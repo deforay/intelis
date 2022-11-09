@@ -230,11 +230,15 @@ try {
      //$vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFname'], $vldata['patient_art_no']);
      //$vldata['patient_last_name'] = $general->crypto('encrypt', $_POST['surName'], $vldata['patient_art_no']);
 
-     /* Updating the high and low viral load data */
-     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-          $vlDb = new \Vlsm\Models\Vl();
-          $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+
+     $vlDb = new \Vlsm\Models\Vl();
+     $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+          $vldata['result_status'] = 5;
+     } elseif ($vldata['vl_result_category'] == 'rejected') {
+          $vldata['result_status'] = 4;
      }
+
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
           $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
           $id = $db->update($tableName, $vldata);

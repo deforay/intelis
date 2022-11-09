@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 ob_start();
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -249,11 +249,15 @@ try {
           'manual_result_entry' => 'yes',
           'vl_result_category' => $vl_result_category
      );
-     
-     /* Updating the high and low viral load data */
-     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-          $vlDb = new \Vlsm\Models\Vl();
-          $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+
+
+     $vlDb = new \Vlsm\Models\Vl();
+     $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+
+     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+          $vldata['result_status'] = 5;
+     } elseif ($vldata['vl_result_category'] == 'rejected') {
+          $vldata['result_status'] = 4;
      }
      $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
      if (isset($_POST['indicateVlTesing']) && $_POST['indicateVlTesing'] != '') {

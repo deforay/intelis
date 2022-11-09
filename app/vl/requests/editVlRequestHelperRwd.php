@@ -341,7 +341,12 @@ try {
     }
 
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    
+    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+        $vldata['result_status'] = 5;
+    } elseif ($vldata['vl_result_category'] == 'rejected') {
+        $vldata['result_status'] = 4;
+    }
+
     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     //var_dump($vldata);die;

@@ -3274,3 +3274,8 @@ ALTER TABLE `audit_form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAUL
 ALTER TABLE `audit_form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
 ALTER TABLE `audit_form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
 ALTER TABLE `audit_form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
+
+
+-- Amit 09-Nov-2022
+UPDATE `form_vl` set result_status = 4 where vl_result_category like 'reject%';
+UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';

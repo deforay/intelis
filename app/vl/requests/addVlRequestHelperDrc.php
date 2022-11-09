@@ -366,6 +366,11 @@ try {
     /* Updating the high and low viral load data */
     //if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
     $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+        $vldata['result_status'] = 5;
+    } elseif ($vldata['vl_result_category'] == 'rejected') {
+        $vldata['result_status'] = 4;
+    }
     //}
     $id = 0;
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {

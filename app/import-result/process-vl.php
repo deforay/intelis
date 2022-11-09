@@ -158,11 +158,16 @@ try {
                     $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code='" . $sampleVal . "'";
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
-                    /* Updating the high and low viral load data */
-                    if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                        $vlDb = new \Vlsm\Models\Vl();
-                        $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
+                    $vlDb = new \Vlsm\Models\Vl();
+                    $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
+                    if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
+                        $data['result_status'] = 5;
+                    } elseif ($vldata['vl_result_category'] == 'rejected') {
+                        $data['result_status'] = 4;
                     }
+
                     $data['sample_code'] = $rResult[0]['sample_code'];
                     if (count($vlResult) > 0) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
@@ -259,11 +264,16 @@ try {
                     $data['result'] = $accResult[$i]['result_value_log'];
                 }
             }
-            /* Updating the high and low viral load data */
-            if ($data['result_status'] == 4 || $data['result_status'] == 7) {
-                $vlDb = new \Vlsm\Models\Vl();
-                $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
+            $vlDb = new \Vlsm\Models\Vl();
+            $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+
+            if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
+                $data['result_status'] = 5;
+            } elseif ($data['vl_result_category'] == 'rejected') {
+                $data['result_status'] = 4;
             }
+
             //get bacth code
             $bquery = "SELECT * FROM batch_details WHERE batch_code='" . $accResult[$i]['batch_code'] . "'";
             $bvlResult = $db->rawQuery($bquery);

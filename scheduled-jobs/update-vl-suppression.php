@@ -15,16 +15,20 @@ $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, re
 
 $result = $db->rawQuery($sql);
 
-// var_dump(count($result));
-
 foreach ($result as $aRow) {
 
     $vlResultCategory = $vlDb->getVLResultCategory($aRow['result_status'], $aRow['result']);
 
     if (!empty($vlResultCategory) && $vlResultCategory !== false) {
-        
-        $db->where('vl_sample_id', $aRow['vl_sample_id']);
-        $res = $db->update("form_vl", array('vl_result_category' => $vlResultCategory));
 
+        $db->where('vl_sample_id', $aRow['vl_sample_id']);
+        $dataToUpdate = array();
+        $dataToUpdate['vl_result_category'] = $vlResultCategory;
+        if ($vlResultCategory == 'failed' || $vlResultCategory == 'invalid') {
+            $dataToUpdate['result_status'] = 5;
+        } elseif ($vlResultCategory == 'rejected') {
+            $dataToUpdate['result_status'] = 4;
+        }
+        $res = $db->update("form_vl", $dataToUpdate);
     }
 }

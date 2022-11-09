@@ -152,11 +152,11 @@ try {
           $_POST['reviewedOn'] = null;
      }
      if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", $_POST['approvedOn']);
-		$_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-	} else {
-		$_POST['approvedOn'] = null;
-	}
+          $approvedOn = explode(" ", $_POST['approvedOn']);
+          $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+     } else {
+          $_POST['approvedOn'] = null;
+     }
 
      $vldata = array(
           //'sample_code'=>(isset($_POST['sampleCode']) && $_POST['sampleCode']!='') ? $_POST['sampleCode'] :  null,
@@ -213,8 +213,8 @@ try {
           'result' => (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : null,
           'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
           'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-          'result_approved_by' 	   => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
+          'result_approved_by'         => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
+          'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
           'result_status' => (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] : null,
           'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null),
           'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null),
@@ -230,10 +230,13 @@ try {
      );
 
 
-     /* Updating the high and low viral load data */
-     if ($vldata['result_status'] == 4 || $vldata['result_status'] == 7) {
-          $vlDb = new \Vlsm\Models\Vl();
-          $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+
+     $vlDb = new \Vlsm\Models\Vl();
+     $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
+          $vldata['result_status'] = 5;
+     } elseif ($vldata['vl_result_category'] == 'rejected') {
+          $vldata['result_status'] = 4;
      }
 
      if ($_SESSION['instanceType'] == 'remoteuser') {
