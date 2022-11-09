@@ -337,7 +337,7 @@ try {
         'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
         'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'],
         'data_sync' => 0,
         'last_modified_datetime' => $db->now(),
@@ -400,7 +400,7 @@ try {
     }
     if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != '') {
         $vldata['sample_type'] = $_POST['specimenType'];
-        $vldata['plasma_conservation_temperature'] = $_POST['conservationTemperature'];
+        $vldata['plasma_conservation_temperature'] = !empty($_POST['conservationTemperature']) ? $_POST['conservationTemperature'] : null;
         $vldata['plasma_conservation_duration'] = $_POST['durationOfConservation'];
     }
     if (isset($_POST['status']) && trim($_POST['status']) != '') {
@@ -415,7 +415,6 @@ try {
             $vldata['reason_for_sample_rejection'] = $_POST['rejectionReason'];
         }
     }
-
     //var_dump($vldata);die;
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);

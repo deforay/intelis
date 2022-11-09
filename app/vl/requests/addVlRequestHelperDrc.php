@@ -323,7 +323,7 @@ try {
         'plasma_conservation_duration' => $_POST['durationOfConservation'],
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'result_status' => $resultStatus,
-        'reason_for_sample_rejection' => $_POST['rejectionReason'],
+        'reason_for_sample_rejection' => !empty($_POST['rejectionReason']) ? $_POST['rejectionReason'] : null,
         //'sample_code'=>$_POST['sampleCode'],
         //'lab_code'=>$_POST['labNo'],
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] : null),
@@ -371,7 +371,7 @@ try {
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
-        // echo $db->getLastError();
+        // error_log($db->getLastError());
     }
     // else {
     //     //check existing sample code
