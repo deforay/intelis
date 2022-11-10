@@ -277,7 +277,7 @@ foreach ($tatResult as $sRow) {
                             name: '<?php echo ($tRow['status_name']); ?>',
                             y: <?php echo ($tRow['total']); ?>,
                             color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>'
+                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']);?>'
                         },
                     <?php } ?>
                 ];
