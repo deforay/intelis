@@ -10,7 +10,7 @@ if (!class_exists('DRC_PDF')) {
             if ($this->htitle != '') {
 
 
-                $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "inrb.png";
+                $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
                 if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
@@ -52,7 +52,7 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
                 // Define the path to the image that you want to use as watermark.
-                $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
+                $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 if ($this->fileExists($watermarkImage)) {
                     $this->SetAlpha(0.1);
                     $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);

@@ -9,10 +9,10 @@ if (!class_exists('DRC_PDF')) {
             // Logo
             if ($this->htitle != '') {
 
-                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'inrb.png';
+                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . 'inrb.png';
                 $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'inrb.png';
+                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . 'inrb.png';
                 $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 $this->SetFont('helvetica', 'B', 12);
                 $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
@@ -34,7 +34,7 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 10, 36, '<hr>', 0, 0, 0, true, 'C', true);
 
                 // Define the path to the image that you want to use as watermark.
-                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
+                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 // Render the image
                 if ($img_file != "") {
                     $this->SetAlpha(0.1);

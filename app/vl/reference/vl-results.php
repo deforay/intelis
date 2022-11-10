@@ -20,7 +20,7 @@ require_once(APPLICATION_PATH . '/header.php');
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-                    <?php if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                    <?php if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges'])) { ?>
 							<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Results");?></a>
 						<?php } ?>
 					</div>
@@ -32,7 +32,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<th scope="row"><?php echo _("Viral Load Result");?></th>
 									<th scope="row"><?php echo _("Instruments");?></th>
 									<th scope="row"><?php echo _("Status");?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) { ?>
 									<th scope="row">Action</th>
 									<?php } ?>
 								</tr>

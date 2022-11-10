@@ -771,7 +771,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-lg-7 resultInputContainer">
 													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 													<datalist id="possibleVlResults" title="Please enter viral load result">
-														
+
 													</datalist>
 												</div>
 											</div>
@@ -1362,6 +1362,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
+		if (!text) return;
 		var str1 = text.split("##");
 		var str = str1[0];
 		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
@@ -1372,18 +1373,18 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#hivDetection").val("");
 		}
 
-		  //Get VL results by platform id
-          var platformId = str1[3];
-          $("#possibleVlResults").html('');
-          $.post("/vl/requests/getVlResults.php", {
-                              instrumentId : platformId,
-                         },
-                         function(data) {
-                             // alert(data);
-                              if (data != "") {
-                                   $("#possibleVlResults").html(data);
-                              }
-                         });
+		//Get VL results by platform id
+		var platformId = str1[3];
+		$("#possibleVlResults").html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				// alert(data);
+				if (data != "") {
+					$("#possibleVlResults").html(data);
+				}
+			});
 	}
 
 	function checkRejectionReason() {

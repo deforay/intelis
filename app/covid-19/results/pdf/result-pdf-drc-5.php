@@ -55,7 +55,7 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
 
                 // Define the path to the image that you want to use as watermark.
-                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
+                $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 if (!empty($this->logo) && file_exists($img_file)) {
                 } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . "actual-inrb.png") {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . "actual-inrb.png")) {

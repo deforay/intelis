@@ -639,7 +639,7 @@ $sFormat = '';
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)">
                                                                            <datalist id="possibleVlResults">
-                                                                               
+
                                                                            </datalist>
                                                                       </div>
                                                                  </div>
@@ -1228,6 +1228,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
+          if(!text) return;
           var str1 = text.split("##");
           var str = str1[0];
           if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
@@ -1242,14 +1243,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var platformId = str1[3];
           $("#possibleVlResults").html('');
           $.post("/vl/requests/getVlResults.php", {
-                              instrumentId : platformId,
-                         },
-                         function(data) {
-                             // alert(data);
-                              if (data != "") {
-                                   $("#possibleVlResults").html(data);
-                              }
-                         });
+                    instrumentId: platformId,
+               },
+               function(data) {
+                    // alert(data);
+                    if (data != "") {
+                         $("#possibleVlResults").html(data);
+                    }
+               });
 
      }
 
