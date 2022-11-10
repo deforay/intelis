@@ -155,7 +155,14 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 									<?php } ?>
 								</select>
 							</td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
 
+							</td>
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -504,6 +511,7 @@ if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Viral_Load: $("#result  option:selected").text(),
 				Print_Date: $("#printDate").val(),
+				patientInfo: $("#patientInfo  option:selected").val(),
 				Status: $("#status  option:selected").text(),
 				withAlphaNum: withAlphaNum
 			},

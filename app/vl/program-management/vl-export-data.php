@@ -212,6 +212,15 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								</select>
 
 							</td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
+							</td>
+							
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -451,7 +460,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				},
 				{
 					"sClass": "center"
-				},
+				}, 
 				{
 					"sClass": "center"
 				},
@@ -597,6 +606,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				Gender: $("#gender  option:selected").text(),
+				patientInfo: $("#patientInfo  option:selected").val(),
 				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: $("#status  option:selected").text(),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),

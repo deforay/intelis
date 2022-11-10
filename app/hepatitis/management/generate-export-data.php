@@ -22,8 +22,13 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	}
+	else
+	{
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	}
 	if ($sarr['sc_user_type'] == 'standalone') {
 		if (($key = array_search('Remote Sample Code', $headings)) !== false) {
 			unset($headings[$key]);
@@ -161,8 +166,10 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $aRow['facility_code'];
 		$row[] = ucwords($aRow['facility_district']);
 		$row[] = ucwords($aRow['facility_state']);
-		$row[] = $aRow['patient_id'];
-		$row[] = $patientFname . " " . $patientLname;
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+			$row[] = $aRow['patient_id'];
+			$row[] = $patientFname . " " . $patientLname;
+		}
 		$row[] = $dob;
 		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;

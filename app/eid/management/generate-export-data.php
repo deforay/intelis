@@ -21,8 +21,13 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
-	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
-
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Sample Type","Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+	}
+	else
+	{
+		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+	}
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
 			unset($headings[$key]);
@@ -57,7 +62,6 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 			),
 		)
 	);
-
 	$sheet->mergeCells('A1:AH1');
 	$nameValue = '';
 	foreach ($_POST as $key => $value) {
@@ -65,6 +69,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
+	
 	$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
@@ -162,9 +167,11 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = ucwords($aRow['facility_district']);
 		$row[] = ucwords($aRow['facility_state']);
 		$row[] = ucwords($aRow['lab_name']);
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$row[] = $aRow['child_id'];
 		$row[] = $aRow['child_name'];
 		$row[] = $aRow['mother_id'];
+		}
 		$row[] = $dob;
 		$row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
 		$row[] = $gender;
@@ -172,6 +179,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = ucwords($aRow['pcr_test_performed_before']);
 		$row[] = ucwords($aRow['previous_pcr_result']);
 		$row[] = $sampleCollectionDate;
+		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
 		$row[] = $eidResults[$aRow['result']];
