@@ -10,7 +10,7 @@ if (!class_exists('DRC_PDF')) {
             if ($this->htitle != '') {
 
 
-                $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "inrb.png";
+                $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
                 if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
@@ -33,26 +33,28 @@ if (!class_exists('DRC_PDF')) {
                 $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
                 $this->SetFont('helvetica', 'B', 10);
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DU HAUT KATANGA", 0, 0, 0, true, 'C', true);
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
-                    $this->writeHTMLCell(0, 0, 0, 16, ($this->lab), 0, 0, 0, true, 'C', true);
+                    $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C', true);
                 }
                 $this->SetFont('helvetica', '', 10);
                 $this->SetTextColor(0, 0, 250);
-                $this->writeHTMLCell(0, 0, 0, 22, '<em>Service de Biologie Moléculaire</em>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 32, '<em>Service de Biologie Moléculaire</em>', 0, 0, 0, true, 'C', true);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('helvetica', 'U', 11);
-                $this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 38, 'Laboratoire National de Référence pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C', true);
 
                 $this->SetFont('helvetica', 'B', 10);
-                $this->writeHTMLCell(0, 0, 0, 36, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 44, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
                 $this->SetFont('helvetica', 'U', 10);
-                $this->writeHTMLCell(0, 0, 0, 42, 'TEST AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 49, 'TEST AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C', true);
 
-                $this->writeHTMLCell(0, 0, 10, 48, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 54, '<hr>', 0, 0, 0, true, 'C', true);
 
                 // Define the path to the image that you want to use as watermark.
-                $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-inrb.png";
+                $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 if ($this->fileExists($watermarkImage)) {
                     $this->SetAlpha(0.1);
                     $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
@@ -340,7 +342,7 @@ $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
-            <br><br><strong>Fait à Kinshasa, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
+            <br><br><strong>Fait à Lubumbashi, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
     '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 

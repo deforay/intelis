@@ -631,7 +631,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 
 	$(document).ready(function() {
-	getVlResults($("#testingPlatform").val());
+		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');
@@ -881,19 +881,20 @@ $sampleSuggestionDisplay = 'display:none;';
 		}
 	}
 
-	function getVlResults(platformInfo)
-	{
+	function getVlResults(platformInfo) {
+		if(!platformInfo) return;
+		
 		var str1 = platformInfo.split("##");
-          //Get VL results by platform id
-          var platformId = str1[3];
-          $("#possibleVlResults").html('');
-          $.post("/vl/requests/getVlResults.php", {
-                              instrumentId : platformId,
-                         },
-                         function(data) {
-                              if (data != "") {
-                                   $("#possibleVlResults").html(data);
-                              }
-                         });
+		//Get VL results by platform id
+		var platformId = str1[3];
+		$("#possibleVlResults").html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				if (data != "") {
+					$("#possibleVlResults").html(data);
+				}
+			});
 	}
 </script>

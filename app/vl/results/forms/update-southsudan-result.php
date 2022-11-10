@@ -894,7 +894,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		
+
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
 		//$("#hivDetection, #noResult").trigger('change');
@@ -904,7 +904,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#hivDetection, #noResult").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and fName changes will do
-			$("#sampleCollectionDate").trigger('change');			
+			$("#sampleCollectionDate").trigger('change');
 			__clone = $(".labSection").clone();
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();
@@ -1042,6 +1042,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
+		if (!text) return;
 		var str1 = text.split("##");
 		var str = str1[0];
 		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
@@ -1052,18 +1053,18 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#hivDetection").val("");
 		}
 
-		 //Get VL results by platform id
-		 var platformId = str1[3];
-          $("#possibleVlResults").html('');
-          $.post("/vl/requests/getVlResults.php", {
-                              instrumentId : platformId,
-                         },
-                         function(data) {
-                             // alert(data);
-                              if (data != "") {
-                                   $("#possibleVlResults").html(data);
-                              }
-                         });
+		//Get VL results by platform id
+		var platformId = str1[3];
+		$("#possibleVlResults").html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				// alert(data);
+				if (data != "") {
+					$("#possibleVlResults").html(data);
+				}
+			});
 	}
 
 

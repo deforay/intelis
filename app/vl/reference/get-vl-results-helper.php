@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "r_vl_results";
 $primaryKey = "result_id";
@@ -96,7 +96,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM r_vl_results";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_vl_results";
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' where ' . $sWhere;
@@ -111,20 +111,12 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
-// echo $sQuery;
+
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
+
 /* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_vl_results $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(result_id) as total FROM r_vl_results");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
          * Output
@@ -137,25 +129,24 @@ $output = array(
 );
 foreach ($rResult as $aRow) {
     $instruments = json_decode($aRow['available_for_instruments']);
-    $idValues = implode(',',$instruments);
-    $sqlInstrument = "select group_concat(machine_name) as machine_name from import_config where config_id in ($idValues)";
+    $idValues = implode(',', $instruments);
+    $sqlInstrument = "SELECT group_concat(machine_name) as machine_name from import_config where config_id in ($idValues)";
     $instrumentRes = $db->rawQuery($sqlInstrument);
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
-               <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
-               <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
+               <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = array();
     $row[] = ucwords($aRow['result']);
     $row[] = $instrumentRes[0]['machine_name'];
-    
-    if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+
+    if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) {
         $row[] = $status;
         $row[] = '<a href="edit-vl-results.php?id=' . base64_encode($aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-    }
-    else {
+    } else {
         $row[] = ucwords($aRow['status']);
     }
-   
+
     $output['aaData'][] = $row;
 }
 
