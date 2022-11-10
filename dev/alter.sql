@@ -3279,3 +3279,7 @@ ALTER TABLE `audit_form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL
 -- Amit 09-Nov-2022
 UPDATE `form_vl` set result_status = 4 where vl_result_category like 'reject%';
 UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';
+
+
+-- Amit 10-Nov-2022 version 5.0.9
+UPDATE `system_config` SET `value` = '5.0.9' WHERE `system_config`.`name` = 'sc_version';
