@@ -468,7 +468,7 @@ $sFormat = '';
 													<option value="yes">Echantillon rejeté</option>
 												</select>
 											</td>
-											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet </label></td>
+											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
@@ -482,9 +482,9 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr class="rejectionReason" style="display:none;">
-											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser </label></td>
+											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
+											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?> <span class="mandatory">*</span></th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
@@ -519,11 +519,11 @@ $sFormat = '';
 										<tr>
 											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
 											<td style="width:14%;">
-												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime authorisation form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
 											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
 											<td style="width:14%;">
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
@@ -531,11 +531,11 @@ $sFormat = '';
 										<tr>
 											<th>Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOn" id="approvedOn" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
 											<th>Approuvé par</th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+												<select name="approvedBy" id="approvedBy" class="select2 authorisation form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
@@ -745,6 +745,11 @@ $sFormat = '';
 	}
 
 	$('#vlResult').on('change', function() {
+		if($(this).val() != ""){
+			$('.authorisation').addClass("isRequired");
+		}else{
+			$('.authorisation').removeClass("isRequired");
+		}
 		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
 			if ($(this).val().trim().toLowerCase() == 'failed') {
 				$('.reasonForFailure').show();
