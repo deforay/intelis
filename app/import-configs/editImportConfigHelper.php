@@ -50,6 +50,7 @@ try {
             'lower_limit' => $_POST['lowerLimit'],
             'higher_limit' => $_POST['higherLimit'],
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
+            'date_time' => !empty($_POST['dateFormat']) ? $_POST['dateFormat'] : null,
             'low_vl_result_text' => $_POST['lowVlResultText'],
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,

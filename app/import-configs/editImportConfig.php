@@ -139,6 +139,16 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="dateFormat" class="col-lg-4 control-label"><?php echo _("Date Time"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<input type="text" value="<?php echo $sInfo['date_time']; ?>" class="form-control" id="dateFormat" name="dateFormat" placeholder='<?php echo _("d/m/Y"); ?>' title='<?php echo _("Please enter the date format"); ?>' />
+									</div>
+								</div>
+							</div>
+						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 							<div class="row lowVlResultText" <?php echo $lowerText; ?>>
 								<div class="col-md-12">
