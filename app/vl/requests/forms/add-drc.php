@@ -449,9 +449,9 @@ $sFormat = '';
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span> </label></td>
 											<td style="width: 25%;">
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -460,9 +460,9 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<td style="width: 25%;"><label for="">Décision prise </label></td>
+											<td style="width: 25%;"><label for="">Décision prise <span class="mandatory">*</span> </label></td>
 											<td style="width: 25%;">
-												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control isRequired" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no">Echantillon accepté</option>
 													<option value="yes">Echantillon rejeté</option>
@@ -493,7 +493,7 @@ $sFormat = '';
 										<tr class="resultSection">
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
 											<td class="resultInputContainer">
-												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);">
+												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);" disabled>
 												<datalist id="possibleVlResults">
 													<!--<option value="< 20"> &lt; 20 </option>
 													<option value="< 40"> &lt; 40 </option>
@@ -877,19 +877,23 @@ $sFormat = '';
 		});
 	});
 
-	function getVlResults(platformInfo)
-	{
+	function getVlResults(platformInfo) {
+		if (!platformInfo) {
+			$("#vlResult").attr("disabled", true);
+			return;
+		}
 		var str1 = platformInfo.split("##");
-          //Get VL results by platform id
-          var platformId = str1[3];
-          $("#possibleVlResults").html('');
-          $.post("/vl/requests/getVlResults.php", {
-                              instrumentId : platformId,
-                         },
-                         function(data) {
-                              if (data != "") {
-                                   $("#possibleVlResults").html(data);
-                              }
-                         });
+		//Get VL results by platform id
+		var platformId = str1[3];
+		$("#possibleVlResults").html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				if (data != "") {
+					$("#possibleVlResults").html(data);
+					$("#vlResult").attr("disabled", false);
+				}
+			});
 	}
 </script>

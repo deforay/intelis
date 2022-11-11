@@ -565,18 +565,18 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span" style="display: none;">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                                       </div>
                                                                  </div>
 
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform </label>
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -585,9 +585,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? </label>
+                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="yes">Yes</option>
                                                                                 <option value="no">No</option>
@@ -637,7 +637,7 @@ $sFormat = '';
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) <span class="mandatory result-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)">
+                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
@@ -1228,7 +1228,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
-          if(!text) return;
+          if (!text) {
+               $("#vlResult").attr("disabled", true);
+               return;
+          }
+
           var str1 = text.split("##");
           var str = str1[0];
           if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
@@ -1249,6 +1253,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     // alert(data);
                     if (data != "") {
                          $("#possibleVlResults").html(data);
+                         $("#vlResult").attr("disabled", false);
                     }
                });
 

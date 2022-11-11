@@ -500,9 +500,9 @@ $sampleSuggestionDisplay = 'display:none;';
 											<td>
 												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td><label for="testingPlatform">Technique utilisée </label></td>
+											<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -511,9 +511,9 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 										</tr>
 										<tr>
-											<td><label for="">Décision prise </label></td>
+											<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 											<td>
-												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control isRequired" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -882,8 +882,11 @@ $sampleSuggestionDisplay = 'display:none;';
 	}
 
 	function getVlResults(platformInfo) {
-		if(!platformInfo) return;
-		
+		if (!platformInfo) {
+			$("#vlResult").attr("disabled", true);
+			return;
+		}
+
 		var str1 = platformInfo.split("##");
 		//Get VL results by platform id
 		var platformId = str1[3];
@@ -894,6 +897,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			function(data) {
 				if (data != "") {
 					$("#possibleVlResults").html(data);
+					$("#vlResult").attr("disabled", false);
 				}
 			});
 	}
