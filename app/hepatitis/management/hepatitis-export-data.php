@@ -39,7 +39,6 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 } else {
 	$reportType = 'generate-export-data.php';
 }
-
 ?>
 <style>
 	.select2-selection__choice {
@@ -147,6 +146,16 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
+							</td>
+									</tr>
+							<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
 
@@ -476,6 +485,7 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 				HCV_Viral_Load: $("#hcvVLoad  option:selected").text(),
 				HBV_Viral_Load: $("#hbvVLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
+				patientInfo: $("#patientInfo  option:selected").val(),
 				Status: $("#status  option:selected").text(),
 				withAlphaNum: withAlphaNum
 			},

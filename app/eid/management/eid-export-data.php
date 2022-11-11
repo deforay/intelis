@@ -164,6 +164,13 @@ $eidResults = $eidModel->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="6">
@@ -541,9 +548,11 @@ $eidResults = $eidModel->getEidResults();
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Facility_Name: $("#facilityName  option:selected").text(),
 				sample_Test_Date: $("#sampleTestDate").val(),
+				Sample_Type: $("#sampleType  option:selected").text(),
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				Status: $("#status  option:selected").text(),
+				patientInfo: $("#patientInfo  option:selected").val(),
 				withAlphaNum: withAlphaNum
 			},
 			function(data) {

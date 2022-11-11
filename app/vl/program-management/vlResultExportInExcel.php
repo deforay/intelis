@@ -19,8 +19,13 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 	$sheet->setTitle('VL Results');
-	$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
-
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+		$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.",  "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+	}
+	else
+	{
+		$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+	}
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
 			unset($headings[$key]);
@@ -57,6 +62,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 	$sheet->mergeCells('A1:AH1');
 	$nameValue = '';
+	
 	foreach ($_POST as $key => $value) {
 		if (trim($value) != '' && trim($value) != '-- Select --') {
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
@@ -203,8 +209,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
-		$row[] = $aRow['patient_art_no'];
-		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+		
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+			$row[] = $aRow['patient_art_no'];
+			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+		}
 		$row[] = $dob;
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;

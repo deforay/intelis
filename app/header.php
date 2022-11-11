@@ -217,7 +217,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<script src="/assets/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
 <style>
-	.select2-selection--multiple{ height:auto; width: auto; overflow-y:scroll !important; }
+	.select2-selection--multiple{ max-height:100px; width: auto; overflow-y:scroll !important; }
 	</style>
 </head>
 
