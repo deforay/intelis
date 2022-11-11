@@ -102,6 +102,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     f.facility_code,
                     f.facility_state,
                     f.facility_district,
+                    UPPER(s.sample_name) as sample_name,
                     u_d.user_name as reviewedBy,
                     a_u_d.user_name as approvedBy,
                     rs.rejection_reason_name,
@@ -112,6 +113,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
                     INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type 
                     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
                     LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
@@ -177,6 +179,10 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
           $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
+}
+/* Sample type filter */
+if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+     $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
 /* Facility id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
