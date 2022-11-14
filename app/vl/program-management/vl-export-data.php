@@ -222,6 +222,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 							
 						</tr>
+					
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>

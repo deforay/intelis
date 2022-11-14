@@ -224,7 +224,14 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-						
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
+							</td>
 							</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
@@ -673,7 +680,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("generate-pending-covid19-request-excel.php", {
-				reqSampleType: requestSampleType
+				reqSampleType: requestSampleType,
+				patientInfo: $('#patientInfo').val(),
 			},
 			function(data) {
 				$.unblockUI();

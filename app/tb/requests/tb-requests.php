@@ -214,6 +214,16 @@ foreach ($srcResults as $list) {
 
                         </tr>
                         <tr>
+                        <td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
+							</td>
+                                    </tr>
+                        <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
@@ -605,7 +615,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function exportAllPendingTbRequest() {
         // $.blockUI();
         $.post("/tb/requests/generate-pending-tb-request-excel.php", {
-                reqSampleType: $('#requestSampleType').val()
+                reqSampleType: $('#requestSampleType').val(),
+                patientInfo: $('#patientInfo').val(),
             },
             function(data) {
                 $.unblockUI();

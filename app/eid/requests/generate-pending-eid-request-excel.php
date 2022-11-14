@@ -62,8 +62,14 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
+if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+}
+else
+{
+    $headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+}
 
-$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 
 if ($_SESSION['instanceType'] == 'standalone') {
     if (($key = array_search("Remote Sample Code", $headings)) !== false) {
@@ -207,9 +213,11 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['facility_district']);
     $row[] = ucwords($aRow['facility_state']);
     $row[] = ucwords($aRow['labName']);
-    $row[] = $aRow['child_id'];
-    $row[] = $aRow['child_name'];
-    $row[] = $aRow['mother_id'];
+    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+        $row[] = $aRow['child_id'];
+        $row[] = $aRow['child_name'];
+        $row[] = $aRow['mother_id'];
+    }
     $row[] = $dob;
     $row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
     $row[] = $gender;

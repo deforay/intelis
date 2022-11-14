@@ -32,9 +32,6 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
-$state = $geoLocationDb->getProvinces("yes");
-
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
@@ -111,16 +108,12 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
-								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<option value="yes"><?php echo _("Yes"); ?></option>
-									<option value="no"><?php echo _("No"); ?></option>
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
+									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							
-							
 							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
@@ -262,25 +255,35 @@ foreach ($srcResults as $list) {
 						
 						</tr>
 						<tr>
-						
+						<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value=""> <?php echo _("-- Select --"); ?> </option>
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+							</td>
+							
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
-									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
+								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-							<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
-                </select>
+								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
 							</td>
-							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
-									<?= $facilitiesDropdown; ?>
-								</select>
-							</td>
+
 						</tr>
+						<tr>
+						<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no"><?php echo _("No"); ?></option>
+								</select>
+
+							</td>
+									</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -830,6 +833,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		$.post("generatePendingVlRequestExcel.php", {
 				reqSampleType: $('#requestSampleType').val(),
+				patientInfo: $('#patientInfo').val(),
 			},
 			function(data) {
 				$.unblockUI();
@@ -933,28 +937,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			});
 
 	}
-
-	function getDistrictByProvince(provinceId)
-  	{
-		$("#district").html('');
-		$.post("/common/get-district-by-province-id.php", {
-		provinceId : provinceId,
-				},
-				function(data) {
-			$("#district").html(data);
-				});
-  	}
-
-function getFacilityByDistrict(districtId)
-{
-	$("#facilityName").html('');
-    $.post("/common/get-facilities-by-district-id.php", {
-		districtId : districtId,
-			},
-			function(data) {
-        $("#facilityName").html(data);
-			});
-}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
