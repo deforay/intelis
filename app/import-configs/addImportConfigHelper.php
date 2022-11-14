@@ -47,6 +47,7 @@ try {
             'lower_limit' => !empty($_POST['lowerLimit']) ? $_POST['lowerLimit'] : null,
             'higher_limit' => !empty($_POST['higherLimit']) ? $_POST['higherLimit'] : null,
             'max_no_of_samples_in_a_batch' => !empty($_POST['maxNOfSamplesInBatch']) ? $_POST['maxNOfSamplesInBatch'] : null,
+            'date_time' => !empty($_POST['dateFormat']) ? $_POST['dateFormat'] : null,
             'low_vl_result_text' => !empty($_POST['lowVlResultText']) ? $_POST['lowVlResultText'] : null,
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,

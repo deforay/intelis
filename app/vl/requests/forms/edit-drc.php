@@ -484,9 +484,9 @@ $sampleSuggestionDisplay = 'display:none;';
 									</div>
 									<table class="table" aria-hidden="true" style="width:100%">
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
-											<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
+											<td><label for="">Date de réception de l'échantillon  </label></td>
 											<td>
-												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du laboratoire </label> </td>
 											<td>
@@ -500,9 +500,9 @@ $sampleSuggestionDisplay = 'display:none;';
 											<td>
 												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
+											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -511,9 +511,9 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 										</tr>
 										<tr>
-											<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
+											<td><label for="">Décision prise </label></td>
 											<td>
-												<select class="form-control isRequired" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -526,7 +526,7 @@ $sampleSuggestionDisplay = 'display:none;';
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
 														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($rjctReason['rejection_reason_name']); ?></option>
 													<?php } ?>
-													<option value="other">Autre</option>
+													<option value="other">Autre <span class="mandatory">*</span></option>
 												</select>
 												<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 											</td>
@@ -534,7 +534,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
+											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?> <span class="mandatory">*</span></th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
@@ -566,11 +566,11 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr>
 											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
 											<td style="width:14%;">
-												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime authorisation form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
 											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
 											<td style="width:14%;">
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
@@ -578,11 +578,11 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr>
 											<th>Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
 											<th>Approuvé par</th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+												<select name="approvedBy" id="approvedBy" class="select2 authorisation form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
@@ -812,6 +812,11 @@ $sampleSuggestionDisplay = 'display:none;';
 	}
 
 	$('#vlResult').on('change', function() {
+		if($(this).val() != ""){
+			$('.authorisation').addClass("isRequired");
+		}else{
+			$('.authorisation').removeClass("isRequired");
+		}
 		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
 			if ($(this).val().trim().toLowerCase() == 'failed') {
 				$('.reasonForFailure').show();

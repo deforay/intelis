@@ -3283,3 +3283,6 @@ UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';
 
 -- Amit 10-Nov-2022 version 5.0.9
 UPDATE `system_config` SET `value` = '5.0.9' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 11-Nov-2022
+ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`; 
