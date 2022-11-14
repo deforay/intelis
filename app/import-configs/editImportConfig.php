@@ -139,16 +139,6 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="dateFormat" class="col-lg-4 control-label"><?php echo _("Date Time"); ?> <span class="mandatory">*</span></label>
-									<div class="col-lg-7">
-										<input type="text" value="<?php echo $sInfo['date_time']; ?>" class="form-control" id="dateFormat" name="dateFormat" placeholder='<?php echo _("d/m/Y"); ?>' title='<?php echo _("Please enter the date format"); ?>' />
-									</div>
-								</div>
-							</div>
-						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 							<div class="row lowVlResultText" <?php echo $lowerText; ?>>
 								<div class="col-md-12">
@@ -350,7 +340,13 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
-													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkMachineName(this);" ; />
+													<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkDublicateName(this, 'configMachineName');" ; />
+												</td>
+												<td>
+													<input type="text" value="<?php echo $machine['date_format']; ?>" name="dateFormat[]" id="dateFormat<?php echo $i; ?>" class="form-control" placeholder='<?php echo _("Date Format"); ?>' title='<?php echo _("Please enter date format"); ?>'/>
+												</td>
+												<td>
+													<input type="text" value="<?php echo $machine['file_name']; ?>" name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control" placeholder='<?php echo _("File Name"); ?>' title='<?php echo _("Please enter file name"); ?>'  onblur="checkDublicateName(this, 'fileName');" />
 												</td>
 												<td>
 													<div class="col-md-3">
@@ -377,6 +373,12 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 										<tr>
 											<td>
 												<input type="text" name="configMachineName[]" id="configMachineName0" class="form-control configMachineName isRequired" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" onblur="checkMachineName(this);" />
+											</td>
+											<td>
+												<input type="text" name="dateFormat[]" id="dateFormat0" class="form-control" placeholder='<?php echo _("Date Format"); ?>' title='<?php echo _("Please enter date format"); ?>'/>
+											</td>
+											<td>
+												<input type="text" name="fileName[]" id="fileName0" class="form-control" placeholder='<?php echo _("File Name"); ?>' title='<?php echo _("Please enter file name"); ?>'  onblur="checkDublicateName(this, 'fileName');" />
 											</td>
 											<td>
 												<div class="col-md-3">
@@ -486,11 +488,15 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 		var b = a.insertCell(0);
 		var c = a.insertCell(1);
 		var d = a.insertCell(2);
-		d.setAttribute("align", "center");
-		d.setAttribute("style", "vertical-align:middle");
+		var e = a.insertCell(3);
+		var f = a.insertCell(4);
+		f.setAttribute("align", "center");
+		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '"class="isRequired configMachineName form-control" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" onblur="checkMachineName(this);"/ >';
-		c.innerHTML = '<div class="col-md-3" >\
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _('Machine Name'); ?>" title="<?php echo _('Please enter machine name'); ?>" onblur="checkDublicateName(this, \'"configMachineName"\');"/ >';
+		c.innerHTML = '<input type="text" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _("Date Format"); ?>" title="<?php echo _("Please enter date format"); ?>"  onblur="checkDublicateName(this, \'"dateFormat"\');"/>';
+		d.innerHTML = '<input type="text" name="fileName[]" id="fileName' + tableRowId + '" class="form-control" placeholder="<?php echo _("File Name"); ?>" title="<?php echo _("Please enter file name"); ?>"/>';
+		e.innerHTML = '<div class="col-md-3" >\
 						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
 						</div>\
 						<div class="latLong' + tableRowId + ' " style="display:none">\
@@ -501,7 +507,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _('Longitude'); ?>" data-placement="bottom" title="<?php echo _('Longitude'); ?>"/>\
 							</div>\
 						</div>';
-		d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 		tableRowId++;
 	}
@@ -516,10 +522,10 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 		});
 	}
 
-	function checkMachineName(obj) {
-		machineObj = document.getElementsByName("configMachineName[]");
-		for (m = 0; m < machineObj.length; m++) {
-			if (obj.value != '' && obj.id != machineObj[m].id && obj.value == machineObj[m].value) {
+	function checkDublicateName(obj, name) {
+		dublicateObj = document.getElementsByName(name+"[]");
+		for (m = 0; m < dublicateObj.length; m++) {
+			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
 				alert('Duplicate value not allowed');
 				$('#' + obj.id).val('');
 			}

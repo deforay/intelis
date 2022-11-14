@@ -3286,3 +3286,7 @@ UPDATE `system_config` SET `value` = '5.0.9' WHERE `system_config`.`name` = 'sc_
 
 -- Thana 11-Nov-2022
 ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`; 
+
+-- Thana 14-Nov-2022
+ALTER TABLE `import_config` DROP `date_time`; 
+ALTER TABLE `import_config_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`; 
