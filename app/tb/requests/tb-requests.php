@@ -349,6 +349,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 <script type="text/javascript">
+    let searchExecuted = false;
     var startDate = "";
     var endDate = "";
     var selectedTests = [];
@@ -409,6 +410,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $("#showhide").hover(function() {}, function() {
             $(this).fadeOut('slow')
         });
+
+        $("#advanceFilter input, #advanceFilter select").on("change", function() {
+			searchExecuted = false;
+		});
 
     });
 
@@ -577,6 +582,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 
     function searchVlRequestData() {
+        searchExecuted = true;
         $.blockUI();
         oTable.fnDraw();
         $.unblockUI();
@@ -613,7 +619,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 
     function exportAllPendingTbRequest() {
-        // $.blockUI();
+        if (searchExecuted === false) {
+			searchVlRequestData();
+		}
+         $.blockUI();
         $.post("/tb/requests/generate-pending-tb-request-excel.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
