@@ -50,7 +50,6 @@ try {
             'lower_limit' => $_POST['lowerLimit'],
             'higher_limit' => $_POST['higherLimit'],
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
-            'date_time' => !empty($_POST['dateFormat']) ? $_POST['dateFormat'] : null,
             'low_vl_result_text' => $_POST['lowVlResultText'],
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
@@ -67,11 +66,11 @@ try {
                         $pocDev = 'yes';
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
-                        $configMachineData = array('config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getCurrentDateTime());
+                        $configMachineData = array('config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getCurrentDateTime());
                         $db = $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
-                        $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getCurrentDateTime());
+                        $configMachineData = array('config_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => $general->getCurrentDateTime());
                         $db->insert($importMachineTable, $configMachineData);
                     }
                 }
