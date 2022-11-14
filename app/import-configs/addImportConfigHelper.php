@@ -6,9 +6,9 @@ ob_start();
   
 
 $general = new \Vlsm\Models\General();
-$tableName = "import_config";
-$importMachineTable = "import_config_machines";
-$importControlTable = "import_config_controls";
+$tableName = "instruments";
+$importMachineTable = "instrument_machines";
+$importControlTable = "instrument_controls";
 /* echo "<pre>";
 print_r($_POST);
 die; */

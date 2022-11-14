@@ -18,7 +18,7 @@ foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ucwords($user['user_name']);
 }
 //get import config
-$importQuery = "SELECT * FROM import_config WHERE status = 'active'";
+$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 $userQuery = "SELECT * FROM user_details where status='active'";
@@ -52,7 +52,7 @@ $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 $disable = "disabled = 'disabled'";
 
 
-$iResultQuery = "SELECT * FROM import_config_machines";
+$iResultQuery = "SELECT * FROM instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
 $machine = array();
 foreach ($iResult as $val) {

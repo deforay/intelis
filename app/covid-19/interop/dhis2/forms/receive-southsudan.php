@@ -161,7 +161,7 @@ foreach ($trackedEntityInstances as $tracker) {
         // Platform
         if (!empty($formData['covid19_test_platform'])) {
             $db->where("machine_name", $formData['covid19_test_platform']);
-            $testPlatform = $db->getOne("import_config");
+            $testPlatform = $db->getOne("instruments");
             $formData['covid19_test_platform'] = $testPlatform['config_id'];
         } else {
             $formData['covid19_test_platform'] = null;

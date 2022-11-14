@@ -51,7 +51,7 @@ foreach ($rejectionTypeResult as $type) {
     $rejectionReason .= '</optgroup>';
 }
 
-$iResultQuery = "select * from  import_config_machines";
+$iResultQuery = "select * from  instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
 $machine = array();
 foreach ($iResult as $val) {

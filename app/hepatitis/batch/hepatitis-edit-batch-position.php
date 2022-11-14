@@ -11,10 +11,10 @@ if (!isset($id) || trim($id) == '') {
 }
 $content = '';
 $displayOrder = array();
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
+$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
-$configControlQuery = "SELECT * from import_config_controls where config_id=".$batchInfo[0]['config_id'];
+$configControlQuery = "SELECT * from instrument_controls where config_id=".$batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
 $configControl = array();
 foreach($configControlInfo as $info){

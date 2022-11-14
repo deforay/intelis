@@ -8,7 +8,7 @@ $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
 
 $id = base64_decode($_GET['id']);
-$sQuery = "SELECT * from import_config where config_id=?";
+$sQuery = "SELECT * from instruments where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, array($id));
 
 if (!empty($sInfo['supported_tests'])) {
@@ -23,9 +23,9 @@ if (!empty($sInfo['supported_tests'])) {
 	$sInfo['approved_by'] = json_decode($sInfo['approved_by'], true);
 }
 
-$configMachineQuery = "SELECT * from import_config_machines where config_id=$id";
+$configMachineQuery = "SELECT * from instrument_machines where config_id=$id";
 $configMachineInfo = $db->query($configMachineQuery);
-$configControlQuery = "SELECT * from import_config_controls where config_id=$id";
+$configControlQuery = "SELECT * from instrument_controls where config_id=$id";
 $configControlInfo = $db->query($configControlQuery);
 $configControl = array();
 foreach ($configControlInfo as $info) {
@@ -71,7 +71,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott'); ?>" title="<?php echo _('Please enter configuration name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('import_config','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _('This configuration name already exists.Try another name'); ?>',null);" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder="<?php echo _('eg. Roche or Abbott'); ?>" title="<?php echo _('Please enter configuration name'); ?>" value="<?php echo $sInfo['machine_name']; ?>" onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "config_id##" . $sInfo['config_id']; ?>','<?php echo _('This configuration name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>

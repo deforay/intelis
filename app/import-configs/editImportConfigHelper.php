@@ -6,13 +6,13 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "import_config";
-$importMachineTable = "import_config_machines";
-$importControlTable = "import_config_controls";
+$tableName = "instruments";
+$importMachineTable = "instrument_machines";
+$importControlTable = "instrument_controls";
 
 $configId = (int) base64_decode($_POST['configId']);
 
-$configControlQuery = "SELECT * FROM import_config_controls WHERE config_id=$configId";
+$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=$configId";
 $configControlInfo = $db->query($configControlQuery);
 // echo "<pre>";print_r($_POST);die;
 try {
@@ -80,7 +80,7 @@ try {
         if ($configId > 0 && isset($_POST['testType']) && count($_POST['testType']) > 0) {
             if (count($configControlInfo) > 0) {
                 foreach ($_POST['testType'] as $key => $val) {
-                    $cQuery = "SELECT * FROM import_config_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
+                    $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
                     $cResult = $db->rawQueryOne($cQuery);
                     if (trim($val) != '' && $cResult) {
                         $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);

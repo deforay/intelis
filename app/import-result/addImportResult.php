@@ -8,7 +8,7 @@ $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
-$query = "SELECT config_id,machine_name,import_machine_file_name FROM import_config WHERE status='active' ORDER BY machine_name ASC";
+$query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 
 $fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id 
@@ -139,6 +139,8 @@ $lastResult = $db->rawQueryOne($lastQuery);
 											<div class="box-footer">
 												<input type="hidden" id="vltestPlatform" name="vltestPlatform" value="" />
 												<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
+												<input type="hidden" id="dateFormat" name="dateFormat" value="" />
+												<input type="hidden" id="fileName" name="fileName" value="" />
 												<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
 												<a href="/dashboard/index.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 											</div>
@@ -164,6 +166,10 @@ $lastResult = $db->rawQueryOne($lastQuery);
 
 <script type="text/javascript">
 	function validateNow() {
+		var _filename = $("#configMachineName").find(':selected').data("filename");
+		var _dateformat = $("#configMachineName").find(':selected').data("dateformat");
+		$('#dateFormat').val(_dateformat);
+		$('#fileName').val(_filename);
 		flag = deforayValidator.init({
 			formId: 'addImportResultForm'
 		});

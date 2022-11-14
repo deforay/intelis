@@ -442,7 +442,7 @@ class General
         }
         $this->db->where("status", "active");
         $this->db->orderBy('machine_name', "ASC");
-        return $this->db->get('import_config');
+        return $this->db->get('instruments');
     }
 
     public function getDuplicateDataFromField($tablename, $fieldname, $fieldValue, $lab = "")

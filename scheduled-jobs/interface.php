@@ -105,7 +105,7 @@ if (count($interfaceInfo) > 0) {
         }
 
         //Getting Approved By and Reviewed By from Instruments table
-        $instrumentDetails = $db->rawQueryOne("SELECT * from import_config where machine_name like '" . $result['machine_used'] . "'");
+        $instrumentDetails = $db->rawQueryOne("SELECT * from instruments where machine_name like '" . $result['machine_used'] . "'");
 
         $approved = isset($instrumentDetails['approved_by']) && !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : array();
         $reviewed = isset($instrumentDetails['reviewed_by']) && !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : array();

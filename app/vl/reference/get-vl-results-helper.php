@@ -130,7 +130,7 @@ $output = array(
 foreach ($rResult as $aRow) {
     $instruments = json_decode($aRow['available_for_instruments']);
     $idValues = implode(',', $instruments);
-    $sqlInstrument = "SELECT group_concat(machine_name) as machine_name from import_config where config_id in ($idValues)";
+    $sqlInstrument = "SELECT group_concat(machine_name) as machine_name from instruments where config_id in ($idValues)";
     $instrumentRes = $db->rawQuery($sqlInstrument);
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>

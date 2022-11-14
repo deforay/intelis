@@ -16,7 +16,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $id = base64_decode($_GET['id']);
 //global config
-$batchQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=?";
+$batchQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, array($id));
 $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.hepatitis_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = ? ORDER BY vl.last_modified_datetime ASC";
 //error_log($bQuery);die;

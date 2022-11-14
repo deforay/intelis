@@ -6,8 +6,8 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
-$tableName = "import_config";
-$importMachineTable = "import_config_machines";
+$tableName = "instruments";
+$importMachineTable = "instrument_machines";
 
 $configId = $_POST['configName'];
 $testType = $_POST['testType'];
