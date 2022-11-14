@@ -466,6 +466,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 <script type="text/javascript">
+	let searchExecuted = false;
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];
@@ -539,6 +540,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
+		$("#advanceFilter input, #advanceFilter select").on("change", function() {
+			searchExecuted = false;
+		});
 	});
 
 	function fnShowHide(iCol) {
@@ -746,6 +750,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
@@ -830,6 +835,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function exportAllPendingVlRequest() {
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		$.blockUI();
 		$.post("generatePendingVlRequestExcel.php", {
 				reqSampleType: $('#requestSampleType').val(),

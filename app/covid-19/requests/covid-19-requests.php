@@ -372,6 +372,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 <script type="text/javascript">
+	let searchExecuted = false;
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];
@@ -435,6 +436,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		$("#showhide").hover(function() {}, function() {
 			$(this).fadeOut('slow')
+		});
+
+		$("#advanceFilter input, #advanceFilter select").on("change", function() {
+			searchExecuted = false;
 		});
 
 	});
@@ -608,6 +613,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function searchVlRequestData() {
+		searchExecuted = true;
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
@@ -677,6 +683,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	<?php } ?>
 
 	function exportAllPendingCovid19Requests() {
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("generate-pending-covid19-request-excel.php", {
