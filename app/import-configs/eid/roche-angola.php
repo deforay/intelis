@@ -20,9 +20,9 @@ try {
     );
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $ranNumber . "." . $extension;
+    // $ranNumber         = \Vlsm\Models\General::generateRandomString(12);
+    // $fileName          = $ranNumber . "." . $extension;
 
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {

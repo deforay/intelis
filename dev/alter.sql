@@ -3294,3 +3294,7 @@ ALTER TABLE `import_config_machines` ADD `date_format` TEXT NULL DEFAULT NULL AF
 RENAME TABLE `vlsm`.`import_config` TO `vlsm`.`instruments`;
 RENAME TABLE `vlsm`.`import_config_machines` TO `vlsm`.`instrument_machines`; 
 RENAME TABLE `vlsm`.`import_config_controls` TO `vlsm`.`instrument_controls`;
+
+UPDATE `instrument_machines` INNER JOIN `instruments`
+    ON `instrument_machines`.`config_id` = `instruments`.`config_id`
+SET `instrument_machines`.`file_name` = `instruments`.`import_machine_file_name`;

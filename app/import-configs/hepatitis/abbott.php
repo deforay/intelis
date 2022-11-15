@@ -5,7 +5,7 @@
 use Aranyasen\HL7\Message;
 
 try {
-
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -23,9 +23,10 @@ try {
     );
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName = $ranNumber . "." . $extension;
+    $fileName = $_POST['fileName'] . "." . $extension;
+    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
@@ -61,8 +62,6 @@ try {
         $lotNumberCol = 12;
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
-
-        $dateFormat = 'd/m/Y';
 
         if (strpos($mime_type, 'text/plain') !== false) {
             $infoFromFile = array();
