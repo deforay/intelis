@@ -15,7 +15,7 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 }
 
 //get import config
-$importQuery = "SELECT * FROM import_config WHERE status = 'active'";
+$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 $fQuery = "SELECT * FROM facility_details where status='active'";

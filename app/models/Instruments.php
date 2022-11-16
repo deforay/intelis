@@ -12,7 +12,7 @@ class Instruments
 {
 
     protected $db = null;
-    protected $table = 'import_config';
+    protected $table = 'instruments';
 
     public function __construct($db = null)
     {

@@ -387,7 +387,7 @@ class Vl
 
         $this->db->where("low_vl_result_text", NULL, 'IS NOT');
         $this->db->where("status", 'active', 'like');
-        return $this->db->getValue('import_config', 'low_vl_result_text', null);
+        return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
     public function insertSampleCode($params)

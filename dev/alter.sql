@@ -3290,3 +3290,11 @@ ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl
 -- Thana 14-Nov-2022
 ALTER TABLE `import_config` DROP `date_time`; 
 ALTER TABLE `import_config_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`; 
+
+RENAME TABLE `vlsm`.`import_config` TO `vlsm`.`instruments`;
+RENAME TABLE `vlsm`.`import_config_machines` TO `vlsm`.`instrument_machines`; 
+RENAME TABLE `vlsm`.`import_config_controls` TO `vlsm`.`instrument_controls`;
+
+UPDATE `instrument_machines` INNER JOIN `instruments`
+    ON `instrument_machines`.`config_id` = `instruments`.`config_id`
+SET `instrument_machines`.`file_name` = `instruments`.`import_machine_file_name`;

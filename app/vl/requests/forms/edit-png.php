@@ -56,7 +56,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 $bQuery = "SELECT * FROM batch_details";
 $bResult = $db->rawQuery($bQuery);
 //get import config
-$importQuery = "SELECT * FROM import_config WHERE status = 'active'";
+$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 $aQuery = "SELECT * FROM r_vl_art_regimen";

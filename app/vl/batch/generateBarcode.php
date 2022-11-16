@@ -60,7 +60,7 @@ if ($id > 0) {
     $tQuery = "SELECT * from global_config where name='header'";
     $tResult = $db->query($tQuery);
 
-    $bQuery = "SELECT * from batch_details as b_d LEFT JOIN import_config as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
+    $bQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
     $bResult = $db->query($bQuery);
 
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {

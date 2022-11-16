@@ -3,7 +3,7 @@
 // File included in addImportResultHelper.php
 
 try {
-
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -21,9 +21,10 @@ try {
     );
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName = $ranNumber . "." . $extension;
+    $fileName = $_POST['fileName'] . "." . $extension;
+    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
@@ -110,7 +111,7 @@ try {
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
                     if (trim($sheetData[$lotExpirationDateCol]) != '') {
-                        $timestamp = DateTime::createFromFormat('!m/d/Y', $sheetData[$lotExpirationDateCol]);
+                        $timestamp = DateTime::createFromFormat('!'.$dateFormat, $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
                             $lotExpirationDateVal = date('Y-m-d H:i', $timestamp);

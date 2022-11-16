@@ -1,7 +1,7 @@
 <?php
   
 
-$tableName="import_config";
+$tableName="instruments";
 $primaryKey="config_id";
 
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -86,7 +86,7 @@ $primaryKey="config_id";
          * Get data to display
         */
         
-       $sQuery="SELECT * FROM import_config";
+       $sQuery="SELECT * FROM instruments";
         
         if (isset($sWhere) && $sWhere != "") {
             $sWhere=' where '.$sWhere;
@@ -107,11 +107,11 @@ $primaryKey="config_id";
        // print_r($rResult);
         /* Data set length after filtering */
         
-        $aResultFilterTotal =$db->rawQuery("SELECT * FROM import_config $sWhere order by $sOrder");
+        $aResultFilterTotal =$db->rawQuery("SELECT * FROM instruments $sWhere order by $sOrder");
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $aResultTotal =  $db->rawQuery("SELECT * FROM import_config");
+        $aResultTotal =  $db->rawQuery("SELECT * FROM instruments");
        // $aResultTotal = $countResult->fetch_row();
        //print_r($aResultTotal);
         $iTotal = count($aResultTotal);

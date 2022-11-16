@@ -16,7 +16,7 @@ $testingLabs = $facilitiesDb->getTestingLabs('vl');
 
 //get import config
 $condition = "status = 'active'";
-$importResult = $general->fetchDataFromTable('import_config', $condition);
+$importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $reasonForFailure = $vlDb->getReasonForFailure();

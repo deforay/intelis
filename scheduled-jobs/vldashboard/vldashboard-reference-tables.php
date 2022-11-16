@@ -69,7 +69,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 
 if (isset(SYSTEM_CONFIG['modules']['common']) && SYSTEM_CONFIG['modules']['common'] === true) {
     $commonTables = array(
-        'import_config_machines',
+        'instrument_machines',
     );
     $referenceTables = array_merge($referenceTables, $commonTables);
 }

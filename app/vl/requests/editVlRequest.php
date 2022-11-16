@@ -21,7 +21,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $id = base64_decode($_GET['id']);
 
 //get import config
-$importQuery = "SELECT * FROM import_config WHERE status = 'active'";
+$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);

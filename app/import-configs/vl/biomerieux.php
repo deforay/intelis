@@ -1,6 +1,7 @@
 <?php
 
 try {
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -20,9 +21,10 @@ try {
     );
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $ranNumber . "." . $extension;
+    $fileName          = $_POST['fileName'] . "." . $extension;
+    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $fileName          = $ranNumber . "." . $extension;
 
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
@@ -111,7 +113,7 @@ try {
 
             // Date time in the provided Biomerieux Sample file is in this format : 05-23-16 12:52:33
             $testingDate = $sheetData[6]['C'] . " " . $sheetData[7]['C'];
-            $testingDate = DateTime::createFromFormat('m-d-y H:i:s', $testingDate)->format('Y-m-d H:i:s');
+            $testingDate = DateTime::createFromFormat($dateFormat, $testingDate)->format('Y-m-d H:i:s');
 
             if ($sampleCode == "")
                 break;

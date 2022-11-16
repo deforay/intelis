@@ -86,7 +86,7 @@ if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'auto2' || $
     }
 }
 
-$iResultQuery = "select * from  import_config_machines";
+$iResultQuery = "select * from  instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
 $machine = array();
 foreach ($iResult as $val) {

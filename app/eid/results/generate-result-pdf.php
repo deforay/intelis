@@ -60,7 +60,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type 
                   LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
                   LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner 
-                  LEFT JOIN import_config_machines as tp ON tp.config_machine_id=vl.import_machine_name 
+                  LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name 
                   WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;
