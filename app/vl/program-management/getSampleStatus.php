@@ -99,12 +99,15 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     FROM " . $table . " as vl 
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
     JOIN facility_details as f ON vl.lab_id=f.facility_id 
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = array();
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $recencyWhere;
+if($_SESSION['instanceType'] != 'remoteuser'){
+    $sWhere[] = ' result_status != 9 ';
+}
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -125,6 +128,7 @@ if (isset($sWhere) && !empty($sWhere)) {
     $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
+//echo $tQuery; die;
 $tResult = $db->rawQuery($tQuery);
 
 $sWhere = array();

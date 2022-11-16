@@ -167,7 +167,7 @@ FROM $table as vl
 INNER JOIN facility_details as f ON f.facility_id=vl.facility_id 
 WHERE DATE(vl.sample_collection_date) <= '" . $cDate . "' 
 AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
-// die($aggregateQuery);
+ //die($aggregateQuery);
 $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
 
