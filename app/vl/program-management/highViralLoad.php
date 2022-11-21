@@ -19,6 +19,13 @@ $fQuery = "SELECT * FROM facility_details where status='active'";
 $fResult = $db->rawQuery($fQuery);
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+//sample rejection reason
+$condition = "rejection_reason_status ='active'";
+$rejectionResult = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
+
+//rejection type
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 ?>
 <style>
 	.select2-selection__choice {
@@ -245,7 +252,27 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
+													<td><strong><?php echo _("Rejection Reason");?>&nbsp;:</strong></td>
+											<td>
+													<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                                                     <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+                                                                                          <?php foreach ($rejectionResult as $reject) {
+                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) {
+                                                                                          ?>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+                                                                                          <?php }
+                                                                                          } ?>
+                                                                                     </optgroup>
+                                                                                <?php }
+                                                                                if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                                     <option value="other">Other (Please Specify) </option>
+                                                                                <?php } ?>
+                                                                           </select>
+														</td>
 												</tr>
+												
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
@@ -687,6 +714,10 @@ startDate: moment().subtract(28, 'days'),
 					"name": "rjtPatientBreastfeeding",
 					"value": $("#rjtPatientBreastfeeding").val()
 				});
+				aoData.push({
+					"name": "rejectionReason",
+					"value": $("#rejectionReason").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -938,7 +969,8 @@ startDate: moment().subtract(28, 'days'),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
 				Gender: $("#rjtGender  option:selected").text(),
 				Pregnant: $("#rjtPatientPregnant  option:selected").text(),
-				Breastfeeding: $("#rjtPatientBreastfeeding  option:selected").text()
+				Breastfeeding: $("#rjtPatientBreastfeeding  option:selected").text(),
+				RejectionReason: $("#rejectionReason  option:selected").val()
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {

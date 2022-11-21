@@ -3298,3 +3298,8 @@ RENAME TABLE `vlsm`.`import_config_controls` TO `vlsm`.`instrument_controls`;
 UPDATE `instrument_machines` INNER JOIN `instruments`
     ON `instrument_machines`.`config_id` = `instruments`.`config_id`
 SET `instrument_machines`.`file_name` = `instruments`.`import_machine_file_name`;
+
+
+-- Jeyabanu 17-Nov-2022
+
+ALTER TABLE `form_covid19` CHANGE `reason_for_sample_rejection` `reason_for_sample_rejection` INT NULL DEFAULT NULL;

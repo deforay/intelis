@@ -23,6 +23,25 @@ $sResult = $db->rawQuery($sQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+
+//sample rejection reason
+$rejectionQuery = "SELECT * FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active'";
+$rejectionResult = $db->rawQuery($rejectionQuery);
+
+/* To create a rejection reason group options */
+$rejectionReason = "";
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+foreach ($rejectionTypeResult as $type) {
+    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+    foreach ($rejectionResult as $reject) {
+        if ($type['rejection_type'] == $reject['rejection_type']) {
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+        }
+    }
+    $rejectionReason .= '</optgroup>';
+}
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -204,8 +223,13 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
-													<td></td>
-													<td></td>
+													<td><strong><?php echo _("Rejection Reason"); ?>&nbsp;:</strong></td>
+													<td>
+													<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
+													<option value=''> -- Select -- </option>
+													<?php echo $rejectionReason; ?>
+												</select>
+													</td>
 												</tr>
 												<tr>
 													<td></td>
@@ -605,6 +629,10 @@ $batResult = $db->rawQuery($batQuery);
 				aoData.push({
 					"name": "rjtGender",
 					"value": $("#rjtGender").val()
+				});
+				aoData.push({
+					"name": "sampleRejectionReason",
+					"value": $("#sampleRejectionReason").val()
 				});
 				$.ajax({
 					"dataType": 'json',
