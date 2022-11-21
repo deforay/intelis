@@ -34,14 +34,14 @@ if (!class_exists('DRC_PDF')) {
                 $this->SetFont('helvetica', 'B', 10);
                 $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
                 $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DU HAUT KATANGA", 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DE LUALABA", 0, 0, 0, true, 'C', true);
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C', true);
                 }
                 $this->SetFont('helvetica', '', 10);
                 $this->SetTextColor(0, 0, 250);
-                $this->writeHTMLCell(0, 0, 0, 32, '<em>Service de Biologie Moléculaire</em>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 32, '<em>Biologie Moléculaire</em>', 0, 0, 0, true, 'C', true);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('helvetica', 'U', 11);
                 $this->writeHTMLCell(0, 0, 0, 38, 'Laboratoire National de Référence pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C', true);
@@ -87,7 +87,7 @@ if (!class_exists('DRC_PDF')) {
             $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
             $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             //$this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
-            $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Moléculaire', 0, 0, false, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 290, 'Biologie Moléculaire', 0, 0, false, true, 'C', true);
             // Page number
             //$this->SetFont('helvetica', '', 8);
             //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');
@@ -342,8 +342,8 @@ $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
-            <br><br><strong>Fait à Lubumbashi, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
-    '<br><span style="font-size:8;font-weight:normal;">(Done in Lubumbashi, on)</span></td>';
+            <br><br><strong>Fait à Kolwezi, le: </strong>' . $general->humanReadableDateFormat($result['result_approved_datetime']) .
+    '<br><span style="font-size:8;font-weight:normal;">(Done in Kolwezi, on)</span></td>';
 $html .= '</tr>';
 
 
