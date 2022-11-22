@@ -246,7 +246,12 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
           $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
      }
-
+     if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+          $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+     }
+     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+          $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+     }
      $sWhere[] = '  vl.result_status!=9';
 
 //$cWhere = '';
