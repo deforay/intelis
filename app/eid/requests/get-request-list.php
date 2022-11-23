@@ -263,6 +263,18 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
 }
+if (isset($_POST['childId']) && $_POST['childId'] != "") {
+     $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+}
+if (isset($_POST['childName']) && $_POST['childName'] != "") {
+     $sWhere[] = ' vl.child_name like "%'.$_POST['childName'].'%"';
+}
+if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
+     $sWhere[] = ' vl.mother_id like "%'.$_POST['motherId'].'%"';
+}
+if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
+     $sWhere[] = ' vl.mother_name like "%'.$_POST['motherName'].'%"';
+}
 
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -280,7 +292,7 @@ if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-// die($sQuery);
+ //die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;

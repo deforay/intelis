@@ -217,7 +217,12 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-
+if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
 /* Date time filtering */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {

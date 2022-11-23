@@ -232,6 +232,12 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
 }
+if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);

@@ -169,11 +169,12 @@ foreach ($srcResults as $list) {
 							
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Patient ID"); ?></strong></td>
+						<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
+								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
+								</select>
 							</td>
-							
 						<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
@@ -218,12 +219,7 @@ foreach ($srcResults as $list) {
 							
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
-									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
-								</select>
-							</td>
+						
 							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
@@ -232,7 +228,18 @@ foreach ($srcResults as $list) {
 								</select>
 
 							</td>
+							<td><strong><?php echo _("Patient ID"); ?></strong></td>
+							<td>
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
+							</td>
+							
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+							
 							</tr>
+						
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -579,6 +586,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "srcOfReq",
 					"value": $("#srcOfReq").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#patientName").val()
 				});
 				aoData.push({
 					"name": "dateRangeModel",
