@@ -93,11 +93,11 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							
+
 
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
+							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
@@ -120,10 +120,10 @@ foreach ($srcResults as $list) {
 									?>
 								</select>
 							</td>
-						
+
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -145,7 +145,7 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-                            <td><strong><?php echo _("Req. Sample Type"); ?> :</strong></td>
+							<td><strong><?php echo _("Req. Sample Type"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _('Please select request sample type'); ?>">
 									<option value=""><?php echo _("All"); ?></option>
@@ -153,11 +153,11 @@ foreach ($srcResults as $list) {
 									<option value="noresult"><?php echo _("Sample Without Result"); ?></option>
 								</select>
 							</td>
-							
-							
+
+
 						</tr>
 						<tr>
-                        <td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -177,7 +177,7 @@ foreach ($srcResults as $list) {
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -185,23 +185,23 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-							
-							
+
+
 						</tr>
 						<tr>
-						
-                        <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
-							
-							
-						<td><strong><?php echo _("District/County"); ?> :</strong></td>
-						<td>
-						<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
-                </select>
+
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+								</select>
 							</td>
 							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
@@ -211,7 +211,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -715,27 +715,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			});
 	}
 
-	function getDistrictByProvince(provinceId)
-  	{
+	function getDistrictByProvince(provinceId) {
 		$("#district").html('');
 		$.post("/common/get-district-by-province-id.php", {
-		provinceId : provinceId,
-				},
-				function(data) {
-			$("#district").html(data);
-				});
-  	}
-
-function getFacilityByDistrict(districtId)
-{
-	$("#facilityName").html('');
-    $.post("/common/get-facilities-by-district-id.php", {
-		districtId : districtId,
+				provinceId: provinceId,
 			},
 			function(data) {
-        $("#facilityName").html(data);
+				$("#district").html(data);
 			});
-}
+	}
+
+	function getFacilityByDistrict(districtId) {
+		$("#facilityName").html('');
+		$.post("/common/get-facilities-by-district-id.php", {
+				districtId: districtId,
+			},
+			function(data) {
+				$("#facilityName").html(data);
+			});
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
