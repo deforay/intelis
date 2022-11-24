@@ -338,7 +338,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 
-									<tr>
+									<tr class="femaleFactor">
 										<td class="labels">
 											<label for="patientPregnant">Patient Pregnant ?</label>
 										</td>
@@ -594,10 +594,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="testingTech">Testing Platform</label></td>
 										<td>
-											<select name="testingTech" id="testingTech" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingTech" id="testingTech" onchange="getVlResults('testingTech','possibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>
@@ -605,7 +605,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result</label></td>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<datalist id="possibleVlResults">
+
+</datalist>
 										</td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
@@ -651,10 +654,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="testingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>
@@ -662,7 +665,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="failedvlResult">VL result</label></td>
 										<td>
-											<input type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+											<input list="failedPossibleVlResults" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+                                                <datalist id="failedPossibleVlResults">
+
+                                                </datalist>
 										</td>
 									</tr>
 									<tr>
@@ -774,9 +780,33 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <script>
 	let provinceName = true;
 	let facilityName = true;
-
+	function getVlResults(testingPlatformId, vlResultId)
+	{
+		testingVal = $('#'+testingPlatformId).val();
+		  var str1 = testingVal.split("##");
+		  var platformId = str1[3];
+		  $("#"+vlResultId).html('');
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: platformId,
+               },
+               function(data) {
+                    // alert(data);
+                    if (data != "") {
+						$("#"+vlResultId).html(data);
+                        // $("#vlResult").attr("disabled", false);
+                    }
+               });
+	}
+	
 	$(document).ready(function() {
-
+		getVlResults('testingTech','possibleVlResults');
+		getVlResults('failedTestingTech','failedPossibleVlResults');
+		$("#gender").change(function(){
+			if($(this).val()=="female")
+				$(".femaleFactor").show();
+			else
+				$(".femaleFactor").hide();
+		});
 		//getfacilityProvinceDetails($("#fName").val());
 		$('.date').datepicker({
 			changeMonth: true,
@@ -825,6 +855,20 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
 		});
+
+		$('#labId').select2({
+			placeholder: "Select Testing Lab Name"
+		});
+          $('#fName').select2({
+               placeholder: "Select Clinic/Health Center"
+          });
+          $('#district').select2({
+               placeholder: "District"
+          });
+          $('#province').select2({
+               placeholder: "Province"
+          });
+
 	});
 
 	function validateNow() {

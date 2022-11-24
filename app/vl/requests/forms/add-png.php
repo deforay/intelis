@@ -164,7 +164,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 									</tr>
 
-									<tr>
+									<tr class="femaleFactor">
 										<td>
 											<label for="patientPregnant" class="labels">Patient Pregnant ?</label>
 										</td>
@@ -599,6 +599,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	var sampleCodeGenerationEvent = null;
 	var facilityListEvent = null;
 	$(document).ready(function() {
+
+		$("#gender").change(function(){
+			if($(this).val()=="female")
+				$(".femaleFactor").show();
+			else
+				$(".femaleFactor").hide();
+		});
+
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -638,12 +646,28 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$('#laboratoryId').select2({
 			placeholder: "Select Laboratory Name"
 		});
+		
+		
 		$('#reviewedBy').select2({
 			placeholder: "Select Reviewed By"
 		});
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
 		});
+	$('#labId').select2({
+			placeholder: "Select Testing Lab Name"
+		});
+          $('#fName').select2({
+               placeholder: "Select Clinic/Health Center"
+          });
+          $('#district').select2({
+               placeholder: "District"
+          });
+          $('#province').select2({
+               placeholder: "Province"
+          });
+
+
 	});
 
 	function validateNow() {

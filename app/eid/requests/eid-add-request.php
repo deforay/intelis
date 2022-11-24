@@ -37,6 +37,7 @@ $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejectio
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //sample rejection reason
+$rejectionReason = "";
 $rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
@@ -227,6 +228,7 @@ require($fileArray[$arr['vl_form']]);
                 provinceId: provinceId
             },
             function(data) {
+                alert(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("eidSampleId").value = data;

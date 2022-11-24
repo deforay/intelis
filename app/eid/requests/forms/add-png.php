@@ -605,8 +605,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     function validateNow() {
-        var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-        $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+        
+    //   alert(provinceCode);
+        var provinceId = $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });
@@ -614,10 +615,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $('.btn-disabled').attr('disabled', 'yes');
             $(".btn-disabled").prop("onclick", null).off("click");
             $.blockUI();
+            var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
             <?php
             if (isset($arr['eid_sample_code'])) {
             ?>
-                insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', $("#formId").val(), 'sampleCollectionDate', provinceCode);
+                insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', $("#formId").val(), 'sampleCollectionDate', provinceCode, provinceId);
             <?php
             } else {
             ?>
@@ -625,6 +627,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <?php
             } ?>
         }
+        return;
     }
 
     function updateMotherViralLoad() {
@@ -649,12 +652,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
-        // $('#district').select2({
-        //     placeholder: "District"
-        // });
-        // $('#province').select2({
-        //     placeholder: "Province"
-        // });
+         $('#district').select2({
+             placeholder: "District"
+         });
+         $('#province').select2({
+             placeholder: "Province"
+         });
         $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
             var motherVl = $("#motherViralLoadCopiesPerMl").val();
             //var motherVlText = $("#motherViralLoadText").val();
@@ -662,7 +665,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $("#motherViralLoadText").val('');
             }
         });
-
 
     });
 </script>

@@ -230,8 +230,8 @@ try {
 	$eidData['last_modified_by'] =  $_SESSION['userId'];
 
 
-	// echo "<pre>";
-	// print_r($_POST);die;
+	 echo "<pre>";
+	 print_r($_POST);die;
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db = $db->where('eid_id', $_POST['eidSampleId']);
