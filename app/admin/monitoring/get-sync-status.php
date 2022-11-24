@@ -61,7 +61,7 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
 if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere) . ' GROUP BY f.facility_id ORDER BY tar.requested_on DESC';
 }
-// die($sQuery);
+$_SESSION['labSyncStatus'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 $twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
 $threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-3 weeks'));
@@ -75,11 +75,10 @@ foreach ($rResult as $key => $aRow) {
     } elseif ($threeWeekExpiry >= $aRow['requested_on'] || (!isset($aRow['test_type']) || !empty($aRow['test_type']))) {
         $color = "red";
     }
-    $status = ($color == 'red') ? "Not Synced" : "Synced(" . $aRow['total'] . ")";
     /* Assign data table variables */?>
     <tr class="<?php echo $color;?>">
         <td><?php echo ucwords($aRow['facility_name']);?></td>
-        <td><?php echo ucwords($status);?></td>
+        <td><?php echo ucwords($aRow['test_type']);?></td>
         <td><?php echo $general->humanReadableDateFormat($aRow['requested_on']);?></td>
     </tr>
 <?php } ?>
