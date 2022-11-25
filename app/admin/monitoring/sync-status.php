@@ -55,12 +55,15 @@ $activeTestModules = $general->getActiveTestModules();
                                 <select class="form-control" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
                             <td><strong><?php echo _("Lab Name"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
+                            
                             <td><strong><?php echo _("Test Types"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
@@ -82,6 +85,13 @@ $activeTestModules = $general->getActiveTestModules();
                                 </select>
                             </td>
                         </tr>
+                        <tr>
+							<td colspan="4">
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
+                                &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                                <input type="button" onclick="loadData();" value="<?php echo _('Search'); ?>" class="btn btn-default pull-right">
+							</td>
+                        </tr>
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -89,13 +99,13 @@ $activeTestModules = $general->getActiveTestModules();
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>
-                                    <th><?php echo _("Status"); ?></th>
+                                    <th><?php echo _("Request Type"); ?></th>
                                     <th><?php echo _("Last Sync done on"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="2" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="3" class="dataTables_empty"><?php echo _("No data available"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -114,6 +124,24 @@ $activeTestModules = $general->getActiveTestModules();
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        $('#labName').select2({
+               width: '100%',
+               placeholder: "Select Testing Lab"
+          });
+        
+          $('#province').select2({
+               width: '100%',
+               placeholder: "Select Province"
+          });
+
+          $('#district').select2({
+               width: '100%',
+               placeholder: "Select District"
+          });
+          loadData();
+    });
+    
+    function loadData(){
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status.php", {
                 province: $('#province').val(),
@@ -126,8 +154,7 @@ $activeTestModules = $general->getActiveTestModules();
                 $('#syncStatusDataTable').dataTable();
                 $.unblockUI();
 			});
-    });
-    
+    }
     function applyColor(){
         console.log("calling");
         $("span").remove();
@@ -140,6 +167,19 @@ $activeTestModules = $general->getActiveTestModules();
 			},
 			function(data) {
 				$("#district").html(data);
+			});
+	}
+
+    function exportSyncStatus() {
+		// $.blockUI();
+		$.post("generate-lab-sync-status.php", {},
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
+				} else {
+					window.open('/download.php?f=' + data, '_blank');
+				}
 			});
 	}
 </script>
