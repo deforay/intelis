@@ -360,13 +360,12 @@ class Eid
                 echo 0;
                 exit();
             }
-            echo $provinceId; exit();
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
                     echo 0;
                     exit();
             }
-
+          
             $rowData = false;
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;

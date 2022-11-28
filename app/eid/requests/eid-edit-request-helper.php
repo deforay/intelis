@@ -158,8 +158,8 @@ try {
 		'facility_id' 										=> isset($_POST['facilityId']) ? $_POST['facilityId'] : null,
 		'province_id' 										=> isset($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' 											=> isset($_POST['labId']) ? $_POST['labId'] : null,
-		'implementing_partner' 								=> isset($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-		'funding_source' 									=> isset($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
+		'implementing_partner' 								=> !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
+		'funding_source' 									=> !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
 		'mother_id' 										=> isset($_POST['mothersId']) ? $_POST['mothersId'] : null,
 		'caretaker_contact_consent' 						=> isset($_POST['caretakerConsentForContact']) ? $_POST['caretakerConsentForContact'] : null,
 		'caretaker_phone_number' 							=> isset($_POST['caretakerPhoneNumber']) ? $_POST['caretakerPhoneNumber'] : null,
@@ -182,7 +182,7 @@ try {
 		'mother_hiv_status' 								=> isset($_POST['mothersHIVStatus']) ? $_POST['mothersHIVStatus'] : null,
 		'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
 		'previous_pcr_result' 								=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
-		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
+		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $general->isoDateFormat($_POST['previousPCRTestDate']) : null,
 		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
 		'sample_requestor_name' 							=> isset($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
 		'sample_requestor_phone'							=> isset($_POST['sampleRequestorPhone']) ? $_POST['sampleRequestorPhone'] : null,
@@ -251,6 +251,7 @@ try {
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db = $db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
+		error_log($db->getLastError());
 	}
 
 

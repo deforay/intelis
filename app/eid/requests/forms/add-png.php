@@ -606,7 +606,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function validateNow() {
         $.blockUI();
-        var provinceId = $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+        var provinceId = $("#province").find(":selected").attr("data-province-id");
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });
@@ -615,6 +615,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $(".btn-disabled").prop("onclick", null).off("click");
             
             var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
+            
             <?php
             if (isset($arr['eid_sample_code'])) {
             ?>
@@ -626,7 +627,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <?php
             } ?>
         }
-        $.unblockUI();
+       
     }
 
     function updateMotherViralLoad() {
