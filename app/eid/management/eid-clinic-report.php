@@ -25,6 +25,25 @@ $sResult = $db->rawQuery($sQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+
+//sample rejection reason
+$rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";
+$rejectionResult = $db->rawQuery($rejectionQuery);
+
+
+foreach ($rejectionTypeResult as $type) {
+    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+    foreach ($rejectionResult as $reject) {
+        if ($type['rejection_type'] == $reject['rejection_type']) {
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+        }
+    }
+    $rejectionReason .= '</optgroup>';
+}
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -207,8 +226,16 @@ $batResult = $db->rawQuery($batQuery);
 															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
-													<td></td>
-													<td></td>
+													
+													<td><strong><?php echo _("Rejection Reason");?>&nbsp;:</strong></td>
+												
+													<td>
+
+													<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
+                                                    <option value=''> -- Select -- </option>
+                                                    <?php echo $rejectionReason; ?>
+                                                </select>
+													</td>
 												</tr>
 												<tr>
 													<td></td>
@@ -607,6 +634,10 @@ startDate: moment().subtract(28, 'days'),
 					"name": "rjtGender",
 					"value": $("#rjtGender").val()
 				});
+				aoData.push({
+					"name": "sampleRejectionReason",
+					"value": $("#sampleRejectionReason").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -843,7 +874,8 @@ startDate: moment().subtract(28, 'days'),
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
-				Gender: $("#rjtGender  option:selected").text()
+				Gender: $("#rjtGender  option:selected").text(),
+				Rejection_Reason: $("#sampleRejectionReason  option:selected").val()
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {

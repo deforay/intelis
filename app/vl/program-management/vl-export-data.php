@@ -222,7 +222,16 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 							
 						</tr>
-					
+					<tr>
+					<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+							</td>
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+									</tr>
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
@@ -571,6 +580,14 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "patientId",
+					"value": $("#patientId").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#patientName").val()
 				});
 				$.ajax({
 					"dataType": 'json',

@@ -202,7 +202,7 @@ try {
           'failed_batch_id' => (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null),
           'sample_collection_date' => $_POST['collectionDate'],
           'sample_collected_by' => (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null),
-          'lab_id' => (isset($_POST['laboratoryId']) && $_POST['laboratoryId'] != '' ? (int) $_POST['laboratoryId'] : null),
+          'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? (int) $_POST['labId'] : null),
           'sample_type' => (isset($_POST['sampleType']) && $_POST['sampleType'] != '' ? $_POST['sampleType'] : null),
           'sample_received_at_vl_lab_datetime' => $_POST['receivedDate'],
           'tech_name_png' => (isset($_POST['techName']) && trim($_POST['techName']) != '') ? $_POST['techName'] : null,
@@ -222,7 +222,7 @@ try {
           'clinic_date' => $_POST['clinicDate'],
           'report_date' => $_POST['reportDate'],
           'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-          'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : "",
+          'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : null,
           'last_modified_by' => $_SESSION['userId'],
           'last_modified_datetime' => $db->now(),
           'data_sync' => 0,
@@ -259,12 +259,13 @@ try {
                $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
           }
      }
-
+   //  echo $_POST['vlSampleId'];
+//echo '<pre>'; print_r($vldata); die;
 
 
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
-
+error_log($db->getLastError());
 
      $_SESSION['alertMsg'] = "VL request updated successfully";
      //Add event log

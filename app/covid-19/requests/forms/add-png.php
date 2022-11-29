@@ -807,6 +807,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         flag = deforayValidator.init({
             formId: 'addCovid19RequestForm'
         });
+        provinceId = $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
             $(".btn-disabled").prop("onclick", null).off("click");
@@ -814,7 +815,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
             ?>
-                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 9, 'sampleCollectionDate', null, $('#province').val());
+                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 9, 'sampleCollectionDate', null, provinceId);
             <?php
             } else {
             ?>

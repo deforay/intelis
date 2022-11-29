@@ -171,7 +171,28 @@ $eidResults = $eidModel->getEidResults();
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
+							<td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _('Child ID'); ?>" style="background:#fff;" />
+							</td>
 						</tr>
+
+						<tr>
+							<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
+							</td>
+									
+									<td><strong><?php echo _("Mother ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="motherId" name="motherId" class="form-control" placeholder="<?php echo _('Enter Mother ID'); ?>" style="background:#fff;" />
+							</td>
+							<td><strong><?php echo _("Mother Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="motherName" name="motherName" class="form-control" placeholder="<?php echo _('Enter Mother Name'); ?>" style="background:#fff;" />
+							</td>
+									</tr>
+
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
@@ -498,6 +519,22 @@ $eidResults = $eidModel->getEidResults();
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "childId",
+					"value": $("#childId").val()
+				});
+				aoData.push({
+					"name": "motherId",
+					"value": $("#motherId").val()
+				});
+				aoData.push({
+					"name": "childName",
+					"value": $("#childName").val()
+				});
+				aoData.push({
+					"name": "motherName",
+					"value": $("#motherName").val()
 				});
 				$.ajax({
 					"dataType": 'json',

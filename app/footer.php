@@ -244,23 +244,21 @@
 	} else if (splitsUrl == 'audit-trail.php') {
 		$(".allMenu").removeClass('active');
 		$(".audit-trail-menu, .manage, .monitoring-menu").addClass('active');
-		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'activity-log.php') {
 		$(".allMenu").removeClass('active');
 		$(".activity-log-menu, .manage, .monitoring-menu").addClass('active');
-		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'sources-of-requests.php') {
 		$(".allMenu").removeClass('active');
 		$(".sources-of-requests-report-menu, .manage, .monitoring-menu").addClass('active');
-		$(".facilityMenu").addClass('active');
+	} else if (splitsUrl == 'sync-status.php') {
+		$(".allMenu").removeClass('active');
+		$(".sync-status-menu, .manage, .monitoring-menu").addClass('active');
 	} else if (splitsUrl == 'api-sync-history.php') {
 		$(".allMenu").removeClass('active');
 		$(".api-sync-history-menu, .manage, .monitoring-menu").addClass('active');
-		$(".facilityMenu").addClass('active');
 	} else if (splitsUrl == 'facilityMap.php' || splitsUrl == 'addFacilityMap.php' || splitsUrl == 'editFacilityMap.php') {
 		$(".manage").addClass('active');
 		$(".allMenu").removeClass('active');
-		$(".facilityMapMenu").addClass('active');
 	} else if (splitsUrl == 'globalConfig.php' || splitsUrl == 'editGlobalConfig.php') {
 		$(".system-config-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
