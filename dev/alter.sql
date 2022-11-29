@@ -3298,3 +3298,20 @@ RENAME TABLE `vlsm`.`import_config_controls` TO `vlsm`.`instrument_controls`;
 UPDATE `instrument_machines` INNER JOIN `instruments`
     ON `instrument_machines`.`config_id` = `instruments`.`config_id`
 SET `instrument_machines`.`file_name` = `instruments`.`import_machine_file_name`;
+
+--ilahir 29-Nov-2022
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Support Email', 'support_email', '', 'general', 'no', NULL, '', 'active');
+
+
+CREATE TABLE `support` (
+  `support_id` int NOT NULL,
+  `feedback` varchar(500) DEFAULT NULL,
+  `feedback_url` varchar(255) DEFAULT NULL,
+  `upload_file_name` varchar(255) DEFAULT NULL,
+  `attach_screenshot` varchar(100) DEFAULT NULL,
+  `screenshot_file_name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `support`  ADD PRIMARY KEY (`support_id`);
+
+ALTER TABLE `support`  MODIFY `support_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;

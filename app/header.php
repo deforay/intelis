@@ -221,7 +221,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	</style>
 </head>
 
-<body class="hold-transition <?php echo $skin; ?> sidebar-mini">
+<body class="hold-transition <?php echo $skin; ?> sidebar-mini" id="capture">
 	<div class="wrapper">
 		<header class="main-header">
 			<!-- Logo -->

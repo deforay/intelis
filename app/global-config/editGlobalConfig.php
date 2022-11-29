@@ -316,6 +316,21 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="support_email" class="col-lg-4 control-label"><?php echo _("Support Email"); ?></label>
+											<div class="col-lg-8">
+												<input type="text" class="form-control readPage" id="support_email" name="support_email" placeholder="<?php echo _('eg. manager1@example.com, manager2@example.com'); ?>" title="<?php echo _('Please enter manager email'); ?>" value="<?php echo $arr['support_email']; ?>" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="text-align:center;">
+										<code><?php echo _("You can enter multiple emails by separating them with commas"); ?></code>
+									</div>
+								</div><br />
 							</div>
 						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>

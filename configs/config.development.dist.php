@@ -23,8 +23,8 @@ $systemConfig['instanceName'] = '';
 
 // Database Settings
 $systemConfig['dbHost']     = '';
-$systemConfig['dbUser']     = '';
-$systemConfig['dbPassword'] = '';
+$systemConfig['dbUser']     = 'root';
+$systemConfig['dbPassword'] = 'zaq12345';
 $systemConfig['dbName']     = 'vlsm';
 $systemConfig['dbPort']     = 3306;
 $systemConfig['dbCharset'] = 'utf8mb4';
