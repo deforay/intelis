@@ -15,7 +15,7 @@ $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = array();
-$data[] = "lastUpdatedDuration=90m";
+$data[] = "lastUpdatedDuration=180m";
 //$data[] = "lastUpdatedDuration=15d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
@@ -101,7 +101,10 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $labTestEventIds = array_keys($allProgramStages, 'ODgOyrbLkvv'); // Lab Test Request programStage
 
-        if (count($labTestEventIds) == 0)  continue 2; // if no lab test request stage, skip this tracker entirely
+        if (count($labTestEventIds) == 0) {
+            error_log("No Lab Test Request programStage found for " . $tracker['trackedEntityInstance']);
+            continue 2; // if no lab test request stage, skip this tracker entirely
+        }
 
         //echo "<pre>";var_dump($enrollments['events']);echo "</pre>";
 
@@ -171,6 +174,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $hepResult = $db->getOne("form_hepatitis");
 
         if (!empty($hepResult)) {
+            error_log('Duplicate Hepatitis Result Found: ' . $uniqueID);
             continue;
         }
 
@@ -187,6 +191,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         // if this is an old request, then skip
         if (strtotime($formData['sample_collection_date']) < strtotime('-6 months')) {
+            error_log('Old Hepatitis Request: ' . $uniqueID);
             continue;
         }
 
@@ -217,6 +222,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $formData['lab_id'] = null;
             }
         } else {
+            error_log('Lab ID not found: ' . $uniqueID);
             //$formData['lab_id'] = null;
             continue;
         }
@@ -301,13 +307,15 @@ foreach ($trackedEntityInstances as $tracker) {
         $formAttributes['applicationVersion'] = $version;
         $formAttributes['trackedEntityInstance'] = $tracker['trackedEntityInstance'];
         $formData['form_attributes'] = json_encode($formAttributes);
-        //echo "<pre>";var_dump($formData);echo "</pre>";
+        // echo "<pre>";
+        // var_dump($formData);
+        // echo "</pre>";
         //$updateColumns = array_keys($formData);
         //$db->onDuplicate($updateColumns, 'unique_id');
 
         $id = $db->insert("form_hepatitis", $formData);
-        //error_log("Error in Receive Rwanda DHIS2 Script : " . $db->getLastError() . PHP_EOL);
-        if ($id != false) {
+        error_log("Error in Receive Rwanda DHIS2 Script : " . $db->getLastError() . PHP_EOL);
+        if ($id !== false) {
             $processedCounter++;
         }
     }

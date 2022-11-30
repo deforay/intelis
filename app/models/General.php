@@ -827,7 +827,7 @@ class General
             return $this->db->insert("track_api_requests", $data);
         } catch (\Exception $exc) {
             error_log($exc->getMessage());
-            error_log($this->db->getLastError());
+            error_log ($this->db->getLastError());
             error_log($exc->getTraceAsString());
         }
     }
