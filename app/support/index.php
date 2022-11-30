@@ -125,11 +125,9 @@ $(document).ready(function(e){
 					//$('.statusMsg').html('');
 					if(response.status == 1){
 						if(response.attached=='yes'){
-							supportId=response.supportId;
-							parent.screenshot(supportId);
+							parent.screenshot(response.supportId,'yes');
 						}else{
-							parent.screenshot('');
-							//parent.closeModal();
+							parent.screenshot(response.supportId,'');
 						}
 						//$('#fupForm')[0].reset();
 						//$('.statusMsg').html('<p class="alert alert-success">'+response.message+'</p>');

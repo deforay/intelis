@@ -810,19 +810,30 @@
 		$(".dashboardMenu").addClass('active');
 	}
 	
-	function screenshot(supportId){
-		if(supportId!=""){
+	function screenshot(supportId,attached){
+		if(supportId!="" && attached=='yes'){
 			closeModal();
 			html2canvas(document.querySelector("#capture")).then(canvas => {
 				dataURL = canvas.toDataURL();
+				$.blockUI();
 				$.post("/support/saveScreenshot.php", {image:dataURL,supportId:supportId},
 				function(data) {
-					alert(data);
+					//console.log(data.message);
+					//console.log(data);
+					$.unblockUI();
+					alert("Submitted successfully");
 				});
 			});
 		}else{
 			closeModal();
-			alert("Submitted successfully");
+			$.blockUI();
+			$.post("/support/saveScreenshot.php", {supportId:supportId},
+			function(data) {
+				//console.log(data.message);
+				//console.log(data);
+				$.unblockUI();
+				alert("Submitted successfully");
+			});
 		}
 	}
 </script>
