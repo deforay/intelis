@@ -172,7 +172,7 @@ $activeTestModules = $general->getActiveTestModules();
 
     function exportSyncStatus() {
 		// $.blockUI();
-		$.post("generate-lab-sync-status.php", {},
+		$.post("generate-lab-sync-status-report.php", {},
 			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
