@@ -150,7 +150,7 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
 							</div>
-							<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+							<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -236,8 +236,15 @@ foreach ($rejectionTypeResult as $type) {
 
 
 					<?php } else { ?>
-						<h4>Either there were no records imported or you seem to have reached this page by mistake. Please contact support if you need assistance. </h4>
-						<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-danger btn-sm">
+						<div class="box-body">
+							<div class="col-md-12 col-sm-12">
+								<br>
+								<h3>Either there were no records imported or you seem to have reached this page by mistake. <br><br> Please contact technical support if you need assistance. </h3>
+								<br>
+								<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-danger btn-sm">
+							</div>
+						</div>
+
 					<?php } ?>
 				</div>
 				<!-- /.box -->

@@ -199,4 +199,3 @@ $lastResult = $db->rawQueryOne($lastQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

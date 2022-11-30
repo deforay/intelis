@@ -3306,7 +3306,7 @@ ALTER TABLE `form_covid19` CHANGE `reason_for_sample_rejection` `reason_for_samp
 -- Thana 21-Nov-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sync-status.php', 'Sync Status');
 
---ilahir 29-Nov-2022
+-- ilahir 29-Nov-2022
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Support Email', 'support_email', '', 'general', 'no', NULL, '', 'active');
 
 
@@ -3317,7 +3317,7 @@ CREATE TABLE `support` (
   `upload_file_name` varchar(255) DEFAULT NULL,
   `attach_screenshot` varchar(100) DEFAULT NULL,
   `screenshot_file_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `support`  ADD PRIMARY KEY (`support_id`);
 
