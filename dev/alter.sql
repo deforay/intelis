@@ -3285,15 +3285,16 @@ UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';
 UPDATE `system_config` SET `value` = '5.0.9' WHERE `system_config`.`name` = 'sc_version';
 
 -- Thana 11-Nov-2022
-ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`; 
+-- ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`; 
 
 -- Thana 14-Nov-2022
-ALTER TABLE `import_config` DROP `date_time`; 
-ALTER TABLE `import_config_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`; 
+-- ALTER TABLE `import_config` DROP `date_time`; 
 
-RENAME TABLE `vlsm`.`import_config` TO `vlsm`.`instruments`;
-RENAME TABLE `vlsm`.`import_config_machines` TO `vlsm`.`instrument_machines`; 
-RENAME TABLE `vlsm`.`import_config_controls` TO `vlsm`.`instrument_controls`;
+RENAME TABLE `import_config` TO `instruments`;
+RENAME TABLE `import_config_machines` TO `instrument_machines`; 
+RENAME TABLE `import_config_controls` TO `instrument_controls`;
+
+ALTER TABLE `instrument_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`; 
 
 UPDATE `instrument_machines` INNER JOIN `instruments`
     ON `instrument_machines`.`config_id` = `instruments`.`config_id`
@@ -3305,7 +3306,7 @@ ALTER TABLE `form_covid19` CHANGE `reason_for_sample_rejection` `reason_for_samp
 -- Thana 21-Nov-2022
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sync-status.php', 'Sync Status');
 
---ilahir 29-Nov-2022
+-- ilahir 29-Nov-2022
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Support Email', 'support_email', '', 'general', 'no', NULL, '', 'active');
 
 

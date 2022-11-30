@@ -13,7 +13,9 @@ $formResults = $db->rawQuery($query);
 $counter = 0;
 
 $transactionId = $general->generateUUID();
+$url = "/api/events";
 
+$urlData = array();
 
 foreach ($formResults as $row) {
 
@@ -45,7 +47,7 @@ foreach ($formResults as $row) {
   //$urlData[] = "status=ACTIVE";
 
 
-  $url = "/api/events";
+  
 
 
   $dhis2Response = $dhis2->get($url, $urlData);
