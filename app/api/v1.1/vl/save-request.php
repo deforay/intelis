@@ -21,7 +21,7 @@ try {
 
     $origJson = file_get_contents("php://input") ?: '[]';
     $input = json_decode($origJson, true);
-
+    
     if (empty($input) || empty($input['data'])) {
         throw new \Exception("Invalid request");
     }
@@ -383,7 +383,7 @@ try {
             'result_approved_by'                    => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  null,
             'revised_by'                            => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
-            'revised_on'                            => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
+            'revised_on'                            => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
             'reason_for_vl_result_changes'          => (isset($data['reasonForVlResultChanges']) && !empty($data['reasonForVlResultChanges'])) ? $data['reasonForVlResultChanges'] : null,
             'lab_tech_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  null,
             'result_status'                         => $status,
@@ -399,7 +399,7 @@ try {
             'date_dispatched_from_clinic_to_lab'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,
             'vl_test_number'                        => (isset($data['viralLoadNo'])) ? $data['viralLoadNo'] : null,
             'last_viral_load_result'                => (isset($data['lastViralLoadResult'])) ? $data['lastViralLoadResult'] : null,
-            'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? $data['lastViralLoadTestDate'] : null,
+            'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? $general->isoDateFormat($data['lastViralLoadTestDate']) : null,
             'facility_support_partner'              => (isset($data['implementingPartner']) && $data['implementingPartner'] != '') ? $data['implementingPartner'] :  null,
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  null,
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
@@ -460,11 +460,13 @@ try {
         } elseif ($vldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = 4;
         }
-        
+      //  echo " SAmple Id update :".$data['vlSampleId']; exit;
+      //  echo '<pre>'; print_r($vlFulldata); 
         $id = 0;
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update($tableName, $vlFulldata);
+            error_log($db->getLastError());
             // echo "ID=>" . $id;
         }
         if ($id > 0) {
