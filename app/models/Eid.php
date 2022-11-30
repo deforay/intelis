@@ -356,18 +356,16 @@ class Eid
             $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
             $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
-
             if (empty($sampleCollectionDate)) {
                 echo 0;
                 exit();
             }
-
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
                     echo 0;
                     exit();
             }
-
+          
             $rowData = false;
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
@@ -459,8 +457,8 @@ class Eid
                 );
                 $eidData['form_attributes'] = json_encode($formAttributes);
             }
-
             $id = 0;
+           
             if ($rowData) {
                 // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
                 // $id = $this->db->update("form_eid", $eidData);
@@ -473,11 +471,13 @@ class Eid
 
                 if (isset($params['api']) && $params['api'] = "yes") {
                     $id = $this->db->insert("form_eid", $eidData);
+                    error_log($this->db->getLastError());
                     $params['eidSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $eidData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_eid", $eidData);
+                        error_log($this->db->getLastError());
                     }
                 }
             }

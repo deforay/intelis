@@ -216,9 +216,7 @@ if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
 
-if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
-     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
-}
+
 if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
      if (trim($_POST['gender']) == "not_recorded") {
           $sWhere[] = ' vl.patient_gender="not_recorded" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
@@ -248,6 +246,12 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
      $sWhere[] = ' vl.result != ""  ';
 } else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
      $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
+}
+if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
 }
 /* Source of request show model conditions */
 if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
@@ -286,7 +290,6 @@ if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-// die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $_SESSION['covid19RequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;

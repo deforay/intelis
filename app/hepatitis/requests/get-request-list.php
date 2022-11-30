@@ -215,6 +215,12 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 if (isset($_POST['source']) && trim($_POST['source']) == 'dhis2') {
      $sWhere[] = ' `source_of_request` like "dhis2%" ';
 }
+if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
 /* Source of request show model conditions */
 if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
      $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';

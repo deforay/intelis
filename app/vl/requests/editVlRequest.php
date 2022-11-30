@@ -56,6 +56,7 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
+//echo "<pre>"; print_r($vlQueryInfo); die;
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
      $vlQueryInfo['patient_dob'] = $general->humanReadableDateFormat($vlQueryInfo['patient_dob']);
 } else {

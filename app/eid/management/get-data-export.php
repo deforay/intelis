@@ -212,6 +212,20 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
+
+if (isset($_POST['childId']) && $_POST['childId'] != "") {
+     $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+}
+if (isset($_POST['childName']) && $_POST['childName'] != "") {
+     $sWhere[] = ' vl.child_name like "%'.$_POST['childName'].'%"';
+}
+if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
+     $sWhere[] = ' vl.mother_id like "%'.$_POST['motherId'].'%"';
+}
+if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
+     $sWhere[] = ' vl.mother_name like "%'.$_POST['motherName'].'%"';
+}
+
 /* Date time filters */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
@@ -276,7 +290,6 @@ if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-
 $_SESSION['eidExportResultQuery'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
@@ -312,7 +325,8 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['child_id'];
-     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     //$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = $aRow['child_name'];
      $row[] = ucwords($aRow['facility_name']);
      $row[] = ucwords($aRow['lab_name']);
      $row[] = $aRow['mother_id'];

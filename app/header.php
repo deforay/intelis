@@ -221,7 +221,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	</style>
 </head>
 
-<body class="hold-transition <?php echo $skin; ?> sidebar-mini">
+<body class="hold-transition <?php echo $skin; ?> sidebar-mini" id="capture">
 	<div class="wrapper">
 		<header class="main-header">
 			<!-- Logo -->
@@ -382,6 +382,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											if (isset($_SESSION['privileges']) && in_array("sources-of-requests.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview sources-of-requests-report-menu">
 													<a href="/admin/monitoring/sources-of-requests.php"><span class="fa-solid fa-circle-notch"></span> <?php echo _("Source of Requests"); ?></a>
+												</li>
+											<?php } 
+											if (isset($_SESSION['privileges']) && in_array("sync-status.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu treeview sync-status-menu">
+													<a href="/admin/monitoring/sync-status.php"><span class="fa-solid fa-circle-notch"></span> <?php echo _("Lab Sync Status"); ?></a>
 												</li>
 											<?php } ?>
 										</ul>

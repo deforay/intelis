@@ -143,6 +143,9 @@ if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
 if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
 }
+if (isset($_POST['sampleRejectionReason']) && $_POST['sampleRejectionReason'] != '') {
+    $sWhere[] =  ' vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
+}
 
 //$dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {

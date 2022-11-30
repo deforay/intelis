@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -147,7 +147,9 @@ if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
 if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
 }
-
+if (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') {
+    $sWhere[] = ' vl.reason_for_sample_rejection = "' . $_POST['rejectionReason'] . '"';
+}
 //$dWhere = '';
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -155,12 +157,16 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] = " vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+
+if (isset($sWhere) && count($sWhere)>0) {
     $sWhere = implode(" AND ", $sWhere);
+    $sQuery = $sQuery . ' AND ' . $sWhere;
 }
 
-$sQuery = $sQuery . ' AND ' . $sWhere;
+
+
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
+//echo $sQuery; die;
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
@@ -170,7 +176,7 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-//echo $sQuery;die;
+//echo $sQuery; die;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */

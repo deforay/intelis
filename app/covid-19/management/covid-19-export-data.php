@@ -167,6 +167,17 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 							</td>
 						</tr>
 						<tr>
+						<td><strong><?php echo _("Patient ID"); ?></strong></td>
+							<td>
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
+							</td>
+							
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+									</tr>
+						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
 
@@ -450,6 +461,14 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "patientId",
+					"value": $("#patientId").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#patientName").val()
 				});
 				$.ajax({
 					"dataType": 'json',

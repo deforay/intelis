@@ -192,7 +192,7 @@ try {
           'failed_batch_id' => (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null),
           'sample_collection_date' => $_POST['collectionDate'],
           'sample_collected_by' => (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null),
-          'lab_id' => (isset($_POST['laboratoryId']) && $_POST['laboratoryId'] != '' ? $_POST['laboratoryId'] : null),
+          'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] : null),
           'sample_type' => (isset($_POST['sampleType']) && $_POST['sampleType'] != '' ? $_POST['sampleType'] : null),
           'sample_received_at_vl_lab_datetime' => $_POST['receivedDate'],
           'tech_name_png' => (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null,

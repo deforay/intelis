@@ -269,6 +269,12 @@ if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
      $sWhere[] =  '  vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
 }
+if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+     $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+}
 /* Assign date time filters */
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {

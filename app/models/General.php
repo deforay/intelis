@@ -805,7 +805,7 @@ class General
     }
 
 
-    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null)
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null, $labId = null)
     {
 
         try {
@@ -822,6 +822,7 @@ class General
                 'request_data'      => $requestData,
                 'response_data'     => $responseData,
                 'facility_id'       => $facilityId ?: null,
+                'lab_id'            => $labId ?: null,
                 'data_format'       => $format ?: null
             );
             return $this->db->insert("track_api_requests", $data);
