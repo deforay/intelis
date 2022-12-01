@@ -28,6 +28,9 @@ $path = '/assets/img/remote-bg.jpg';
     <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
     <link href="/assets/css/deforayModal.css" rel="stylesheet" />
     <!-- iCheck -->
+
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+
     <style>
         body {
             background: #F6F6F6;
@@ -47,7 +50,7 @@ $path = '/assets/img/remote-bg.jpg';
         <div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
             <div class="panel panel-default" style="opacity: 0.93;">
                 <div class="panel-heading">
-                    <div class="panel-title"><?php echo _("VLSM Admin");?></div>
+                    <div class="panel-title"><?php echo _("System Administrator");?></div>
                 </div>
 
                 <div style="padding-top:10px;" class="panel-body">
