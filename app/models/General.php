@@ -822,7 +822,7 @@ class General
                 'request_data'      => $requestData,
                 'response_data'     => $responseData,
                 'facility_id'       => $facilityId ?: null,
-                'lab_id'            => $labId ?: null,
+                'facility_id'            => $labId ?: null,
                 'data_format'       => $format ?: null
             );
             return $this->db->insert("track_api_requests", $data);

@@ -35,8 +35,8 @@ try {
     }
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
-        http_response_code(501);
-        exit(0);
+        //http_response_code(501);
+        //exit(0);
     } else if (!empty($_REQUEST)) {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
@@ -56,7 +56,6 @@ try {
             $post = $decode['post'];
         }
     }
-
     $post['loginId'] = $post['loginId'] ?: $post['login_id'] ?: null;
     $post['role'] = $post['role'] ?: $post['role_id'] ?: null;
     $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hash_algorithm'] ?: 'phb';
@@ -117,6 +116,7 @@ try {
             $data['user_signature'] = $imageName;
         }
     }
+    
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);
