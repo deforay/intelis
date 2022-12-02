@@ -113,7 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
-            f.facility_name,
+            f.facility_name, f.facility_district,f.facility_state,
             l_f.facility_name as labName,
             l_f.facility_logo as facilityLogo,
             l_f.header_text as headerText,
@@ -159,9 +159,20 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     }
 }
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
 }
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+}
+
+if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+    $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+    $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
+
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
@@ -277,11 +288,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    $row[] = $aRow['batch_code'];
+   // $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = ucwords($patientFname . " " . $patientLname);
     $row[] = ucwords($aRow['facility_name']);
     $row[] = ucwords($aRow['labName']);
+    $row[] = ucwords($aRow['facility_state']);
+     $row[] = ucwords($aRow['facility_district']);
     $row[] = $aRow['hcv_vl_count'];
     $row[] = $aRow['hbv_vl_count'];
 

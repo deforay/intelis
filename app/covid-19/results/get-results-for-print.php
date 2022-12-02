@@ -30,13 +30,13 @@ $primaryKey = "covid19_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 's.sample_name','vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 's.sample_name','vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = array('vl.sample_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name','f.facility_state','f.facility_district', 's.sample_name','vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district','s.sample_name','vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
 if (isset($_POST['vlPrint'])) {
     array_unshift($orderColumns, "vl.covid19_id");
@@ -113,13 +113,13 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
-            f.facility_name,
+            f.facility_name, f.facility_district,f.facility_state,
             l_f.facility_name as labName,
             UPPER(s.sample_name) as sample_name, 
             l_f.facility_logo as facilityLogo,
             l_f.header_text as headerText,
             l_f.report_format as reportFormat,
-            f.facility_code,f.facility_state,f.facility_district,
+            f.facility_code,
             imp.i_partner_name,
             u_d.user_name as reviewedBy,
             a_u_d.user_name as approvedBy,
@@ -162,8 +162,18 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     }
 }
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+}
+
+if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+    $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+    $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
 }
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -278,11 +288,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    $row[] = $aRow['batch_code'];
+    //$row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = ucwords($patientFname . " " . $patientLname);
     $row[] = ucwords($aRow['facility_name']);
     $row[] = ucwords($aRow['labName']);
+    $row[] = ucwords($aRow['facility_state']);
+     $row[] = ucwords($aRow['facility_district']);
     $row[] = ucwords($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
 

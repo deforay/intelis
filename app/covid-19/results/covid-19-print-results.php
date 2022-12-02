@@ -13,11 +13,13 @@ try {
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+$state = $geoLocationDb->getProvinces("yes");
 
 ?>
 <style>
@@ -61,7 +63,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                     <td>
                                                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                <!--    <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -69,14 +71,27 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                                             <?php } ?>
                                                         </select>
-                                                    </td>
+                                                    </td>--> 
+                                                    <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
 
-                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                </select>
+							</td>
+
+                                                   
+                                                </tr>
+                                                <tr>
+                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -89,10 +104,18 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                 
                                                 </tr>
-
+                                                <tr>
+												<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+							</td>
+												<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+														</tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
                                                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -155,11 +178,12 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
-                                                        <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Province/State"); ?></th>
+														<th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Sample Type"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
@@ -183,7 +207,7 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                     <td>
                                                         <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                  <!--  <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -195,14 +219,28 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             }
                                                             ?>
                                                         </select>
-                                                    </td>
+                                                    </td>--> 
 
-                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="printState" onchange="getDistrictByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                </select>
+							</td>
+
+                                                   
+                                                </tr>
+                                                <tr>
+                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -215,10 +253,18 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                 
                                                 </tr>
-
+                                                <tr>
+												<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+							</td>
+												<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+												</tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
                                                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -280,11 +326,12 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
-                                                        <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Province/State"); ?></th>
+														<th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Sample Type"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
@@ -325,6 +372,12 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
+        $("#state, #printState").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+    	$("#district, #printDistrict").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
         $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -460,6 +513,9 @@ startDate: moment().subtract(28, 'days'),
                     "sClass": "center"
                 },
                 {
+					"sClass": "center"
+				},
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
@@ -484,9 +540,21 @@ startDate: moment().subtract(28, 'days'),
             "sAjaxSource": "/covid-19/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
+					"name": "patientId",
+					"value": $("#patientId").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#patientName").val()
+				});
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#sampleCollectionDate").val()
@@ -574,6 +642,9 @@ startDate: moment().subtract(28, 'days'),
                     "sClass": "center"
                 },
                 {
+					"sClass": "center"
+				},
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
@@ -598,9 +669,21 @@ startDate: moment().subtract(28, 'days'),
             "sAjaxSource": "/covid-19/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
+					"name": "state",
+					"value": $("#printState").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#printDistrict").val()
+				});
+				aoData.push({
+					"name": "patientId",
+					"value": $("#printPatientId").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#printPatientName").val()
+				});
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#printSampleCollectionDate").val()
@@ -800,6 +883,28 @@ startDate: moment().subtract(28, 'days'),
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
+
+    function getDistrictByProvince(provinceId)
+	{
+		$("#district").html('');
+		$.post("/common/get-district-by-province-id.php", {
+		provinceId : provinceId,
+				},
+				function(data) {
+			$("#district").html(data);
+				});
+	}
+
+	function getDistrictByPrintProvince(provinceId)
+	{
+		$("#printDistrict").html('');
+		$.post("/common/get-district-by-province-id.php", {
+		provinceId : provinceId,
+				},
+				function(data) {
+			$("#printDistrict").html(data);
+				});
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

@@ -110,6 +110,8 @@ vl.patient_first_name,
 vl.patient_middle_name,
 vl.patient_last_name,
 f.facility_name, 
+f.facility_district,
+f.facility_state,
 testingLab.facility_name as lab_name, 
 UPPER(s.sample_name) as sample_name, 
 vl.result,
@@ -121,8 +123,6 @@ vl.requesting_vl_service_sector,
 vl.request_clinician_name,
 vl.requesting_phone,
 vl.patient_responsible_person,
-vl.patient_district,
-vl.patient_province,
 vl.patient_mobile_number,
 vl.consent_to_receive_sms,
 vl.result_value_log,
@@ -152,6 +152,7 @@ LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
+
 $start_date = '';
 $end_date = '';
 $t_start_date = '';
@@ -177,10 +178,25 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
-
+/*
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}*/
+
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
 }
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+}
+
+if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+     $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+}
+
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 
@@ -259,7 +275,6 @@ if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-//echo $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
@@ -306,11 +321,13 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     $row[] = $aRow['batch_code'];
+    // $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
      $row[] = ucwords($aRow['lab_name']);
+     $row[] = ucwords($aRow['facility_state']);
+     $row[] = ucwords($aRow['facility_district']);
      $row[] = ucwords($aRow['sample_name']);
      $row[] = $aRow['result'];
 
