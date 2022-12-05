@@ -77,14 +77,14 @@ $state = $geoLocationDb->getProvinces("yes");
                                                     </td>-->
                                                     <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-              <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
               <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
                 </select>
 							</td>
 
@@ -225,14 +225,14 @@ $state = $geoLocationDb->getProvinces("yes");
                                                     </td>--> 
                                                     <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-              <select class="form-control select2-element" id="printState" onchange="getDistrictByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
               <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
                 </select>
 							</td>
                                                    
@@ -878,27 +878,82 @@ $state = $geoLocationDb->getProvinces("yes");
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
-
-    function getDistrictByProvince(provinceId)
+	function getByProvince(provinceId)
 	{
-		$("#district").html('');
+		/*$("#district").html('');
 		$.post("/common/get-district-by-province-id.php", {
 		provinceId : provinceId,
 				},
 				function(data) {
 			$("#district").html(data);
+				});*/
+                $("#district").html('');
+        $("#facility").html('');
+        $("#labId").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#district").html(Obj['districts']);
+			$("#facility").html(Obj['facilities']);
+			$("#labId").html(Obj['labs']);
 				});
+
 	}
 
-	function getDistrictByPrintProvince(provinceId)
+	function getByPrintProvince(provinceId)
 	{
-		$("#printDistrict").html('');
+        $("#printDistrict").html('');
+        $("#printFacility").html('');
+        $("#printLabId").html('');
+		$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#printDistrict").html(Obj['districts']);
+			$("#printFacility").html(Obj['facilities']);
+			$("#printLabId").html(Obj['labs']);
+				});
+
+	}
+
+	function getByDistrict(districtId)
+	{
+		/*$("#district").html('');
 		$.post("/common/get-district-by-province-id.php", {
 		provinceId : provinceId,
 				},
 				function(data) {
-			$("#printDistrict").html(data);
+			$("#district").html(data);
+				});*/
+                $("#facility").html('');
+                $("#labId").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facility").html(Obj['facilities']);
+			$("#labId").html(Obj['labs']);
 				});
+
+	}
+
+	function getByPrintDistrict(districtId)
+	{
+        $("#printFacility").html('');
+        $("#printLabId").html('');
+		$.post("/common/get-by-district-id.php", {
+			districtId : districtId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#printFacility").html(Obj['facilities']);
+				$("#printLabId").html(Obj['labs']);
+			});
+
 	}
 </script>
 <?php
