@@ -8,6 +8,8 @@ if(isset($_POST['provinceId']))
     $result = $geoLocationDb->getByProvinceId($provinceId, true, true, true);
 
     //Get Districts by province
+    if(isset($_POST['districts']))
+    {
         $districtList = $result['districts'];
         $option = "<option value=''>--Select--</option>";
         foreach($districtList as $district)
@@ -15,9 +17,10 @@ if(isset($_POST['provinceId']))
             $option .= '<option value="'.$district['geo_id'].'">'.$district['geo_name'].' </option>';
         }
         $list['districts'] = $option;
-
+    }
     //Get Facilities by province
-    
+    if(isset($_POST['facilities']))
+    {
         $facilityList = $result['facilities'];
         $option = "<option value=''>--Select--</option>";
         foreach($facilityList as $facility)
@@ -25,9 +28,10 @@ if(isset($_POST['provinceId']))
             $option .= '<option value="'.$facility['facility_id'].'">'.$facility['facility_name'].' </option>';
         }
         $list['facilities'] = $option;
-
+    }
     //Get Labs by province
-
+    if(isset($_POST['labs']))
+    {
         $labList = $result['labs'];
         $option = "<option value=''>--Select--</option>";
         foreach($labList as $lab)
@@ -35,6 +39,6 @@ if(isset($_POST['provinceId']))
             $option .= '<option value="'.$lab['facility_id'].'">'.$lab['facility_name'].' </option>';
         }
         $list['labs'] = $option;
-
-        echo json_encode($list);
+    }
+    echo json_encode($list);
 }

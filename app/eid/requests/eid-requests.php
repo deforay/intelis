@@ -717,21 +717,25 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function getDistrictByProvince(provinceId) {
 		$("#district").html('');
-		$.post("/common/get-district-by-province-id.php", {
+		$.post("/common/get-by-province-id.php", {
 				provinceId: provinceId,
+				districts: true,
 			},
 			function(data) {
-				$("#district").html(data);
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
 			});
 	}
 
 	function getFacilityByDistrict(districtId) {
 		$("#facilityName").html('');
-		$.post("/common/get-facilities-by-district-id.php", {
+		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
+				facilities : true,
 			},
 			function(data) {
-				$("#facilityName").html(data);
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['facilities']);
 			});
 	}
 </script>

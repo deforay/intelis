@@ -19,6 +19,8 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$state = $geoLocationDb->getProvinces("yes");
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -266,11 +268,14 @@ foreach ($srcResults as $list) {
 							
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="state" name="state" class="form-control" placeholder="<?php echo _('Enter Province/State'); ?>" style="background:#fff;" onkeyup="loadVlRequestStateDistrict()" />
+							<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<input type="text" id="district" name="district" class="form-control" placeholder="<?php echo _('Enter District/County'); ?>" onkeyup="loadVlRequestStateDistrict()" />
+							<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+								</select>
 							</td>
 
 						</tr>
@@ -960,6 +965,31 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$.unblockUI();
 			});
 
+	}
+
+
+	function getDistrictByProvince(provinceId) {
+		$("#district").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+			});
+	}
+
+	function getFacilityByDistrict(districtId) {
+		$("#facilityName").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities : true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['facilities']);
+			});
 	}
 </script>
 <?php

@@ -877,18 +877,14 @@ $state = $geoLocationDb->getProvinces("yes");
     }
     function getByProvince(provinceId)
 	{
-		/*$("#district").html('');
-		$.post("/common/get-district-by-province-id.php", {
-		provinceId : provinceId,
-				},
-				function(data) {
-			$("#district").html(data);
-				});*/
-                $("#district").html('');
+        $("#district").html('');
         $("#facility").html('');
         $("#labId").html('');
 				$.post("/common/get-by-province-id.php", {
 					provinceId : provinceId,
+                    districts : true,
+					facilities : true,
+					labs : true,
 				},
 				function(data) {
 					Obj = $.parseJSON(data);
@@ -906,6 +902,9 @@ $state = $geoLocationDb->getProvinces("yes");
         $("#printLabId").html('');
 		$.post("/common/get-by-province-id.php", {
 					provinceId : provinceId,
+                    districts : true,
+					facilities : true,
+					labs : true,
 				},
 				function(data) {
 					Obj = $.parseJSON(data);
@@ -918,17 +917,12 @@ $state = $geoLocationDb->getProvinces("yes");
 
 	function getByDistrict(districtId)
 	{
-		/*$("#district").html('');
-		$.post("/common/get-district-by-province-id.php", {
-		provinceId : provinceId,
-				},
-				function(data) {
-			$("#district").html(data);
-				});*/
                 $("#facility").html('');
                 $("#labId").html('');
 				$.post("/common/get-by-district-id.php", {
 					districtId : districtId,
+                    facilities : true,
+					labs : true,
 				},
 				function(data) {
 					Obj = $.parseJSON(data);
@@ -944,6 +938,8 @@ $state = $geoLocationDb->getProvinces("yes");
         $("#printLabId").html('');
 		$.post("/common/get-by-district-id.php", {
 			districtId : districtId,
+            facilities : true,
+			labs : true,
 				},
 				function(data) {
 					Obj = $.parseJSON(data);

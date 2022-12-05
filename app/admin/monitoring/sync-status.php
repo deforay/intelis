@@ -162,11 +162,13 @@ $activeTestModules = $general->getActiveTestModules();
 
     function getDistrictByProvince(provinceId) {
 		$("#district").html('');
-		$.post("/common/get-district-by-province-id.php", {
+		$.post("/common/get-by-province-id.php", {
 				provinceId: provinceId,
+                districts : true,
 			},
 			function(data) {
-				$("#district").html(data);
+                Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
 			});
 	}
 
