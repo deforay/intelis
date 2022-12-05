@@ -74,7 +74,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -118,7 +118,11 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-
+        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
+            $data['sampleCollectionDate'] = $general->isoDateFormat($data['sampleCollectionDate'], true);
+        } else {
+            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
+        }
         $data['instanceId'] = $data['instanceId'] ?: $instanceId;
 
         $tbData = array(
@@ -211,6 +215,7 @@ try {
             $data['sampleCollectionDate'] = null;
         }
 
+
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
@@ -272,7 +277,7 @@ try {
             'vlsm_country_id'                     => $data['formId'],
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
-            'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : null,
+            'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
             'province_id'                         => !empty($data['provinceId']) ? $data['provinceId'] : null,
             'referring_unit'                      => !empty($data['referringUnit']) ? $data['referringUnit'] : null,
@@ -297,7 +302,7 @@ try {
             'tests_requested'                     => !empty($data['testTypeRequested']) ? json_encode($data['testTypeRequested']) : null,
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'other_specimen_type'                 => !empty($data['otherSpecimenType']) ? $data['otherSpecimenType'] : null,
-            'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
+            'sample_collection_date'              => $data['sampleCollectionDate'],
             'sample_dispatched_datetime'          => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'          => $data['resultDispatchedOn'],
             'sample_tested_datetime'              => isset($data['sampleTestedDateTime']) ? $data['sampleTestedDateTime'] : null,
@@ -315,7 +320,7 @@ try {
             'result_approved_datetime'            => !empty($data['approvedOn']) ? $general->isoDateFormat($data['approvedOn']) : null,
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
-            'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
+            'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
             'reason_for_changing'                 => (isset($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
@@ -359,6 +364,7 @@ try {
         if (!empty($data['tbSampleId'])) {
             $db = $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
+           // error_log($db->getLastError());
         }
         /* echo "<pre>";
         print_r($id);

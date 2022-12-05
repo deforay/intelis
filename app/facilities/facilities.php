@@ -15,8 +15,10 @@ $geoLocationDb = new \Vlsm\Models\GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>
-select { width:50px; !important}
-  </style>
+select { width:400px; !important }
+.select2-element { width: 300px; }
+</style>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -37,13 +39,13 @@ select { width:50px; !important}
 						<tbody><tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-              <select class="form-control" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
               <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
                 </select>
 							</td>
 
@@ -51,7 +53,7 @@ select { width:50px; !important}
 						<tr>
 							<td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
 							<td>
-              <select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
+              <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											foreach ($fResult as $type) {
@@ -64,7 +66,7 @@ select { width:50px; !important}
 							</td>
               <td>&nbsp;<strong>Test Type &nbsp;:</strong></td>
 							<td>
-              <select type="text" id="testType" name="testType" onchange="return checkFacilityType();" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+              <select type="text" id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _('Please select the Test types'); ?>">
 										<option value="">-- Choose Test Type--</option>
 										<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _("Viral Load"); ?></option>
@@ -169,6 +171,13 @@ select { width:50px; !important}
   $(document).ready(function() {
    
     $.blockUI();
+
+    $("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+    $("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
     oTable = $('#facilityDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"

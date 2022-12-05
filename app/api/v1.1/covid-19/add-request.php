@@ -185,9 +185,11 @@ try {
         if ($rowData) {
             $db = $db->where('covid19_id', $rowData['covid19_id']);
             $id = $db->update("form_covid19", $covid19Data);
+            error_log($db->getLastError());
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
             $id = $db->insert("form_covid19", $covid19Data);
+            error_log($db->getLastError());
             $data['covid19SampleId'] = $id;
         }
 
@@ -320,7 +322,7 @@ try {
             'reason_for_covid19_test'             => !empty($data['reasonForCovid19Test']) ? $data['reasonForCovid19Test'] : null,
             'type_of_test_requested'              => !empty($data['testTypeRequested']) ? $data['testTypeRequested'] : null,
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
-            'sample_collection_date'              => !empty($data['sampleCollectionDate']) ? $data['sampleCollectionDate'] : null,
+            'sample_collection_date'              => $data['sampleCollectionDate'],
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date'                 => !empty($data['outcomeDate']) ? $general->isoDateFormat($data['outcomeDate']) : null,
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
@@ -356,7 +358,7 @@ try {
             'authorized_by'                       => !empty($data['authorizedBy']) ? $data['authorizedBy'] : null,
             'authorized_on'                       => !empty($data['authorizedOn']) ? $general->isoDateFormat($data['authorizedOn']) : null,
             'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
-            'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : "",
+            'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : null,
             'result_reviewed_by'                  => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime'            => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'result_approved_by'                  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
@@ -391,6 +393,7 @@ try {
                     $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && count($data['symptomDetails'][$data['symptomId'][$i]]) > 0) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     //var_dump($symptomData);
                     $db->insert("covid19_patient_symptoms", $symptomData);
+                    error_log($db->getLastError());
                 }
             }
         }
@@ -404,6 +407,7 @@ try {
             $reasonData["reasons_detected"]    = "yes";
             $reasonData["reason_details"]     = json_encode($data['reasonDetails']);
             $db->insert("covid19_reasons_for_testing", $reasonData);
+            error_log($db->getLastError());
         }
 
         $db = $db->where('covid19_id', $data['covid19SampleId']);
@@ -415,6 +419,7 @@ try {
                 $comorbidityData["comorbidity_id"] = $data['comorbidityId'][$i];
                 $comorbidityData["comorbidity_detected"] = $data['comorbidityDetected'][$i];
                 $db->insert("covid19_patient_comorbidities", $comorbidityData);
+                error_log($db->getLastError());
             }
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
@@ -439,6 +444,7 @@ try {
                             'result'                 => $test['testResult'],
                         );
                         $db->insert($testTableName, $covid19TestData);
+                        error_log($db->getLastError());
                         $covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($test['testDate']));
                     }
                 }
@@ -452,6 +458,7 @@ try {
         if (!empty($data['covid19SampleId'])) {
             $db = $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
+            error_log($db->getLastError());
         }
 
         // $general->var_error_log($db->getLastQuery());

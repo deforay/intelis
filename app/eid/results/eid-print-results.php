@@ -5,6 +5,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
@@ -21,6 +22,8 @@ $batResult = $db->rawQuery($batQuery);
 // //Implementing partner list
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);
+
+$state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>
     .select2-selection__choice {
@@ -59,7 +62,7 @@ $batResult = $db->rawQuery($batQuery);
                                                     <td>
                                                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                   <!-- <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -71,14 +74,27 @@ $batResult = $db->rawQuery($batQuery);
                                                             }
                                                             ?>
                                                         </select>
-                                                    </td>
+                                                    </td>-->
+                                                    <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
 
-                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+                </select>
+							</td>
+
+                                                   
+                                                </tr>
+                                                <tr>
+                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -91,9 +107,18 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    
                                                 </tr>
+                                                <tr>
+                                                <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
+							</td>
+												<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
+							</td>
+                                                        </tr>
 
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
@@ -157,11 +182,12 @@ $batResult = $db->rawQuery($batQuery);
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
-                                                        <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Province/State"); ?></th>
+														<th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -184,7 +210,7 @@ $batResult = $db->rawQuery($batQuery);
                                                     <td>
                                                         <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                    <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                  <!--  <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -196,14 +222,26 @@ $batResult = $db->rawQuery($batQuery);
                                                             }
                                                             ?>
                                                         </select>
-                                                    </td>
+                                                    </td>--> 
+                                                    <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
 
-                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
+                </select>
+							</td>
+                                                   
+                                                </tr>
+                                                <tr>
+                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
@@ -216,10 +254,18 @@ $batResult = $db->rawQuery($batQuery);
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
+                                                  
                                                 </tr>
-
+                                                <tr>
+                                                <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
+							</td>
+												<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
+							</td>
+                                                        </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
                                                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -281,11 +327,12 @@ $batResult = $db->rawQuery($batQuery);
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                                         <?php } ?>
-                                                        <th><?php echo _("Batch Code"); ?></th>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
+                                                        <th><?php echo _("Province/State"); ?></th>
+														<th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -325,6 +372,12 @@ $batResult = $db->rawQuery($batQuery);
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
+        $("#state, #printState").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+    	$("#district, #printDistrict").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
         $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -445,6 +498,9 @@ $batResult = $db->rawQuery($batQuery);
                     "sClass": "center"
                 },
                 {
+					"sClass": "center"
+				},
+                {
                     "sClass": "center"
                 },
                 {
@@ -481,9 +537,21 @@ $batResult = $db->rawQuery($batQuery);
             "sAjaxSource": "/eid/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
+					"name": "childId",
+					"value": $("#childId").val()
+				});
+				aoData.push({
+					"name": "childName",
+					"value": $("#childName").val()
+				});
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#sampleCollectionDate").val()
@@ -550,6 +618,9 @@ $batResult = $db->rawQuery($batQuery);
                     "sClass": "center"
                 },
                 {
+					"sClass": "center"
+				},
+                {
                     "sClass": "center"
                 },
                 {
@@ -592,9 +663,21 @@ $batResult = $db->rawQuery($batQuery);
             "sAjaxSource": "/eid/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
+					"name": "state",
+					"value": $("#printState").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#printDistrict").val()
+				});
+				aoData.push({
+					"name": "childId",
+					"value": $("#printChildId").val()
+				});
+				aoData.push({
+					"name": "childName",
+					"value": $("#printChildName").val()
+				});
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#printSampleCollectionDate").val()
@@ -795,6 +878,83 @@ $batResult = $db->rawQuery($batQuery);
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
+	function getByProvince(provinceId)
+	{
+		/*$("#district").html('');
+		$.post("/common/get-district-by-province-id.php", {
+		provinceId : provinceId,
+				},
+				function(data) {
+			$("#district").html(data);
+				});*/
+                $("#district").html('');
+        $("#facility").html('');
+        $("#labId").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#district").html(Obj['districts']);
+			$("#facility").html(Obj['facilities']);
+			$("#labId").html(Obj['labs']);
+				});
+
+	}
+
+	function getByPrintProvince(provinceId)
+	{
+        $("#printDistrict").html('');
+        $("#printFacility").html('');
+        $("#printLabId").html('');
+		$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#printDistrict").html(Obj['districts']);
+			$("#printFacility").html(Obj['facilities']);
+			$("#printLabId").html(Obj['labs']);
+				});
+
+	}
+
+	function getByDistrict(districtId)
+	{
+		/*$("#district").html('');
+		$.post("/common/get-district-by-province-id.php", {
+		provinceId : provinceId,
+				},
+				function(data) {
+			$("#district").html(data);
+				});*/
+                $("#facility").html('');
+                $("#labId").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facility").html(Obj['facilities']);
+			$("#labId").html(Obj['labs']);
+				});
+
+	}
+
+	function getByPrintDistrict(districtId)
+	{
+        $("#printFacility").html('');
+        $("#printLabId").html('');
+		$.post("/common/get-by-district-id.php", {
+			districtId : districtId,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#printFacility").html(Obj['facilities']);
+				$("#printLabId").html(Obj['labs']);
+			});
+
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
