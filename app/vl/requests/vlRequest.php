@@ -110,24 +110,11 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
-									<?= $facilitiesDropdown; ?>
-								</select>
-							</td>
-							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
-									<?= $testingLabsDropdown; ?>
-								</select>
-							</td>
+							
 							<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Viral Load"); ?> &nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
@@ -143,13 +130,14 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+						</tr>
+						<tr>
+							
 							<td><strong><?php echo _("Request Creation Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
-						<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _("All Status"); ?></option>
@@ -168,6 +156,9 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
+						</tr>
+						<tr>
+						
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">
@@ -188,10 +179,7 @@ foreach ($srcResults as $list) {
 									</div>
 								</div>
 							</td>
-							
-						</tr>
-						<tr>
-						<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
+							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -216,6 +204,9 @@ foreach ($srcResults as $list) {
 								</select>
 							</td>
 							
+						</tr>
+						<tr>
+						
 							
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
@@ -228,10 +219,7 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-							
-						</tr>
-						<tr>
-						<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -248,16 +236,16 @@ foreach ($srcResults as $list) {
 									<option value="noresult"><?php echo _("Sample Without Result"); ?></option>
 								</select>
 							</td>
+						</tr>
+						<tr>
+						
 							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-						
-						</tr>
-						<tr>
-						<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -268,16 +256,30 @@ foreach ($srcResults as $list) {
 							
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+							<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
+						</tr>
+						<tr>
+						
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-							<select class="form-control" id="district" onchange="getFacilityByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+							<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
 								</select>
 							</td>
-
+							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
+									<?= $facilitiesDropdown; ?>
+								</select>
+							</td>
+							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
+									<?= $testingLabsDropdown; ?>
+								</select>
+							</td>
 						</tr>
 						<tr>
 						<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
@@ -968,27 +970,36 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 
-	function getDistrictByProvince(provinceId) {
+	function getByProvince(provinceId) {
 		$("#district").html('');
-		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-			},
-			function(data) {
-				Obj = $.parseJSON(data);
-				$("#district").html(Obj['districts']);
-			});
+        $("#facilityName").html('');
+        $("#vlLab").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					labs : true,
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#district").html(Obj['districts']);
+			$("#facilityName").html(Obj['facilities']);
+			$("#vlLab").html(Obj['labs']);
+				});
 	}
 
-	function getFacilityByDistrict(districtId) {
+	function getByDistrict(districtId) {
 		$("#facilityName").html('');
+		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
 				facilities : true,
+				labs : true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
 			});
 	}
 </script>
