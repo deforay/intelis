@@ -69,6 +69,35 @@ $fResult = $db->query($fDetails);
                 </div>
               </div>
             </div>
+
+            <div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title"><?php echo _("SMTP Settings"); ?></h3>
+							</div>
+							<div class="panel-body">
+                <div class="row">
+                  <div class="col-md-7">
+                    <div class="form-group">
+                      <label for="sup_email" class="col-lg-4 control-label">Email </label>
+                      <div class="col-lg-8">
+                        <input type="text" class="form-control isEmail" id="sup_email" name="sup_email" placeholder="Email" title="Please enter email" value="<?php echo $arr['sup_email']; ?>">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-7">
+                    <div class="form-group">
+                      <label for="sup_password" class="col-lg-4 control-label">Password </label>
+                      <div class="col-lg-8">
+                        <input type="text" class="form-control" id="sup_password" name="sup_password" placeholder="Password" title="Please enter password" value="<?php echo $arr['sup_password']; ?>">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+							</div>
+						</div>
+
           </div>
           <div class="box-footer">
             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>

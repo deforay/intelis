@@ -818,8 +818,6 @@
 				$.blockUI();
 				$.post("/support/saveScreenshot.php", {image:dataURL,supportId:supportId},
 				function(data) {
-					//console.log(data.message);
-					//console.log(data);
 					$.unblockUI();
 					alert("Submitted successfully");
 				});
@@ -829,8 +827,6 @@
 			$.blockUI();
 			$.post("/support/saveScreenshot.php", {supportId:supportId},
 			function(data) {
-				//console.log(data.message);
-				//console.log(data);
 				$.unblockUI();
 				alert("Submitted successfully");
 			});

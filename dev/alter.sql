@@ -3323,3 +3323,7 @@ CREATE TABLE `support` (
 ALTER TABLE `support`  ADD PRIMARY KEY (`support_id`);
 
 ALTER TABLE `support`  MODIFY `support_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+
+INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES ('Email Id', 'sup_email', NULL);
+INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES ('Password', 'sup_password', NULL);
