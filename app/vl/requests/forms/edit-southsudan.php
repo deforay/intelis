@@ -26,7 +26,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	}
 }
 //check remote user
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
@@ -41,8 +41,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-	$pdQuery = "SELECT * FROM geographical_divisions as pd JOIN facility_details as fd ON fd.facility_state_id=pd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE geo_parent = 0 AND user_id='" . $_SESSION['userId'] . "'";
+	$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 }
+
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {

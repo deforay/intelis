@@ -94,7 +94,8 @@ function getProvinceDropdown($selectedProvince = null)
 	}
 
 	$db->where("p.geo_parent = 0");
-	$pdResult = $db->get('geographical_divisions p');
+	$pdResult = $db->setQueryOption('DISTINCT')->get('geographical_divisions p', null, array('geo_id', 'geo_name', 'geo_code'));
+	//$pdResult = $db->get('geographical_divisions p');
 	$state = $option;
 	foreach ($pdResult as $pdRow) {
 		$selected = '';
