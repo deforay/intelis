@@ -476,7 +476,7 @@ if (sizeof($requestResult) > 0) {
 			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Resultats dernière charge virale(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
 			$html .= '</tr>';
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:110px;border-bottom:2px solid #d3d3d3;"></td>';
+			$html .= '<td colspan="3" style="line-height:30px;border-bottom:2px solid #d3d3d3;"></td>';
 			$html .= '</tr>';
 		}
 		$html .= '<tr>';

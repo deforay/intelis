@@ -341,7 +341,7 @@ foreach ($rResult as $aRow) {
 
      //  $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
      //  $patientMname = ucwords($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-     //  $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
+     //  $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_surname'],$aRow['patient_art_no']));
 
 
      $row = array();

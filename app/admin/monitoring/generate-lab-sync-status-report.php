@@ -68,15 +68,15 @@ $rResult = $db->rawQuery($_SESSION['labSyncStatus']);
 $no = 1;
 
 $twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
-$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-3 weeks'));
+$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-4 weeks'));
 foreach ($rResult as $aRow) {
     $row = array();
     $_color = "f08080";
-    if ($twoWeekExpiry <= $aRow['requested_on']) {
+    if ($aRow['requested_on'] >= $twoWeekExpiry) {
         $_color = "90ee90";
-    } elseif ($twoWeekExpiry >= $aRow['requested_on'] && $threeWeekExpiry < $aRow['requested_on']) {
+    } elseif ($aRow['requested_on'] > $threeWeekExpiry && $aRow['requested_on'] < $twoWeekExpiry) {
         $_color = "ffff00";
-    } elseif ($threeWeekExpiry >= $aRow['requested_on'] || (!isset($aRow['test_type']) || !empty($aRow['test_type']))) {
+    } elseif ($aRow['requested_on'] >= $threeWeekExpiry) {
         $_color = "f08080";
     }
     $color[]['color'] = $_color;
