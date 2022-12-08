@@ -461,6 +461,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
+				{
+                    "sClass": "center"
+                },
                 <?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
                         "sClass": "center action",
                         "bSortable": false

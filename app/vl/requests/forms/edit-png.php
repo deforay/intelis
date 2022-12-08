@@ -32,7 +32,7 @@ $rKey = '';
 $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
@@ -46,7 +46,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 //sample rejection reason
@@ -75,10 +75,11 @@ if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility
 	$facilityResult[0]['facility_state'] = "";
 }
 $stateName = $facilityResult[0]['facility_state'];
-$stateQuery = "SELECT * FROM province_details WHERE province_name='" . $stateName . "'";
+$stateId = $facilityResult[0]['facility_state_id'];
+$stateQuery = "SELECT * FROM geographical_divisions WHERE geo_id='" . $stateId . "'";
 $stateResult = $db->query($stateQuery);
-if (!isset($stateResult[0]['province_code']) || $stateResult[0]['province_code'] == '') {
-	$stateResult[0]['province_code'] = "";
+if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
+	$stateResult[0]['geo_code'] = "";
 }
 //district details
 $districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state='" . $stateName . "'";
@@ -86,7 +87,7 @@ $districtResult = $db->query($districtQuery);
 
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
@@ -129,7 +130,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 	$vlObj = new \Vlsm\Models\Vl();
 	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
 	$sampleCollectionDate = $general->humanReadableDateFormat($sampleCollectionDate[0]);
-	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
+	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
 	$sampleCodeKeys = json_decode($sampleSuggestionJson, true);
 	$sampleSuggestion = $sampleCodeKeys['sampleCode'];
 	$sampleSuggestionDisplay = 'display:block;';
@@ -255,7 +256,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['province_name'] . "##" . $provinceName['province_code']; ?>" <?php echo (strtolower($facilityResult[0]['facility_state']) . "##" . $stateResult[0]['province_code'] == strtolower($provinceName['province_name']) . "##" . $provinceName['province_code']) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['province_name']); ?></option>;
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($facilityResult[0]['facility_state']) . "##" . $stateResult[0]['geo_code'] == strtolower($provinceName['geo_name']) . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['geo_name']); ?></option>;
 												<?php } ?>
 											</select>
 										</td>
