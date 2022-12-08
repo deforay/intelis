@@ -183,10 +183,10 @@ foreach ($trackedEntityInstances as $tracker) {
         $fac = $db->getOne("facility_details");
         $formData['facility_id'] =  $fac['facility_id'];
 
-        $db->where("province_name", $fac['facility_state']);
-        $prov = $db->getOne("province_details");
+        $db->where("geo_name", $fac['facility_state']);
+        $prov = $db->getOne("geographical_divisions");
 
-        $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
+        $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
 
 
         //Specimen Type
@@ -205,7 +205,6 @@ foreach ($trackedEntityInstances as $tracker) {
                 $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
             }
         }
-
 
 
         $status = 6;

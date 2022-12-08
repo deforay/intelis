@@ -23,7 +23,7 @@ foreach ($testPlatformResult as $row) {
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$pQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 
 // $configQuery = "SELECT * from global_config";
@@ -46,7 +46,6 @@ $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -626,7 +625,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <?php
                                             foreach ($pResult as $province) {
                                             ?>
-                                                <option value="<?php echo $province['province_name']; ?>"><?php echo $province['province_name']; ?></option>
+                                                <option value="<?php echo $province['geo_name']; ?>"><?php echo $province['geo_name']; ?></option>
                                             <?php
                                             }
                                             ?>
