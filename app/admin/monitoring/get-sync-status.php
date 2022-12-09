@@ -42,7 +42,8 @@ if (isset($testType) && $testType == 'tb') {
 
 $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requested_on, tar.test_type 
             FROM facility_details as f 
-            LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id";
+            LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id
+            LEFT JOIN testing_labs as lab ON lab.facility_id = f.facility_id";
 
 //if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
 //$sQuery .= " JOIN $table as vl ON f.facility_id = vl.lab_id";
@@ -50,6 +51,7 @@ $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requeste
 $sWhere[] = ' f.facility_type = 2 and f.status = "active" ';
 if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
     $sWhere[] = ' (tar.test_type like "' . $_POST['testType'] . '"  OR tar.test_type is null) ';
+    $sWhere[] = ' (lab.test_type like "' . $_POST['testType'] . '"  OR lab.test_type is null) ';
 }
 
 if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
@@ -82,7 +84,7 @@ foreach ($rResult as $key => $aRow) {
     }
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>">
-        <td><?php echo ucwords($aRow['facility_name']); ?></td>
+        <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ucwords($aRow['facility_name']); ?></a></td>
         <!-- <td><?php echo ucwords($aRow['test_type']); ?></td> -->
         <td><?php echo $general->humanReadableDateFormat($aRow['requested_on'], true); ?></td>
     </tr>
