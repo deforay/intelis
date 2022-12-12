@@ -26,7 +26,7 @@ $importResult = $db->query($importQuery);
 $userQuery = "SELECT * FROM user_details WHERE `status` = 'active'";
 $userResult = $db->rawQuery($userQuery);
 
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
 $id = base64_decode($_GET['id']);

@@ -190,7 +190,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     if (isset($data['provinceLastModified']) && !empty($data['provinceLastModified'])) {
         $condition = "updated_datetime > '" . $data['provinceLastModified'] . "'";
     }
-    $response['province'] = $general->fetchDataFromTable('province_details', $condition);
+    $response['province'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
 
     $condition = null;

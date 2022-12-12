@@ -22,7 +22,7 @@ $formId = $general->getGlobalConfig('vl_form');
 $sTypeQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 $batchQuery = "SELECT * FROM batch_details WHERE test_type='vl' AND batch_status='completed'";
 $batchResult = $db->rawQuery($batchQuery);
@@ -163,7 +163,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
-                          <option value="<?php echo $province['province_name']; ?>"><?php echo ucwords($province['province_name']); ?></option>
+                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ucwords($province['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </td>

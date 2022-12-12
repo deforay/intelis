@@ -53,7 +53,7 @@ try {
                 $sampleType = $general->getDuplicateDataFromField('r_eid_sample_type', 'sample_name', $rowData['AF']);
                 // ADDED
                 $facility = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['E']);
-                $state = $general->getDuplicateDataFromField('province_details', 'province_name', $rowData['C']);
+                $state = $general->getDuplicateDataFromField('geographical_divisions', 'geo_name', $rowData['C']);
                 $labName = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['AA'], 'facility_type');
                 $rejectionReason = $general->getDuplicateDataFromField('r_eid_sample_rejection_reasons', 'rejection_reason_name', $rowData['AC']);
                 $result = $general->getDuplicateDataFromField('r_eid_results', 'result', $rowData['AE']);
@@ -108,7 +108,7 @@ try {
                     'vlsm_instance_id'                                  => $instanceId,
                     'vlsm_country_id'                                   => 1,
                     'sample_code'                                       => isset($rowData['B']) ? $rowData['B'] : null,
-                    'province_id'                                       => isset($state['province_id']) ? $state['province_id'] : null,
+                    'province_id'                                       => isset($state['geo_id']) ? $state['geo_id'] : null,
                     'facility_id'                                       => isset($facility['facility_id']) ? $facility['facility_id'] : null,
                     'child_id'                                          => isset($rowData['F']) ? $rowData['F'] : null,
                     'child_name'                                        => isset($rowData['G']) ? $rowData['G'] : null,

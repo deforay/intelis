@@ -3,7 +3,7 @@ ob_start();
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 //check remote user
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $sampleCode = 'remote_sample_code';
   if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
@@ -15,7 +15,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
   $chkUserFcMapResult = $db->query($chkUserFcMapQry);
   if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "'";
+    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
   }
 } else {
   $sampleCode = 'sample_code';
@@ -23,7 +23,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
-  $province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+  $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Selecione --');
@@ -37,10 +37,10 @@ if (!isset($stateResult[0]['facility_state']) || $stateResult[0]['facility_state
 //district details
 $districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateResult[0]['facility_state'] . "'";
 $districtResult = $db->query($districtQuery);
-$provinceQuery = "SELECT * from province_details where province_name='" . $stateResult[0]['facility_state'] . "'";
+$provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $stateResult[0]['facility_state'] . "'";
 $provinceResult = $db->query($provinceQuery);
-if (!isset($provinceResult[0]['province_code']) || $provinceResult[0]['province_code'] == '') {
-  $provinceResult[0]['province_code'] = '';
+if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == '') {
+  $provinceResult[0]['geo_code'] = '';
 }
 //get ART list
 $aQuery = "SELECT * from r_vl_art_regimen";
@@ -170,7 +170,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       <td>
                         <select class="form-control isRequired" name="province" id="province" title="Please choose província" style="width:100%;" onchange="getfacilityDetails(this)">
                           <?php foreach ($pdResult as $provinceName) { ?>
-                            <option value="<?php echo $provinceName['province_name'] . "##" . $provinceName['province_code']; ?>" <?php echo ($stateResult[0]['facility_state'] . "##" . $provinceResult[0]['province_code'] == $provinceName['province_name'] . "##" . $provinceName['province_code']) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['province_name']); ?></option>
+                            <option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($stateResult[0]['facility_state'] . "##" . $provinceResult[0]['geo_code'] == $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['geo_name']); ?></option>
                           <?php } ?>
                         </select>
                       </td>

@@ -17,11 +17,11 @@ $fResult = $general->fetchDataFromTable('facility_details', $condition);
 $condition = "i_partner_status = 'active'";
 $implementingPartnerList = $general->fetchDataFromTable('r_implementation_partners', $condition);
 //province data
-$pResult = $general->fetchDataFromTable('province_details');
+$pResult = $general->fetchDataFromTable('geographical_divisions');
 
 $province = "<option value=''> -- select -- </option>";
 foreach ($pResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 //$facility = "";
 $facility = "<option value=''> -- select -- </option>";

@@ -378,10 +378,10 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         //add province
         $splitProvince = explode("##", $_POST['province']);
         if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
-            $provinceQuery = "SELECT * from province_details where province_name='" . $splitProvince[0] . "'";
+            $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
             $provinceInfo = $db->query($provinceQuery);
             if (!isset($provinceInfo) || count($provinceInfo) == 0) {
-                $db->insert('province_details', array('province_name' => $splitProvince[0], 'province_code' => $splitProvince[1]));
+                $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
             }
         }
         if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {

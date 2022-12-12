@@ -148,7 +148,7 @@ class GeoLocations
         }
         
         return $response;
-        }
+    }
 
     public function getByDistrictId($districtId, $facilities = true, $labs = false){
 

@@ -28,7 +28,7 @@ $eidResults = $eidModel->getEidResults();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-$pdQuery = "SELECT * from province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -41,7 +41,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $chkUserFcMapQry = "SELECT user_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
     if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
     }
     $rKey = 'R';
 } else {
@@ -54,13 +54,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 //set province
 if (isset($eidInfo['province_id']) && !empty($eidInfo['province_id'])) {
-    $stateQuery = "SELECT * from province_details where province_id= " . $eidInfo['province_id'];
+    $stateQuery = "SELECT * from geographical_divisions where geo_id= " . $eidInfo['province_id'];
     $stateResult = $db->query($stateQuery);
 }
-if (!isset($stateResult[0]['province_code'])) {
+if (!isset($stateResult[0]['geo_code'])) {
     $provinceCode = '';
 } else {
-    $provinceCode = $stateResult[0]['province_code'];
+    $provinceCode = $stateResult[0]['geo_code'];
 }
 
 //suggest sample id when lab user add request sample
@@ -80,7 +80,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');

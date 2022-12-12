@@ -127,8 +127,8 @@ try {
             lt_u_d.user_name                                     as labTechnicianName,
             t_b.user_name                                        as testedByName,
             rs.rejection_reason_name                             as rejectionReason,
-            p.province_id                                        as provinceId,
-            p.province_name                                      as provinceName,
+            g.geo_id                                             as provinceId,
+            g.geo_name                                           as provinceName,
             r_f_s.funding_source_name                            as fundingSourceName,
             r_i_p.i_partner_name                                 as implementingPartnerName,
             ts.status_name                                       as resultStatusName, 
@@ -153,7 +153,7 @@ try {
             vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
             
             FROM form_vl as vl 
-            LEFT JOIN province_details as p ON vl.province_id=p.province_id
+            LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
