@@ -3318,7 +3318,7 @@ CREATE TABLE `support` (
   `attach_screenshot` varchar(100) DEFAULT NULL,
   `screenshot_file_name` varchar(255) DEFAULT NULL,
   `status` varchar(100) DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `support`  ADD PRIMARY KEY (`support_id`);
 
@@ -3327,3 +3327,6 @@ ALTER TABLE `support`  MODIFY `support_id` int NOT NULL AUTO_INCREMENT, AUTO_INC
 
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES ('Email Id', 'sup_email', NULL);
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES ('Password', 'sup_password', NULL);
+
+-- Amit
+ALTER TABLE `eid_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;

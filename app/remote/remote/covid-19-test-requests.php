@@ -70,6 +70,7 @@ $payload = json_encode($data);
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
 
-
+$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
 
 echo $payload;

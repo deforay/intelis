@@ -19,18 +19,28 @@ $activeTestModules = $general->getActiveTestModules();
     th {
         display: revert !important;
     }
+
     .red {
         background: lightcoral !important;
     }
+
     .green {
         background: lightgreen !important;
+    }
+
+    .yellow {
+        background: yellow !important;
+    }
+
+    .center {
+        text-align: center;
     }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-circle-notch"></em> <?php echo _("Lab Sync Status"); ?></h1>
+        <h1><em class="fa-solid fa-traffic-light"></em> <?php echo _("Lab Sync Status"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Lab Sync Status"); ?></li>
@@ -63,10 +73,13 @@ $activeTestModules = $general->getActiveTestModules();
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
-                            
-                            <td><strong><?php echo _("Test Types"); ?>&nbsp;:</strong></td>
+
                             <td>
-                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <!-- <strong><?php echo _("Test Type"); ?>&nbsp;:</strong> -->
+                            </td>
+                            <td>
+                                <!-- <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                    <option value=""><?php echo _("--Select--"); ?></option>
                                     <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
@@ -82,15 +95,15 @@ $activeTestModules = $general->getActiveTestModules();
                                     if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
-                                </select>
+                                </select> -->
                             </td>
                         </tr>
                         <tr>
-							<td colspan="4">
+                            <td colspan="4">
                                 &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
                                 &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
                                 <input type="button" onclick="loadData();" value="<?php echo _('Search'); ?>" class="btn btn-default pull-right">
-							</td>
+                            </td>
                         </tr>
                     </table>
                     <!-- /.box-header -->
@@ -98,14 +111,16 @@ $activeTestModules = $general->getActiveTestModules();
                         <table id="syncStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th><?php echo _("Lab Name"); ?></th>
-                                    <th><?php echo _("Request Type"); ?></th>
-                                    <th><?php echo _("Last Sync done on"); ?></th>
+                                    <th class="center"><?php echo _("Lab Name"); ?></th>
+                                    <!-- <th><?php echo _("Request Type"); ?></th> -->
+                                    <th class="center"><?php echo _("Last Synced on"); ?></th>
+                                    <th class="center"><?php echo _("Last Results Sync from Lab"); ?></th>
+                                    <th class="center"><?php echo _("Last Requests Sync from VLSTS"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="3" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="4" class="dataTables_empty"><?php echo _("No data available"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -125,65 +140,66 @@ $activeTestModules = $general->getActiveTestModules();
     var oTable = null;
     $(document).ready(function() {
         $('#labName').select2({
-               width: '100%',
-               placeholder: "Select Testing Lab"
-          });
-        
-          $('#province').select2({
-               width: '100%',
-               placeholder: "Select Province"
-          });
+            width: '100%',
+            placeholder: "Select Testing Lab"
+        });
 
-          $('#district').select2({
-               width: '100%',
-               placeholder: "Select District"
-          });
-          loadData();
+        $('#province').select2({
+            width: '100%',
+            placeholder: "Select Province"
+        });
+
+        $('#district').select2({
+            width: '100%',
+            placeholder: "Select District"
+        });
+        loadData();
     });
-    
-    function loadData(){
+
+    function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status.php", {
                 province: $('#province').val(),
                 district: $('#district').val(),
                 labName: $('#labName').val(),
                 testType: $('#testType').val()
-			},
-			function(data) {
-				$("#syncStatusTable").html(data);
-                $('#syncStatusDataTable').dataTable();
+            },
+            function(data) {
+                $("#syncStatusTable").html(data);
+                //$('#syncStatusDataTable').dataTable();
                 $.unblockUI();
-			});
+            });
     }
-    function applyColor(){
+
+    function applyColor() {
         console.log("calling");
         $("span").remove();
     }
 
     function getDistrictByProvince(provinceId) {
-		$("#district").html('');
-		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-                districts : true,
-			},
-			function(data) {
+        $("#district").html('');
+        $.post("/common/get-by-province-id.php", {
+                provinceId: provinceId,
+                districts: true,
+            },
+            function(data) {
                 Obj = $.parseJSON(data);
-				$("#district").html(Obj['districts']);
-			});
-	}
+                $("#district").html(Obj['districts']);
+            });
+    }
 
     function exportSyncStatus() {
-		// $.blockUI();
-		$.post("generate-lab-sync-status-report.php", {},
-			function(data) {
-				$.unblockUI();
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
-				} else {
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
+        // $.blockUI();
+        $.post("generate-lab-sync-status-report.php", {},
+            function(data) {
+                $.unblockUI();
+                if (data === "" || data === null || data === undefined) {
+                    alert("<?php echo _("Unable to generate the excel file"); ?>");
+                } else {
+                    window.open('/download.php?f=' + data, '_blank');
+                }
+            });
+    }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

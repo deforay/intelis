@@ -280,4 +280,3 @@ if ($arr['vl_form'] == 1) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -115,8 +115,10 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 $payload = json_encode($sampleCode);
 
-if ($counter > 0) {
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
-}
+
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
+
+$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
 
 echo $payload;

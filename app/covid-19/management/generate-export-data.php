@@ -149,7 +149,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		} else {
 			$patientFname = '';
 		}
-		if ($aRow['patient_last_name'] != '') {
+		if ($aRow['patient_surname'] != '') {
 			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';

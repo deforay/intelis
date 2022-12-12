@@ -36,6 +36,7 @@ try {
         }
 
 
+
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
 
@@ -108,7 +109,6 @@ try {
                 } else {
                     $id = $db->insert('form_vl', $lab);
                 }
-
             } catch (\Exception $e) {
                 error_log($db->getLastError());
                 error_log($exc->getMessage());
@@ -124,10 +124,14 @@ try {
 
     $payload = json_encode($sampleCode);
 
-    if ($counter > 0) {
-        //$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
-    }
+
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
+
+    $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
+    $db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+
     echo $payload;
+    
 } catch (\Exception $e) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

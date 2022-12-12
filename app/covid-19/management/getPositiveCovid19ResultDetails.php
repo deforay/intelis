@@ -229,7 +229,7 @@ foreach ($rResult as $aRow) {
     }
     /*$patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]);
     $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow[$decrypt]);*/
+    $patientLname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow[$decrypt]);*/
     $row = array();
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {

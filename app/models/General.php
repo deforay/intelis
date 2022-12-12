@@ -805,7 +805,7 @@ class General
     }
 
 
-    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $facilityId = null, $labId = null)
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
 
         try {
@@ -819,9 +819,9 @@ class General
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,
                 'api_url'           => $url ?: null,
-                'request_data'      => $requestData,
-                'response_data'     => $responseData,
-                'facility_id'       => $facilityId ?: null,
+                'request_data'      => $requestData ?: null,
+                'response_data'     => $responseData ?: null,
+                //'facility_id'       => $facilityId ?: null,
                 'facility_id'            => $labId ?: null,
                 'data_format'       => $format ?: null
             );
