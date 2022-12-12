@@ -10,7 +10,7 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
-$headings = array("Lab Name", "Test Type", "Last Sync done on");
+$headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS");
 $colNo = 1;
 
 $styleArray = array(
@@ -40,52 +40,55 @@ $borderStyle = array(
     )
 );
 
-$sheet->mergeCells('A1:AH1');
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode("Lab Sync Status Report"), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-    foreach ($headings as $field => $value) {
-        $string = str_replace(' ', '', $value);
-        $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-        $sheet->getStyle($colNo . 3)->applyFromArray($borderStyle);
-        $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
-        $colNo++;
-    }
-} else {
-    foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-        $sheet->getStyle($colNo . 3)->applyFromArray($borderStyle);
-        $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
-        $colNo++;
-    }
+// $sheet->mergeCells('A1:AH1');
+// $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode("Lab Sync Status Report"), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+foreach ($headings as $field => $value) {
+    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->getStyle($colNo . 1)->applyFromArray($borderStyle);
+    $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+    $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
+    $colNo++;
 }
-$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
+$sheet->getStyle('A1:AH1')->applyFromArray($styleArray);
 
 
 $rResult = $db->rawQuery($_SESSION['labSyncStatus']);
 $no = 1;
 
-$twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
-$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-4 weeks'));
+$today = new DateTimeImmutable();
+$twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
+//$twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
+$threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
+
 foreach ($rResult as $aRow) {
     $row = array();
     $_color = "f08080";
-    if ($aRow['requested_on'] >= $twoWeekExpiry) {
+
+    $aRow['latest'] = $aRow['latest'] ?: $aRow['requested_on'];
+    $latest = new DateTimeImmutable($aRow['latest']);
+
+    $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
+    // $twoWeekExpiry = new DateTimeImmutable($twoWeekExpiry);
+    // $threeWeekExpiry = new DateTimeImmutable($threeWeekExpiry);
+
+    if (empty($latest)) {
+        $_color = "f08080";
+    } elseif ($latest >= $twoWeekExpiry) {
         $_color = "90ee90";
-    } elseif ($aRow['requested_on'] > $threeWeekExpiry && $aRow['requested_on'] < $twoWeekExpiry) {
+    } elseif ($latest > $threeWeekExpiry && $latest < $twoWeekExpiry) {
         $_color = "ffff00";
-    } elseif ($aRow['requested_on'] >= $threeWeekExpiry) {
+    } elseif ($latest >= $threeWeekExpiry) {
         $_color = "f08080";
     }
     $color[]['color'] = $_color;
 
     $row[] = ucwords($aRow['facility_name']);
-    $row[] = ucwords($aRow['test_type']);
-    $row[] = $general->humanReadableDateFormat($aRow['requested_on']);
+    //$row[] = ucwords($aRow['test_type']);
+    $row[] = $general->humanReadableDateFormat($aRow['latest']);
+    $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
     $output[] = $row;
-    
+
     $no++;
 }
 // echo "<pre>";
@@ -95,7 +98,7 @@ $colorNo = 0;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
-        $rRowCount = ($rowNo + 4);
+        $rRowCount = ($rowNo+2);
         $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         // echo "Col : ".$colNo ." => Row : " . $rRowCount . " => Color : " .$color[$colorNo]['color'];
         // echo "<br>";
@@ -108,7 +111,7 @@ foreach ($output as $rowNo => $rowData) {
     }
     $colorNo++;
 }
-$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
+// $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

@@ -40,14 +40,24 @@ if (isset($testType) && $testType == 'tb') {
     $sampleReceivedfield = "sample_received_at_lab_datetime";
 }
 
-$sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requested_on, tar.test_type 
-            FROM facility_details as f 
+$sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requested_on, tar.test_type, 
+                GREATEST(
+                    COALESCE(facility_attributes->>'$.lastHeartBeat', 0), 
+                    COALESCE(facility_attributes->>'$.lastResultsSync', 0), 
+                    COALESCE(facility_attributes->>'$.lastRequestSync', 0),
+                    COALESCE(tar.requested_on, 0)
+                    ) as latest, 
+                (facility_attributes->>'$.version') as version, 
+                (facility_attributes->>'$.lastHeartBeat') as lastHeartBeat, 
+                (facility_attributes->>'$.lastResultsSync') as lastResultsSync, 
+                (facility_attributes->>'$.lastRequestSync') as lastRequestsSync 
+            FROM `facility_details`as f 
             LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id";
 
 //if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
 //$sQuery .= " JOIN $table as vl ON f.facility_id = vl.lab_id";
 //}
-$sWhere[] = ' f.facility_type = 2 and f.status = "active" ';
+$sWhere[] = ' f.facility_type = 2 AND f.status = "active" ';
 if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
     $sWhere[] = ' (tar.test_type like "' . $_POST['testType'] . '"  OR tar.test_type is null) ';
 }
@@ -64,26 +74,41 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
 
 /* Implode all the where fields for filtering the data */
 if (!empty($sWhere)) {
-    $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere) . ' GROUP BY f.facility_id ORDER BY tar.requested_on DESC';
+    $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere) . ' 
+    GROUP BY f.facility_id 
+    ORDER BY latest DESC';
 }
 $_SESSION['labSyncStatus'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
-$twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
-$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-4 weeks'));
+$today = new DateTimeImmutable();
+$twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
+//$twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
+$threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
+//$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-4 weeks'));
 foreach ($rResult as $key => $aRow) {
     $color = "red";
+    $aRow['latest'] = $aRow['latest'] ?: $aRow['requested_on'];
+    $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
+    // $twoWeekExpiry = new DateTimeImmutable($twoWeekExpiry);
+    // $threeWeekExpiry = new DateTimeImmutable($threeWeekExpiry);
 
-    if ($aRow['requested_on'] >= $twoWeekExpiry) {
+    if (empty($latest)) {
+        $color = "red";
+    } elseif ($latest >= $twoWeekExpiry) {
         $color = "green";
-    } elseif ($aRow['requested_on'] > $threeWeekExpiry && $aRow['requested_on'] < $twoWeekExpiry) {
+    } elseif ($latest > $threeWeekExpiry && $latest < $twoWeekExpiry) {
         $color = "yellow";
-    } elseif ($aRow['requested_on'] >= $threeWeekExpiry) {
+    } elseif ($latest >= $threeWeekExpiry) {
         $color = "red";
     }
+
+
+
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>">
-        <td><?php echo ucwords($aRow['facility_name']); ?></td>
-        <!-- <td><?php echo ucwords($aRow['test_type']); ?></td> -->
-        <td><?php echo $general->humanReadableDateFormat($aRow['requested_on'], true); ?></td>
+        <td><?= ($aRow['facility_name']); ?></td>
+        <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
+        <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+        <td><?= $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
     </tr>
 <?php } ?>

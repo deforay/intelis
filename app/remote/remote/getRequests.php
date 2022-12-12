@@ -26,6 +26,7 @@ $transactionId = $general->generateUUID();
 
 $counter = 0;
 
+
 $facilityDb = new \Vlsm\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
@@ -99,5 +100,8 @@ if ($db->count > 0) {
 
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
+
+$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
 
 echo $payload;

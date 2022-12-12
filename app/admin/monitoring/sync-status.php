@@ -31,12 +31,16 @@ $activeTestModules = $general->getActiveTestModules();
     .yellow {
         background: yellow !important;
     }
+
+    .center {
+        text-align: center;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-circle-notch"></em> <?php echo _("Lab Sync Status"); ?></h1>
+        <h1><em class="fa-solid fa-traffic-light"></em> <?php echo _("Lab Sync Status"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Lab Sync Status"); ?></li>
@@ -70,9 +74,12 @@ $activeTestModules = $general->getActiveTestModules();
                                 </select>
                             </td>
 
-                            <td><strong><?php echo _("Test Types"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <!-- <strong><?php echo _("Test Type"); ?>&nbsp;:</strong> -->
+                            </td>
+                            <td>
+                                <!-- <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                    <option value=""><?php echo _("--Select--"); ?></option>
                                     <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
@@ -88,7 +95,7 @@ $activeTestModules = $general->getActiveTestModules();
                                     if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
-                                </select>
+                                </select> -->
                             </td>
                         </tr>
                         <tr>
@@ -107,11 +114,13 @@ $activeTestModules = $general->getActiveTestModules();
                                     <th class="center"><?php echo _("Lab Name"); ?></th>
                                     <!-- <th><?php echo _("Request Type"); ?></th> -->
                                     <th class="center"><?php echo _("Last Synced on"); ?></th>
+                                    <th class="center"><?php echo _("Last Results Sync from Lab"); ?></th>
+                                    <th class="center"><?php echo _("Last Requests Sync from VLSTS"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="2" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="4" class="dataTables_empty"><?php echo _("No data available"); ?></td>
                                 </tr>
                             </tbody>
                         </table>

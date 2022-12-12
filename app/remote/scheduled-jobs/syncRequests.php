@@ -209,9 +209,8 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             }
             //}
         }
-        if ($counter > 0) {
-            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
-        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
 
@@ -368,9 +367,8 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             }
             //}
         }
-        if ($counter > 0) {
-            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
-        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
     }
 }
 
@@ -584,9 +582,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         }
 
 
-        if ($counter > 0) {
-            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
-        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $json_data, $jsonResponse, 'json', $labId);
     }
 }
 
@@ -796,9 +793,8 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
 
-        if ($counter > 0) {
-            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
-        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $json_data, $jsonResponse, 'json', $labId);
     }
 }
 
@@ -951,9 +947,8 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             }
         }
 
-        if ($counter > 0) {
-            $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
-        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $json_data, $jsonResponse, 'json', $labId);
     }
 }
 

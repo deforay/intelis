@@ -3318,7 +3318,7 @@ CREATE TABLE `support` (
   `attach_screenshot` varchar(100) DEFAULT NULL,
   `screenshot_file_name` varchar(255) DEFAULT NULL,
   `status` varchar(100) DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `support`  ADD PRIMARY KEY (`support_id`);
 

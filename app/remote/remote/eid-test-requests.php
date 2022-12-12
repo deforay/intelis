@@ -94,4 +94,7 @@ if ($db->count > 0) {
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
 
+$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+
 echo $payload;
