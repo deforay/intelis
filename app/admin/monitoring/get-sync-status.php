@@ -52,7 +52,8 @@ $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requeste
                 (facility_attributes->>'$.lastResultsSync') as lastResultsSync, 
                 (facility_attributes->>'$.lastRequestSync') as lastRequestsSync 
             FROM `facility_details`as f 
-            LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id";
+            LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id 
+            LEFT JOIN testing_labs as lab ON lab.facility_id = f.facility_id";
 
 //if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
 //$sQuery .= " JOIN $table as vl ON f.facility_id = vl.lab_id";
@@ -106,7 +107,7 @@ foreach ($rResult as $key => $aRow) {
 
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>">
-        <td><?= ($aRow['facility_name']); ?></td>
+        <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ($aRow['facility_name']); ?></a></td>
         <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
