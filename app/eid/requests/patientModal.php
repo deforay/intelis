@@ -12,7 +12,7 @@ $arr = array();
 for ($i = 0; $i < sizeof($cResult); $i++) {
 	$arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
-$pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN province_details as pd ON fd.facility_state=pd.province_name where vlsm_country_id='" . $arr['vl_form'] . "' AND (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%')";
+$pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where vlsm_country_id='" . $arr['vl_form'] . "' AND (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%')";
 $pResult = $db->rawQuery($pQuery);
 // print_r($pResult);die;
 ?>

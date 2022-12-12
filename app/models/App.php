@@ -41,13 +41,13 @@ class App
                         f.facility_district_id, 
                         f.facility_district, 
                         f.testing_points, 
-                        f.facility_attributes, 
+                        f.facility_attributes,
                         f.status, 
-                        pd.province_id, 
-                        pd.province_name
+                        gd.geo_id as province_id, 
+                        gd.geo_name as province_name
                     FROM health_facilities AS hf 
                     INNER JOIN facility_details as f ON hf.facility_id=f.facility_id
-                    INNER JOIN province_details as pd ON pd.province_name=f.facility_state";
+                    INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = "";
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
@@ -132,10 +132,10 @@ class App
     public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
-        $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, pd.province_id, pd.province_name
+        $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl 
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
-                    LEFT JOIN province_details as pd ON pd.province_name=f.facility_state";
+                    LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = "";
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
@@ -203,9 +203,9 @@ class App
     public function getProvinceDetails($user = null, $onlyActive = false)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
-        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, pd.province_id, pd.province_name, f.facility_district, f.facility_type 
-                    from province_details AS pd 
-                    LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
+        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
+                    from geographical_divisions AS gd 
+                    LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = "";
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
@@ -228,14 +228,14 @@ class App
             $where .= " f.status like 'active'";
         }
 
-        $where .= ' GROUP BY province_name ORDER BY province_name ASC';
+        $where .= ' GROUP BY geo_name ORDER BY geo_name ASC';
         $query .= $where;
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
-            $condition1 = " facility_state like '" . $row['province_name'] . "%'";
+            $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
 
-            $response[$key]['value']    = $row['province_id'];
-            $response[$key]['show']     = $row['province_name'];
+            $response[$key]['value']    = $row['geo_id'];
+            $response[$key]['show']     = $row['geo_name'];
             // $response[$key]['district'] = $row['facility_district'];
             $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition1);
         }
@@ -245,9 +245,9 @@ class App
     public function getDistrictDetails($user = null, $onlyActive = false)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
-        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, pd.province_id, pd.province_name, f.facility_district
-                    from province_details AS pd 
-                    LEFT JOIN facility_details as f ON pd.province_name=f.facility_state";
+        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
+                    from geographical_divisions AS gd 
+                    LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = "";
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
@@ -276,12 +276,12 @@ class App
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
             $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
-            $condition2 = " province_name like '" . $row['province_name'] . "%'";
+            $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
 
             $response[$key]['value']        = $row['facility_district'];
             $response[$key]['show']         = $row['facility_district'];
             $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', $condition1);
-            $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition2);
+            $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', $condition2);
             /* $response[$key]['facilityId']   = $row['facility_id'];
             $response[$key]['facilityName'] = $row['facility_name'].' ('.$row['facility_code'].')';
             $response[$key]['provinceId']   = $row['province_id'];

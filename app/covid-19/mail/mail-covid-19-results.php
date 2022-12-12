@@ -16,7 +16,7 @@ $sTypeQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 $facilityQuery = "SELECT * FROM facility_details where status='active'";
 $facilityResult = $db->rawQuery($facilityQuery);
-$pdQuery = "SELECT * from province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 $batchQuery = "SELECT * FROM batch_details";
 $batchResult = $db->rawQuery($batchQuery);
@@ -147,7 +147,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
-                          <option value="<?php echo $province['province_name']; ?>"><?php echo ucwords($province['province_name']); ?></option>
+                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ucwords($province['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </td>

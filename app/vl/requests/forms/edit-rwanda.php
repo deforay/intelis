@@ -70,11 +70,11 @@ if (!isset($facilityResult[0]['facility_district'])) {
      $facilityResult[0]['facility_district'] = '';
 }
 if (trim($facilityResult[0]['facility_state']) != '') {
-     $stateQuery = "SELECT * FROM province_details where province_name='" . $facilityResult[0]['facility_state'] . "'";
+     $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
      $stateResult = $db->query($stateQuery);
 }
-if (!isset($stateResult[0]['province_code'])) {
-     $stateResult[0]['province_code'] = '';
+if (!isset($stateResult[0]['geo_code'])) {
+     $stateResult[0]['geo_code'] = '';
 }
 //district details
 $districtResult = array();

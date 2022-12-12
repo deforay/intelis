@@ -9,7 +9,7 @@ $geolocation = new \Vlsm\Models\GeoLocations();
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);
-$provinceTable = "province_details";
+$provinceTable = "geographical_divisions";
 $vlUserFacilityMapTable = "user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
@@ -27,13 +27,13 @@ try {
 			$_POST['state'] = $_POST['provinceNew'];
 			// if (trim($_POST['state']) != "") {
 			$strSearch = (isset($_POST['provinceNew']) && trim($_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
-			$facilityQuery = "SELECT province_name from province_details where province_name='" . $strSearch . "'";
+			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name='" . $strSearch . "'";
 			$facilityInfo = $db->query($facilityQuery);
-			if (isset($facilityInfo[0]['province_name'])) {
-				$_POST['state'] = $facilityInfo[0]['province_name'];
+			if (isset($facilityInfo[0]['geo_name'])) {
+				$_POST['state'] = $facilityInfo[0]['geo_name'];
 			} else {
 				$data = array(
-					'province_name' => $_POST['provinceNew'],
+					'geo_name' => $_POST['provinceNew'],
 					'updated_datetime' => $general->getCurrentDateTime(),
 				);
 				$db->insert($provinceTable, $data);

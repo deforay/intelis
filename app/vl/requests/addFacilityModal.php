@@ -32,7 +32,7 @@ if(isset($_POST['facilityName']) && trim($_POST['facilityName'])!="" && trim($_P
 }
 $fQuery="SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pQuery="SELECT * FROM province_details";
+$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 ?>
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
@@ -161,7 +161,7 @@ $pResult = $db->rawQuery($pQuery);
                           <?php
                           foreach($pResult as $province){
                             ?>
-                            <option value="<?php echo $province['province_name'];?>"><?php echo $province['province_name'];?></option>
+                            <option value="<?php echo $province['geo_name'];?>"><?php echo $province['geo_name'];?></option>
                             <?php
                           }
                           ?>

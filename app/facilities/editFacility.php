@@ -22,7 +22,7 @@ $facilityAttributes = json_decode($facilityInfo['facility_attributes']);
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pQuery = "SELECT * FROM province_details";
+$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 
 $chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where vl_lab_id = ?', array($id));

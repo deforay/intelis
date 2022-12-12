@@ -7,7 +7,7 @@ $geolocation = new \Vlsm\Models\GeoLocations();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pQuery = "SELECT * FROM province_details";
+$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 $usersModel = new \Vlsm\Models\Users();
 $userResult = $usersModel->getAllUsers();

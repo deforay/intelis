@@ -41,7 +41,7 @@ $reasonDetails = json_decode($covid19SelectedReasonsDetailsForTesting['reason_de
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -56,7 +56,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
     if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
     }
     $rKey = 'R';
 } else {
@@ -67,12 +67,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
 }
 $pdResult = $db->query($pdQuery);
 $provinceInfo = array();
 foreach ($pdResult as $state) {
-    $provinceInfo[$state['province_name']] = ucwords($state['province_name']);
+    $provinceInfo[$state['geo_name']] = ucwords($state['geo_name']);
 }
 foreach ($implementingPartnerList as $implementingPartner) {
     $implementingPartnerArray[$implementingPartner['i_partner_id']] = ucwords($implementingPartner['i_partner_name']);
@@ -92,7 +92,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new \Vlsm\Models\Covid19();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = $general->humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
+    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';

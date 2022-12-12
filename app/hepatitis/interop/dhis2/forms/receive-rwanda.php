@@ -235,11 +235,11 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['facility_id'] =  $fac['facility_id'];
 
         if (!empty($fac['facility_state'])) {
-            $db->where("province_name", $fac['facility_state']);
-            $prov = $db->getOne("province_details");
+            $db->where("geo_name", $fac['facility_state']);
+            $prov = $db->getOne("geographical_divisions");
         }
 
-        $formData['province_id'] = !empty($prov['province_id']) ? $prov['province_id'] : 1;
+        $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
 
         $formData['specimen_type'] = 1; // Always Whole Blood
         $formData['result_status'] = 9; // Registered on VLSTS but not in Testing Lab

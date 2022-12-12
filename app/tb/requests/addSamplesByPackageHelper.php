@@ -15,9 +15,9 @@ foreach ($sampleResult as $sampleRow) {
 
     $provinceCode = null;
     if (isset($sampleRow['province_id']) && !empty($sampleRow['province_id'])) {
-        $provinceQuery = "SELECT * FROM province_details WHERE province_id= " . $sampleRow['province_id'];
+        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= " . $sampleRow['province_id'];
         $provinceResult = $db->rawQueryOne($provinceQuery);
-        $provinceCode = $provinceResult['province_code'];
+        $provinceCode = $provinceResult['geo_code'];
     }
 
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {

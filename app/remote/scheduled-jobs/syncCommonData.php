@@ -41,7 +41,7 @@ $hepatitisDataToSync = array();
 
 $payload = array(
     'globalConfigLastModified'      => $general->getLastModifiedDateTime('global_config', 'updated_on'),
-    'provinceLastModified'          => $general->getLastModifiedDateTime('province_details'),
+    'provinceLastModified'          => $general->getLastModifiedDateTime('geographical_divisions'),
     'facilityLastModified'          => $general->getLastModifiedDateTime('facility_details'),
     'healthFacilityLastModified'    => $general->getLastModifiedDateTime('health_facilities'),
     'testingLabsLastModified'       => $general->getLastModifiedDateTime('testing_labs'),
@@ -58,8 +58,8 @@ $commonDataToSync = array(
         'tableName' => 'global_config',
     ),
     'province'  => array(
-        'primaryKey' => 'province_id',
-        'tableName' => 'province_details',
+        'primaryKey' => 'geo_id',
+        'tableName' => 'geographical_divisions',
     ), 
     'users'  => array(
         'primaryKey' => 'user_id',

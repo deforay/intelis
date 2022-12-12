@@ -34,7 +34,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $statusQuery = "SELECT * FROM r_sample_status where status = 'active' AND status_id NOT IN(9,8,6)";
 $statusResult = $db->rawQuery($statusQuery);
 
-$pdQuery = "SELECT * from province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
 $sQuery = "SELECT * from r_eid_sample_type where status='active'";
