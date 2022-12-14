@@ -172,9 +172,13 @@ class Vl
         return $this->db->rawQuery($query);
     }
 
-    public function getVlSampleTypes()
+    public function getVlSampleTypes($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_vl_sample_type where status='active'");
+        $query = "SELECT * FROM r_vl_sample_type where status='active'";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
@@ -527,10 +531,13 @@ class Vl
         }
     }
 
-    public function getReasonForFailure($option = true)
+    public function getReasonForFailure($option = true, $updatedDateTime = null)
     {
         $result = array();
         $this->db->where('status', 'active');
+        if($updatedDateTime){
+            $this->db->where('updated_datetime >= "'.$updatedDateTime.'"');
+        }
         $results = $this->db->get('r_vl_test_failure_reasons');
         if ($option) {
             foreach ($results as $row) {

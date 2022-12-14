@@ -42,6 +42,7 @@ if (empty($user) || empty($user['user_id'])) {
     echo json_encode($response);
     exit(0);
 }
+$updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "")?$input['latestDateTime']:null;
 /* Status name list */
 $statusList = array();
 $tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";
@@ -53,14 +54,24 @@ foreach ($tsResult as $row) {
 $status = false;
 /* Funding Source List */
 $fundingSourceList = array();
-$fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+$fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ";
+if($updatedDateTime){
+    $fundingSourceQry .= " AND updated_datetime >= '$updatedDateTime'";
+}
+$fundingSourceQry .= " ORDER BY funding_source_name ASC";
+
 $fundingSourceResult = $db->query($fundingSourceQry);
 foreach ($fundingSourceResult as $funding) {
     $fundingSourceList[$funding['funding_source_id']] = $funding['funding_source_name'];
 }
 /* Implementing Partner Details */
 $implementingPartnerList = array();
-$implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+$implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ";
+if($updatedDateTime){
+    $implementingPartnerQry .= " AND updated_datetime >= '$updatedDateTime'";
+}
+$implementingPartnerQry .= " ORDER BY i_partner_name ASC";
+
 $implementingPartnerResult = $db->query($implementingPartnerQry);
 foreach ($implementingPartnerResult as $key => $ip) {
     $implementingPartnerList[$key]['value'] = strtolower(str_replace(" ", "-", $ip['i_partner_id']));
@@ -81,55 +92,38 @@ foreach ($commonResult as $key => $result) {
 }
 /* Lab Technician Details */
 $facilityMap = $facilitiesDb->getUserFacilityMap($user['user_id']);
-$userResult = $userDb->getActiveUsers($facilityMap);
+$userResult = $userDb->getActiveUsers($facilityMap, $updatedDateTime);
 $labTechniciansList = array();
 foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ucwords($row['user_name']);
 }
-$activeModule = "";
+$activeModule = array();
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $activeModule .= '"vl"';
+    $activeModule[] = '"vl"';
 }
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    if ($activeModule != "") {
-        $activeModule .= ', "eid"';
-    } else {
-        $activeModule .= '"eid"';
-    }
+    $activeModule[] = '"eid"';
 }
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    if ($activeModule != "") {
-        $activeModule .= ', "covid19"';
-    } else {
-        $activeModule .= '"covid19"';
-    }
+    $activeModule[] = '"covid19"';
 }
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-    if ($activeModule != "") {
-        $activeModule .= ', "hepatitis"';
-    } else {
-        $activeModule .= '"hepatitis"';
-    }
+    $activeModule[] = '"hepatitis"';
 }
-
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-    if ($activeModule != "") {
-        $activeModule .= ', "tb"';
-    } else {
-        $activeModule .= '"tb"';
-    }
+    $activeModule[] = '"tb"';
 }
 
 $data = array();
 $data['formId'] = $formId;
-$data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id']);
-$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no");
-$data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, $activeModule);
-$data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, $activeModule);
+$data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
+$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
+$data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, implode(",", $activeModule), $updatedDateTime);
+$data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, implode(",", $activeModule), $updatedDateTime);
 /* Province Details */
-$data['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+$data['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
 /* District Details */
-$data['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+$data['districtList'] = $app->getDistrictDetails($user['user_id'], true, $updatedDateTime);
 $data['implementingPartnerList'] = $implementingPartnerList;
 $data['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
 $data['nationalityList'] = $nationalityList;
@@ -150,9 +144,9 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $data['covid19']['sourceOfAlertList'] = $sourceOfAlertList;
     // }
     /* Province Details */
-    $data['covid19']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+    $data['covid19']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
     /* District Details */
-    $data['covid19']['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+    $data['covid19']['districtList'] = $app->getDistrictDetails($user['user_id'], true, $updatedDateTime);
     /* Health Facility Details */
     // $data['covid19']['healthFacilitiesList'] = $app->getAppHealthFacilities('covid19', $user['user_id'], true, 1, true);
     $data['covid19']['fundingSourceList'] = $app->generateSelectOptions($fundingSourceList);
@@ -179,14 +173,14 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $data['covid19']['rdtAntigenOptions'] = $platformTestKits;
 
-    $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Obj->getCovid19ReasonsForTesting());
-    $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Obj->getCovid19SampleTypes());
+    $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Obj->getCovid19ReasonsForTesting($updatedDateTime));
+    $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Obj->getCovid19SampleTypes($updatedDateTime));
     foreach (range(1, 5) as $key => $req) {
         $testingPoint[$key]['value'] = $req;
         $testingPoint[$key]['show'] = $req;
     }
     $data['covid19']['testingPoint'] = $testingPoint;
-    $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true);
+    $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true, false, $updatedDateTime);
     /* Type of Test Request */
     $qualityList = array();
     $qualityResults = array('Good', 'Poor');
@@ -197,12 +191,19 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $data['covid19']['qualityList'] = $qualityList;
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
+    if($updatedDateTime){
+        $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
+    }
+    $rejectionTypeQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
+        if($updatedDateTime){
+            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+        }
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -219,9 +220,9 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $data['covid19']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Results());
-    $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Symptoms());
-    $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities());
+    $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Results($updatedDateTime));
+    $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Symptoms($updatedDateTime));
+    $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities($updatedDateTime));
     // $data['covid19']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['covid19']['statusFilterList'] = array(
@@ -237,9 +238,9 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     $eidObj = new \Vlsm\Models\Eid();
     /* SITE INFORMATION SECTION */
     /* Province Details */
-    $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true);
+    $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
     /* District Details */
-    $data['eid']['districtList'] = $app->getDistrictDetails($user['user_id'], true);
+    $data['eid']['districtList'] = $app->getDistrictDetails($user['user_id'], true, $updatedDateTime);
     /* Health Facility Details */
     // $data['eid']['healthFacilitiesList'] = $app->getAppHealthFacilities('eid', $user['user_id'], true, 1, true);
     // $data['eid']['implementingPartnerList'] = $implementingPartnerList;
@@ -257,7 +258,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $motherTreatmentList[$key]['show'] = $treatment;
     }
     $data['eid']['motherTreatment'] = $motherTreatmentList;
-    $data['eid']['rapidTestResult'] = $app->generateSelectOptions($eidObj->getEidResults());
+    $data['eid']['rapidTestResult'] = $app->generateSelectOptions($eidObj->getEidResults($updatedDateTime));
     $data['eid']['prePcrTestResult'] = $commonResultsList;
 
     $pcrTestReasonList = array();
@@ -267,15 +268,21 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $pcrTestReasonList[$key]['show'] = $reason;
     }
     $data['eid']['pcrTestReason'] = $pcrTestReasonList;
-    $data['eid']['specimenTypeList'] = $app->generateSelectOptions($eidObj->getEidSampleTypes());
+    $data['eid']['specimenTypeList'] = $app->generateSelectOptions($eidObj->getEidSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    if($updatedDateTime){
+        $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+    }
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
+        if($updatedDateTime){
+            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+        }
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -307,9 +314,12 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
     $vlObj = new \Vlsm\Models\Vl();
     /* SAMPLE INFORMATION SECTION */
-    $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes());
+    $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
-    $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active'";
+    $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active' ";
+    if($updatedDateTime){
+        $aQuery .= " AND updated_datetime >= '$updatedDateTime'";
+    }
     $aResult = $db->query($aQuery);
 
     $regimenResult = array();
@@ -326,12 +336,19 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     );
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
+    if($updatedDateTime){
+        $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+    }
+    $rejectionQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
+        if($updatedDateTime){
+            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+        }
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -347,7 +364,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
     }
     $data['vl']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
-    $data['vl']['reasonForFailure'] = $vlObj->getReasonForFailure(false);
+    $data['vl']['reasonForFailure'] = $vlObj->getReasonForFailure(false, $updatedDateTime);
 
     $data['vl']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),
@@ -373,7 +390,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     //     $motherTreatmentList[$key]['show'] = $treatment;
     // }
     // $data['eid']['motherTreatment'] = $motherTreatmentList;
-    $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults());
+    $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults(null, $updatedDateTime));
     // $data['eid']['prePcrTestResult'] = $commonResultsList;
 
     // $pcrTestReasonList = array();
@@ -383,15 +400,22 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     //     $pcrTestReasonList[$key]['show'] = $reason;
     // }
     // $data['eid']['pcrTestReason'] = $pcrTestReasonList;
-    $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbObj->getTbSampleTypes());
+    $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbObj->getTbSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
+    if($updatedDateTime){
+        $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
+    }
+    $rejectionTypeQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%'";
+        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
+        if($updatedDateTime){
+            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
+        }
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
@@ -408,7 +432,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     }
     $data['tb']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['tb']['resultsList'] = $app->generateSelectOptions($tbObj->getTbResults());
+    $data['tb']['resultsList'] = $app->generateSelectOptions($tbObj->getTbResults(null, $updatedDateTime));
     // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['tb']['statusFilterList'] = array(

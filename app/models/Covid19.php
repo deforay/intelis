@@ -132,9 +132,13 @@ class Covid19
     }
 
 
-    public function getCovid19SampleTypes()
+    public function getCovid19SampleTypes($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_covid19_sample_type where status='active'");
+        $query = "SELECT * FROM r_covid19_sample_type where status='active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
@@ -182,9 +186,14 @@ class Covid19
     }
 
 
-    public function getCovid19Results()
+    public function getCovid19Results($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT result_id,result FROM r_covid19_results where status='active' ORDER BY result_id DESC");
+        $query = "SELECT result_id,result FROM r_covid19_results where status='active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $query .= " ORDER BY result_id DESC";
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
@@ -192,9 +201,13 @@ class Covid19
         return $response;
     }
 
-    public function getCovid19ReasonsForTesting()
+    public function getCovid19ReasonsForTesting($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active'");
+        $query = "SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active'";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
@@ -211,9 +224,13 @@ class Covid19
         }
         return $response;
     }
-    public function getCovid19Symptoms()
+    public function getCovid19Symptoms($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active'");
+        $query = "SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active'";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['symptom_id']] = $row['symptom_name'];
@@ -231,9 +248,13 @@ class Covid19
         return $response;
     }
 
-    public function getCovid19Comorbidities()
+    public function getCovid19Comorbidities($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT comorbidity_id,comorbidity_name FROM r_covid19_comorbidities WHERE `comorbidity_status` LIKE 'active'");
+        $query = "SELECT comorbidity_id,comorbidity_name FROM r_covid19_comorbidities WHERE `comorbidity_status` LIKE 'active'";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['comorbidity_id']] = $row['comorbidity_name'];

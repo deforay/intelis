@@ -129,9 +129,14 @@ class Eid
     }
 
 
-    public function getEidResults(): array
+    public function getEidResults($updatedDateTime = null): array
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_eid_results where status='active' ORDER BY result_id DESC");
+        $query = "SELECT * FROM r_eid_results where status='active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $query .= " ORDER BY result_id DESC";
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
@@ -139,9 +144,13 @@ class Eid
         return $response;
     }
 
-    public function getEidSampleTypes()
+    public function getEidSampleTypes($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_eid_sample_type where status='active'");
+        $query = "SELECT * FROM r_eid_sample_type where status='active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        }
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];

@@ -132,9 +132,13 @@ class Tb
     }
 
 
-    public function getTbSampleTypes()
+    public function getTbSampleTypes($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_tb_sample_type where status='active'");
+        $query = "SELECT * FROM r_tb_sample_type where status='active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        } 
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
@@ -176,13 +180,17 @@ class Tb
     }
 
 
-    public function getTbResults($type = null)
+    public function getTbResults($type = null, $updatedDateTime = null)
     {
+        $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
         if ($type != null) {
-            $results = $this->db->rawQuery("SELECT result_id,result FROM r_tb_results where status='active' AND result_type = '" . $type . "' ORDER BY result_id DESC");
-        } else {
-            $results = $this->db->rawQuery("SELECT result_id,result FROM r_tb_results where status='active' ORDER BY result_id DESC");
+            $query .= " AND result_type = '" . $type . "' ";
         }
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        } 
+        $query .= " ORDER BY result_id DESC";
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
@@ -190,9 +198,13 @@ class Tb
         return $response;
     }
 
-    public function getTbReasonsForTesting()
+    public function getTbReasonsForTesting($updatedDateTime = null)
     {
-        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active'");
+        $query = "SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' ";
+        if($updatedDateTime){
+            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+        } 
+        $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
@@ -209,36 +221,6 @@ class Tb
         }
         return $response;
     }
-    public function getTbSymptoms()
-    {
-        $results = $this->db->rawQuery("SELECT symptom_id,symptom_name FROM r_tb_symptoms WHERE `symptom_status` LIKE 'active'");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['symptom_id']] = $row['symptom_name'];
-        }
-        return $response;
-    }
-
-    public function getTbSymptomsDRC()
-    {
-        $results = $this->db->rawQuery("SELECT symptom_id,symptom_name FROM r_tb_symptoms WHERE `symptom_status` LIKE 'active' AND (parent_symptom IS NULL OR parent_symptom = 0)");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['symptom_id']] = $row['symptom_name'];
-        }
-        return $response;
-    }
-
-    public function getTbComorbidities()
-    {
-        $results = $this->db->rawQuery("SELECT comorbidity_id,comorbidity_name FROM r_tb_comorbidities WHERE `comorbidity_status` LIKE 'active'");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['comorbidity_id']] = $row['comorbidity_name'];
-        }
-        return $response;
-    }
-
 
     public function getTbTestsByFormId($tbId = "")
     {
