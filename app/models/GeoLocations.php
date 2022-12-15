@@ -28,7 +28,7 @@ class GeoLocations
         return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive, $facilityMap);
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null)
+    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null)
     {
         $returnArr = array();
         if ($onlyActive) {
@@ -48,6 +48,10 @@ class GeoLocations
         }
         if(isset($_SESSION['mappedProvinces']) && !empty($_SESSION['mappedProvinces'])){
             $this->db->where('geo_id', $_SESSION['mappedProvinces']);
+        }
+
+        if ($updatedDateTime) {
+            $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
 
         if (!empty($facilityMap)) {

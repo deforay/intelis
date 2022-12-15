@@ -29,7 +29,7 @@ class App
         return $response;
     }
 
-    public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null)
+    public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
         $query = "SELECT hf.test_type, 
@@ -48,58 +48,39 @@ class App
                     FROM health_facilities AS hf 
                     INNER JOIN facility_details as f ON hf.facility_id=f.facility_id
                     INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
-        $where = "";
+        $where = array();
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " f.facility_id IN (" . $facilityMap . ")";
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
         if (!$module && $facilityType == 1) {
             if (!empty($activeModule)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " hf.test_type IN (" . $activeModule . ")";
+                $where[] = " hf.test_type IN (" . $activeModule . ")";
             }
         }
 
         if (!empty($testType)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " hf.test_type like '$testType'";
+            $where[] = " hf.test_type like '$testType'";
         }
 
         if ($onlyActive) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " f.status like 'active'";
+            $where[] = " f.status like 'active'";
         }
 
         if ($facilityType > 0) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " f.facility_type = '$facilityType'";
+            $where[] = " f.facility_type = '$facilityType'";
         }
-        $where .= ' GROUP BY facility_name ORDER BY facility_name ASC ';
-        $query .= $where;
+        if($updatedDateTime){
+            $where[] = " f.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if(count($where) > 0){
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr.' GROUP BY facility_name ORDER BY facility_name ASC ';
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
             // $condition1 = " province_name like '" . $row['province_name'] . "%'";
@@ -129,57 +110,44 @@ class App
         return $response;
     }
 
-    public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false)
+    public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl 
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
-        $where = "";
+        $where = array();
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " f.facility_id IN (" . $facilityMap . ")";
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
         if (!$module) {
             if (!empty($activeModule)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " tl.test_type IN (" . $activeModule . ")";
+                $where[] = " tl.test_type IN (" . $activeModule . ")";
             }
         }
 
         if (!empty($testType)) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " tl.test_type like '$testType'";
+            $where[] = " tl.test_type like '$testType'";
         }
 
         if ($onlyActive) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " f.status like 'active'";
+            $where[] = " f.status like 'active'";
         }
 
-        $where .= ' GROUP BY facility_name ORDER BY facility_name ASC';
-        $query .= $where;
+        if($updatedDateTime){
+            $where[] = " f.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if(count($where) > 0){
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr.' GROUP BY facility_name ORDER BY facility_name ASC';
+        // die($query);
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
             // $condition1 = " province_name like '" . $row['province_name'] . "%'";
@@ -200,36 +168,32 @@ class App
         return $response;
     }
 
-    public function getProvinceDetails($user = null, $onlyActive = false)
+    public function getProvinceDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = "";
+        $where = array();
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " f.facility_id IN (" . $facilityMap . ")";
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
         if ($onlyActive) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " f.status like 'active'";
+            $where[] = " f.status like 'active'";
         }
 
-        $where .= ' GROUP BY geo_name ORDER BY geo_name ASC';
-        $query .= $where;
+        if($updatedDateTime){
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if(count($where) > 0){
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr.' GROUP BY geo_name ORDER BY geo_name ASC';
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {
             $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
@@ -242,36 +206,32 @@ class App
         return $response;
     }
 
-    public function getDistrictDetails($user = null, $onlyActive = false)
+    public function getDistrictDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
         $facilityDb = new \Vlsm\Models\Facilities($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = "";
+        $where = array();
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
-                if (isset($where) && trim($where) != "") {
-                    $where .= " AND ";
-                } else {
-                    $where .= " WHERE ";
-                }
-                $where .= " f.facility_id IN (" . $facilityMap . ")";
+                $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
         }
 
         if ($onlyActive) {
-            if (isset($where) && trim($where) != "") {
-                $where .= " AND ";
-            } else {
-                $where .= " WHERE ";
-            }
-            $where .= " f.status like 'active'";
+            $where[] = " f.status like 'active'";
         }
 
-        $where .= ' GROUP BY facility_district ORDER BY facility_district ASC';
-        $query .= $where;
+        if($updatedDateTime){
+            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+        }
+        $whereStr = "";
+        if(count($where) > 0){
+            $whereStr = " WHERE " . implode(" AND ", $where);
+        }
+        $query .= $whereStr.' GROUP BY facility_district ORDER BY facility_district ASC';
         // die($query);
         $result = $this->db->rawQuery($query);
         foreach ($result as $key => $row) {

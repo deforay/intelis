@@ -221,7 +221,7 @@ class Users
         return $this->db->rawQueryOne($uQuery, array($userId));
     }
 
-    public function getAllUsers($facilityMap = null, $status = null, $type = null)
+    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime =null)
     {
 
         if (!empty($facilityMap)) {
@@ -231,6 +231,10 @@ class Users
         }
         if ($status == 'active') {
             $this->db->where("status='active'");
+        }
+        
+        if ($updatedDateTime) {
+            $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
 
         $this->db->orderBy("user_name", "asc");
@@ -247,9 +251,9 @@ class Users
         }
     }
 
-    public function getActiveUsers($facilityMap = null)
+    public function getActiveUsers($facilityMap = null, $updatedDateTime =null)
     {
-        return $this->getAllUsers($facilityMap, 'active');
+        return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
 
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
