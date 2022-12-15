@@ -108,6 +108,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     $("#clinicName").select2({
       placeholder: "<?php echo _("Select Clinics");?>"
     });
+    $("#labName").select2({
+      placeholder: "<?php echo _("Select Labs");?>"
+    });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
           cancelLabel: "<?= _("Clear"); ?>",

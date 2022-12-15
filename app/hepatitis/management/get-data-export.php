@@ -191,7 +191,12 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
-
+     if (isset($_POST['state']) && trim($_POST['state']) != '') {
+          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+      }
+      if (isset($_POST['district']) && trim($_POST['district']) != '') {
+          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+      }
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $sWhere[] =  ' vl.facility_id = "' . $_POST['facilityName'] . '"';
      }

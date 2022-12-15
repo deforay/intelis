@@ -6,6 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -33,6 +34,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 $eidModel = new \Vlsm\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
+$state = $geoLocationDb->getProvinces("yes");
 
 ?>
 <style>
@@ -82,7 +84,22 @@ $eidResults = $eidModel->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("Facility Name"); ?></th>
+							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                </select>
+							</td>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
@@ -94,13 +111,14 @@ $eidResults = $eidModel->getEidResults();
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<th><?php echo _("Result"); ?> </th>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("Result"); ?> </th>
 							<td>
 								<select class="form-control" id="result" name="result" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -114,8 +132,6 @@ $eidResults = $eidModel->getEidResults();
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
@@ -127,7 +143,10 @@ $eidResults = $eidModel->getEidResults();
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -151,8 +170,6 @@ $eidResults = $eidModel->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -164,7 +181,11 @@ $eidResults = $eidModel->getEidResults();
 									<?php } ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							
+						</tr>
+
+						<tr>
+						<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -175,14 +196,14 @@ $eidResults = $eidModel->getEidResults();
 							<td>
 								<input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _('Child ID'); ?>" style="background:#fff;" />
 							</td>
-						</tr>
-
-						<tr>
 							<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
 							</td>
 									
+								
+									</tr>
+									<tr>
 									<td><strong><?php echo _("Mother ID"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="motherId" name="motherId" class="form-control" placeholder="<?php echo _('Enter Mother ID'); ?>" style="background:#fff;" />
@@ -304,6 +325,12 @@ $eidResults = $eidModel->getEidResults();
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -496,6 +523,14 @@ $eidResults = $eidModel->getEidResults();
 					"value": $("#printDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -609,6 +644,40 @@ $eidResults = $eidModel->getEidResults();
 		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
 			alert("<?php echo _("Please select Sample Test Date Range"); ?>");
 		}
+	}
+
+	function getByProvince(provinceId)
+	{
+        $("#district").html('');
+        $("#facilityName").html('');
+		$("#testingLab").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+				});
+	}
+	function getByDistrict(districtId)
+	{
+                $("#facilityName").html('');
+				$("#testingLab").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facilityName").html(Obj['facilities']);
+			$("#testingLab").html(Obj['labs']);
+				});
 	}
 </script>
 <?php

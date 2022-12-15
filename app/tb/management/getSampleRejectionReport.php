@@ -131,6 +131,12 @@ if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
 }
+if (isset($_POST['rjtState']) && trim($_POST['rjtState']) != '') {
+    $sWhere[] = " f.facility_state_id = '" . $_POST['rjtState'] . "' ";
+}
+if (isset($_POST['rjtDistrict']) && trim($_POST['rjtDistrict']) != '') {
+    $sWhere[] = " f.facility_district_id = '" . $_POST['rjtDistrict'] . "' ";
+}
 if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }

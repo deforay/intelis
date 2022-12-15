@@ -171,8 +171,8 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 /* Sample recevied date filter */
 $sSampleReceivedDate = '';
 $eSampleReceivedDate = '';
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     $s_p_date = explode("to", $_POST['sampleReceivedDate']);
+if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
+     $s_p_date = explode("to", $_POST['sampleRecievedDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
           $sSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[0]));
      }
@@ -192,6 +192,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
+
 /* Sample print date filter */
 $sPrintDate = '';
 $ePrintDate = '';
@@ -208,6 +209,12 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+ }
+ if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+ }
 /* Facility ID filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
@@ -292,7 +299,6 @@ $_SESSION['tbResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

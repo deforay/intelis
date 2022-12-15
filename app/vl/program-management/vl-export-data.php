@@ -4,6 +4,8 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $arr = $general->getGlobalConfig();
@@ -26,6 +28,9 @@ $fundingSourceList = $db->query($fundingSourceQry);
 //Implementing partner list
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
+
+$state = $geoLocationDb->getProvinces("yes");
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -75,13 +80,28 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 						</tr>
 						<tr>
+						<td><strong><?php echo _("Province/State"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                </select>
+							</td>
 							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
@@ -91,8 +111,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Viral Load"); ?> &nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
@@ -104,7 +122,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									</option>
 								</select>
 							</td>
-							<td><strong><?php echo _("Last Print Date"); ?>&nbsp;:</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Last Print Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -112,8 +133,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							<td>
 								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
@@ -125,7 +144,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -153,8 +175,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									</div>
 								</div>
 							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
@@ -168,7 +188,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
+							
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -179,7 +203,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<?php } ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
+						<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -190,9 +214,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
-
 							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td><select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -203,7 +224,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 							</td>
 
 
-							<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
+						
+							
+						</tr>
+					<tr>
+					<td><strong><?php echo _("Community Sample"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -212,7 +237,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								</select>
 
 							</td>
-							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							
+					<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -220,14 +246,14 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 								</select>
 
 							</td>
-							
-						</tr>
-					<tr>
 					<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+						
+									</tr>
+									<tr>
+									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
@@ -356,6 +382,12 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -534,6 +566,14 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 					"value": $("#printDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -675,6 +715,39 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
 			alert("<?php echo _("Please select Sample Test Date Range"); ?>");
 		}
+	}
+	function getByProvince(provinceId)
+	{
+        $("#district").html('');
+        $("#facilityName").html('');
+		$("#vlLab").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
+				});
+	}
+	function getByDistrict(districtId)
+	{
+                $("#facilityName").html('');
+				$("#vlLab").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facilityName").html(Obj['facilities']);
+			$("#vlLab").html(Obj['labs']);
+				});
 	}
 </script>
 <?php

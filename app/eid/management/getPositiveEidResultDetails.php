@@ -143,6 +143,12 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
 	if(isset($_POST['hvlSampleType']) && $_POST['hvlSampleType']!=''){
 		$sWhere[] = '  s.sample_id = "'.$_POST['hvlSampleType'].'"';
 	}
+    if (isset($_POST['state']) && trim($_POST['state']) != '') {
+        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+    }
+    if (isset($_POST['district']) && trim($_POST['district']) != '') {
+        $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+    }
 	if(isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName']!=''){
 		$sWhere[] = '  f.facility_id IN ('.$_POST['hvlFacilityName'].')';
 	}

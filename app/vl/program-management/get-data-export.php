@@ -190,6 +190,12 @@ if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) !=
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
 }
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+ }
+ if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+ }
 /* Facility id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';

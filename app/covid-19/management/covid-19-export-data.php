@@ -6,6 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -40,6 +41,7 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 } else {
 	$reportType = 'generate-export-data.php';
 }
+$state = $geoLocationDb->getProvinces("yes");
 
 ?>
 <style>
@@ -75,21 +77,37 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 							<td>
 								<input type="text" id="sampleRecievedDate" name="sampleRecievedDate" class="filter-input form-control" placeholder="<?php echo _('Select Recieved Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							
+						</tr>
+						<tr>
+						<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                </select>
+							</td>
 							<th><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="filter-input form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Testing Lab"); ?></th>
 							<td>
 								<select class="filter-input form-control" id="testingLab" name="testingLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<th><?php echo _("Sample Test Date"); ?></th>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -103,13 +121,14 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Last Print Date"); ?></th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<th><?php echo _("Status"); ?></th>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _("All Status"); ?></option>
@@ -133,8 +152,6 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Funding Sources"); ?></th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
@@ -146,7 +163,10 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("Implementing Partners"); ?></th>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="filter-input form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -165,14 +185,14 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 								</select>
 
 							</td>
-						</tr>
-						<tr>
 						<td><strong><?php echo _("Patient ID"); ?></strong></td>
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
 							</td>
 							
-							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+									</tr>
+									<tr>
+									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
@@ -282,10 +302,19 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
-
+		$("#testingLab").select2({
+			placeholder: "<?php echo _("Select Facilities"); ?>"
+		});
+		
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').on('cancel.daterangepicker', function(ev, picker) {
 			//do something, like clearing an input
 			$(this).val('');
@@ -435,6 +464,14 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 					"value": $("#printDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -553,6 +590,40 @@ if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwand
 		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
 			alert("<?php echo _("Please select Sample Test Date Range"); ?>");
 		}
+	}
+
+	function getByProvince(provinceId)
+	{
+        $("#district").html('');
+        $("#facilityName").html('');
+		$("#testingLab").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+				});
+	}
+	function getByDistrict(districtId)
+	{
+                $("#facilityName").html('');
+				$("#testingLab").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facilityName").html(Obj['facilities']);
+			$("#testingLab").html(Obj['labs']);
+				});
 	}
 </script>
 <?php

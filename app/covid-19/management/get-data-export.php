@@ -189,6 +189,13 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
      }
 }
+
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+ }
+ if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+ }
 /* Facility Id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';

@@ -2,7 +2,7 @@
 $title = _("VL | Clinics Report");
  
 require_once(APPLICATION_PATH . '/header.php');
-
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query
@@ -26,10 +26,17 @@ $rejectionResult = $general->fetchDataFromTable('r_vl_sample_rejection_reasons',
 //rejection type
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+
+$state = $geoLocationDb->getProvinces("yes");
+
 ?>
 <style>
 	.select2-selection__choice {
-		color: black !important;
+		color: #000000 !important;
+	}
+
+	.center {
+		/*text-align:left;*/
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -94,6 +101,18 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code");?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
@@ -107,7 +126,10 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Contact Status");?>&nbsp;:</strong></td>
+													
+												</tr>
+												<tr>
+												<td>&nbsp;<strong><?php echo _("Contact Status");?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status');?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --");?> </option>
@@ -125,8 +147,6 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="not_recorded"><?php echo _("Not Recorded");?></option>
 														</select>
 													</td>
-												</tr>
-												<tr>
 													<td><strong><?php echo _("Pregnant");?>&nbsp;:</strong></td>
 													<td>
 														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control" title="<?php echo _('Please choose pregnant option');?>">
@@ -135,7 +155,10 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _("Breastfeeding");?>&nbsp;:</strong></td>
+													
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Breastfeeding");?>&nbsp;:</strong></td>
 													<td>
 														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
 															<option value=""> <?php echo _("-- Select --");?> </option>
@@ -143,7 +166,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
-												</tr>
+														</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
@@ -212,6 +235,18 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code");?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
@@ -225,7 +260,10 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															?>
 														</select>
 													</td>
-													<td><strong><?php echo _("Gender");?>&nbsp;:</strong></td>
+													
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Gender");?>&nbsp;:</strong></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value=""> <?php echo _("-- Select --");?> </option>
@@ -242,8 +280,6 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
-												</tr>
-												<tr>
 													<td><strong><?php echo _("Breastfeeding");?>&nbsp;:</strong></td>
 													<td>
 														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
@@ -252,8 +288,11 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _("Rejection Reason");?>&nbsp;:</strong></td>
-											<td>
+												
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Rejection Reason");?>&nbsp;:</strong></td>
+											<td colspan="2"> 
 													<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
@@ -271,8 +310,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
                                                                                 <?php } ?>
                                                                            </select>
 														</td>
-												</tr>
-												
+														</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search');?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
@@ -337,6 +375,18 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code");?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name');?>" multiple="multiple" style="width:220px;">
@@ -350,7 +400,10 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															?>
 														</select>
 													</td>
-													<td><strong><?php echo _("Gender");?>&nbsp;:</strong></td>
+													
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Gender");?>&nbsp;:</strong></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender');?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value=""> <?php echo _("-- Select --");?> </option>
@@ -367,8 +420,6 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 															<option value="no"><?php echo _("No");?></option>
 														</select>
 													</td>
-												</tr>
-												<tr>
 													<td><strong><?php echo _("Breastfeeding");?>&nbsp;:</strong></td>
 													<td>
 														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option');?>">
@@ -486,6 +537,12 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
+		$("#state,#rjtState,#noResultState").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district,#rjtDistrict,#noResultDistrict").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
 			placeholder: "<?php echo _("Select Facilities");?>"
 		});
@@ -602,6 +659,14 @@ startDate: moment().subtract(28, 'days'),
 					"value": $("#hvlSampleTestDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "hvlFacilityName",
 					"value": $("#hvlFacilityName").val()
 				});
@@ -695,6 +760,14 @@ startDate: moment().subtract(28, 'days'),
 					"value": $("#rjtSampleTestDate").val()
 				});
 				aoData.push({
+					"name": "rjtState",
+					"value": $("#rjtState").val()
+				});
+				aoData.push({
+					"name": "rjtDistrict",
+					"value": $("#rjtDistrict").val()
+				});
+				aoData.push({
 					"name": "rjtFacilityName",
 					"value": $("#rjtFacilityName").val()
 				});
@@ -783,6 +856,14 @@ startDate: moment().subtract(28, 'days'),
 				aoData.push({
 					"name": "noResultSampleTestDate",
 					"value": $("#noResultSampleTestDate").val()
+				});
+				aoData.push({
+					"name": "noResultState",
+					"value": $("#noResultState").val()
+				});
+				aoData.push({
+					"name": "noResultDistrict",
+					"value": $("#noResultDistrict").val()
 				});
 				aoData.push({
 					"name": "noResultFacilityName",
@@ -1044,6 +1125,37 @@ startDate: moment().subtract(28, 'days'),
 
 	function setSampleTestDate(obj) {
 		$(".stDate").val($("#" + obj.id).val());
+	}
+
+	function getByProvince(districtId,facilityId,provinceId)
+	{
+        $("#"+districtId).html('');
+        $("#"+facilityId).html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					facilityCode : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#"+districtId).html(Obj['districts']);
+			$("#"+facilityId).html(Obj['facilities']);
+				});
+
+	}
+	function getByDistrict(facilityId,districtId)
+	{
+                $("#"+facilityId).html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					facilityCode : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#"+facilityId).html(Obj['facilities']);
+				});
 	}
 </script>
 <?php

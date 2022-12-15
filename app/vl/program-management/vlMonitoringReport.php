@@ -185,24 +185,25 @@ $state = $geoLocationDb->getProvinces("yes");
 									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
 								</div>-->
 							</td>
-							<td><strong><?php echo _("Lab Name"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>">
-									<?= $testingLabsDropdown; ?>
-								</select>
-							</td>
-						</tr>
-						<tr>
 							<td><strong><?php echo _("Region/Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onchange="getByProvince(this.value)" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
+						</tr>
+						<tr>
+							
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onkeyup="searchVlRequestData()">
+								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
+								</select>
+							</td>
+							<td><strong><?php echo _("Lab Name"); ?> :</strong></td>
+							<td>
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>">
+									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 						</tr>
@@ -262,6 +263,15 @@ $state = $geoLocationDb->getProvinces("yes");
 	var endDate = "";
 	var oTable = null;
 	$(document).ready(function() {
+		$("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
+		$("#facilityName").select2({
+			placeholder: "<?php echo _("Select Facility"); ?>"
+		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _("Clear"); ?>",
@@ -744,6 +754,34 @@ $state = $geoLocationDb->getProvinces("yes");
 
 	function safeRound(val) {
 		return Math.round(((val) + 0.00001) * 100) / 100;
+	}
+
+	function getByProvince(provinceId)
+	{
+        $("#district").html('');
+        $("#facilityName").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['labs']);
+				});
+	}
+	function getByDistrict(districtId)
+	{
+                $("#facilityName").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facilityName").html(Obj['labs']);
+				});
 	}
 </script>
 <?php

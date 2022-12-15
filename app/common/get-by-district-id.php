@@ -12,9 +12,19 @@ if(isset($_POST['districtId']))
     {
         $facilityList = $result['facilities'];
         $option = "<option value=''>--Select--</option>";
-        foreach($facilityList as $facility)
+        if(isset($_POST['facilityCode']))
         {
-            $option .= '<option value="'.$facility['facility_id'].'">'.$facility['facility_name'].' </option>';
+            foreach($facilityList as $facility)
+            {
+                $option .= '<option value="'.$facility['facility_id'].'">'.$facility['facility_name'].' - '.$facility['facility_code'].' </option>';
+            }
+        }
+        else
+        {
+            foreach($facilityList as $facility)
+            {
+                $option .= '<option value="'.$facility['facility_id'].'">'.$facility['facility_name'].'</option>';
+            }
         }
         $list['facilities'] = $option;
     }

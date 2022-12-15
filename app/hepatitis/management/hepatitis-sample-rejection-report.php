@@ -90,6 +90,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script src="/assets/js/highcharts.js"></script>
 <script>
   $(function() {
+    $("#labName").select2({
+      placeholder: "<?php echo _("Select Labs");?>"
+    });
     $("#clinicName").select2({
       placeholder: "<?php echo _("Select Clinics");?>"
     });

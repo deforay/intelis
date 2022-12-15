@@ -130,6 +130,12 @@ if (isset($_POST['noResultSampleTestDate']) && trim($_POST['noResultSampleTestDa
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
 }
+if (isset($_POST['noResultState']) && trim($_POST['noResultState']) != '') {
+    $sWhere[] = " f.facility_state_id = '" . $_POST['noResultState'] . "' ";
+}
+if (isset($_POST['noResultDistrict']) && trim($_POST['noResultDistrict']) != '') {
+    $sWhere[] = " f.facility_district_id = '" . $_POST['noResultDistrict'] . "' ";
+}
 if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '') {
     $sWhere[] =  ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
 }

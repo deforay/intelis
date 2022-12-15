@@ -7,6 +7,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $hepatitisDb = new \Vlsm\Models\Hepatitis();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -39,6 +40,9 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 } else {
 	$reportType = 'generate-export-data.php';
 }
+
+$state = $geoLocationDb->getProvinces("yes");
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -69,7 +73,22 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<th><?php echo _("Facility Name"); ?></th>
+							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                </select>
+							</td>
+						
+						</tr>
+						<tr>
+						<th><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
@@ -81,14 +100,15 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
-							<th><?php echo _("HCV VL Result"); ?> </th>
+							
+						</tr>
+						<tr>
+						<th><?php echo _("HCV VL Result"); ?> </th>
 							<td>
 								<select class="form-control" id="hcvVLoad" name="hcvVLoad" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -106,8 +126,6 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-						<tr>
 							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>">
@@ -117,7 +135,11 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 								</select>
 							</td>
 
-							<th><?php echo _("Funding Sources"); ?></th>
+							
+						</tr>
+
+						<tr>
+						<th><?php echo _("Funding Sources"); ?></th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -139,14 +161,14 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 									<?php } ?>
 								</select>
 							</td>
-						</tr>
-
-						<tr>
 							<th><?php echo _("Last Print Date"); ?></th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							
+									</tr>
+									<tr>
+									<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -159,8 +181,6 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 							</td>
 							
-									</tr>
-									<tr>
 									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
@@ -273,8 +293,18 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+		$("#state").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
+		});
+		
+		$("#testingLab").select2({
+			placeholder: "<?php echo _("Select Labs"); ?>"
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
 				locale: {
@@ -413,6 +443,14 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 					"value": $("#printDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -517,6 +555,39 @@ if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'r
 					location.href = '/temporary/' + data;
 				}
 			});
+	}
+	function getByProvince(provinceId)
+	{
+        $("#district").html('');
+        $("#facilityName").html('');
+		$("#testingLab").html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+				});
+	}
+	function getByDistrict(districtId)
+	{
+                $("#facilityName").html('');
+				$("#testingLab").html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					labs : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#facilityName").html(Obj['facilities']);
+			$("#testingLab").html(Obj['labs']);
+				});
 	}
 </script>
 <?php

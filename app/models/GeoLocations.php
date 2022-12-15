@@ -138,7 +138,7 @@ class GeoLocations
         }
       
         if($facilities === true){
-            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id = $provinceId AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id = $provinceId AND status='active'";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
       
@@ -155,7 +155,7 @@ class GeoLocations
         $response = array();
       
         if($facilities === true){
-            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_district_id = $districtId AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_district_id = $districtId AND status='active'";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
       

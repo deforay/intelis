@@ -9,6 +9,7 @@ $tsResult = $db->rawQuery($tsQuery);
 //$arr = $general->getGlobalConfig();
 
 $facilitiesDb = new \Vlsm\Models\Facilities();
+$geoLocationDb = new \Vlsm\Models\GeoLocations();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
@@ -41,10 +42,17 @@ foreach ($rejectionTypeResult as $type) {
     }
     $rejectionReason .= '</optgroup>';
 }
+
+$state = $geoLocationDb->getProvinces("yes");
+
 ?>
 <style>
 	.select2-selection__choice {
-		color: black !important;
+		color: #000000 !important;
+	}
+
+	.center {
+		/*text-align:left;*/
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -111,13 +119,28 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
+												
+												</tr>
+												<tr>
+												<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -135,11 +158,6 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
-													<td></td>
 													<td></td>
 												</tr>
 												<tr>
@@ -210,13 +228,28 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -232,10 +265,6 @@ foreach ($rejectionTypeResult as $type) {
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
 													</td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
@@ -301,13 +330,29 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
+												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+							<td>
+              <select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								</select>
+							</td>
+
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td>
+              <select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+                </select>
+							</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													
+													
+												</tr>
+												<tr>
+												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -316,12 +361,6 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
@@ -431,6 +470,12 @@ foreach ($rejectionTypeResult as $type) {
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
+		$("#state,#rjtState,#noResultState").select2({
+			placeholder: "<?php echo _("Select Province"); ?>"
+		});
+		$("#district,#rjtDistrict,#noResultDistrict").select2({
+			placeholder: "<?php echo _("Select District"); ?>"
+		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -539,6 +584,14 @@ foreach ($rejectionTypeResult as $type) {
 					"value": $("#hvlSampleTestDate").val()
 				});
 				aoData.push({
+					"name": "state",
+					"value": $("#state").val()
+				});
+				aoData.push({
+					"name": "district",
+					"value": $("#district").val()
+				});
+				aoData.push({
 					"name": "hvlFacilityName",
 					"value": $("#hvlFacilityName").val()
 				});
@@ -624,6 +677,14 @@ foreach ($rejectionTypeResult as $type) {
 					"value": $("#rjtSampleTestDate").val()
 				});
 				aoData.push({
+					"name": "rjtState",
+					"value": $("#rjtState").val()
+				});
+				aoData.push({
+					"name": "rjtDistrict",
+					"value": $("#rjtDistrict").val()
+				});
+				aoData.push({
 					"name": "rjtFacilityName",
 					"value": $("#rjtFacilityName").val()
 				});
@@ -704,6 +765,14 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "noResultSampleTestDate",
 					"value": $("#noResultSampleTestDate").val()
+				});
+				aoData.push({
+					"name": "noResultState",
+					"value": $("#noResultState").val()
+				});
+				aoData.push({
+					"name": "noResultDistrict",
+					"value": $("#noResultDistrict").val()
 				});
 				aoData.push({
 					"name": "noResultFacilityName",
@@ -940,6 +1009,37 @@ foreach ($rejectionTypeResult as $type) {
 
 	function setSampleTestDate(obj) {
 		$(".stDate").val($("#" + obj.id).val());
+	}
+
+	function getByProvince(districtId,facilityId,provinceId)
+	{
+        $("#"+districtId).html('');
+        $("#"+facilityId).html('');
+				$.post("/common/get-by-province-id.php", {
+					provinceId : provinceId,
+					districts : true,
+					facilities : true,
+					facilityCode : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#"+districtId).html(Obj['districts']);
+			$("#"+facilityId).html(Obj['facilities']);
+				});
+
+	}
+	function getByDistrict(facilityId,districtId)
+	{
+                $("#"+facilityId).html('');
+				$.post("/common/get-by-district-id.php", {
+					districtId : districtId,
+					facilities : true,
+					facilityCode : true
+				},
+				function(data) {
+					Obj = $.parseJSON(data);
+			$("#"+facilityId).html(Obj['facilities']);
+				});
 	}
 </script>
 <?php
