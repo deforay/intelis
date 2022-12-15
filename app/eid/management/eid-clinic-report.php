@@ -406,12 +406,12 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="sample_code"><?php echo _("Sample Code");?></option>
 															<option value="sample_collection_date"><?php echo _("Sample Collection Date");?></option>
 															<option value="sample_batch_id"><?php echo _("Batch Code");?></option>
-															<option value="patient_art_no"><?php echo _("Patient ID");?></option>
-															<option value="patient_first_name"><?php echo _("Child's Name");?></option>
+															<option value="child_id"><?php echo _("Child ID");?></option>
+															<option value="child_name"><?php echo _("Child's Name");?></option>
 															<option value="facility_id"><?php echo _("Facility Name");?></option>
 															<option value="facility_state"><?php echo _("Province");?></option>
 															<option value="facility_district"><?php echo _("County");?></option>
-															<option value="sample_type"><?php echo _("Sample Type");?></option>
+															<option value="specimen_type"><?php echo _("Sample Type");?></option>
 															<option value="result"><?php echo _("Result");?></option>
 															<option value="result_status"><?php echo _("Status");?></option>
 														</select>
