@@ -107,7 +107,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS* FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';
 $end_date = '';
@@ -137,9 +137,12 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                     $sWhereSub .= $sWhereSubC;
                     $sWhereSub .= "(";
                } else {
-                    $sWhereSub .= " OR (";
+                    $sWhereSub .= " AND (";
                }
-               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
+               if($search=='sample_collection_date')
+                    $sWhereSub .=  'vl.'.$search . " IS NULL";
+               else
+                    $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
                $sWhereSub .= ")";
           }
           $sWhereSub .= ")";

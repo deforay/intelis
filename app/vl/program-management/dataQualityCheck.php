@@ -141,12 +141,12 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
                $sWhereSub .= $sWhereSubC;
                $sWhereSub .= "(";
           } else {
-               $sWhereSub .= " OR (";
+               $sWhereSub .= " AND (";
           }
           if($search=='sample_collection_date')
-               $sWhereSub .=  $search . " IS NULL";
+               $sWhereSub .=  'vl.'.$search . " IS NULL";
           else
-               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
+               $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
           $sWhereSub .= ")";
      }
      $sWhereSub .= ")";
@@ -171,6 +171,7 @@ if (isset($sWhere) && !empty($sWhere)) {
  }
 
 $sQuery = $sQuery . ' ' . $sWhere;
+echo $sQuery; die;
 $_SESSION['vlIncompleteForm'] = $sQuery;
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

@@ -136,12 +136,12 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                     $sWhereSub .= $sWhereSubC;
                     $sWhereSub .= "(";
                } else {
-                    $sWhereSub .= " OR (";
+                    $sWhereSub .= " AND (";
                }
                if($search=='sample_collection_date')
-               $sWhereSub .=  $search . " IS NULL";
+               $sWhereSub .=  'vl.'.$search . " IS NULL";
           else
-               $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
+               $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
                $sWhereSub .= ")";
           }
           $sWhereSub .= ")";
@@ -162,14 +162,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 if(isset($sWhere) && count($sWhere)>0)
 {
-    $sWhere = ' AND '.implode(' AND ',$sWhere);
+    $sWhere = ' WHERE '.implode(' AND ',$sWhere);
 }
 else
 {
     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-// echo $sQuery;die;
+echo $sQuery;die;
 $_SESSION['vlIncompleteForm'] = $sQuery;
 if (isset($sOrder) && $sOrder != "") {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

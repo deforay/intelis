@@ -136,12 +136,12 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                     $sWhereSub .= $sWhereSubC;
                     $sWhereSub .= "(";
                } else {
-                    $sWhereSub .= " OR (";
+                    $sWhereSub .= " AND (";
                }
                if($search=='sample_collection_date')
-                    $sWhereSub .=  $search . " IS NULL";
+                    $sWhereSub .=  'vl.'.$search . " IS NULL";
                else
-                    $sWhereSub .= $search . " ='' OR " . $search . " IS NULL";
+                    $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
                $sWhereSub .= ")";
           }
           $sWhereSub .= ")";
