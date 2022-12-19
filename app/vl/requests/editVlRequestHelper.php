@@ -189,6 +189,7 @@ try {
      }
 
      if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
+          $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Below Detection Level';
           $_POST['vlResult'] = 'Below Detection Level';
           $_POST['vlLog'] = null;
      } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
