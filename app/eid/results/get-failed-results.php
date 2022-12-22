@@ -128,9 +128,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-    }
+   
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
             $sWhere[]=  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -139,22 +137,37 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         }
     }
 
+    if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
+        $sWhere[] =  ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+    }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
+    if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+        $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+   }
+    if (isset($_POST['status']) && $_POST['status'] != '') {
+        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+    }
+    if (isset($_POST['childId']) && $_POST['childId'] != "") {
+        $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+   }
+   if (isset($_POST['childName']) && $_POST['childName'] != "") {
+        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
+   }
 
-if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $sWhere[] = ' vl.result != ""  ';
-} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $sWhere[] = '(vl.result IS NULL OR vl.result = "")  ';
+   if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
+    $sWhere[] = ' vl.mother_id like "%'.$_POST['motherId'].'%"';
 }
-    $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
+    $sWhere[] = " CONCAT(COALESCE(vl.mother_name,''), COALESCE(vl.mother_surname,'')) like '%" . $_POST['motherName'] . "%'";
+}
 
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -166,7 +179,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+//    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
     if(isset($sWhere) && count($sWhere)>0)
     {

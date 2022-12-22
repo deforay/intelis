@@ -62,7 +62,8 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+            if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+                $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -129,9 +130,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-    }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
@@ -140,22 +138,30 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         }
     }
 
+    if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
+        $sWhere[] =  ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+    }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere[] =  " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
-
-if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $sWhere[] = 'vl.result != "" ';
-} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $sWhere[] = '(vl.result IS NULL OR vl.result = "") ';
-}
-
+    if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+        $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+   }
+    if (isset($_POST['status']) && $_POST['status'] != '') {
+        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+    }
+    if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+        $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+   }
+   if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+        $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+   }
 //$sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -166,23 +172,22 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-    $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+   // $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
-if(!empty($sWhere))
-    $sWhere = ' where ' .implode(' AND ',$sWhere);
+if(!empty($sWhere) && count($sWhere) > 0)
+    $sWhere = ' where ' . implode(' AND ',$sWhere);
 else
     $sWhere = "";
 
 $sQuery = $sQuery . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty(trim($sOrder))) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-// $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
+//$_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
