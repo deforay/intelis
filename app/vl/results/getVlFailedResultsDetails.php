@@ -133,9 +133,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-    }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
@@ -150,12 +147,24 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere[] =  " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
-
+    if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+        $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+   }
+    if (isset($_POST['status']) && $_POST['status'] != '') {
+        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+    }
+    if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+        $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+   }
+   if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+   }
+/*
 $whereResult = '';
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
     $whereResult = 'vl.result != ""  ';
@@ -164,7 +173,7 @@ if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result')
 }
 if(!empty($whereResult))
     $sWhere[] = $whereResult;
-    
+    */
 //$sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
     if (!empty($facilityMap)) {
@@ -172,14 +181,15 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         //$sFilter = " AND vl.facility_id IN (" . $facilityMap . ") ";
     }
 }
-    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+  //  $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
     if(isset($sWhere) && count($sWhere) > 0)
     {
         $sWhere = implode(' AND ', $sWhere);
+        $sQuery = $sQuery . ' WHERE ' . $sWhere;
     }
 
-$sQuery = $sQuery . ' WHERE ' . $sWhere;
 
+//echo $sQuery; die;
 if (isset($sOrder) && $sOrder != "") {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
