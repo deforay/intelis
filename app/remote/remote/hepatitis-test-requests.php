@@ -57,10 +57,6 @@ if ($db->count > 0) {
     $data['result'] = $hepatitisRemoteResult;
     $data['risks'] = $risks;
     $data['comorbidities'] = $comorbidities;
-
-
-    $db->where('hepatitis_id', $sampleIds, 'IN')
-        ->update('form_hepatitis', array('data_sync' => 1));
 }
 
 $payload = json_encode($data);

@@ -91,8 +91,7 @@ if ($db->count > 0) {
   $counter = $db->count;
 
   $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
-  $db->where('vl_sample_id', $sampleIds, 'IN')
-    ->update('form_vl', array('data_sync' => 1));
+  $facilityIds = array_column($vlRemoteResult, 'facility_id');
 
   $payload = json_encode($vlRemoteResult);
 } else {

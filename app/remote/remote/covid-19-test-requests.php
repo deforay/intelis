@@ -61,10 +61,6 @@ if ($db->count > 0) {
   $data['symptoms'] = $symptoms;
   $data['comorbidities'] = $comorbidities;
   $data['testResults'] = $testResults;
-
-
-  $db->where('covid19_id', $sampleIds, 'IN')
-    ->update('form_covid19', array('data_sync' => 1));
 }
 
 
@@ -88,7 +84,9 @@ if (!empty($facilityIds)) {
 }
 
 // Whether any data got synced or not, we will update sync datetime for the lab
-$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) WHERE facility_id = ?';
+$sql = 'UPDATE facility_details 
+        SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) 
+        WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $labId));
 
 echo $payload;

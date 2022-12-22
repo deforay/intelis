@@ -48,9 +48,6 @@ if ($db->count > 0) {
     $facilityIds = array_column($tbRemoteResult, 'facility_id');
 
     $data['result'] = $tbRemoteResult;
-
-    $db->where('tb_id', $sampleIds, 'IN')
-        ->update('form_tb', array('data_sync' => 1));
 }
 
 $payload = json_encode($data);
