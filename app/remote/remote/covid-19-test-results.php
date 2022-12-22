@@ -12,7 +12,7 @@ $app = new \Vlsm\Models\App();
 
 $transactionId = $general->generateUUID();
 
-$sampleCode = array();
+$sampleCodes = $facilityIds = array();
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
@@ -96,7 +96,8 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         } else if (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
             $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_covid19 WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
         } else {
-            $sampleCode[] = $lab['sample_code'];
+            $sampleCodes[] = $lab['sample_code'];
+            $facilityIds[] = $lab['facility_id'];
             continue;
         }
         //$lab['source_of_request'] = 'vlsts';
@@ -109,7 +110,8 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         }
 
         if ($id > 0 && isset($lab['sample_code'])) {
-            $sampleCode[] = $lab['sample_code'];
+            $sampleCodes[] = $lab['sample_code'];
+            $facilityIds[] = $lab['facility_id'];
         }
     }
 
@@ -154,11 +156,30 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     }
 }
 
-$payload = json_encode($sampleCode);
+$payload = json_encode($sampleCodes);
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'covid19', null, $jsonResponse, $payload, 'json', $labId);
 
-$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
-$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+
+$currentDateTime = $general->getCurrentDateTime();
+
+if (!empty($sampleCodes)) {
+    $sql = 'UPDATE form_covid19 SET data_sync = ?,
+                form_attributes = JSON_SET(form_attributes, "$.remoteResultsSync", ?)
+                WHERE sample_code IN (' . implode(",", $sampleCodes) . ')';
+    $db->rawQuery($sql, array(1, $currentDateTime));
+}
+
+if (!empty($facilityIds)) {
+    $sql = 'UPDATE facility_details 
+                    SET facility_attributes = JSON_SET(facility_attributes, "$.remoteResultsSync", ?)
+                    WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
+    $db->rawQuery($sql, array($currentDateTime));
+}
+
+$sql = 'UPDATE facility_details SET 
+                facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) 
+                    WHERE facility_id = ?';
+$db->rawQuery($sql, array($currentDateTime, $labId));
 
 echo $payload;
