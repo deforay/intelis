@@ -5,7 +5,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new \Vlsm\Models\General();
 
-$sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id ";
+$sQuery = "SELECT f.facility_id, 
+              f.facility_name, 
+               (SELECT (requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id ORDER BY requested_on DESC LIMIT 1) AS request, 
+               (SELECT (requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id ORDER BY requested_on DESC LIMIT 1) AS results, 
+               tar.test_type, tar.requested_on  
+               FROM facility_details AS f 
+               JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id ";
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
@@ -19,6 +25,7 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
+error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
     <tr class="<?php echo $color; ?>">

@@ -13,7 +13,7 @@ $stateNameList = $geoLocationDb->getProvinces("yes");
 $sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id WHERE f.facility_id = ".base64_decode($_GET['labId']) ." GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
 $labInfo = $db->rawQueryOne($sQuery);
 ?>
-<style>
+<style>˝
     .select2-selection__choice {
         color: black !important;
     }
@@ -164,4 +164,3 @@ $labInfo = $db->rawQueryOne($sQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
