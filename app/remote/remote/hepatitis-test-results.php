@@ -111,7 +111,7 @@ $payload = json_encode($sampleCode);
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', null, $jsonResponse, $payload, 'json', $labId);
 
-$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
-$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+$sql = 'UPDATE facility_details SET data_sync = ?, facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array(1, $general->getCurrentDateTime(), $labId));
 
 echo $payload;

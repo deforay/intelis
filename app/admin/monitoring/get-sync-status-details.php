@@ -15,10 +15,15 @@ if (isset($_POST['province']) && trim($_POST['province']) != '') {
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
+
+if (isset($_POST['labId']) && trim($_POST['labId']) != '') {
+    $sWhere[] = ' f.facility_id = "' . base64_decode($_POST['labId']) . '"';
+}
 if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
     <tr class="<?php echo $color; ?>">

@@ -79,6 +79,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
         $lab['last_modified_datetime'] = $general->getCurrentDateTime();
+        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -158,7 +159,7 @@ $payload = json_encode($sampleCode);
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'covid19', null, $jsonResponse, $payload, 'json', $labId);
 
-$sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
-$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+$sql = 'UPDATE facility_details SET data_sync = ?, facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) WHERE facility_id = ?';
+$db->rawQuery($sql, array(1, $general->getCurrentDateTime(), $labId));
 
 echo $payload;
