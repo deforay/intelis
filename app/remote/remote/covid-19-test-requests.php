@@ -63,11 +63,8 @@ if ($db->count > 0) {
   $data['testResults'] = $testResults;
 
 
-  /* $db->where('covid19_id', $sampleIds, 'IN')
-    ->update('form_covid19', array('data_sync' => 1)); */
-
-    $sql = 'UPDATE form_covid19 SET data_sync = ?, form_attributes = JSON_SET(form_attributes, "$.remoteRequestsSync", ?) WHERE covid19_id IN "('. implode(',', $sampleIds) .'")';
-    $db->rawQuery($sql, array(1, $general->getCurrentDateTime()));
+  $db->where('covid19_id', $sampleIds, 'IN')
+    ->update('form_covid19', array('data_sync' => 1));
 }
 
 

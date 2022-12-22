@@ -85,11 +85,8 @@ if ($db->count > 0) {
 
   $counter = $db->count;
   $sampleIds = array_column($eidRemoteResult, 'eid_id');
-  /* $db->where('eid_id', $sampleIds, 'IN')
-    ->update('form_eid', array('data_sync' => 1)); */
-
-  $sql = 'UPDATE form_eid SET data_sync = ?, form_attributes = JSON_SET(form_attributes, "$.remoteRequestsSync", ?) WHERE eid_id IN "('. implode(',', $sampleIds) .'")';
-  $db->rawQuery($sql, array(1, $general->getCurrentDateTime()));
+  $db->where('eid_id', $sampleIds, 'IN')
+    ->update('form_eid', array('data_sync' => 1));
   $payload = json_encode($payload);
 } else {
   $payload = json_encode([]);

@@ -49,11 +49,8 @@ if ($db->count > 0) {
 
     $data['result'] = $tbRemoteResult;
 
-    /* $db->where('tb_id', $sampleIds, 'IN')
-        ->update('form_tb', array('data_sync' => 1)); */
-
-    $sql = 'UPDATE form_tb SET data_sync = ?, form_attributes = JSON_SET(form_attributes, "$.remoteRequestsSync", ?) WHERE tb_id IN "('. implode(',', $sampleIds) .'")';
-    $db->rawQuery($sql, array(1, $general->getCurrentDateTime()));
+    $db->where('tb_id', $sampleIds, 'IN')
+        ->update('form_tb', array('data_sync' => 1));
 }
 
 $payload = json_encode($data);

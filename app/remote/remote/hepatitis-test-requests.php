@@ -59,11 +59,8 @@ if ($db->count > 0) {
     $data['comorbidities'] = $comorbidities;
 
 
-    /* $db->where('hepatitis_id', $sampleIds, 'IN')
-        ->update('form_hepatitis', array('data_sync' => 1)); */
-
-    $sql = 'UPDATE form_hepatitis SET data_sync = ?, form_attributes = JSON_SET(form_attributes, "$.remoteRequestsSync", ?) WHERE hepatitis_id IN "('. implode(',', $sampleIds) .'")';
-    $db->rawQuery($sql, array(1, $general->getCurrentDateTime()));
+    $db->where('hepatitis_id', $sampleIds, 'IN')
+        ->update('form_hepatitis', array('data_sync' => 1));
 }
 
 $payload = json_encode($data);
