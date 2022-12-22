@@ -350,6 +350,9 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},

@@ -959,8 +959,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').addClass('isRequired');
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
-			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			//$('#approvedBy').addClass('isRequired');
+			//$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
 			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
@@ -975,8 +975,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionReason').val('');
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
-			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			//$('#approvedBy').addClass('isRequired');
+			//$('#approvedOnDateTime').addClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields").attr("disabled", false);

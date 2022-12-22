@@ -403,9 +403,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<option value="patient_id"><?php echo _("Patient ID"); ?></option>
 															<option value="patient_name"><?php echo _("Patient's Name"); ?></option>
 															<option value="facility_id"><?php echo _("Facility Name"); ?></option>
-															<option value="facility_state"><?php echo _("Province"); ?></option>
-															<option value="facility_district"><?php echo _("County"); ?></option>
-															<option value="sample_type"><?php echo _("Sample Type"); ?></option>
+															<option value="specimen_type"><?php echo _("Sample Type"); ?></option>
 															<option value="result"><?php echo _("Result"); ?></option>
 															<option value="result_status"><?php echo _("Status"); ?></option>
 														</select>
