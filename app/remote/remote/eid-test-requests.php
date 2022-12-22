@@ -75,7 +75,7 @@ $removeKeys = array(
   'result_printed_datetime',
   'last_modified_datetime'
 );
-
+$sampleIds = $facilityIds = array();
 $counter = 0;
 if ($db->count > 0) {
   $payload = $eidRemoteResult;
@@ -97,7 +97,25 @@ if ($db->count > 0) {
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
 
+
+$currentDateTime = $general->getCurrentDateTime();
+if (!empty($sampleIds)) {
+  $sql = 'UPDATE form_eid SET data_sync = ?,
+              form_attributes = JSON_SET(form_attributes, "$.remoteRequestsSync", ?)
+              WHERE eid_id IN (' . implode(",", $sampleIds) . ')';
+  $db->rawQuery($sql, array(1, $currentDateTime));
+}
+
+if (!empty($facilityIds)) {
+  $sql = 'UPDATE facility_details 
+            SET facility_attributes = JSON_SET(facility_attributes, "$.remoteRequestsSync", ?) 
+            WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
+  $db->rawQuery($sql, array($currentDateTime));
+}
+
+// Whether any data got synced or not, we will update sync datetime for the lab
 $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.lastRequestsSync", ?) WHERE facility_id = ?';
-$db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
+$db->rawQuery($sql, array($currentDateTime, $labId));
+
 
 echo $payload;
