@@ -118,13 +118,15 @@ $labInfo = $db->rawQueryOne($sQuery);
                                 <tr>
                                     <th class="center"><?php echo _("Facility Name"); ?></th>
                                     <th class="center"><?php echo _("Test Type"); ?></th>
+                                    <th class="center"><?php echo _("Province"); ?></th>
+                                    <th class="center"><?php echo _("District"); ?></th>
                                     <th class="center"><?php echo _("Last Request Sent from VLSTS"); ?></th>
                                     <th class="center"><?php echo _("Last Result Received From Lab"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="4" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="6" class="dataTables_empty"><?php echo _("No data available"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
