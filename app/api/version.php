@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 if (!empty($_GET['labId']) && !empty($_GET['version'])) {
     $labId = (int) $_GET['labId'];
     $version = $_GET['version'];
-    $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(facility_attributes, "$.version", ?, "$.lastHeartBeat", ?) WHERE facility_id = ?';
+    $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.version", ?, "$.lastHeartBeat", ?) WHERE facility_id = ?';
     $db->rawQuery($sql, array($version, $general->getCurrentDateTime(), $labId));
 }
 

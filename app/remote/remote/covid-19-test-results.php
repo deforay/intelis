@@ -165,20 +165,21 @@ $currentDateTime = $general->getCurrentDateTime();
 
 if (!empty($sampleCodes)) {
     $sql = 'UPDATE form_covid19 SET data_sync = ?,
-                form_attributes = JSON_SET(form_attributes, "$.remoteResultsSync", ?)
-                WHERE sample_code IN (' . implode(",", $sampleCodes) . ')';
+                form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?)
+                WHERE sample_code IN ("' . implode('","', $sampleCodes) . '")';
     $db->rawQuery($sql, array(1, $currentDateTime));
 }
 
 if (!empty($facilityIds)) {
+    $facilityIds = array_unique($facilityIds);
     $sql = 'UPDATE facility_details 
-                    SET facility_attributes = JSON_SET(facility_attributes, "$.remoteResultsSync", ?)
+                    SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?)
                     WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
     $db->rawQuery($sql, array($currentDateTime));
 }
 
 $sql = 'UPDATE facility_details SET 
-                facility_attributes = JSON_SET(facility_attributes, "$.lastResultsSync", ?) 
+                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?) 
                     WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $labId));
 
