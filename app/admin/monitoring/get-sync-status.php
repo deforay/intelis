@@ -83,15 +83,11 @@ $_SESSION['labSyncStatus'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 $today = new DateTimeImmutable();
 $twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
-//$twoWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-2 weeks'));
 $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
-//$threeWeekExpiry = date("Y-m-d", strtotime(date("Y-m-d") . '-4 weeks'));
 foreach ($rResult as $key => $aRow) {
     $color = "red";
     $aRow['latest'] = $aRow['latest'] ?: $aRow['requested_on'];
     $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
-    // $twoWeekExpiry = new DateTimeImmutable($twoWeekExpiry);
-    // $threeWeekExpiry = new DateTimeImmutable($threeWeekExpiry);
 
     if (empty($latest)) {
         $color = "red";
@@ -107,8 +103,8 @@ foreach ($rResult as $key => $aRow) {
 
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>">
-        <!-- <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ($aRow['facility_name']); ?></a></td> -->
-        <td><?= ($aRow['facility_name']); ?></td>
+        <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ($aRow['facility_name']); ?></a></td>
+        <!-- <td><?= ($aRow['facility_name']); ?></td> -->
         <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
