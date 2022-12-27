@@ -622,6 +622,7 @@ $sampleSuggestionDisplay = 'display:none;';
 </div>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script type="text/javascript">
+	
 	changeProvince = true;
 	changeFacility = true;
 
@@ -629,7 +630,7 @@ $sampleSuggestionDisplay = 'display:none;';
 	provinceName = true;
 	facilityName = true;
 
-
+	
 	$(document).ready(function() {
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
@@ -665,8 +666,50 @@ $sampleSuggestionDisplay = 'display:none;';
 			placeholder: "Select Approuvé par"
 		});
 
-	});
+		//$('#sampleCollectionDate').trigger("change");
+		$('#sampleCollectionDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            maxDate: "+1Y",
+           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+			onSelect: function(date) {
+				var dt2 = $('#dateDispatchedFromClinicToLab');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+				dt2.val($(this).val());
+			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+	
 
+		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+		if($("#dateDispatchedFromClinicToLab").val()=="")
+		$("#dateDispatchedFromClinicToLab").val($('#sampleCollectionDate').val());
+		
+		$('#dateDispatchedFromClinicToLab').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            minDate: minDate,
+			startDate: minDate,
+        });
+	});
+	
+
+	//$('#dateDispatchedFromClinicToLab').val($('#sampleCollectionDate').val());
+	//	var startDate = $('#sampleCollectionDate').datetimepicker('getDate');
+	
+		//$('#dateDispatchedFromClinicToLab').datetimepicker('option', 'minDate', minDate);
+ 	//	$("#dateDispatchedFromClinicToLab").datetimepicker( {minDate, minDate });
 	function getfacilityDetails(obj) {
 		$.blockUI();
 		var pName = $("#province").val();
@@ -906,4 +949,6 @@ $sampleSuggestionDisplay = 'display:none;';
 				}
 			});
 	}
+
+	
 </script>

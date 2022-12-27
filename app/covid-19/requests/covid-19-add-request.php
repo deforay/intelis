@@ -100,23 +100,23 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
-        $('.date-time').datetimepicker({
+        $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            maxDate: "Today",
+            //maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {},
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+          //  onSelect: function(e) {},
+           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-
+      
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
@@ -138,20 +138,20 @@ require($fileArray[$arr['vl_form']]);
                 changeYear: true,
                 dateFormat: 'dd-M-yy',
                 timeFormat: "HH:mm",
-                maxDate: "Today",
+              //  maxDate: "Today",
                 onChangeMonthYear: function(year, month, widget) {
                     setTimeout(function() {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
-                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y'); ?>"
+               // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y'); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
+     
 
-
-        $('#sampleCollectionDate').datetimepicker({
+       /* $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
@@ -169,7 +169,7 @@ require($fileArray[$arr['vl_form']]);
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
-        });
+        });*/
 
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,

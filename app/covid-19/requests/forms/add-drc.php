@@ -1307,30 +1307,32 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
 
     $(document).ready(function() {
-        $("#sampleCollectionDate").datetimepicker({
+       
+        $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-            }
+            timeFormat: "hh:mm TT",
+            maxDate: "+1Y",
+           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+			onSelect: function(date) {
+               
+				var dt2 = $('#sampleDispatchedDate');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+				dt2.val($(this).val());
+                $('#sampleReceivedDate').val('');
+                $('#sampleReceivedDate').datetimepicker('option', 'minDate', date);
+			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
         });
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            yearRange: "-100:+100",
-        });
+
         <?php if ($generateAutomatedPatientCode) { ?>
             //$.blockUI();
             $.post("/patients/generate-patient-id.php", {

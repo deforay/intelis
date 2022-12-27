@@ -1401,29 +1401,40 @@ if (!empty($patientData)) {
 
 
     $(document).ready(function() {
-        $("#sampleCollectionDate").datetimepicker({
+        $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                //dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-            }
+            timeFormat: "hh:mm TT",
+            maxDate: "+1Y",
+           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+			onSelect: function(date) {
+				var dt2 = $('#sampleDispatchedDate');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+				dt2.val($(this).val());
+			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
         });
-        $('#sampleDispatchedDate').datetimepicker({
+	
+       
+		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+		if($("#sampleDispatchedDate").val()=="")
+		$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+		
+		$('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            yearRange: "-100:+100",
+            minDate: minDate,
+			startDate: minDate,
         });
         $('.result-focus').change(function(e) {
             var status = false;

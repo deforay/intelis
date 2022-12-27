@@ -801,7 +801,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          });
                }
           });
-          $("#sampleCollectionDate").datetimepicker({
+        /*  $("#sampleCollectionDate").datetimepicker({
                changeMonth: true,
                changeYear: true,
                dateFormat: 'dd-M-yy',
@@ -824,7 +824,28 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                dateFormat: 'dd-M-yy',
                timeFormat: "HH:mm",
                yearRange: "-100:+100",
-          });
+          });*/
+          $('#sampleCollectionDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "hh:mm TT",
+            maxDate: "+1Y",
+           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+			onSelect: function(date) {
+				var dt2 = $('#sampleDispatchedDate');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+				dt2.val($(this).val());
+			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
