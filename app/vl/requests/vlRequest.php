@@ -9,6 +9,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$srcStatus = $params[3];
 	$hidesrcofreq = true;
 }
+if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+	$facilityId = base64_decode($_GET['facilityId']);
+	$labId = base64_decode($_GET['labId']);
+}
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $interopConfig = array();
@@ -759,6 +764,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "hidesrcofreq",
 					"value": '<?php echo $hidesrcofreq; ?>'
+				});
+				aoData.push({
+					"name": "t_a_labId",
+					"value": '<?php echo $labId; ?>'
+				});
+				aoData.push({
+					"name": "t_a_facilityId",
+					"value": '<?php echo $facilityId; ?>'
 				});
 				$.ajax({
 					"dataType": 'json',
