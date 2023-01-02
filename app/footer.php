@@ -250,7 +250,7 @@
 	} else if (splitsUrl == 'sources-of-requests.php') {
 		$(".allMenu").removeClass('active');
 		$(".sources-of-requests-report-menu, .manage, .monitoring-menu").addClass('active');
-	} else if (splitsUrl == 'sync-status.php' || str_contains('lab-sync-details.php', splitsUrl)) {
+	} else if (splitsUrl == 'sync-status.php' || splitsUrl == 'lab-sync-details.php') {
 		$(".allMenu").removeClass('active');
 		$(".sync-status-menu, .manage, .monitoring-menu").addClass('active');
 	} else if (splitsUrl == 'api-sync-history.php') {

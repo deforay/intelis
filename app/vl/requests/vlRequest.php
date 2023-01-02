@@ -9,6 +9,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$srcStatus = $params[3];
 	$hidesrcofreq = true;
 }
+$facilityId = null;
+$labId = null;
+if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+	$facilityId = base64_decode($_GET['facilityId']);
+	$labId = base64_decode($_GET['labId']);
+}
+
 require_once(APPLICATION_PATH . '/header.php');
 
 $interopConfig = array();
@@ -23,9 +30,9 @@ $geoLocationDb = new \Vlsm\Models\GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
-$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
-$testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+$testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";

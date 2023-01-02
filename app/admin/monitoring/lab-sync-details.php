@@ -97,7 +97,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <!-- &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a> -->
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
                                 &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
                                 <input type="button" onclick="loadData();" value="<?php echo _('Search'); ?>" class="btn btn-default pull-right">
                             </td>
@@ -187,6 +187,19 @@ $labInfo = $db->rawQueryOne($sQuery);
             function(data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
+            });
+    }
+
+    function exportSyncStatus() {
+        // $.blockUI();
+        $.post("generate-lab-sync-status-details-report.php", {},
+            function(data) {
+                $.unblockUI();
+                if (data === "" || data === null || data === undefined) {
+                    alert("<?php echo _("Unable to generate the excel file"); ?>");
+                } else {
+                    window.open('/download.php?f=' + data, '_blank');
+                }
             });
     }
 </script>

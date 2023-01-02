@@ -34,7 +34,7 @@ if (isset($testType) && $testType == 'hepatitis') {
     $testName = 'Hepatitis';
 }
 if (isset($testType) && $testType == 'tb') {
-    $url = "/tb/requests/tb-requests.php";
+     
     $table = "form_tb";
     $testName = 'TB';
     $sampleReceivedfield = "sample_received_at_lab_datetime";
@@ -103,7 +103,7 @@ foreach ($rResult as $key => $aRow) {
 
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>">
-        <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ($aRow['facility_name']); ?></a></td>
+        <td><a href="lab-sync-details.php?labId=<?php echo base64_encode($aRow['facility_id']);?>" target="_blank"><?php echo ucwords($aRow['facility_name']); ?></a></td>
         <!-- <td><?= ($aRow['facility_name']); ?></td> -->
         <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>

@@ -13,22 +13,27 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
+    $url = "/vl/requests/vlRequest.php";
     $table = "form_vl";
     $testName = 'Viral Load';
 }
 if (isset($testType) && $testType == 'eid') {
+    $url = "/eid/requests/eid-requests.php";
     $table = "form_eid";
     $testName = 'EID';
 }
 if (isset($testType) && $testType == 'covid19') {
+    $url = "/covid-19/requests/covid-19-requests.php";
     $table = "form_covid19";
     $testName = 'Covid-19';
 }
 if (isset($testType) && $testType == 'hepatitis') {
+    $url = "/hepatitis/requests/hepatitis-requests.php";
     $table = "form_hepatitis";
     $testName = 'Hepatitis';
 }
 if (isset($testType) && $testType == 'tb') {
+    $url = "/tb/requests/tb-requests.php";
     $table = "form_tb";
     $testName = 'TB';
 }
@@ -59,10 +64,12 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " ORDER BY latestSync DESC";
+
+$_SESSION['labSyncStatusDetails'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
     <tr class="<?php echo $color; ?>">
-        <td><?php echo ucwords($aRow['facility_name']); ?></td>
+        <td><a href="<?php echo $url;?>?facilityId=<?php echo base64_encode($aRow['facility_id']);?>&labId=<?php echo ($_POST['labId']);?>" target="_blank"><?php echo ucwords($aRow['facility_name']); ?></a></td>
         <td><?php echo ucwords($_POST['testType']); ?></td>
         <td><?php echo ucwords($aRow['province']); ?></td>
         <td><?php echo ucwords($aRow['district']); ?></td>
