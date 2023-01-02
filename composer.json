@@ -31,7 +31,8 @@
         "ext-zlib": "*",
         "ext-intl": "*",
         "ext-bcmath": "*",
-        "phpseclib/phpseclib": "~3.0"
+        "phpseclib/phpseclib": "~3.0",
+        "hackzilla/password-generator": "^1.6"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
