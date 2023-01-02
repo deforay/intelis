@@ -66,6 +66,7 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . " ORDER BY latestSync DESC";
 
 $_SESSION['labSyncStatusDetails'] = $sQuery;
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
     <tr class="<?php echo $color; ?>">

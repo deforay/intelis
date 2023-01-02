@@ -173,7 +173,35 @@ $labInfo = $db->rawQueryOne($sQuery);
             },
             function(data) {
                 $("#syncStatusTable").html(data);
-                $('#syncStatusDataTable').dataTable();
+                $('#syncStatusDataTable').dataTable({
+                    "aoColumns": [
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        },
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        },
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        },
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        },
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        },
+                        {
+                            "sClass": "center",
+						    "bSortable": false
+                        }
+                    ],
+                    "ordering": false
+                });
                 $.unblockUI();
             });
     }
