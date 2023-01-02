@@ -216,10 +216,6 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-
-if (isset($_POST['t_a_facilityId']) && trim($_POST['t_a_facilityId']) != '') {
-     $sWhere[] = ' f.facility_id IN (' . $_POST['t_a_facilityId'] . ')';
-}
 if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
@@ -278,9 +274,6 @@ if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
 }
 if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
      $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
-}
-if (isset($_POST['t_a_labId']) && trim($_POST['t_a_labId']) != '') {
-     $sWhere[] = ' vl.lab_id like "' . $_POST['t_a_labId'] . '" ';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
      $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
