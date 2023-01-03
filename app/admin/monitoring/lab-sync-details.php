@@ -163,50 +163,7 @@ $labInfo = $db->rawQueryOne($sQuery);
             width: '100%',
             placeholder: "Select District"
         });
-        // loadData();
-        $.blockUI();
-        $.post("/admin/monitoring/get-sync-status-details.php", {
-                labId: '<?php echo $_GET['labId'];?>',
-                testType: $('#testType').val(),
-                province: $('#province').val(),
-                district: $('#district').val(),
-                facilityName: $('#facilityName').val()
-            },
-            function(data) {
-                $("#syncStatusTable").html(data);
-                oTable = $('#syncStatusDataTable').dataTable({
-                    "aoColumns": [
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        }
-                    ],
-                    "ordering": false
-                });
-
-                $.unblockUI();
-            });
-        
+        loadData();
         $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let url = $(this).attr('data-url');
             let facilityId = $(this).attr('data-facilityId');
@@ -218,8 +175,20 @@ $labInfo = $db->rawQueryOne($sQuery);
 
     function loadData() {
         $.blockUI();
-		oTable.fnDraw();
-		$.unblockUI();
+        $.post("/admin/monitoring/get-sync-status-details.php", {
+                labId: '<?php echo $_GET['labId'];?>',
+                testType: $('#testType').val(),
+                province: $('#province').val(),
+                district: $('#district').val(),
+                facilityName: $('#facilityName').val()
+            },
+            function(data) {
+                $("#syncStatusTable").html(data);
+                $('#syncStatusDataTable').dataTable({
+                    "ordering": false
+                });
+                $.unblockUI();
+            });
     }
 
     function getDistrictByProvince(provinceId) {
