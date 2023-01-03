@@ -7,8 +7,8 @@ $generator
   ->setUppercase(true)
   ->setLowercase(true)
   ->setNumbers(true)
-  ->setSymbols()
-  ->setLength(8);
+  ->setSymbols(true)
+  ->setLength(10);
 
-$password = $generator->generatePasswords(8);
+$password = $generator->generatePasswords(10);
 echo $password[0];
