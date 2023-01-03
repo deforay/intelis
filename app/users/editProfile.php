@@ -78,9 +78,9 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> </label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" /><br>
+                    <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" maxlength="16"/><br>
                     <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><b>Generate Random Password</b></button><br>
-                    <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
+                    <code><?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
               </div>
@@ -88,7 +88,7 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password"); ?></label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" />
+                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" maxlength="16"/>
                   </div>
                 </div>
               </div>
@@ -213,9 +213,9 @@ responsive: true
 
   function checkPasswordLength() {
     var pwd = $('#confirmPassword').val();
-    var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
+    var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){12,}$/;
     if (regex.test(pwd) == false) {
-      alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+      alert("<?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
       $('.ppwd').focus();
     }
     return regex.test(pwd);

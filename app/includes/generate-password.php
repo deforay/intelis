@@ -1,14 +1,18 @@
 <?php 
-use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
+use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 
-$generator = new ComputerPasswordGenerator();
+$generator = new RequirementPasswordGenerator();
 
 $generator
-  ->setUppercase(true)
-  ->setLowercase(true)
-  ->setNumbers(true)
-  ->setSymbols(true)
-  ->setLength(10);
+  ->setLength(12)
+  ->setOptionValue(RequirementPasswordGenerator::OPTION_UPPER_CASE, true)
+  ->setOptionValue(RequirementPasswordGenerator::OPTION_LOWER_CASE, true)
+  ->setOptionValue(RequirementPasswordGenerator::OPTION_NUMBERS, true)
+  ->setOptionValue(RequirementPasswordGenerator::OPTION_SYMBOLS, false)
+  ->setMinimumCount(RequirementPasswordGenerator::OPTION_UPPER_CASE, 2)
+  ->setMinimumCount(RequirementPasswordGenerator::OPTION_LOWER_CASE, 2)
+  ->setMinimumCount(RequirementPasswordGenerator::OPTION_NUMBERS, 2)
+;
 
-$password = $generator->generatePasswords(10);
-echo $password[0];
+$password = $generator->generatePassword();
+echo $password;
