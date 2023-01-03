@@ -34,6 +34,10 @@ $labInfo = $db->rawQueryOne($sQuery);
     .yellow {
         background: yellow !important;
     }
+    #syncStatusTable tr:hover {
+       cursor: pointer;
+       background: darkgray !important;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -113,7 +117,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                                 <td align="left"><?php echo $labInfo['results'];?></td>
                             </tr>
                         </table>
-                        <table id="syncStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center"><?php echo _("Facility Name"); ?></th>
@@ -159,10 +163,7 @@ $labInfo = $db->rawQueryOne($sQuery);
             width: '100%',
             placeholder: "Select District"
         });
-        loadData();
-    });
-
-    function loadData() {
+        // loadData();
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status-details.php", {
                 labId: '<?php echo $_GET['labId'];?>',
@@ -173,7 +174,7 @@ $labInfo = $db->rawQueryOne($sQuery);
             },
             function(data) {
                 $("#syncStatusTable").html(data);
-                $('#syncStatusDataTable').dataTable({
+                oTable = $('#syncStatusDataTable').dataTable({
                     "aoColumns": [
                         {
                             "sClass": "center",
@@ -202,8 +203,23 @@ $labInfo = $db->rawQueryOne($sQuery);
                     ],
                     "ordering": false
                 });
+
                 $.unblockUI();
             });
+        
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
+            let url = $(this).attr('data-url');
+            let facilityId = $(this).attr('data-facilityId');
+            let labId = $(this).attr('data-labId');
+            let link = url + "?facilityId=" + facilityId + "&labId="+labId;
+            window.open(link);
+        });        
+    });
+
+    function loadData() {
+        $.blockUI();
+		oTable.fnDraw();
+		$.unblockUI();
     }
 
     function getDistrictByProvince(provinceId) {

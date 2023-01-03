@@ -171,8 +171,8 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" />
-                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default">Generate Password</button><br>
+                                                  <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" /><br>
+                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><b>Generate Random Password</b></button><br>
                                                   <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>

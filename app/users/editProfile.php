@@ -78,7 +78,8 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> </label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control ppwd" id="confirmPassword" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" />
+                    <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" /><br>
+                    <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><b>Generate Random Password</b></button><br>
                     <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
@@ -219,6 +220,73 @@ responsive: true
     }
     return regex.test(pwd);
   }
+
+  function passwordType()
+     {
+          document.getElementById('password').type = "text";
+          document.getElementById('confirmPassword').type = "text";
+          $.post("/includes/generate-password.php", {
+                    size : 32
+               },
+               function(data) {
+                   // alert(data);
+                   $("#password").val(data);
+                   $("#confirmPassword").val(data);
+                   var cpy = copyToClipboard(document.getElementById("confirmPassword"));
+                   if(cpy==true)
+                         alert("Password copied to clipboard!");
+               });
+     }
+
+     function copyToClipboard(elem) {
+	  // create hidden text element, if it doesn't already exist
+          var targetId = "_hiddenCopyText_";
+          var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+          var origSelectionStart, origSelectionEnd;
+          if (isInput) {
+               // can just use the original source element for the selection and copy
+               target = elem;
+               origSelectionStart = elem.selectionStart;
+               origSelectionEnd = elem.selectionEnd;
+          } else {
+               // must use a temporary form element for the selection and copy
+               target = document.getElementById(targetId);
+               if (!target) {
+                    var target = document.createElement("textarea");
+                    target.style.position = "absolute";
+                    target.style.left = "-9999px";
+                    target.style.top = "0";
+                    target.id = targetId;
+                    document.body.appendChild(target);
+               }
+               target.textContent = elem.textContent;
+          }
+          // select the content
+          var currentFocus = document.activeElement;
+          target.focus();
+          target.setSelectionRange(0, target.value.length);
+          
+          // copy the selection
+          var succeed;
+          try {
+               succeed = document.execCommand("copy");
+          } catch(e) {
+               succeed = false;
+          }
+          // restore original focus
+          if (currentFocus && typeof currentFocus.focus === "function") {
+               currentFocus.focus();
+          }
+          
+          if (isInput) {
+               // restore prior selection
+               elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+          } else {
+               // clear temporary content
+               target.textContent = "";
+          }
+          return succeed;
+}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
