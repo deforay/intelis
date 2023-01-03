@@ -20,6 +20,8 @@ $data = $db->get("user_login_history", 25);
 
 <!-- DataTables Responsive CSS -->
 <link href="vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -160,8 +162,8 @@ $data = $db->get("user_login_history", 25);
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
 <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables-responsive/dataTables.responsive.js">
-</script>
+<script src="vendor/datatables-responsive/dataTables.responsive.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <!-- $(document).ready(function() {
 $('#example').DataTable({
 responsive: true
@@ -233,8 +235,13 @@ responsive: true
                    $("#password").val(data);
                    $("#confirmPassword").val(data);
                    var cpy = copyToClipboard(document.getElementById("confirmPassword"));
-                   if(cpy==true)
-                         alert("Password copied to clipboard!");
+                   if(cpy==true){
+                        // alert("Password copied to clipboard!");
+                        Toastify({
+                    text: "Random password generated and copied to clipboard",
+                    duration:3000,
+                    }).showToast();
+               }
                });
      }
 

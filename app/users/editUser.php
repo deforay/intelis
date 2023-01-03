@@ -43,6 +43,7 @@ $ftResult = $db->rawQuery($fQuery);
 ?>
 
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -334,6 +335,8 @@ $ftResult = $db->rawQuery($fQuery);
 </div>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 <script type="text/javascript">
      function clearUserSignature(img) {
           $(".userSignature").fileinput("clear");
@@ -525,8 +528,13 @@ $ftResult = $db->rawQuery($fQuery);
                    $("#password").val(data);
                    $("#confirmPassword").val(data);
                    var cpy = copyToClipboard(document.getElementById("confirmPassword"));
-                   if(cpy==true)
-                         alert("Password copied to clipboard!");
+                   if(cpy==true){
+                        // alert("Password copied to clipboard!");
+                        Toastify({
+                    text: "Random password generated and copied to clipboard",
+                    duration:3000,
+                    }).showToast();
+               }
                });
      }
 
