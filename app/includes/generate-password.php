@@ -4,11 +4,11 @@ use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 $generator = new ComputerPasswordGenerator();
 
 $generator
-  ->setUppercase(true)
-  ->setLowercase(true)
-  ->setNumbers(true)
-  ->setSymbols(true)
-  ->setLength(10);
+  ->setOptionValue(ComputerPasswordGenerator::OPTION_UPPER_CASE, true)
+  ->setOptionValue(ComputerPasswordGenerator::OPTION_LOWER_CASE, true)
+  ->setOptionValue(ComputerPasswordGenerator::OPTION_NUMBERS, true)
+  ->setOptionValue(ComputerPasswordGenerator::OPTION_SYMBOLS, false)
+;
 
-$password = $generator->generatePasswords(10);
-echo $password[0];
+$password = $generator->generatePassword();
+echo $password;

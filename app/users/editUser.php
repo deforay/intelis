@@ -433,7 +433,7 @@ $ftResult = $db->rawQuery($fQuery);
      }
 
      function checkPasswordLength() {
-          var pwd = $('#password').val();
+          var pwd = $('#confirmPassword').val();
           var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
           if (regex.test(pwd) == false) {
                alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
