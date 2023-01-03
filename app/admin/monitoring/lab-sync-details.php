@@ -109,7 +109,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
                                 <th>Last Request Sent from VLSTS :</th>
                                 <td align="left"><?php echo $labInfo['request'];?></td>
@@ -117,6 +117,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                                 <td align="left"><?php echo $labInfo['results'];?></td>
                             </tr>
                         </table>
+                        <hr>
                         <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
@@ -147,7 +148,7 @@ $labInfo = $db->rawQueryOne($sQuery);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-    var oTable = null;
+    var oTable = 0;
     $(document).ready(function() {
         $('#facilityName').select2({
             width: '100%',
@@ -184,9 +185,12 @@ $labInfo = $db->rawQueryOne($sQuery);
             },
             function(data) {
                 $("#syncStatusTable").html(data);
-                $('#syncStatusDataTable').dataTable({
-                    "ordering": false
-                });
+                if(oTable == 0){
+                    $('#syncStatusDataTable').dataTable({
+                        "ordering": false
+                    });
+                    oTable = 1;
+                }
                 $.unblockUI();
             });
     }
