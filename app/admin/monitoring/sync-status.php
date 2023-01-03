@@ -35,6 +35,15 @@ $activeTestModules = $general->getActiveTestModules();
     .center {
         text-align: center;
     }
+
+    tr td a {
+        color:#000;
+        text-decoration: underline;
+    }
+    tr td a:active,
+    tr td a:hover {
+        color:#000;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
