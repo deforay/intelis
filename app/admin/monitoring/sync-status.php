@@ -35,9 +35,10 @@ $activeTestModules = $general->getActiveTestModules();
     .center {
         text-align: center;
     }
+
     #syncStatusTable tr:hover {
-       cursor: pointer;
-       background: darkgray !important;
+        cursor: pointer;
+        background: #eee !important;
     }
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -159,11 +160,11 @@ $activeTestModules = $general->getActiveTestModules();
         });
         loadData();
 
-        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
             let facilityId = $(this).attr('data-facilityId');
             let link = "lab-sync-details.php?labId=" + facilityId;
             window.open(link);
-        }); 
+        });
     });
 
     function loadData() {
