@@ -35,6 +35,10 @@ $activeTestModules = $general->getActiveTestModules();
     .center {
         text-align: center;
     }
+    #syncStatusTable tr:hover {
+       cursor: pointer;
+       background: darkgray !important;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -108,7 +112,7 @@ $activeTestModules = $general->getActiveTestModules();
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="syncStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center"><?php echo _("Lab Name"); ?></th>
@@ -154,6 +158,12 @@ $activeTestModules = $general->getActiveTestModules();
             placeholder: "Select District"
         });
         loadData();
+
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
+            let facilityId = $(this).attr('data-facilityId');
+            let link = "lab-sync-details.php?labId=" + facilityId;
+            window.open(link);
+        }); 
     });
 
     function loadData() {

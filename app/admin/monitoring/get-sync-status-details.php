@@ -69,8 +69,8 @@ $_SESSION['labSyncStatusDetails'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr class="<?php echo $color; ?>">
-        <td><a href="<?php echo $url;?>?facilityId=<?php echo base64_encode($aRow['facility_id']);?>&labId=<?php echo ($_POST['labId']);?>" target="_blank"><?php echo ucwords($aRow['facility_name']); ?></a></td>
+    <tr class="<?php echo $color; ?>" data-facilityId="<?php echo base64_encode($aRow['facility_id']);?>" data-labId="<?php echo ($_POST['labId']);?>" data-url="<?php echo $url;?>">
+        <td><?php echo ucwords($aRow['facility_name']); ?></td>
         <td><?php echo ucwords($_POST['testType']); ?></td>
         <td><?php echo ucwords($aRow['province']); ?></td>
         <td><?php echo ucwords($aRow['district']); ?></td>
