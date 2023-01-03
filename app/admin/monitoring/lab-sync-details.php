@@ -5,17 +5,17 @@ require_once(APPLICATION_PATH . '/header.php');
 $facilityDb = new \Vlsm\Models\Facilities();
 $geoLocationDb = new \Vlsm\Models\GeoLocations();
 $facilityDetails = $facilityDb->getAllFacilities();
-foreach($facilityDetails as $row){
+foreach ($facilityDetails as $row) {
     $facilityNameList[$row['facility_id']] = $row['facility_name'];
 }
 $stateNameList = $geoLocationDb->getProvinces("yes");
 $activeTestModules = $general->getActiveTestModules();
 
-$sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id WHERE f.facility_id = ".base64_decode($_GET['labId']) ." GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
+$sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id WHERE f.facility_id = " . base64_decode($_GET['labId']) . " GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
 $labInfo = $db->rawQueryOne($sQuery);
 ?>
-<style>˝
-    .select2-selection__choice {
+<style>
+    ˝ .select2-selection__choice {
         color: black !important;
     }
 
@@ -34,16 +34,17 @@ $labInfo = $db->rawQueryOne($sQuery);
     .yellow {
         background: yellow !important;
     }
+
     #syncStatusTable tr:hover {
-       cursor: pointer;
-       background: darkgray !important;
+        cursor: pointer;
+        background: #eee !important;
     }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-sync"></em> <?php echo _("Lab Sync Details For ") ?><span style="font-weight: 500;"><?php echo $labInfo['facility_name'];?></span></h1>
+        <h1><em class="fa-solid fa-sync"></em> <?php echo _("Lab Sync Details For ") ?><span style="font-weight: 500;"><?php echo $labInfo['facility_name']; ?></span></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Lab Sync Details"); ?></li>
@@ -55,7 +56,7 @@ $labInfo = $db->rawQueryOne($sQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
                             <td>
@@ -109,14 +110,15 @@ $labInfo = $db->rawQueryOne($sQuery);
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
                                 <th>Last Request Sent from VLSTS :</th>
-                                <td align="left"><?php echo $labInfo['request'];?></td>
+                                <td align="left"><?php echo $labInfo['request']; ?></td>
                                 <th>Last Result Received from Lab</th>
-                                <td align="left"><?php echo $labInfo['results'];?></td>
+                                <td align="left"><?php echo $labInfo['results']; ?></td>
                             </tr>
                         </table>
+                        <hr>
                         <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
@@ -147,7 +149,7 @@ $labInfo = $db->rawQueryOne($sQuery);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-    var oTable = null;
+    var oTable = 0;
     $(document).ready(function() {
         $('#facilityName').select2({
             width: '100%',
@@ -163,10 +165,20 @@ $labInfo = $db->rawQueryOne($sQuery);
             width: '100%',
             placeholder: "Select District"
         });
-        // loadData();
+        loadData();
+        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
+            let url = $(this).attr('data-url');
+            let facilityId = $(this).attr('data-facilityId');
+            let labId = $(this).attr('data-labId');
+            let link = url + "?facilityId=" + facilityId + "&labId=" + labId;
+            window.open(link);
+        });
+    });
+
+    function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status-details.php", {
-                labId: '<?php echo $_GET['labId'];?>',
+                labId: '<?php echo $_GET['labId']; ?>',
                 testType: $('#testType').val(),
                 province: $('#province').val(),
                 district: $('#district').val(),
@@ -174,52 +186,14 @@ $labInfo = $db->rawQueryOne($sQuery);
             },
             function(data) {
                 $("#syncStatusTable").html(data);
-                oTable = $('#syncStatusDataTable').dataTable({
-                    "aoColumns": [
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        },
-                        {
-                            "sClass": "center",
-						    "bSortable": false
-                        }
-                    ],
-                    "ordering": false
-                });
-
+                if (oTable == 0) {
+                    $('#syncStatusDataTable').dataTable({
+                        "ordering": false
+                    });
+                    oTable = 1;
+                }
                 $.unblockUI();
             });
-        
-        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
-            let url = $(this).attr('data-url');
-            let facilityId = $(this).attr('data-facilityId');
-            let labId = $(this).attr('data-labId');
-            let link = url + "?facilityId=" + facilityId + "&labId="+labId;
-            window.open(link);
-        });        
-    });
-
-    function loadData() {
-        $.blockUI();
-		oTable.fnDraw();
-		$.unblockUI();
     }
 
     function getDistrictByProvince(provinceId) {

@@ -40,16 +40,16 @@ if (isset($testType) && $testType == 'tb') {
 
 $sQuery = "SELECT f.facility_id, 
               f.facility_name, GREATEST(
-                    COALESCE(facility_attributes->>'$.remoteResultsSync', 0), 
-                    COALESCE(facility_attributes->>'$.remoteRequestsSync', 0)
+                    COALESCE(facility_attributes->>'$.".$testType."RemoteResultsSync', 0), 
+                    COALESCE(facility_attributes->>'$.".$testType."RemoteRequestsSync', 0)
                 ) as latestSync,
-                (f.facility_attributes->>'$.remoteResultsSync') as lastResultsSync, 
-                (f.facility_attributes->>'$.remoteRequestsSync') as lastRequestsSync, g_d_s.geo_name as province, g_d_d.geo_name as district  
+                (f.facility_attributes->>'$.".$testType."RemoteResultsSync') as lastResultsSync, 
+                (f.facility_attributes->>'$.".$testType."RemoteRequestsSync') as lastRequestsSync, g_d_s.geo_name as province, g_d_d.geo_name as district  
                FROM facility_details AS f 
                 LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id 
                 LEFT JOIN geographical_divisions as g_d_d ON g_d_d.geo_id = f.facility_district_id ";
 if (isset($_POST['testType']) && trim($_POST['testType']) != '' && isset($_POST['labId']) && trim($_POST['labId']) != '') {
-    $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from '.$table.' WHERE lab_id = '.base64_decode($_POST['labId']).') ';
+    $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from ' . $table . ' WHERE lab_id = ' . base64_decode($_POST['labId']) . ') ';
 }
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
@@ -63,13 +63,13 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
 if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . " ORDER BY latestSync DESC";
+$sQuery = $sQuery . " ORDER BY latestSync DESC, f.facility_name ASC";
 
 $_SESSION['labSyncStatusDetails'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr class="<?php echo $color; ?>" data-facilityId="<?php echo base64_encode($aRow['facility_id']);?>" data-labId="<?php echo ($_POST['labId']);?>" data-url="<?php echo $url;?>">
+    <tr class="<?php echo $color; ?>" data-facilityId="<?php echo base64_encode($aRow['facility_id']); ?>" data-labId="<?php echo ($_POST['labId']); ?>" data-url="<?php echo $url; ?>">
         <td><?php echo ucwords($aRow['facility_name']); ?></td>
         <td><?php echo ucwords($_POST['testType']); ?></td>
         <td><?php echo ucwords($aRow['province']); ?></td>

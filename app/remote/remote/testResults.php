@@ -133,22 +133,22 @@ try {
     $currentDateTime = $general->getCurrentDateTime();
     if (!empty($sampleCodes)) {
         $sql = 'UPDATE form_vl SET data_sync = ?,
-                    form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?)
-                    WHERE sample_code IN ("' . implode('","', $sampleCodes) . '")';
-        $db->rawQuery($sql, array(1, $currentDateTime));
+                form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)
+                WHERE sample_code IN ("' . implode('","', $sampleCodes) . '")';
+        $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
     }
 
     if (!empty($facilityIds)) {
         $facilityIds = array_unique($facilityIds);
         $sql = 'UPDATE facility_details 
-                        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?)
+                        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.vlRemoteResultsSync", ?)
                         WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-        $db->rawQuery($sql, array($currentDateTime));
+        $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
     }
     $sql = 'UPDATE facility_details SET 
-                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?) 
+                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.vlLastResultsSync", ?) 
                     WHERE facility_id = ?';
-    $db->rawQuery($sql, array($currentDateTime, $labId));
+    $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 
     echo $payload;
 } catch (\Exception $e) {
