@@ -10,12 +10,16 @@ $userName = ($_POST['username']);
 $emailId = ($_POST['email']);
 $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
+$secretKey = trim($_POST['secretKey']);
 
 $user = new \Vlsm\Models\Users();
 
 $userPassword = $user->passwordHash($password);
 
 try {
+    $key = file_get_contents("app/system-admin/secretKey.txt");
+
+    if($secretKey==trim($key)){
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
     $insertData = array(
         'system_admin_name'     => $userName,
@@ -24,9 +28,17 @@ try {
         'system_admin_password' => $userPassword
     );
     $db->insert($tableName, $insertData);
+    unlink("app/system-admin/secretKey.txt");
     $_SESSION['alertMsg'] = _("New User Added successfully");
-}
-        header("location:/system-admin/login/login.php");
+    header("location:/system-admin/login/login.php");
+    }
+    }
+    else{
+        $_SESSION['alertMsg'] = _("Invalid Secret Key, Please enter valid key");
+        header("location:/system-admin/setup/index.php");
+    }
+    
+        
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

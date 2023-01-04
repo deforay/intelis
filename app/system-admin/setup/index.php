@@ -8,6 +8,14 @@ $adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
     }
 
 $path = '/assets/img/remote-bg.jpg';
+$general = new \Vlsm\Models\General();
+
+$myfile = fopen("app/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
+
+$randomString = $general->generateRandomString();
+fwrite($myfile, $randomString);
+fclose($myfile);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,6 +78,10 @@ $path = '/assets/img/remote-bg.jpg';
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
               <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password');?>" title="" />
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
+              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?php echo _('Secret Key');?>" title="" />
             </div>
                         <div style="margin-top:10px" class="form-group">
                             <!-- Button -->
