@@ -31,3 +31,4 @@ configs/config.staging.php
 configs/config.development.php
 configs/bg.png
 configs/bg.jpg
+secretKey.txt
