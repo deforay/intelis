@@ -35,7 +35,7 @@ try {
 
     $db->orderBy("last_modified_datetime", "ASC");
 
-    $rResult = $db->get('form_vl', 5000);
+    $rResult = $db->get('form_vl', 10000);
 
     if (empty($rResult)) {
         exit(0);
@@ -46,15 +46,24 @@ try {
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
-        if ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) {
-            if (!empty($aRow['vl_result_category'])) {
-                $aRow['DashVL_Abs'] = (float)$aRow['result'];
-                $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+        // if ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) {
+        //     if (!empty($aRow['vl_result_category'])) {
+        //         $aRow['DashVL_Abs'] = (float)$aRow['result'];
+        //         $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+        //     } else {
+        //         $aRow['DashVL_Abs'] = (float)$aRow['result'];
+        //         $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+        //     }
+        // }
+
+        if (!empty($aRow['remote_sample_code'])) {
+            if (!empty($aRow['sample_code'])) {
+                $aRow['sample_code']      = $aRow['remote_sample_code'] . '-' . $aRow['sample_code'];
             } else {
-                $aRow['DashVL_Abs'] = (float)$aRow['result'];
-                $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+                $aRow['sample_code']      = $aRow['remote_sample_code'];
             }
         }
+                
         $output['data'][] = $aRow;
     }
 

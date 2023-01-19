@@ -11,7 +11,7 @@
 	```
 	sudo apt update && sudo apt upgrade -y;
 	sudo apt autoremove -y;
-	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync git gdebi -y;
+	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl acl snapd rsync git gdebi -y;
 
 	```
 	
@@ -30,6 +30,7 @@ Run the following commands in the terminal:
 sudo apt install apache2 -y;
 sudo a2enmod rewrite headers deflate;
 sudo service apache2 restart;
+sudo setfacl -R -m u:www-data:rwx /var/www;
 ```
 
 #### MySQL Setup
