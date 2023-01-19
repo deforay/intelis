@@ -3330,3 +3330,6 @@ INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES ('Password'
 
 -- Amit
 ALTER TABLE `eid_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
+
+-- Amit 20-Jan-2023 version 5.1.0
+UPDATE `system_config` SET `value` = '5.1.0' WHERE `system_config`.`name` = 'sc_version';
