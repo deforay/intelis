@@ -605,17 +605,17 @@ $disable = "disabled = 'disabled'";
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
-			$(".vlResult, .vlLog").hide();
-			$("#vlResult").removeClass('isRequired');
+			// $("#vlResult").val('').css('pointer-events', 'none');
+			// $("#vlLog").val('').css('pointer-events', 'none');
+			// $(".vlResult, .vlLog").hide();
+			// $("#vlResult").removeClass('isRequired');
 		} else {
 			$(".rejectionReason").hide();
 			$("#rejectionReason").removeClass('isRequired');
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-			$(".vlResult, .vlLog").show();
-			$("#vlResult").addClass('isRequired');
+			// $("#vlResult").css('pointer-events', 'auto');
+			// $("#vlLog").css('pointer-events', 'auto');
+			// $(".vlResult, .vlLog").show();
+			// $("#vlResult").addClass('isRequired');
 		}
 	});
 
