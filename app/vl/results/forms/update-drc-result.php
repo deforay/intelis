@@ -622,8 +622,8 @@ $disable = "disabled = 'disabled'";
 	function checkTestStatus() {
 		var status = $("#isSampleRejected").val();
 		if (status == 'yes') {
-			$('#vlResult').attr('disabled', false);
-			$('#vlLog').attr('disabled', false);
+			// $('#vlResult').attr('disabled', false);
+			// $('#vlLog').attr('disabled', false);
 			$(".rejectionReason").show();
 			$("#rejectionReason").addClass('isRequired');
 			$("#vlResult").val('').css('pointer-events', 'none');
