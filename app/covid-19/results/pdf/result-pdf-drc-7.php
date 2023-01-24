@@ -13,17 +13,17 @@ if (!class_exists('DRC_PDF')) {
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
-                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 } else {
-                    if ($this->fileExists($inrbImage)) {
+                    if ($this->imageExists($inrbImage)) {
                         $this->Image($inrbImage, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
 
                 //right logo
-                if ($this->fileExists($inrbImage)) {
+                if ($this->imageExists($inrbImage)) {
                     $this->Image($inrbImage, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 }
 
@@ -55,7 +55,7 @@ if (!class_exists('DRC_PDF')) {
 
                 // Define the path to the image that you want to use as watermark.
                 $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
-                if ($this->fileExists($watermarkImage)) {
+                if ($this->imageExists($watermarkImage)) {
                     $this->SetAlpha(0.1);
                     $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
                 }
@@ -364,7 +364,7 @@ if (!empty($result['lab_manager'])) {
     $labManagerSignature = '';
     if (!empty($labManagerRes['user_signature'])) {
         $labManagerSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $labManagerRes['user_signature'];
-        if ($general->fileExists($labManagerSignaturePath)) {
+        if ($general->imageExists($labManagerSignaturePath)) {
             $labManagerSignature = '<img src="' . $labManagerSignaturePath . '" style="width:70px;" /><br>';
         }
     }

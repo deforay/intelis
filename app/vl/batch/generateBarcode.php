@@ -95,9 +95,9 @@ if ($id > 0) {
                 $this->reviewed = $reviewed;
                 $this->worksheetName = $worksheetName;
             }
-            public function fileExists($filePath)
+            public function imageExists($filePath)
             {
-                return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+                return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
             }
             //Page header
             public function Header()
@@ -107,7 +107,7 @@ if ($id > 0) {
                 //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 // Set font
                 if (trim($this->logo) != "") {
-                    if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($image_file, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }

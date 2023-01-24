@@ -32,7 +32,7 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
@@ -409,7 +409,7 @@ if (sizeof($requestResult) > 0) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-            if (!empty($testUserSignaturePath) &&  $general->fileExists($testUserSignaturePath)) {
+            if (!empty($testUserSignaturePath) &&  $general->imageExists($testUserSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -430,7 +430,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedBySignaturePath) &&  $general->fileExists($reviewedBySignaturePath)) {
+            if (!empty($reviewedBySignaturePath) &&  $general->imageExists($reviewedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -452,7 +452,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($approvedBySignaturePath) &&  $general->fileExists($approvedBySignaturePath)) {
+            if (!empty($approvedBySignaturePath) &&  $general->imageExists($approvedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -481,7 +481,7 @@ if (sizeof($requestResult) > 0) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-            if (!empty($revisedSignaturePath) && $general->fileExists($revisedSignaturePath)) {
+            if (!empty($revisedSignaturePath) && $general->imageExists($revisedSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -571,7 +571,7 @@ if (sizeof($requestResult) > 0) {
         }
     }
 
-    if (count($pages) > 0) {
+    if (!empty($pages)) {
         $resultPdf = new Pdf_concat();
         $resultPdf->setFiles($pages);
         $resultPdf->setPrintHeader(false);

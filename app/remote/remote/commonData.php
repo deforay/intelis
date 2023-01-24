@@ -56,10 +56,10 @@ if ($data['Key'] == 'vlsm-get-remote') {
         
         // $condition = null;
         $response['vlResults'] = array();
-        // if (isset($data['vlResultsLastModified']) && !empty($data['vlResultsLastModified'])) {
-        //     $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
-        // }
-        // $response['vlResults'] = $general->fetchDataFromTable('r_vl_results', $condition);
+        if (isset($data['vlResultsLastModified']) && !empty($data['vlResultsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
+        }
+        $response['vlResults'] = $general->fetchDataFromTable('r_vl_results', $condition);
 
         $counter += (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']) + count($response['vlFailureReasons']) + count($response['vlResults']));
     }

@@ -36,9 +36,9 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
             $this->logo = $logo;
             $this->text = $text;
          }
-         public function fileExists($filePath)
+         public function imageExists($filePath)
          {
-            return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+            return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
          }
          //Page header
          public function Header()
@@ -276,7 +276,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
          <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post" action="vlResultMailHelper.php">
             <div class="row">
                <div class="col-lg-12" style="text-align:center !important;">
-                  <table class="table table-bordered table-striped" aria-hidden="true"  style="width:18%;margin-left:41%;">
+                  <table class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
                      <thead>
                         <tr>
                            <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>
@@ -313,8 +313,8 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                   <a href="../mail/vlResultMail.php" class="btn btn-default"> Cancel</a>&nbsp;
                   <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
                   <!-- <div><code><?php echo ($global['sync_path'] == '') ? 'Please enter "Sync Path" in General Config to enable file sharing via shared folder' : '' ?></code></div> -->
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile1; ?>" target="_blank"  rel="noopener" download style="text-decoration:none;">Click here to download the result only pdf</a></p>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile2; ?>" target="_blank"  rel="noopener" download style="text-decoration:none;">Click here to download the result pdf </a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile1; ?>" target="_blank" rel="noopener" download style="text-decoration:none;">Click here to download the result only pdf</a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile2; ?>" target="_blank" rel="noopener" download style="text-decoration:none;">Click here to download the result pdf </a></p>
                </div>
             </div>
          </form>
