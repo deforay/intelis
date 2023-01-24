@@ -384,7 +384,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/admin/monitoring/sources-of-requests.php"><span class="fa-solid fa-circle-notch"></span> <?php echo _("Source of Requests"); ?></a>
 												</li>
 											<?php } 
-											if (isset($_SESSION['privileges']) && in_array("sync-status.php", $_SESSION['privileges'])) { ?>
+											if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['privileges']) && in_array("sync-status.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview sync-status-menu">
 													<a href="/admin/monitoring/sync-status.php"><span class="fa-solid fa-traffic-light"></span> <?php echo _("Lab Sync Status"); ?></a>
 												</li>

@@ -37,7 +37,7 @@ sudo setfacl -R -m u:www-data:rwx /var/www;
 
 Run the following command in the terminal:
 
-```sudo apt install mysql-server -y```
+```sudo apt install mysql-server -y;```
 
 Now let us enter the MySQL terminal to set up the root user password
 
@@ -63,14 +63,14 @@ innodb_strict_mode = 0
 ```
 Save and Close file. Then restart mysql :
 
-```sudo service mysql restart```
+```sudo service mysql restart;```
 
 #### PHP Setup
 
 Run the following command in the terminal :
 
 ``` 
-sudo add-apt-repository ppa:ondrej/php
+sudo add-apt-repository ppa:ondrej/php;
 ```
 Press ENTER when prompted.
 
