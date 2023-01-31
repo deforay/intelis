@@ -95,7 +95,7 @@ foreach ($srcResults as $list) {
 						<tr>
 						<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (isset($_GET['daterange']) && !empty($_GET['daterange']))?$_GET['daterange']:"";?>"/>
 							</td>
 							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
@@ -538,8 +538,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
-
+			<?php if((isset($_GET['daterange']) && !empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')){ ?>
+				$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+				$('#sampleCollectionDate').val('<?php echo $_GET['daterange'];?>');
+			<?php }else { ?>
+					$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+			<?php } ?>
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
