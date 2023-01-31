@@ -1,0 +1,303 @@
+<?php
+ob_start();
+
+$title = "Move Manifest";
+
+require_once(APPLICATION_PATH . '/header.php');
+
+$general = new \Vlsm\Models\General();
+$facilitiesDb = new \Vlsm\Models\Facilities();
+
+$module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
+$testingLabs = $facilitiesDb->getTestingLabs($module);
+
+$usersDb = new \Vlsm\Models\Users();
+$usersList = array();
+$users = $usersDb->getActiveUsers();
+foreach ($users as $u) {
+	$usersList[$u["user_id"]] = $u['user_name'];
+}
+$facilities = $facilitiesDb->getHealthFacilities($module);
+$shortCode = strtoupper($module);
+if ($module == 'vl') {
+	$vlDb = new \Vlsm\Models\Vl($db);
+	$sampleTypes = $vlDb->getVlSampleTypes();
+} else if ($module == 'eid') {
+	$eidDb = new \Vlsm\Models\Eid($db);
+	$sampleTypes = $eidDb->getEidSampleTypes();
+} else if ($module == 'covid19') {
+	$shortCode = 'C19';
+	$covid19Db = new \Vlsm\Models\Covid19($db);
+	$sampleTypes = $covid19Db->getCovid19SampleTypes();
+} else if ($module == 'hepatitis') {
+	$shortCode = 'HEP';
+	$hepDb = new \Vlsm\Models\Hepatitis($db);
+	$sampleTypes = $hepDb->getHepatitisSampleTypes();
+} else if ($module == 'tb') {
+	$tbDb = new \Vlsm\Models\Tb($db);
+	$sampleTypes = $tbDb->getTbSampleTypes();
+}
+$testTypes = array(
+    "vl" => "Viral Load", 
+    "eid" => "Early Infant Diagnosis", 
+    "covid19" => "Covid-19",
+    "hepatitis" => "Hepatitis",
+    "tb" => "TB"
+);
+$packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
+
+?>
+<link href="/assets/css/multi-select.css" rel="stylesheet" />
+<style>
+	.select2-selection__choice {
+		color: #000000 !important;
+	}
+
+	#ms-sampleCode {
+		width: 110%;
+	}
+
+	.showFemaleSection {
+		display: none;
+	}
+
+	#sortableRow {
+		list-style-type: none;
+		margin: 30px 0px 30px 0px;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	#sortableRow li {
+		color: #333 !important;
+		font-size: 16px;
+	}
+
+	#alertText {
+		text-shadow: 1px 1px #eee;
+	}
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1><em class="fa-solid fa-pen-to-square"></em> Move Specimen Referral Manifest</h1>
+		<ol class="breadcrumb">
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
+			<li><a href="/specimen-referral-manifest/specimenReferralManifestList.php"> Manage Specimen Referral Manifest</a></li>
+			<li class="active">Move Specimen Referral Manifest</li>
+		</ol>
+	</section>
+
+	<!-- Main content -->
+	<section class="content">
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+			</div>
+			<br><br><br><br>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<!-- form start -->
+				<form class="form-horizontal" method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
+					<div class="box-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="facilityName" class="col-lg-4 control-label"><?php echo _("Facility Name");?> :</label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<select type="text" class="form-control select2" id="facilityName" name="facilityName" title="Choose one facility name">
+											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
+										</select>
+									</div>
+								</div>
+							</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab");?> <span class="mandatory">*</span> :</label>
+                                    <div class="col-lg-7" style="margin-left:3%;">
+                                        <select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<select type="text" class="form-control select2" id="testType" name="testType" title="Choose Test Type">
+											<?= $general->generateSelectOptions($testTypes, $module, '-- Select --'); ?>
+										</select>
+									</div>
+								</div>
+							</div>
+                            <div class="col-md-12 text-center">
+                                <div class="form-group">
+                                    <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
+                                    <a href="move-manifest.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
+                                </div>
+                            </div>
+						</div>
+					</div>
+
+					<br>
+					<div class="row" id="sampleDetails">
+						<div class="col-md-9 col-md-offset-1">
+							<div class="form-group">
+								<div class="col-md-12">
+									<div class="col-md-12">
+										<div style="width:60%;margin:0 auto;clear:both;">
+											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+										</div><br /><br />
+										<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" id="alertText" style="font-size:18px;"></div>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
+				<a href="specimenReferralManifestList.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
+			</div>
+			<!-- /.box-footer -->
+			</form>
+			<!-- /.row -->
+		</div>
+</div>
+<!-- /.box -->
+</section>
+<!-- /.content -->
+</div>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/assets/js/jquery.multi-select.js"></script>
+<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript">
+	noOfSamples = 100;
+	sortedTitle = [];
+
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'moveSpecimenReferralManifestForm'
+		});
+		if (flag) {
+			$.blockUI();
+			document.getElementById('moveSpecimenReferralManifestForm').submit();
+		}
+	}
+
+	$(document).ready(function() {
+		$(".select2").select2();
+		$(".select2").select2({
+			tags: true
+		});
+
+		$('.search').multiSelect({
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			afterInit: function(ms) {
+				var that = this,
+					$selectableSearch = that.$selectableUl.prev(),
+					$selectionSearch = that.$selectionUl.prev(),
+					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+					.on('keydown', function(e) {
+						if (e.which === 40) {
+							that.$selectableUl.focus();
+							return false;
+						}
+					});
+
+				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+					.on('keydown', function(e) {
+						if (e.which == 40) {
+							that.$selectionUl.focus();
+							return false;
+						}
+					});
+			},
+			afterSelect: function() {
+				//button disabled/enabled
+				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
+					$("#packageSubmit").attr("disabled", false);
+					$("#packageSubmit").css("pointer-events", "auto");
+				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+					$("#packageSubmit").attr("disabled", false);
+					$("#packageSubmit").css("pointer-events", "auto");
+				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+					alert("You have already selected Maximum no. of sample " + noOfSamples);
+					$("#packageSubmit").attr("disabled", true);
+					$("#packageSubmit").css("pointer-events", "none");
+				}
+				this.qs1.cache();
+				this.qs2.cache();
+			},
+			afterDeselect: function() {
+				//button disabled/enabled
+				if (this.qs2.cache().matchedResultsCount == 0) {
+					$("#packageSubmit").attr("disabled", true);
+					$("#packageSubmit").css("pointer-events", "none");
+				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
+					$("#packageSubmit").attr("disabled", false);
+					$("#packageSubmit").css("pointer-events", "auto");
+				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+					$("#packageSubmit").attr("disabled", false);
+					$("#packageSubmit").css("pointer-events", "auto");
+				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+					$("#packageSubmit").attr("disabled", true);
+					$("#packageSubmit").css("pointer-events", "none");
+				}
+				this.qs1.cache();
+				this.qs2.cache();
+			}
+		});
+
+		$('#select-all-samplecode').click(function() {
+			$('#sampleCode').multiSelect('select_all');
+			return false;
+		});
+		$('#deselect-all-samplecode').click(function() {
+			$('#sampleCode').multiSelect('deselect_all');
+			$("#packageSubmit").attr("disabled", true);
+			$("#packageSubmit").css("pointer-events", "none");
+			return false;
+		});
+	});
+
+	function getSampleCodeDetails() {
+		if ($('#testingLab').val() != '') {
+			$.blockUI();
+
+			$.post("/specimen-referral-manifest/getSpecimenReferralManifestSampleCodeDetails.php", {
+					module: $("#module").val(),
+					testingLab: $('#testingLab').val(),
+					facility: $('#facility').val(),
+					testType: $('#testType').val()
+				},
+				function(data) {
+					if (data != "") {
+						$("#sampleDetails").html(data);
+						$("#packageSubmit").attr("disabled", true);
+						$("#packageSubmit").css("pointer-events", "none");
+					}
+				});
+			$.unblockUI();
+		} else {
+			alert('Please select the testing lab');
+		}
+	}
+</script>
+<?php
+require_once(APPLICATION_PATH . '/footer.php');
+?>

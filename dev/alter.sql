@@ -3333,3 +3333,6 @@ ALTER TABLE `eid_imported_controls` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFA
 
 -- Amit 20-Jan-2023 version 5.1.0
 UPDATE `system_config` SET `value` = '5.1.0' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 31-Jan-2023
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'specimen-referral-manifest', 'move-manifest.php', 'Move Samples');
