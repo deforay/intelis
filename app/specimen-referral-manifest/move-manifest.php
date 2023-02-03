@@ -137,7 +137,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 							</div>
                             <div class="col-md-12 text-center">
                                 <div class="form-group">
-                                    <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
+                                    <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getManifestCodeDetails();return false;">Search </a>
                                     <a href="move-manifest.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 								<div class="col-md-12">
 									<div class="col-md-12">
 										<div style="width:60%;margin:0 auto;clear:both;">
-											<a href='#' id='select-all-packageCode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+											<a href='#' id='select-all-packageCode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-manifestCode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 										</div><br /><br />
 										<select id='packageCode' name="packageCode[]" multiple='multiple' class="search"></select>
 									</div>
@@ -219,8 +219,8 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		});
 
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
@@ -294,7 +294,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		});
 	});
 
-	function getSampleCodeDetails() {
+	function getManifestCodeDetails() {
 		if ($('#testingLab').val() != '') {
 			$.blockUI();
 
