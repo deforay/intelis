@@ -201,7 +201,7 @@ $activeTestModules = $general->getActiveTestModules();
     }
 
     function exportSyncStatus() {
-        // $.blockUI();
+        $.blockUI();
         $.post("generate-lab-sync-status-report.php", {},
             function(data) {
                 $.unblockUI();
