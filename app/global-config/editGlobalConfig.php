@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = _("Edit Global Configuration");
+$title = _("Edit General Configuration");
 
 require_once(APPLICATION_PATH . '/header.php');
 

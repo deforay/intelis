@@ -3,7 +3,7 @@
 // File included in addImportResultHelper.php
 
 try {
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table

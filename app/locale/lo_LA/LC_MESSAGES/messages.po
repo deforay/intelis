@@ -5903,11 +5903,11 @@ msgid "eg. Roche or Abbott"
 msgstr "eg. Roche ຫຼື Abbott"
 
 #: import-configs/addImportConfig.php:41 import-configs/editImportConfig.php:63
-msgid "Please enter configuration name"
+msgid "Please enter instrument name"
 msgstr "ກະລຸນາໃສ່ຊື່ການຕັ້ງຄ່າ"
 
 #: import-configs/addImportConfig.php:41 import-configs/editImportConfig.php:63
-msgid "This configuration name already exists.Try another name"
+msgid "This instrument name already exists.Try another name"
 msgstr "ຊື່ການຕັ້ງຄ່ານີ້ມີຢູ່ແລ້ວ. ລອງໃສ່ຊື່ອື່ນ"
 
 #: import-configs/addImportConfig.php:50 import-configs/editImportConfig.php:71
@@ -6246,7 +6246,7 @@ msgid "Import the file below. Make sure to pick the right Machine Configuration.
 msgstr "ນໍາເຂົ້າໄຟລ໌ຂ້າງລຸ່ມນີ້. ເຮັດ ໃຫ້ ແນ່ ໃຈວ່ າ ການ ເລືອກ ຕັ້ງ ທີ່ ຖືກ ຕ້ອງ ການ ເຄື່ອງ ຈັກ ."
 
 #: import-result/addImportResult.php:78
-msgid "Configuration Name"
+msgid "Instrument Name"
 msgstr "ຊື່ການຕັ້ງຄ່າ"
 
 #: import-result/addImportResult.php:80

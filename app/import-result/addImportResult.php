@@ -76,7 +76,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
-													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Name"); ?> <span class="mandatory">*</span></label>
+													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
 														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>

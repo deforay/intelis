@@ -9386,11 +9386,11 @@ msgstr ""
 #: import-configs/addImportConfig.php:48 import-configs/editImportConfig.php:74
 #, fuzzy
 #| msgid "General Configuration"
-msgid "Please enter configuration name"
-msgstr "Configuration générale"
+msgid "Please enter instrument name"
+msgstr ""
 
 #: import-configs/addImportConfig.php:48 import-configs/editImportConfig.php:74
-msgid "This configuration name already exists.Try another name"
+msgid "This instrument name already exists.Try another name"
 msgstr ""
 
 #: import-configs/addImportConfig.php:57 import-configs/editImportConfig.php:82
@@ -9894,8 +9894,8 @@ msgstr ""
 #: import-result/addImportResult.php:79
 #, fuzzy
 #| msgid "Confirmation Manifest"
-msgid "Configuration Name"
-msgstr "Confirmer le manifeste"
+msgid "Instrument Name"
+msgstr ""
 
 #: import-result/addImportResult.php:81
 msgid "Please select the import machine type"
