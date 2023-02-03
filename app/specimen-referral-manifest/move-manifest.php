@@ -53,7 +53,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		color: #000000 !important;
 	}
 
-	#ms-sampleCode {
+	#ms-packageCode {
 		width: 110%;
 	}
 
@@ -143,7 +143,16 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
                             </div>
 						</div>
 					</div>
-
+					<div class="col-md-12" style="text-align:center;padding: 20px;background: aliceblue;">
+						<div class="form-group">
+							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assigning Testing Lab");?> <span class="mandatory">*</span> :</label>
+							<div class="col-lg-4" style="margin-left:3%;">
+								<select type="text" class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this)">
+									<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+								</select>
+							</div>
+						</div>
+					</div>
 					<br>
 					<div class="row" id="sampleDetails">
 						<div class="col-md-9 col-md-offset-1">
@@ -151,9 +160,9 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 								<div class="col-md-12">
 									<div class="col-md-12">
 										<div style="width:60%;margin:0 auto;clear:both;">
-											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+											<a href='#' id='select-all-packageCode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 										</div><br /><br />
-										<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
+										<select id='packageCode' name="packageCode[]" multiple='multiple' class="search"></select>
 									</div>
 								</div>
 							</div>
@@ -190,6 +199,16 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		if (flag) {
 			$.blockUI();
 			document.getElementById('moveSpecimenReferralManifestForm').submit();
+		}
+	}
+
+	function checkLab(obj){
+		let _assign = $(obj).val();
+		let _lab = $('#testingLab').val();
+		if(_lab == _assign){
+			confirm("Please choose different lab to assign the package details.");
+			$(obj).val(null).trigger('change');
+			return false;
 		}
 	}
 
@@ -263,12 +282,12 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 			}
 		});
 
-		$('#select-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('select_all');
+		$('#select-all-packageCode').click(function() {
+			$('#packageCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('deselect_all');
+		$('#deselect-all-packageCode').click(function() {
+			$('#packageCode').multiSelect('deselect_all');
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");
 			return false;
@@ -279,10 +298,11 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		if ($('#testingLab').val() != '') {
 			$.blockUI();
 
-			$.post("/specimen-referral-manifest/getSpecimenReferralManifestSampleCodeDetails.php", {
+			$.post("/specimen-referral-manifest/get-manifest-package-code.php", {
 					module: $("#module").val(),
 					testingLab: $('#testingLab').val(),
 					facility: $('#facility').val(),
+					assignLab: $('#assignLab').val(),
 					testType: $('#testType').val()
 				},
 				function(data) {

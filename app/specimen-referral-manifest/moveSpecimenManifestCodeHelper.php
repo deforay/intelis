@@ -4,52 +4,38 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
+$table = 'form_vl';
+if ($_POST['testType'] == 'vl') {
+    $table = 'form_vl';
+} else if ($_POST['testType'] == 'eid') {
+    $table = 'form_eid';
+} else if ($_POST['testType'] == 'covid19') {
+    $table = 'form_covid19';
+} else if ($_POST['testType'] == 'hepatitis') {
+    $table = 'form_hepatitis';
+} else if ($_POST['testType'] == 'tb') {
+    $table = 'form_tb';
+}
 
 $general = new \Vlsm\Models\General();
 try {
-    if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != "" && count($_POST['sampleCode']) > 0) {
-        if ($_POST['testType'] == 'vl') {
-            $db = $db->where('vl_sample_id IN('.implode(",", $_POST['sampleCode']).')');
-            $result = $db->get('form_vl');
-        } else if ($_POST['testType'] == 'eid') {
-            $db = $db->where('eid_id IN('.implode(",", $_POST['sampleCode']).')');
-            $result = $db->get('form_eid');
-        } else if ($_POST['testType'] == 'covid19') {
-            $db = $db->where('covid19_id IN('.implode(",", $_POST['sampleCode']).')');
-            $result = $db->get('form_covid19');
-        } else if ($_POST['testType'] == 'hepatitis') {
-            $db = $db->where('hepatitis_id IN('.implode(",", $_POST['sampleCode']).')');
-            $result = $db->get('form_hepatitis');
-        } else if ($_POST['testType'] == 'tb') {
-            $db = $db->where('tb_id IN('.implode(",", $_POST['sampleCode']).')');
-            $result = $db->get('form_tb');
-        }
-
+    if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && count($_POST['packageCode']) > 0) {
         $value = array(
-            'lab_id'                    => $_POST['testingLab'],
-            'referring_lab_id'          => $result[0]['lab_id'],
+            'lab_id'                    => $_POST['assignLab'],
+            'referring_lab_id'          => $_POST['testingLab'],
             'last_modified_datetime'    => $db->now(),
             'samples_referred_datetime' => $db->now(),
             'data_sync'                 => 0
         );
-        if ($_POST['testType'] == 'vl') {
-            $db = $db->where('vl_sample_id IN('.implode(",", $_POST['sampleCode']).')');
-            $db->update('form_vl', $value);
-        } else if ($_POST['testType'] == 'eid') {
-            $db = $db->where('eid_id IN('.implode(",", $_POST['sampleCode']).')');
-            $db->update('form_eid', $value);
-        } else if ($_POST['testType'] == 'covid19') {
-            $db = $db->where('covid19_id IN('.implode(",", $_POST['sampleCode']).')');
-            $db->update('form_covid19', $value);
-        } else if ($_POST['testType'] == 'hepatitis') {
-            $db = $db->where('hepatitis_id IN('.implode(",", $_POST['sampleCode']).')');
-            $db->update('form_hepatitis', $value);
-        } else if ($_POST['testType'] == 'tb') {
-            $db = $db->where('tb_id IN('.implode(",", $_POST['sampleCode']).')');
-            $db->update('form_tb', $value);
-        }
-        $_SESSION['alertMsg'] = "Manifest details moved successfully";
+        /* Update Package details table */
+        $db = $db->where('package_code IN('.implode(",", $_POST['packageCode']).')');
+        $db->update('package_details', array("lab_id" => $_POST['assignLab']));
+        
+        /* Update test types */
+        $db = $db->where('sample_package_code IN('.implode(",", $_POST['packageCode']).')');
+        $db->update($table, $value);
+
+        $_SESSION['alertMsg'] = "Manifest code moved to lab successfully";
     }
     header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['testType']));
 } catch (Exception $exc) {
