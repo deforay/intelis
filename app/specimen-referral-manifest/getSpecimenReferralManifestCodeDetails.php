@@ -95,25 +95,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
     */
 $facilityQuery = '';
 
-// in case module is not set, we pick vl as the default one
-if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
-    $tableName = "form_vl";
-    $primaryKey = "vl_sample_id";
-} else if ($_POST['module'] == 'eid') {
-    $tableName = "form_eid";
-    $primaryKey = "eid_id";
-} else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
-    $tableName = "form_covid19";
-    $primaryKey = "covid19_id";
-} else if ($_POST['module'] == 'hepatitis') {
-    $tableName = "form_hepatitis";
-    $primaryKey = "hepatitis_id";
-} else if ($_POST['module'] == 'tb') {
-    $tableName = "form_tb";
-    $primaryKey = "tb_id";
-}
-
-$sQuery = "SELECT p.request_created_datetime, p.package_code, p.package_status, p.module, p.package_id,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id ";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
+            p.package_code, p.package_status,
+            p.module, p.package_id, p.number_of_samples,
+            f.facility_name as labName
+            FROM package_details p
+            INNER JOIN facility_details f on f.facility_id = p.lab_id ";
 
 
 if (isset($sWhere) && $sWhere != "") {
@@ -138,15 +125,12 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo($sQuery);die;
 //error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id $sWhere group by p.package_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id  where vl.vlsm_country_id ='" . $vlForm . "' $facilityQuery group by p.package_id ");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+/* Data set length after filtering */
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+
 /*
         * Output
     */
@@ -179,7 +163,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['package_code'];
     $row[] = strtoupper($aRow['module']);
     $row[] = $aRow['labName'];
-    $row[] = $aRow['sample_count'];
+    $row[] = $aRow['number_of_samples'];
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {

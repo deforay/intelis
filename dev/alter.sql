@@ -3336,3 +3336,27 @@ UPDATE `system_config` SET `value` = '5.1.0' WHERE `system_config`.`name` = 'sc_
 
 -- Thana 31-Jan-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'specimen-referral-manifest', 'move-manifest.php', 'Move Samples');
+
+-- Amit 06-Feb-2023
+ALTER TABLE `package_details` ADD `number_of_samples` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `package_details` ADD `last_modified_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `request_created_datetime`;
+
+UPDATE package_details A 
+INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_vl GROUP BY sample_package_code) as B
+  ON B.sample_package_code = A.package_code 
+SET A.number_of_samples = B.sampleCount;
+
+UPDATE package_details A 
+INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_eid GROUP BY sample_package_code) as B
+  ON B.sample_package_code = A.package_code 
+SET A.number_of_samples = B.sampleCount;
+
+UPDATE package_details A 
+INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_covid19 GROUP BY sample_package_code) as B
+  ON B.sample_package_code = A.package_code 
+SET A.number_of_samples = B.sampleCount;
+
+UPDATE package_details A 
+INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_hepatitis GROUP BY sample_package_code) as B
+  ON B.sample_package_code = A.package_code 
+SET A.number_of_samples = B.sampleCount;

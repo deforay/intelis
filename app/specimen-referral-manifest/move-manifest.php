@@ -160,7 +160,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 					</div>
 					<div class="col-md-12" style="text-align:center;padding: 20px;background: aliceblue;">
 						<div class="form-group">
-							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assign Manifest to Testing Lab");?> <span class="mandatory">*</span> :</label>
+							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assign Manifests to Testing Lab");?> <span class="mandatory">*</span> :</label>
 							<div class="col-lg-4" style="margin-left:3%;">
 								<select type="text" class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this)">
 									<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>

@@ -25,7 +25,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("move-manifest.php", $_SESSION['privileges'])) { ?>
-							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?php echo _("Move Manifest");?></a>
+							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _("Move Manifest");?></a>
 						<?php } if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
 							<a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest");?></a>
 						<?php } ?>
@@ -37,19 +37,19 @@ require_once(APPLICATION_PATH . '/header.php');
 							<thead>
 								<tr>
 									<!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkPackageData" onclick="checkAllPackageRows(this);"/></th> -->
-									<th>Manifest Code</th>
-									<th>Type of Test</th>
-									<th>Testing Labs</th>
-									<th>No. of Samples</th>
-									<th>Added On</th>
+									<th><?= _("Manifest Code"); ?></th>
+									<th><?= _("Test Type"); ?></th>
+									<th><?= _("Testing Lab"); ?></th>
+									<th><?= _("Number of Samples"); ?></th>
+									<th><?= _("Manifest Created On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("editSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-										<th>Action</th>
+										<th><?= _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty">Loading data from server</td>
+									<td colspan="6" class="dataTables_empty">Loading data from server</td>
 								</tr>
 							</tbody>
 							<input type="hidden" name="checkedPackages" id="checkedPackages" />
@@ -90,6 +90,9 @@ require_once(APPLICATION_PATH . '/header.php');
 				{
 					"sClass": "center",
 					"bSortable": false
+				},
+				{
+					"sClass": "center"
 				},
 				{
 					"sClass": "center"
@@ -202,10 +205,10 @@ require_once(APPLICATION_PATH . '/header.php');
 		// }
 	}
 
-	var count_elem = document.getElementById('specimenReferralManifestDataTable');
-	var div = document.createElement('div');
-	div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-	count_elem.parentNode.insertBefore(div, count_elem);
+	// var count_elem = document.getElementById('specimenReferralManifestDataTable');
+	// var div = document.createElement('div');
+	// div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
+	// count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
