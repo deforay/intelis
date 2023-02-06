@@ -105,6 +105,14 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
+									<label for="daterange" class="col-lg-4 control-label"><?php echo _("Sample Collection Date Range"); ?></label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
 									<label for="facilityName" class="col-lg-4 control-label"><?php echo _("Facility Name");?> :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2" id="facilityName" name="facilityName" title="Choose one facility name">
@@ -113,18 +121,18 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 									</div>
 								</div>
 							</div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab");?> <span class="mandatory">*</span> :</label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
-                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
 						</div>
 						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab");?> <span class="mandatory">*</span> :</label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+											<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
@@ -213,6 +221,32 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 	}
 
 	$(document).ready(function() {
+
+		$('#daterange').daterangepicker({
+			locale: {
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
+			},
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+		function(start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
+
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -302,6 +336,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 					module: $("#module").val(),
 					testingLab: $('#testingLab').val(),
 					facility: $('#facility').val(),
+					daterange: $('#daterange').val(),
 					assignLab: $('#assignLab').val(),
 					testType: $('#testType').val()
 				},

@@ -24,9 +24,10 @@ require_once(APPLICATION_PATH . '/header.php');
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-plus"></em> Move Manifest</a>
-						<?php if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-							<a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> Add Specimen Referral Manifest</a>
+						<?php if (isset($_SESSION['privileges']) && in_array("move-manifest.php", $_SESSION['privileges'])) { ?>
+							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-plus"></em> <?php echo _("Move Manifest");?></a>
+						<?php } if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
+							<a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest");?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
