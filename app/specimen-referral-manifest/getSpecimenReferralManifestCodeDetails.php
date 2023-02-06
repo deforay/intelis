@@ -105,9 +105,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' WHERE ' . $sWhere;
-    $sWhere = $sWhere . ' AND vl.vlsm_country_id ="' . $vlForm . '"';
 } else {
-    $sWhere = ' WHERE vl.vlsm_country_id ="' . $vlForm . '"';
+    $sWhere = '';
 }
 if (!empty($facilityMap)) {
     $sWhere = $sWhere . " AND facility_id IN(" . $facilityMap . ")";
