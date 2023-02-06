@@ -307,7 +307,7 @@
 		$(".request").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".vlRequestMailMenu").addClass('active');
-	} else if (splitsUrl == 'specimenReferralManifestList.php' || splitsUrl == 'addSpecimenReferralManifest.php' || splitsUrl == 'editSpecimenReferralManifest.php') {
+	} else if (splitsUrl == 'specimenReferralManifestList.php' || splitsUrl == 'addSpecimenReferralManifest.php' || splitsUrl == 'editSpecimenReferralManifest.php' || splitsUrl == 'move-manifest.php') {
 		searchStr = $(location).attr('search');
 		if (searchStr == '?t=' + btoa('vl')) {
 			$(".allMenu").removeClass('active');
