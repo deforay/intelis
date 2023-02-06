@@ -35,7 +35,7 @@ try {
         $db = $db->where('sample_package_code IN('.implode(",", $_POST['packageCode']).')');
         $db->update($table, $value);
 
-        $_SESSION['alertMsg'] = "Manifest code moved to lab successfully";
+        $_SESSION['alertMsg'] = "Manifest code(s) moved successfully";
     }
     header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['testType']));
 } catch (Exception $exc) {

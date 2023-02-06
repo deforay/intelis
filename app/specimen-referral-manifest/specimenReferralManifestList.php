@@ -25,7 +25,7 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("move-manifest.php", $_SESSION['privileges'])) { ?>
-							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-plus"></em> <?php echo _("Move Manifest");?></a>
+							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?php echo _("Move Manifest");?></a>
 						<?php } if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
 							<a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest");?></a>
 						<?php } ?>
