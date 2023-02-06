@@ -22,8 +22,8 @@ $vlForm = $general->getGlobalConfig('vl_form');
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
     */
-$aColumns = array('p.package_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.package_id', 'p.module', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
+$aColumns = array('p.package_code', 'p.module', 'labName', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('p.package_id', 'p.module', 'labName', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
 /* Indexed column (used for fast and accurate table cardinality) */
 // $sIndexColumn = "package_id";
 // $sTable = "package_details";
@@ -113,7 +113,7 @@ if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
     $primaryKey = "tb_id";
 }
 
-$sQuery = "SELECT p.request_created_datetime, p.package_code, p.package_status, p.module, p.package_id,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id";
+$sQuery = "SELECT p.request_created_datetime, p.package_code, p.package_status, p.module, p.package_id,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id ";
 
 
 if (isset($sWhere) && $sWhere != "") {
@@ -135,15 +135,15 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo($sQuery);die;
+// echo($sQuery);die;
 //error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id $sWhere group by p.package_id order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id $sWhere group by p.package_id order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id where vl.vlsm_country_id ='" . $vlForm . "' $facilityQuery group by p.package_id");
+$aResultTotal =  $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_count, f.facility_name as labName from $tableName vl right join package_details p on vl.sample_package_id = p.package_id left join facility_details f on f.facility_id = vl.lab_id  where vl.vlsm_country_id ='" . $vlForm . "' $facilityQuery group by p.package_id ");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
@@ -178,7 +178,8 @@ foreach ($rResult as $aRow) {
     //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['package_id'] . '"  value="' . $aRow['package_id'] . '" onclick="checkPackage(this);"  />';
     $row[] = $aRow['package_code'];
     $row[] = strtoupper($aRow['module']);
-    $row[] = $aRow['sample_code'];
+    $row[] = $aRow['labName'];
+    $row[] = $aRow['sample_count'];
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {

@@ -37,6 +37,7 @@ if ($module == 'vl') {
 	$tbDb = new \Vlsm\Models\Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
+
 $testTypes = array(
     "vl" => "Viral Load", 
     "eid" => "Early Infant Diagnosis", 
@@ -44,6 +45,13 @@ $testTypes = array(
     "hepatitis" => "Hepatitis",
     "tb" => "TB"
 );
+if(!empty(SYSTEM_CONFIG['modules'])){
+	foreach(SYSTEM_CONFIG['modules'] as $type=>$status){
+		if($status){
+			$testTypesNames[$type] = $testTypes[$type];
+		}
+	}
+}
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
 
 ?>
@@ -89,7 +97,6 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 			<li class="active">Move Specimen Referral Manifest</li>
 		</ol>
 	</section>
-
 	<!-- Main content -->
 	<section class="content">
 		<div class="box box-default">
@@ -138,7 +145,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2" id="testType" name="testType" title="Choose Test Type">
-											<?= $general->generateSelectOptions($testTypes, $module, '-- Select --'); ?>
+											<?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
 										</select>
 									</div>
 								</div>

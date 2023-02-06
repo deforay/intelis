@@ -39,6 +39,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkPackageData" onclick="checkAllPackageRows(this);"/></th> -->
 									<th>Manifest Code</th>
 									<th>Type of Test</th>
+									<th>Testing Labs</th>
 									<th>No. of Samples</th>
 									<th>Added On</th>
 									<?php if (isset($_SESSION['privileges']) && in_array("editSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
