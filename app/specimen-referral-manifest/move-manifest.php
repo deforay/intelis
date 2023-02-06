@@ -82,11 +82,11 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-angles-right"></em> Move Specimen Referral Manifest</h1>
+		<h1><em class="fa-solid fa-angles-right"></em> Move Manifests</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li><a href="/specimen-referral-manifest/specimenReferralManifestList.php"> Manage Specimen Referral Manifest</a></li>
-			<li class="active">Move Specimen Referral Manifest</li>
+			<li class="active">Move Manifests</li>
 		</ol>
 	</section>
 
@@ -153,7 +153,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 					</div>
 					<div class="col-md-12" style="text-align:center;padding: 20px;background: aliceblue;">
 						<div class="form-group">
-							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assigning Testing Lab");?> <span class="mandatory">*</span> :</label>
+							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assign Manifest to Testing Lab");?> <span class="mandatory">*</span> :</label>
 							<div class="col-lg-4" style="margin-left:3%;">
 								<select type="text" class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this)">
 									<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
