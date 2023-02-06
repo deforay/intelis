@@ -19,7 +19,7 @@ $country = $configResult[0]['value'];
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
 	$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-} else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
+} elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';
 }
 
@@ -27,13 +27,13 @@ $module = (isset($_POST['testType']) && !empty($_POST['testType']))?$_POST['test
 $query = "";
 if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM package_details as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.package_code ";
-} else if ($module == 'eid') {
+} elseif ($module == 'eid') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.eid_id FROM package_details as p INNER JOIN form_eid as vl ON vl.sample_package_code = p.package_code ";
-} else if ($module == 'covid19') {
+} elseif ($module == 'covid19') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM package_details as p INNER JOIN form_covid19 as vl ON vl.sample_package_code = p.package_code ";
-} else if ($module == 'hepatitis') {
+} elseif ($module == 'hepatitis') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM package_details as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.package_code ";
-} else if ($module == 'tb') {
+} elseif ($module == 'tb') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM package_details as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
 }
 $where = array();
