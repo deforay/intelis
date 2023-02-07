@@ -22,8 +22,8 @@ $vlForm = $general->getGlobalConfig('vl_form');
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
     */
-$aColumns = array('p.package_code', 'p.module', 'labName', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.package_id', 'p.module', 'labName', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
+$aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
 /* Indexed column (used for fast and accurate table cardinality) */
 // $sIndexColumn = "package_id";
 // $sTable = "package_details";
@@ -56,7 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
         * word by word on any field. It's possible to do here, but concerned about efficiency
         * on very large tables, and MySQL's regex functionality is very limited
     */
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -77,41 +77,57 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 /*
         * SQL queries
         * Get data to display
     */
-$facilityQuery = '';
+
+// in case module is not set, we pick vl as the default one
+if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
+    $tableName = "form_vl";
+    $primaryKey = "vl_sample_id";
+} else if ($_POST['module'] == 'eid') {
+    $tableName = "form_eid";
+    $primaryKey = "eid_id";
+} else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
+    $tableName = "form_covid19";
+    $primaryKey = "covid19_id";
+} else if ($_POST['module'] == 'hepatitis') {
+    $tableName = "form_hepatitis";
+    $primaryKey = "hepatitis_id";
+} else if ($_POST['module'] == 'tb') {
+    $tableName = "form_tb";
+    $primaryKey = "tb_id";
+}
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
             p.package_code, p.package_status,
             p.module, p.package_id, p.number_of_samples,
             f.facility_name as labName
             FROM package_details p
-            INNER JOIN facility_details f on f.facility_id = p.lab_id ";
+            INNER JOIN facility_details f on f.facility_id = p.lab_id";
 
+if (!empty($facilityMap)) {
+    $sQuery .= " INNER JOIN $tableName t on t.sample_package_code = p.package_code ";
 
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' WHERE ' . $sWhere;
+    $sWhere[] = " t.facility_id IN(" . $facilityMap . ") ";
+}
+
+if (!empty($sWhere)) {
+    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = '';
 }
-if (!empty($facilityMap)) {
-    $sWhere = $sWhere . " AND facility_id IN(" . $facilityMap . ")";
-    $facilityQuery = " AND facility_id IN(" . $facilityMap . ")";
-}
+
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.package_id';
 if (isset($sOrder) && $sOrder != "") {
