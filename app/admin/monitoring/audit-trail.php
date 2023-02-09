@@ -5,6 +5,8 @@
 		white-space: nowrap;
 	}
 </style>
+<link href="/assets/css/multi-select.css" rel="stylesheet" />
+
 <?php
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
@@ -40,6 +42,9 @@ function getColumnValues($db, $tableName, $sampleCode)
 				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
 	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
 }
+
+$resultColumn = getColumns($db, $tableName);
+
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -58,6 +63,7 @@ function getColumnValues($db, $tableName, $sampleCode)
 
 			<div class="col-xs-12">
 				<div class="box">
+			
 					<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 
 						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
@@ -104,12 +110,26 @@ function getColumnValues($db, $tableName, $sampleCode)
 					<div class="box">
 						<!-- /.box-header -->
 						<div class="box-body">
+							
 							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+		<select name="auditColumn" id="auditColumn" class="form-control" multiple="multiple">
+	<?php
+	//echo '<pre>'; print_r($resultColumn); die;
+	$i=0;
+	foreach($resultColumn as $col)
+	{
+	?>
+	<option value="<?php echo $i; ?>"><?php echo $col['COLUMN_NAME']; ?></option>
+	<?php
+	$i++;
+	}
+	?>
+</select>
 							<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 								<thead>
 									<tr>
 										<?php
-										$resultColumn = getColumns($db, $tableName);
+										
 										$colArr = array();
 										foreach ($resultColumn as $col) {
 											$colArr[] = $col['COLUMN_NAME'];
@@ -210,19 +230,37 @@ function getColumnValues($db, $tableName, $sampleCode)
 	</section>
 	<!-- /.content -->
 </div>
-
-<?php
-require_once(APPLICATION_PATH . '/footer.php');
-?>
-
+<script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript">
-	$(function() {
-		$("#auditTable").DataTable({
+
+
+$(document).ready(function() {
+
+		$("#auditColumn").select2({
+			placeholder: "<?php echo _("Select Facilities"); ?>"
+		});
+		table = $("#auditTable").DataTable({
 			scrollY: '50vh',
 			scrollX: true,
 			scrollCollapse: true,
 			paging: false,
 			"aaSorting": [1, "asc"]
 		});
+
+		$('#auditColumn').on('select2:select', function (e) {
+        e.preventDefault();
+		text = $(this).val();
+
+		for ( var i=0 ; i<text.length ; i++ ) {
+			table.column( text[i] ).visible( false );
+		}
+			table.columns.adjust().draw( false ); 
+			$(this).trigger("change");
+		
+    });
+	
 	});
 </script>
+<?php
+require_once(APPLICATION_PATH . '/footer.php');
+?>
