@@ -502,7 +502,7 @@ class Vl
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
 
 
-                error_log('Insert VL Sample : ' . $this->db->getLastQuery());
+                //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
@@ -514,6 +514,7 @@ class Vl
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $vlData['unique_id'] = $general->generateUUID();
                         $id = $this->db->insert("form_vl", $vlData);
+                        error_log($this->db->getLastError());
                     }
                 }
             }

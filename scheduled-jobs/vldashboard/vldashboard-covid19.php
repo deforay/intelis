@@ -30,7 +30,6 @@ try {
     $output['timestamp'] = strtotime($instanceUpdateOn);
     foreach ($rResult as $aRow) {
 
-        
         if (!empty($aRow['remote_sample_code'])) {
             if (!empty($aRow['sample_code'])) {
                 $aRow['sample_code']      = $aRow['remote_sample_code'] . '-' . $aRow['sample_code'];

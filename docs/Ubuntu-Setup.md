@@ -11,7 +11,7 @@
 	```
 	sudo apt update && sudo apt upgrade -y;
 	sudo apt autoremove -y;
-	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl snapd rsync git gdebi -y;
+	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl acl snapd rsync git gdebi -y;
 
 	```
 	
@@ -30,13 +30,14 @@ Run the following commands in the terminal:
 sudo apt install apache2 -y;
 sudo a2enmod rewrite headers deflate;
 sudo service apache2 restart;
+sudo setfacl -R -m u:www-data:rwx /var/www;
 ```
 
 #### MySQL Setup
 
 Run the following command in the terminal:
 
-```sudo apt install mysql-server -y```
+```sudo apt install mysql-server -y;```
 
 Now let us enter the MySQL terminal to set up the root user password
 
@@ -62,14 +63,14 @@ innodb_strict_mode = 0
 ```
 Save and Close file. Then restart mysql :
 
-```sudo service mysql restart```
+```sudo service mysql restart;```
 
 #### PHP Setup
 
 Run the following command in the terminal :
 
 ``` 
-sudo add-apt-repository ppa:ondrej/php
+sudo add-apt-repository ppa:ondrej/php;
 ```
 Press ENTER when prompted.
 

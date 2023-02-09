@@ -27,7 +27,7 @@ if (sizeof($requestResult) > 0) {
           }
           // create new PDF document
           $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-          if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+          if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = $result['facilityLogo'];
           } else {
                $logoPrintInPdf = $arr['logo'];
@@ -460,7 +460,7 @@ if (sizeof($requestResult) > 0) {
           }
      }
 
-     if (count($pages) > 0) {
+     if (!empty($pages)) {
           $resultPdf = new Pdf_concat();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);

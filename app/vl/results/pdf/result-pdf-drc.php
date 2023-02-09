@@ -4,6 +4,12 @@
 
 class DRC_PDF extends MYPDF
 {
+	public $text = '';
+	public $lab = '';
+	public $formId = '';
+	public $logo = '';
+	public $labFacilityId = '';
+
 	//Page header
 	public function Header()
 	{
@@ -11,20 +17,20 @@ class DRC_PDF extends MYPDF
 		//$image_file = K_PATH_IMAGES.'logo_example.jpg';
 		//$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		// Set font
-
+		$image_file = null;
 		if (trim($this->logo) != '') {
-			if ($this->fileExists($this->logo)) {
+			if ($this->imageExists($this->logo)) {
 				$image_file = $this->logo;
-			} else if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+			} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
 				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-			} else if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+			} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 			}
 			if (!empty($image_file)) {
 				$this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 			}
 		}
-		if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
+		if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
 			$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
 			$this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
@@ -33,7 +39,6 @@ class DRC_PDF extends MYPDF
 		$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C', true);
 		if ($this->text != '') {
 			$this->SetFont('helvetica', '', 12);
-			//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
 			$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C', true);
 			$thirdHeading = '23';
 			$fourthHeading = '28';
@@ -48,11 +53,7 @@ class DRC_PDF extends MYPDF
 			$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
 		}
 		$this->SetFont('helvetica', '', 12);
-		if ($this->formId == 3) {
-			$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
-		} else {
-			$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
-		}
+		$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
 		$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C', true);
 	}
 }
@@ -89,7 +90,7 @@ if (sizeof($requestResult) > 0) {
 		}
 		// create new PDF document
 		$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+		if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
 			$logoPrintInPdf = $result['facilityLogo'];
 		} else {
 			$logoPrintInPdf = $arr['logo'];
@@ -104,10 +105,7 @@ if (sizeof($requestResult) > 0) {
 		$pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id']);
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
-		//$pdf->SetAuthor('Pal');
 		$pdf->SetTitle('PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST');
-		//$pdf->SetSubject('TCPDF Tutorial');
-		//$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
 		// set default header data
 		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -441,7 +439,7 @@ if (sizeof($requestResult) > 0) {
 		}
 		if (!isset($signResults) || empty($signResults)) {
 
-			if (!empty($userSignaturePath) && $pdf->fileExists($userSignaturePath) && !empty($resultApprovedBy)) {
+			if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
 				$html .= '<tr>';
 				$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
 				$html .= '</tr>';
@@ -452,7 +450,7 @@ if (sizeof($requestResult) > 0) {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:10px;"></td>';
 			$html .= '</tr>';
-			
+
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
 			$html .= '</tr>';
@@ -565,7 +563,7 @@ if (sizeof($requestResult) > 0) {
 		}
 	}
 
-	if (count($pages) > 0) {
+	if (!empty($pages)) {
 		$resultPdf = new Pdf_concat();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);

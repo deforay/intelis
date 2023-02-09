@@ -107,5 +107,6 @@ foreach ($rResult as $key => $aRow) {
         <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
         <td><?= $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
+        <td><?= (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - "; ?></td>
     </tr>
 <?php } ?>

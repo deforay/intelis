@@ -755,6 +755,11 @@ class General
         return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
     }
 
+    public function imageExists($filePath): bool
+    {
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+    }
+
 
     // This function removes control characters from the strings in the CSV file.
     // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
@@ -828,8 +833,14 @@ class General
             return $this->db->insert("track_api_requests", $data);
         } catch (\Exception $exc) {
             error_log($exc->getMessage());
-            error_log ($this->db->getLastError());
+            error_log($this->db->getLastError());
             error_log($exc->getTraceAsString());
         }
+    }
+
+    public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0))
+    {
+        $barcodeobj = new \TCPDFBarcode($code, $type);
+        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 }

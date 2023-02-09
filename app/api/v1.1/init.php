@@ -116,6 +116,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
 
 $data = array();
 $data['formId'] = $formId;
+$data['activeModule'] = implode(",", $activeModule);
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
 $data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
 $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, implode(",", $activeModule), $updatedDateTime);

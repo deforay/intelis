@@ -101,10 +101,10 @@ class MYPDF extends TCPDF
 		$this->systemConfig = $systemConfig;
 		$this->dataSync = $dataSync;
 	}
-	public function fileExists($filePath)
-	{
-		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
-	}
+	public function imageExists($filePath)
+    {
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+    }
 	//Page header
 	public function Header()
 	{
@@ -368,7 +368,7 @@ if (sizeof($requestResult) > 0) {
 			require($fileArray[$arr['vl_form']]);
 		}
 	}
-	if (count($pages) > 0) {
+	if (!empty($pages)) {
 		$resultPdf = new Pdf_concat();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);

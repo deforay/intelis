@@ -22,8 +22,8 @@ $vlForm = $general->getGlobalConfig('vl_form');
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
     */
-$aColumns = array('p.package_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.package_id', 'p.module', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
+$aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
 /* Indexed column (used for fast and accurate table cardinality) */
 // $sIndexColumn = "package_id";
 // $sTable = "package_details";
@@ -56,7 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
         * word by word on any field. It's possible to do here, but concerned about efficiency
         * on very large tables, and MySQL's regex functionality is very limited
     */
-$sWhere = "";
+$sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -77,23 +77,19 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere .= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-        if ($sWhere == "") {
-            $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        } else {
-            $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-        }
+
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 /*
         * SQL queries
         * Get data to display
     */
-$facilityQuery = '';
 
 // in case module is not set, we pick vl as the default one
 if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
@@ -113,19 +109,25 @@ if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
     $primaryKey = "tb_id";
 }
 
-$sQuery = "SELECT p.request_created_datetime, p.package_code, p.package_status, p.module, p.package_id,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
+            p.package_code, p.package_status,
+            p.module, p.package_id, p.number_of_samples,
+            f.facility_name as labName
+            FROM package_details p
+            INNER JOIN facility_details f on f.facility_id = p.lab_id";
 
-
-if (isset($sWhere) && $sWhere != "") {
-    $sWhere = ' WHERE ' . $sWhere;
-    $sWhere = $sWhere . ' AND vl.vlsm_country_id ="' . $vlForm . '"';
-} else {
-    $sWhere = ' WHERE vl.vlsm_country_id ="' . $vlForm . '"';
-}
 if (!empty($facilityMap)) {
-    $sWhere = $sWhere . " AND facility_id IN(" . $facilityMap . ")";
-    $facilityQuery = " AND facility_id IN(" . $facilityMap . ")";
+    $sQuery .= " INNER JOIN $tableName t on t.sample_package_code = p.package_code ";
+
+    $sWhere[] = " t.facility_id IN(" . $facilityMap . ") ";
 }
+
+if (!empty($sWhere)) {
+    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+} else {
+    $sWhere = '';
+}
+
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.package_id';
 if (isset($sOrder) && $sOrder != "") {
@@ -135,18 +137,15 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo($sQuery);die;
+// echo($sQuery);die;
 //error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id $sWhere group by p.package_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT p.request_created_datetime ,p.package_code,p.package_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join package_details p on vl.sample_package_id = p.package_id where vl.vlsm_country_id ='" . $vlForm . "' $facilityQuery group by p.package_id");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+/* Data set length after filtering */
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+
 /*
         * Output
     */
@@ -178,7 +177,8 @@ foreach ($rResult as $aRow) {
     //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['package_id'] . '"  value="' . $aRow['package_id'] . '" onclick="checkPackage(this);"  />';
     $row[] = $aRow['package_code'];
     $row[] = strtoupper($aRow['module']);
-    $row[] = $aRow['sample_code'];
+    $row[] = $aRow['labName'];
+    $row[] = $aRow['number_of_samples'];
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {

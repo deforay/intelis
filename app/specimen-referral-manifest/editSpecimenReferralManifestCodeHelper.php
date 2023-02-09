@@ -13,8 +13,10 @@ try {
         $lastId = $_POST['packageId'];
         $db->where('package_id', $lastId);
         $db->update($packageTable, array(
-            'lab_id'         => $_POST['testingLab'],
-            'package_status' => $_POST['packageStatus']
+            'lab_id' => $_POST['testingLab'],
+            'number_of_samples' => count($_POST['sampleCode']),
+            'package_status' => $_POST['packageStatus'],
+            'last_modified_datetime' => $db->now()
         ));
 
         if ($lastId > 0) {

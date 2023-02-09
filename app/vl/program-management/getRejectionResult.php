@@ -85,7 +85,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
         if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) {
         ?>
-                <tr>
+                <tr data-lab="<?php echo base64_encode($_POST['labName']);?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName']));?>" data-daterange="<?php echo $_POST['sampleCollectionDate'];?>" data-type="rejection">
                     <td><?php echo ucwords($tableRow['labname']); ?></td>
                     <td><?php echo ucwords($tableRow['facility_name']); ?></td>
                     <td><?php echo ucwords($tableRow['rejection_reason_name']); ?></td>
@@ -102,6 +102,17 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     $(function() {
         $("#vlRequestDataTable").DataTable();
     });
+    $(document).ready(function() {
+        $('#vlRequestDataTable tbody').on('click', 'tr', function() {
+            let facilityId = $(this).attr('data-facility');
+            let lab = $(this).attr('data-lab');
+            let daterange = $(this).attr('data-daterange');
+            let type = $(this).attr('data-type');
+            let link = "/vl/requests/vlRequest.php?labId=" + lab + "&facilityId=" + facilityId + "&daterange=" + daterange + "&type=" + type;
+            window.open(link);
+        });
+    });
+
     <?php
     if (isset($tResult) && count($tResult) > 0) { ?>
         $('#container').highcharts({

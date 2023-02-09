@@ -121,6 +121,7 @@ $activeTestModules = $general->getActiveTestModules();
                                     <th class="center"><?php echo _("Last Synced on"); ?></th>
                                     <th class="center"><?php echo _("Last Results Sync from Lab"); ?></th>
                                     <th class="center"><?php echo _("Last Requests Sync from VLSTS"); ?></th>
+                                    <th class="center"><?php echo _("Version"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
@@ -200,7 +201,7 @@ $activeTestModules = $general->getActiveTestModules();
     }
 
     function exportSyncStatus() {
-        // $.blockUI();
+        $.blockUI();
         $.post("generate-lab-sync-status-report.php", {},
             function(data) {
                 $.unblockUI();

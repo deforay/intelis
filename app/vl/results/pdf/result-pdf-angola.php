@@ -14,9 +14,9 @@ class MYPDFANG extends TCPDF
           //$this->text = $text;
           //$this->lab = $lab;
      }
-     public function fileExists($filePath)
+     public function imageExists($filePath)
      {
-          return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+          return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
      }
      //Page header
      public function Header()
@@ -359,7 +359,7 @@ if (sizeof($requestResult) > 0) {
           if ($result['result_status'] == '4') {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
           }
-         $html = '<table style="padding:0px 2px 2px 2px;">';
+          $html = '<table style="padding:0px 2px 2px 2px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Nº da amostra</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Data da colheita de amostra</td>';
@@ -602,7 +602,7 @@ if (sizeof($requestResult) > 0) {
           }
      }
 
-     if (count($pages) > 0) {
+     if (!empty($pages)) {
           $resultPdf = new Pdf_concat();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);

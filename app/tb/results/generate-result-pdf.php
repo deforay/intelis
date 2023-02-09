@@ -99,9 +99,9 @@ class MYPDF extends TCPDF
         $this->formId = $formId;
         $this->facilityInfo = $facilityInfo;
     }
-    public function fileExists($filePath)
+    public function imageExists($filePath)
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
     }
     //Page header
     public function Header()
@@ -370,7 +370,7 @@ if (sizeof($requestResult) > 0) {
             exit(0);
         }
     }
-    if (count($pages) > 0) {
+    if (!empty($pages)) {
         $resultPdf = new Pdf_concat();
         $resultPdf->setFiles($pages);
         $resultPdf->setPrintHeader(false);

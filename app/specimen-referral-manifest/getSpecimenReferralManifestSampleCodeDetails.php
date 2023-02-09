@@ -23,21 +23,21 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-$module = $_POST['module'];
-
+$module = (isset($_POST['testType']) && !empty($_POST['testType']))?$_POST['testType']:$_POST['module'];
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl ";
 } else if ($module == 'eid') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM form_eid as vl ";
 } else if ($module == 'covid19') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl ";
 } else if ($module == 'hepatitis') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl ";
 } else if ($module == 'tb') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl ";
 }
-
+$where = array();
+$where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') AND vl.vlsm_country_id = " . $country;
 if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	//print_r($dateRange);die;
@@ -48,33 +48,35 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 		$endDate = $general->isoDateFormat(trim($dateRange[1]));
 	}
 
-	$query .= " AND DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
+	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
 }
 
 if (!empty($facilityMap)) {
-	$query .= " AND facility_id IN(" . $facilityMap . ")";
+	$where[] = " facility_id IN(" . $facilityMap . ")";
 }
 
 if (isset($_POST['testingLab']) && !empty($_POST['testingLab'])) {
-	$query .= " AND (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null OR lab_id = 0))";
+	$where[] = " (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null OR lab_id = 0))";
 }
 
 if (isset($_POST['facility']) && !empty($_POST['facility'])) {
-	$query .= " AND (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
+	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
 if (isset($_POST['operator']) && !empty($_POST['operator'])) {
-	$query .= " AND (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
+	$where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
 if (isset($_POST['sampleType']) && !empty($_POST['sampleType']) && $module == 'vl') {
-	$query .= " AND (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
+	$where[] = " (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
-	$query .= " AND (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
+	$where[] = " (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
 }
-
+if(isset($where) && count($where) > 0){
+	$query .= " where ". implode(" AND ", $where);	
+}
 $query .= " ORDER BY vl.request_created_datetime ASC";
-//error_log($query);
+// die($query);
 $result = $db->rawQuery($query);
 
 ?>

@@ -15,8 +15,10 @@ try {
             'module'                    => $_POST['module'],
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
+            'number_of_samples'         => count($_POST['sampleCode']),
             'package_status'            => 'pending',
-            'request_created_datetime'  => $general->getCurrentDateTime()
+            'request_created_datetime'  => $db->now(),
+            'last_modified_datetime' => $db->now()
         );
         //var_dump($data);die;
         $db->insert($packageTable, $data);

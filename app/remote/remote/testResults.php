@@ -139,7 +139,7 @@ try {
     }
 
     if (!empty($facilityIds)) {
-        $facilityIds = array_unique($facilityIds);
+        $facilityIds = array_unique(array_filter($facilityIds));
         $sql = 'UPDATE facility_details 
                         SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.vlRemoteResultsSync", ?)
                         WHERE facility_id IN (' . implode(",", $facilityIds) . ')';

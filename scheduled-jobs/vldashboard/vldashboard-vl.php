@@ -5,25 +5,9 @@ ini_set('memory_limit', -1);
 require_once(__DIR__ . "/../../startup.php");
 
 
-
-
 $general = new \Vlsm\Models\General();
 $lastUpdate = null;
 $output = array();
-
-$suppressionLimit = 1000;
-
-$suppressedArray = array(
-    'target not detected',
-    'tnd',
-    'not detected',
-    'below detection limit',
-    'below detection level',
-    'bdl',
-    'suppressed',
-    'negative',
-    'negat'
-);
 
 try {
 
@@ -35,7 +19,7 @@ try {
 
     $db->orderBy("last_modified_datetime", "ASC");
 
-    $rResult = $db->get('form_vl', 5000);
+    $rResult = $db->get('form_vl', 10000);
 
     if (empty($rResult)) {
         exit(0);
@@ -46,38 +30,33 @@ try {
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
-        if ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) {
-            if (!empty($aRow['vl_result_category'])) {
-                $aRow['DashVL_Abs'] = (float)$aRow['result'];
-                $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+        if (!empty($aRow['remote_sample_code'])) {
+            if (!empty($aRow['sample_code'])) {
+                $aRow['sample_code']      = $aRow['remote_sample_code'] . '-' . $aRow['sample_code'];
             } else {
-                $aRow['DashVL_Abs'] = (float)$aRow['result'];
-                $aRow['DashVL_AnalysisResult'] = $aRow['vl_result_category'];
+                $aRow['sample_code']      = $aRow['remote_sample_code'];
             }
         }
+
         $output['data'][] = $aRow;
     }
 
     $currentDate = date('d-m-y-h-i-s');
-    // echo "<pre>";print_r($output);die;
 
     $filename = 'export-vl-result-' . $currentDate . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);
 
-
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    if(empty($vldashboardUrl)) exit(0);
+
+    if (empty($vldashboardUrl)) {
+        exit(0);
+    }
+
     $vldashboardUrl = rtrim($vldashboardUrl, "/");
 
-
-    //$vldashboardUrl = "http://vldashboard";
-
     $apiUrl = $vldashboardUrl . "/api/vlsm";
-    //error_log($apiUrl);
-    //$apiUrl.="?key_identity=XXX&key_credential=YYY";
-
 
     $data = [];
     $data['api-version'] = 'v2';

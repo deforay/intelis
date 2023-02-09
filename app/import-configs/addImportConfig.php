@@ -45,7 +45,7 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								<div class="form-group">
 									<label for="configurationName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _("eg. Roche or Abbott"); ?>' title='<?php echo _("Please enter configuration name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _('This configuration name already exists.Try another name'); ?>',null);setConfigFileName();" onkeypress="setConfigFileName();" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _("eg. Roche or Abbott"); ?>' title='<?php echo _("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _('This instrument name already exists.Try another name'); ?>',null);setConfigFileName();" onkeypress="setConfigFileName();" />
 									</div>
 								</div>
 							</div>

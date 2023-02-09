@@ -10,7 +10,7 @@ $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
-$headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS");
+$headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS", "Version");
 $colNo = 1;
 
 $styleArray = array(
@@ -87,6 +87,7 @@ foreach ($rResult as $aRow) {
     $row[] = $general->humanReadableDateFormat($aRow['latest']);
     $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - ";
     $output[] = $row;
 
     $no++;

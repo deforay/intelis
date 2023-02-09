@@ -16,9 +16,9 @@ class MYPDF extends TCPDF
         $this->text = $text;
         $this->labname = $labname;
     }
-    public function fileExists($filePath)
+    public function imageExists($filePath)
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
     }
     //Page header
     public function Header()

@@ -3,6 +3,12 @@ if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
     {
+        public $logo = '';
+        public $text = '';
+        public $lab = '';
+        public $facilityInfo = array();
+        public $htitle = '';
+
         //Page header
         public function Header()
         {
@@ -12,21 +18,21 @@ if (!class_exists('DRC_PDF')) {
 
                 // Check facility have the logo
                 $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                if ($this->fileExists($image_file)) {
+                if ($this->imageExists($image_file)) {
                     $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 } else {
                     $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    if ($this->fileExists($image_file)) {
+                    if ($this->imageExists($image_file)) {
                         $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
 
                 $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                if ($this->fileExists($image_file)) {
+                if ($this->imageExists($image_file)) {
                     $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 } else {
                     $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    if ($this->fileExists($image_file)) {
+                    if ($this->imageExists($image_file)) {
                         $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
@@ -55,22 +61,22 @@ if (!class_exists('DRC_PDF')) {
 
                 // Define the path to the image that you want to use as watermark.
                 $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "actual-" . $this->logo;
-                if (!empty($this->logo) && $this->fileExists($img_file)) {
+                if (!empty($this->logo) && $this->imageExists($img_file)) {
                 } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
-                    if ($this->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     }
                 } else {
                     $img_file = "";
                 }
                 // Render the image
-                if ($this->fileExists($img_file)) {
+                if ($this->imageExists($img_file)) {
                     $this->SetAlpha(0.1);
                     $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
                 }
 
                 $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png';
-                if ($this->fileExists($stamp)) {
+                if ($this->imageExists($stamp)) {
                     $this->SetAlpha(0.6);
                     $this->Image($stamp, 50, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
                     $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
@@ -103,7 +109,7 @@ $users = new \Vlsm\Models\Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-if ($pdf->fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
     $logoPrintInPdf = $result['facilityLogo'];
 } else {
     $logoPrintInPdf = $arr['logo'];
