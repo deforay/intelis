@@ -247,18 +247,26 @@ $(document).ready(function() {
 			"aaSorting": [1, "asc"]
 		});
 
-		$('#auditColumn').on('select2:select', function (e) {
-        e.preventDefault();
-		text = $(this).val();
-
-		for ( var i=0 ; i<text.length ; i++ ) {
-			table.column( text[i] ).visible( false );
-		}
-			table.columns.adjust().draw( false ); 
-			$(this).trigger("change");
 		
-    });
 	
+
+	$('#auditColumn').on('select2:select',function(e) {
+		var data = e.params.data;
+    console.log(data.id);
+   // $('option:selected', $(this)).each(function() {
+		table.column(data.id).visible( false );
+   // });
+  });
+
+  $('#auditColumn').on('select2:unselect',function(e) {
+    var data = e.params.data;
+    console.log(data.id);
+   // $('option:selected', $(this)).each(function() {
+		table.column( data.id ).visible( true );
+   // });
+  });
+
+
 	});
 </script>
 <?php
