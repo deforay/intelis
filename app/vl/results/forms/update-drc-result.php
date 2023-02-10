@@ -498,14 +498,14 @@ $disable = "disabled = 'disabled'";
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 										<td class="vlResult"><label for="vlResult">Résultat</label></td>
 										<td class="vlResult resultInputContainer">
-											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" oninput="calculateLogValue(this)">
 											<datalist id="possibleVlResults">
 
 											</datalist>
 										</td>
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 										<td class="vlLog">
-											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 										</td>
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>
@@ -738,7 +738,7 @@ $disable = "disabled = 'disabled'";
 			absValue = $("#vlResult").val();
 			absValue = Number.parseFloat(absValue).toFixed();
 			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-				$("#vlResult").val(absValue);
+				//$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');

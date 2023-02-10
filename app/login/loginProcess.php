@@ -214,7 +214,8 @@ try {
         }
     }
 } catch (Exception $exc) {
-    $_SESSION['alertMsg'] = _("Please check your login credentials");
+    //$_SESSION['alertMsg'] = _("Please check your login credentials");
+    $_SESSION['alertMsg'] = $exc->getMessage();
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
     header("Location:/login/login.php");

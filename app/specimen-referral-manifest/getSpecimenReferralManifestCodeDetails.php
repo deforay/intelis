@@ -17,6 +17,31 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $sCode = 'sample_code';
 }
 
+
+// in case module is not set, we pick vl as the default one
+if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
+    $module = 'vl';
+    $tableName = "form_vl";
+    $primaryKey = "vl_sample_id";
+} else if ($_POST['module'] == 'eid') {
+    $module = 'eid';
+    $tableName = "form_eid";
+    $primaryKey = "eid_id";
+} else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
+    $module = 'covid19';
+    $tableName = "form_covid19";
+    $primaryKey = "covid19_id";
+} else if ($_POST['module'] == 'hepatitis') {
+    $module = 'hepatitis';
+    $tableName = "form_hepatitis";
+    $primaryKey = "hepatitis_id";
+} else if ($_POST['module'] == 'tb') {
+    $module = 'tb';
+    $tableName = "form_tb";
+    $primaryKey = "tb_id";
+}
+
+
 $vlForm = $general->getGlobalConfig('vl_form');
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -57,6 +82,7 @@ if (isset($_POST['iSortCol_0'])) {
         * on very large tables, and MySQL's regex functionality is very limited
     */
 $sWhere = array();
+$sWhere[] = "p.module = '$module'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -91,23 +117,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
         * Get data to display
     */
 
-// in case module is not set, we pick vl as the default one
-if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
-    $tableName = "form_vl";
-    $primaryKey = "vl_sample_id";
-} else if ($_POST['module'] == 'eid') {
-    $tableName = "form_eid";
-    $primaryKey = "eid_id";
-} else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
-    $tableName = "form_covid19";
-    $primaryKey = "covid19_id";
-} else if ($_POST['module'] == 'hepatitis') {
-    $tableName = "form_hepatitis";
-    $primaryKey = "hepatitis_id";
-} else if ($_POST['module'] == 'tb') {
-    $tableName = "form_tb";
-    $primaryKey = "tb_id";
-}
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
             p.package_code, p.package_status,

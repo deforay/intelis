@@ -11,7 +11,7 @@
 	```
 	sudo apt update && sudo apt upgrade -y;
 	sudo apt autoremove -y;
-	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl acl snapd rsync git gdebi -y;
+	sudo apt install apt-transport-https ca-certificates lsb-release gnupg software-properties-common apt-transport-https wget vim zip unzip curl acl snapd rsync git gdebi wget gedit -y;
 
 	```
 	
