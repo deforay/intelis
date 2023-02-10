@@ -36,6 +36,8 @@ $state = $geoLocationDb->getProvinces("yes");
 	.select2-selection__choice {
 		color: black !important;
 	}
+	.select2-selection--multiple{ max-height:100px; width: auto; overflow-y:scroll !important; }
+
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
