@@ -6,6 +6,7 @@
 	}
 </style>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 <?php
 $title = _("Audit Trail");
@@ -112,7 +113,7 @@ $resultColumn = getColumns($db, $tableName);
 						<div class="box-body">
 							
 							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
-		<select name="auditColumn" id="auditColumn" class="form-control" multiple="multiple">
+		<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 	<?php
 	//echo '<pre>'; print_r($resultColumn); die;
 	$i=0;
@@ -230,44 +231,77 @@ $resultColumn = getColumns($db, $tableName);
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript">
 
+<script src="/assets/js/moment.min.js"></script>
+
+
+<script type="text/javascript">
 
 $(document).ready(function() {
 
 		$("#auditColumn").select2({
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _("Select Columns"); ?>"
 		});
 		table = $("#auditTable").DataTable({
 			scrollY: '50vh',
 			scrollX: true,
 			scrollCollapse: true,
 			paging: false,
-			"aaSorting": [1, "asc"]
+			"aaSorting": [1, "asc"],
+			/*dom: 'Bfrtip',
+        buttons: [
+             'excel'
+        ],*/
 		});
 
 		
-	
-
-	$('#auditColumn').on('select2:select',function(e) {
+/*	$('#auditColumn').on('select2:select',function(e) {
 		var data = e.params.data;
-    console.log(data.id);
-   // $('option:selected', $(this)).each(function() {
-		table.column(data.id).visible( false );
-   // });
+	
+		//table.column(data.id).visible( true );
+    	for ( var i=0 ; i<226 ; i++ ) {
+			if(data.id!=i)
+				table.column(i).visible( false );
+	}
+ 
   });
 
   $('#auditColumn').on('select2:unselect',function(e) {
     var data = e.params.data;
-    console.log(data.id);
-   // $('option:selected', $(this)).each(function() {
-		table.column( data.id ).visible( true );
-   // });
+    //console.log(data.id);
+	for ( var i=0 ; i<226 ; i++ ) {
+			if(data.id!=i)
+				table.column(i).visible( true );
+	}
   });
+i=0;
+$('#auditColumn').on('change',function(e) {
+	if ($(this).val() !== null && $(this).val() !== "" && i==0) {
+		table.columns().visible( false );
+		i++;
+	}
+	
+
+table.columns( [ $(this).val() ] ).visible(true);
+ 
+
+  });*/
+  $('#auditColumn').on("select2:select select2:unselect", function(e) {
+			if ($(this).val() !== null && $(this).val() !== "") {
+
+				//table.columns().every(function() {
+					table.columns().visible(false);
+				//});
+				table.columns($(this).val()).visible(true);
+			} else {
+				//table.columns().every(function() {
+					table.columns().visible(true);
+				//});
+			}
+		});
+});
 
 
-	});
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
