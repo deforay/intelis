@@ -32,7 +32,8 @@ $hepatitisQuery = "SELECT * FROM form_hepatitis
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-    $hepatitisQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
+    //$hepatitisQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
+    $hepatitisQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
     $hepatitisQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
 }

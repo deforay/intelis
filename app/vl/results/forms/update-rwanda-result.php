@@ -846,7 +846,7 @@ $disable = "disabled = 'disabled'";
 			absValue = $("#vlResult").val();
 			absValue = Number.parseFloat(absValue).toFixed();
 			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-				$("#vlResult").val(absValue);
+				//$("#vlResult").val(absValue);
 				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
 			} else {
 				$("#vlLog").val('');
