@@ -243,7 +243,7 @@ $(document).ready(function() {
 			placeholder: "<?php echo _("Select Columns"); ?>"
 		});
 		table = $("#auditTable").DataTable({
-			scrollY: '50vh',
+			scrollY: '250vh',
 			scrollX: true,
 			scrollCollapse: true,
 			paging: false,
