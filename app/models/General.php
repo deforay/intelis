@@ -816,6 +816,20 @@ class General
         try {
             $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData) : $requestData;
             $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData) : $responseData;
+            $output = array();
+            if(isset($requestData) && !empty($requestData)){
+                $output = $requestData;
+                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
+            }else if(isset($responseData) && !empty($responseData)){
+                $output = $responseData;
+                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR;
+            }
+            if(isset($output) && !empty($output)){
+                $filename = $transactionId . '.json';
+                $fp = fopen($pathname . $filename, 'w');
+                fwrite($fp, json_encode($output));
+                fclose($fp);
+            }
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
@@ -824,10 +838,10 @@ class General
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,
                 'api_url'           => $url ?: null,
-                'request_data'      => $requestData ?: null,
-                'response_data'     => $responseData ?: null,
-                //'facility_id'       => $facilityId ?: null,
-                'facility_id'            => $labId ?: null,
+                // 'request_data'      => $requestData ?: null,
+                // 'response_data'     => $responseData ?: null,
+                // 'facility_id'       => $facilityId ?: null,
+                'facility_id'       => $labId ?: null,
                 'data_format'       => $format ?: null
             );
             return $this->db->insert("track_api_requests", $data);
