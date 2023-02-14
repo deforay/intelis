@@ -248,56 +248,22 @@ $(document).ready(function() {
 			scrollCollapse: true,
 			paging: false,
 			"aaSorting": [1, "asc"],
-			/*dom: 'Bfrtip',
-        buttons: [
-             'excel'
-        ],*/
 		});
 
-		
-/*	$('#auditColumn').on('select2:select',function(e) {
-		var data = e.params.data;
-	
-		//table.column(data.id).visible( true );
-    	for ( var i=0 ; i<226 ; i++ ) {
-			if(data.id!=i)
-				table.column(i).visible( false );
-	}
- 
-  });
 
-  $('#auditColumn').on('select2:unselect',function(e) {
-    var data = e.params.data;
-    //console.log(data.id);
-	for ( var i=0 ; i<226 ; i++ ) {
-			if(data.id!=i)
-				table.column(i).visible( true );
-	}
-  });
-i=0;
-$('#auditColumn').on('change',function(e) {
-	if ($(this).val() !== null && $(this).val() !== "" && i==0) {
-		table.columns().visible( false );
-		i++;
-	}
-	
-
-table.columns( [ $(this).val() ] ).visible(true);
- 
-
-  });*/
   $('#auditColumn').on("select2:select select2:unselect", function(e) {
-			if ($(this).val() !== null && $(this).val() !== "") {
+		
+		var columns = $(this).val()
 
-				//table.columns().every(function() {
-					table.columns().visible(false);
-				//});
-				table.columns($(this).val()).visible(true);
-			} else {
-				//table.columns().every(function() {
-					table.columns().visible(true);
-				//});
-			}
+		if(columns=="" || columns==null)
+		{
+			table.columns().visible(true);
+		}
+		else{
+			table.columns().visible(false);
+			table.columns(columns).visible(true);
+		}
+	
 		});
 });
 
