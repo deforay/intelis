@@ -76,6 +76,7 @@ foreach ($syncedTypeResults as $synced) {
 						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
+									<th><?php echo _("Transaction Id"); ?></th>
 									<th><?php echo _("Number of Records Synced"); ?></th>
 									<th><?php echo _("Sync Type"); ?></th>
 									<th><?php echo _("Test Type"); ?></th>
@@ -86,7 +87,7 @@ foreach ($syncedTypeResults as $synced) {
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -153,10 +154,12 @@ foreach ($syncedTypeResults as $synced) {
 			}, {
 				"sClass": "center"
 			}, {
+				"sClass": "center"
+			}, {
 				"sClass": "center",
 				"bSortable": false
 			}],
-			"aaSorting": [4, "desc"],
+			"aaSorting": [5, "desc"],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/admin/monitoring/get-api-sync-history-list.php",
