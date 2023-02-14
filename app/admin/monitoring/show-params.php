@@ -6,7 +6,12 @@ $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
-
+if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
+    $request = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+}
+if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
+    $response = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+}
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
@@ -35,10 +40,10 @@ $result = $db->getOne('track_api_requests');
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($result['request_data'] ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson(json_decode($request) ?: array()); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($result['response_data'] ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson(json_decode($response) ?: array()); ?></pre>
                 </div>
             </div>
     </section>

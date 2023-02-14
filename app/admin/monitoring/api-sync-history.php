@@ -86,7 +86,7 @@ foreach ($syncedTypeResults as $synced) {
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
