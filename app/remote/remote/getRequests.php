@@ -100,7 +100,7 @@ if ($db->count > 0) {
 }
 
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
 $currentDateTime = $general->getCurrentDateTime();

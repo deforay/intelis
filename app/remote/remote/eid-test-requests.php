@@ -93,7 +93,7 @@ if ($db->count > 0) {
   $payload = json_encode([]);
 }
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
 $currentDateTime = $general->getCurrentDateTime();

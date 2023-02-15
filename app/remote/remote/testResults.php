@@ -126,7 +126,7 @@ try {
     $payload = json_encode($sampleCodes);
 
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', null, $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
 
