@@ -120,7 +120,7 @@ try {
             'timestamp' => time(),
         );
     }
-    $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, json_encode($payload), 'json');
+    $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
     echo json_encode($payload);
     exit(0);

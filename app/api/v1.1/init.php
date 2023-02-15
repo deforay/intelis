@@ -469,5 +469,5 @@ if (isset($user['token_updated']) && $user['token_updated'] === true) {
 } else {
     $payload['token'] = null;
 }
-$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, json_encode($payload), 'json');
+$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 echo json_encode($payload);

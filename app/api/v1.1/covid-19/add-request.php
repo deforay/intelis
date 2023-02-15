@@ -532,7 +532,7 @@ try {
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'covid19', $requestUrl, $input, json_encode($payload), 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;
 exit(0);
