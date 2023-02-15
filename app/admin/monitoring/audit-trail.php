@@ -310,7 +310,7 @@ $(document).ready(function() {
               var colour = $(table.cell(':eq('+count+')',td).node()).css('background-color');            
 
               if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
-                $('c[r^="' + excelMap[td] + '"]', row).attr( 'background-color', 'orange' );
+                $('c[r^="' + excelMap[td] + '"]', row).attr( 's', '35' );
               }
              
             }
