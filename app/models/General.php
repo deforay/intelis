@@ -814,22 +814,36 @@ class General
     {
 
         try {
-            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData) : $requestData;
-            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData) : $responseData;
-            $output = array();
-            if(isset($requestData) && !empty($requestData)){
-                $output = $requestData;
-                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
-            }else if(isset($responseData) && !empty($responseData)){
-                $output = $responseData;
-                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR;
+            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData, JSON_UNESCAPED_SLASHES) : $requestData;
+            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData, JSON_UNESCAPED_SLASHES) : $responseData;
+
+
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api')) {
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api', 0777, true);
             }
-            if(isset($output) && !empty($output)){
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests')) {
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests', 0777, true);
+            }
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses')) {
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses', 0777, true);
+            }
+
+            if (isset($requestData) && !empty($requestData) && $requestData != '[]') {
+                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
                 $filename = $transactionId . '.json';
                 $fp = fopen($pathname . $filename, 'w');
-                fwrite($fp, json_encode($output));
+                fwrite($fp, $requestData);
                 fclose($fp);
             }
+
+            if (isset($responseData) && !empty($responseData) && $responseData != '[]') {
+                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR;
+                $filename = $transactionId . '.json';
+                $fp = fopen($pathname . $filename, 'w');
+                fwrite($fp, $responseData);
+                fclose($fp);
+            }
+
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
@@ -838,9 +852,6 @@ class General
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,
                 'api_url'           => $url ?: null,
-                // 'request_data'      => $requestData ?: null,
-                // 'response_data'     => $responseData ?: null,
-                // 'facility_id'       => $facilityId ?: null,
                 'facility_id'       => $labId ?: null,
                 'data_format'       => $format ?: null
             );

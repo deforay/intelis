@@ -9,8 +9,8 @@ $result = $db->getOne('track_api_requests');
 if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
     $request = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
 }
-if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
-    $response = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
+    $response = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
 }
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
