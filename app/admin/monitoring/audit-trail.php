@@ -323,7 +323,7 @@ $(document).ready(function() {
       }
 	        }
     ],
-			scrollY: '50vh',
+			scrollY: '250vh',
 			scrollX: true,
 			scrollCollapse: true,
 			paging: false,

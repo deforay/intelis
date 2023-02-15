@@ -3360,3 +3360,11 @@ UPDATE package_details A
 INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_hepatitis GROUP BY sample_package_code) as B
   ON B.sample_package_code = A.package_code 
 SET A.number_of_samples = B.sampleCount;
+
+-- Amit 13-Feb-2023
+ALTER TABLE `form_vl` ADD INDEX(`sample_package_id`);
+ALTER TABLE `form_eid` ADD INDEX(`sample_package_id`);
+ALTER TABLE `form_covid19` ADD INDEX(`sample_package_id`);
+ALTER TABLE `form_hepatitis` ADD INDEX(`sample_package_id`);
+ALTER TABLE `form_tb` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_tb` ADD INDEX(`sample_package_id`);

@@ -10,8 +10,8 @@ $primaryKey = "api_track_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')");
-$orderColumns = array('number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on');
+$aColumns = array('transaction_id', 'number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')");
+$orderColumns = array('transaction_id', 'number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -140,6 +140,7 @@ $output = array(
 );
 foreach ($rResult as $key => $aRow) {
      $row = array();
+     $row[] = $aRow['transaction_id'];
      $row[] = $aRow['number_of_records'];
      $row[] = str_replace("-", " ", ucwords($aRow['request_type']));
      $row[] = strtoupper($aRow['test_type']);

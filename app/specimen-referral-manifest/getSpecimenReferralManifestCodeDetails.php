@@ -121,14 +121,14 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
             p.package_code, p.package_status,
             p.module, p.package_id, p.number_of_samples,
-            f.facility_name as labName
+            lab.facility_name as labName
             FROM package_details p
-            INNER JOIN facility_details f on f.facility_id = p.lab_id";
+            INNER JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($facilityMap)) {
-    $sQuery .= " INNER JOIN $tableName t on t.sample_package_code = p.package_code ";
-
+    $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.package_id ";
     $sWhere[] = " t.facility_id IN(" . $facilityMap . ") ";
+    //$sWhere[] = " lab.facility_id IN(" . $facilityMap . ") ";
 }
 
 if (!empty($sWhere)) {
