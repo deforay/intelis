@@ -103,15 +103,17 @@ $resultColumn = getColumns($db, $tableName);
 					</form>
 				</div>
 			</div>
+			
 			<?php
 			if (!empty($sampleCode)) {
 				$posts = getColumnValues($db, $tableName, $sampleCode);
+				
 			?>
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->
 						<div class="box-body">
-							
+							<?php if (!empty($posts)) { ?>
 							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 		<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 	<?php
@@ -126,6 +128,7 @@ $resultColumn = getColumns($db, $tableName);
 	}
 	?>
 </select>
+					
 							<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 								<thead>
 									<tr>
@@ -145,7 +148,7 @@ $resultColumn = getColumns($db, $tableName);
 								</thead>
 								<tbody>
 									<?php
-									if (!empty($posts)) {
+									
 										for ($i = 0; $i < count($posts); $i++) {
 									?>
 											<tr>
@@ -161,17 +164,12 @@ $resultColumn = getColumns($db, $tableName);
 												<?php }
 												?>
 											</tr>
-									<?php
-										}
-									} else {
-										echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
-									}
-									?>
+								<?php } ?>
 
 								</tbody>
 
 							</table>
-
+							
 							<p>
 							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
 							</p>
@@ -193,7 +191,6 @@ $resultColumn = getColumns($db, $tableName);
 								</thead>
 								<tbody>
 									<?php
-									if (!empty($posts)) {
 										for ($i = 0; $i < count($posts); $i++) {
 									?>
 											<tr>
@@ -210,22 +207,25 @@ $resultColumn = getColumns($db, $tableName);
 											</tr>
 									<?php
 										}
-									} else {
-										echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
-									}
+									
 									?>
 								</tbody>
 
 							</table>
-
+									<?php } 
+									else
+									{
+										echo '<h3 align="center">Records are not available for this sample code. Please enter  valid sample code</h3>';
+									}
+									?>
 						</div>
 					</div>
 					<!-- /.box -->
 				</div>
 				<!-- /.col -->
 			<?php
-			}
-			?>
+		}
+?>
 		</div>
 		<!-- /.row -->
 	</section>
@@ -310,7 +310,7 @@ $(document).ready(function() {
               var colour = $(table.cell(':eq('+count+')',td).node()).css('background-color');            
 
               if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
-                $('c[r^="' + excelMap[td] + '"]', row).attr( 's', '35' );
+                $('c[r^="' + excelMap[td] + '"]', row).attr( 'background-color', 'orange' );
               }
              
             }
