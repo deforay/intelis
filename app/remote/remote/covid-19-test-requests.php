@@ -67,7 +67,7 @@ if ($db->count > 0) {
 
 $payload = json_encode($data);
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', null, $origData, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 $currentDateTime = $general->getCurrentDateTime();
 if (!empty($sampleIds)) {

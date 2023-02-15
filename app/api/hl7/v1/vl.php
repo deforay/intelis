@@ -178,7 +178,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
         // http_response_code(204);
         unset($ack);
     }
-    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7Msg, $response, 'hl7');
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'vl', $_SERVER['REQUEST_URI'], $hl7Msg, $response, 'hl7');
 }
 
 if ($type[1] == 'REQ' || $type[1] == 'UPI') {

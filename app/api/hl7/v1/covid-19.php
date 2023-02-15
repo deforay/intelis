@@ -551,5 +551,5 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         echo $returnString;
         unset($ack);
     }
-    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $response, 'hl7');
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $_SERVER['REQUEST_URI'], $hl7Msg, $response, 'hl7');
 }

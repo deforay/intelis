@@ -97,7 +97,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 $payload = json_encode($sampleCodes);
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', null, $jsonResponse, $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 $currentDateTime = $general->getCurrentDateTime();
 if (!empty($sampleCodes)) {
