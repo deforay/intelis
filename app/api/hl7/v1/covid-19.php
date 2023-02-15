@@ -92,8 +92,6 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     if (!empty($rowData)) {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
             /* MSH Information */
             $msh = new MSH();
@@ -194,22 +192,22 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             $msg->setSegment($obx, 8);
 
             $hl7Data .= $msg->toString(true);
+            $response = $hl7Data;
             echo $hl7Data;
-            die;
         }
         // http_response_code(200);
     } else {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], 0, $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         $msh = new MSH();
         $msh->setMessageType(["COVID-19", "RES"]);
         $ack = new ACK($msg, $msh);
         $ack->setAckCode('AR', "Data not found");
         $returnString = $ack->toString(true);
+        $response = $returnString;
         echo $returnString;
         // http_response_code(204);
         unset($ack);
     }
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $response, 'hl7');
 }
 
 if ($type[1] == 'REQ' || $type[1] == 'UPI') {
@@ -425,6 +423,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $returnString = $ack->toString(true);
             echo $returnString;
             // http_response_code(204);
+            $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $returnString, 'hl7');
             unset($ack);
             exit(0);
         } else {
@@ -536,8 +535,6 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $returnString = "";
     // print_r($savedSamples);die;
     if ($id > 0 && isset($covid19Data) && count($covid19Data) > 0) {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], 1, $type[1], 'covid19', $requestUrl, $hl7, 'hl7');
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {
@@ -550,7 +547,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $spm->setField(2, $sampleCode);
         // $ack->setSegment($spm, 2);
         $returnString = $msg->toString(true);
+        $response = $returnString;
         echo $returnString;
         unset($ack);
     }
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $response, 'hl7');
 }

@@ -51,6 +51,8 @@ try {
     // print_r(explode("MSH", $hl7Msg));die;
     foreach (explode("MSH", $hl7Msg) as $hl7) {
         if (isset($hl7) && !empty($hl7) && trim($hl7) != "") {
+            
+            $transactionId = $general->generateUUID();
             $hl7 = 'MSH' . $hl7;
             $msg = new Message($hl7);
             // To get the type of test

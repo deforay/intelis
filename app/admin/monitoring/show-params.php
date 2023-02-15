@@ -40,10 +40,10 @@ if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= $general->prettyJson(json_decode($request) ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson($request ?: array()); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= $general->prettyJson(json_decode($response) ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson($response ?: array()); ?></pre>
                 </div>
             </div>
     </section>
