@@ -6,7 +6,7 @@
 	}
 </style>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 <?php
 $title = _("Audit Trail");
@@ -153,7 +153,7 @@ $resultColumn = getColumns($db, $tableName);
 												for ($j = 0; $j < count($colArr); $j++) {
 
 													if (($j > 3) && ($i > 0) && $posts[$i][$colArr[$j]] != $posts[$i - 1][$colArr[$j]]) {
-														echo '<td style="background: orange; color:black;" >' . $posts[$i][$colArr[$j]] . '</td>';
+														echo '<td style="background-color: orange;" >' . $posts[$i][$colArr[$j]] . '</td>';
 													} else {
 														echo '<td>' . $posts[$i][$colArr[$j]] . '</td>';
 													}
@@ -232,17 +232,97 @@ $resultColumn = getColumns($db, $tableName);
 	<!-- /.content -->
 </div>
 
-<script src="/assets/js/moment.min.js"></script>
 
 
 <script type="text/javascript">
 
+function printString(columnNumber)
+{
+    // To store result (Excel column name)
+        let columnName = [];
+  
+        while (columnNumber > 0) {
+            // Find remainder
+            let rem = columnNumber % 26;
+  
+            // If remainder is 0, then a
+            // 'Z' must be there in output
+            if (rem == 0) {
+                columnName.push("Z");
+                columnNumber = Math.floor(columnNumber / 26) - 1;
+            }
+            else // If remainder is non-zero
+            {
+                columnName.push(String.fromCharCode((rem - 1) + 'A'.charCodeAt(0)));
+                columnNumber = Math.floor(columnNumber / 26);
+            }
+        }
+  
+        // Reverse the string and print result
+        return columnName.reverse().join("");
+}
 $(document).ready(function() {
 
 		$("#auditColumn").select2({
 			placeholder: "<?php echo _("Select Columns"); ?>"
 		});
 		table = $("#auditTable").DataTable({
+			dom: 'Bfrtip',
+    buttons: [ 
+	   {
+	            extend: 'excelHtml5',
+				exportOptions: {
+                    columns: ':visible'
+                },
+	            text: 'Export To Excel',
+	            title:'AuditTrailSample-<?php echo $sampleCode; ?>',
+	            extension:'.xlsx',
+				customize: function ( xlsx ) {
+        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+        // Map used to map column index to Excel index
+		
+		var excelMap = [];
+	b=0;
+	for(a=1;a<=226;a++)
+		{
+				excelMap[b] = printString(a);
+				b++;
+		}
+        var count = 0;
+        var skippedHeader = 0;
+		
+        $('row', sheet).each( function () {
+          var row = this;
+          if (skippedHeader==2) {
+//             var colour = $('tbody tr:eq('+parseInt(count)+') td:eq(2)').css('background-color');
+            
+            // Output first row
+            if (count === 0) {
+              console.log(this);
+            }
+            
+            for (td=0; td<226; td++) {
+              
+              // Output cell contents for first row
+              if (count === 0) {
+                console.log($('c[r^="' + excelMap[td] + '"]', row).text());
+              }
+              var colour = $(table.cell(':eq('+count+')',td).node()).css('background-color');            
+
+              if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
+                $('c[r^="' + excelMap[td] + '"]', row).attr( 's', '35' );
+              }
+             
+            }
+            count++;
+          }
+          else {
+            skippedHeader++;
+          }
+        });
+      }
+	        }
+    ],
 			scrollY: '50vh',
 			scrollX: true,
 			scrollCollapse: true,
@@ -266,8 +346,6 @@ $(document).ready(function() {
 	
 		});
 });
-
-
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
