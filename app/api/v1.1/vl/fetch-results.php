@@ -270,6 +270,6 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'vl', $requestUrl, $params, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'vl', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
 exit(0);

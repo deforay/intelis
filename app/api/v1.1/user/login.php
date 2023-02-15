@@ -7,7 +7,7 @@ $users = new \Vlsm\Models\Users();
 $app = new \Vlsm\Models\App();
 
 $vlsmSystemConfig = $general->getSystemConfig();
-
+$transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
 try {
     if (isset($input['userName']) && !empty($input['userName']) && isset($input['password']) && !empty($input['password'])) {
@@ -120,7 +120,7 @@ try {
             'timestamp' => time(),
         );
     }
-
+    $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
     echo json_encode($payload);
     exit(0);

@@ -818,30 +818,33 @@ class General
             $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData, JSON_UNESCAPED_SLASHES) : $responseData;
 
 
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api')) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api', 0777, true);
+            $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0777, true);
             }
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests')) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests', 0777, true);
+            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'requests')) {
+                mkdir($folderPath . DIRECTORY_SEPARATOR . 'requests', 0777, true);
             }
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses')) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses', 0777, true);
-            }
-
-            if (isset($requestData) && !empty($requestData) && $requestData != '[]') {
-                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
-                $filename = $transactionId . '.json';
-                $fp = fopen($pathname . $filename, 'w');
-                fwrite($fp, $requestData);
-                fclose($fp);
+            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'responses')) {
+                mkdir($folderPath . DIRECTORY_SEPARATOR . 'responses', 0777, true);
             }
 
-            if (isset($responseData) && !empty($responseData) && $responseData != '[]') {
-                $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR;
-                $filename = $transactionId . '.json';
-                $fp = fopen($pathname . $filename, 'w');
-                fwrite($fp, $responseData);
-                fclose($fp);
+            if (!empty($requestData) && $requestData != '[]') {
+                $path = $folderPath
+                    . DIRECTORY_SEPARATOR
+                    . 'requests'
+                    . DIRECTORY_SEPARATOR
+                    . $transactionId . '.json';
+                file_put_contents($path, $requestData);
+            }
+
+            if (!empty($responseData) && $responseData != '[]') {
+                $path = $folderPath
+                    . DIRECTORY_SEPARATOR
+                    . 'responses'
+                    . DIRECTORY_SEPARATOR
+                    . $transactionId . '.json';
+                file_put_contents($path, $responseData);
             }
 
             $data = array(

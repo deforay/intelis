@@ -91,8 +91,6 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     if (!empty($rowData)) {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7, 'hl7');
         foreach ($rowData as $row) {
             /* MSH Information */
             $msh = new MSH();
@@ -164,22 +162,23 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             $msg->setSegment($obx, 7);
 
             $hl7Data .= $msg->toString(true);
+            $response = $hl7Data;
             echo $hl7Data;
             die;
         }
         // http_response_code(200);
     } else {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], 0, $type[1], 'vl', $requestUrl, $hl7, 'hl7');
         $msh = new MSH();
         $msh->setMessageType(["VL", "RES"]);
         $ack = new ACK($msg, $msh);
         $ack->setAckCode('AR', "Data not found");
         $returnString = $ack->toString(true);
+        $response = $returnString;
         echo $returnString;
         // http_response_code(204);
         unset($ack);
     }
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7Msg, $response, 'hl7');
 }
 
 if ($type[1] == 'REQ' || $type[1] == 'UPI') {
@@ -358,6 +357,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             echo $returnString;
             // http_response_code(204);
             unset($ack);
+            $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7Msg, $returnString, 'hl7');
             exit(0);
         } else {
             $id = $db->insert("form_vl", $vlData);
@@ -481,8 +481,6 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $savedSamples = $db->rawQueryOne($sQuery);
     }
     if ($id > 0 && isset($vlData) && count($vlData) > 0) {
-        $app = new \Vlsm\Models\App();
-        $trackId = $app->addApiTracking($user['user_id'], 1, $type[1], 'vl', $requestUrl, $hl7, 'hl7');
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {
@@ -495,7 +493,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $spm->setField(2, $sampleCode);
         // $ack->setSegment($spm, 2);
         $returnString = $msg->toString(true);
+        $response = $returnString;
         echo $returnString;
         unset($ack);
     }
+    $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'vl', $requestUrl, $hl7Msg, $response, 'hl7');
 }

@@ -21,6 +21,7 @@ $userDb = new \Vlsm\Models\Users();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 $geoLocationDb = new \Vlsm\Models\GeoLocations();
 
+$transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
 $auth = $general->getHeader('Authorization');
@@ -460,7 +461,7 @@ if ($status) {
     );
     http_response_code(401);
     echo json_encode($payload);
-    exit(0);
+    // exit(0);
 }
 
 if (isset($user['token_updated']) && $user['token_updated'] === true) {
@@ -468,4 +469,5 @@ if (isset($user['token_updated']) && $user['token_updated'] === true) {
 } else {
     $payload['token'] = null;
 }
+$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 echo json_encode($payload);
