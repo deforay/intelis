@@ -6,7 +6,7 @@
 	}
 </style>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" rel="stylesheet" />
+<link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 <?php
 $title = _("Audit Trail");
