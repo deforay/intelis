@@ -76,7 +76,7 @@ foreach ($syncedTypeResults as $synced) {
 						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
-									<th><?php echo _("Transaction Id"); ?></th>
+									<th><?php echo _("Transaction ID"); ?></th>
 									<th><?php echo _("Number of Records Synced"); ?></th>
 									<th><?php echo _("Sync Type"); ?></th>
 									<th><?php echo _("Test Type"); ?></th>

@@ -256,7 +256,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $payload = json_encode([]);
     }
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', null, $origData, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
     
     $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?) WHERE facility_id = ?';
     $db->rawQuery($sql, array($general->getCurrentDateTime(), $labId));
