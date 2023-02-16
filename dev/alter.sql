@@ -3368,3 +3368,7 @@ ALTER TABLE `form_covid19` ADD INDEX(`sample_package_id`);
 ALTER TABLE `form_hepatitis` ADD INDEX(`sample_package_id`);
 ALTER TABLE `form_tb` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
 ALTER TABLE `form_tb` ADD INDEX(`sample_package_id`);
+
+
+-- Amit 16-Feb-2023 version 5.1.1
+UPDATE `system_config` SET `value` = '5.1.1' WHERE `system_config`.`name` = 'sc_version';
