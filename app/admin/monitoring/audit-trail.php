@@ -115,7 +115,7 @@ $resultColumn = getColumns($db, $tableName);
 						<div class="box-body">
 							<?php if (!empty($posts)) { ?>
 							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
-		<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
+	<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 	<?php
 	//echo '<pre>'; print_r($resultColumn); die;
 	$i=0;
@@ -127,7 +127,7 @@ $resultColumn = getColumns($db, $tableName);
 	$i++;
 	}
 	?>
-</select>
+	</select>
 					
 							<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 								<thead>
@@ -350,3 +350,6 @@ $(document).ready(function() {
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
 ?>
+<script src="/assets/js/dataTables.buttons.min.js"></script>
+<script src="/assets/js/jszip.min.js"></script>
+<script src="/assets/js/buttons.html5.min.js"></script>

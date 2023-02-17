@@ -52,9 +52,7 @@
 <script src="/assets/js/jquery.maskedinput.js"></script>
 <script src="/assets/js/jquery.blockUI.js"></script>
 <script src="/assets/js/moment.min.js"></script>
-<script src="/assets/js/dataTables.buttons.min.js"></script>
-<script src="/assets/js/jszip.min.js"></script>
-<script src="/assets/js/buttons.html5.min.js"></script>
+
 
 <!-- HTML2CANVAS -->
 
