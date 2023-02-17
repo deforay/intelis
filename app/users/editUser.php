@@ -16,19 +16,13 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-
+$facilityDb = new \Vlsm\Models\Facilities();
 $activeFacilities = array();
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
-     
-     $selectedQuery = "SELECT DISTINCT vlfm.facility_id FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id where vlfm.user_id = '" . $id . "'";
-     $selectedResult = $db->rawQuery($selectedQuery);
-
-     $preselectedFacilities = array();
-     foreach ($selectedResult as $selected) {
-          $preselectedFacilities[] = $selected['facility_id'];
-     }
+     $facilityMap = $facilityDb->getUserFacilityMap($id);
+     $preselectedFacilities = explode(",", $facilityMap);
 
 
      $fResult = array();
