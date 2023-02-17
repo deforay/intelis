@@ -122,13 +122,14 @@ if (!empty($sampleCodes)) {
     $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
 }
 
-if (!empty($facilityIds)) {
+if (!empty($facilityIds) && !empty(array_unique(array_filter($facilityIds)))) {
     $facilityIds = array_unique(array_filter($facilityIds));
     $sql = 'UPDATE facility_details 
                     SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.hepatitisRemoteResultsSync", ?)
                     WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
     $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
+
 $sql = 'UPDATE facility_details SET 
             facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.hepatitisLastResultsSync", ?) 
                 WHERE facility_id = ?';

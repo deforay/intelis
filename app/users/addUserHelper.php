@@ -3,10 +3,12 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+var_dump($_POST);die;
+
 $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
-// 
-// require_once(APPLICATION_PATH . '/header.php');
+
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
 try {
