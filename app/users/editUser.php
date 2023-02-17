@@ -5,7 +5,7 @@ $title = _("Edit User");
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
-$userInfo = $db->rawQueryOne('SELECT ud.*, r.role_id, r.role_name from user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', Array ($id));
+$userInfo = $db->rawQueryOne('SELECT ud.*, r.role_id, r.role_name from user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', array($id));
 
 
 $interfaceUsers = "";
@@ -16,18 +16,42 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-
-$fResult = array();
+$facilityDb = new \Vlsm\Models\Facilities();
+$activeFacilities = array();
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     //get all facility list with lab,clinic
-     $fQuery = "SELECT facility_name,facility_id FROM facility_details";
+
+     $facilityMap = $facilityDb->getUserFacilityMap($id);
+     $preselectedFacilities = explode(",", $facilityMap);
+
+
+     $fResult = array();
+     $fQuery = "SELECT facility_name,facility_id
+                    FROM facility_details
+                    WHERE status='active'
+                    ORDER BY facility_name ASC";
      $fResult = $db->rawQuery($fQuery);
+
+     foreach ($fResult as $ft) {
+          $selected = false;
+          if (in_array($ft['facility_id'], $preselectedFacilities)) {
+               $selected = true;
+          }
+          $activeFacilities[] = array(
+               'id' => $ft['facility_id'],
+               'text' => $ft['facility_name'],
+               'selected' => $selected
+          );
+     }
+
+
+
+
+
+
+
      $display = 'display:block';
 }
-
-$selectedQuery = "SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id where vlfm.user_id = '" . $id . "'";
-$selectedResult = $db->rawQuery($selectedQuery);
 
 //province Stratt
 $pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
@@ -164,7 +188,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
                                                             <?php } else { ?>
-                                                                 
+
                                                             <?php } ?>
                                                        </div>
                                                        <div>
@@ -203,7 +227,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> </label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" maxlength="16"/><br>
+                                                  <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" maxlength="16" /><br>
                                                   <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><b>Generate Random Password</b></button><br>
                                                   <code><?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
@@ -213,7 +237,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" maxlength="16"/>
+                                                  <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" maxlength="16" />
                                              </div>
                                         </div>
                                    </div>
@@ -232,7 +256,7 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
 
-                              <div class="row" style=<?php echo $display; ?>>
+                              <!-- <div class="row" style=<?php echo $display; ?>>
                                    <div class="col-md-12">
                                         <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _("Show Advanced Search Options"); ?></a>
                                         <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _("Hide Advanced Search Options"); ?></a>
@@ -277,40 +301,12 @@ $ftResult = $db->rawQuery($fQuery);
                                              </div>
                                         </div>
                                    </div>
-                              </div>
-                              <div class="row" style="margin: 15px; <?php echo $display; ?>">
-                                   <h4 style=" margin-left: 15px;"> <?php echo _("Facility User Map Details"); ?></h4>
-                                   <div class="col-xs-5">
-                                        <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
-                                             <?php
-                                             if ($fResult > 0) {
-                                                  foreach ($fResult as $fName) {
-                                             ?>
-                                                       <option value="<?php echo $fName['facility_id']; ?>"><?php echo ucwords($fName['facility_name']); ?></option>
-                                             <?php
-                                                  }
-                                             }
-                                             ?>
-                                        </select>
-                                   </div>
+                              </div> -->
+                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
 
-                                   <div class="col-xs-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
-
-                                   <div class="col-xs-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-                                             <?php
-                                             foreach ($selectedResult as $uName) {
-                                             ?>
-                                                  <option value="<?php echo $uName['facility_id']; ?>" selected="selected"><?php echo ucwords($uName['facility_name']); ?></option>
-                                             <?php
-                                             }
-                                             ?>
-                                        </select>
+                                   <div class="col-md-12">
+                                        <h4 style="font-weight:bold;"> <?php echo _("Map User to Selected Facilities (optional)"); ?></h4>
+                                        <input id="mappedFacilities" style="width:100%;" placeholder="Type facility name" />
                                    </div>
                               </div>
                          </div>
@@ -351,6 +347,32 @@ $ftResult = $db->rawQuery($fQuery);
 
 
      jQuery(document).ready(function($) {
+          $('#mappedFacilities').select2({
+               data: <?= json_encode($activeFacilities) ?>,
+               placeholder: 'Type facility name',
+               multiple: true,
+               // query with pagination
+               query: function(q) {
+                    var pageSize,
+                         results,
+                         that = this;
+                    pageSize = 20; // or whatever pagesize
+                    results = [];
+                    if (q.term && q.term !== '') {
+                         // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+                         results = _.filter(that.data, function(e) {
+                              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+                         });
+                    } else if (q.term === '') {
+                         results = that.data;
+                    }
+                    q.callback({
+                         results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+                         more: results.length >= q.page * pageSize,
+                    });
+               },
+          });
+
           $('#search').multiselect({
                search: {
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -395,10 +417,14 @@ $ftResult = $db->rawQuery($fQuery);
      pwdflag = true;
 
      function validateNow() {
-          var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
+          let mappedFacilities = ($('#mappedFacilities').select2('data'));
+          let selVal = [];
+          $(mappedFacilities).each(
+               function(index, value) {
+                    selVal[index] = (value.id);
+               }
+          );
+
           $("#selectedFacility").val(selVal);
 
           flag = deforayValidator.init({
@@ -516,30 +542,29 @@ $ftResult = $db->rawQuery($fQuery);
                });
      }
 
-     function passwordType()
-     {
+     function passwordType() {
           document.getElementById('password').type = "text";
           document.getElementById('confirmPassword').type = "text";
           $.post("/includes/generate-password.php", {
-                    size : 32
+                    size: 32
                },
                function(data) {
-                   // alert(data);
-                   $("#password").val(data);
-                   $("#confirmPassword").val(data);
-                   var cpy = copyToClipboard(document.getElementById("confirmPassword"));
-                   if(cpy==true){
-                        // alert("Password copied to clipboard!");
-                        Toastify({
-                    text: "Random password generated and copied to clipboard",
-                    duration:3000,
-                    }).showToast();
-               }
+                    // alert(data);
+                    $("#password").val(data);
+                    $("#confirmPassword").val(data);
+                    var cpy = copyToClipboard(document.getElementById("confirmPassword"));
+                    if (cpy == true) {
+                         // alert("Password copied to clipboard!");
+                         Toastify({
+                              text: "Random password generated and copied to clipboard",
+                              duration: 3000,
+                         }).showToast();
+                    }
                });
      }
 
      function copyToClipboard(elem) {
-	  // create hidden text element, if it doesn't already exist
+          // create hidden text element, if it doesn't already exist
           var targetId = "_hiddenCopyText_";
           var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
           var origSelectionStart, origSelectionEnd;
@@ -565,19 +590,19 @@ $ftResult = $db->rawQuery($fQuery);
           var currentFocus = document.activeElement;
           target.focus();
           target.setSelectionRange(0, target.value.length);
-          
+
           // copy the selection
           var succeed;
           try {
                succeed = document.execCommand("copy");
-          } catch(e) {
+          } catch (e) {
                succeed = false;
           }
           // restore original focus
           if (currentFocus && typeof currentFocus.focus === "function") {
                currentFocus.focus();
           }
-          
+
           if (isInput) {
                // restore prior selection
                elem.setSelectionRange(origSelectionStart, origSelectionEnd);
@@ -586,7 +611,7 @@ $ftResult = $db->rawQuery($fQuery);
                target.textContent = "";
           }
           return succeed;
-}
+     }
 </script>
 <?php
 include APPLICATION_PATH . '/footer.php';

@@ -6904,7 +6904,7 @@ msgid "Please choose district"
 msgstr "ກະລຸນາເລືອກແຂວງ"
 
 #: users/addUser.php:237 users/editUser.php:280
-msgid "Facility User Map Details"
+msgid "Map User to Selected Facilities"
 msgstr "Facility User Map ລາຍລະອຽດ"
 
 #: users/addUser.php:328 users/editUser.php:386

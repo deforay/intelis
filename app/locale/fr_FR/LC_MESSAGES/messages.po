@@ -11205,7 +11205,7 @@ msgid "Please choose district"
 msgstr "District"
 
 #: users/addUser.php:232 users/editUser.php:280
-msgid "Facility User Map Details"
+msgid "Map User to Selected Facilities"
 msgstr ""
 
 #: users/addUser.php:323 users/editUser.php:386
