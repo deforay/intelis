@@ -18,12 +18,14 @@ $primaryKey = "vl_sample_id";
 */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state', 'f.facility_district' ,'s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     if (($key = array_search("Remote Sample Code", $aColumns)) !== false) {
+		unset($aColumns[$key]);
+          unset($orderColumns[$key]);
+	}
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.vl_sample_id");

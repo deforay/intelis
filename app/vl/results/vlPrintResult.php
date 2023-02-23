@@ -53,7 +53,7 @@ $state = $geoLocationDb->getProvinces("yes");
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 										<li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _("Results not yet Printed"); ?> </a></li>
-										<li><a href="#printedData" data-toggle="tab"><?php echo _("Results already Printed"); ?> </a></li>
+										<li><a href="#printedData" data-toggle="tab" class="printedData"><?php echo _("Results already Printed"); ?> </a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
@@ -431,6 +431,13 @@ $state = $geoLocationDb->getProvinces("yes");
 	var oTable = null;
 	var opTable = null;
 	$(document).ready(function() {
+
+		$(".printedData").click(function(){
+			loadPrintedVlRequestData();
+		});
+		
+
+
 		$("#state, #printState").select2({
 			placeholder: "<?php echo _("Select Province"); ?>"
 		});
@@ -470,7 +477,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
 		loadVlRequestData();
-		loadPrintedVlRequestData();
+		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
@@ -535,9 +542,9 @@ $state = $geoLocationDb->getProvinces("yes");
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			"bStateSave": true,
+			//"bStateSave" : true,
 			"iDisplayLength": 100,
-			//"bRetrieve": true,                    
+			"bRetrieve": true,
 			"aoColumns": [{
 					"sClass": "center",
 					"bSortable": false
@@ -589,7 +596,8 @@ $state = $geoLocationDb->getProvinces("yes");
 			<?php } else { ?> "aaSorting": [
 					[10, "desc"]
 				],
-			<?php } ?> "fnDrawCallback": function() {
+				<?php } ?>
+			 "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
