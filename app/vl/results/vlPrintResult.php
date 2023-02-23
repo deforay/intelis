@@ -576,18 +576,15 @@ $state = $geoLocationDb->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
-					"sClass": "center"
-				},
-				{
 					"sClass": "center",
 					"bSortable": false
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[8, "desc"]
+					[10, 'desc']
 				],
 			<?php } else { ?> "aaSorting": [
-					[7, "desc"]
+					[9, 'desc']
 				],
 			<?php } ?> "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -732,10 +729,10 @@ $state = $geoLocationDb->getProvinces("yes");
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[9, "desc"]
+					[11, "desc"]
 				],
 			<?php } else { ?> "aaSorting": [
-					[8, "desc"]
+					[10, "desc"]
 				],
 			<?php } ?> "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");

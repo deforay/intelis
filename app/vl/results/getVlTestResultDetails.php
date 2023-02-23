@@ -17,17 +17,15 @@ $primaryKey = "vl_sample_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'testingLab.facility_name','s.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
-if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-     array_unshift($orderColumns, "vl.vl_sample_id");
-}
+
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 
@@ -135,7 +133,6 @@ vl.last_vl_date_if,
 vl.lab_technician,
 vl.patient_gender,
 vl.locked,
-b.batch_code, 
 ts.status_name,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
@@ -149,8 +146,7 @@ FROM form_vl as vl
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
 LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
 $start_date = '';
