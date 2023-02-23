@@ -78,21 +78,21 @@ $state = $geoLocationDb->getProvinces("yes");
 													</td>-->
 
 													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+													<td>
+														<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
-                </select>
-							</td>
-													
+													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td>
+														<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+														</select>
+													</td>
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -117,10 +117,10 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-													
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -137,18 +137,18 @@ $state = $geoLocationDb->getProvinces("yes");
 													<td>
 														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
-							</td>
-												<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
-							</td>
-														</tr>
+													<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+													</td>
+													<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+													</td>
+												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -203,7 +203,7 @@ $state = $geoLocationDb->getProvinces("yes");
 												</div>
 											</span>
 
-											<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -254,21 +254,21 @@ $state = $geoLocationDb->getProvinces("yes");
 														</select>
 													</td>-->
 
-							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td>
+														<select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
-                </select>
-							</td>
+													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td>
+														<select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
+														</select>
+													</td>
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:220px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -293,10 +293,10 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-												
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="gender" id="printGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -312,17 +312,17 @@ $state = $geoLocationDb->getProvinces("yes");
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
-													</td>							
+													</td>
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
-							</td>
-												<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
-							</td>
+													<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+													</td>
+													<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
@@ -377,7 +377,7 @@ $state = $geoLocationDb->getProvinces("yes");
 													</div>
 												</div>
 											</span>
-											<table id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
@@ -434,7 +434,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		$("#state, #printState").select2({
 			placeholder: "<?php echo _("Select Province"); ?>"
 		});
-    	$("#district, #printDistrict").select2({
+		$("#district, #printDistrict").select2({
 			placeholder: "<?php echo _("Select District"); ?>"
 		});
 		$("#facility,#printFacility, #labId, #printLabId").select2({
@@ -581,10 +581,10 @@ $state = $geoLocationDb->getProvinces("yes");
 				},
 			],
 			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[10, 'desc']
+					[8, "desc"]
 				],
 			<?php } else { ?> "aaSorting": [
-					[9, 'desc']
+					[7, "desc"]
 				],
 			<?php } ?> "fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -981,74 +981,71 @@ $state = $geoLocationDb->getProvinces("yes");
 		}
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
 	}
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facility").html('');
-        $("#labId").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facility").html(Obj['facilities']);
-			$("#labId").html(Obj['labs']);
-				});
 
-	}
-
-	function getByPrintProvince(provinceId)
-	{
-        $("#printDistrict").html('');
-        $("#printFacility").html('');
-        $("#printLabId").html('');
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facility").html('');
+		$("#labId").html('');
 		$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#printDistrict").html(Obj['districts']);
-			$("#printFacility").html(Obj['facilities']);
-			$("#printLabId").html(Obj['labs']);
-				});
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facility").html(Obj['facilities']);
+				$("#labId").html(Obj['labs']);
+			});
 
 	}
 
-	function getByDistrict(districtId)
-	{
-                $("#facility").html('');
-                $("#labId").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facility").html(Obj['facilities']);
-			$("#labId").html(Obj['labs']);
-				});
+	function getByPrintProvince(provinceId) {
+		$("#printDistrict").html('');
+		$("#printFacility").html('');
+		$("#printLabId").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#printDistrict").html(Obj['districts']);
+				$("#printFacility").html(Obj['facilities']);
+				$("#printLabId").html(Obj['labs']);
+			});
 
 	}
 
-	function getByPrintDistrict(districtId)
-	{
-        $("#printFacility").html('');
-        $("#printLabId").html('');
+	function getByDistrict(districtId) {
+		$("#facility").html('');
+		$("#labId").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId : districtId,
-				facilities : true,
-				labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+				districtId: districtId,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facility").html(Obj['facilities']);
+				$("#labId").html(Obj['labs']);
+			});
+
+	}
+
+	function getByPrintDistrict(districtId) {
+		$("#printFacility").html('');
+		$("#printLabId").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#printFacility").html(Obj['facilities']);
 				$("#printLabId").html(Obj['labs']);
 			});
