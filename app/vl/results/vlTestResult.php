@@ -362,7 +362,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				],
 			<?php } ?> "bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
+			"sAjaxSource": "/vl/results/get-manual-results.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",

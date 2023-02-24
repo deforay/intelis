@@ -127,9 +127,10 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-
+                                                
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
+                                                <button class="btn btn-default btn-sm result-pdf-without-print" style="display:none;" onclick="convertSearchResultToPdf('');"><span><?php echo _("Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
@@ -184,6 +185,8 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
+                                                        <th><?php echo _("Mother ID"); ?></th>
+                                                        <th><?php echo _("Mother Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
@@ -196,7 +199,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                                        <td colspan="14" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -273,9 +276,10 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-
+                                                
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
+                                                <button class="btn btn-default btn-sm result-pdf-without-printed" style="display:none;" onclick="convertSearchResultToPdf('','printData');"><span><?php echo _("Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
@@ -329,6 +333,8 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
+                                                        <th><?php echo _("Mother ID"); ?></th>
+                                                        <th><?php echo _("Mother Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
@@ -341,7 +347,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                                        <td colspan="14" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -408,6 +414,25 @@ $state = $geoLocationDb->getProvinces("yes");
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
         loadPrintedVlRequestData();
+        $(".checkRows").change(function() {
+            console.log("CHECK");
+            var checkBoxes = document.getElementsByName("chk[]");
+            len = checkBoxes.length;
+            if(len > 0){
+                $('.result-pdf-without-print').show();
+            }else{
+                $('.result-pdf-without-print').hide();
+            }
+        });
+        $(".checkPrintedRows").change(function() {
+            var checkBoxes = document.getElementsByName("chkPrinted[]");
+            len = checkBoxes.length;
+            if(len > 0){
+                $('.result-pdf-without-printed').show();
+            }else{
+                $('.result-pdf-without-printed').hide();
+            }
+        });
         $(".showhideCheckBox").change(function() {
             if ($(this).attr('checked')) {
                 idpart = $(this).attr('data-showhide');
@@ -513,15 +538,21 @@ $state = $geoLocationDb->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
             ],
             <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [9, "desc"]
+                    [12, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [9, "desc"]
+                    [11, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -639,15 +670,21 @@ $state = $geoLocationDb->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
             ],
             <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [9, "desc"]
+                    [12, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [9, "desc"]
+                    [11, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");

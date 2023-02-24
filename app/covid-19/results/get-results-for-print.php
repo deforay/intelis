@@ -34,9 +34,11 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'C
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name','f.facility_state','f.facility_district', 's.sample_name','vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district','s.sample_name','vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+} else if ($_SESSION['instanceType'] == 'standalone') {
+    if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
+       unset($aColumns[$key]);
+         unset($orderColumns[$key]);
+   }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
