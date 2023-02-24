@@ -17,12 +17,16 @@ $primaryKey = "vl_sample_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.vl_sample_id','vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state', 'f.facility_district' ,'s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.vl_sample_id', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+$aColumns = array('vl.sample_code','vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state', 'f.facility_district' ,'s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+if($_POST['from'] == "enterresult"){
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+}
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'standalone') {
-     if (($key = array_search("Remote Sample Code", $aColumns)) !== false) {
+     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
 		unset($aColumns[$key]);
           unset($orderColumns[$key]);
 	}
@@ -103,6 +107,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
 vl.sample_code,
 vl.remote_sample,
 vl.remote_sample_code,
+b.batch_code,
 vl.sample_collection_date,
 vl.sample_tested_datetime,
 vl.patient_art_no,
@@ -146,6 +151,7 @@ vl.result_approved_by
 
 FROM form_vl as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
 LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
 LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
@@ -176,10 +182,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
      }
 }
-/*
+
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}*/
+}
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
@@ -320,16 +326,19 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-    // $row[] = $aRow['batch_code'];
+     if($_POST['from'] == "enterresult"){
+          $row[] = $aRow['batch_code'];
+     }
      $row[] = $aRow['patient_art_no'];
      $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
      $row[] = ucwords($aRow['lab_name']);
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
+     if($_POST['from'] != "enterresult"){
+          $row[] = ucwords($aRow['facility_state']);
+          $row[] = ucwords($aRow['facility_district']);
+     }
      $row[] = ucwords($aRow['sample_name']);
      $row[] = $aRow['result'];
-
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
           $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
