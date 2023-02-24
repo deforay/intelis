@@ -182,7 +182,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>><?php echo _("Rejected Samples"); ?></option>
 							</select>
 						</div>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -203,7 +203,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -323,9 +323,6 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 						"sClass": "center"
 					},
 				<?php } ?> {
-					"sClass": "center"
-				},
-				{
 					"sClass": "center"
 				},
 				{
