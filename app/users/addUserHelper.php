@@ -4,8 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-var_dump($_POST);die;
-
 $userDb = new \Vlsm\Models\Users();
 $general = new \Vlsm\Models\General();
 

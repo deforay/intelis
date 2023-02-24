@@ -25,9 +25,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name','l_f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name','l_f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
-if (isset($_POST['vlPrint'])) {
-    array_unshift($orderColumns, "vl.eid_id");
-}
+
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 

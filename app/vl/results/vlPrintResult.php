@@ -590,14 +590,10 @@ $state = $geoLocationDb->getProvinces("yes");
 					"bSortable": false
 				},
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[11, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[10, "desc"]
-				],
-				<?php } ?>
-			 "fnDrawCallback": function() {
+			"aaSorting": [
+				[<?php echo ($_SESSION['instanceType'] ==  'remoteuser' || $_SESSION['instanceType'] ==  'vluser') ? 11 : 10 ?>, "desc"]
+			],
+			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -739,13 +735,10 @@ $state = $geoLocationDb->getProvinces("yes");
 					"bSortable": false
 				},
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[11, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[10, "desc"]
-				],
-			<?php } ?> "fnDrawCallback": function() {
+			"aaSorting": [
+				[<?php echo ($_SESSION['instanceType'] ==  'remoteuser' || $_SESSION['instanceType'] ==  'vluser') ? 11 : 10 ?>, "desc"]
+			],
+			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
