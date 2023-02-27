@@ -180,39 +180,48 @@ try {
         $isRejected = true;
         $_POST['vlResult'] = '';
         $_POST['vlLog'] = '';
-    }
+   }
 
-
-    if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
+   if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
+        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Below Detection Level';
         $_POST['vlResult'] = 'Below Detection Level';
         $_POST['vlLog'] = null;
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
+   } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
+   } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Error';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
+   } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'No Result';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 11; // No Result
-    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+   } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+
         $resultStatus = 8; // Awaiting Approval
+
         $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
 
         //Result is saved as entered
-        $finalResult = $_POST['vlResult'];
+        $finalResult  = $_POST['vlResult'];
 
         $logVal = $interpretedResults['logVal'];
         $absDecimalVal = $interpretedResults['absDecimalVal'];
         $absVal = $interpretedResults['absVal'];
         $txtVal = $interpretedResults['txtVal'];
-    }
+   }
+
+   $_POST['result'] = '';
+   if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
+        $_POST['result'] = $_POST['vlResult'];
+   } else if ($_POST['vlLog'] != '') {
+        $_POST['result'] = $_POST['vlLog'];
+   }
 
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';

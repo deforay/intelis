@@ -173,10 +173,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 if (isset($sWhere) && !empty($sWhere)) {
-    $sWhere = implode(" AND ", $sWhere);
+    $sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' AND ' . $sWhere;
 
 //$sQuery = $sQuery . ' group by vl.vl_sample_id';
 if (isset($sOrder) && $sOrder != "") {

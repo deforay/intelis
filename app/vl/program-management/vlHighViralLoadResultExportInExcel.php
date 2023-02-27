@@ -25,9 +25,9 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
      $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
      $output = array();
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code','Remote Sample Code',"Facility Name","Patient's Name","Patient ART no.","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
+     $headings = array('Sample Code','Remote Sample Code',"Facility Name","Patient ART no.","Patient's Name","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
      if($sarr['sc_user_type']=='standalone') {
-     $headings = array('Sample Code',"Facility Name","Patient's Name","Patient ART no.","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
+     $headings = array('Sample Code',"Facility Name","Patient ART no.","Patient's Name","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
      }
 
      $colNo = 1;
@@ -131,8 +131,8 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
            $row[] = $aRow['remote_sample_code'];
             }
           $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($patientFname." ".$patientMname." ".$patientLname);
           $row[] = $aRow['patient_art_no'];
+          $row[] = ucwords($patientFname." ".$patientMname." ".$patientLname);
           $row[] = $aRow['patient_mobile_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;

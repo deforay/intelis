@@ -26,9 +26,9 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
      $output = array();
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child's ID","Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+          $headings = array('Sample Code', "Facility Name","Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
 
      $colNo = 1;
@@ -116,14 +116,14 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           } else {
                $decrypt = 'sample_code';
           }
-          $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]));
+          $childName = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($patientFname);
           $row[] = $aRow['child_id'];
+          $row[] = ucwords($childName);
           $row[] = $aRow['caretaker_phone_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
