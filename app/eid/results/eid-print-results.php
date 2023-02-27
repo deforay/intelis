@@ -62,7 +62,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                   <!-- <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <!-- <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -76,22 +76,22 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         </select>
                                                     </td>-->
                                                     <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+                                                    <td>
+                                                        <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+                                                            <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                                        </select>
+                                                    </td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
-                </select>
-							</td>
+                                                    <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                                                    <td>
+                                                        <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+                                                        </select>
+                                                    </td>
 
-                                                   
+
                                                 </tr>
                                                 <tr>
-                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
@@ -107,18 +107,18 @@ $state = $geoLocationDb->getProvinces("yes");
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <tr>
-                                                <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
-							</td>
-												<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
-							</td>
-                                                        </tr>
+                                                    <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
+                                                    <td>
+                                                        <input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                    <td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
+                                                    <td>
+                                                        <input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                </tr>
 
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
@@ -127,9 +127,10 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-
+                                                
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
+                                                <button class="btn btn-default btn-sm result-pdf-without-print" style="display:none;" onclick="convertSearchResultToPdf('');"><span><?php echo _("Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
@@ -174,7 +175,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </div>
                                             </span>
 
-                                            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -184,10 +185,12 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
+                                                        <th><?php echo _("Mother ID"); ?></th>
+                                                        <th><?php echo _("Mother Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
-														<th><?php echo _("District/County"); ?></th>
+                                                        <th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -196,7 +199,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                                        <td colspan="14" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -210,7 +213,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
-                                                  <!--  <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+                                                    <!--  <td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -222,23 +225,23 @@ $state = $geoLocationDb->getProvinces("yes");
                                                             }
                                                             ?>
                                                         </select>
-                                                    </td>--> 
+                                                    </td>-->
                                                     <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+                                                    <td>
+                                                        <select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+                                                            <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                                        </select>
+                                                    </td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
-                </select>
-							</td>
-                                                   
+                                                    <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                                                    <td>
+                                                        <select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
+                                                        </select>
+                                                    </td>
+
                                                 </tr>
                                                 <tr>
-                                                <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+                                                    <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
@@ -254,18 +257,18 @@ $state = $geoLocationDb->getProvinces("yes");
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                  
+
                                                 </tr>
                                                 <tr>
-                                                <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
-							</td>
-												<td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
-							</td>
-                                                        </tr>
+                                                    <td><strong><?php echo _("Child ID"); ?>&nbsp;:</strong></td>
+                                                    <td>
+                                                        <input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _('Enter Child ID'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                    <td><strong><?php echo _("Child Name"); ?>&nbsp;:</strong></td>
+                                                    <td>
+                                                        <input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
                                                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -273,9 +276,10 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-
+                                                
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
+                                                <button class="btn btn-default btn-sm result-pdf-without-printed" style="display:none;" onclick="convertSearchResultToPdf('','printData');"><span><?php echo _("Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
@@ -319,7 +323,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                     </div>
                                                 </div>
                                             </span>
-                                            <table id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
@@ -329,10 +333,12 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Child's ID"); ?></th>
                                                         <th><?php echo _("Child's Name"); ?></th>
+                                                        <th><?php echo _("Mother ID"); ?></th>
+                                                        <th><?php echo _("Mother Name"); ?></th>
                                                         <th><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Lab"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
-														<th><?php echo _("District/County"); ?></th>
+                                                        <th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("Result"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
                                                         <th><?php echo _("Status"); ?></th>
@@ -341,7 +347,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                                        <td colspan="14" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -373,11 +379,11 @@ $state = $geoLocationDb->getProvinces("yes");
     var opTable = null;
     $(document).ready(function() {
         $("#state, #printState").select2({
-			placeholder: "<?php echo _("Select Province"); ?>"
-		});
-    	$("#district, #printDistrict").select2({
-			placeholder: "<?php echo _("Select District"); ?>"
-		});
+            placeholder: "<?php echo _("Select Province"); ?>"
+        });
+        $("#district, #printDistrict").select2({
+            placeholder: "<?php echo _("Select District"); ?>"
+        });
         $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -408,6 +414,25 @@ $state = $geoLocationDb->getProvinces("yes");
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
         loadPrintedVlRequestData();
+        $(".checkRows").change(function() {
+            console.log("CHECK");
+            var checkBoxes = document.getElementsByName("chk[]");
+            len = checkBoxes.length;
+            if(len > 0){
+                $('.result-pdf-without-print').show();
+            }else{
+                $('.result-pdf-without-print').hide();
+            }
+        });
+        $(".checkPrintedRows").change(function() {
+            var checkBoxes = document.getElementsByName("chkPrinted[]");
+            len = checkBoxes.length;
+            if(len > 0){
+                $('.result-pdf-without-printed').show();
+            }else{
+                $('.result-pdf-without-printed').hide();
+            }
+        });
         $(".showhideCheckBox").change(function() {
             if ($(this).attr('checked')) {
                 idpart = $(this).attr('data-showhide');
@@ -498,8 +523,14 @@ $state = $geoLocationDb->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
-					"sClass": "center"
-				},
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
                 {
                     "sClass": "center"
                 },
@@ -518,10 +549,10 @@ $state = $geoLocationDb->getProvinces("yes");
                 },
             ],
             <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [8, "desc"]
+                    [12, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [7, "desc"]
+                    [11, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -537,21 +568,21 @@ $state = $geoLocationDb->getProvinces("yes");
             "sAjaxSource": "/eid/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-					"name": "state",
-					"value": $("#state").val()
-				});
-				aoData.push({
-					"name": "district",
-					"value": $("#district").val()
-				});
-				aoData.push({
-					"name": "childId",
-					"value": $("#childId").val()
-				});
-				aoData.push({
-					"name": "childName",
-					"value": $("#childName").val()
-				});
+                    "name": "state",
+                    "value": $("#state").val()
+                });
+                aoData.push({
+                    "name": "district",
+                    "value": $("#district").val()
+                });
+                aoData.push({
+                    "name": "childId",
+                    "value": $("#childId").val()
+                });
+                aoData.push({
+                    "name": "childName",
+                    "value": $("#childName").val()
+                });
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#sampleCollectionDate").val()
@@ -618,8 +649,14 @@ $state = $geoLocationDb->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
-					"sClass": "center"
-				},
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
                 {
                     "sClass": "center"
                 },
@@ -644,10 +681,10 @@ $state = $geoLocationDb->getProvinces("yes");
                 },
             ],
             <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [8, "desc"]
+                    [12, "desc"]
                 ],
             <?php } else { ?> "aaSorting": [
-                    [7, "desc"]
+                    [11, "desc"]
                 ],
             <?php } ?> "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");
@@ -663,21 +700,21 @@ $state = $geoLocationDb->getProvinces("yes");
             "sAjaxSource": "/eid/results/get-results-for-print.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
-					"name": "state",
-					"value": $("#printState").val()
-				});
-				aoData.push({
-					"name": "district",
-					"value": $("#printDistrict").val()
-				});
-				aoData.push({
-					"name": "childId",
-					"value": $("#printChildId").val()
-				});
-				aoData.push({
-					"name": "childName",
-					"value": $("#printChildName").val()
-				});
+                    "name": "state",
+                    "value": $("#printState").val()
+                });
+                aoData.push({
+                    "name": "district",
+                    "value": $("#printDistrict").val()
+                });
+                aoData.push({
+                    "name": "childId",
+                    "value": $("#printChildId").val()
+                });
+                aoData.push({
+                    "name": "childName",
+                    "value": $("#printChildName").val()
+                });
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#printSampleCollectionDate").val()
@@ -878,80 +915,77 @@ $state = $geoLocationDb->getProvinces("yes");
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
-	function getByProvince(provinceId)
-	{
-	
+
+    function getByProvince(provinceId) {
+
         $("#district").html('');
         $("#facility").html('');
         $("#labId").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-                    districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facility").html(Obj['facilities']);
-			$("#labId").html(Obj['labs']);
-				});
+        $.post("/common/get-by-province-id.php", {
+                provinceId: provinceId,
+                districts: true,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#district").html(Obj['districts']);
+                $("#facility").html(Obj['facilities']);
+                $("#labId").html(Obj['labs']);
+            });
 
-	}
+    }
 
-	function getByPrintProvince(provinceId)
-	{
+    function getByPrintProvince(provinceId) {
         $("#printDistrict").html('');
         $("#printFacility").html('');
         $("#printLabId").html('');
-		$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-                    districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#printDistrict").html(Obj['districts']);
-			$("#printFacility").html(Obj['facilities']);
-			$("#printLabId").html(Obj['labs']);
-				});
+        $.post("/common/get-by-province-id.php", {
+                provinceId: provinceId,
+                districts: true,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#printDistrict").html(Obj['districts']);
+                $("#printFacility").html(Obj['facilities']);
+                $("#printLabId").html(Obj['labs']);
+            });
 
-	}
+    }
 
-	function getByDistrict(districtId)
-	{
-                $("#facility").html('');
-                $("#labId").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-                    facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facility").html(Obj['facilities']);
-			$("#labId").html(Obj['labs']);
-				});
+    function getByDistrict(districtId) {
+        $("#facility").html('');
+        $("#labId").html('');
+        $.post("/common/get-by-district-id.php", {
+                districtId: districtId,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#facility").html(Obj['facilities']);
+                $("#labId").html(Obj['labs']);
+            });
 
-	}
+    }
 
-	function getByPrintDistrict(districtId)
-	{
+    function getByPrintDistrict(districtId) {
         $("#printFacility").html('');
         $("#printLabId").html('');
-		$.post("/common/get-by-district-id.php", {
-			districtId : districtId,
-            facilities : true,
-			labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-				$("#printFacility").html(Obj['facilities']);
-				$("#printLabId").html(Obj['labs']);
-			});
+        $.post("/common/get-by-district-id.php", {
+                districtId: districtId,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#printFacility").html(Obj['facilities']);
+                $("#printLabId").html(Obj['labs']);
+            });
 
-	}
+    }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
