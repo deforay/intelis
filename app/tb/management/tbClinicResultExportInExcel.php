@@ -23,9 +23,9 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
      $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
      $output = array();
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name","Patient ART no.", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+          $headings = array('Sample Code', "Facility Name","Patient ART no.", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
 
      $colNo = 1;
@@ -113,15 +113,15 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
           } else {
                $decrypt = 'sample_code';
           }
-          $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]));
+          $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]);
+          $patientMname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow[$decrypt]);
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
           $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($patientFname);
           $row[] = $aRow['patient_id'];
-          $row[] = $aRow['caretaker_phone_number'];
+          $row[] = ucwords($patientFname . " " . $patientMname);
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];

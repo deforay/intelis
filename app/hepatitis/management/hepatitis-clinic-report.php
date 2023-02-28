@@ -915,7 +915,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			var markAsComplete = true;
 		}
 		$.blockUI();
-		$.post("/covid-19/management/covid19ClinicResultExportInExcel.php", {
+		$.post("/hepatitis/management/hepatitis-clinic-result-exportIn-excel.php", {
 				Sample_Test_Date: $("#hvlSampleTestDate").val(),
 				Batch_Code: $("#hvlBatchCode  option:selected").text(),
 				Sample_Type: $("#hvlSampleType  option:selected").text(),
@@ -940,7 +940,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("/covid-19/management/covid19RejectedResultExportInExcel.php", {
+		$.post("/hepatitis/management/hepatitis-rejected-result-exportIn-excel.php", {
 				Sample_Test_Date: $("#rjtSampleTestDate").val(),
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
@@ -964,7 +964,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("/covid-19/management/covid19NotAvailableResultExportInExcel.php", {
+		$.post("/hepatitis/management/hepatitis-not-available-result-export-in-excel.php", {
 				Sample_Test_Date: $("#noResultSampleTestDate").val(),
 				Batch_Code: $("#noResultBatchCode  option:selected").text(),
 				Sample_Type: $("#noResultSampleType  option:selected").text(),
@@ -988,7 +988,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("/covid-19/management/covid19DataQualityExportInExcel.php", {
+		$.post("/hepatitis/management/hepatitis-data-quality-export-in-excel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Field_Name: $("#formField  option:selected").text()
 			},

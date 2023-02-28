@@ -24,9 +24,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name");
+    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name");
     if ($sarr['sc_user_type'] == 'standalone') {
-        $headings = array('Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name");
+        $headings = array('Sample Code', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name");
     }
 
     $colNo = 1;
@@ -95,12 +95,12 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         }else{
             $decrypt = 'sample_code';
         }
-        $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]));
+        //$patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
-        $row[] = ucwords($patientFname);
+        $row[] = $aRow['facility_name'];
         $row[] = $aRow['patient_id'];
         $row[] = ucwords($aRow['patient_name']);
         $row[] = $sampleCollectionDate;

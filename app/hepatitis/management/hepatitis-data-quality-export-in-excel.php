@@ -25,9 +25,9 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
      $output = array();
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code','Remote Sample Code',"Sample Collection Date","Batch Code", "Child Id.", "Child's Name","Facility Name","Province/State","District/County","Sample Type","Result","Status");
+     $headings = array('Sample Code','Remote Sample Code',"Sample Collection Date","Batch Code", "Patient Id.", "Patient's Name","Facility Name","Province/State","District/County","Sample Type",'vl.hcv_vl_result' , 'vl.hbv_vl_result',"Status");
      if($sarr['sc_user_type']=='standalone') {
-     $headings = array("Sample Code","Sample Collection Date","Batch Code", "Child Id.",  "Child's Name","Facility Name","Province/State","District/County","Sample Type","Result","Status");
+     $headings = array("Sample Code","Sample Collection Date","Batch Code", "Patient Id.",  "Patient's Name","Facility Name","Province/State","District/County","Sample Type",'vl.hcv_vl_result' , 'vl.hbv_vl_result',"Status");
      }
 
      $colNo = 1;
@@ -90,7 +90,7 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
                $decrypt = 'sample_code';
           }
 
-          $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]));
+          $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){
@@ -104,7 +104,8 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $row[] = ucwords($aRow['facility_state']);
           $row[] = ucwords($aRow['facility_district']);
           $row[] = ucwords($aRow['sample_name']);
-          $row[] = $aRow['result'];
+          $row[] = ucwords($aRow['hcv_vl_result']);
+          $row[] = ucwords($aRow['hbv_vl_result']);
           $row[] = ucwords($aRow['status_name']);
           $output[] = $row;
      }

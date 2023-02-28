@@ -148,7 +148,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere[] =  $sWhereSub;
      }
 
-     $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+    // $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {

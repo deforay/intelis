@@ -100,7 +100,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
-        $row[] = ucwords($patientFname);
+        $row[] = $aRow['facility_name'];
         $row[] = $aRow['patient_id'];
         $row[] = ucwords($aRow['patient_name']);
         $row[] = $sampleCollectionDate;
