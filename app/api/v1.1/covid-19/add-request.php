@@ -10,6 +10,8 @@ try {
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
     $covid19Model = new \Vlsm\Models\Covid19();
+    
+    $transactionId = $general->generateUUID();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -54,7 +56,6 @@ try {
     $formId = $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 

@@ -26,6 +26,7 @@ $general = new \Vlsm\Models\General();
 $userDb = new \Vlsm\Models\Users();
 $facilityDb = new \Vlsm\Models\Facilities();
 $app = new \Vlsm\Models\App();
+$transactionId = $general->generateUUID();
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
@@ -48,7 +49,6 @@ try {
         http_response_code(401);
         throw new \Exception('Bearer Token Invalid');
     }
-    $transactionId = $general->generateUUID();
     $sQuery = "SELECT 
             vl.app_sample_code                                   as appSampleCode,
             vl.unique_id                                         as uniqueId,

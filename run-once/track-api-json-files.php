@@ -15,7 +15,7 @@ if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEP
 
 
 //To select the list of json data
-$query = "SELECT * FROM track_api_requests WHERE (request_data NOT like 'x' AND response_data  NOT like 'x') AND transaction_id IS NOT NULL ORDER BY requested_on";
+$query = "SELECT * FROM track_api_requests WHERE (request_data is not null OR response_data is not null) AND transaction_id IS NOT NULL ORDER BY requested_on";
 $jsonResult = $db->rawQuery($query);
 foreach ($jsonResult as $row) {
     if (isset($row['request_data']) && !empty($row['request_data']) && $row['request_data'] != 'x' && $row['request_data'] != '[]') {
@@ -45,5 +45,5 @@ foreach ($jsonResult as $row) {
 
 
     $db->where("api_track_id", $row['api_track_id']);
-    $db->update("track_api_requests", array("request_data" => 'x', "response_data" => 'x'));
+    $db->update("track_api_requests", array("request_data" => null, "response_data" => null));
 }

@@ -354,11 +354,11 @@ class Vl
             if (strpos($result, '< 2.00E+1') !== false) {
                 $vlResult = "< 20";
             } else {
-                $resultArray = explode("(", $result);
-                $exponentArray = explode("E", $resultArray[0]);
+                // incase there are some brackets in the result
+                $resultArray = explode("(", $result); 
+                
                 $absVal = ($resultArray[0]);
-                $vlResult = (float) $resultArray[0];
-                $absDecimalVal = (float) trim($vlResult);
+                $absDecimalVal = (float) $resultArray[0];
                 $logVal = round(log10($absDecimalVal), 2);
             }
         } else {
