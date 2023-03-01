@@ -235,12 +235,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td> -->
 									</tr>
 									<tr>
-										<th colspan="4">Reason for Examination</th>
+										<th colspan="4"><label for="reasonForExamination">Reason for Examination<span class="mandatory">*</span></th>
 									</tr>
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis','followup-uncheck');">
+												<input type="radio" class="isRequired diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis','followup-uncheck');">
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
@@ -270,7 +270,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason][follow-up]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up','diagnosis-check');">
+												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up','diagnosis-check');">
 												<strong>Follow Up</strong>
 											</label>
 										</td>

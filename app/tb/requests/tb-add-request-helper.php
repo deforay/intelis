@@ -132,6 +132,8 @@ try {
             $_POST['provinceId'] = $provinceDetails['geo_id'];
         }
     }
+    $reason = $_POST['reasonForTbTest'];
+    $reason['reason'] = array($reason['reason']=>'yes');
 
     $tbData = array(
         'vlsm_instance_id'                    => $instanceId,
@@ -150,7 +152,7 @@ try {
         'patient_dob'                         => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
         'patient_gender'                      => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age'                         => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
-        'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
+        'reason_for_tb_test'                  => !empty($reason) ? json_encode($reason) : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,

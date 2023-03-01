@@ -254,7 +254,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason][diagnosis]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis', 'followup-uncheck');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="isRequired diagnosis-check" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="diagnosis" title="Select reason for examination" onchange="checkSubReason(this,'diagnosis', 'followup-uncheck');" <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "checked" : ""; ?>>
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
@@ -284,7 +284,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason][followup]" value="yes" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>

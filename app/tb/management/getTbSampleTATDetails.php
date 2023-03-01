@@ -161,6 +161,11 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
+
+if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+	$sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
+}
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	if (trim($start_date) == trim($end_date)) {
 		$sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
@@ -190,19 +195,22 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (!empty($sWhere)) {
-	$_SESSION['tbTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+if (count($sWhere)>0) {
+	//$_SESSION['tbTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+	$sWhere = implode(" AND ", $sWhere);
 	$sQuery = $sQuery . ' AND '. $sWhere;
 }
 
 if (isset($sOrder) && $sOrder != "") {
-	$_SESSION['tbTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	//$_SESSION['tbTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-
+$_SESSION['tbTatData'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
+
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering 
 $rUser = '';
