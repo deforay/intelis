@@ -15,6 +15,8 @@ $facilityDb = new \Vlsm\Models\Facilities();
 $c19Db = new \Vlsm\Models\Covid19();
 $vlDb = new \Vlsm\Models\Vl();
 
+$transactionId = $general->generateUUID();
+
 $user = null;
 try {
     $requestUrl = $_SERVER['REQUEST_URI'];
@@ -52,7 +54,7 @@ try {
     foreach (explode("MSH", $hl7Msg) as $hl7) {
         if (isset($hl7) && !empty($hl7) && trim($hl7) != "") {
             
-            $transactionId = $general->generateUUID();
+            
             $hl7 = 'MSH' . $hl7;
             $msg = new Message($hl7);
             // To get the type of test

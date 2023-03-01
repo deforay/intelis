@@ -11,6 +11,7 @@ try {
     $userDb = new \Vlsm\Models\Users();
     $app = new \Vlsm\Models\App();
     $eidModel = new \Vlsm\Models\Eid();
+    $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -52,7 +53,6 @@ try {
     $formId = $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $transactionId = $general->generateUUID();
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 

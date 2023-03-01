@@ -7,6 +7,10 @@ $dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
 $general = new \Vlsm\Models\General();
+
+
+$transactionId = $general->generateUUID();
+
 $hepatitisModel = new \Vlsm\Models\Hepatitis();
 
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -82,7 +86,6 @@ $eventsDataElementMapping = [
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
-$transactionId = $general->generateUUID();
 $version = $general->getSystemConfig('sc_version');
 
 foreach ($trackedEntityInstances as $tracker) {

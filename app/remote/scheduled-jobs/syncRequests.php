@@ -9,6 +9,10 @@ if (php_sapi_name() == 'cli') {
 $general = new \Vlsm\Models\General();
 $app = new \Vlsm\Models\App();
 
+
+
+$transactionId = $general->generateUUID();
+
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
 
@@ -31,8 +35,6 @@ if (strpos($headers[0], '200') === false) {
 }
 $arr = $general->getGlobalConfig();
 
-
-$transactionId = $general->generateUUID();
 
 //get remote data
 if (empty($labId)) {
