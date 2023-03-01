@@ -951,7 +951,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "hh:mm TT",
-            maxDate: "+1Y",
+            maxDate: "Today",
            // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
@@ -959,7 +959,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				var minDate = $(this).datetimepicker('getDate');
 				dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'maxDate', "Today");
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());

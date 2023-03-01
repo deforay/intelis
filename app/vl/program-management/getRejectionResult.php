@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ob_start();
 
 
@@ -49,7 +52,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $sWhere = implode(' AND ',$sWhere);
     }
     $vlQuery = $vlQuery . ' where '.$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
-
+    $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
     foreach ($tableResult as $tableRow) {

@@ -74,13 +74,12 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
 
      foreach ($rResult as $aRow) {
           $row = array();
-          //sample collecion date
-        $row[] = ($aRow['labname']);
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['rejection_reason_name']);
-        $row[] = strtoupper($aRow['rejection_type']);
-        $row[] = $aRow['total'];
-        $output[] = $row;
+          $row[] = ($aRow['labname']);
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['rejection_reason_name']);
+          $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = $aRow['total'];
+          $output[] = $row;
      }
 
      $start = (count($output)) + 2;
