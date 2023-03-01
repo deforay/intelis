@@ -3372,3 +3372,7 @@ ALTER TABLE `form_tb` ADD INDEX(`sample_package_id`);
 
 -- Amit 16-Feb-2023 version 5.1.1
 UPDATE `system_config` SET `value` = '5.1.1' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Amit 01-Mar-2023 version 5.1.2
+UPDATE `system_config` SET `value` = '5.1.2' WHERE `system_config`.`name` = 'sc_version';
