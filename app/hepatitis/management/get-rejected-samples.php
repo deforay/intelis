@@ -32,7 +32,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
                 ";
                 
-    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND vl.vlsm_country_id = "' . $formId . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
         $sWhere[] = '  s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -55,7 +55,7 @@ else
     $sWhere ="";
 }
     $vlQuery = $vlQuery . ' where ' .$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
-
+    $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
     // print_r($vlQuery);die;
 
