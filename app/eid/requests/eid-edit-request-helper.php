@@ -271,8 +271,8 @@ try {
 			$_SESSION['alertMsg'] = _("EID request updated successfully");
 			//Add event log
 			$eventType = 'eid-edit-request';
-			$action = ucwords($_SESSION['userName']) . ' updated EID request with the Sample ID/Code  ' . $_POST['eidSampleId'];
-			$resource = 'eid-request-drc';
+			$action = $_SESSION['userName'] . ' updated EID request for the Child ID ' . $_POST['childId'];
+			$resource = 'eid-request';
 
 			$general->activityLog($eventType, $action, $resource);
 

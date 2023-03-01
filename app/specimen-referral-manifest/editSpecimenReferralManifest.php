@@ -143,7 +143,7 @@ $global = $general->getGlobalConfig();
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="testingLab" name="testingLab" title="Choose one test lab">
+										<select type="text" class="form-control select2" id="testingLab" name="testingLab" title="Choose one test lab" readonly>
 											<?= $general->generateSelectOptions($testingLabs, $pResult[0]['lab_id'], '-- Select --'); ?>
 										</select>
 									</div>

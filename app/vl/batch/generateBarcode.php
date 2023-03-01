@@ -201,7 +201,7 @@ if ($id > 0) {
                 </tr>
                 <tr>
                     <th style="font-weight: bold;">Lot Expiry Date :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
-                    <th style="font-weight: bold;">Printed By :</th><td>' . ucwords($_SESSION['userName']) . '</td>
+                    <th style="font-weight: bold;">Printed By :</th><td>' . $_SESSION['userName'] . '</td>
                     </tr>
                     <tr>
                     <th style="font-weight: bold;">Printed Date/Time :</th><td colspan="3">' . date("d-M-Y h:i:A") . '</td>

@@ -400,7 +400,7 @@ try {
             //Add event log
 
             $eventType = 'add-vl-request-sudan';
-            $action = ucwords($_SESSION['userName']) . ' added a new request data with the sample code ' . $_POST['sampleCode'];
+            $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
             $resource = 'vl-request-ss';
 
             $general->activityLog($eventType, $action, $resource);

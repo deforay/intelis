@@ -425,7 +425,7 @@ try {
             $_SESSION['alertMsg'] = "VL result updated successfully";
             //Add event log
             $eventType = 'update-vl-result-drc';
-            $action = ucwords($_SESSION['userName']) . ' updated a result data with the patient code ' . $_POST['patientArtNo'];
+            $action = $_SESSION['userName'] . ' updated a result data with the patient code ' . $_POST['patientArtNo'];
             $resource = 'vl-result-drc';
 
             $general->activityLog($eventType, $action, $resource);
@@ -433,7 +433,7 @@ try {
             $_SESSION['alertMsg'] = "VL request updated successfully";
             //Add event log
             $eventType = 'edit-vl-request-drc';
-            $action = ucwords($_SESSION['userName']) . ' updated a request data with the patient code ' . $_POST['patientArtNo'];
+            $action = $_SESSION['userName'] . ' updated a request data with the patient code ' . $_POST['patientArtNo'];
             $resource = 'vl-request-drc';
 
             $general->activityLog($eventType, $action, $resource);

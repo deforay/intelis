@@ -218,7 +218,7 @@ try {
         $_SESSION['alertMsg'] = _("TB test request added successfully");
         //Add event log
         $eventType = 'tb-add-request';
-        $action = ucwords($_SESSION['userName']) . ' added a new TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];
+        $action = $_SESSION['userName'] . ' added a new TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];
         $resource = 'tb-add-request';
 
         $general->activityLog($eventType, $action, $resource);

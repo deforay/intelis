@@ -90,7 +90,7 @@ try {
   $_SESSION['alertMsg'] = _("EID result updated successfully");
   //Add event log
   $eventType = 'update-vl-result-drc';
-  $action = ucwords($_SESSION['userName']) . ' updated a result for the EID sample no. ' . $_POST['sampleCode'];
+  $action = $_SESSION['userName'] . ' updated a result for the EID sample no. ' . $_POST['sampleCode'];
   $resource = 'eid-result-drc';
 
   $general->activityLog($eventType, $action, $resource);

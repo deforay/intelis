@@ -240,7 +240,7 @@ try {
     
     //Add event log
     $eventType = 'result-import';
-    $action = ucwords($_SESSION['userName']) . ' imported test results for Roche VL';
+    $action = $_SESSION['userName'] . ' imported test results for Roche VL';
     $resource  = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 

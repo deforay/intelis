@@ -88,7 +88,7 @@ try {
 	}
 	//Add event log
 	$eventType = 'update-hepatitis-result';
-	$action = ucwords($_SESSION['userName']) . ' updated a result for the hepatitis sample no. ' . $_POST['sampleCode'];
+	$action = $_SESSION['userName'] . ' updated a result for the hepatitis sample no. ' . $_POST['sampleCode'];
 	$resource = 'hepatitis-result';
 
 	$general->activityLog($eventType, $action, $resource);

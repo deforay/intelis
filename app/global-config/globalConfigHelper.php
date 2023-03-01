@@ -69,7 +69,7 @@ try {
     if ($updateInstance > 0) {
         //Add event log
         $eventType = 'update-instance';
-        $action = ucwords($_SESSION['userName']) . ' update instance id';
+        $action = $_SESSION['userName'] . ' update instance id';
         $resource = 'instance-details';
         $general->activityLog($eventType, $action, $resource);
     }
@@ -285,7 +285,7 @@ try {
 
     //Add event log
     $eventType = 'general-config-update';
-    $action = ucwords($_SESSION['userName']) . ' updated general config';
+    $action = $_SESSION['userName'] . ' updated general config';
     $resource = 'general-config';
 
     $general->activityLog($eventType, $action, $resource);

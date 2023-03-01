@@ -270,7 +270,7 @@ error_log($db->getLastError());
      $_SESSION['alertMsg'] = "VL request updated successfully";
      //Add event log
      $eventType = 'update-vl-request-png';
-     $action = ucwords($_SESSION['userName']) . ' updated a request data with the sample code ' . $_POST['sampleCode'];
+     $action = $_SESSION['userName'] . ' updated a request data with the sample code ' . $_POST['sampleCode'];
      $resource = 'vl-request-png';
 
      $general->activityLog($eventType, $action, $resource);

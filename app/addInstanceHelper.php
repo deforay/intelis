@@ -93,7 +93,7 @@ try {
       }
       //Add event log
       $eventType = 'add-instance';
-      $action = ucwords($_SESSION['userName']) . ' added instance id';
+      $action = $_SESSION['userName'] . ' added instance id';
       $resource = 'instance-details';
 
       $general->activityLog($eventType, $action, $resource);
