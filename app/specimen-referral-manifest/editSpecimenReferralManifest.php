@@ -143,7 +143,7 @@ $global = $general->getGlobalConfig();
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="testingLab" name="testingLab" title="Choose one test lab" readonly>
+										<select type="text" class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" readonly="readonly">
 											<?= $general->generateSelectOptions($testingLabs, $pResult[0]['lab_id'], '-- Select --'); ?>
 										</select>
 									</div>
@@ -155,7 +155,7 @@ $global = $general->getGlobalConfig();
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Manifest Status <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control isRequired" name="packageStatus" id="packageStatus" title="Please select manifest status">
+										<select class="form-control isRequired" name="packageStatus" id="packageStatus" title="Please select manifest status" readonly="readonly">
 											<option value="">-- Select --</option>
 											<option value="pending" <?php echo ($pResult[0]['package_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
 											<option value="dispatch" <?php echo ($pResult[0]['package_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
@@ -436,10 +436,9 @@ $global = $general->getGlobalConfig();
 	}
 
 	function clearSelection() {
-		$('#testingLab').val('').trigger('change');
+		//$('#testingLab').val('').trigger('change');
 		getSampleCodeDetails();
 	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
