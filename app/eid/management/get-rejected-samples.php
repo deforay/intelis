@@ -1,6 +1,9 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ob_start();
-  
+
 
 
 $general = new \Vlsm\Models\General();
@@ -46,7 +49,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 //echo $vlQuery; die;
     $vlQuery = $vlQuery . ' where ' .implode(' AND ',$sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
-
+    $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
     foreach ($tableResult as $tableRow) {

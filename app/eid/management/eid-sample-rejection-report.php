@@ -120,7 +120,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
   function searchResultData() {
     $.blockUI();
-    $.post("/covid-19/management/get-rejected-samples.php", {
+    $.post("/eid/management/get-rejected-samples.php", {
         sampleCollectionDate: $("#sampleCollectionDate").val(),
         labName: $("#labName").val(),
         clinicName: $("#clinicName").val()
@@ -135,7 +135,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
   function exportInexcel() {
     $.blockUI();
-    $.post("/covid-19/management/generate-rejected-samples-export.php", {
+    $.post("/eid/management/generate-rejected-samples-export.php", {
         sampleCollectionDate: $("#sampleCollectionDate").val(),
         lab_name: $("#labName").val(),
         clinic_name: $("#clinicName").val()
