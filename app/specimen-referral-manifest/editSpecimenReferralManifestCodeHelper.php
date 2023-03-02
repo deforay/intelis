@@ -70,6 +70,14 @@ try {
             $_SESSION['alertMsg'] = "Manifest details updated successfully";
         }
     }
+
+    //Add event log
+    $eventType = 'edit-manifest';
+    $action = $_SESSION['userName'] . ' updated Sample Manifest details for ' . $_POST['packageCode'];
+    $resource = 'specimen-manifest';
+
+    $general->activityLog($eventType, $action, $resource);
+
     header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['module']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());

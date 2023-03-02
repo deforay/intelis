@@ -420,7 +420,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
 if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
     //Add event log
     $eventType = 'print-result';
-    $action = ucwords($_SESSION['userName']) . ' generated the test result PDF with Patient ID/Code ' . $result['patient_id'];
+    $action = ($_SESSION['userName'] ?: 'System') . ' generated the test result PDF with Patient ID/Code ' . $result['patient_id'];
     $resource = 'print-test-result';
     $data = array(
         'event_type' => $eventType,

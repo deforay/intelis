@@ -52,6 +52,15 @@ try {
             $_SESSION['alertMsg'] = "Manifest added successfully";
         }
     }
+
+
+    //Add event log
+    $eventType = 'add-manifest';
+    $action = $_SESSION['userName'] . ' added Sample Manifest ' . $_POST['packageCode'];
+    $resource = 'specimen-manifest';
+
+    $general->activityLog($eventType, $action, $resource);
+
     header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['module']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());

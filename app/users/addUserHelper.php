@@ -97,7 +97,7 @@ try {
     }
     //Add event log
     $eventType = 'user-add';
-    $action = ucwords($_SESSION['userName']) . ' added user ' . $_POST['userName'];
+    $action = $_SESSION['userName'] . ' added user ' . $_POST['userName'];
     $resource = 'user';
 
     $general->activityLog($eventType, $action, $resource);

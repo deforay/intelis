@@ -142,7 +142,7 @@ try {
 	}
 	//Add event log
 	$eventType = 'update-covid-19-result';
-	$action = ucwords($_SESSION['userName']) . ' updated a result for the Covid-19 sample Code/ID. ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+	$action = $_SESSION['userName'] . ' updated a result for the Covid-19 sample Code/ID. ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
 	$resource = 'covid-19-result';
 
 	$general->activityLog($eventType, $action, $resource);

@@ -99,7 +99,7 @@ try {
 	$_SESSION['alertMsg'] = "Covid-19 result updated successfully";
 	//Add event log
 	$eventType = 'update-covid-19-result';
-	$action = ucwords($_SESSION['userName']) . ' updated a result for the Covid-19 sample no. ' . $_POST['sampleCode'];
+	$action = $_SESSION['userName'] . ' updated a result for the Covid-19 sample no. ' . $_POST['sampleCode'];
 	$resource = 'covid-19-result';
 
 	$general->activityLog($eventType, $action, $resource);

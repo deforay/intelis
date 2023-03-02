@@ -171,7 +171,7 @@ try {
     $_SESSION['alertMsg'] = "VL result updated successfully";
     //Add event log
     $eventType = 'update-vl-result-drc';
-    $action = ucwords($_SESSION['userName']) . ' updated a result data with the patient code ' . $_POST['dubPatientArtNo'];
+    $action = $_SESSION['userName'] . ' updated a result data with the patient code ' . $_POST['dubPatientArtNo'];
     $resource = 'vl-result-drc';
 
     $general->activityLog($eventType, $action, $resource);

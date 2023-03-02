@@ -28,15 +28,23 @@ try {
             'data_sync'                 => 0
         );
         /* Update Package details table */
-        $db = $db->where('package_code IN('.implode(",", $_POST['packageCode']).')');
+        $db = $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update('package_details', array("lab_id" => $_POST['assignLab']));
-        
+
         /* Update test types */
-        $db = $db->where('sample_package_code IN('.implode(",", $_POST['packageCode']).')');
+        $db = $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update($table, $value);
 
         $_SESSION['alertMsg'] = "Manifest code(s) moved successfully";
     }
+
+    //Add event log
+    $eventType = 'move-manifest';
+    $action = $_SESSION['userName'] . ' moved Sample Manifest ' . $_POST['packageCode']. ' to lab '.$_POST['assignLab'] . ' from lab '.$_POST['testingLab'];
+    $resource = 'specimen-manifest';
+
+    $general->activityLog($eventType, $action, $resource);
+
     header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['testType']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());

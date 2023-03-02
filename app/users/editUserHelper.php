@@ -144,7 +144,7 @@ try {
 
     //Add event log
     $eventType = 'user-update';
-    $action = ucwords($_SESSION['userName']) . ' updated details for user ' . $_POST['userName'];
+    $action = $_SESSION['userName'] . ' updated details for user ' . $_POST['userName'];
     $resource = 'user';
 
     $general->activityLog($eventType, $action, $resource);
