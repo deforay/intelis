@@ -97,9 +97,6 @@ $facilityQuery = '';
 
 if (isset($sWhere) && $sWhere != "") {
     $sWhere = ' WHERE ' . $sWhere;
-    $sWhere = $sWhere . ' AND vl.vlsm_country_id ="' . $configResult[0]['value'] . '"';
-} else {
-    $sWhere = ' where vl.vlsm_country_id ="' . $configResult[0]['value'] . '"';
 }
 if (isset($vlfmResult[0]['facilityId'])) {
     $sWhere = $sWhere . " AND facility_id IN(" . $vlfmResult[0]['facilityId'] . ")";

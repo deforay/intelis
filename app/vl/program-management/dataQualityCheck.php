@@ -153,7 +153,6 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
      $sWhere[] = $sWhereSub;
 }
 
-     $sWhere[] =  ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {

@@ -159,9 +159,8 @@ if ($table == "form_eid") {
 			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
-		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
-		where  vl.vlsm_country_id =" . $country;
-    $sQuery = $sQuery . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id" ;
+    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
     $sQuery = $sQuery . ' GROUP BY vl.facility_id';
 }

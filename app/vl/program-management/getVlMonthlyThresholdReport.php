@@ -177,9 +177,9 @@ if (isset($sWhere) && $sWhere != "") {
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status!=9';
 } else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status!=9';
 }
 
 // HAVING COUNT(c2.sid) >= 2)

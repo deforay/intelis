@@ -178,9 +178,9 @@ if (isset($sWhere) && $sWhere != "") {
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . '  AND vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere = $sWhere . '  AND vl.result_status!=9';
 } else {
-     $sWhere = $sWhere . ' where  vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+     $sWhere = $sWhere . ' where vl.result_status!=9';
 }
 
 if (!empty($facilityMap)) {

@@ -25,9 +25,9 @@ $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_
 //error_log($bQuery);die;
 //echo '<pre>'; print_r($batchInfo); die;
 $batchResultresult = $db->rawQuery($bQuery);
-$query = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' AND vl.vlsm_country_id = ? ORDER BY vl.last_modified_datetime ASC";
+$query = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' ORDER BY vl.last_modified_datetime ASC";
 //error_log($query);die;
-$result = $db->rawQuery($query, array($arr['vl_form']));
+$result = $db->rawQuery($query);
 $result = array_merge($batchResultresult, $result);
 
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";

@@ -166,9 +166,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
 
           if (isset($sWhere) && $sWhere != "") {
-               $sWhere = $sWhere.' AND vl.vlsm_country_id = "'.$configResult[0]['value'].'" AND vl.result_status = "'.$_POST['status'].'"';
+               $sWhere = $sWhere.' AND vl.result_status = "'.$_POST['status'].'"';
           }else{
-               $sWhere =' WHERE vl.vlsm_country_id = "'.$configResult[0]['value'].'" AND vl.result_status = "'.$_POST['status'].'"';
+               $sWhere =' WHERE vl.result_status = "'.$_POST['status'].'"';
           }
 
           $sQuery = $sQuery.' '.$sWhere;

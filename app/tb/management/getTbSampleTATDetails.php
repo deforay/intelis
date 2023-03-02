@@ -110,7 +110,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null
-                        AND vl.result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "'";
+                        AND vl.result != ''";
 if ($sarr['sc_user_type'] == 'remoteuser') {
 	$whereCondition = '';
 	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";

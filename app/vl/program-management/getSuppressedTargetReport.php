@@ -29,7 +29,7 @@ SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppr
 SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
  FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
-$sWhere = ' WHERE  vl.vlsm_country_id="' . $formId . '" AND vl.result_status!=9';
+$sWhere = ' WHERE vl.result_status!=9';
 if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {
     $fac = $_POST['facilityName'];
     $out = '';

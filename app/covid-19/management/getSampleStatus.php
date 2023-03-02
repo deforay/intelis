@@ -81,8 +81,7 @@ $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
                 FROM form_covid19 as vl 
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
-                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                WHERE vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
+                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
 $sWhere = array();
@@ -104,7 +103,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && !empty($sWhere)) {
-    $tQuery .= " AND " . implode(" AND ", $sWhere);
+    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 // echo $tQuery;die;
@@ -130,7 +129,7 @@ $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
     status_id,
     status_name 
     
-    FROM form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
+    FROM form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 
@@ -153,7 +152,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && !empty($sWhere)) {
-    $vlSuppressionQuery .= " AND " . implode(" AND ", $sWhere);
+    $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 // echo $vlSuppressionQuery;die;
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
@@ -183,8 +182,7 @@ $tatSampleQuery = "SELECT
     vl.result is not null
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
-    AND DATE(vl.sample_tested_datetime) <= '$end_date'
-    AND vl.vlsm_country_id='" . $configFormResult[0]['value'] . "'";
+    AND DATE(vl.sample_tested_datetime) <= '$end_date'";
 $sWhere = array();
 if(!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
