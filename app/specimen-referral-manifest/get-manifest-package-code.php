@@ -9,10 +9,8 @@ $general = new \Vlsm\Models\General();
 $facilitiesDb = new \Vlsm\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+
+
 
 // $rpQuery="SELECT GROUP_CONCAT(DISTINCT rp.sample_id SEPARATOR ',') as sampleId FROM r_package_details_map as rp";
 // $rpResult = $db->rawQuery($rpQuery);
@@ -23,7 +21,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-$module = (isset($_POST['testType']) && !empty($_POST['testType']))?$_POST['testType']:$_POST['module'];
+$module = (isset($_POST['testType']) && !empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
 $query = "";
 if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM package_details as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.package_code ";
@@ -47,22 +45,22 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 		$endDate = $general->isoDateFormat(trim($dateRange[1]));
 	}
 
-	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
+	$where[] = "DATE(p.request_created_datetime) BETWEEN '" . $startDate . "' AND '" . $endDate . "'";
 }
 if (!empty($facilityMap)) {
 	$where[] = " facility_id IN(" . $facilityMap . ")";
 }
 
 if (isset($_POST['testingLab']) && !empty($_POST['testingLab'])) {
-	$where[] = " (vl.lab_id IN(" . $_POST['testingLab'] . ") OR (vl.lab_id like '' OR vl.lab_id is null OR vl.lab_id = 0))";
+	$where[] = " (p.lab_id IN(" . $_POST['testingLab'] . ") OR (p.lab_id like '' OR p.lab_id is null OR p.lab_id = 0))";
 }
 
 if (isset($_POST['facility']) && !empty($_POST['facility'])) {
 	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
-if(isset($where) && count($where) > 0){
-	$query .= " where ". implode(" AND ", $where);	
+if (isset($where) && !empty($where)) {
+	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " GROUP BY p.package_code ORDER BY vl.request_created_datetime ASC";
 // die($query);
@@ -78,7 +76,7 @@ $result = $db->rawQuery($query);
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
 					<?php foreach ($result as $sample) { ?>
-							<option value="'<?php echo $sample['package_code']; ?>'"><?php echo ucwords($sample["package_code"]); ?></option>
+						<option value="'<?php echo $sample['package_code']; ?>'"><?php echo ucwords($sample["package_code"]); ?></option>
 					<?php } ?>
 				</select>
 			</div>
