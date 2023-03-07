@@ -4,15 +4,8 @@
 
 $general = new \Vlsm\Models\General();
 $artNo = $_GET['artNo'];
-//global config
-$cQuery = "SELECT * FROM global_config";
-$cResult = $db->query($cQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cResult); $i++) {
-	$arr[$cResult[$i]['name']] = $cResult[$i]['value'];
-}
-$pQuery = "SELECT * FROM form_vl as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where vlsm_country_id='" . $arr['vl_form'] . "' AND (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%')";
+
+$pQuery = "SELECT * FROM form_vl as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC";
 $pResult = $db->rawQuery($pQuery);
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
@@ -72,6 +65,8 @@ $pResult = $db->rawQuery($pQuery);
 									<th>Gender</th>
 									<th>Facility</th>
 									<th>Date and Time</th>
+									<th>Tested Date and Time</th>
+									<th>Result</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -81,15 +76,40 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_art_no'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										$patientDetails = $patient['patient_first_name'] . "##" . $patient['patient_last_name'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age_in_years'] . "##" . $patient['patient_age_in_months'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_mobile_number'] . "##" . $patient['consent_to_receive_sms'] . "##" . $general->humanReadableDateFormat($patient['treatment_initiated_date']) . "##" . $patient['current_regimen'] . "##" . $general->humanReadableDateFormat($patient['last_viral_load_date']) . "##" . $patient['last_viral_load_result'] . "##" . $patient['number_of_enhanced_sessions'] . "##" . $patient['patient_art_no'] . "##" . $patient['is_patient_new']; ?>
+										//$patientDetails = $patient['patient_first_name'] . "##" . $patient['patient_last_name'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age_in_years'] . "##" . $patient['patient_age_in_months'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_mobile_number'] . "##" . $patient['consent_to_receive_sms'] . "##" . $general->humanReadableDateFormat($patient['treatment_initiated_date']) . "##" . $patient['current_regimen'] . "##" . $general->humanReadableDateFormat($patient['last_viral_load_date']) . "##" . $patient['last_viral_load_result'] . "##" . $patient['number_of_enhanced_sessions'] . "##" . $patient['patient_art_no'] . "##" . $patient['is_patient_new'] . "##" .$patient['sample_tested_datetime']; 
+										$patientDetails = json_encode(array(
+											"name"=>$patient['patient_first_name'] . " " . $patient['patient_last_name'],
+											"gender" => $patient['patient_gender'],
+											"dob" => $general->humanReadableDateFormat($patient['patient_dob']),
+											"age_in_years" => $patient['patient_age_in_years'],
+											"age_in_months" => $patient['patient_age_in_months'],
+											"is_pregnant" => $patient['is_patient_pregnant'],
+											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
+											"mobile" => $patient['patient_mobile_number'],
+											"consent_to_receive_sms" =>$patient['consent_to_receive_sms'],
+											"treatment_initiated_date" => $general->humanReadableDateFormat($patient['treatment_initiated_date']),
+											"current_regimen" => $patient['current_regimen'],
+											"last_viral_load_date" => $general->humanReadableDateFormat($patient['last_viral_load_date']),
+											"last_viral_load_result" => $patient['last_viral_load_result'],
+											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
+											"patient_art_no" => $patient['patient_art_no'],
+											"is_patient_new" => $patient['is_patient_new'],
+											"sample_tested_datetime" => $general->humanReadableDateFormat($patient['sample_tested_datetime']),
+											"result" => $patient['result'],
+										));
+										
+										?>
+										
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value="<?php echo $patientDetails; ?>" onclick="getPatientDetails(this.value);"></td>
+											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td><?php echo $patient['patient_art_no']; ?></td>
 											<td><?php echo ucfirst($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
 											<td><?php echo $patient['patient_age_in_years']; ?></td>
 											<td><?php echo ucwords(str_replace("_", " ", $patient['patient_gender'])); ?></td>
 											<td><?php echo ucwords($patient['facility_name']); ?></td>
 											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
+											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['sample_tested_datetime'])); ?></td>
+											<td><?php echo $patient['result']; ?></td>
 										</tr>
 								<?php
 									}
@@ -122,6 +142,7 @@ $pResult = $db->rawQuery($pQuery);
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [1, 'asc']
 		});
+		
 	});
 
 	function getPatientDetails(pDetails) {

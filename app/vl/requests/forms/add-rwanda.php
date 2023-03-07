@@ -677,6 +677,7 @@ $sFormat = '';
                                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
                                         <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                    </div>
+                                   <input id="selectedSample" value="" name="selectedSample" class=""/>
                     </form>
                </div>
      </section>
@@ -740,6 +741,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
+          patientInfo = JSON.parse($("#selectedSample").val());
+         
+          if ($.trim(patientInfo['sample_tested_datetime']) != '') {
+               $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+               $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+               $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+              
+          }
+         // setPatientDetails(patientInfo);
      }
 
      function getProvinceDistricts(obj) {
@@ -1082,61 +1092,78 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function setPatientDetails(pDetails) {
-          patientArray = pDetails.split("##");
-          $("#patientFirstName").val(patientArray[0] + " " + patientArray[1]);
-          $("#patientPhoneNumber").val(patientArray[8]);
-          if ($.trim(patientArray[3]) != '') {
-               $("#dob").val(patientArray[3]);
+         // patientArray = pDetails.split("##");
+
+          $("#selectedSample").val(pDetails);
+          var patientArray = JSON.parse(pDetails);
+       //  alert(pDetails);
+          $("#patientFirstName").val(patientArray['name']);
+          $("#patientPhoneNumber").val(patientArray['mobile']);
+          if ($.trim(patientArray['dob']) != '') {
+               $("#dob").val(patientArray['dob']);
                getAge();
-          } else if ($.trim(patientArray[4]) != '' && $.trim(patientArray[4]) != 0) {
-               $("#ageInYears").val(patientArray[4]);
-          } else if ($.trim(patientArray[5]) != '') {
-               $("#ageInMonths").val(patientArray[5]);
+          } else if ($.trim(patientArray['age_in_years']) != '' && $.trim(patientArray['age_in_years']) != 0) {
+               $("#ageInYears").val(patientArray['age_in_years']);
+          } else if ($.trim(patientArray['age_in_months']) != '') {
+               $("#ageInMonths").val(patientArray['age_in_years']);
           }
 
-          if ($.trim(patientArray[2]) != '') {
+          if ($.trim(patientArray['gender']) != '') {
                $('#breastfeedingYes').removeClass('isRequired');
                $('#pregYes').removeClass('isRequired');
-               if (patientArray[2] == 'male' || patientArray[2] == 'not_recorded') {
+               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'not_recorded') {
                     $('.femaleSection').hide();
                     $('input[name="breastfeeding"]').prop('checked', false);
                     $('input[name="patientPregnant"]').prop('checked', false);
-                    if (patientArray[2] == 'male') {
+                    if (patientArray['gender'] == 'male') {
                          $("#genderMale").prop('checked', true);
                     } else {
                          $("#genderNotRecorded").prop('checked', true);
                     }
-               } else if (patientArray[2] == 'female') {
+               } else if (patientArray['gender'] == 'female') {
                     $('.femaleSection').show();
                     $("#genderFemale").prop('checked', true);
                     $('#breastfeedingYes').addClass('isRequired');
                     $('#pregYes').addClass('isRequired');
-                    if ($.trim(patientArray[6]) != '') {
-                         if ($.trim(patientArray[6]) == 'yes') {
+                    if ($.trim(patientArray['is_pregnant']) != '') {
+                         if ($.trim(patientArray['is_pregnant']) == 'yes') {
                               $("#pregYes").prop('checked', true);
-                         } else if ($.trim(patientArray[6]) == 'no') {
+                         } else if ($.trim(patientArray['is_pregnant']) == 'no') {
                               $("#pregNo").prop('checked', true);
                          }
                     }
-                    if ($.trim(patientArray[7]) != '') {
-                         if ($.trim(patientArray[7]) == 'yes') {
+                    if ($.trim(patientArray['is_pregnant']) != '') {
+                         if ($.trim(patientArray['is_pregnant']) == 'yes') {
                               $("#breastfeedingYes").prop('checked', true);
-                         } else if ($.trim(patientArray[7]) == 'no') {
+                         } else if ($.trim(patientArray['is_pregnant']) == 'no') {
                               $("#breastfeedingNo").prop('checked', true);
                          }
                     }
                }
           }
-          if ($.trim(patientArray[9]) != '') {
-               if (patientArray[9] == 'yes') {
+          if ($.trim(patientArray['consent_to_receive_sms']) != '') {
+               if (patientArray['consent_to_receive_sms'] == 'yes') {
                     $("#receivesmsYes").prop('checked', true);
-               } else if (patientArray[9] == 'no') {
+               } else if (patientArray['consent_to_receive_sms'] == 'no') {
                     $("#receivesmsNo").prop('checked', true);
                }
           }
-          if ($.trim(patientArray[15]) != '') {
-               $("#artNo").val($.trim(patientArray[15]));
+          if ($.trim(patientArray['patient_art_no']) != '') {
+               $("#artNo").val($.trim(patientArray['patient_art_no']));
           }
+
+          if ($.trim(patientArray['treatment_initiated_date']) != '') {
+               $("#dateOfArtInitiation").val($.trim(patientArray['treatment_initiated_date']));
+          }
+
+          if ($.trim(patientArray['current_regimen']) != '') {
+               $("#artRegimen").val($.trim(patientArray['current_regimen']));
+          }
+
+          if ($.trim(patientArray['result']) != '') {
+               $("#vlResult").val($.trim(patientArray['result']));
+          }
+          
      }
 
      function calculateLogValue(obj) {
