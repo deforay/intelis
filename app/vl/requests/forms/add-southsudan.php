@@ -998,6 +998,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
               $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
              
          }
+         if ($.trim(patientInfo['result']) != '') {
+               $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+               $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+               $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+         }
      }
 
      function getProvinceDistricts(obj) {
@@ -1408,9 +1413,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#artRegimen").val($.trim(patientArray['current_regimen']));
           }
 
-          if ($.trim(patientArray['result']) != '') {
-               $("#vlResult").val($.trim(patientArray['result']));
-          }
      }
 
      function calculateLogValue(obj) {

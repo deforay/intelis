@@ -747,9 +747,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-              
           }
-         // setPatientDetails(patientInfo);
+
+          if ($.trim(patientInfo['result']) != '') {
+               $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+               $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+               $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+         }
      }
 
      function getProvinceDistricts(obj) {
@@ -1092,11 +1096,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function setPatientDetails(pDetails) {
-         // patientArray = pDetails.split("##");
-
           $("#selectedSample").val(pDetails);
           var patientArray = JSON.parse(pDetails);
-       //  alert(pDetails);
           $("#patientFirstName").val(patientArray['name']);
           $("#patientPhoneNumber").val(patientArray['mobile']);
           if ($.trim(patientArray['dob']) != '') {
@@ -1158,10 +1159,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           if ($.trim(patientArray['current_regimen']) != '') {
                $("#artRegimen").val($.trim(patientArray['current_regimen']));
-          }
-
-          if ($.trim(patientArray['result']) != '') {
-               $("#vlResult").val($.trim(patientArray['result']));
           }
           
      }
