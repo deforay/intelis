@@ -403,15 +403,16 @@ if ($arr['vl_form'] == 1) {
      }
 
      function getAge() {
-          var agYrs = '';
-          var agMnths = '';
-          var dob = changeFormat($("#dob").val());
-          if (agYrs == '' && $("#dob").val() != '') {
-               //calculate age
-               var years = moment().diff(dob, 'years', false);
-               var months = (years == 0) ? moment().diff(dob, 'months', false) : '';
-               $("#ageInYears").val(years); // Gives difference as years
-               $("#ageInMonths").val(months); // Gives difference as months
+          var dob = $("#dob").val();
+          if ($.trim(dob) != '') {
+               let age = getAgeFromDob(dob);
+               $("#ageInYears").val("");
+               $("#ageInMonths").val("");
+               if (age.years >= 1) {
+                    $("#ageInYears").val(age.years);
+               } else {
+                    $("#ageInMonths").val(age.months);
+               }
           }
      }
 

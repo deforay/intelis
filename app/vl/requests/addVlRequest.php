@@ -199,7 +199,7 @@ require($fileArray[$arr['vl_form']]);
 
             date1 = new Date(dob);
             date2 = new Date(artInitiationDate);
-            
+
             if (date2.getTime() < date1.getTime()) {
                 alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
                 $("#dateOfArtInitiation").val("");
@@ -298,15 +298,16 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function getAge() {
-        var agYrs = '';
-        var agMnths = '';
-        var dob = changeFormat($("#dob").val());
+        var dob = $("#dob").val();
         if ($.trim(dob) != '') {
-            //calculate age
-            var years = moment().diff(dob, 'years', false);
-            var months = (years == 0) ? moment().diff(dob, 'months', false) : '';
-            $("#ageInYears").val(years); // Gives difference as years
-            $("#ageInMonths").val(months); // Gives difference as months
+            let age = getAgeFromDob(dob);
+            $("#ageInYears").val("");
+            $("#ageInMonths").val("");
+            if (age.years >= 1) {
+                $("#ageInYears").val(age.years);
+            }else{
+                $("#ageInMonths").val(age.months);
+            }
         }
     }
 
