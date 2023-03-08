@@ -324,13 +324,13 @@ if ($arr['vl_form'] == 1) {
           var sampleCollectionDate = $("#sampleCollectionDate").val();
           var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
           if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-               var scdf = $("#sampleCollectionDate").val().split(' ');
-               var stdl = $("#sampleReceivedAtHubOn").val().split(' ');
-               var scd = changeFormat(scdf[0]);
-               var std = changeFormat(stdl[0]);
-               if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleReceivedAtHubOn);
+
+               if (date2.getTime() < date1.getTime()) {
                     alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleTestingDateAtLab").val("");
+                    $("#sampleReceivedAtHubOn").val("");
                }
           }
      }
@@ -339,13 +339,13 @@ if ($arr['vl_form'] == 1) {
           var sampleCollectionDate = $("#sampleCollectionDate").val();
           var sampleReceivedDate = $("#sampleReceivedDate").val();
           if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-               var scdf = $("#sampleCollectionDate").val().split(' ');
-               var srdf = $("#sampleReceivedDate").val().split(' ');
-               var scd = changeFormat(scdf[0]);
-               var srd = changeFormat(srdf[0]);
-               if (moment(scd + ' ' + scdf[1]).isAfter(srd + ' ' + srdf[1])) {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleReceivedDate);
+
+               if (date2.getTime() < date1.getTime()) {
                     alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                    $('#sampleReceivedDate').val('');
+                    $("#sampleReceivedDate").val("");
                }
           }
      }
@@ -354,11 +354,11 @@ if ($arr['vl_form'] == 1) {
           var sampleCollectionDate = $("#sampleCollectionDate").val();
           var sampleTestingDate = $("#sampleTestingDateAtLab").val();
           if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-               var scdf = $("#sampleCollectionDate").val().split(' ');
-               var stdl = $("#sampleTestingDateAtLab").val().split(' ');
-               var scd = changeFormat(scdf[0]);
-               var std = changeFormat(stdl[0]);
-               if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleTestingDate);
+
+               if (date2.getTime() < date1.getTime()) {
                     alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleTestingDateAtLab").val("");
                }
@@ -369,8 +369,11 @@ if ($arr['vl_form'] == 1) {
           var dob = changeFormat($("#dob").val());
           var artInitiationDate = $("#dateOfArtInitiation").val();
           if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
-               var artInitiationDate = changeFormat($("#dateOfArtInitiation").val());
-               if (moment(dob).isAfter(artInitiationDate)) {
+
+               date1 = new Date(dob);
+               date2 = new Date(artInitiationDate);
+
+               if (date2.getTime() < date1.getTime()) {
                     alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
                     $("#dateOfArtInitiation").val("");
                }
