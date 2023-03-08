@@ -298,7 +298,7 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function getAge() {
-        var dob = $("#dob").val();
+        let dob = $("#dob").val();
         if ($.trim(dob) != '') {
             let age = getAgeFromDob(dob);
             $("#ageInYears").val("");
