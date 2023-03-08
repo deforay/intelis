@@ -12,6 +12,39 @@ $(document).on('select2:open', (e) => {
 });
 
 
+function getAgeFromDob(dob) {
+    if ($.trim(dob) != '') {
+        let millisecondsBetweenDOBAnd1970 = Date.parse(dob);
+        let millisecondsBetweenNowAnd1970 = Date.now();
+        let ageInMilliseconds = millisecondsBetweenNowAnd1970 - millisecondsBetweenDOBAnd1970;
+        //--We will leverage Date.parse and now method to calculate age in milliseconds refer here https://www.w3schools.com/jsref/jsref_parse.asp
+
+        let milliseconds = ageInMilliseconds;
+        let second = 1000;
+        let minute = second * 60;
+        let hour = minute * 60;
+        let day = hour * 24;
+        let month = day * 30;
+        /*using 30 as base as months can have 28, 29, 30 or 31 days depending a month in a year it itself is a different piece of comuptation*/
+        let year = day * 365;
+
+        //let the age conversion begin
+        let years = Math.round(milliseconds / year);
+        let months = years * 12;
+        //let days = years * 365;
+        //let hours = Math.round(milliseconds / hour);
+        //let seconds = Math.round(milliseconds / second);
+        return {
+            years: years,
+            months: months,
+            //days: days,
+            //hours: hours,
+            //seconds: seconds
+        }
+    }
+}
+
+
 
 function showModal(url, w, h) {
     showdefModal('dDiv', w, h);
