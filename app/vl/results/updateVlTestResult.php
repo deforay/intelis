@@ -263,7 +263,7 @@ require_once(APPLICATION_PATH . '/footer.php');
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
-			timeFormat: "hh:mm TT",
+			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
 		}).click(function() {

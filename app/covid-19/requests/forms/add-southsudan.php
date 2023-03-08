@@ -1000,7 +1000,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             maxDate: "Today",
            // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
 			onSelect: function(date) {
@@ -1024,7 +1024,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $(this).change();
             },
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
@@ -1122,7 +1122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $(this).change();
             },
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
@@ -1136,7 +1136,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $(this).change();
             },
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {

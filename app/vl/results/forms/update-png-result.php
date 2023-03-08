@@ -689,7 +689,7 @@ $disable = "disabled = 'disabled'";
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
-			timeFormat: "hh:mm TT",
+			timeFormat: "HH:mm",
 			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();

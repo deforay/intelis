@@ -702,7 +702,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             maxDate: "Today",
            // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
 			onSelect: function(date) {

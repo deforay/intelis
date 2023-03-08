@@ -123,7 +123,7 @@ require($fileArray[$arr['vl_form']]);
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "hh:mm",
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
         }).click(function() {
@@ -134,13 +134,12 @@ require($fileArray[$arr['vl_form']]);
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            //maxDate: "Today",
+            maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {
                     $('.ui-datepicker-calendar').show();
                 });
-            },
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -152,13 +151,13 @@ require($fileArray[$arr['vl_form']]);
         var sampleCollectionDate = $("#sampleCollectionDate").val();
         var sampleReceivedDate = $("#sampleReceivedDate").val();
         if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-            var scdf = $("#sampleCollectionDate").val().split(' ');
-            var srdf = $("#sampleReceivedDate").val().split(' ');
-            var scd = changeFormat(scdf[0]);
-            var srd = changeFormat(srdf[0]);
-            if (moment(scd + ' ' + scdf[1]).isAfter(srd + ' ' + srdf[1])) {
+
+            date1 = new Date(sampleCollectionDate);
+            date2 = new Date(sampleReceivedDate);
+
+            if (date2.getTime() < date1.getTime()) {
                 alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                $('#sampleReceivedDate').val('');
+                $("#sampleReceivedDate").val("");
             }
         }
     }
@@ -167,13 +166,13 @@ require($fileArray[$arr['vl_form']]);
         var sampleCollectionDate = $("#sampleCollectionDate").val();
         var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
         if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-            var scdf = $("#sampleCollectionDate").val().split(' ');
-            var stdl = $("#sampleReceivedAtHubOn").val().split(' ');
-            var scd = changeFormat(scdf[0]);
-            var std = changeFormat(stdl[0]);
-            if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
+
+            date1 = new Date(sampleCollectionDate);
+            date2 = new Date(sampleReceivedAtHubOn);
+
+            if (date2.getTime() < date1.getTime()) {
                 alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleTestingDateAtLab").val("");
+                $("#sampleReceivedAtHubOn").val("");
             }
         }
     }
@@ -182,11 +181,11 @@ require($fileArray[$arr['vl_form']]);
         var sampleCollectionDate = $("#sampleCollectionDate").val();
         var sampleTestingDate = $("#sampleTestingDateAtLab").val();
         if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-            var scdf = $("#sampleCollectionDate").val().split(' ');
-            var stdl = $("#sampleTestingDateAtLab").val().split(' ');
-            var scd = changeFormat(scdf[0]);
-            var std = changeFormat(stdl[0]);
-            if (moment(scd + ' ' + scdf[1]).isAfter(std + ' ' + stdl[1])) {
+
+            date1 = new Date(sampleCollectionDate);
+            date2 = new Date(sampleTestingDate);
+
+            if (date2.getTime() < date1.getTime()) {
                 alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
                 $("#sampleTestingDateAtLab").val("");
             }
@@ -197,8 +196,11 @@ require($fileArray[$arr['vl_form']]);
         var dob = changeFormat($("#dob").val());
         var artInitiationDate = $("#dateOfArtInitiation").val();
         if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
-            var artInitiationDate = changeFormat($("#dateOfArtInitiation").val());
-            if (moment(dob).isAfter(artInitiationDate)) {
+
+            date1 = new Date(dob);
+            date2 = new Date(artInitiationDate);
+            
+            if (date2.getTime() < date1.getTime()) {
                 alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
                 $("#dateOfArtInitiation").val("");
             }

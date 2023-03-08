@@ -146,7 +146,7 @@
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-M-yy',
-        timeFormat: "hh:mm TT",
+        timeFormat: "HH:mm",
         yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
       });
       <?php if (count($contact) > 0) { ?>
