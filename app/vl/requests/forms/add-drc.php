@@ -866,7 +866,7 @@ $sFormat = '';
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm TT",
+            timeFormat: "HH:mm",
             maxDate: "+1Y",
            // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
 			onSelect: function(date) {
