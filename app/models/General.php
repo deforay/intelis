@@ -768,7 +768,7 @@ class General
     {
         $inputString = preg_replace('/[[:cntrl:]]/', '',  $inputString);
         if ($encodeToUTF8 && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
-            $inputString = utf8_encode($inputString);
+            $inputString = mb_convert_encoding($inputString, 'UTF-8');
         }
         return $inputString;
     }
