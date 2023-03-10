@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e67a1e3fe89ba3041e84d49fa7582361",
+    "content-hash": "6a93c610875c0a26cabd24b7358f2a93",
     "packages": [
         {
             "name": "brick/math",
@@ -4279,22 +4279,21 @@
         },
         {
             "name": "thingengineer/mysqli-database-class",
-            "version": "dev-master",
+            "version": "v2.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class.git",
-                "reference": "5159467ae081adbe96586e45e65a58c0fe7a32ce"
+                "reference": "03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ThingEngineer/PHP-MySQLi-Database-Class/zipball/5159467ae081adbe96586e45e65a58c0fe7a32ce",
-                "reference": "5159467ae081adbe96586e45e65a58c0fe7a32ce",
+                "url": "https://api.github.com/repos/ThingEngineer/PHP-MySQLi-Database-Class/zipball/03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed",
+                "reference": "03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -4323,9 +4322,9 @@
             "description": "PHP MySQL Wrapper and object mapper which utilizes MySQLi and prepared statements",
             "support": {
                 "issues": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/issues",
-                "source": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/tree/master"
+                "source": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/tree/v2.9.3"
             },
-            "time": "2022-09-13T15:42:11+00:00"
+            "time": "2019-08-24T09:28:56+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -4389,9 +4388,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "thingengineer/mysqli-database-class": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -451,7 +451,7 @@ class dbObject {
         if (!property_exists ($this, 'relations') || !isset ($this->relations[$objectName]))
             die ("No relation with name $objectName found");
 
-        $this->_with[MysqliDb::$prefix.$objectName] = $this->relations[$objectName];
+        $this->_with[$objectName] = $this->relations[$objectName];
 
         return $this;
     }
@@ -769,7 +769,7 @@ class dbObject {
             if (!in_array ($key, array_keys ($this->dbFields)))
                 continue;
 
-            if (!is_array($value) && !is_object($value)) {
+            if (!is_array($value)) {
                 $sqlData[$key] = $value;
                 continue;
             }

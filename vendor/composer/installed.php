@@ -602,14 +602,12 @@
             'dev_requirement' => false,
         ),
         'thingengineer/mysqli-database-class' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '5159467ae081adbe96586e45e65a58c0fe7a32ce',
+            'pretty_version' => 'v2.9.3',
+            'version' => '2.9.3.0',
+            'reference' => '03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed',
             'type' => 'library',
             'install_path' => __DIR__ . '/../thingengineer/mysqli-database-class',
-            'aliases' => array(
-                0 => '9999999-dev',
-            ),
+            'aliases' => array(),
             'dev_requirement' => false,
         ),
         'webmozart/assert' => array(

@@ -1,6 +1,8 @@
 <?php
 $title = _("View All Requests");
 $hidesrcofreq = false;
+$dateRange = $labName = $srcOfReq = $srcStatus = null;
+$hidesrcofreq = null;
 if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];
@@ -11,7 +13,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 $facilityId = null;
 $labId = null;
-if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
 	$facilityId = base64_decode($_GET['facilityId']);
 	$labId = base64_decode($_GET['labId']);
 }
@@ -93,15 +95,15 @@ foreach ($srcResults as $list) {
 				<div class="box">
 					<table id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
-						<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (isset($_GET['daterange']) && !empty($_GET['daterange']))?$_GET['daterange']:"";?>"/>
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (isset($_GET['daterange']) && !empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
 							</td>
 							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
-							
+
 							<td><strong><?php echo _("Sample Type"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
@@ -117,7 +119,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
@@ -139,7 +141,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("Request Creation Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
@@ -155,7 +157,7 @@ foreach ($srcResults as $list) {
 									<option value="10"><?php echo _("Expired"); ?></option>
 								</select>
 							</td>
-						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
 									<option value=""> -- Select -- </option>
@@ -165,7 +167,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">
@@ -199,7 +201,7 @@ foreach ($srcResults as $list) {
 									?>
 								</select>
 							</td>
-						<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -210,11 +212,11 @@ foreach ($srcResults as $list) {
 									<?php } ?>
 								</select>
 							</td>
-							
+
 						</tr>
 						<tr>
-						
-							
+
+
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -245,7 +247,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Source of Request"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _('Please select source of request'); ?>">
@@ -260,19 +262,19 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-							
-						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-							<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
 								</select>
 							</td>
 							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
@@ -289,7 +291,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -305,7 +307,7 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-							</tr>
+						</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -538,12 +540,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-			<?php if((isset($_GET['daterange']) && !empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')){ ?>
-				$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
-				$('#sampleCollectionDate').val('<?php echo $_GET['daterange'];?>');
-			<?php }else { ?>
-					$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
-			<?php } ?>
+		<?php if ((isset($_GET['daterange']) && !empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
+			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
+		<?php } else { ?>
+			$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+		<?php } ?>
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
@@ -983,20 +985,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
-        $("#facilityName").html('');
-        $("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
+		$("#facilityName").html('');
+		$("#vlLab").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
+			});
 	}
 
 	function getByDistrict(districtId) {
@@ -1004,8 +1006,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
-				facilities : true,
-				labs : true,
+				facilities: true,
+				labs: true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);
