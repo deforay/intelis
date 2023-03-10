@@ -259,7 +259,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                            <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+                                                            <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" onchange="if(this.value.length!=10) alert('ART No. should be 10 characters long');" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -582,32 +582,32 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                               <!--  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control date  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" />
                                                                       </div>
-                                                                 </div>
+                                                                 </div>-->
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
+                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter shipper name" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
+                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                <!-- <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="emailHf">Email for HF </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" value="<?php echo $facilityResult[0]['facility_emails']; ?>" />
                                                                       </div>
-                                                                 </div>
+                                                                 </div>-->
                                                             </div>
                                                        </div>
                                                   </div>
@@ -1153,6 +1153,12 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      }
 
      function validateNow() {
+          var ARTlength = $("#artNo").val();
+          if(ARTlength.length!=10)
+          {
+               alert("ART No. should be 10 characters long");
+               return false;
+          }
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });

@@ -135,7 +135,7 @@ $state = $geoLocationDb->getProvinces("yes");
 							<td>
 								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td> 
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _("All Status"); ?></option>
@@ -537,7 +537,7 @@ $state = $geoLocationDb->getProvinces("yes");
 				}
 			],
 			"aaSorting": [
-				[15, "desc"]
+				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

@@ -224,19 +224,26 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function checkPatientDetails(tableName, fieldName, obj, fnct) {
-        if ($.trim(obj.value) != '') {
-            $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: obj.value,
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data === '1') {
-                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
-                    }
-                });
+        if($.trim(obj.value).length==10)
+        {
+            if ($.trim(obj.value) != '') {
+                $.post("/includes/checkDuplicate.php", {
+                        tableName: tableName, 
+                        fieldName: fieldName,
+                        value: obj.value,
+                        fnct: fnct,
+                        format: "html"
+                    },
+                    function(data) {
+                        if (data === '1') {
+                            showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                        }
+                    });
+            }
+        }
+        else
+        {
+            alert("ART No. should be 10 characters long");
         }
     }
 

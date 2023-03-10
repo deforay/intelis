@@ -190,7 +190,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -258,8 +258,12 @@ $sFormat = '';
                                                             <label for="specimenType">Sample Type <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
-                                                                 <?php foreach ($sResult as $name) { ?>
-                                                                      <option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
+                                                                 <?php
+                                                                 $selected = '';
+                                                                 if(count($sResult)==1)
+                                                                      $selected = "selected='selected'";
+                                                                 foreach ($sResult as $name) { ?>
+                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -469,32 +473,32 @@ $sFormat = '';
                                                                       <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-4">
+                                                           <!-- <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" />
                                                                  </div>
-                                                            </div>
+                                                            </div>-->
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-4">
-                                                                 <label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                 <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" />
+                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="Shipper Name" title="Please enter shipper name" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                 <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                 <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
+                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-4">
+                                                           <!-- <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="emailHf">Email for HF</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" />
                                                                  </div>
-                                                            </div>
+                                                            </div>-->
                                                        </div>
                                                   </div>
                                              </div>
@@ -1041,9 +1045,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
+          var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample id length must be a minimum length of " + minLength + " characters");
+               return false;
+          }
+          if(ARTlength.length!=10)
+          {
+               alert("ART No. should be 10 characters long");
                return false;
           }
           flag = deforayValidator.init({
@@ -1075,9 +1085,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function validateSaveNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
+          var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample id length must be a minimum length of " + minLength + " characters");
+               return false;
+          }
+          if(ARTlength.length!=10)
+          {
+               alert("ART No. should be 10 characters long");
                return false;
           }
           flag = deforayValidator.init({
