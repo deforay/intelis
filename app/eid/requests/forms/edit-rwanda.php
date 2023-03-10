@@ -204,7 +204,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                 <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
+                                        <th style="width:15% !important"><label for="childId">CRVS file name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
                                         </td>
@@ -261,7 +261,6 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="positive" <?php echo ($eidInfo['mother_hiv_status'] == 'positive') ? "selected='selected'" : ""; ?>> Positive </option>
-                                                <option value="negative" <?php echo ($eidInfo['mother_hiv_status'] == 'negative') ? "selected='selected'" : ""; ?>> Negative </option>
                                                 <option value="unknown" <?php echo ($eidInfo['mother_hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
                                             </select>
                                         </td>
@@ -298,7 +297,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             <select class="form-control" name="rapidTestResult" id="rapidTestResult">
                                                 <option value=''> -- Select -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                    <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
+                                                    <option value="<?php echo strtolower($eidResultKey); ?>" <?php echo ($eidInfo['rapid_test_result'] == strtolower($eidResultKey)) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                 <?php } ?>
 
                                             </select>
@@ -320,9 +319,9 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                         </td>
 
-                                        <th scope="row">PCR test performed on child before : <span class="mandatory">*</span></th>
+                                        <th scope="row">Previous PCR test : <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value)">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -620,11 +619,26 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
         }
     }
 
-
+    function setRelatedField(pcrVal)
+    {
+        if(pcrVal=='yes')
+        {
+            $('#previousPCRTestDate').addClass('isRequired');
+            $('#pcrTestReason').addClass('isRequired');
+            $('#previousPCRTestDate').prop('disabled', false);
+            $('#pcrTestReason').prop('disabled', false);
+        }
+        else{
+            $('#previousPCRTestDate').prop('disabled', true);
+            $('#pcrTestReason').prop('disabled', true);
+            $('#previousPCRTestDate').removeClass('isRequired');
+            $('#pcrTestReason').removeClass('isRequired');
+        }
+    }
 
     $(document).ready(function() {
 
-
+        setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

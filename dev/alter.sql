@@ -3376,3 +3376,7 @@ UPDATE `system_config` SET `value` = '5.1.1' WHERE `system_config`.`name` = 'sc_
 
 -- Amit 01-Mar-2023 version 5.1.2
 UPDATE `system_config` SET `value` = '5.1.2' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Jeyabanu 10-03-2023
+ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;

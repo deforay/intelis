@@ -166,7 +166,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
+                                        <th style="width:15% !important"><label for="childId">CRVS file name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" onchange="" />
                                         </td>
@@ -223,7 +223,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="positive"> Positive </option>
-                                                <option value="negative"> Negative </option>
                                                 <option value="unknown"> Unknown </option>
                                             </select>
                                         </td>
@@ -260,7 +259,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="rapidTestResult" id="rapidTestResult">
                                                 <option value=''> -- Select -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                    <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
+                                                    <option value="<?php echo strtolower($eidResultKey); ?>"> <?php echo $eidResultValue; ?> </option>
                                                 <?php } ?>
 
                                             </select>
@@ -282,9 +281,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
 
-                                        <th scope="row">PCR test performed on child before : <span class="mandatory">*</span></th>
+                                        <th scope="row">Previous PCR test : <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -597,6 +596,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
+    function setRelatedField(pcrVal)
+    {
+        if(pcrVal=='yes')
+        {
+            $('#previousPCRTestDate').addClass('isRequired');
+            $('#pcrTestReason').addClass('isRequired');
+            $('#previousPCRTestDate').prop('disabled', false);
+            $('#pcrTestReason').prop('disabled', false);
+        }
+        else{
+            $('#previousPCRTestDate').prop('disabled', true);
+            $('#pcrTestReason').prop('disabled', true);
+            $('#previousPCRTestDate').removeClass('isRequired');
+            $('#pcrTestReason').removeClass('isRequired');
+        }
+    }
+
     $(document).ready(function() {
 
         $('#facilityId').select2({
@@ -627,4 +643,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     });
+
+   
 </script>

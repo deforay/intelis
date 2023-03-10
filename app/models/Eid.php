@@ -135,11 +135,11 @@ class Eid
         if($updatedDateTime){
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
-        $query .= " ORDER BY result_id DESC";
+        $query .= " ORDER BY result_id";
         $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
+            $response[$row['result']] = $row['result'];
         }
         return $response;
     }
