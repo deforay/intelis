@@ -574,16 +574,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     }
 
     function setPatientDetails(pDetails) {
-        patientArray = pDetails.split("##");
-        $("#childId").val(patientArray[6]);
-        $("#childName").val(patientArray[0]);
-        $("#childDob").val(patientArray[3]);
-        $("#childGender").val(patientArray[2]);
-        $("#childAge").val(patientArray[4]);
-        $("#mothersId").val(patientArray[7]);
-        $("#caretakerPhoneNumber").val(patientArray[5]);
-        $("#caretakerAddress").text(patientArray[8]);
-
+        var patientArray = JSON.parse(pDetails);
+        $("#childId").val(patientArray['child_id']);
+        $("#childName").val(patientArray['name']);
+        $("#childDob").val(patientArray['dob']);
+        $("#childGender").val(patientArray['gender']);
+        $("#childAge").val(patientArray['age']);
+        $("#mothersId").val(patientArray['mother_id']);
+        $("#caretakerPhoneNumber").val(patientArray['caretaker_no']);
+        $("#caretakerAddress").text(patientArray['caretaker_address']);
         setTimeout(function() {
             $("#patientDistrict").val(patientArray[15]).trigger('change');
         }, 3000);

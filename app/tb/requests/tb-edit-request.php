@@ -305,7 +305,7 @@ require($fileArray[$arr['vl_form']]);
     function showPatientList() {
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/tb/requests/checkPatientExist.php", {
+            $.post("/tb/requests/search-patients.php", {
                     artPatientNo: $("#artPatientNo").val()
                 },
                 function(data) {

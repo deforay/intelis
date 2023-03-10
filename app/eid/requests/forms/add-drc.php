@@ -613,17 +613,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 	}
 
 	function setPatientDetails(pDetails) {
-		patientArray = pDetails.split("##");
+		var patientArray = JSON.parse(pDetails);
 		//   console.log(patientArray);
-		$("#childId").val(patientArray[6]);
-		$("#childName").val(patientArray[0]);
-		$("#childDob").val(patientArray[3]);
-		$("#childGender").val(patientArray[2]);
-		$("#childAge").val(patientArray[4]);
-		$("#mothersId").val(patientArray[7]);
-		$("#mothersName").val(patientArray[9]);
-		$("#mothersDob").val(patientArray[10]);
-		$("#mothersMaritalStatus").val(patientArray[11]);
+		$("#childId").val(patientArray['child_id']);
+		$("#childName").val(patientArray['child_name']);
+		$("#childDob").val(patientArray['dob']);
+		$("#childGender").val(patientArray['gender']);
+		$("#childAge").val(patientArray['age']);
+		$("#mothersId").val(patientArray['mother_id']);
+		$("#mothersName").val(patientArray['mother_name']);
+		$("#mothersDob").val(patientArray['mother_dob']);
+		$("#mothersMaritalStatus").val(patientArray['mother_marital_status']);
 	}
 
 	function sampleCodeGeneration() {

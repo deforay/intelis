@@ -700,6 +700,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 }
 ?>
+
 <!-- BARCODESTUFF END -->
 <script>
      provinceName = true;
@@ -741,19 +742,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-          patientInfo = JSON.parse($("#selectedSample").val());
-         
-          if ($.trim(patientInfo['sample_tested_datetime']) != '') {
-               $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-               $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-               $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-          }
+          if($("#selectedSample").val()!="")
+          {
+               patientInfo = JSON.parse($("#selectedSample").val());
+          
+               if ($.trim(patientInfo['sample_tested_datetime']) != '') {
+                    $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+               }
 
-          if ($.trim(patientInfo['result']) != '') {
-               $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-               $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-               $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
-         }
+               if ($.trim(patientInfo['result']) != '') {
+                    $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+               }
+          }
      }
 
      function getProvinceDistricts(obj) {

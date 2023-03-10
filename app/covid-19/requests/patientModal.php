@@ -4,15 +4,8 @@
 
 $general = new \Vlsm\Models\General();
 $artNo = $_GET['artNo'];
-//global config
-$cQuery = "SELECT * FROM global_config";
-$cResult = $db->query($cQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cResult); $i++) {
-	$arr[$cResult[$i]['name']] = $cResult[$i]['value'];
-}
-$pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%' OR patient_phone_number like '%" . $artNo . "%')";
+
+$pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%' OR patient_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
 $pResult = $db->rawQuery($pQuery);
 // print_r($pResult);die;
 ?>
@@ -82,9 +75,33 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_name']) . strtolower($patient['patient_surname']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_age'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_phone_number'] .  "##" . $patient['patient_id'] .  "##" . $patient['patient_passport_number'] .  "##" . $patient['patient_address'] .  "##" . $patient['patient_nationality'] .  "##" . $patient['patient_city'] .  "##" . $patient['patient_province'] .  "##" . $patient['patient_district'] .  "##" . $patient['geo_code'] .  "##" . $patient['province_id'] . "##" . $patient['patient_zone'] . "##" . $patient['external_sample_code']; ?>
+										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_age'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_phone_number'] .  "##" . $patient['patient_id'] .  "##" . $patient['patient_passport_number'] .  "##" . $patient['patient_address'] .  "##" . $patient['patient_nationality'] .  "##" . $patient['patient_city'] .  "##" . $patient['patient_province'] .  "##" . $patient['patient_district'] .  "##" . $patient['geo_code'] .  "##" . $patient['province_id'] . "##" . $patient['patient_zone'] . "##" . $patient['external_sample_code']; 
+										$patientDetails = json_encode(array(
+											"firstname"=>ucfirst($patient['patient_name']),
+											"lastname"=>ucfirst($patient['patient_surname']),
+											"gender"=>$patient['patient_gender'],
+											"dob"=>$general->humanReadableDateFormat($patient['patient_dob']),
+											"age"=>$patient['patient_age'],
+											"is_patient_pregnant"=>$patient['is_patient_pregnant'],
+											"is_patient_breastfeeding"=>$patient['is_patient_breastfeeding'],
+											"patient_phone_number"=>$patient['patient_phone_number'],
+											"patient_id"=>$patient['patient_id'],
+											"patient_passport_number"=>$patient['patient_passport_number'],
+											"patient_address"=>$patient['patient_address'],
+											"patient_nationality"=>$patient['patient_nationality'],
+											"patient_city"=>$patient['patient_city'],
+											"patient_province"=>$patient['patient_province'],
+											"patient_district"=>$patient['patient_district'],
+											"geo_code"=>$patient['geo_code'],
+											"geo_name"=>$patient['geo_name'],
+											"province_id"=>$patient['province_id'],
+											"patient_zone"=>$patient['patient_zone'],
+											"external_sample_code"=>$patient['external_sample_code'],
+										));
+										?>
+										
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>" name="patient" value="<?php echo $patientDetails; ?>" onclick="getPatientDetails(this.value);"></td>
+											<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td><?php echo $patient['patient_id']; ?></td>
 											<td><?php echo ucfirst($patient['patient_name']) . " " . $patient['patient_surname']; ?></td>
 											<td><?php echo $patient['patient_age']; ?></td>

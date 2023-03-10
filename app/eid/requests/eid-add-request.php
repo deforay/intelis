@@ -178,13 +178,13 @@ require($fileArray[$arr['vl_form']]);
             patientSearchTimeout = null;
 
             $("#showEmptyResult").hide();
-            if (patientCode != '') {
-                $.post("/eid/requests/checkPatientExist.php", {
-                        artPatientNo: patientCode
+            if ($.trim(patientCode) != '') {
+                $.post("/eid/requests/search-patients.php", {
+                        artPatientNo: $.trim(patientCode)
                     },
                     function(data) {
                         if (data >= '1') {
-                            showModal('patientModal.php?artNo=' + patientCode, 900, 520);
+                            showModal('patientModal.php?artNo=' + $.trim(patientCode), 900, 520);
                         } else {
                             $("#showEmptyResult").show();
                         }

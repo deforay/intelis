@@ -550,9 +550,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#caretakerPhoneNumber").val(patientArray['caretaker_no']);
         $("#caretakerAddress").text(patientArray['caretaker_address']);
 
-        setTimeout(function() {
+       /* setTimeout(function() {
             $("#patientDistrict").val(patientArray[15]).trigger('change');
-        }, 3000);
+        }, 3000);*/
     }
 
     function sampleCodeGeneration() {

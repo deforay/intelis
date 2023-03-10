@@ -754,33 +754,33 @@ $sampleSuggestionDisplay = 'display:none;';
 	}
 
 	function setPatientDetails(pDetails) {
-		patientArray = pDetails.split("##");
+		var patientArray = JSON.parse(pDetails);
 		console.log(patientArray);
-		if ($.trim(patientArray[3]) != '') {
-			$("#dob").val(patientArray[3]);
+		if ($.trim(patientArray['dob']) != '') {
+			$("#dob").val(patientArray['dob']);
 			getAge();
-		} else if ($.trim(patientArray[4]) != '' && $.trim(patientArray[4]) != 0) {
-			$("#ageInYears").val(patientArray[4]);
-		} else if ($.trim(patientArray[5]) != '') {
-			$("#ageInMonths").val(patientArray[5]);
+		} else if ($.trim(patientArray['age_in_years']) != '' && $.trim(patientArray['age_in_years']) != 0) {
+			$("#ageInYears").val(patientArray['age_in_years']);
+		} else if ($.trim(patientArray['age_in_months']) != '') {
+			$("#ageInMonths").val(patientArray['age_in_months']);
 		}
-		if ($.trim(patientArray[2]) != '') {
-			if (patientArray[2] == 'male') {
+		if ($.trim(patientArray['gender']) != '') {
+			if (patientArray['gender'] == 'male') {
 				$("#genderMale").prop('checked', true);
-			} else if (patientArray[2] == 'female') {
+			} else if (patientArray['gender'] == 'female') {
 				$("#genderFemale").prop('checked', true);
 			}
 		}
-		if ($.trim(patientArray[15]) != '') {
-			$("#patientArtNo").val($.trim(patientArray[15]));
+		if ($.trim(patientArray['patient_art_no']) != '') {
+			$("#patientArtNo").val($.trim(patientArray['patient_art_no']));
 		}
-		if ($.trim(patientArray[11]) != '') {
-			$("#artRegimen").val($.trim(patientArray[11]));
+		if ($.trim(patientArray['current_regimen']) != '') {
+			$("#artRegimen").val($.trim(patientArray['current_regimen']));
 		}
-		if ($.trim(patientArray[16]) != '') {
-			if (patientArray[16] == 'yes') {
+		if ($.trim(patientArray['is_patient_new']) != '') {
+			if (patientArray['is_patient_new'] == 'yes') {
 				$("#isPatientNewYes").prop('checked', true);
-			} else if (patientArray[16] == 'no') {
+			} else if (patientArray['is_patient_new'] == 'no') {
 				$("#isPatientNewNo").prop('checked', true);
 			}
 		}

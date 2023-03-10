@@ -990,19 +990,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-          patientInfo = JSON.parse($("#selectedSample").val());
          
-         if ($.trim(patientInfo['sample_tested_datetime']) != '') {
-              $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-              $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-              $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-             
-         }
-         if ($.trim(patientInfo['result']) != '') {
-               $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-               $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-               $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
-         }
+          if($("#selectedSample").val()!="")
+          {
+               patientInfo = JSON.parse($("#selectedSample").val());
+               if ($.trim(patientInfo['sample_tested_datetime']) != '') {
+                    $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    
+               }
+               if ($.trim(patientInfo['result']) != '') {
+                         $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                         $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                         $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+               }
+          }
      }
 
      function getProvinceDistricts(obj) {
@@ -1358,7 +1361,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else if ($.trim(patientArray['age_in_years']) != '' && $.trim(patientArray['age_in_years']) != 0) {
                $("#ageInYears").val(patientArray['age_in_years']);
           } else if ($.trim(patientArray['age_in_months']) != '') {
-               $("#ageInMonths").val(patientArray['age_in_years']);
+               $("#ageInMonths").val(patientArray['age_in_months']);
           }
 
           if ($.trim(patientArray['gender']) != '') {
@@ -1412,6 +1415,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['current_regimen']) != '') {
                $("#artRegimen").val($.trim(patientArray['current_regimen']));
           }
+
+          if ($.trim(patientArray['sample_tested_datetime']) != '') {
+                    $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    
+               }
+               if ($.trim(patientArray['result']) != '') {
+                         $("#rmTestingVlValue").val($.trim(patientArray['result']));
+                         $("#repeatTestingVlValue").val($.trim(patientArray['result']));
+                         $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
+               }
 
      }
 

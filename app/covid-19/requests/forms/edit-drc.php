@@ -1274,21 +1274,23 @@ if (!empty($patientData)) {
     }
 
     function setPatientDetails(pDetails) {
-        patientArray = pDetails.split("##");
+        patientArray = JSON.parse(pDetails); 
         //   console.log(patientArray);
-        $("#patientProvince").val(patientArray[14]);
-        $("#firstName").val(patientArray[0]);
-        $("#lastName").val(patientArray[1]);
-        $("#patientPhoneNumber").val(patientArray[8]);
-        $("#patientGender").val(patientArray[2]);
-        $("#patientAge").val(patientArray[4]);
-        $("#patientDob").val(patientArray[3]);
-        $("#patientId").val(patientArray[9]);
-        $("#patientAddress").text(patientArray[11]);
-        $("#patientNationality").val(patientArray[12]);
-        $("#isPatientPregnant").val(patientArray[6]);
+        $("#patientProvince").val(patientArray['geo_name']);
+        $("#firstName").val(patientArray['firstname']);
+        $("#lastName").val(patientArray['lastname']);
+        $("#patientPhoneNumber").val(patientArray['patient_phone_number']);
+        $("#patientGender").val(patientArray['gender']);
+        $("#patientAge").val(patientArray['age']);
+        $("#patientDob").val(patientArray['dob']);
+        $("#patientId").val(patientArray['patient_id']);
+        $("#patientAddress").text(patientArray['patient_address']);
+        $("#patientNationality").val(patientArray['patient_nationality']).trigger('change');
+        $("#isPatientPregnant").val(patientArray['is_patient_pregnant']);
+        $("#patientCodePrefix").val("");
+        $("#patientCodeKey").val("");
         setTimeout(function() {
-            $("#patientDistrict").val(patientArray[15]).trigger('change');
+            $("#patientDistrict").val(patientArray['patient_district']).trigger('change');
         }, 3000);
     }
 

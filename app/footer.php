@@ -46,7 +46,7 @@
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
-<script src="/assets/js/main.js"></script>
+<script src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js")?>'></script>
 <script src="/assets/js/app.min.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script src="/assets/js/jquery.maskedinput.js"></script>

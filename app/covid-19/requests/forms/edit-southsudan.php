@@ -657,26 +657,25 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     }
 
     function setPatientDetails(pDetails) {
-        patientArray = pDetails.split("##");
-        console.log(patientArray);
-        $("#patientProvince").val(patientArray[14]).trigger('change');
-        $("#firstName").val(patientArray[0]);
-        $("#lastName").val(patientArray[1]);
-        $("#patientPhoneNumber").val(patientArray[8]);
-        $("#patientGender").val(patientArray[2]);
-        $("#patientAge").val(patientArray[4]);
-        $("#patientDob").val(patientArray[3]);
-        $("#patientId").val(patientArray[9]);
-        $("#patientPassportNumber").val(patientArray[10]);
-        $("#patientAddress").text(patientArray[11]);
-        $("#patientNationality").select2('val', patientArray[12]);
-        $("#patientCity").val(patientArray[13]);
-        $("#patientZone").val(patientArray[18]);
-        $("#externalSampleCode").val(patientArray[19]);
-        // $('#patientProvince').select2('data', {"province-id": patientArray[17], code: patientArray[16], name:patientArray[14]});
-
+        patientArray = JSON.parse(pDetails);
+        
+        $("#patientProvince").val(patientArray['geo_name']).trigger('change');
+        $("#firstName").val(patientArray['firstname']);
+        $("#lastName").val(patientArray['lastname']);
+        $("#patientPhoneNumber").val(patientArray['patient_phone_number']);
+        $("#patientGender").val(patientArray['gender']);
+        $("#patientAge").val(patientArray['age']);
+        $("#patientDob").val(patientArray['dob']);
+        $("#patientId").val(patientArray['patient_id']);
+        $("#patientPassportNumber").val(patientArray['patient_passport_number']);
+        $("#patientAddress").text(patientArray['patient_address']);
+        $("#patientNationality").val(patientArray['patient_nationality']).trigger('change');
+        $("#patientDistrict").val(patientArray['patient_district']).trigger('change');
+        $("#patientCity").val(patientArray['patient_city']);
+        $("#patientZone").val(patientArray['patient_zone']);
+        $("#externalSampleCode").val(patientArray['external_sample_code']);
         setTimeout(function() {
-            $("#patientDistrict").val(patientArray[15]).trigger('change');
+            $("#patientDistrict").val(patientArray['patient_district']).trigger('change');
         }, 3000);
     }
 
@@ -903,6 +902,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
         $('#patientNationality').select2({
             placeholder: "Select Nationality"
+        });
+
+        $('#patientProvince').select2({
+            placeholder: "Select Case State"
         });
 
         $('#facilityId').select2({

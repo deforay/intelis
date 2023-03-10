@@ -627,13 +627,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	}
 
 	function setPatientDetails(pDetails) {
-		patientArray = pDetails.split("##");
-		$("#firstName").val(patientArray[0]);
-		$("#lastName").val(patientArray[1]);
-		$("#patientGender").val(patientArray[2]);
-		$("#patientAge").val(patientArray[4]);
-		$("#patientDob").val(patientArray[3]);
-		$("#patientId").val(patientArray[5]);
+		patientArray = JSON.parse(pDetails);
+        $("#firstName").val(patientArray['firstname']);
+        $("#lastName").val(patientArray['lastname']);
+        $("#patientGender").val(patientArray['gender']);
+        $("#patientAge").val(patientArray['age']);
+        $("#patientDob").val(patientArray['dob']);
+        $("#patientId").val(patientArray['patient_id']);
 	}
 
 	function sampleCodeGeneration() {

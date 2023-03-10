@@ -266,8 +266,8 @@ require($fileArray[$arr['vl_form']]);
     function showPatientList() {
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/covid-19/requests/checkPatientExist.php", {
-                    artPatientNo: $("#artPatientNo").val()
+            $.post("/covid-19/requests/search-patients.php", {
+                    artPatientNo: $.trim($("#artPatientNo").val())
                 },
                 function(data) {
                     if (data >= '1') {
@@ -321,4 +321,4 @@ require($fileArray[$arr['vl_form']]);
         $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php');
+<?php require_once(APPLICATION_PATH . '/footer.php'); ?>
