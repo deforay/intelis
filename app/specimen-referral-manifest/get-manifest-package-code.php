@@ -76,7 +76,7 @@ $result = $db->rawQuery($query);
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
 					<?php foreach ($result as $sample) { ?>
-						<option value="'<?php echo $sample['package_code']; ?>'"><?php echo ucwords($sample["package_code"]); ?></option>
+						<option value="'<?php echo $sample['package_code']; ?>'"><?php echo ($sample["package_code"]); ?></option>
 					<?php } ?>
 				</select>
 			</div>

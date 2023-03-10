@@ -47,7 +47,7 @@ $hcResult = $db->rawQuery($hcQuery);
                       <?php
                       foreach ($fResult as $lab) {
                       ?>
-                        <option value="<?php echo $lab['facility_id']; ?>"><?php echo ucwords($lab['facility_name']); ?></option>
+                        <option value="<?php echo $lab['facility_id']; ?>"><?php echo ($lab['facility_name']); ?></option>
                       <?php
                       }
                       ?>
@@ -62,7 +62,7 @@ $hcResult = $db->rawQuery($hcQuery);
                   <?php
                   foreach ($hcResult as $facility) {
                   ?>
-                    <option value="<?php echo $facility['facility_id']; ?>"><?php echo ucwords($facility['facility_name']); ?></option>
+                    <option value="<?php echo $facility['facility_id']; ?>"><?php echo ($facility['facility_name']); ?></option>
                   <?php
                   }
                   ?>

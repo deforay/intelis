@@ -24,7 +24,7 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ucwords($user['user_name']);
+	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";

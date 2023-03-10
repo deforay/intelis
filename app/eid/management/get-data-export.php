@@ -320,9 +320,9 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
-     $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['child_id']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['child_id']));
+     $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
+     $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['child_id']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['child_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];
@@ -333,13 +333,13 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['child_id'];
      //$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = $aRow['child_name'];
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['lab_name']);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
      $row[] = $aRow['mother_id'];
      $row[] = $eidResults[$aRow['result']];
-     $row[] = ucwords($aRow['status_name']);
-     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+     $row[] = ($aRow['status_name']);
+     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
      $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;

@@ -119,9 +119,9 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
-          $row[] = ucwords($aRow['facility_name']);
+          $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_id'];
-          $row[] = ucwords($patientFname . " " . $patientMname);
+          $row[] = ($patientFname . " " . $patientMname);
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];

@@ -161,8 +161,8 @@ $primaryKey="facility_id";
 		$row[] = '<input type="radio" id="facility'.$aRow['facility_id'].'" name="facility" value="'.$facilityDetails.'" onclick="getFacilityLab(this.value);">';
 	    }
 	    $row[] = $aRow['facility_code'];
-	    $row[] = ucwords($aRow['facility_name']);
-            $row[] = ucwords($aRow['facility_type_name']);
+	    $row[] = ($aRow['facility_name']);
+            $row[] = ($aRow['facility_type_name']);
             $output['aaData'][] = $row;
         }
         echo json_encode($output);

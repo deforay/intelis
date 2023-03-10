@@ -30,7 +30,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Sélectionner -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 
@@ -137,7 +137,7 @@ $sFormat = '';
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ($implementingPartner['i_partner_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -154,7 +154,7 @@ $sFormat = '';
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ($fundingSource['funding_source_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -175,7 +175,7 @@ $sFormat = '';
                                       < ?php
                                       foreach($implementingPartnerList as $implementingPartner){
                                       ?>
-                                        <option value="< ?php echo base64_encode($implementingPartner['i_partner_id']); ?>">< ?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+                                        <option value="< ?php echo base64_encode($implementingPartner['i_partner_id']); ?>">< ?php echo ($implementingPartner['i_partner_name']); ?></option>
                                       < ?php } ?>
                                     </select>
                                 </td> -->
@@ -292,7 +292,7 @@ $sFormat = '';
 												<?php
 												foreach ($testReason as $tReason) {
 												?>
-													<option value="<?php echo $tReason['test_reason_id']; ?>"><?php echo ucwords($tReason['test_reason_name']); ?></option>
+													<option value="<?php echo $tReason['test_reason_id']; ?>"><?php echo ($tReason['test_reason_name']); ?></option>
 												<?php } ?>
 												<option value="other">Autre</option>
 											</select>
@@ -393,7 +393,7 @@ $sFormat = '';
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($sResult as $type) { ?>
-														<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+														<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -473,7 +473,7 @@ $sFormat = '';
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
-														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>"><?php echo ucwords($rjctReason['rejection_reason_name']); ?></option>
+														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>"><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 													<?php }
 													if ($sarr['sc_user_type'] != 'vluser') {  ?>
 														<option value="other">Autre</option>

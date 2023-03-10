@@ -55,10 +55,10 @@ $no = 1;
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['testType'];
-    $row[] = ucwords($aRow['province']);
-    $row[] = ucwords($aRow['district']);
+    $row[] = ($aRow['province']);
+    $row[] = ($aRow['district']);
     $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
     $output[] = $row;

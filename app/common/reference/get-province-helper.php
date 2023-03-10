@@ -138,8 +138,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $row[] = ucwords($aRow['province_name']);
-    $row[] = ucwords($aRow['province_code']);
+    $row[] = ($aRow['province_name']);
+    $row[] = ($aRow['province_code']);
     if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = '<a href="edit-province.php?id=' . base64_encode($aRow['province_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
     }

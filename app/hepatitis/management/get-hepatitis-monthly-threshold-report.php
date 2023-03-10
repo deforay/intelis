@@ -199,7 +199,7 @@ foreach ($rResult as $rowData) {
      if ($targetType1 || $targetType2 || $targetType3) {
           $cnt++;
           $data = array();
-          $data[] = ucwords($rowData['facility_name']);
+          $data[] = ($rowData['facility_name']);
           $data[] = $rowData['monthrange'];
           $data[] = $rowData['totalReceived'];
           $data[] = $rowData['totalRejected'];

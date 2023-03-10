@@ -130,7 +130,7 @@ $tableName="other_config";
 	
         foreach ($rResult as $aRow) {
             $row = array();
-	    $row[] = ucwords($aRow['display_name']);
+	    $row[] = ($aRow['display_name']);
 	    $row[] = $aRow['value'];
             $output['aaData'][] = $row;
         }

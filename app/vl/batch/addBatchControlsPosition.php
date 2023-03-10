@@ -87,7 +87,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 				$displayNonSampleArray[] = $jsonToArray[$j];
 				$label = str_replace("_", " ", $jsonToArray[$j]);
 				$label = str_replace("in house", "In-House", $label);
-				$label = ucwords(str_replace("no of ", " ", $label));
+				$label = (str_replace("no of ", " ", $label));
 				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
 			}
 		}
@@ -100,7 +100,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 		$displayOrder[] = $remainNewArray[$n];
 		$label = str_replace("_", " ", $remainNewArray[$n]);
 		$label = str_replace("in house", "In-House", $label);
-		$label = ucwords(str_replace("no of ", " ", $label));
+		$label = (str_replace("no of ", " ", $label));
 		$newContent .= '<li class="ui-state-default" id="' . $remainNewArray[$n] . '">' . $label . '</li>';
 	}
 	//For new samples

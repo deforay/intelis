@@ -90,7 +90,7 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
                $decrypt = 'sample_code';
           }
 
-          $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]));
+          $patientFname = ($general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){
@@ -99,13 +99,13 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_id'];
-          $row[] = ucwords($patientFname);
-          $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($aRow['facility_state']);
-          $row[] = ucwords($aRow['facility_district']);
-          $row[] = ucwords($aRow['sample_name']);
+          $row[] = ($patientFname);
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['facility_state']);
+          $row[] = ($aRow['facility_district']);
+          $row[] = ($aRow['sample_name']);
           $row[] = $aRow['result'];
-          $row[] = ucwords($aRow['status_name']);
+          $row[] = ($aRow['status_name']);
           $output[] = $row;
      }
 

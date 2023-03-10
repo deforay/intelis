@@ -16,7 +16,7 @@ if(count($configMachineInfo)>0){
         $selected = "selected";
     }
     foreach($configMachineInfo as $machine){
-        $configMachine.='<option value="'.$machine['config_machine_id'].'" data-filename="'.$machine['file_name'].'" data-dateformat="'.$machine['date_format'].'" selected='.$selected.'>'.ucwords($machine['config_machine_name']).'</option>';
+        $configMachine.='<option value="'.$machine['config_machine_id'].'" data-filename="'.$machine['file_name'].'" data-dateformat="'.$machine['date_format'].'" selected='.$selected.'>'.($machine['config_machine_name']).'</option>';
     }
 }else{
     $configMachineData = array('config_id'=>$iResult[0]['config_id'],'config_machine_name'=>$iResult[0]['machine_name']." 1");
@@ -24,7 +24,7 @@ if(count($configMachineInfo)>0){
     $configMachineInfo=$db->query($configMachineQuery);
     $configMachine.='<option value"">-- Select --</option>';
     foreach($configMachineInfo as $machine){
-        $configMachine.='<option value="'.$machine['config_machine_id'].'" data-filename="'.$machine['file_name'].'" data-dateformat="'.$machine['date_format'].'" selected="selected">'.ucwords($machine['config_machine_name']).'</option>';
+        $configMachine.='<option value="'.$machine['config_machine_id'].'" data-filename="'.$machine['file_name'].'" data-dateformat="'.$machine['date_format'].'" selected="selected">'.($machine['config_machine_name']).'</option>';
     }
 }
 echo $configMachine;

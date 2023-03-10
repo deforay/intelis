@@ -109,7 +109,7 @@ foreach ($srcResults as $list) {
 									<?php
 									foreach ($sResult as $type) {
 									?>
-										<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+										<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 									<?php
 									}
 									?>
@@ -206,7 +206,7 @@ foreach ($srcResults as $list) {
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
-										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ($fundingSource['funding_source_name']); ?></option>
 									<?php } ?>
 								</select>
 							</td>
@@ -222,7 +222,7 @@ foreach ($srcResults as $list) {
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
-										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ($implementingPartner['i_partner_name']); ?></option>
 									<?php } ?>
 								</select>
 							</td>

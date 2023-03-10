@@ -330,14 +330,14 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['batch_code'];
      }
      $row[] = $aRow['patient_art_no'];
-     $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['lab_name']);
+     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
      if($_POST['from'] != "enterresult"){
-          $row[] = ucwords($aRow['facility_state']);
-          $row[] = ucwords($aRow['facility_district']);
+          $row[] = ($aRow['facility_state']);
+          $row[] = ($aRow['facility_district']);
      }
-     $row[] = ucwords($aRow['sample_name']);
+     $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
@@ -347,7 +347,7 @@ foreach ($rResult as $aRow) {
      }
 
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
      $row[] = $print;
      $output['aaData'][] = $row;
 }

@@ -197,9 +197,9 @@ foreach ($rResult as $aRow) {
           $aRow['sample_collection_date'] = '';
      }
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
-     $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+     $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+     $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
@@ -218,9 +218,9 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['sample_name']);
+     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);

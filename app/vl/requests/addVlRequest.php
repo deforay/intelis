@@ -22,7 +22,7 @@ $userResult = $usersModel->getActiveUsers($facilityMap);
 $reasonForFailure = $vlDb->getReasonForFailure();
 $userInfo = array();
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+    $userInfo[$user['user_id']] = ($user['user_name']);
 }
 
 //sample rejection reason

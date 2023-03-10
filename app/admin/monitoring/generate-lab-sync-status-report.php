@@ -82,8 +82,8 @@ foreach ($rResult as $aRow) {
     }
     $color[]['color'] = $_color;
 
-    $row[] = ucwords($aRow['facility_name']);
-    //$row[] = ucwords($aRow['test_type']);
+    $row[] = ($aRow['facility_name']);
+    //$row[] = ($aRow['test_type']);
     $row[] = $general->humanReadableDateFormat($aRow['latest']);
     $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
     $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);

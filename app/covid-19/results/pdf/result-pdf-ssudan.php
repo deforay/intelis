@@ -96,8 +96,8 @@ if (sizeof($requestResult) > 0) {
         $facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
         $facilityInfo = $db->rawQueryOne($facilityQuery);
         // echo "<pre>";print_r($covid19TestInfo);die;
-        $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
@@ -238,7 +238,7 @@ if (sizeof($requestResult) > 0) {
 
         $userRes = array();
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
-            $resultApprovedBy = ucwords($result['authorized_by']);
+            $resultApprovedBy = ($result['authorized_by']);
             $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
         } else {
             $resultApprovedBy  = '';
@@ -293,7 +293,7 @@ if (sizeof($requestResult) > 0) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SEX</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">EMAIL</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labEmail'] . '</td>';
         $html .= '</tr>';
@@ -317,7 +317,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">PASSPORT # / NIN </td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_passport_number'] . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labState']) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labState']) . '</td>';
 
         $html .= '</tr>';
 
@@ -325,7 +325,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">CASE ID</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_id'] . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COUNTY</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labCounty']) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labCounty']) . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
@@ -385,7 +385,7 @@ if (sizeof($requestResult) > 0) {
         //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $covid19TestInfo[$indexKey]['test_name'] . '</td>
         //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $covid19TestInfo[$indexKey]['testing_platform'] . '</td>
         //                                 <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($covid19TestInfo[$indexKey]['sample_tested_datetime'])) . '</td>
-        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>
+        //                                 <td align="center" style="line-height:20px;font-size:11px;">' . ($covid19TestInfo[$indexKey]['result']) . '</td>
         //                             </tr>';
         //     }
         //     $html .= '</table>';

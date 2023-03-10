@@ -82,7 +82,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<?php
 									foreach ($fResult as $name) {
 									?>
-										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 									<?php
 									}
 									?>

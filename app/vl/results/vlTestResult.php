@@ -86,7 +86,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<?php
 									foreach ($sResult as $type) {
 									?>
-										<option value="<?php echo $type['sample_id']; ?>" <?php echo ($sampleType == $type['sample_id']) ? "selected='selected'" : "" ?>><?php echo ucwords($type['sample_name']); ?></option>
+										<option value="<?php echo $type['sample_id']; ?>" <?php echo ($sampleType == $type['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($type['sample_name']); ?></option>
 									<?php
 									}
 									?>

@@ -145,11 +145,11 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['failure_reason']);
+    $row[] = ($aRow['failure_reason']);
     if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
-        $row[] = ucwords($aRow['status']);
+        $row[] = ($aRow['status']);
     }
     $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode($aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     $output['aaData'][] = $row;

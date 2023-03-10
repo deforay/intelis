@@ -1073,7 +1073,7 @@ interfaces.
 * Added support for PHP 5.5's CurlFile to prevent warnings with the deprecated @ syntax
 * Added support for oauth_callback in OAuth signatures
 * Added support for oauth_verifier in OAuth signatures
-* Added support to attempt to retrieve a command first literally, then ucfirst, the with inflection
+* Added support to attempt to retrieve a command first literally, then , the with inflection
 
 ## 3.4.0 - 2013-04-11
 

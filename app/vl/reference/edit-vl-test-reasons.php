@@ -8,7 +8,7 @@ $id = base64_decode($_GET['id']);
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
-	$testParent[$test['test_reason_id']] = ucwords($test['test_reason_name']);
+	$testParent[$test['test_reason_id']] = ($test['test_reason_name']);
 }
 
 $tstQuery = "SELECT * from r_vl_test_reasons where test_reason_id=$id";

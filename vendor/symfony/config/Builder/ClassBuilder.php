@@ -39,7 +39,7 @@ class ClassBuilder
     public function __construct(string $namespace, string $name)
     {
         $this->namespace = $namespace;
-        $this->name = ucfirst($this->camelCase($name)).'Config';
+        $this->name = ($this->camelCase($name)).'Config';
     }
 
     public function getDirectory(): string
@@ -142,7 +142,7 @@ BODY
 
     private function camelCase(string $input): string
     {
-        $output = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $input))));
+        $output = lcfirst(str_replace(' ', '', (str_replace('_', ' ', $input))));
 
         return preg_replace('#\W#', '', $output);
     }

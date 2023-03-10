@@ -41,7 +41,7 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
-    $labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
+    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 
 // Comorbidity
@@ -92,11 +92,11 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+    $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
     foreach ($rejectionResult as $reject) {
         if ($type['rejection_type'] == $reject['rejection_type']) {
             $selected = (isset($hepatitisInfo['reason_for_sample_rejection']) && $hepatitisInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "";
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" ' . $selected . '>' . ucwords($reject['rejection_reason_name']) . '</option>';
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '" ' . $selected . '>' . ($reject['rejection_reason_name']) . '</option>';
         }
     }
     $rejectionReason .= '</optgroup>';

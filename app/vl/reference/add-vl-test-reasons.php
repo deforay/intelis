@@ -6,7 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
-	$testParent[$test['test_reason_id']] = ucwords($test['test_reason_name']);
+	$testParent[$test['test_reason_id']] = ($test['test_reason_name']);
 }
 ?>
 <!-- Content Wrapper. Contains page content -->

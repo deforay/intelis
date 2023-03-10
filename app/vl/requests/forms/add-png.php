@@ -24,7 +24,7 @@ $aResult = $db->query($aQuery);
 $pdResult = $db->query($pdQuery);
 $province = "<option data-code='' data-name='' value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . substr(strtoupper($provinceName['geo_name']), 0, 3) . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . substr(strtoupper($provinceName['geo_name']), 0, 3) . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
@@ -381,7 +381,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionResult as $reject) { ?>
-														<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+														<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -400,7 +400,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="sampleType" id="sampleType" class="form-control" title="Please choose Specimen type" style="width: 100%">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
 													<?php } ?>
 												</select>
 											</td>

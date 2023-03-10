@@ -72,7 +72,7 @@ $result = $db->rawQuery($query);
 					<?php
 					foreach ($result as $sample) {
 					?>
-						<option value="<?php echo $sample[$primaryKey]; ?>"><?php echo ucwords($sample['remote_sample_code']); ?></option>
+						<option value="<?php echo $sample[$primaryKey]; ?>"><?php echo ($sample['remote_sample_code']); ?></option>
 					<?php
 					}
 					?>

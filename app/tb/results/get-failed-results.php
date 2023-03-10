@@ -234,14 +234,14 @@ foreach ($rResult as $aRow) {
     }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = $aRow['patient_name'];
-    $row[] = ucwords($aRow['facility_state']);
-    $row[] = ucwords($aRow['facility_district']);
-    $row[] = ucwords($aRow['result']);
+    $row[] = ($aRow['facility_state']);
+    $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['result']);
     $row[] = $aRow['last_modified_datetime'];
-    $row[] = ucwords($aRow['status_name']);
+    $row[] = ($aRow['status_name']);
 
     if ($editRequest) {
         $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['tb_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>'. _("Retest").'</a>';

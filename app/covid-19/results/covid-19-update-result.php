@@ -16,7 +16,7 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
-	$labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
+	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 
 $id = base64_decode($_GET['id']);

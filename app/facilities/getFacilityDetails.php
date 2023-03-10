@@ -156,10 +156,10 @@ foreach ($rResult as $aRow) {
     $row = array();
     $row[] = $aRow['facility_code'];
     $row[] = ($aRow['facility_name']);
-    $row[] = ucwords($aRow['facility_type_name']);
-    $row[] = ucwords($aRow['status']);
-    $row[] = ucwords($aRow['province']);
-    $row[] = ucwords($aRow['district']);
+    $row[] = ($aRow['facility_type_name']);
+    $row[] = ($aRow['status']);
+    $row[] = ($aRow['province']);
+    $row[] = ($aRow['district']);
     if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
         $row[] = '<a href="editFacility.php?id=' . base64_encode($aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }

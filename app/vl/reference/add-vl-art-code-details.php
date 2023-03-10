@@ -13,7 +13,7 @@ $categoryQuery = "SELECT DISTINCT headings FROM `r_vl_art_regimen` GROUP BY head
 $categoryInfo = $db->query($categoryQuery);
 $categoryData = array();
 foreach ($categoryInfo as $category) {
-	$categoryData[$category['headings']] = ucwords($category['headings']);
+	$categoryData[$category['headings']] = ($category['headings']);
 }
 ?>
 <!-- Content Wrapper. Contains page content -->

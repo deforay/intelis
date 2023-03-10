@@ -74,7 +74,7 @@ $batchResult = $db->rawQuery($batchQuery);
                       <?php
                       foreach ($facilityResult as $facility) { ?>
                         ?>
-                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ucwords($facility['facility_name']); ?></option>
+                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -109,7 +109,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($sTypeResult as $type) {
                         ?>
-                          <option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+                          <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
                         <?php
                         }
                         ?>
@@ -123,7 +123,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($facilityResult as $name) {
                         ?>
-                          <option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+                          <option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
                         <?php
                         }
                         ?>
@@ -147,7 +147,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
-                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ucwords($province['geo_name']); ?></option>
+                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ($province['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </td>
@@ -216,7 +216,7 @@ $batchResult = $db->rawQuery($batchQuery);
                       foreach ($result as $sample) {
                         if (trim($sample['sample_code']) != '') {
                       ?>
-                          <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ucwords($sample['sample_code']); ?></option>
+                          <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ($sample['sample_code']); ?></option>
                       <?php
                         }
                       }

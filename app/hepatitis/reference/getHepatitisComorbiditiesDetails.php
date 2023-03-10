@@ -132,12 +132,12 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['comorbidity_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['comorbidity_name']);
+    $row[] = ($aRow['comorbidity_name']);
     if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     }
     else {
-        $row[] = ucwords($aRow['comorbidity_status']);
+        $row[] = ($aRow['comorbidity_status']);
     }
     $output['aaData'][] = $row;
 }

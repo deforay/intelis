@@ -42,7 +42,7 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $userInfo = array();
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ucwords($user['user_name']);
+    $userInfo[$user['user_id']] = ($user['user_name']);
 }
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active'";

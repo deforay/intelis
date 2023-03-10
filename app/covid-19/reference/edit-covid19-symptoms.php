@@ -50,7 +50,7 @@ $symptomInfo = $db->query($symptomQuery);
 											<?php
 											foreach ($rejInfo as $type) {
 											?>
-												<option value="<?php echo $type['symptom_id']; ?>" <?php echo (strtolower($symptomInfo[0]['parent_symptom']) == strtolower($type['symptom_id'])) ? "selected" : ""; ?>><?php echo ucwords($type['symptom_name']); ?></option>
+												<option value="<?php echo $type['symptom_id']; ?>" <?php echo (strtolower($symptomInfo[0]['parent_symptom']) == strtolower($type['symptom_id'])) ? "selected" : ""; ?>><?php echo ($type['symptom_name']); ?></option>
 											<?php
 											}
 											?>

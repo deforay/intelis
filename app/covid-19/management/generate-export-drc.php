@@ -148,7 +148,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         WHERE ps.symptom_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
         $result = $db->rawQuery($squery);
         foreach ($result as $symp) {
-            //$symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ucwords($symptom['symptom_detected']) : "Unknown";
+            //$symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ($symptom['symptom_detected']) : "Unknown";
             $symptomList[] = $symp['symptom_name'];
         }
 
@@ -223,12 +223,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
 
         if ($aRow['patient_name'] != '') {
-            $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+            $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
         } else {
             $patientFname = '';
         }
         if ($aRow['patient_surname'] != '') {
-            $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+            $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
         } else {
             $patientLname = '';
         }
@@ -248,24 +248,24 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $row[] = $aRow["sample_code"];
             $row[] = $aRow["remote_sample_code"];
         }
-        $row[] = ucwords($aRow['lab_name']);
-        $row[] = ucwords($aRow['labTechnician']);
+        $row[] = ($aRow['lab_name']);
+        $row[] = ($aRow['labTechnician']);
         $row[] = $aRow['test_number'];
-        $row[] = ucwords($aRow['facility_district']);
-        $row[] = ucwords($aRow['facility_state']);
-        $row[] = ucwords($aRow['facility_name']);
+        $row[] = ($aRow['facility_district']);
+        $row[] = ($aRow['facility_state']);
+        $row[] = ($aRow['facility_name']);
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
         $row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-        $row[] = ucwords($aRow['patient_gender']);
-        $row[] = ucwords($aRow['is_patient_pregnant']);
-        $row[] = ucwords($aRow['patient_phone_number']);
-        $row[] = ucwords($aRow['patient_email']);
-        $row[] = ucwords($aRow['patient_address']);
-        $row[] = ucwords($aRow['patient_province']);
-        $row[] = ucwords($aRow['patient_district']);
-        $row[] = ucwords($aRow['nationality']);
+        $row[] = ($aRow['patient_gender']);
+        $row[] = ($aRow['is_patient_pregnant']);
+        $row[] = ($aRow['patient_phone_number']);
+        $row[] = ($aRow['patient_email']);
+        $row[] = ($aRow['patient_address']);
+        $row[] = ($aRow['patient_province']);
+        $row[] = ($aRow['patient_district']);
+        $row[] = ($aRow['nationality']);
         $row[] = $aRow['fever_temp'];
         $row[] = $aRow['temperature_measurement_method'];
         $row[] = $aRow['respiratory_rate'];
@@ -291,16 +291,16 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
         $row[] = $general->humanReadableDateFormat($aRow['date_of_initial_consultation']);
         $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
-        $row[] = ucwords($aRow['test_reason_name']);
+        $row[] = ($aRow['test_reason_name']);
         $row[] = $subReasonsList;
         $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
         $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
-        $row[] = ucwords($aRow['sample_condition']);
-        $row[] = ucwords($aRow['status_name']);
-        $row[] = ucwords($aRow['sample_name']);
+        $row[] = ($aRow['sample_condition']);
+        $row[] = ($aRow['status_name']);
+        $row[] = ($aRow['sample_name']);
         $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
         $row[] = $aRow['covid19_test_platform'];
-        $row[] = ucwords($testMethod);
+        $row[] = ($testMethod);
         $row[] = $covid19Results[$aRow['result']];
         $row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
 

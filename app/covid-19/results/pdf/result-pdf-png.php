@@ -146,7 +146,7 @@ if (sizeof($requestResult) > 0) {
 
         $userRes = array();
         if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
-            $resultApprovedBy = ucwords($result['approvedBy']);
+            $resultApprovedBy = ($result['approvedBy']);
             $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
         } else {
             $resultApprovedBy  = '';
@@ -191,13 +191,13 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">District</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
         $html .= '</td>';
@@ -215,7 +215,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_id'] . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $general->humanReadableDateFormat($result['patient_dob']) . '/' . $age . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_address'] . '</td>';
 
         $html .= '</tr>';
@@ -278,7 +278,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '</tr>';
 
             $html .= '<tr>';
-                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['covid19_test_platform']) . '</td>';
+                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['covid19_test_platform']) . '</td>';
             $html .= '</tr>';
 
             $html .= '<tr>';
@@ -312,8 +312,8 @@ if (sizeof($requestResult) > 0) {
                                             <td align="center" width="15%">' . ($indexKey + 1) . '</td>
                                             <td align="center" width="45%">' . $rows['test_name'] . '</td>
                                             <td align="center" width="25%">' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
-                                            <td align="center" width="15%">' . ucwords($rows['testing_platform']) . '</td>
-                                            <td align="center" width="15%">' . ucwords($rows['result']) . '</td>
+                                            <td align="center" width="15%">' . ($rows['testing_platform']) . '</td>
+                                            <td align="center" width="15%">' . ($rows['result']) . '</td>
                                         </tr>';
             }
             $html .= '</table>';
@@ -329,7 +329,7 @@ if (sizeof($requestResult) > 0) {
                                         </table>';
         $html .= '</td>';
         $html .= '</tr>';
-        //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucfirst($result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
+        //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ($result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
         if ($covid19Results[$result['result']] != 'positive' && $result['other_diseases']) {
             $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Other Diseases&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['other_diseases'] . '</td></tr>';
         }

@@ -151,7 +151,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 										<?php
 												foreach ($result as $key => $sample) {
 												?>
-													<option value="<?php echo $sample['hepatitis_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
+													<option value="<?php echo $sample['hepatitis_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>

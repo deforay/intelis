@@ -46,7 +46,7 @@ $rejInfo = $db->query($rejQuery);
                       <?php
                       foreach ($rejInfo as $type) {
                       ?>
-                        <option value="<?php echo $type['symptom_id']; ?>"><?php echo ucwords($type['symptom_name']); ?></option>
+                        <option value="<?php echo $type['symptom_id']; ?>"><?php echo ($type['symptom_name']); ?></option>
                       <?php
                       }
                       ?>

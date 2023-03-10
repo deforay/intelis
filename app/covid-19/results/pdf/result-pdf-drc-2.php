@@ -191,7 +191,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
 
 $userRes = array();
 if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
-    $resultApprovedBy = ucwords($result['approvedBy']);
+    $resultApprovedBy = ($result['approvedBy']);
     $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = '';
@@ -238,11 +238,11 @@ $html .= '<table style="padding:10px;">';
 
 $html .= '<tr>';
 $html .= '<td colspan="2" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">INFORMATION SUR LE VOYAGEUR<br><span style="font-size:10px;font-weight:normal;">TRAVELLERS INFORMATION</span></td>';
-$html .= '<td style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">ID LABO : <u>' . ucwords($result['labName']) . '</u> /21<br><span style="font-size:10px;font-weight:normal;">LAB ID</span></td>';
+$html .= '<td style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">ID LABO : <u>' . ($result['labName']) . '</u> /21<br><span style="font-size:10px;font-weight:normal;">LAB ID</span></td>';
 $html .= '</tr>';
 
-$patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-$patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+$patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+$patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
@@ -258,7 +258,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:10px;font-weight:normal;">Gender</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -270,7 +270,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Ville<br><span style="font-size:10px;font-weight:normal;">City</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
-$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . ucwords($result['patient_city']) . '</td>';
+$html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . ($result['patient_city']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -312,7 +312,7 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
 
     foreach ($covid19TestInfo as $indexKey => $rows) {
         $html .= '<tr>';
-        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><strong>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($rows['result']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><strong>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ($rows['result']) . '</td>';
         $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>';
         $html .= '</tr>';
     }

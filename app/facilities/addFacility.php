@@ -14,7 +14,7 @@ $userResult = $usersModel->getAllUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ucwords($user['user_name']);
+	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 
 $cntId = $general->reportPdfNames();
@@ -103,7 +103,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 											<?php
 											foreach ($fResult as $type) {
 											?>
-												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ucwords($type['facility_type_name']); ?></option>
+												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
 											<?php
 											}
 											?>
@@ -307,7 +307,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['vl'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -325,7 +325,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -343,7 +343,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['covid19'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -361,7 +361,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -379,7 +379,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ucwords($value); ?></option>
+														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>

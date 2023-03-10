@@ -10,7 +10,7 @@ $userResult = $usersModel->getAllUsers();
 
 $userInfo = array();
 foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ucwords($user['user_name']);
+	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 
 $id = base64_decode($_GET['id']);
@@ -183,7 +183,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											$k = 10;
 											foreach ($fResult as $type) {
 											?>
-												<option data-disable="<?php echo $k; ?>" value="<?php echo $type['facility_type_id']; ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ucwords($type['facility_type_name']); ?></option>
+												<option data-disable="<?php echo $k; ?>" value="<?php echo $type['facility_type_id']; ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
 											<?php
 												$k = $k + 10;
 											}
@@ -414,7 +414,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['vl'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['vl'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['vl'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -432,7 +432,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['eid'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['eid'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -450,7 +450,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['covid19'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['covid19'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['covid19'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -468,7 +468,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -486,7 +486,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ucwords($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo ($formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -663,7 +663,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<?php
 									foreach ($uResult as $uName) {
 									?>
-										<option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
+										<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
 									<?php
 									}
 									?>
@@ -682,7 +682,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<?php
 									foreach ($selectedResult as $uName) {
 									?>
-										<option value="<?php echo $uName['user_id']; ?>" selected="selected"><?php echo ucwords($uName['user_name']); ?></option>
+										<option value="<?php echo $uName['user_id']; ?>" selected="selected"><?php echo ($uName['user_name']); ?></option>
 									<?php
 									}
 									?>

@@ -142,12 +142,12 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['funding_source_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['funding_source_name']);
+    $row[] = ($aRow['funding_source_name']);
     if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = $status;
     }
     else {
-        $row[] = ucwords($aRow['funding_source_status']);
+        $row[] = ($aRow['funding_source_status']);
     }
     $output['aaData'][] = $row;
 }

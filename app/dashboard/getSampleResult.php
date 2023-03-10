@@ -377,7 +377,7 @@ if ($table == "form_covid19") {
                 categories: [
                     <?php
                     foreach ($tResult as $tRow) {
-                        echo '"' . ucwords($tRow['date']) . '",';
+                        echo '"' . ($tRow['date']) . '",';
                     }
                     ?>
                 ],
@@ -419,7 +419,7 @@ if ($table == "form_covid19") {
                 name: 'Samples',
                 data: [<?php
                         foreach ($tResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
+                            echo ($tRow['total']) . ",";
                         }
                         ?>]
 
@@ -446,7 +446,7 @@ if ($table == "form_covid19") {
             xAxis: {
                 categories: [<?php
                                 foreach ($waitingResult as $total) {
-                                    echo "'" . ucwords($total['date']) . "',";
+                                    echo "'" . ($total['date']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -480,7 +480,7 @@ if ($table == "form_covid19") {
                 name: 'Samples',
                 data: [<?php
                         foreach ($waitingResult as $total) {
-                            echo ucwords($total[0]['total']) . ",";
+                            echo ($total[0]['total']) . ",";
                         }
                         ?>]
 
@@ -508,7 +508,7 @@ if ($table == "form_covid19") {
             xAxis: {
                 categories: [<?php
                                 foreach ($acceptedResult as $tRow) {
-                                    echo "'" . ucwords($tRow['date']) . "',";
+                                    echo "'" . ($tRow['date']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -542,7 +542,7 @@ if ($table == "form_covid19") {
                 name: 'Samples',
                 data: [<?php
                         foreach ($acceptedResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
+                            echo ($tRow['total']) . ",";
                         }
                         ?>]
 
@@ -569,7 +569,7 @@ if ($table == "form_covid19") {
             xAxis: {
                 categories: [<?php
                                 foreach ($rejectedResult as $tRow) {
-                                    echo "'" . ucwords($tRow['date']) . "',";
+                                    echo "'" . ($tRow['date']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -603,7 +603,7 @@ if ($table == "form_covid19") {
                 name: "<?php echo _("Samples"); ?>",
                 data: [<?php
                         foreach ($rejectedResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
+                            echo ($tRow['total']) . ",";
                         }
                         ?>]
 

@@ -163,7 +163,7 @@ try {
                 }
                 //Add event log
                 $eventType = 'login';
-                $action = ucwords($userRow['user_name']) . ' logged in';
+                $action = ($userRow['user_name']) . ' logged in';
                 $resource = 'user-login';
                 $general->activityLog($eventType, $action, $resource);
 

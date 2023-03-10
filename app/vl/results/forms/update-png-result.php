@@ -66,7 +66,7 @@ $districtResult = $db->query($districtQuery);
 
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Selecione --');
@@ -192,7 +192,7 @@ $disable = "disabled = 'disabled'";
 										<select class="form-control" name="province" id="province" <?php echo $disable; ?> title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($pdResult as $provinceName) { ?>
-												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($facilityResult[0]['facility_state']) . "##" . $stateResult[0]['geo_code'] == strtolower($provinceName['geo_name']) . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['geo_name']); ?></option>;
+												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($facilityResult[0]['facility_state']) . "##" . $stateResult[0]['geo_code'] == strtolower($provinceName['geo_name']) . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
 											<?php } ?>
 										</select>
 									</td>
@@ -205,7 +205,7 @@ $disable = "disabled = 'disabled'";
 											<?php
 											foreach ($districtResult as $districtName) {
 											?>
-												<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ucwords($districtName['facility_district']); ?></option>
+												<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 											<?php
 											}
 											?>
@@ -461,7 +461,7 @@ $disable = "disabled = 'disabled'";
 											<select name="rejectionReason" id="rejectionReason" class="form-control <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "isRequired" : ""; ?>" title="Please choose reason" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($rejectionResult as $reject) { ?>
-													<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "" ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+													<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "" ?>><?php echo ($reject['rejection_reason_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -487,7 +487,7 @@ $disable = "disabled = 'disabled'";
 											<select name="sampleType" id="sampleType" class="form-control" title="Please choose Specimen type" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($sResult as $name) { ?>
-													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ucwords($name['sample_name']); ?></option>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>

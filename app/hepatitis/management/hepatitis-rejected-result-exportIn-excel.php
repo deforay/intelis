@@ -89,15 +89,15 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                $decrypt = 'sample_code';
           }
 
-          $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]));
+          $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
-          $row[] = ucwords($aRow['facility_name']);
+          $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_id'];
-          $row[] = ucwords($patientFname);
+          $row[] = ($patientFname);
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];

@@ -217,7 +217,7 @@ $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
      $data = array();
-     $data[] = ucwords($rowData['facility_name']);
+     $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];
      $data[] = $rowData['totalRejected'];

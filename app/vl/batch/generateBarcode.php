@@ -289,7 +289,7 @@ if ($id > 0) {
                     } else {
                         $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
                         $label = str_replace("in house", "In-House", $label);
-                        $label = ucwords(str_replace("no of ", " ", $label));
+                        $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
                         $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
@@ -346,7 +346,7 @@ if ($id > 0) {
                     } else {
                         $label = str_replace("_", " ", $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
-                        $label = ucwords(str_replace("no of ", " ", $label));
+                        $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
                         $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';

@@ -37,7 +37,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
@@ -263,7 +263,7 @@ $sFormat = '';
                                                                  if(count($sResult)==1)
                                                                       $selected = "selected='selected'";
                                                                  foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
+                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -288,7 +288,7 @@ $sFormat = '';
                                                                  <select class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?php echo ucwords($heading['headings']); ?>">
+                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
                                                                                 <?php
                                                                                 foreach ($aResult as $regimen) {
 
@@ -567,11 +567,11 @@ $sFormat = '';
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+                                                                                     <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
@@ -634,7 +634,7 @@ $sFormat = '';
                                                                       <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                            <option value="">-- Select --</option>
                                                                            <?php foreach ($userResult as $uName) { ?>
-                                                                                <option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
+                                                                                <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                                                                            <?php } ?>
                                                                       </select>
                                                                  </div>

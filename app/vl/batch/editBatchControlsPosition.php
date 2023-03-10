@@ -45,7 +45,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			} else {
 				$label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
 				$label = str_replace("in house", "In-House", $label);
-				$label = ucwords(str_replace("no of ", " ", $label));
+				$label = (str_replace("no of ", " ", $label));
 			}
 			$content .= '<li class="ui-state-default" id="' . $jsonToArray[$alphaNumeric[$j]] . '">' . $label . '</li>';
 		}
@@ -60,7 +60,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			} else {
 				$label = str_replace("_", " ", $jsonToArray[$j]);
 				$label = str_replace("in house", "In-House", $label);
-				$label = ucwords(str_replace("no of ", " ", $label));
+				$label = (str_replace("no of ", " ", $label));
 			}
 			$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
 		}

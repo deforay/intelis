@@ -56,7 +56,7 @@ if (sizeof($collectionResult) > 0) {
             xAxis: {
                 categories: [<?php
                                 foreach ($collectionResult as $tRow) {
-                                    echo "'" . ucwords($tRow['facility_name']) . "',";
+                                    echo "'" . ($tRow['facility_name']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -90,7 +90,7 @@ if (sizeof($collectionResult) > 0) {
                 name: 'Samples',
                 data: [<?php
                         foreach ($collectionResult as $tRow) {
-                            echo ucwords($tRow['total']) . ",";
+                            echo ($tRow['total']) . ",";
                         }
                         ?>]
 

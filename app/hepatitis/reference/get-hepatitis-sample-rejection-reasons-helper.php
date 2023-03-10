@@ -142,14 +142,14 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['rejection_reason_name']);
-    $row[] = ucwords($aRow['rejection_type']);
-    $row[] = ucwords($aRow['rejection_reason_code']);
+    $row[] = ($aRow['rejection_reason_name']);
+    $row[] = ($aRow['rejection_type']);
+    $row[] = ($aRow['rejection_reason_code']);
     if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = $status;
     }
     else {
-        $row[] = ucwords($aRow['rejection_reason_status']);
+        $row[] = ($aRow['rejection_reason_status']);
     }
     $output['aaData'][] = $row;
 }

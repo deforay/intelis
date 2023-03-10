@@ -79,7 +79,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php foreach ($fResult as $name) { ?>
-										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 									<?php } ?>
 								</select>
 							</td>

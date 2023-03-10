@@ -124,7 +124,7 @@ try {
                     'rejection_on'                          => date('Y-m-d', strtotime($rowData['BB'])),
                     'result'                                => $result['result_id'],
                     'is_result_authorised'                  => strtolower($rowData['BL']),
-                    'authorized_by'                         => ucwords($rowData['BM']),
+                    'authorized_by'                         => ($rowData['BM']),
                     'authorized_on'                         => date('Y-m-d', strtotime($rowData['BN'])),
                     'last_modified_datetime'                => $general->getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],

@@ -26,7 +26,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     $echoResult = array();
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$field], "text" => ucwords($row[$field]));
+            $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
         }
     } else {
         $echoResult[] = array("id" => $text, 'text' => $text);

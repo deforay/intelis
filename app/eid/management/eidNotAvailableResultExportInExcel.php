@@ -95,16 +95,16 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         }else{
             $decrypt = 'sample_code';
         }
-        $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]));
+        $patientFname = ($general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
-        $row[] = ucwords($patientFname);
+        $row[] = ($patientFname);
         $row[] = $aRow['child_id'];
-        $row[] = ucwords($aRow['child_name']);
+        $row[] = ($aRow['child_name']);
         $row[] = $sampleCollectionDate;
-        $row[] = ucwords($aRow['labName']);
+        $row[] = ($aRow['labName']);
         $output[] = $row;
     }
 

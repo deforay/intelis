@@ -92,7 +92,7 @@ try {
                     'rejection_on'                          => date('Y-m-d',strtotime($rowData['Z'])),
                     'result'                                => $result['result_id'],
                     'is_result_authorised'                  => strtolower($rowData['AJ']),
-                    'authorized_by'                         => ucwords($rowData['AK']),
+                    'authorized_by'                         => ($rowData['AK']),
                     'authorized_on'                         => date('Y-m-d',strtotime($rowData['AL'])),
                     'last_modified_datetime'                => $general->getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],

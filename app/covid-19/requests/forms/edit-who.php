@@ -47,7 +47,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ($provinceName['province_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
@@ -162,7 +162,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?php echo ($implementingPartner['i_partner_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -173,7 +173,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?php echo ($fundingSource['funding_source_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -275,7 +275,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
                                                 <?php foreach ($specimenTypeResult as $name) { ?>
-                                                    <option value="<?php echo $name['sample_id']; ?>" <?php echo ($covid19Info['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($name['sample_name']); ?></option>
+                                                    <option value="<?php echo $name['sample_id']; ?>" <?php echo ($covid19Info['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?php echo ($name['sample_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -385,11 +385,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                        <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+                                                        <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
                                                             <?php }
                                                             } ?>
                                                         </optgroup>

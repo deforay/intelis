@@ -127,8 +127,8 @@ $primaryKey="config_id";
 	
         foreach ($rResult as $aRow) {
             $row = array();
-	        $row[] = ucwords($aRow['machine_name']);
-	        $row[] = ucwords($aRow['status']);
+	        $row[] = ($aRow['machine_name']);
+	        $row[] = ($aRow['status']);
 	        $row[] = '<a href="editImportConfig.php?id=' . base64_encode($aRow['config_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
             $output['aaData'][] = $row;
         }

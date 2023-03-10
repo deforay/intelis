@@ -66,7 +66,7 @@ $batResult = $db->rawQuery($batQuery);
                   <?php
                   foreach ($sResult as $type) {
                   ?>
-                    <option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+                    <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
                   <?php
                   }
                   ?>
@@ -80,7 +80,7 @@ $batResult = $db->rawQuery($batQuery);
                   <?php
                   foreach ($fResult as $name) {
                   ?>
-                    <option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+                    <option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
                   <?php
                   }
                   ?>

@@ -308,7 +308,7 @@ foreach ($rResult as $aRow) {
      }
 
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
      $row[] = $print;
      $output['aaData'][] = $row;
 }

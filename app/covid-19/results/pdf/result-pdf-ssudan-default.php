@@ -182,7 +182,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
 
 $userRes = array();
 if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
-    $resultApprovedBy = ucwords($result['authorized_by']);
+    $resultApprovedBy = ($result['authorized_by']);
     $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = '';
@@ -237,7 +237,7 @@ $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SEX</td>';
-$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">EMAIL</td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['labEmail'] . '</td>';
 $html .= '</tr>';
@@ -261,7 +261,7 @@ $html .= '<tr>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">PASSPORT # / NIN </td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_passport_number'] . '</td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE</td>';
-$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labState']) . '</td>';
+$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labState']) . '</td>';
 
 $html .= '</tr>';
 
@@ -269,7 +269,7 @@ $html .= '<tr>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">CASE ID</td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['patient_id'] . '</td>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COUNTY</td>';
-$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords($result['labCounty']) . '</td>';
+$html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labCounty']) . '</td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
@@ -329,7 +329,7 @@ $html .= '</tr>';
 //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $covid19TestInfo[$indexKey]['test_name'] . '</td>
 //                                 <td align="center" style="line-height:20px;font-size:11px;">' . $covid19TestInfo[$indexKey]['testing_platform'] . '</td>
 //                                 <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($covid19TestInfo[$indexKey]['sample_tested_datetime'])) . '</td>
-//                                 <td align="center" style="line-height:20px;font-size:11px;">' . ucwords($covid19TestInfo[$indexKey]['result']) . '</td>
+//                                 <td align="center" style="line-height:20px;font-size:11px;">' . ($covid19TestInfo[$indexKey]['result']) . '</td>
 //                             </tr>';
 //     }
 //     $html .= '</table>';

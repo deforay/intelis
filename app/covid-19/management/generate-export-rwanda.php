@@ -137,12 +137,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 
 		if ($aRow['patient_name'] != '') {
-			$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+			$patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_surname'] != '') {
-			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+			$patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}
@@ -167,10 +167,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$row[] = $aRow["sample_code"];
 			$row[] = $aRow["remote_sample_code"];
 		}
-		$row[] = ucwords($aRow['facility_name']);
+		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
-		$row[] = ucwords($aRow['facility_district']);
-		$row[] = ucwords($aRow['facility_state']);
+		$row[] = ($aRow['facility_district']);
+		$row[] = ($aRow['facility_state']);
 		$row[] = $aRow['patient_id'];
 		$row[] = $patientFname . " " . $patientLname;
 		$row[] = $dob;
@@ -181,9 +181,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = implode(',', $sysmtomsArr);
 		$row[] = implode(',', $comorbiditiesArr);
 		/* $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
-		$row[] = ucwords($aRow['contact_with_confirmed_case']);
-		$row[] = ucwords($aRow['has_recent_travel_history']);
-		$row[] = ucwords($aRow['travel_country_names']);
+		$row[] = ($aRow['contact_with_confirmed_case']);
+		$row[] = ($aRow['has_recent_travel_history']);
+		$row[] = ($aRow['travel_country_names']);
 		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
@@ -191,8 +191,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
 		$output[] = $row;
 		$no++;
 	}

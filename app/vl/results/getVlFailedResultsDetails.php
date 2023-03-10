@@ -229,9 +229,9 @@ foreach ($rResult as $aRow) {
         $aRow['last_modified_datetime'] = '';
     }
 
-    $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
-    $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-    $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+    $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+    $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+    $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
     $row = array();
     $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
@@ -242,14 +242,14 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_art_no'];
-    $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
-    $row[] = ucwords($aRow['facility_name']);
-    $row[] = ucwords($aRow['facility_state']);
-    $row[] = ucwords($aRow['facility_district']);
-    $row[] = ucwords($aRow['sample_name']);
+    $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+    $row[] = ($aRow['facility_name']);
+    $row[] = ($aRow['facility_state']);
+    $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['sample_name']);
     $row[] = $aRow['result'];
     $row[] = $aRow['last_modified_datetime'];
-    $row[] = ucwords($aRow['status_name']);
+    $row[] = ($aRow['status_name']);
     if ($editRequest) {
         $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Failed result retest").'" onclick="retestSample(\'' . trim(base64_encode($aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>'. _("Retest").'</a>';
     }

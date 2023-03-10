@@ -138,8 +138,8 @@ foreach ($rResult as $aRow) {
     if ($aRow['moved_on'] != '0000-00-00' && $aRow['moved_on'] != null) {
         $date = $general->humanReadableDateFormat($aRow['moved_on']);
     }
-    $row[] = ucwords($aRow['labNameFrom']);
-    $row[] = ucwords($aRow['labNameTo']);
+    $row[] = ($aRow['labNameFrom']);
+    $row[] = ($aRow['labNameTo']);
     $row[] = $date;
     $row[] = $aRow['reason_for_moving'];
     $row[] = $aRow['move_approved_by'];

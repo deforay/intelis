@@ -22,7 +22,7 @@ if(isset($configInfo) && $configInfo != ""){
     $configMachineInfo = $db->rawQuery($configMachineQuery);
     foreach($configMachineInfo as $machine){
         $selected = (isset($machineId) && $machine['config_machine_id'] == $machineId)?"selected='selected'":"";
-        $options .= '<option value="'.$machine['config_machine_id'].'" '.$selected.'>'.ucwords($machine['config_machine_name']).'</option>';
+        $options .= '<option value="'.$machine['config_machine_id'].'" '.$selected.'>'.($machine['config_machine_name']).'</option>';
     }
 }
 echo $options;

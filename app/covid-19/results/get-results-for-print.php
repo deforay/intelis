@@ -290,12 +290,12 @@ foreach ($rResult as $aRow) {
     }
     //$row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
-    $row[] = ucwords($patientFname . " " . $patientLname);
-    $row[] = ucwords($aRow['facility_name']);
-    $row[] = ucwords($aRow['labName']);
-    $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
-    $row[] = ucwords($aRow['sample_name']);
+    $row[] = ($patientFname . " " . $patientLname);
+    $row[] = ($aRow['facility_name']);
+    $row[] = ($aRow['labName']);
+    $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
@@ -306,7 +306,7 @@ foreach ($rResult as $aRow) {
     }
 
     $row[] = $aRow['last_modified_datetime'];
-    $row[] = ucwords($aRow['status_name']);
+    $row[] = ($aRow['status_name']);
     $row[] = $print;
     $output['aaData'][] = $row;
 }

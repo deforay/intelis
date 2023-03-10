@@ -221,8 +221,8 @@ foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = '';
     }
 
-    $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-    $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+    $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+    $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 
 
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
@@ -242,7 +242,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = $patientFname . " " . $patientLname;
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['hcv_vl_count'];
     $row[] = $aRow['hbv_vl_count'];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {

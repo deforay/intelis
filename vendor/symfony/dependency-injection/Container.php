@@ -339,7 +339,7 @@ class Container implements ContainerInterface, ResetInterface
      */
     public static function camelize(string $id)
     {
-        return strtr(ucwords(strtr($id, ['_' => ' ', '.' => '_ ', '\\' => '_ '])), [' ' => '']);
+        return strtr((strtr($id, ['_' => ' ', '.' => '_ ', '\\' => '_ '])), [' ' => '']);
     }
 
     /**

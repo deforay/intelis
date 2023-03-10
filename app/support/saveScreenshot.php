@@ -104,7 +104,7 @@ try{
 
 				$message='';
 				if(isset($feedback) && trim($feedback)!=""){
-					$feedback =ucfirst(nl2br($feedback));
+					$feedback =(nl2br($feedback));
 					$message="<table cellpadding='0' cellspacing='0' style='width:95%;' border='1'>";
 					$message.="<tr>";
 					$message.="<th style='width:15%;'>Feedback</th>";

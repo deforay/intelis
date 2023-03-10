@@ -104,7 +104,7 @@ class ByteString extends AbstractString
     {
         $str = clone $this;
 
-        $parts = explode(' ', trim(ucwords(preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $this->string))));
+        $parts = explode(' ', trim((preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $this->string))));
         $parts[0] = 1 !== \strlen($parts[0]) && ctype_upper($parts[0]) ? $parts[0] : lcfirst($parts[0]);
         $str->string = implode('', $parts);
 
@@ -421,7 +421,7 @@ class ByteString extends AbstractString
     public function title(bool $allWords = false): parent
     {
         $str = clone $this;
-        $str->string = $allWords ? ucwords($str->string) : ucfirst($str->string);
+        $str->string = $allWords ? ($str->string) : ($str->string);
 
         return $str;
     }

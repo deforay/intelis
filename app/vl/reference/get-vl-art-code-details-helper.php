@@ -146,12 +146,12 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = array();
     $row[] = $aRow['art_code'];
-    $row[] = ucwords($aRow['headings']);
+    $row[] = ($aRow['headings']);
     if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = $status;
     }
     else {
-        $row[] = ucwords($aRow['art_status']);
+        $row[] = ($aRow['art_status']);
     }
     $output['aaData'][] = $row;
 }

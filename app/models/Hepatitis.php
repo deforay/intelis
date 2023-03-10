@@ -240,7 +240,7 @@ class Hepatitis
         $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
         $comorbidityResult = $this->db->rawQuery($comorbidityQuery);
         foreach ($comorbidityResult as $comorbidity) {
-            $comorbidityData[$comorbidity['comorbidity_id']] = ucwords($comorbidity['comorbidity_name']);
+            $comorbidityData[$comorbidity['comorbidity_id']] = ($comorbidity['comorbidity_name']);
         }
 
         return $comorbidityData;
@@ -252,7 +252,7 @@ class Hepatitis
         $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
         $riskFactorsResult = $this->db->rawQuery($riskFactorsQuery);
         foreach ($riskFactorsResult as $riskFactors) {
-            $riskFactorsData[$riskFactors['riskfactor_id']] = ucwords($riskFactors['riskfactor_name']);
+            $riskFactorsData[$riskFactors['riskfactor_id']] = ($riskFactors['riskfactor_name']);
         }
 
         return $riskFactorsData;

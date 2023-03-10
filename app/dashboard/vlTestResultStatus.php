@@ -22,10 +22,10 @@
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
-			<h1>VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</h1>
+			<h1>VL Test Result Status [<?php echo ($tsResult[0]['status_name']); ?> ]</h1>
 			<ol class="breadcrumb">
 				<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-				<li class="active">VL Test Result Status [<?php echo ucwords($tsResult[0]['status_name']); ?> ]</li>
+				<li class="active">VL Test Result Status [<?php echo ($tsResult[0]['status_name']); ?> ]</li>
 			</ol>
 		</section>
 
@@ -62,7 +62,7 @@
 										<?php
 										foreach ($sResult as $type) {
 										?>
-											<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+											<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 										<?php
 										}
 										?>
@@ -76,7 +76,7 @@
 										<?php
 										foreach ($fResult as $name) {
 										?>
-											<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+											<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 										<?php
 										}
 										?>

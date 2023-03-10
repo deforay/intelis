@@ -98,7 +98,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 							<?php
 							foreach ($sResult as $type) {
 							?>
-								<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 							<?php
 							}
 							?>
@@ -196,7 +196,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 												<?php
 												foreach ($result as $key => $sample) {
 												?>
-													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
+													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>
@@ -212,7 +212,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 										<?php
 												foreach ($result as $key => $sample) {
 												?>
-													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
+													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>

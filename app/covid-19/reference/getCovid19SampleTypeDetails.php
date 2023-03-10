@@ -142,12 +142,12 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['sample_name']);
+    $row[] = ($aRow['sample_name']);
     if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
         $row[] = $status;
     }
     else {
-        $row[] = ucwords($aRow['status']);
+        $row[] = ($aRow['status']);
     }
     $output['aaData'][] = $row;
 }

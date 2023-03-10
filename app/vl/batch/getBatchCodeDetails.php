@@ -187,7 +187,7 @@ foreach ($rResult as $aRow) {
         $exp = explode(" ", $aRow['last_tested_date']);
         $lastDate = $general->humanReadableDateFormat($exp[0]);
     }
-    $row[] = ucwords($aRow['batch_code']);
+    $row[] = ($aRow['batch_code']);
     $row[] = $aRow['total_samples'];
     $row[] = $aRow['testcount'];
     $row[] = $lastDate;

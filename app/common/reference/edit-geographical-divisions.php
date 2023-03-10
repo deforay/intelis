@@ -14,7 +14,7 @@ $geoQuery = "SELECT * from geographical_divisions WHERE geo_status ='active'";
 $geoParentInfo = $db->query($geoQuery);
 $geoArray = array();
 foreach ($geoParentInfo as $type) {
-    $geoArray[$type['geo_id']] = ucwords($type['geo_name']);
+    $geoArray[$type['geo_id']] = ($type['geo_name']);
 }
 $query = "SELECT * from geographical_divisions where geo_id = $id";
 $geoInfo = $db->rawQueryOne($query);

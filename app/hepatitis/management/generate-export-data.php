@@ -139,12 +139,12 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		}
 
 		if ($aRow['patient_name'] != '') {
-			$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+			$patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+			$patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}
@@ -162,10 +162,10 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		} else {
 			$row[] = $aRow["sample_code"];
 		}
-		$row[] = ucwords($aRow['facility_name']);
+		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
-		$row[] = ucwords($aRow['facility_district']);
-		$row[] = ucwords($aRow['facility_state']);
+		$row[] = ($aRow['facility_district']);
+		$row[] = ($aRow['facility_state']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			$row[] = $aRow['patient_id'];
 			$row[] = $patientFname . " " . $patientLname;
@@ -176,13 +176,13 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $sampleCollectionDate;
 		$row[] = $sampleRejection;
 		$row[] = $sampleTestedOn;
-		$row[] = ucwords($aRow['hcv_vl_result']);
-		$row[] = ucwords($aRow['hbv_vl_result']);
+		$row[] = ($aRow['hcv_vl_result']);
+		$row[] = ($aRow['hbv_vl_result']);
 		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
-		$row[] = ucfirst($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+		$row[] = ($aRow['lab_tech_comments']);
+		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
 		$output[] = $row;
 		$no++;
 	}

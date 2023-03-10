@@ -153,12 +153,12 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $row[] = ucwords($aRow['login_id']);
-    $row[] = ucwords($aRow['login_attempted_datetime']);
-    $row[] = ucwords($aRow['ip_address']);
-    $row[] = ucwords($aRow['browser']);
-    $row[] = ucwords($aRow['operating_system']);
-    $row[] = ucwords($aRow['login_status']);
+    $row[] = ($aRow['login_id']);
+    $row[] = ($aRow['login_attempted_datetime']);
+    $row[] = ($aRow['ip_address']);
+    $row[] = ($aRow['browser']);
+    $row[] = ($aRow['operating_system']);
+    $row[] = ($aRow['login_status']);
     $output['aaData'][] = $row;
 }
 

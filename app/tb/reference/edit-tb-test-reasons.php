@@ -50,7 +50,7 @@ $tstInfo = $db->query($tstQuery);
                       <?php
                       foreach ($rejInfo as $type) {
                       ?>
-                        <option value="<?php echo $type['test_reason_id']; ?>" <?php echo (strtolower($tstInfo[0]['parent_reason']) == strtolower($type['test_reason_id'])) ? "selected" : ""; ?>><?php echo ucwords($type['test_reason_name']); ?></option>
+                        <option value="<?php echo $type['test_reason_id']; ?>" <?php echo (strtolower($tstInfo[0]['parent_reason']) == strtolower($type['test_reason_id'])) ? "selected" : ""; ?>><?php echo ($type['test_reason_name']); ?></option>
                       <?php
                       }
                       ?>

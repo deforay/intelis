@@ -13,7 +13,7 @@ $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
 
 foreach ($nationalityResult as $nrow) {
-	$nationalityList[$nrow['id']] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
+	$nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
 foreach ($testPlatformResult as $row) {
@@ -61,7 +61,7 @@ foreach ($pdResult as $provinceName) {
 	if ($tbInfo['province_id'] == $provinceName['geo_id']) {
 		$selected = "selected='selected'";
 	}
-	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
@@ -387,11 +387,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
-														<optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+														<optgroup label="<?php echo ($type['rejection_type']); ?>">
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($tbInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($tbInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
 															<?php }
 															} ?>
 														</optgroup>

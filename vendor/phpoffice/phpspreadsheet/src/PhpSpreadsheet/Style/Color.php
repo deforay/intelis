@@ -206,7 +206,7 @@ class Color extends Supervisor
         if ($colorValue === null || $colorValue === '') {
             return self::COLOR_BLACK;
         }
-        $named = ucfirst(strtolower($colorValue));
+        $named = (strtolower($colorValue));
         if (array_key_exists($named, self::NAMED_COLOR_TRANSLATIONS)) {
             return self::NAMED_COLOR_TRANSLATIONS[$named];
         }

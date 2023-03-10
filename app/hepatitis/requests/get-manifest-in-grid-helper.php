@@ -189,8 +189,8 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];
@@ -199,15 +199,15 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ucwords($aRow['facility_name']);
+     $row[] = ($aRow['facility_name']);
      $row[] = $aRow['patient_id'];
      $row[] = $patientFname . " " . $patientLname;
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
+     $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
      $row[] = $aRow['hcv_vl_count'];
      $row[] = $aRow['hbv_vl_count'];
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
 
      $output['aaData'][] = $row;
 }

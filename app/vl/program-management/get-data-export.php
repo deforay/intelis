@@ -365,9 +365,9 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
-     $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+     $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+     $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
      $row = array();
      $row[] = $aRow['sample_code'];
@@ -383,9 +383,9 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];
-     $row[] = ucwords($aRow['status_name']);
-     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+     $row[] = ($aRow['status_name']);
+     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
      $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime'], true);
      $row[] = $general->humanReadableDateFormat($aRow['last_modified_datetime'], true);
      //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';

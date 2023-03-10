@@ -19,7 +19,7 @@ if(count($sampleResult) > 0){
         $unknown = (isset($response[$sampleRow['test_reason_id']]) && $response[$sampleRow['test_reason_id']] == 'unknown')?"selected='selected'":'';
 
         echo '<tr class="responseRow'.$_POST['responseParent'].'" id="'.$_POST['responseParent'].'">
-                <th style="width:50%;padding-left:25px;">'.ucwords($sampleRow['test_reason_name']).'</th>
+                <th style="width:50%;padding-left:25px;">'.($sampleRow['test_reason_name']).'</th>
                 <td style="width:50%;">
                     <input name="responseId[]" type="hidden" value="'.$sampleRow['test_reason_id'].'">
                     <select name="responseDetected[]" class="reason-input form-control" title="Veuillez choisir la valeur pour '. $sampleRow['test_reason_name'].'" style="width:80%" onchange="checkSubResponse(this,'.$sampleRow['test_reason_id'].','.$index.');">

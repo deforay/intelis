@@ -309,16 +309,16 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ucwords($aRow['lab_name']);
-     $row[] = ucwords($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
+     $row[] = ($aRow['facility_name']);
      $row[] = $aRow['patient_id'];
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
 
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
-     $row[] = ucwords($aRow['lamResult']);
+     $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
+     $row[] = ($aRow['lamResult']);
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
 
      if ($editRequest) {
           $edit = '<a href="tb-edit-request.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
@@ -339,7 +339,7 @@ foreach ($rResult as $aRow) {
      }
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
-          $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
+          $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
           $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }
      $actions = "";

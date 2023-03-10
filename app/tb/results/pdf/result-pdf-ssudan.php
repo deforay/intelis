@@ -97,8 +97,8 @@ if (sizeof($requestResult) > 0) {
         $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id= " . $result['tb_id'] . " GROUP BY fd.facility_id LIMIT 1";
         $facilityInfo = $db->rawQueryOne($facilityQuery);
         // echo "<pre>";print_r($tbTestInfo);die;
-        $patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
@@ -253,7 +253,7 @@ if (sizeof($requestResult) > 0) {
         $userRes = array();
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
             $userRes = $users->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
-            $resultAuthroizedBy = ucwords($userRes['user_name']);
+            $resultAuthroizedBy = ($userRes['user_name']);
         } else {
             $resultAuthroizedBy  = '';
         }
@@ -266,7 +266,7 @@ if (sizeof($requestResult) > 0) {
         $userApprovedRes = array();
         if (isset($result['result_approved_by']) && trim($result['result_approved_by']) != '') {
             $userApprovedRes = $users->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
-            $resultApprovedBy = ucwords($userApprovedRes['user_name']);
+            $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
             $resultApprovedBy  = '';
         }
@@ -344,7 +344,7 @@ if (sizeof($requestResult) > 0) {
         $typeOfPatient = json_decode($result['patient_type']);
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TB PATIENT CATEGORY</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("-", " ", $typeOfPatient)) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("-", " ", $typeOfPatient)) . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE & REGION</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $fstate . '</td>';
         $html .= '</tr>';
@@ -358,7 +358,7 @@ if (sizeof($requestResult) > 0) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">SEX</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
         $html .= '</tr>';

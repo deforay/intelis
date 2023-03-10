@@ -58,7 +58,7 @@ $pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 //Province Details  Ends
@@ -130,7 +130,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                        <?php foreach ($result as $row) {
                                                             $roleCode = (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? $row['role_code'] : ""
                                                        ?>
-                                                            <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords(($row['role_name'])); ?></option>
+                                                            <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo (($row['role_name'])); ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -292,7 +292,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                             <?php
                                                             foreach ($ftResult as $type) {
                                                             ?>
-                                                                 <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ucwords($type['facility_type_name']); ?></option>
+                                                                 <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
                                                             <?php
                                                             }
                                                             ?>

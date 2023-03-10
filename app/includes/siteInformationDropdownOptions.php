@@ -124,7 +124,7 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 				if ($selectedDistrict == $pdRow['geo_id']) {
 					$selected = "selected='selected'";
 				}
-				$district .= "<option $selected value='" . $pdRow['geo_id'] . "'>" . ucwords($pdRow['geo_name']) . "</option>";
+				$district .= "<option $selected value='" . $pdRow['geo_id'] . "'>" . ($pdRow['geo_name']) . "</option>";
 			}
 			return $district;
 		} else {

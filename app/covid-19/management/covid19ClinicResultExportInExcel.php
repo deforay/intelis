@@ -113,14 +113,14 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           } else {
                $decrypt = 'sample_code';
           }
-          $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]));
+          $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]));
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
-          $row[] = ucwords($aRow['facility_name']);
+          $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_id'];
-          $row[] = ucwords($patientFname);
+          $row[] = ($patientFname);
           $row[] = $aRow['caretaker_phone_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;

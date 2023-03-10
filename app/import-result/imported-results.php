@@ -62,7 +62,7 @@ foreach ($rejectionTypeResult as $type) {
 	$rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
 	foreach ($rejectionResult as $reject) {
 		if ($type['rejection_type'] == $reject['rejection_type']) {
-			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
 		}
 	}
 	$rejectionReason .= '</optgroup>';
@@ -189,7 +189,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>"><?php echo ucwords($uName['user_name']); ?></option>
+											<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
 										<?php
 										}
 										?>
@@ -203,7 +203,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
 										<?php
 										}
 										?>
@@ -217,7 +217,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
 										<?php
 										}
 										?>

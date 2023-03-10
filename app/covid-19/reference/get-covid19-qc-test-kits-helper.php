@@ -143,13 +143,13 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     $row = array();
-    $row[] = ucwords($aRow['testkit_name']);
+    $row[] = ($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
         $row[] = $edit;
     } else {
-        $row[] = ucwords($aRow['status']);
+        $row[] = ($aRow['status']);
     }
     $output['aaData'][] = $row;
 }

@@ -38,7 +38,7 @@ $sResult = $db->rawQuery($sQuery);
                   <?php
                   foreach ($sResult as $type) {
                   ?>
-                    <option value="<?php echo $type['login_id']; ?>"><?php echo ucwords($type['login_id']); ?></option>
+                    <option value="<?php echo $type['login_id']; ?>"><?php echo ($type['login_id']); ?></option>
                   <?php
                   }
                   ?>

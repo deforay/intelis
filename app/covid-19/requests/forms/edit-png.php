@@ -14,7 +14,7 @@ $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
 
 foreach ($nationalityResult as $nrow) {
-    $nationalityList[$nrow['id']] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
+    $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
 foreach ($testPlatformResult as $row) {
@@ -67,19 +67,19 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
-    $provinceSelect .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
+    $provinceSelect .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $pdResult = $db->query($pdQuery);
 $provinceInfo = array();
 foreach ($pdResult as $state) {
-    $provinceInfo[$state['geo_name']] = ucwords($state['geo_name']);
+    $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
 foreach ($implementingPartnerList as $implementingPartner) {
-    $implementingPartnerArray[$implementingPartner['i_partner_id']] = ucwords($implementingPartner['i_partner_name']);
+    $implementingPartnerArray[$implementingPartner['i_partner_id']] = ($implementingPartner['i_partner_name']);
 }
 foreach ($fundingSourceList as $fundingSource) {
-    $fundingSourceArray[$fundingSource['funding_source_id']] = ucwords($fundingSource['funding_source_name']);
+    $fundingSourceArray[$fundingSource['funding_source_id']] = ($fundingSource['funding_source_name']);
 }
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 $implementingPartnerOptions = $general->generateSelectOptions($implementingPartnerArray, $covid19Info['implementing_partner'], '-- Select --');

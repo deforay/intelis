@@ -243,7 +243,7 @@ class Users
             $result =  $this->db->get('user_details u');
             $userDetails = array();
             foreach ($result as $user) {
-                $userDetails[$user['user_id']] = ucwords($user['user_name']);
+                $userDetails[$user['user_id']] = ($user['user_name']);
             }
             return $userDetails;
         } else {

@@ -81,7 +81,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php foreach ($iResult as $val) { ?>
-																<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ucwords($val['machine_name']); ?></option>
+																<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -128,7 +128,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 															<?php
 															foreach ($fResult as $val) {
 															?>
-																<option value="<?php echo base64_encode($val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($val['facility_name']); ?></option>
+																<option value="<?php echo base64_encode($val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
 															<?php } ?>
 														</select>
 													</div>

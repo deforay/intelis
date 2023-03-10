@@ -384,9 +384,9 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
-     $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+     $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+     $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
 
      $row = array();
@@ -400,14 +400,14 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
-     $row[] = ucwords($aRow['lab_name']);
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
-     $row[] = ucwords($aRow['sample_name']);
+     $row[] = ($aRow['lab_name']);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
+     $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
 
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['vl_sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
      //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '\',900,520);"> Result</a>';
@@ -422,7 +422,7 @@ foreach ($rResult as $aRow) {
      }
 
      if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
-          $fac = ucwords($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
+          $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
           $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }
 

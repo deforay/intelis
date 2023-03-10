@@ -161,7 +161,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 										<?php
 												foreach ($result as $key => $sample) {
 												?>
-													<option value="<?php echo $sample['covid19_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ucwords($sample['facility_name']); ?></option>
+													<option value="<?php echo $sample['covid19_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>

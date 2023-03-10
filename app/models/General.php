@@ -484,7 +484,7 @@ class General
             $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
         }
         foreach ($rejArray as $rej) {
-            $rejReaons[$rej] = ucwords($rej);
+            $rejReaons[$rej] = ($rej);
         }
         return $rejReaons;
     }
@@ -535,7 +535,7 @@ class General
                     $index = substr($formatPath, strpos($formatPath, "results/") + 8);
                     $cut = str_replace("-", "", substr($index, strpos($index, "resultPdf" . $countryCode . "-") + 14));
                     $value = substr($cut, 0, strpos($cut, ".php"));
-                    $list[$index] = ucwords($value);
+                    $list[$index] = ($value);
                 }
             } else {
                 $list['pdf/resultPdf-' . $countryCode . '.pdf'] = "Default";
@@ -554,7 +554,7 @@ class General
                     /* Previous code updated */
                     $str = explode("/", $index);
                     $str = explode("-", $str[1]);
-                    $str = ucwords($str[2]) . "-" . ucwords($str[3]);
+                    $str = ($str[2]) . "-" . ($str[3]);
                     $value = substr($str, 0, strpos($str, ".php"));
                     /* $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
                     $value = substr($cut, 0, strpos($cut, ".php")); */

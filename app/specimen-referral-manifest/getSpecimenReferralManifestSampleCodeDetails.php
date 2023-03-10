@@ -104,7 +104,7 @@ $result = $db->rawQuery($query);
 								$sampleId  = $sample['tb_id'];
 							}
 					?>
-							<option value="<?php echo $sampleId; ?>"><?php echo ucwords($sample[$sCode]); ?></option>
+							<option value="<?php echo $sampleId; ?>"><?php echo ($sample[$sCode]); ?></option>
 					<?php
 						}
 					}

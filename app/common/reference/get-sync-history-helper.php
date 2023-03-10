@@ -133,7 +133,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = date('d-M-Y h:i:s a', strtotime($aRow['requested_on']));
     $row[] = $aRow['number_of_records'];
-    $row[] = ucwords(str_replace('-', ' ', $aRow['request_type']));
+    $row[] = (str_replace('-', ' ', $aRow['request_type']));
     $output['aaData'][] = $row;
 }
 

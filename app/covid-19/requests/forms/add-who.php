@@ -45,12 +45,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ucwords($provinceName['province_name']) . "</option>";
+    $province .= "<option data-code='" . $provinceName['province_code'] . "' data-province-id='" . $provinceName['province_id'] . "' data-name='" . $provinceName['province_name'] . "' value='" . $provinceName['province_name'] . "##" . $provinceName['province_code'] . "'>" . ($provinceName['province_name']) . "</option>";
 }
 //$facility = "";
 $facility = "<option value=''> -- Select -- </option>";
 foreach ($fResult as $fDetails) {
-    $facility .= "<option value='" . $fDetails['facility_id'] . "'>" . ucwords(addslashes($fDetails['facility_name'])) . "</option>";
+    $facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . "</option>";
 }
 
 ?>
@@ -139,7 +139,7 @@ foreach ($fResult as $fDetails) {
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+                                                    <option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?php echo ($implementingPartner['i_partner_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -150,7 +150,7 @@ foreach ($fResult as $fDetails) {
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+                                                    <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?php echo ($fundingSource['funding_source_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -161,7 +161,7 @@ foreach ($fResult as $fDetails) {
                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please select Testing Lab name" style="width:100%;">
                                                     <option value=""> -- Select -- </option>
                                                     <?php foreach ($lResult as $labName) { ?>
-                                                        <option value="<?php echo $labName['facility_id']; ?>"><?php echo ucwords($labName['facility_name']); ?></option>
+                                                        <option value="<?php echo $labName['facility_id']; ?>"><?php echo ($labName['facility_name']); ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </td>
@@ -252,7 +252,7 @@ foreach ($fResult as $fDetails) {
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <option value="">-- Select --</option>
                                                 <?php foreach ($specimenTypeResult as $name) { ?>
-                                                    <option value="<?php echo $name['sample_id']; ?>"><?php echo ucwords($name['sample_name']); ?></option>
+                                                    <option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -346,7 +346,7 @@ foreach ($fResult as $fDetails) {
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <option value=""> -- Select -- </option>
                                                     <?php foreach ($lResult as $labName) { ?>
-                                                        <option value="<?php echo $labName['facility_id']; ?>" <?php echo ($covid19Info['lab_id'] == $labName['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ucwords($labName['facility_name']); ?></option>
+                                                        <option value="<?php echo $labName['facility_id']; ?>" <?php echo ($covid19Info['lab_id'] == $labName['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($labName['facility_name']); ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </td>

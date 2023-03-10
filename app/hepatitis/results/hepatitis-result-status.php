@@ -21,10 +21,10 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = '<option value="">-- Select  --</option>';
 foreach ($rejectionTypeResult as $type) {
-	$rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+	$rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
 	foreach ($rejectionResult as $reject) {
 		if ($type['rejection_type'] == $reject['rejection_type']) {
-			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
 		}
 	}
 	$rejectionReason .= '</optgroup>';
@@ -113,7 +113,7 @@ foreach ($rejectionTypeResult as $type) {
 									<?php
 									foreach ($fResult as $name) {
 									?>
-										<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 									<?php
 									}
 									?>

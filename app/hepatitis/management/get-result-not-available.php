@@ -224,11 +224,11 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
             if($sarr['sc_user_type']!='standalone'){
                     $row[] = $aRow['remote_sample_code'];
             }
-            $row[] = ucwords($aRow['facility_name']);
+            $row[] = ($aRow['facility_name']);
             $row[] = $aRow['patient_id'];
-            $row[] = ucwords($patientName);
+            $row[] = ($patientName);
             $row[] = $aRow['sample_collection_date'];
-            $row[] = ucwords($aRow['labName']);
+            $row[] = ($aRow['labName']);
 			$output['aaData'][] = $row;
         }
         echo json_encode($output);

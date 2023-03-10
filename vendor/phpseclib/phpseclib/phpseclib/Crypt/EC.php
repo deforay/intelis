@@ -166,7 +166,7 @@ abstract class EC extends AsymmetricKey
 
         $curveName = $curve;
         if (preg_match('#(?:^curve|^ed)\d+$#', $curveName)) {
-            $curveName = ucfirst($curveName);
+            $curveName = ($curveName);
         } elseif (substr($curveName, 0, 10) == 'brainpoolp') {
             $curveName = 'brainpoolP' . substr($curveName, 10);
         }

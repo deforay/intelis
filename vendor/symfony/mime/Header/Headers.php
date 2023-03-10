@@ -144,7 +144,7 @@ final class Headers
     public function addHeader(string $name, $argument, array $more = []): self
     {
         $parts = explode('\\', self::HEADER_CLASS_MAP[strtolower($name)] ?? UnstructuredHeader::class);
-        $method = 'add'.ucfirst(array_pop($parts));
+        $method = 'add'.(array_pop($parts));
         if ('addUnstructuredHeader' === $method) {
             $method = 'addTextHeader';
         } elseif ('addIdentificationHeader' === $method) {

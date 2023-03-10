@@ -339,9 +339,9 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     //  $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
-     //  $patientMname = ucwords($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-     //  $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_surname'],$aRow['patient_art_no']));
+     //  $patientFname = ($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
+     //  $patientMname = ($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
+     //  $patientLname = ($general->crypto('decrypt',$aRow['patient_surname'],$aRow['patient_art_no']));
 
 
      $row = array();
@@ -353,16 +353,16 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ucwords($aRow['lab_name']);
-     $row[] = ucwords($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
+     $row[] = ($aRow['facility_name']);
      $row[] = $aRow['patient_id'];
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
 
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
-     $row[] = (is_numeric($aRow['result'])) ? ucwords($aRow['resultTxt']) : ucwords($aRow['result']);
+     $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
+     $row[] = (is_numeric($aRow['result'])) ? ($aRow['resultTxt']) : ($aRow['result']);
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['covid19_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
      //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['covid19_id']) . '\',900,520);"> Result</a>';
 

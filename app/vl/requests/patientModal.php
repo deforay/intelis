@@ -103,10 +103,10 @@ $pResult = $db->rawQuery($pQuery);
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td><?php echo $patient['patient_art_no']; ?></td>
-											<td><?php echo ucfirst($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
+											<td><?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
 											<td><?php echo $patient['patient_age_in_years']; ?></td>
-											<td><?php echo ucwords(str_replace("_", " ", $patient['patient_gender'])); ?></td>
-											<td><?php echo ucwords($patient['facility_name']); ?></td>
+											<td><?php echo (str_replace("_", " ", $patient['patient_gender'])); ?></td>
+											<td><?php echo ($patient['facility_name']); ?></td>
 											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
 											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['sample_tested_datetime'])); ?></td>
 											<td><?php echo $patient['result']; ?></td>

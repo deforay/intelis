@@ -202,11 +202,11 @@ if (trim($id) != '') {
                 $tbl .= '<td style="font-size:11px;width:5%;"><br><br>' . $sampleCounter . '.</td>';
                 $tbl .= '<td style="font-size:11px;width:12%;"><br><br>' . $sample['remote_sample_code'] . '</td>';
                 $tbl .= '<td style="font-size:11px;width:15%;">' . ($sample['clinic_name']) . ', ' . ($sample['facility_district']) . '</td>';
-                $tbl .= '<td style="font-size:11px;width:15%;">' . ucwords($sample['patient_first_name'] . " " . $sample['patient_middle_name'] . " " . $sample['patient_last_name']) . '<br>' . $sample['patient_art_no'] . '</td>';
-                $tbl .= '<td style="font-size:11px;width:5%;">' . ucwords($sample['patient_age_in_years']) . '</td>';
+                $tbl .= '<td style="font-size:11px;width:15%;">' . ($sample['patient_first_name'] . " " . $sample['patient_middle_name'] . " " . $sample['patient_last_name']) . '<br>' . $sample['patient_art_no'] . '</td>';
+                $tbl .= '<td style="font-size:11px;width:5%;">' . ($sample['patient_age_in_years']) . '</td>';
                 $tbl .= '<td style="font-size:11px;width:8%;">' . $patientDOB . '</td>';
-                $tbl .= '<td style="font-size:11px;width:8%;">' . ucwords(str_replace("_", " ", $sample['patient_gender'])) . '</td>';
-                $tbl .= '<td style="font-size:11px;width:8%;">' . ucwords($sample['sample_name']) . '</td>';
+                $tbl .= '<td style="font-size:11px;width:8%;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
+                $tbl .= '<td style="font-size:11px;width:8%;">' . ($sample['sample_name']) . '</td>';
                 $tbl .= '<td style="font-size:11px;width:8%;"><br><br>' . $collectionDate . '</td>';
                 // $tbl .= '<td style="font-size:11px;width:20%;"><br><br><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
                 $tbl .= '<td style="font-size:11px;width:20%;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code'], 'C39') . '"/></td>';

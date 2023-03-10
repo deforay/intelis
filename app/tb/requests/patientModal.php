@@ -77,8 +77,8 @@ $pResult = $db->rawQuery($pQuery);
 										$artNoList[] = $value;
 										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
 										$patientDetails = json_encode(array(
-											"firstname"=>ucfirst($patient['patient_name']),
-											"lastname"=>ucfirst($patient['patient_surname']),
+											"firstname"=>($patient['patient_name']),
+											"lastname"=>($patient['patient_surname']),
 											"gender"=>$patient['patient_gender'],
 											"dob"=>$general->humanReadableDateFormat($patient['patient_dob']),
 											"age"=>$patient['patient_age'],
@@ -89,10 +89,10 @@ $pResult = $db->rawQuery($pQuery);
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td><?php echo $patient['patient_id']; ?></td>
-											<td><?php echo ucfirst($patient['patient_name']) . " " . $patient['patient_surname']; ?></td>
+											<td><?php echo ($patient['patient_name']) . " " . $patient['patient_surname']; ?></td>
 											<td><?php echo $patient['patient_age']; ?></td>
-											<td><?php echo ucwords(str_replace("_", " ", $patient['patient_gender'])); ?></td>
-											<td><?php echo ucwords($patient['facility_name']); ?></td>
+											<td><?php echo (str_replace("_", " ", $patient['patient_gender'])); ?></td>
+											<td><?php echo ($patient['facility_name']); ?></td>
 											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
 										</tr>
 								<?php

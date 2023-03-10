@@ -82,21 +82,21 @@ foreach ($implementingPartnerResult as $key => $ip) {
 $nationalityQry = "SELECT iso_name, iso3, id FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
 foreach ($nationalityResult as $key => $nrow) {
-    $nationalityList[$key]['show'] = ucwords($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
+    $nationalityList[$key]['show'] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
     $nationalityList[$key]['value'] = $nrow['id'];
 }
 $commonResultsList = array();
 $commonResult = array('positive', 'negative', 'unknown');
 foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['value'] = $result;
-    $commonResultsList[$key]['show'] = ucwords($result);
+    $commonResultsList[$key]['show'] = ($result);
 }
 /* Lab Technician Details */
 $facilityMap = $facilitiesDb->getUserFacilityMap($user['user_id']);
 $userResult = $userDb->getActiveUsers($facilityMap, $updatedDateTime);
 $labTechniciansList = array();
 foreach ($userResult as $row) {
-    $labTechniciansList[$row['user_id']] = ucwords($row['user_name']);
+    $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
 $activeModule = array();
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
@@ -201,7 +201,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
         if($updatedDateTime){
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
@@ -209,7 +209,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
         }
     }
     $data['covid19']['rejectedReasonList'] = $rejectionReason;
@@ -280,7 +280,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
         if($updatedDateTime){
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
@@ -288,7 +288,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
         }
     }
     $data['eid']['rejectedReasonList'] = $rejectionReason;
@@ -346,7 +346,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
         if($updatedDateTime){
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
@@ -354,7 +354,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
         }
     }
     $data['vl']['rejectedReasonList'] = $rejectionReason;
@@ -413,7 +413,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
     $rejectionReason = array();
     foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ucwords($type['rejection_type']);
+        $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
         if($updatedDateTime){
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
@@ -421,7 +421,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
         $rejectionResult = $db->rawQuery($rejectionQuery);
         foreach ($rejectionResult as $subKey => $reject) {
             $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ucwords($reject['rejection_reason_name']);
+            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
         }
     }
     $data['tb']['rejectedReasonList'] = $rejectionReason;

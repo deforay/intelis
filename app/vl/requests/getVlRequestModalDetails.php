@@ -222,9 +222,9 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_art_no'];
-    $row[] = ucwords($aRow['patient_first_name']);
-    $row[] = ucwords($aRow['facility_name']);
-    $row[] = ucwords($aRow['sample_name']);
+    $row[] = ($aRow['patient_first_name']);
+    $row[] = ($aRow['facility_name']);
+    $row[] = ($aRow['sample_name']);
     $output['aaData'][] = $row;
 }
 

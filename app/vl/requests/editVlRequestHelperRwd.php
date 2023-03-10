@@ -86,7 +86,7 @@ try {
     }
 
     if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
-        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . ucfirst(strtolower($_POST['newArtRegimen'])) . "')";
+        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
         $artResult = $db->rawQuery($artQuery);
         if (!isset($artResult[0]['art_id'])) {
             $data = array(
@@ -146,7 +146,7 @@ try {
     }
 
     if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
-        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . ucfirst(strtolower($_POST['newRejectionReason'])) . "'";
+        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
             $data = array(

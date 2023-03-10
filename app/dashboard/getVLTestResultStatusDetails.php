@@ -211,9 +211,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
                }else{
                     $aRow['sample_collection_date'] = '';
                }
-               $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
-               $patientMname = ucwords($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-               $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
+               $patientFname = ($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
+               $patientMname = ($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
+               $patientLname = ($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
 
                $row = array();
                $row[] = $aRow['sample_code'];
@@ -221,10 +221,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
                $row[] = $aRow['batch_code'];
                $row[] = $aRow['patient_art_no'];
                $row[] = ($patientFname." ".$patientMname." ".$patientLname);
-               $row[] = ucwords($aRow['facility_name']);
-               $row[] = ucwords($aRow['facility_state']);
-               $row[] = ucwords($aRow['facility_district']);
-               $row[] = ucwords($aRow['sample_name']);
+               $row[] = ($aRow['facility_name']);
+               $row[] = ($aRow['facility_state']);
+               $row[] = ($aRow['facility_district']);
+               $row[] = ($aRow['sample_name']);
                $row[] = $aRow['result'];
                $output['aaData'][] = $row;
           }

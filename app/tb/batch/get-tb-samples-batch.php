@@ -73,7 +73,7 @@ $result = $db->rawQuery($query);
                                         <?php
                                     foreach ($result as $sample) {
                                     ?>
-                                        <option value="<?php echo $sample['tb_id']; ?>"><?php echo ucwords($sample['sample_code']) . " - " . ucwords($sample['facility_name']); ?></option>
+                                        <option value="<?php echo $sample['tb_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
                                     <?php
                                     }
                                     ?>

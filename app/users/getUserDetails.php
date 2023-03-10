@@ -141,8 +141,8 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['user_name']);
     $row[] = ($aRow['login_id']);
     $row[] = $aRow['email'];
-    $row[] = ucwords($aRow['role_name']);
-    $row[] = ucwords($aRow['status']);
+    $row[] = ($aRow['role_name']);
+    $row[] = ($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("editUser.php", $_SESSION['privileges'])) {
         $row[] = '<a href="editUser.php?id=' . base64_encode($aRow['user_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
     }

@@ -96,17 +96,17 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         // }
 
         if ($aRow['patient_first_name'] != '') {
-            $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+            $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
         } else {
             $patientFname = '';
         }
         if ($aRow['patient_middle_name'] != '') {
-            $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+            $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
         } else {
             $patientMname = '';
         }
         if ($aRow['patient_last_name'] != '') {
-            $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+            $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
         } else {
             $patientLname = '';
         }
@@ -114,11 +114,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
-        $row[] = ucwords($aRow['facility_name']);
+        $row[] = ($aRow['facility_name']);
         $row[] = $aRow['patient_art_no'];
-        $row[] = ucwords($patientFname . " " . $patientMname . " " . $patientLname);
+        $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
         $row[] = $sampleCollectionDate;
-        $row[] = ucwords($aRow['labName']);
+        $row[] = ($aRow['labName']);
         $output[] = $row;
     }
 

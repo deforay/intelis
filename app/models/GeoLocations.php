@@ -65,7 +65,7 @@ class GeoLocations
 
         if ($api == 'yes') {
             foreach ($response as $row) {
-                $returnArr[$row['geo_id']] = ucwords($row['geo_name']);
+                $returnArr[$row['geo_id']] = ($row['geo_name']);
             }
         } else {
             $returnArr = $response;

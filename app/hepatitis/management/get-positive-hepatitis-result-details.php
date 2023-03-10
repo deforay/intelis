@@ -242,14 +242,14 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
-    $row[] = ucwords($patientName);
+    $row[] = ($patientName);
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['labName'];
-    $row[] =  ucwords($aRow['hcv_vl_result']);
-    $row[] =  ucwords($aRow['hbv_vl_result']);
+    $row[] =  ($aRow['hcv_vl_result']);
+    $row[] =  ($aRow['hbv_vl_result']);
     $row[] = '';
     /* $row[] = '<select class="form-control" name="status" id=' . $aRow['hepatitis_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
                             <option value=""> -- Select -- </option>

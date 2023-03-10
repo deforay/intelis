@@ -80,7 +80,7 @@ $batchResult = $db->rawQuery($batchQuery);
                       <?php
                       foreach ($facilityResult as $facility) { ?>
                         ?>
-                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ucwords($facility['facility_name']); ?></option>
+                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -119,7 +119,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($sTypeResult as $type) {
                         ?>
-                          <option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+                          <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
                         <?php
                         }
                         ?>
@@ -163,7 +163,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
-                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ucwords($province['geo_name']); ?></option>
+                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ($province['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </td>

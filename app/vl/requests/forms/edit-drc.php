@@ -28,7 +28,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Sélectionner -- </option>";
 foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Sélectionner --');
@@ -155,7 +155,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($stateResult[0]['facility_state']) . "##" . strtolower($provinceResult[0]['geo_code']) == strtolower($provinceName['geo_name']) . "##" . strtolower($provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ucwords($provinceName['geo_name']); ?></option>
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($stateResult[0]['facility_state']) . "##" . strtolower($provinceResult[0]['geo_code']) == strtolower($provinceName['geo_name']) . "##" . strtolower($provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -164,7 +164,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											<select class="form-control isRequired" name="district" id="district" title="Veuillez choisir le quartier" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($districtResult as $districtName) { ?>
-													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ucwords($districtName['facility_district']); ?></option>
+													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -192,7 +192,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?php echo ($implementingPartner['i_partner_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -209,7 +209,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($fundingSource['funding_source_name']); ?></option>
+													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?php echo ($fundingSource['funding_source_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -228,7 +228,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                       < ?php
                                       foreach($implementingPartnerList as $implementingPartner){
                                       ?>
-                                        <option value="< ?php echo base64_encode($implementingPartner['i_partner_id']); ?>" < ?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner'])?'selected="selected"':''; ?>>< ?php echo ucwords($implementingPartner['i_partner_name']); ?></option>
+                                        <option value="< ?php echo base64_encode($implementingPartner['i_partner_id']); ?>" < ?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner'])?'selected="selected"':''; ?>>< ?php echo ($implementingPartner['i_partner_name']); ?></option>
                                       < ?php } ?>
                                     </select>
                                 </td> -->
@@ -342,7 +342,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											<select name="vlTestReason" id="vlTestReason" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkVLTestReason();">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($vlTestReasonResult as $tReason) { ?>
-													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($tReason['test_reason_name']); ?></option>
+													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
 												<?php }
 												if ($sarr['sc_user_type'] != 'vluser') {  ?>
 													<option value="other">Autre</option>
@@ -444,7 +444,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($sResult as $type) { ?>
-														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($type['sample_name']); ?></option>
+														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?php echo ($type['sample_name']); ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -524,7 +524,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
-														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($rjctReason['rejection_reason_name']); ?></option>
+														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 													<?php } ?>
 													<option value="other">Autre <span class="mandatory">*</span></option>
 												</select>

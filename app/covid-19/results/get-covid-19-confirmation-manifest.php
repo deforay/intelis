@@ -25,7 +25,7 @@ $result = $db->rawQuery($query);
                 </div><br /><br />
                 <select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
                     <?php foreach ($result as $sample) { ?>
-                        <option value="<?php echo $sample['covid19_id']; ?>"><?php echo ucwords($sample['sample_code']) . " - " . ucwords($sample['facility_name']); ?></option>
+                        <option value="<?php echo $sample['covid19_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
                     <?php } ?>
                 </select>
             </div>

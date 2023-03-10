@@ -93,7 +93,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>
@@ -120,7 +120,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($fResult as $name) {
 															?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 															<?php
 															}
 															?>
@@ -227,7 +227,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>
@@ -254,7 +254,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($fResult as $name) {
 															?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 															<?php
 															}
 															?>
@@ -296,11 +296,11 @@ $state = $geoLocationDb->getProvinces("yes");
 													<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+                                                                                     <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
@@ -367,7 +367,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>
@@ -394,7 +394,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($fResult as $name) {
 															?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 															<?php
 															}
 															?>

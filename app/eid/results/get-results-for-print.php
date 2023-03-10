@@ -280,7 +280,7 @@ foreach ($rResult as $aRow) {
         $decrypt = 'sample_code';
     }
 
-    // $patientFname = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
+    // $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
 
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {
@@ -291,11 +291,11 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['child_name'];
     $row[] = $aRow['mother_id'];
     $row[] = $aRow['mother_name'];
-    // $row[] = ucwords($patientFname);
-    $row[] = ucwords($aRow['facility_name']);
+    // $row[] = ($patientFname);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['labName'];
-    $row[] = ucwords($aRow['facility_state']);
-    $row[] = ucwords($aRow['facility_district']);
+    $row[] = ($aRow['facility_state']);
+    $row[] = ($aRow['facility_district']);
     $row[] = $eidResults[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
@@ -306,7 +306,7 @@ foreach ($rResult as $aRow) {
     }
 
     $row[] = $aRow['last_modified_datetime'];
-    $row[] = ucwords($aRow['status_name']);
+    $row[] = ($aRow['status_name']);
     $row[] = $print;
     $output['aaData'][] = $row;
 }

@@ -69,7 +69,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                               <?php
                               foreach ($facilityResult as $lab) {
                               ?>
-                                <option value="<?php echo $lab['facility_id']; ?>"><?php echo ucwords($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
+                                <option value="<?php echo $lab['facility_id']; ?>"><?php echo ($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
                               <?php
                               }
                               ?>
@@ -146,7 +146,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                               <?php
                               foreach ($facilityResult as $lab) {
                               ?>
-                                <option value="<?php echo $lab['facility_id']; ?>"><?php echo ucwords($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
+                                <option value="<?php echo $lab['facility_id']; ?>"><?php echo ($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
                               <?php
                               }
                               ?>

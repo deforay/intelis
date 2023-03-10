@@ -34,10 +34,10 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+    $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
     foreach ($rejectionResult as $reject) {
         if ($type['rejection_type'] == $reject['rejection_type']) {
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
         }
     }
     $rejectionReason .= '</optgroup>';
@@ -111,7 +111,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>
@@ -220,7 +220,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>
@@ -322,7 +322,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ucwords($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 															<?php
 															}
 															?>

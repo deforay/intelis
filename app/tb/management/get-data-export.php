@@ -317,8 +317,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];
@@ -327,13 +327,13 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_id'];
-     $row[] = ucwords($patientFname . " " . $patientLname);
-     $row[] = ucwords($aRow['facility_name']);
-     $row[] = ucwords($aRow['lab_name']);
+     $row[] = ($patientFname . " " . $patientLname);
+     $row[] = ($aRow['facility_name']);
+     $row[] = ($aRow['lab_name']);
      $row[] = $tbResults[$aRow['result']];
-     $row[] = ucwords($aRow['status_name']);
-     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+     $row[] = ($aRow['status_name']);
+     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
           $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['tb_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
      } else {

@@ -18,7 +18,7 @@ try {
             $jsonInstruments = NULL;
         }
 		$data = array(
-			'result' 		=> ucfirst($_POST['resultName']),
+			'result' 		=> ($_POST['resultName']),
             'available_for_instruments' => $jsonInstruments,
             'interpretation' => $_POST['interpretation'],
 			'status' 	    => $_POST['resultStatus'],

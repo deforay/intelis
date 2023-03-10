@@ -92,7 +92,7 @@ foreach ($rResult as $aRow) {
             $row['totalTested'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalTested'] + 1; 
             if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
                 $row['totalSuppressed'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalSuppressed'] + 1;
-            $row['facility_name'] = ucwords($aRow['facility_name']);
+            $row['facility_name'] = ($aRow['facility_name']);
             $row['monthrange'] = $aRow['monthrange'];
             $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
             $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
@@ -107,7 +107,7 @@ foreach ($rResult as $aRow) {
                 $row['totalSuppressed'] =  1;
             else
                 $row['totalSuppressed'] =  0;
-        $row['facility_name'] = ucwords($aRow['facility_name']);
+        $row['facility_name'] = ($aRow['facility_name']);
         $row['monthrange'] = $aRow['monthrange'];
         $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
             $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
                     $row['totalSuppressed'] =  1;
                 else
                     $row['totalSuppressed'] =  0;
-               $row['facility_name'] = ucwords($aRow['facility_name']);
+               $row['facility_name'] = ($aRow['facility_name']);
                $row['monthrange'] = $aRow['monthrange'];
                $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
                 $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];

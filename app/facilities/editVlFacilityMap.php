@@ -49,7 +49,7 @@ $hcResult = $db->rawQuery($hcQuery);
                       <?php
                       foreach ($fResult as $lab) {
                       ?>
-                        <option value="<?php echo $lab['facility_id']; ?>" <?php echo ($lab['facility_id'] == $id) ? "selected='selected'" : ''; ?>><?php echo ucwords($lab['facility_name']); ?></option>
+                        <option value="<?php echo $lab['facility_id']; ?>" <?php echo ($lab['facility_id'] == $id) ? "selected='selected'" : ''; ?>><?php echo ($lab['facility_name']); ?></option>
                       <?php
                       }
                       ?>
@@ -65,7 +65,7 @@ $hcResult = $db->rawQuery($hcQuery);
                   foreach ($hcResult as $facility) {
                     if (!in_array($facility['facility_id'], $hcId)) {
                   ?>
-                      <option value="<?php echo $facility['facility_id']; ?>" <?php echo (in_array($facility['facility_id'], $hcId)) ? "selected='selected'" : ''; ?>><?php echo ucwords($facility['facility_name']); ?></option>
+                      <option value="<?php echo $facility['facility_id']; ?>" <?php echo (in_array($facility['facility_id'], $hcId)) ? "selected='selected'" : ''; ?>><?php echo ($facility['facility_name']); ?></option>
                   <?php
                     }
                   }
@@ -85,7 +85,7 @@ $hcResult = $db->rawQuery($hcQuery);
                   <?php
                   foreach ($vlfmResult as $facility) {
                   ?>
-                    <option value="<?php echo $facility['facility_id']; ?>" selected='selected'><?php echo ucwords($facility['facility_name']); ?></option>
+                    <option value="<?php echo $facility['facility_id']; ?>" selected='selected'><?php echo ($facility['facility_name']); ?></option>
                   <?php
                   }
                   ?>

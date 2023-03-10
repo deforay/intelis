@@ -38,7 +38,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
 //regimen heading
@@ -109,7 +109,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           $getData = explode("##", $splitChanges[$c]);
           $expStr = explode(" ", $getData[2]);
           $changedDate = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-          $rch .= '<tr><td>' . ucwords($getData[0]) . '</td><td>' . ucfirst($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
+          $rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
      }
      $rch .= '</tbody>';
      $rch .= '</table>';
@@ -234,7 +234,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s)</strong></div>
                                                   <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
                                                   <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
-                                                  <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ucwords($facilityResult[0]['contact_person']); ?></div>
+                                                  <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
                                              </div>
                                              <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                                   <div class="row">
@@ -328,7 +328,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose a sample type">
                                                                       <option value=""> -- Select -- </option>
                                                                       <?php foreach ($sResult as $name) { ?>
-                                                                           <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ucwords($name['sample_name']); ?></option>
+                                                                           <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
                                                                       <?php } ?>
                                                                  </select>
                                                             </div>
@@ -353,7 +353,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                            <option value="">-- Select --</option>
                                                                            <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                                <optgroup label="<?php echo ucwords($heading['headings']); ?>">
+                                                                                <optgroup label="<?php echo ($heading['headings']); ?>">
                                                                                      <?php
                                                                                      foreach ($aResult as $regimen) {
                                                                                           if ($heading['headings'] == $regimen['headings']) { ?>
@@ -676,11 +676,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                 <select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
                                                                                      <option value="">-- Select --</option>
                                                                                      <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                          <optgroup label="<?php echo ucwords($type['rejection_type']); ?>">
+                                                                                          <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                                <?php
                                                                                                foreach ($rejectionResult as $reject) {
                                                                                                     if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                                                         <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($reject['rejection_reason_name']); ?></option>
+                                                                                                         <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
                                                                                                <?php }
                                                                                                } ?>
                                                                                           </optgroup>
@@ -743,7 +743,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($userResult as $uName) { ?>
-                                                                                     <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ucwords($uName['user_name']); ?></option>
+                                                                                     <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>

@@ -28,7 +28,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 else
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'];
-                $row['facility_name'] = ucwords($aRow['facility_name']);
+                $row['facility_name'] = ($aRow['facility_name']);
                 $row['monthrange'] = $aRow['monthrange'];
                 $row['monthly_target'] = $aRow['monthly_target'];
                 $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
@@ -42,7 +42,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 else
                     $row['totalReceived'] = 0;
-                $row['facility_name'] = ucwords($aRow['facility_name']);
+                $row['facility_name'] = ($aRow['facility_name']);
                 $row['monthrange'] = $aRow['monthrange'];
                 $row['monthly_target'] = $aRow['monthly_target'];
                 $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
@@ -57,7 +57,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
             else
                 $row['totalReceived'] = 0;
-            $row['facility_name'] = ucwords($aRow['facility_name']);
+            $row['facility_name'] = ($aRow['facility_name']);
             $row['monthrange'] = $aRow['monthrange'];
             $row['monthly_target'] = $aRow['monthly_target'];
             $row['totalCollected'] = 1;
@@ -173,7 +173,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     // print_r("Prasath");die;
                     $cnt++;
                     //    $data = array();
-                    //    $data[] = ucwords($rowData['facility_name']);
+                    //    $data[] = ($rowData['facility_name']);
                     //    $data[] = $rowData['monthrange'];
                     //    $data[] = $rowData['totalReceived'];
                     //    $data[] = $rowData['totalRejected'];
@@ -182,7 +182,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     //    // print_r($data);die;
                     //    $output['aaData'][] = $data;
                     // $sheet->mergeCells('A3:M10');
-                    $sheet->setCellValue('A' . $cnt, html_entity_decode(ucwords($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                     // $sheet->mergeCells('A11:A12');
                     // $sheet->mergeCells('B11:F12');
                     $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -198,7 +198,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     // print_r("Prasath");die;
                     $cnt++;
                     //    $data = array();
-                    //    $data[] = ucwords($rowData['facility_name']);
+                    //    $data[] = ($rowData['facility_name']);
                     //    $data[] = $rowData['monthrange'];
                     //    $data[] = $rowData['totalReceived'];
                     //    $data[] = $rowData['totalRejected'];
@@ -207,7 +207,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                     //    // print_r($data);die;
                     //    $output['aaData'][] = $data;
                     // $sheet->mergeCells('A3:M10');
-                    $sheet->setCellValue('A' . $cnt, html_entity_decode(ucwords($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                     // $sheet->mergeCells('A11:A12');
                     // $sheet->mergeCells('B11:F12');
                     $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -221,7 +221,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
             } else {
                 $cnt++;
                 //    $data = array();
-                //    $data[] = ucwords($rowData['facility_name']);
+                //    $data[] = ($rowData['facility_name']);
                 //    $data[] = $rowData['monthrange'];
                 //    $data[] = $rowData['totalReceived'];
                 //    $data[] = $rowData['totalRejected'];
@@ -230,7 +230,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 //    // print_r($data);die;
                 //    $output['aaData'][] = $data;
                 // $sheet->mergeCells('A3:M10');
-                $sheet->setCellValue('A' . $cnt, html_entity_decode(ucwords($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                 // $sheet->mergeCells('A11:A12');
                 // $sheet->mergeCells('B11:F12');
                 $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);

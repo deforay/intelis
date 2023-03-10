@@ -223,11 +223,11 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['child_id'];
-    $row[] = ucwords($childName);
+    $row[] = ($childName);
     $row[] = $aRow['sample_collection_date'];
-    $row[] = ucwords($aRow['labName']);
+    $row[] = ($aRow['labName']);
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

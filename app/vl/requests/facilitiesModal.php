@@ -72,7 +72,7 @@ $type = $_GET['type'];
                     <?php
                     foreach ($fResult as $name) {
                     ?>
-                      <option value="<?php echo $name['facility_type_id']; ?>"><?php echo ucwords($name['facility_type_name']); ?></option>
+                      <option value="<?php echo $name['facility_type_id']; ?>"><?php echo ($name['facility_type_name']); ?></option>
                     <?php
                     }
                     ?>

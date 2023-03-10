@@ -21,12 +21,12 @@ $pResult = $general->fetchDataFromTable('geographical_divisions');
 
 $province = "<option value=''> -- select -- </option>";
 foreach ($pResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ucwords($provinceName['geo_name']) . "</option>";
+	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 //$facility = "";
 $facility = "<option value=''> -- select -- </option>";
 foreach ($fResult as $fDetails) {
-	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . ucwords(addslashes($fDetails['facility_name'])) . "</option>";
+	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . "</option>";
 }
 
 ?>
@@ -71,7 +71,7 @@ foreach ($fResult as $fDetails) {
 							<?php
 							foreach ($lResult as $name) {
 							?>
-								<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name']); ?></option>
+								<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name']); ?></option>
 							<?php
 							}
 							?>
@@ -143,7 +143,7 @@ foreach ($fResult as $fDetails) {
 										<select style="width: 100%;" class="form-control isRequired" id="labNameTo" name="labNameTo" title="Please select lab name">
 											<option value="">-- select --</option>
 											<?php foreach ($lResult as $name) { ?>
-												<option value="<?php echo $name['facility_id']; ?>"><?php echo ucwords($name['facility_name']); ?></option>
+												<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>

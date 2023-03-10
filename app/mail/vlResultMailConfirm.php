@@ -226,7 +226,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                         $fieldValue = $general->humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
-                     $fieldValue = ucwords(str_replace("_", " ", $fValueResult[0][$field]));
+                     $fieldValue = (str_replace("_", " ", $fValueResult[0][$field]));
                   } elseif ($field ==  'result_reviewed_by') {
                      $fieldValue = (isset($fValueResult[0]['reviewedBy'])) ? $fValueResult[0]['reviewedBy'] : '';
                   } elseif ($field ==  'result_approved_by') {
@@ -269,7 +269,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
    <div class="box box-default">
       <div class="box-header with-border">
          <div style="text-align:center;">
-            <h4>Facility Name : <?php echo ucwords($_POST['toName']); ?></h4>
+            <h4>Facility Name : <?php echo ($_POST['toName']); ?></h4>
          </div>
       </div>
       <div class="box-body">

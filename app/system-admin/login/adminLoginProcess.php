@@ -19,7 +19,7 @@ try {
             
             if (isset($adminRow) && !empty($adminRow) && password_verify($adminPassword, $adminRow['system_admin_password'])) {
                 $_SESSION['adminUserId'] = $adminRow['system_admin_id'];
-                $_SESSION['adminUserName'] = ucwords($adminRow['system_admin_name']);
+                $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
                 header("location:/system-admin/edit-config/index.php");
             } else {
                 throw new \Exception("Invalid username or password");

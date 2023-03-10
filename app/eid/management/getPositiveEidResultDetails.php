@@ -237,9 +237,9 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
             if($sarr['sc_user_type']!='standalone'){
                     $row[] = $aRow['remote_sample_code'];
             }
-            $row[] = ucwords($aRow['facility_name']);
+            $row[] = ($aRow['facility_name']);
             $row[] = $aRow['child_id'];
-            $row[] = ucwords($childName);
+            $row[] = ($childName);
             $row[] = $aRow['caretaker_phone_number'];
             $row[] = $aRow['sample_collection_date'];
             $row[] = $aRow['sample_tested_datetime'];

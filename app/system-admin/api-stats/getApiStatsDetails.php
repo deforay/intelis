@@ -125,12 +125,12 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = array();
-    $row[] = ucwords($aRow['requested_on']);
-    $row[] = ucwords($aRow['number_of_records']);
-    $row[] = ucwords($aRow['request_type']);
-    $row[] = ucwords($aRow['test_type']);
-    $row[] = ucwords($aRow['api_url']);
-    $row[] = ucwords($aRow['data_format']);
+    $row[] = ($aRow['requested_on']);
+    $row[] = ($aRow['number_of_records']);
+    $row[] = ($aRow['request_type']);
+    $row[] = ($aRow['test_type']);
+    $row[] = ($aRow['api_url']);
+    $row[] = ($aRow['data_format']);
     $output['aaData'][] = $row;
 }
 

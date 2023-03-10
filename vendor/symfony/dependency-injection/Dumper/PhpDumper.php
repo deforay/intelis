@@ -297,7 +297,7 @@ EOF;
             }
 
             $files[$options['class'].'.php'] = $code;
-            $hash = ucfirst(strtr(ContainerBuilder::hash($files), '._', 'xx'));
+            $hash = (strtr(ContainerBuilder::hash($files), '._', 'xx'));
             $code = [];
 
             foreach ($files as $file => $c) {

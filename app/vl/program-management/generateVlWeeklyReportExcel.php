@@ -205,7 +205,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet->setCellValue('B1', html_entity_decode('Reported Date ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->setCellValue('C1', html_entity_decode($_POST['reportedDate'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->setCellValue('D1', html_entity_decode('Lab Name ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-    $sheet->setCellValue('E1', html_entity_decode(ucwords($vlLab), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('E1', html_entity_decode(($vlLab), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     //$sheet->setCellValue('F1', html_entity_decode('Collection Date ' , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     //$sheet->setCellValue('G1', html_entity_decode($_POST['collectionDate'] , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->setCellValue('B2', html_entity_decode('Province/State ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -270,9 +270,9 @@ foreach ($excelResultSet as $vlLab => $labResult) {
         foreach ($labResult as $aRow) {
             $row = array();
             $row[] = $r;
-            $row[] = ucwords($aRow['facility_state']);
-            $row[] = ucwords($aRow['facility_district']);
-            $row[] = ucwords($aRow['facility_name']);
+            $row[] = ($aRow['facility_state']);
+            $row[] = ($aRow['facility_district']);
+            $row[] = ($aRow['facility_name']);
             $row[] = $aRow['facility_code'];
             $row[] = $aRow['rejections'];
             $row[] = $aRow['lt15suppressed'];

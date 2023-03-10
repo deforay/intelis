@@ -89,9 +89,9 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
             foreach ($tableResult as $tableRow) {
         ?>
                 <tr data-lab="<?php echo base64_encode($_POST['labName']);?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName']));?>" data-daterange="<?php echo $_POST['sampleCollectionDate'];?>" data-type="rejection">
-                    <td><?php echo ucwords($tableRow['labname']); ?></td>
-                    <td><?php echo ucwords($tableRow['facility_name']); ?></td>
-                    <td><?php echo ucwords($tableRow['rejection_reason_name']); ?></td>
+                    <td><?php echo ($tableRow['labname']); ?></td>
+                    <td><?php echo ($tableRow['facility_name']); ?></td>
+                    <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
                     <td><?php echo strtoupper($tableRow['rejection_type']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>
@@ -161,8 +161,8 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                     foreach ($tResult as $reasonName => $values) {
                     ?> {
                             name: '<?php echo $reasonName; ?>',
-                            y: <?php echo ucwords($values['total']); ?>,
-                            number: '<?php echo ucwords($values['category']); ?>'
+                            y: <?php echo ($values['total']); ?>,
+                            number: '<?php echo ($values['category']); ?>'
                         },
                     <?php
                     }
@@ -215,7 +215,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                     <?php
                     foreach ($rjResult as $key => $total) {
                     ?> {
-                            name: '<?php echo ucwords($key); ?>',
+                            name: '<?php echo ($key); ?>',
                             y: <?php echo ($total); ?>
                         },
                     <?php

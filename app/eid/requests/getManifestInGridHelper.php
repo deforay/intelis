@@ -189,7 +189,7 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $patientFname = ucwords($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
+     $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];
@@ -198,17 +198,17 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ucwords($aRow['facility_name']);
+     $row[] = ($aRow['facility_name']);
      $row[] = $aRow['child_id'];
      $row[] = $patientFname;
      $row[] = $aRow['mother_id'];
      $row[] = $aRow['mother_name'];
 
-     $row[] = ucwords($aRow['facility_state']);
-     $row[] = ucwords($aRow['facility_district']);
+     $row[] = ($aRow['facility_state']);
+     $row[] = ($aRow['facility_district']);
      $row[] = $eidResults[$aRow['result']];
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ucwords($aRow['status_name']);
+     $row[] = ($aRow['status_name']);
 
      $output['aaData'][] = $row;
 }

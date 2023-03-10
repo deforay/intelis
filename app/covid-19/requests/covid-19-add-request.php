@@ -37,7 +37,7 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $labTechniciansResults = array();
 foreach ($userResult as $user) {
-    $labTechniciansResults[$user['user_id']] = ucwords($user['user_name']);
+    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
@@ -51,10 +51,10 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ucwords($type['rejection_type']) . '">';
+    $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
     foreach ($rejectionResult as $reject) {
         if ($type['rejection_type'] == $reject['rejection_type']) {
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ucwords($reject['rejection_reason_name']) . '</option>';
+            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
         }
     }
     $rejectionReason .= '</optgroup>';

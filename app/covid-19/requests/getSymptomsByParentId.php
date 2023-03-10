@@ -22,13 +22,13 @@ if (count($covid19Symptoms) > 0) {
         $subSymptoms = '<tr class="symptomRow' . $_POST['symptomParent'] . ' hide-symptoms" id="' . $_POST['symptomParent'] . '">
                 <td colspan="2" style="padding-left: 70px;display: flex;">';
         if ($symptoms['symptom_id'] == 16 || trim($symptoms['symptom_name']) == 'Nombre de selles par /24h') {
-            $subSymptoms .= '<label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ucwords($symptoms['symptom_name']) . '</label>
+            $subSymptoms .= '<label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>
                                     <input type="text" value="' . end($symptomsArray[$_POST['symptomParent']]) . '" class="form-control reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" placeholder="' . $symptoms['symptom_name'] . '" title="' . $symptoms['symptom_name'] . '" ' . $disabled . ' style=" width: 25%; margin-left: 10px; ">';
         } else {
             $subSymptoms .= '<label class="radio-inline" style="width:4%;margin-left:0;">
                                         <input type="checkbox" class="reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" value="' . $symptoms['symptom_id'] . '" title="' . $symptoms['symptom_name'] . '" onclick="checkSubSymptoms(this,' . $symptoms['symptom_id'] . ',' . $index . ', "sub");" ' . $checked . ' ' . $disabled . '>
                                     </label>
-                                    <label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ucwords($symptoms['symptom_name']) . '</label>';
+                                    <label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>';
         }
         $subSymptoms .= '</td>
             </tr>';
@@ -38,7 +38,7 @@ if (count($covid19Symptoms) > 0) {
     echo "";
 }
 /* 
-<th style="width:50%;padding-left:25px;">'.ucwords($sampleRow['symptom_name']).'</th>
+<th style="width:50%;padding-left:25px;">'.($sampleRow['symptom_name']).'</th>
 <td style="width:50%;">
     <input name="symptomId[]" type="hidden" value="'.$sampleRow['symptom_id'].'">
     <select name="symptomDetected[]" class="symptom-input form-control" title="'. $sampleRow['symptom_name'].'" style="width:80%" onchange="checkSubSymptoms(this,'.$sampleRow['symptom_id'].','.$index.');">

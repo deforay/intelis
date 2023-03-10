@@ -224,7 +224,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
 
 $userRes = array();
 if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
-    $resultApprovedBy = ucwords($result['approvedBy']);
+    $resultApprovedBy = ($result['approvedBy']);
     $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = '';
@@ -282,8 +282,8 @@ $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:cente
 $html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . ($result['patient_district']) . '</td>';
 $html .= '</tr>';
 
-$patientFname = ucwords($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-$patientLname = ucwords($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+$patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
+$patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Nom de Malade<br><span style="font-size:8;font-weight:normal;">(Patient Name)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
@@ -299,7 +299,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:8;font-weight:normal;">(Gender)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -329,7 +329,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Structure Sanitaire<br><span style="font-size:8;font-weight:normal;">(Facility Name)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';

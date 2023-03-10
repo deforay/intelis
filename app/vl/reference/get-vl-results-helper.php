@@ -137,14 +137,14 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = array();
-    $row[] = ucwords($aRow['result']);
+    $row[] = ($aRow['result']);
     $row[] = $instrumentRes[0]['machine_name'];
 
     if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) {
         $row[] = $status;
         $row[] = '<a href="edit-vl-results.php?id=' . base64_encode($aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     } else {
-        $row[] = ucwords($aRow['status']);
+        $row[] = ($aRow['status']);
     }
 
     $output['aaData'][] = $row;

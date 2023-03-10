@@ -83,7 +83,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
       $mail->AddAttachment($result_file_to_attach);
       $message = '';
       if (isset($_POST['message']) && trim($_POST['message']) != "") {
-         $message = ucfirst(nl2br($_POST['message']));
+         $message = (nl2br($_POST['message']));
       }
       $message = $sequencenumber . '<br><br>' . $message;
       $mail->msgHTML($message);

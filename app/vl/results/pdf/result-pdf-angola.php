@@ -284,7 +284,7 @@ if (sizeof($requestResult) > 0) {
                $result['patient_gender'] = 'not reported';
           }
           if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
-               $resultApprovedBy = ucwords($result['approvedBy']);
+               $resultApprovedBy = ($result['approvedBy']);
           } else {
                $resultApprovedBy  = '';
           }
@@ -298,7 +298,7 @@ if (sizeof($requestResult) > 0) {
                if (in_array(strtolower(trim($result['result'])), array("tnd", "target not detected"))) {
                     $vlResult = 'TND*';
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ucfirst($arr['l_vl_msg']);
+                    $showMessage = ($arr['l_vl_msg']);
                     $tndMessage = 'TND* - Target not Detected';
                } else if (in_array(strtolower(trim($result['result'])), array("failed", "fail", "no_sample", "invalid"))) {
                     $vlResult = $result['result'];
@@ -308,12 +308,12 @@ if (sizeof($requestResult) > 0) {
                } else if (trim($result['result']) > 1000 && $result['result'] <= 10000000) {
                     $vlResult = $result['result'];
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    $showMessage = ucfirst($arr['h_vl_msg']);
+                    $showMessage = ($arr['h_vl_msg']);
                     $messageTextSize = '15px';
                } else if (trim($result['result']) <= 1000 && $result['result'] >= 20) {
                     $vlResult = $result['result'];
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ucfirst($arr['l_vl_msg']);
+                    $showMessage = ($arr['l_vl_msg']);
                } else if (trim($result['result'] > 10000000) && $resultType) {
                     $vlResult = $result['result'];
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
@@ -325,11 +325,11 @@ if (sizeof($requestResult) > 0) {
                } else if (trim($result['result']) == '<20') {
                     $vlResult = '&lt;20';
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ucfirst($arr['l_vl_msg']);
+                    $showMessage = ($arr['l_vl_msg']);
                } else if (trim($result['result']) == '>10000000') {
                     $vlResult = $result['result'];
                     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    $showMessage = ucfirst($arr['h_vl_msg']);
+                    $showMessage = ($arr['h_vl_msg']);
                } else if ($result['vl_test_platform'] == 'Roche') {
                     $chkSign = '';
                     $smileyShow = '';
@@ -381,7 +381,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '</tr>';
                $html .= '<tr>';
 
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['patient_first_name'] . " " . $result['patient_last_name']) . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['patient_first_name'] . " " . $result['patient_last_name']) . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
                $html .= '</tr>';
@@ -392,7 +392,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Género</td>';
                $html .= '</tr>';
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
           } else if ($arr['patient_name_pdf'] == 'hidename') {
                $html .= '<tr>';
@@ -403,7 +403,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -415,7 +415,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '</tr>';
                $html .= '<tr>';
 
-               $patientFname = ucwords($general->crypto('decrypt', $result['patient_first_name'], $result['patient_art_no']));
+               $patientFname = ($general->crypto('decrypt', $result['patient_first_name'], $result['patient_art_no']));
 
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
@@ -429,7 +429,7 @@ if (sizeof($requestResult) > 0) {
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
           }
           $html .= '<tr>';
@@ -448,8 +448,8 @@ if (sizeof($requestResult) > 0) {
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_code'] . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_state']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_district']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -459,8 +459,8 @@ if (sizeof($requestResult) > 0) {
           $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Responsável pela colheita</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['facility_name']) . '</td>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['request_clinician_name']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
+          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . ($result['request_clinician_name']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -483,8 +483,8 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['sample_name']) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ucwords($result['vl_test_platform']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['sample_name']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['vl_test_platform']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="4" style="line-height:16px;"></td>';

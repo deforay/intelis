@@ -230,9 +230,9 @@ $output = array(
 
 foreach ($sResult as $aRow) {
   $row = array();
-  $row[] = ucwords($aRow['facility_state']);
-  $row[] = ucwords($aRow['facility_district']);
-  $row[] = ucwords($aRow['facility_name']);
+  $row[] = ($aRow['facility_state']);
+  $row[] = ($aRow['facility_district']);
+  $row[] = ($aRow['facility_name']);
   $row[] = $aRow['totalFemale'];
   $row[] = $aRow['pregSuppressed'];
   $row[] = $aRow['pregNotSuppressed'];

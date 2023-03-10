@@ -88,7 +88,7 @@ $result = $db->rawQuery($query);
         foreach ($result as $sample) {
           if (trim($sample['sample_code']) != '') {
         ?>
-            <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ucwords($sample['sample_code']); ?></option>
+            <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ($sample['sample_code']); ?></option>
         <?php
           }
         }

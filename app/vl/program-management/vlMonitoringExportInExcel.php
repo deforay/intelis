@@ -333,10 +333,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $_POST['fyName'] = '';
     }
     $atomcolumns = '';
-    //$atomcolumns .= "Country:" . ucwords($countryResult[0]['form_name']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "Region/Province/State:" . ucwords($_POST['state']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "District/County:" . ucwords($_POST['district']) . "\n\n";
-    $atomcolumns .= "Laboratory Name:" . ucwords($_POST['fyName']) . "\n\n";
+    //$atomcolumns .= "Country:" . ($countryResult[0]['form_name']) . "&nbsp;&nbsp;&nbsp;";
+    $atomcolumns .= "Region/Province/State:" . ($_POST['state']) . "&nbsp;&nbsp;&nbsp;";
+    $atomcolumns .= "District/County:" . ($_POST['district']) . "\n\n";
+    $atomcolumns .= "Laboratory Name:" . ($_POST['fyName']) . "\n\n";
     $atomcolumns .= "Reporting POC Name:________________";
     $atomcolumns .= "Title:________________";
     $atomcolumns .= "Email:________________\n\n";

@@ -88,18 +88,18 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           // }
 
           if($aRow['patient_first_name']!=''){
-               $patientFname = ucwords($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
+               $patientFname = ($general->crypto('decrypt',$aRow['patient_first_name'],$aRow['patient_art_no']));
           }else{
                $patientFname = '';
           }
           if($aRow['patient_middle_name']!=''){
-               $patientMname = ucwords($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
+               $patientMname = ($general->crypto('decrypt',$aRow['patient_middle_name'],$aRow['patient_art_no']));
 
           }else{
                $patientMname = '';
           }
           if($aRow['patient_last_name']!=''){
-               $patientLname = ucwords($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
+               $patientLname = ($general->crypto('decrypt',$aRow['patient_last_name'],$aRow['patient_art_no']));
 
           }else{
                $patientLname = '';
@@ -112,13 +112,13 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_art_no'];
-          $row[] = ucwords($patientFname." ".$patientMname." ".$patientLname);
-          $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($aRow['facility_state']);
-          $row[] = ucwords($aRow['facility_district']);
-          $row[] = ucwords($aRow['sample_name']);
+          $row[] = ($patientFname." ".$patientMname." ".$patientLname);
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['facility_state']);
+          $row[] = ($aRow['facility_district']);
+          $row[] = ($aRow['sample_name']);
           $row[] = $aRow['result'];
-          $row[] = ucwords($aRow['status_name']);
+          $row[] = ($aRow['status_name']);
           $output[] = $row;
      }
 

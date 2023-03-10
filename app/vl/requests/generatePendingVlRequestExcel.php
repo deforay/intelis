@@ -225,17 +225,17 @@ foreach ($rResult as $aRow) {
 	}
 
 	if ($aRow['patient_first_name'] != '') {
-		$patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+		$patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
 	} else {
 		$patientFname = '';
 	}
 	if ($aRow['patient_middle_name'] != '') {
-		$patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+		$patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
 	} else {
 		$patientMname = '';
 	}
 	if ($aRow['patient_last_name'] != '') {
-		$patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+		$patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
 	} else {
 		$patientLname = '';
 	}
@@ -260,15 +260,15 @@ foreach ($rResult as $aRow) {
 	$row[] = ($aRow['patient_age_in_years'] != null && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
 	$row[] = $sampleCollectionDate;
-	$row[] = (isset($aRow['sample_name'])) ? ucwords($aRow['sample_name']) : '';
+	$row[] = (isset($aRow['sample_name'])) ? ($aRow['sample_name']) : '';
 	$row[] = $treatmentInitiationDate;
 	$row[] = $aRow['current_regimen'];
 	$row[] = $dateOfInitiationOfCurrentRegimen;
-	$row[] = ucfirst($aRow['is_patient_pregnant']);
-	$row[] = ucfirst($aRow['is_patient_breastfeeding']);
+	$row[] = ($aRow['is_patient_pregnant']);
+	$row[] = ($aRow['is_patient_breastfeeding']);
 	$row[] = $arvAdherence;
-	$row[] = ucwords(str_replace("_", " ", $aRow['test_reason_name']));
-	$row[] = ucwords($aRow['request_clinician_name']);
+	$row[] = (str_replace("_", " ", $aRow['test_reason_name']));
+	$row[] = ($aRow['request_clinician_name']);
 	$row[] = $requestedDate;
 	$row[] = $sampleRejection;
 	$row[] = $sampleTestedOn;
@@ -277,9 +277,9 @@ foreach ($rResult as $aRow) {
 	$row[] = $sampleReceivedOn;
 	$row[] = $resultDispatchedDate;
 	//$row[] = $tatdays;
-	$row[] = ucfirst($aRow['lab_tech_comments']);
-	$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-	$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+	$row[] = ($aRow['lab_tech_comments']);
+	$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+	$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
 	$row[] = $requestCreatedDatetime;
 	$output[] = $row;
 	$no++;

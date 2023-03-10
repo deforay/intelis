@@ -112,7 +112,7 @@ foreach ($formResults as $row) {
   $dataValues = array(
     'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
     'lHekjJANaNi' => $row['sample_received_at_vl_lab_datetime'],
-    'P61FWjSAjjA' => ucwords($row['sample_condition']),
+    'P61FWjSAjjA' => ($row['sample_condition']),
     'LbIwAbaSV6r' => $sampleRejection[$row['is_sample_rejected']],
     'GeR4aHFlc1O' => $labTechnician['user_name'],
   );
@@ -163,7 +163,7 @@ foreach ($formResults as $row) {
       'b4PEeF4OOwc' => $testName,
       'w9R4l7O9Sau' => $testPlatform,
       'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
-      'ovY6E8BSdto' => ucwords($testResult['result']),
+      'ovY6E8BSdto' => ($testResult['result']),
       'mJFhS108OdO' => $approver['user_name'],
       'S0dl5jidUnW' => $tester['user_name'],
     );
@@ -199,7 +199,7 @@ foreach ($formResults as $row) {
 
 
   $dataValues = array(
-    'ovY6E8BSdto' => ucwords($row['result'])
+    'ovY6E8BSdto' => ($row['result'])
   );
 
   // $idGeneratorApi = $dhis2->get("/api/system/id.json");

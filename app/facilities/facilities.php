@@ -58,7 +58,7 @@ select { width:400px; !important }
 											<?php
 											foreach ($fResult as $type) {
 											?>
-												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ucwords($type['facility_type_name']); ?></option>
+												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
 											<?php
 											}
 											?>

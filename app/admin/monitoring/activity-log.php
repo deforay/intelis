@@ -10,7 +10,7 @@ $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
 
 $actionList = array();
 foreach ($actions as $list) {
-	$actionList[$list['event_type']] = ucwords(str_replace("-", " ", $list['event_type']));
+	$actionList[$list['event_type']] = (str_replace("-", " ", $list['event_type']));
 }
 
 ?>

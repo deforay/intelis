@@ -228,7 +228,7 @@ $tableResult = $db->rawQuery($sQuery);
                     if (isset($tableResult) && count($tableResult) > 0) {
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
-                                <td><?php echo ucwords($tableRow['facility_name']); ?></td>
+                                <td><?php echo ($tableRow['facility_name']); ?></td>
                                 <td><?php echo $tableRow['totalCount']; ?></td>
                                 <td><?php echo $tableRow['registerCount']; ?></td>
                                 <td><?php echo $tableRow['pendingCount']; ?></td>
@@ -399,7 +399,7 @@ $tableResult = $db->rawQuery($sQuery);
                 name: 'Samples',
                 data: [<?php
                         foreach ($tableResult as $tRow) {
-                            echo ucwords($tRow['totalCount']) . ",";
+                            echo ($tRow['totalCount']) . ",";
                         }
                         ?>]
 

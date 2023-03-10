@@ -28,7 +28,7 @@ final class Target
 
     public function __construct(string $name)
     {
-        $this->name = lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $name))));
+        $this->name = lcfirst(str_replace(' ', '', (preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $name))));
     }
 
     public static function parseName(\ReflectionParameter $parameter): string

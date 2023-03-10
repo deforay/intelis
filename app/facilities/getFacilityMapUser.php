@@ -22,7 +22,7 @@ $uResult = $db->rawQuery($uQuery);
         <?php
         foreach($uResult as $uName){
             ?>
-                <option value="<?php echo $uName['user_id'];?>"><?php echo ucwords($uName['user_name']);?></option>
+                <option value="<?php echo $uName['user_id'];?>"><?php echo ($uName['user_name']);?></option>
             <?php
         }
         ?>

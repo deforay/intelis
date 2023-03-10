@@ -243,9 +243,9 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    $row[] = ucwords($aRow['facility_name']);
+    $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
-    $row[] = ucwords($patientFname . " " . $patientMname);
+    $row[] = ($patientFname . " " . $patientMname);
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['labName'];

@@ -297,7 +297,7 @@ foreach ($rResult as $aRow) {
 
     foreach ($scResult as $control) {
         if (trim($control['r_sample_control_name']) != '') {
-            $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == $control['r_sample_control_name'] || $aRow['sample_type'] == ucwords($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ucwords($control['r_sample_control_name']) . '</option>';
+            $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == $control['r_sample_control_name'] || $aRow['sample_type'] == ($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ($control['r_sample_control_name']) . '</option>';
         }
     }
     $controlName .= '</select><br><br>';

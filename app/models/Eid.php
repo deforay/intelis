@@ -288,46 +288,46 @@ class Eid
                 }
 
                 if ($aRow['patient_first_name'] != '') {
-                    $patientFname = ucwords($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+                    $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
                 } else {
                     $patientFname = '';
                 }
                 if ($aRow['patient_middle_name'] != '') {
-                    $patientMname = ucwords($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+                    $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
                 } else {
                     $patientMname = '';
                 }
                 if ($aRow['patient_last_name'] != '') {
-                    $patientLname = ucwords($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+                    $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
                 } else {
                     $patientLname = '';
                 }
 
                 $row[] = $no;
                 $row[] = $aRow[$sampleCode];
-                $row[] = ucwords($aRow['facility_name']);
+                $row[] = ($aRow['facility_name']);
                 $row[] = $aRow['facility_code'];
-                $row[] = ucwords($aRow['facility_district']);
-                $row[] = ucwords($aRow['facility_state']);
-                $row[] = ucwords($aRow['labName']);
+                $row[] = ($aRow['facility_district']);
+                $row[] = ($aRow['facility_state']);
+                $row[] = ($aRow['labName']);
                 $row[] = $aRow['child_id'];
                 $row[] = $aRow['child_name'];
                 $row[] = $aRow['mother_id'];
                 $row[] = $dob;
                 $row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
                 $row[] = $gender;
-                $row[] = ucwords($aRow['has_infant_stopped_breastfeeding']);
-                $row[] = ucwords($aRow['pcr_test_performed_before']);
-                $row[] = ucwords($aRow['previous_pcr_result']);
+                $row[] = ($aRow['has_infant_stopped_breastfeeding']);
+                $row[] = ($aRow['pcr_test_performed_before']);
+                $row[] = ($aRow['previous_pcr_result']);
                 $row[] = $sampleCollectionDate;
                 $row[] = $sampleRejection;
                 $row[] = $sampleTestedOn;
                 $row[] = $eidResults[$aRow['result']];
                 $row[] = $sampleReceivedOn;
                 $row[] = $resultDispatchedDate;
-                $row[] = ucfirst($aRow['lab_tech_comments']);
-                $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ucwords($aRow['funding_source_name']) : '';
-                $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ucwords($aRow['i_partner_name']) : '';
+                $row[] = ($aRow['lab_tech_comments']);
+                $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+                $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
                 $output[] = $row;
                 $no++;
             }

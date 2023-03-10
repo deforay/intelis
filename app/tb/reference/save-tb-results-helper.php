@@ -10,8 +10,8 @@ $primaryKey = "result_id";
 try {
 	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
 		$data = array(
-			'result_type' 		=> ucfirst($_POST['resultType']),
-			'result' 		=> ucfirst($_POST['resultName']),
+			'result_type' 		=> ($_POST['resultType']),
+			'result' 		=> ($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> $general->getCurrentDateTime(),
 		);
