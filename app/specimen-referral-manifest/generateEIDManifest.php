@@ -88,6 +88,8 @@ if (trim($id) != '') {
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
     }
+    $showPatientName = $arr['eid_show_participant_name_in_manifest'];
+
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
@@ -151,9 +153,12 @@ if (trim($id) != '') {
                         <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
                         <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
                         <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>District</em></strong></td> -->
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Child Name</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Child ID</em></strong></td>
+                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>';
+                        if($showPatientName=="yes")
+                        {
+                            $tbl .= '<td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Child Name</em></strong></td>';
+                        }
+                        $tbl .= '<td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Child ID</em></strong></td>
                         <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
                         <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Child Gender</em></strong></td>
                         <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Mother Name</em></strong></td>
@@ -182,7 +187,10 @@ if (trim($id) != '') {
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                 // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['facility_district']) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
+                        if($showPatientName=="yes")
+                        {
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['child_name']) . '</td>';
+                        }
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['child_id'] . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['child_gender'])) . '</td>';

@@ -526,6 +526,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="vl_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("VL Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="vl_show_participant_name_in_manifest" name="vl_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select VL Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['vl_show_participant_name_in_manifest']) && $arr['vl_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['vl_show_participant_name_in_manifest']) && $arr['vl_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -647,6 +661,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<option value=""><?php echo _("--Select--"); ?></option>
 														<option value="yes" <?php echo (isset($arr['eid_auto_approve_api_results']) && $arr['eid_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
 														<option value="no" <?php echo (isset($arr['eid_auto_approve_api_results']) && $arr['eid_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="eid_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("EID Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="eid_show_participant_name_in_manifest" name="eid_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select EID Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['eid_show_participant_name_in_manifest']) && $arr['eid_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['eid_show_participant_name_in_manifest']) && $arr['eid_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 													</select>
 												</div>
 											</div>
@@ -835,6 +863,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="eid_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("COVID-19 Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="covid19_show_participant_name_in_manifest" name="covid19_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select COVID-19 Show Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['covid19_show_participant_name_in_manifest']) && $arr['covid19_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['covid19_show_participant_name_in_manifest']) && $arr['covid19_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -940,6 +982,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="hepatitis_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("Hepatitis Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="hepatitis_show_participant_name_in_manifest" name="hepatitis_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select Hepatitis Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['hepatitis_show_participant_name_in_manifest']) && $arr['hepatitis_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['hepatitis_show_participant_name_in_manifest']) && $arr['hepatitis_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php }
@@ -1040,6 +1096,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<option value=""><?php echo _("--Select--"); ?></option>
 														<option value="yes" <?php echo (isset($arr['tb_auto_approve_api_results']) && $arr['tb_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
 														<option value="no" <?php echo (isset($arr['tb_auto_approve_api_results']) && $arr['tb_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="tb_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("TB Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="tb_show_participant_name_in_manifest" name="tb_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select TB Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['tb_show_participant_name_in_manifest']) && $arr['tb_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['tb_show_participant_name_in_manifest']) && $arr['tb_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
 													</select>
 												</div>
 											</div>

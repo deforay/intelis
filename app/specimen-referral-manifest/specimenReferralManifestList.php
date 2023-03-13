@@ -147,6 +147,10 @@ require_once(APPLICATION_PATH . '/header.php');
 		} else if (module == 'hepatitis') {
 			manifestFileName = "generateHepatitisManifest.php";
 		}
+		else if (module == 'tb') {
+			manifestFileName = "generateTBManifest.php";
+		}
+		//alert(manifestFileName);
 		$.post(manifestFileName, {
 				id: pId,
 				ids: ids,
