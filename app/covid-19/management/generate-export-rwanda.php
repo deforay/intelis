@@ -34,7 +34,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason","Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
 			unset($headings[$key]);
@@ -186,6 +186,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = ($aRow['travel_country_names']);
 		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
+		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $covid19Results[$aRow['result']];
 		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);

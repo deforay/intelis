@@ -122,7 +122,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         rs.rejection_reason_name,
                         r_f_s.funding_source_name,
                         c.iso_name as nationality,
-                        r_i_p.i_partner_name 
+                        r_i_p.i_partner_name,
+                        rs.rejection_reason_name as rejection_reason
                         
                         FROM form_covid19 as vl 
                         

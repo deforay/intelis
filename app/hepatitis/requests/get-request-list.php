@@ -104,7 +104,7 @@ $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, l.facility_name as lab_name, ts.status_name, b.batch_code FROM $tableName as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status  
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';

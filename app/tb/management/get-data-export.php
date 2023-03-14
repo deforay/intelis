@@ -139,7 +139,8 @@ a_u_d.user_name as approvedBy,
 lt_u_d.user_name as labTechnician,
 rs.rejection_reason_name,
 r_f_s.funding_source_name,
-r_i_p.i_partner_name 
+r_i_p.i_partner_name ,
+rs.rejection_reason_name as rejection_reason
 
 FROM form_tb as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 

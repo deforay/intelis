@@ -118,7 +118,8 @@ $sQuery = "SELECT       SQL_CALC_FOUND_ROWS
                         f.facility_district,
                         u_d.user_name as reviewedBy,
                         a_u_d.user_name as approvedBy,
-                        lt_u_d.user_name as labTechnician
+                        lt_u_d.user_name as labTechnician,
+                        rs.rejection_reason_name as rejection_reason
                     
                         
                         FROM form_hepatitis as vl 

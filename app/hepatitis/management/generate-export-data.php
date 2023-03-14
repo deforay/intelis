@@ -9,8 +9,8 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 
-$covid19Obj = new \Vlsm\Models\Covid19();
-$covid19Results = $covid19Obj->getCovid19Results();
+$hepatitisObj = new \Vlsm\Models\Hepatitis();
+$hepatitisResults = $hepatitisObj->gethepatitisResults();
 $sarr = $general->getSystemConfig();
 /* Global config data */
 $arr = $general->getGlobalConfig();
@@ -23,17 +23,18 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason","Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 	else
 	{
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	}
 	if ($sarr['sc_user_type'] == 'standalone') {
 		if (($key = array_search('Remote Sample Code', $headings)) !== false) {
 			unset($headings[$key]);
 		}
 	}
+	
 	$colNo = 1;
 
 	$styleArray = array(
@@ -91,9 +92,9 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row = array();
 		if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method 
-			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
-			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
-			foreach ($covid19TestInfo as $indexKey => $rows) {
+			$hepatitisTestQuery = "SELECT * from hepatitis_tests where hepatitis_id= " . $aRow['hepatitis_id'] . " ORDER BY test_id ASC";
+			$hepatitisTestInfo = $db->rawQuery($hepatitisTestQuery);
+			foreach ($hepatitisTestInfo as $indexKey => $rows) {
 				$testPlatform = $rows['testing_platform'];
 				$testMethod = $rows['test_name'];
 			}
@@ -158,9 +159,9 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $no;
 		if ($sarr['sc_user_type'] == 'standalone') {
 			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];
+			$row[] = $aRow["remote_sample_code"];
 		}
 		$row[] = ($aRow['facility_name']);
 		$row[] = $aRow['facility_code'];
@@ -175,6 +176,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
 		$row[] = $sampleRejection;
+		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = ($aRow['hcv_vl_result']);
 		$row[] = ($aRow['hbv_vl_result']);
