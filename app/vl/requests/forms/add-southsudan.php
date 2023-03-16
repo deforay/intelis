@@ -781,6 +781,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
+         
+        
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1459,4 +1461,5 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#vlResult').val(value);
           }
      }
+
 </script>

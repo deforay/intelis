@@ -191,6 +191,7 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
                                                        <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <span class="artNoGroup"></span>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -709,9 +710,42 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      provinceName = true;
      facilityName = true;
+     function autoSelect(id)
+     {
+          $.blockUI();
+          selValue = $('#'+id).has("option[value!='']").length;
+          $("#"+id+" > option").each(function() {
+               if((this.value)!="")
+               {
+                    $('#'+id).val(this.value).trigger('change');
+               }
+          });
+          $.unblockUI();
+     }
      $(document).ready(function() {
+          autoSelect('province');
+          autoSelect('district');
+          autoSelect('fName');
 
-
+     $("#artNo").change(function(){
+          $.post("/common/patient-last-request-details.php", {
+                         testType : 'vl',
+                         patientId : $.trim($(this).val()),
+                    },
+                    function(data) {
+                         if(data!="0")
+                         {
+                              obj = $.parseJSON(data);
+                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
+                         }
+                         else
+                         {
+                              $(".artNoGroup").html('');
+                         }
+                    });
+          
+     });
+        
           $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
@@ -1206,4 +1240,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           }
      }
+
+    
+
 </script>

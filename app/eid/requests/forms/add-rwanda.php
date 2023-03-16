@@ -169,6 +169,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th style="width:15% !important"><label for="childId">CRVS file name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" onchange="" />
+                                            <span class="artNoGroup"></span>
                                         </td>
                                         <th style="width:15% !important"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
@@ -614,7 +615,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-
+        $("#childId").change(function(){
+          $.post("/common/patient-last-request-details.php", {
+                        patientId : $.trim($(this).val()),
+                        testType : 'eid'
+                    },
+                    function(data) {
+                         if(data!="0")
+                         {
+                              obj = $.parseJSON(data);
+                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
+                         }
+                         else
+                         {
+                              $(".artNoGroup").html('');
+                         }
+                    });
+          
+     });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

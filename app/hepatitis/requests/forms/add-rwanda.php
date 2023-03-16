@@ -87,9 +87,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
                                             </td>
                                         <?php } ?>
-                                        <th style="width:15% !important"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
+                                        <th><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />
+                                            <span class="artNoGroup"></span>
                                         </td>
                                         <td><label for="hepatitisTestType">Type of Hepatitis Test </label><span class="mandatory">*</span></td>
                                         <td>
@@ -152,7 +153,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <th style="width:15% !important"><label for="lastName">Last name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter patient last name" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" title="Please enter patient last name" style="width:100%;" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -605,6 +606,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
+        $("#patientId").change(function(){
+          $.post("/common/patient-last-request-details.php", {
+                        patientId : $.trim($(this).val()),
+                        testType : 'hepatitis'
+                    },
+                    function(data) {
+                         if(data!="0")
+                         {
+                              obj = $.parseJSON(data);
+                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
+                         }
+                         else
+                         {
+                              $(".artNoGroup").html('');
+                         }
+                    });
+          
+     });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });
