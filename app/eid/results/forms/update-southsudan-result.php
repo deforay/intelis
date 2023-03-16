@@ -350,7 +350,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <tr>
                                     <th class="labels" scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                     <td>
-                                        <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                        <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                     </td>
                                     <th scope="row"></th>
                                     <td></td>
@@ -422,7 +422,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th class="labels" style="width:25%;">Sample Test Date</th>
                                         <td style="width:25%;">
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the Sample Tested Date and Time" <?php echo $labFieldDisabled; ?> onchange="" value="<?= $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the Sample Tested Date and Time" <?php echo $labFieldDisabled; ?> onchange="" value="<?= $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                         </td>
                                         <th scope="row">Result</th>
                                         <td>
@@ -466,7 +466,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                         <th class="labels" style="width:25%;">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
                                         <td style="width:25%;">
-                                            <input type="text" value="<?= $general->humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter approved on" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+                                            <input type="text" value="<?= $general->humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter approved on" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -488,7 +488,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                     <?php } ?>
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                    <input type="hidden" class="" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
+                    <input type="hidden" class="" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
                     <input type="hidden" name="revised" id="revised" value="no" />
                     <input type="hidden" name="formId" id="formId" value="1" />
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />

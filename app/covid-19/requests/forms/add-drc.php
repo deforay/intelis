@@ -689,7 +689,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <tr>
                                         <th style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                         <td style="width:35% !important;">
-                                            <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="e.g 09-Jan-1992" title="Date de retour" />
+                                            <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
                                         </td>
 
                                         <th scope="row">Compagnie aérienne</th>
@@ -753,7 +753,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>

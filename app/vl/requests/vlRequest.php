@@ -2,7 +2,6 @@
 $title = _("View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
-$hidesrcofreq = null;
 if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];

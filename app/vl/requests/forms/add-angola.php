@@ -199,7 +199,7 @@ $sFormat = '';
 										<tr>
 											<td style="width:14%;"><label for="">Data de início de TARV </label></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="e.g 09-Jan-1992" title="Please select Data de início de TARV" style="width:100%;" onchange="checkARTInitiationDate();" />
+												<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please select Data de início de TARV" style="width:100%;" onchange="checkARTInitiationDate();" />
 											</td>
 											<td style="width:14%;"><label for="artRegimen"> Esquema de TARV actual </label></td>
 											<td style="width:14%;">
@@ -297,7 +297,7 @@ $sFormat = '';
 													<input type="radio" class="" id="patientPregnantWoman" name="patientGroup" value="pregnant" title="Please check Mulher gestante">
 												</label>
 												<label class="radio-inline" style="padding-left:0px !important;margin-left:0;">Mulher gestante – indique a data provável do parto</label>
-												<input type="text" class="form-control date" name="patientPregnantWomanDate" id="patientPregnantWomanDate" placeholder="e.g 09-Jan-1992" title="Please enter data provável do parto" />
+												<input type="text" class="form-control date" name="patientPregnantWomanDate" id="patientPregnantWomanDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter data provável do parto" />
 											</td>
 										</tr>
 										<tr>
@@ -346,7 +346,7 @@ $sFormat = '';
 										<tr>
 											<td style="width:14%;"><label for="">Se aplicável: data da última carga viral </label></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control date" id="lastVlDate" name="lastVlDate" placeholder="e.g 09-Jan-1992" title="Please select data da última carga viral" style="width:100%;" />
+												<input type="text" class="form-control date" id="lastVlDate" name="lastVlDate" placeholder="<?= _("Please enter date"); ?>" title="Please select data da última carga viral" style="width:100%;" />
 											</td>
 											<td style="width:14%;"><label for="lastVlResult"> Resultado da última carga vira </label></td>
 											<td style="width:14%;">

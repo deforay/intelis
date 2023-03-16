@@ -379,7 +379,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>
@@ -444,7 +444,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <td style="width:25%;" class="labels"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
                                             <th scope="row" class="labels">Result</th>
@@ -488,7 +488,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                             <th scope="row" class="labels">Approved On</th>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="e.g 09-Jan-1992 05:30" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
+                                                <input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>

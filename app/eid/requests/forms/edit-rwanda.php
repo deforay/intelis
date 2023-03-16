@@ -390,7 +390,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -434,7 +434,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
 
