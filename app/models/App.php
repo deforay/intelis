@@ -308,4 +308,26 @@ class App
         }
         return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, kit_lot_no as kitLotNo, kit_expiry_date as kitExpiryDate, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
     }
+
+    public function getLastRequestForPatientID($testType,$patientId){
+
+        if($testType=='vl'){
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_vl` WHERE `patient_art_no`='".$patientId."') as no_of_req_time from form_vl 
+                    WHERE `patient_art_no`='".$patientId."' ORDER by DATE(request_created_datetime) DESC limit 1";
+        }
+        elseif($testType=='eid'){
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_eid` WHERE `child_id`='".$patientId."') as no_of_req_time from form_eid 
+                    WHERE `child_id`='".$patientId."' ORDER by DATE(request_created_datetime) DESC limit 1";
+        }
+        elseif($testType=='covid19'){
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_covid19` WHERE `patient_id`='".$patientId."') as no_of_req_time from form_covid19 
+                    WHERE `patient_id`='".$patientId."' ORDER by DATE(request_created_datetime) DESC limit 1";
+        }
+        elseif($testType=='hepatitis'){
+            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_hepatitis` WHERE `patient_id`='".$patientId."') as no_of_req_time from form_hepatitis 
+                    WHERE `patient_id`='".$patientId."' ORDER by DATE(request_created_datetime) DESC limit 1";
+        }
+        $rowData = $this->db->rawQueryOne($sQuery);
+        return $rowData;
+    }
 }

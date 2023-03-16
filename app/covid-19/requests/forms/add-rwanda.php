@@ -184,6 +184,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th style="width:15% !important"><label for="patientId">Patient ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+                                            <span class="artNoGroup"></span>
                                         </td>
                                         <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -718,7 +719,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
-
+        $("#patientId").change(function(){
+          $.post("/common/patient-last-request-details.php", {
+                        patientId : $.trim($(this).val()),
+                        testType : 'covid19'
+                    },
+                    function(data) {
+                         if(data!="0")
+                         {
+                              obj = $.parseJSON(data);
+                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
+                         }
+                         else
+                         {
+                              $(".artNoGroup").html('');
+                         }
+                    });
+          
+     });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });
