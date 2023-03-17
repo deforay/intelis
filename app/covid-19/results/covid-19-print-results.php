@@ -138,9 +138,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                                 <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
                                                             </div>
                                                         <?php } ?>
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
-                                                        </div>
+                                                       
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
                                                         </div>
@@ -153,6 +151,12 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
+                                                        <div class="col-md-3">
+															<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+														</div>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
+														</div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
                                                         </div>
@@ -287,9 +291,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                                 <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
                                                             </div>
                                                         <?php } ?>
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="batch_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
-                                                        </div>
+                                                      
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
                                                         </div>
@@ -302,6 +304,12 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
+                                                        <div class="col-md-3">
+															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+														</div>
+														<div class="col-md-3">
+															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
+														</div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
                                                         </div>
