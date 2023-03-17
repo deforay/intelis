@@ -730,32 +730,31 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                let artNo = $.trim($(this).val());
 
-               if (artNo.length <= 3) {
-                    return false;
-               } else if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small>');
+               if (artNo.length < 10) {
+                    $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small><br>');
                }
+               if (artNo.length > 3) {
 
-
-               $.post("/common/patient-last-request-details.php", {
-                         testType: 'vl',
-                         patientId: artNo,
-                    },
-                    function(data) {
-                         if (data != "0") {
-                              obj = $.parseJSON(data);
-                              $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
-                                   '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
-                                   '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
-                                   '</small>');
-                         } else {
-                              if (artNo.length < 10) {
-                                   $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small>');
+                    $.post("/common/patient-last-request-details.php", {
+                              testType: 'vl',
+                              patientId: artNo,
+                         },
+                         function(data) {
+                              if (data != "0") {
+                                   obj = $.parseJSON(data);
+                                   $("#artNoGroup").append('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
+                                        '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
+                                        '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
+                                        '</small>');
                               } else {
-                                   $("#artNoGroup").html('');
+                                   if (artNo.length < 10) {
+                                        $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small><br>');
+                                   } else {
+                                        $("#artNoGroup").html('');
+                                   }
                               }
-                         }
-                    });
+                         });
+               }
 
           });
 
