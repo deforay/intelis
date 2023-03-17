@@ -606,24 +606,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
-        $("#patientId").change(function(){
-          $.post("/common/patient-last-request-details.php", {
-                        patientId : $.trim($(this).val()),
-                        testType : 'hepatitis'
-                    },
-                    function(data) {
-                         if(data!="0")
-                         {
-                              obj = $.parseJSON(data);
-                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
-                         }
-                         else
-                         {
-                              $(".artNoGroup").html('');
-                         }
-                    });
-          
-     });
+        $("#patientId").on('input', function() {
+            $.post("/common/patient-last-request-details.php", {
+                    patientId: $.trim($(this).val()),
+                    testType: 'hepatitis'
+                },
+                function(data) {
+                    if (data != "0") {
+                        obj = $.parseJSON(data);
+                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                    } else {
+                        $(".artNoGroup").html('');
+                    }
+                });
+
+        });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

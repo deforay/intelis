@@ -105,16 +105,17 @@ if (count($interfaceInfo) > 0) {
         }
 
         //Getting Approved By and Reviewed By from Instruments table
-        $instrumentDetails = $db->rawQueryOne("SELECT * from instruments where machine_name like '" . $result['machine_used'] . "'");
+        $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", array($result['machine_used']));
 
         if (empty($instrumentDetails) || $instrumentDetails === false) {
-            $instrumentDetails = $db->rawQueryOne("SELECT * from instruments 
-                                                    INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id 
-                                                        WHERE instrument_machines.config_machine_name LIKE '" . $result['machine_used'] . "'");
+            $sql="SELECT * FROM instruments
+                    INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
+                    WHERE instrument_machines.config_machine_name LIKE ?";
+            $instrumentDetails = $db->rawQueryOne($sql, array($result['machine_used']));
         }
 
-        $approved = isset($instrumentDetails['approved_by']) && !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : array();
-        $reviewed = isset($instrumentDetails['reviewed_by']) && !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : array();
+        $approved = isset($instrumentDetails['approved_by']) && !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : [];
+        $reviewed = isset($instrumentDetails['reviewed_by']) && !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;

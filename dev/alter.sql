@@ -3382,19 +3382,19 @@ UPDATE `system_config` SET `value` = '5.1.2' WHERE `system_config`.`name` = 'sc_
 ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES ('VL Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', 'VL', 'no', '2023-03-13 11:44:27', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+VALUES ('Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', 'VL', 'no', null, null, 'active');
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES ('EID Show Participant Name in Manifest', 'eid_show_participant_name_in_manifest', 'yes', 'EID', 'no', '2023-03-13 11:44:27', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+VALUES ('Show Participant Name in Manifest', 'eid_show_participant_name_in_manifest', 'yes', 'EID', 'no', null, null, 'active');
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES ('COVID-19 Show Participant Name in Manifest', 'covid19_show_participant_name_in_manifest', 'yes', 'COVID19', 'no', '2023-03-13 11:44:27', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+VALUES ('Show Participant Name in Manifest', 'covid19_show_participant_name_in_manifest', 'yes', 'COVID19', 'no', null, null, 'active');
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES ('Hepatitis Show Participant Name in Manifest', 'hepatitis_show_participant_name_in_manifest', 'yes', 'HEPATITIS', 'no', '2023-03-13 11:44:27', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+VALUES ('Show Participant Name in Manifest', 'hepatitis_show_participant_name_in_manifest', 'yes', 'HEPATITIS', 'no', null, null, 'active');
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES ('TB Show Participant Name in Manifest', 'tb_show_participant_name_in_manifest', 'yes', 'TB', 'no', '2023-03-13 11:44:27', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+VALUES ('Show Participant Name in Manifest', 'tb_show_participant_name_in_manifest', 'yes', 'TB', 'no', null, null, 'active');
 
 ALTER TABLE `form_vl` CHANGE `request_created_datetime` `request_created_datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
 
@@ -3404,3 +3404,7 @@ ALTER TABLE `form_covid19` CHANGE `request_created_datetime` `request_created_da
 
 ALTER TABLE `form_hepatitis` CHANGE `request_created_datetime` `request_created_datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
 
+
+-- Amit 17-Mar-2023
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+VALUES ('Interpret and Convert VL Results', 'vl_interpret_and_convert_results', 'no', 'VL', 'yes', null, null, 'active');

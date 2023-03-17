@@ -190,8 +190,8 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
-                                                       <span class="artNoGroup"></span>
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <span class="artNoGroup" id="artNoGroup"></span>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -722,21 +722,38 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
      $(document).ready(function() {
-          autoSelect('province');
-          autoSelect('district');
+          // autoSelect('province');
+          // autoSelect('district');
           autoSelect('fName');
 
-          $("#artNo").change(function() {
+          $("#artNo").on('input', function() {
+
+               let artNo = $.trim($(this).val());
+
+               if (artNo.length <= 3) {
+                    return false;
+               } else if (artNo.length < 10) {
+                    $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small>');
+               }
+
+
                $.post("/common/patient-last-request-details.php", {
                          testType: 'vl',
-                         patientId: $.trim($(this).val()),
+                         patientId: artNo,
                     },
                     function(data) {
                          if (data != "0") {
                               obj = $.parseJSON(data);
-                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                              $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
+                                   '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
+                                   '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
+                                   '</small>');
                          } else {
-                              $(".artNoGroup").html('');
+                              if (artNo.length < 10) {
+                                   $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small>');
+                              } else {
+                                   $("#artNoGroup").html('');
+                              }
                          }
                     });
 

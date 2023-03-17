@@ -719,7 +719,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
-        $("#patientId").change(function() {
+        $("#patientId").on('input', function() {
             $.post("/common/patient-last-request-details.php", {
                     patientId: $.trim($(this).val()),
                     testType: 'covid19'

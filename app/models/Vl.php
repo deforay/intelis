@@ -88,7 +88,7 @@ class Vl
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
-        } else if ($sampleCodeFormat == 'YY') {
+        } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
         }
 
@@ -134,12 +134,12 @@ class Vl
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
-        } else if ($sampleCodeFormat == 'auto2') {
+        } elseif ($sampleCodeFormat == 'auto2') {
             $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
-        } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
             $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
@@ -175,7 +175,7 @@ class Vl
     public function getVlSampleTypes($updatedDateTime = null)
     {
         $query = "SELECT * FROM r_vl_sample_type where status='active'";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -198,13 +198,13 @@ class Vl
 
         if (!isset($finalResult) || empty($finalResult)) {
             $vlResultCategory = null;
-        } else if (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+        } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
             $vlResultCategory = 'failed';
-        } else if (in_array($resultStatus, array(1, 2, 3, 10))) {
+        } elseif (in_array($resultStatus, array(1, 2, 3, 10))) {
             $vlResultCategory = null;
-        } else if ($resultStatus == 4) {
+        } elseif ($resultStatus == 4) {
             $vlResultCategory = 'rejected';
-        } else if ($resultStatus == 5) {
+        } elseif ($resultStatus == 5) {
             $vlResultCategory = 'invalid';
         } else {
 
@@ -212,7 +212,7 @@ class Vl
                 $finalResult = (float)$finalResult;
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
-                } else if ($finalResult >= $this->suppressionLimit) {
+                } elseif ($finalResult >= $this->suppressionLimit) {
                     $vlResultCategory = 'not suppressed';
                 }
             } else {
@@ -227,7 +227,7 @@ class Vl
 
                 if ($textResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
-                } else if ($textResult >= $this->suppressionLimit) {
+                } elseif ($textResult >= $this->suppressionLimit) {
                     $vlResultCategory = 'not suppressed';
                 }
             }
@@ -267,9 +267,19 @@ class Vl
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
+        $general = new \Vlsm\Models\General($this->db);
+        $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
+
+
+        if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
+            $interpretAndConvertResult = true;
+        } else {
+            $interpretAndConvertResult = false;
+        }
+
         $resultStatus = null;
         // Some machines and some countries prefer a default text result
-        $vlTextResult = "Target Not Detected" ?: $defaultLowVlResultText;
+        $vlTextResult = $defaultLowVlResultText ?: "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
@@ -278,47 +288,48 @@ class Vl
         $result = strtolower($result);
         if ($result == 'bdl' || $result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
-        } else if ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
+        } elseif ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
             $vlResult = $txtVal = $vlTextResult;
-        } else if ($result == '< 2.00E+1') {
+        } elseif ($result == '< 2.00E+1' || $result == '< titer min') {
             $absDecimalVal = 20;
             $txtVal = $vlResult = $absVal = "< 20";
-        } else if ($result == '< titer min') {
-            $absDecimalVal = 20;
-            $txtVal = $vlResult = $absVal = "< 20";
-        } else if ($result == '> titer max"') {
+        } elseif ($result == '> titer max"') {
             $absDecimalVal = 10000000;
             $txtVal = $vlResult = $absVal = "> 1000000";
-        } else if ($result == '< inf') {
+        } elseif ($result == '< inf') {
             $absDecimalVal = 839;
             $vlResult = $absVal = 839;
             $logVal = 2.92;
             $txtVal = null;
-        } else if (strpos($result, "<") !== false) {
+        } elseif (strpos($result, "<") !== false) {
             $result = (float) trim(str_replace("<", "", $result));
             if (!empty($unit) && strpos($unit, 'Log') !== false) {
                 $logVal = $result;
                 $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                $originalResultValue = "< " . $absDecimalVal;
+                $vlResult = $originalResultValue = "< " . $absDecimalVal;
             } else {
-                $absVal = $absDecimalVal = $result;
+                $vlResult = $absVal = $absDecimalVal = $result;
                 $logVal = round(log10($absDecimalVal), 2);
             }
             $txtVal = null;
-        } else if (strpos($result, ">") !== false) {
+        } elseif (strpos($result, ">") !== false) {
             $result = (float) trim(str_replace(">", "", $result));
             if (!empty($unit) && strpos($unit, 'Log') !== false) {
                 $logVal = $result;
                 $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-                $originalResultValue = ">" . $absDecimalVal;
+                $vlResult = $originalResultValue = ">" . $absDecimalVal;
             } else {
-                $absVal = $absDecimalVal = $result;
+                $vlResult = $absVal = $absDecimalVal = $result;
                 $logVal = round(log10($absDecimalVal), 2);
             }
 
             $txtVal = null;
         } else {
             $vlResult = $txtVal = $result;
+        }
+
+        if ($interpretAndConvertResult) {
+            $originalResultValue = $vlResult;
         }
 
         return array(
@@ -334,38 +345,57 @@ class Vl
     public function interpretViralLoadNumericResult($result, $unit = null)
     {
         // If result is blank, then return null
-        if (empty(trim($result))) return null;
+        if (empty(trim($result))) {
+            return null;
+        }
 
         // If result is NOT numeric, then return it as is
-        if (!is_numeric($result)) return $result;
+        if (!is_numeric($result)) {
+            return $result;
+        }
+
+        $general = new \Vlsm\Models\General($this->db);
+        $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
+
+
+        if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
+            $interpretAndConvertResult = true;
+        } else {
+            $interpretAndConvertResult = false;
+        }
+
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = $result;
         if (strpos($unit, 'Log') !== false && is_numeric($result)) {
             $logVal = $result;
             $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
-        } else if (strpos($unit, '10') !== false) {
+        } elseif (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
             $multiplier = pow($exponentArray[0], $exponentArray[1]);
             $vlResult = $result * $multiplier;
             $unit = $unitArray[1];
-        } else if (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
+        } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
             if (strpos($result, '< 2.00E+1') !== false) {
                 $vlResult = "< 20";
             } else {
                 // incase there are some brackets in the result
-                $resultArray = explode("(", $result); 
-                
+                $resultArray = explode("(", $result);
+
                 $absVal = ($resultArray[0]);
-                $absDecimalVal = (float) $resultArray[0];
+                $vlResult = $absDecimalVal = (float) $resultArray[0];
                 $logVal = round(log10($absDecimalVal), 2);
             }
         } else {
             $absVal = ($result);
-            $absDecimalVal = (float) trim($result);
+            $vlResult = $absDecimalVal = (float) trim($result);
             $logVal = round(log10($absDecimalVal), 2);
             $txtVal = null;
+        }
+
+        if ($interpretAndConvertResult) {
+            $originalResultValue = $vlResult;
         }
 
         return array(
@@ -474,15 +504,15 @@ class Vl
                 $ipaddress = '';
                 if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                     $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                     $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+                } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                } elseif (isset($_SERVER['REMOTE_ADDR'])) {
                     $ipaddress = $_SERVER['REMOTE_ADDR'];
                 } else {
                     $ipaddress = 'UNKNOWN';
@@ -536,8 +566,8 @@ class Vl
     {
         $result = array();
         $this->db->where('status', 'active');
-        if($updatedDateTime){
-            $this->db->where('updated_datetime >= "'.$updatedDateTime.'"');
+        if ($updatedDateTime) {
+            $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');
         }
         $results = $this->db->get('r_vl_test_failure_reasons');
         if ($option) {
@@ -550,9 +580,10 @@ class Vl
         }
     }
 
-    public function getVlResults($instrumentId = null){
+    public function getVlResults($instrumentId = null)
+    {
 
-        if( !empty($instrumentId) ){
+        if (!empty($instrumentId)) {
             $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
         }
         $this->db->where('status', 'active');

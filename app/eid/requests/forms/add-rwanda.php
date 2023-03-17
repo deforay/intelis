@@ -122,7 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                       <!-- <td><label for="supportPartner">Implementing Partner </label></td>
+                                        <!-- <td><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
                                          <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> 
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
@@ -597,16 +597,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function setRelatedField(pcrVal)
-    {
-        if(pcrVal=='yes')
-        {
+    function setRelatedField(pcrVal) {
+        if (pcrVal == 'yes') {
             $('#previousPCRTestDate').addClass('isRequired');
             $('#pcrTestReason').addClass('isRequired');
             $('#previousPCRTestDate').prop('disabled', false);
             $('#pcrTestReason').prop('disabled', false);
-        }
-        else{
+        } else {
             $('#previousPCRTestDate').prop('disabled', true);
             $('#pcrTestReason').prop('disabled', true);
             $('#previousPCRTestDate').removeClass('isRequired');
@@ -615,24 +612,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-        $("#childId").change(function(){
-          $.post("/common/patient-last-request-details.php", {
-                        patientId : $.trim($(this).val()),
-                        testType : 'eid'
-                    },
-                    function(data) {
-                         if(data!="0")
-                         {
-                              obj = $.parseJSON(data);
-                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
-                         }
-                         else
-                         {
-                              $(".artNoGroup").html('');
-                         }
-                    });
-          
-     });
+        $("#childId").on('input', function() {
+            $.post("/common/patient-last-request-details.php", {
+                    patientId: $.trim($(this).val()),
+                    testType: 'eid'
+                },
+                function(data) {
+                    if (data != "0") {
+                        obj = $.parseJSON(data);
+                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                    } else {
+                        $(".artNoGroup").html('');
+                    }
+                });
+
+        });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });
@@ -661,6 +655,4 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     });
-
-   
 </script>
