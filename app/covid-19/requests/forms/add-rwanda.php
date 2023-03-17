@@ -88,7 +88,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
@@ -168,7 +168,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -259,7 +259,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">CLINICAL SIGNS AND SYMPTOMS</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <th style="width:15% !important">Date of Symptom Onset <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -281,7 +281,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th style="width:15% !important">Symptoms Presented in last 14 days <span class="mandatory">*</span> </th>
                                         <td colspan="3">
-                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true" >
+                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true">
                                                 <?php foreach ($covid19Symptoms as $symptomId => $symptomName) { ?>
                                                     <tr>
                                                         <th style="width:50%;"><?php echo $symptomName; ?></th>
@@ -304,11 +304,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">OTHER CO-MORBIDITIES</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <th style="width:15% !important">Co-morbidities <span class="mandatory">*</span> </th>
                                         <td colspan="3">
-                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true" >
+                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true">
                                                 <?php foreach ($covid19Comorbidities as $comId => $comName) { ?>
                                                     <tr>
                                                         <th style="width:50%;"><?php echo $comName; ?></th>
@@ -331,7 +331,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">EPIDEMIOLOGICAL RISK FACTORS AND EXPOSURES</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <th style="width:15% !important">Close contacts of the Patient <span class="mandatory">*</span></th>
                                         <td colspan="3">
@@ -356,7 +356,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table class="table" aria-hidden="true">
                                     <tr>
                                         <td colspan=4>
                                             <ul>
@@ -411,11 +411,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId">Lab Name </label> </td>
                                             <td class="lab-show">
@@ -449,7 +449,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" aria-hidden="true" >
+                                                <table class="table table-bordered table-striped" aria-hidden="true">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No.</th>
@@ -539,7 +539,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <!-- <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Sample Tested Date and Time" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled)) ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Sample Tested Date and Time" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled)) ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td> -->
 
 
@@ -719,24 +719,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
-        $("#patientId").change(function(){
-          $.post("/common/patient-last-request-details.php", {
-                        patientId : $.trim($(this).val()),
-                        testType : 'covid19'
-                    },
-                    function(data) {
-                         if(data!="0")
-                         {
-                              obj = $.parseJSON(data);
-                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
-                         }
-                         else
-                         {
-                              $(".artNoGroup").html('');
-                         }
-                    });
-          
-     });
+        $("#patientId").change(function() {
+            $.post("/common/patient-last-request-details.php", {
+                    patientId: $.trim($(this).val()),
+                    testType: 'covid19'
+                },
+                function(data) {
+                    if (data != "0") {
+                        obj = $.parseJSON(data);
+                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                    } else {
+                        $(".artNoGroup").html('');
+                    }
+                });
+
+        });
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });

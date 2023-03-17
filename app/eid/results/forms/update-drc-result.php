@@ -456,7 +456,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
 											<td>
-												<input type="text" readonly class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+												<input type="text" readonly class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
@@ -500,7 +500,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
 											<td style="width:25%;">
-												<input type="text" readonly class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+												<input type="text" readonly class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
 											</td>
 
 

@@ -582,7 +582,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
-                                                               <!--  <div class="col-md-4">
+                                                                 <!--  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control date  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" />
@@ -602,7 +602,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
-                                                                <!-- <div class="col-md-4">
+                                                                 <!-- <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="emailHf">Email for HF </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" value="<?php echo $facilityResult[0]['facility_emails']; ?>" />
@@ -1154,10 +1154,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
      function validateNow() {
           var ARTlength = $("#artNo").val();
-          if(ARTlength.length!=10)
-          {
-               alert("ART No. should be 10 characters long");
-               return false;
+          if (ARTlength.length != 10) {
+               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+               //return false;
           }
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'

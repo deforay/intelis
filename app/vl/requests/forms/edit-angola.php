@@ -304,7 +304,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                     <tr>
                       <td style="width:14%;"><label for="">Data de início de TARV </label></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="e.g 09-Jan-1992" title="Please select Data de início de TARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();" style="width:100%;" />
+                        <input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please select Data de início de TARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();" style="width:100%;" />
                       </td>
                       <td style="width:14%;"><label for="artRegimen"> Esquema de TARV actual </label></td>
                       <td style="width:14%;">
@@ -402,7 +402,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                           <input type="radio" class="" id="patientPregnantWoman" name="patientGroup" value="pregnant" title="Please check Mulher gestante" <?php echo (isset($patientGrp->patient_group) && trim($patientGrp->patient_group) == "pregnant") ? 'checked="checked"' : ''; ?>>
                         </label>
                         <label class="radio-inline" style="padding-left:0px !important;margin-left:0;">Mulher gestante – indique a data provável do parto</label>
-                        <input type="text" class="form-control date" name="patientPregnantWomanDate" id="patientPregnantWomanDate" placeholder="e.g 09-Jan-1992" title="Please enter data provável do parto" value="<?php echo (isset($patientGrp->patient_group_option_date)) ? $patientGrp->patient_group_option_date : ''; ?>" />
+                        <input type="text" class="form-control date" name="patientPregnantWomanDate" id="patientPregnantWomanDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter data provável do parto" value="<?php echo (isset($patientGrp->patient_group_option_date)) ? $patientGrp->patient_group_option_date : ''; ?>" />
                       </td>
                     </tr>
                     <tr>
@@ -455,7 +455,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                     <tr>
                       <td style="width:14%;"><label for="">Se aplicável: data da última carga viral </label></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control date" id="lastVlDate" name="lastVlDate" placeholder="e.g 09-Jan-1992" title="Please select data da última carga viral" style="width:100%;" value="<?php echo $lastVlDate; ?>" />
+                        <input type="text" class="form-control date" id="lastVlDate" name="lastVlDate" placeholder="<?= _("Please enter date"); ?>" title="Please select data da última carga viral" style="width:100%;" value="<?php echo $lastVlDate; ?>" />
                       </td>
                       <td style="width:14%;"><label for="lastVlResult"> Resultado da última carga vira </label></td>
                       <td style="width:14%;">

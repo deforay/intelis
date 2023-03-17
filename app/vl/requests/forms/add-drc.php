@@ -145,7 +145,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date de la demande </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="e.g 09-Jan-1992" title="Please enter date de la demande" style="width:100%;" />
+											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de la demande" style="width:100%;" />
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
@@ -191,7 +191,7 @@ $sFormat = '';
 									<tr>
 										<td style="width:10% !important;"><label for="">Date de naissance </label></td>
 										<td style="width:15% !important;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="e.g 09-Jan-1992" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" style="width:100%;" />
 										</td>
 										<td style="width:6% !important;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19% !important;">
@@ -230,7 +230,7 @@ $sFormat = '';
 										</td>
 										<td class="du" style="visibility:hidden;"><label for="">Date du début des ARV </label></td>
 										<td class="du" style="visibility:hidden;">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="e.g 09-Jan-1992" title="Please enter date du début des ARV" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" /> &nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" /> &nbsp;(Jour/Mois/Année)
 										</td>
 										<td></td>
 										<td></td>
@@ -276,7 +276,7 @@ $sFormat = '';
 									<tr class="arvChangedElement" style="display:none;">
 										<td><label for="">Date du changement de régime ARV </label></td>
 										<td colspan="3">
-											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="e.g 09-Jan-1992" title="Please enter date du changement de régime ARV" style="width:100%;" /> &nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" style="width:100%;" /> &nbsp;(Jour/Mois/Année)
 										</td>
 										<td></td>
 										<td></td>
@@ -363,7 +363,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date dernière charge virale (demande) </label></td>
 										<td colspan="3">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="e.g 09-Jan-1992" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" style="width:100%;" />
+											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -381,7 +381,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -414,7 +414,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de départ au Labo biomol" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -435,7 +435,7 @@ $sFormat = '';
 										<tr>
 											<td style="width: 25%;"><label for="">Date de réception de l'échantillon  </label></td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="labId">Nom du laboratoire </label> </td>
 											<td style="width: 25%;">
@@ -447,7 +447,7 @@ $sFormat = '';
 										<tr>
 											<td style="width: 25%;"><label for="dateOfCompletionOfViralLoad">Date de réalisation de la charge virale </label></td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée  </label></td>
 											<td style="width: 25%;">

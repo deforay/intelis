@@ -325,7 +325,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <th scope="row"><label for="">Data e Hora da Recepção da Amostra <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="e.g 09-Jan-1992 05:30" title="Data e Hora da Recepção da Amostra" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
+                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Data e Hora da Recepção da Amostra" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
                                         </td>
                                         <th scope="row"><label for="">Responsável da recepção </label></th>
                                         <td>
@@ -368,7 +368,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <td style="width:25%;"><label for="">Data da Quantificação </label></td>
                                         <td style="width:25%;">
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="e.g 09-Jan-1992 05:30" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" />
+                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" />
                                         </td>
 
 

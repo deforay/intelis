@@ -144,7 +144,7 @@ $sampleSuggestionDisplay = 'display:none;';
 
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_vl_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_vl_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_vl_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_vl_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
 										</td>
 
 
@@ -200,7 +200,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="">Date de la demande </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="e.g 09-Jan-1992" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
@@ -244,7 +244,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="e.g 09-Jan-1992" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?php echo $vlQueryInfo['patient_dob']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?php echo $vlQueryInfo['patient_dob']; ?>" style="width:100%;" />
 										</td>
 										<td style="width:6%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19%;">
@@ -283,7 +283,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td class="du"><label for="">Date du début des ARV </label></td>
 										<td class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="e.g 09-Jan-1992" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 										<td></td>
 										<td></td>
@@ -329,7 +329,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr class="arvChangedElement" style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
 										<td><label for="">Date du changement de régime ARV </label></td>
 										<td colspan="3">
-											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="e.g 09-Jan-1992" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 										<td></td>
 										<td></td>
@@ -414,7 +414,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="">Date dernière charge virale (demande) </label></td>
 										<td colspan="3">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="e.g 09-Jan-1992" title="Please enter date dernière charge virale" value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" onchange="checkLastVLTestDate();" style="width:100%;" />
+											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" onchange="checkLastVLTestDate();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -432,7 +432,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td style="width:25%;"><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td style="width:25%;">
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date du prélèvement" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();" style="width:100%;" />
 										</td>
 										<td style="width:25%;"></td>
 										<td style="width:25%;"></td>
@@ -465,7 +465,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['date_dispatched_from_clinic_to_lab']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['date_dispatched_from_clinic_to_lab']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -486,7 +486,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 											<td><label for="">Date de réception de l'échantillon  </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du laboratoire </label> </td>
 											<td>
@@ -498,7 +498,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr>
 											<td><label for="">Date de réalisation de la charge virale </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="e.g 09-Jan-1992 05:30" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>

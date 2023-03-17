@@ -1,6 +1,7 @@
 <?php
 $title = _("Covid-19 | View All Requests");
 $hidesrcofreq = false;
+$dateRange = $labName = $srcOfReq = $srcStatus = null;
 if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];

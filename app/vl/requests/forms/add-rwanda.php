@@ -261,7 +261,7 @@ $sFormat = '';
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php
                                                                  $selected = '';
-                                                                 if(count($sResult)==1)
+                                                                 if (count($sResult) == 1)
                                                                       $selected = "selected='selected'";
                                                                  foreach ($sResult as $name) { ?>
                                                                       <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
@@ -474,7 +474,7 @@ $sFormat = '';
                                                                       <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                                  </div>
                                                             </div>
-                                                           <!-- <div class="col-md-4">
+                                                            <!-- <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="requestDate">Request Date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" />
@@ -494,7 +494,7 @@ $sFormat = '';
                                                                       <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" />
                                                                  </div>
                                                             </div>
-                                                           <!-- <div class="col-md-4">
+                                                            <!-- <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="emailHf">Email for HF</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" />
@@ -588,7 +588,7 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" />
-                                                                        <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
+                                                                           <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
                                                                            &lt; 20<br>
                                                                            <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
                                                                            &lt; 40<br>
@@ -682,7 +682,7 @@ $sFormat = '';
                                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
                                         <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                    </div>
-                                   <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                                   <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                     </form>
                </div>
      </section>
@@ -710,14 +710,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      provinceName = true;
      facilityName = true;
-     function autoSelect(id)
-     {
+
+     function autoSelect(id) {
           $.blockUI();
-          selValue = $('#'+id).has("option[value!='']").length;
-          $("#"+id+" > option").each(function() {
-               if((this.value)!="")
-               {
-                    $('#'+id).val(this.value).trigger('change');
+          selValue = $('#' + id).has("option[value!='']").length;
+          $("#" + id + " > option").each(function() {
+               if ((this.value) != "") {
+                    $('#' + id).val(this.value).trigger('change');
                }
           });
           $.unblockUI();
@@ -727,25 +726,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           autoSelect('district');
           autoSelect('fName');
 
-     $("#artNo").change(function(){
-          $.post("/common/patient-last-request-details.php", {
-                         testType : 'vl',
-                         patientId : $.trim($(this).val()),
+          $("#artNo").change(function() {
+               $.post("/common/patient-last-request-details.php", {
+                         testType: 'vl',
+                         patientId: $.trim($(this).val()),
                     },
                     function(data) {
-                         if(data!="0")
-                         {
+                         if (data != "0") {
                               obj = $.parseJSON(data);
-                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : '+obj.no_of_req_time+'<br>Last Test Request Added On VLSM : '+obj.request_created_datetime+'<br>Sample Collection Date for Last Request : '+obj.sample_collection_date+'</small>');
-                         }
-                         else
-                         {
+                              $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                         } else {
                               $(".artNoGroup").html('');
                          }
                     });
-          
-     });
-        
+
+          });
+
           $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
@@ -780,10 +776,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-          if($("#selectedSample").val()!="")
-          {
+          if ($("#selectedSample").val() != "") {
                patientInfo = JSON.parse($("#selectedSample").val());
-          
+
                if ($.trim(patientInfo['sample_tested_datetime']) != '') {
                     $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
@@ -1085,10 +1080,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if(ARTlength.length!=10)
-          {
-               alert("ART No. should be 10 characters long");
-               return false;
+          if (ARTlength.length != 10) {
+               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+               //return false;
           }
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
@@ -1125,10 +1119,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if(ARTlength.length!=10)
-          {
-               alert("ART No. should be 10 characters long");
-               return false;
+          if (ARTlength.length != 10) {
+               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+               //return false;
           }
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
@@ -1214,7 +1207,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['current_regimen']) != '') {
                $("#artRegimen").val($.trim(patientArray['current_regimen']));
           }
-          
+
      }
 
      function calculateLogValue(obj) {
@@ -1240,7 +1233,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           }
      }
-
-    
-
 </script>
