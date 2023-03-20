@@ -384,7 +384,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:20px;border-bottom:2px solid #d3d3d3;"></td>';
 $html .= '</tr>';
-if (SYSTEM_CONFIG['sc_user_type'] == 'vluser' && SYSTEM_CONFIG['dataSync'] == 0) {
+if ($_SESSION['instanceType'] == 'vluser' && SYSTEM_CONFIG['dataSync'] == 0) {
     $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
 } else {
     $generatedAtTestingLab = "";

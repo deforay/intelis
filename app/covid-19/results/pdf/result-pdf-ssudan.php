@@ -5,6 +5,12 @@
 
 class SouthSudan_PDF extends MYPDF
 {
+    public $logo = '';
+    public $text = '';
+    public $lab = '';
+    public $facilityInfo = array();
+    public $formId = 1;
+    public $htitle = '';
     //Page header
     public function Header()
     {
@@ -14,7 +20,7 @@ class SouthSudan_PDF extends MYPDF
 
             if (isset($this->formId) && $this->formId == 1) {
                 if (trim($this->logo) != '') {
-                    if (file_exists($this->logo)) {
+                    if ($this->imageExists($this->logo)) {
                         $this->Image($this->logo, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
@@ -49,7 +55,7 @@ class SouthSudan_PDF extends MYPDF
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
                 if (trim($this->logo) != '') {
-                    if (file_exists($this->logo)) {
+                    if ($this->imageExists($this->logo)) {
                         $this->Image($this->logo, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
@@ -117,7 +123,7 @@ if (sizeof($requestResult) > 0) {
         }
         // create new PDF document
         $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];
@@ -439,7 +445,12 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">DATE & TIME</td>';
             $html .= '</tr>';
             foreach ($signResults as $key => $row) {
-                $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                if (!$pdf->imageExists($lmSign)) {
+                    $lmSign = "";
+                } else {
+                    $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
+                }
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">' . $row['designation'] . '</td>';
                 $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . $row['name_of_signatory'] . '</td>';
@@ -483,7 +494,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
-        if (SYSTEM_CONFIG['sc_user_type'] == 'vluser' && $result['dataSync'] == 0) {
+        if ($_SESSION['instanceType'] == 'vluser' && $result['dataSync'] == 0) {
             $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";

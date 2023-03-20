@@ -86,6 +86,17 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
+	public $logo;
+	public $text;
+	public $lab;
+	public $htitle;
+	public $labFacilityId;
+	public $formId;
+	public $facilityInfo;
+	public $resultPrintedDate;
+	public $systemConfig;
+	public $dataSync;
+
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = array(), $resultPrintedDate = null, $dataSync = null, $systemConfig = null)
@@ -102,9 +113,9 @@ class MYPDF extends TCPDF
 		$this->dataSync = $dataSync;
 	}
 	public function imageExists($filePath)
-    {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
-    }
+	{
+		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+	}
 	//Page header
 	public function Header()
 	{

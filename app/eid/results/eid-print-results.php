@@ -127,7 +127,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-                                                
+
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
                                                 <button class="btn btn-default btn-sm result-pdf-without-print" style="display:none;" onclick="convertSearchResultToPdf('');"><span><?php echo _("Result PDF"); ?></span></button>
@@ -143,7 +143,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                                 <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
                                                             </div>
                                                         <?php } ?>
-                                                       
+
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Child's ID"); ?></label>
                                                         </div>
@@ -163,11 +163,11 @@ $state = $geoLocationDb->getProvinces("yes");
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-															<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
-														</div>
-														<div class="col-md-3">
-															<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
-														</div>
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
+                                                        </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label> <br>
                                                         </div>
@@ -283,7 +283,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
                                                 </tr>
-                                                
+
                                             </table>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
                                                 <button class="btn btn-default btn-sm result-pdf-without-printed" style="display:none;" onclick="convertSearchResultToPdf('','printData');"><span><?php echo _("Result PDF"); ?></span></button>
@@ -299,7 +299,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                                 <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
                                                             </div>
                                                         <?php } ?>
-                                                     
+
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Child's ID"); ?></label>
                                                         </div>
@@ -319,11 +319,11 @@ $state = $geoLocationDb->getProvinces("yes");
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
-														</div>
-														<div class="col-md-3">
-															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
-														</div>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
+                                                        </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Result"); ?></label> <br>
                                                         </div>
@@ -393,26 +393,26 @@ $state = $geoLocationDb->getProvinces("yes");
     var opTable = null;
     $(document).ready(function() {
         var i = '<?php echo $i; ?>';
-		$(".printedData").click(function(){
-			loadPrintedVlRequestData();
-				/*Hide Province, District Columns */
-		var bVisCol = opTable.fnSettings().aoColumns[9].bVisible;
-		opTable.fnSetColumnVis(9, bVisCol ? false : true);
-		var bVisCol = opTable.fnSettings().aoColumns[10].bVisible;
-		opTable.fnSetColumnVis(10, bVisCol ? false : true);
-		var bVisCol = opTable.fnSettings().aoColumns[13].bVisible;
-		opTable.fnSetColumnVis(13, bVisCol ? false : true);
+        $(".printedData").click(function() {
+            loadPrintedVlRequestData();
+            /*Hide Province, District Columns */
+            //var bVisCol = opTable.fnSettings().aoColumns[9].bVisible;
+            opTable.fnSetColumnVis(9, false);
+            //var bVisCol = opTable.fnSettings().aoColumns[10].bVisible;
+            opTable.fnSetColumnVis(10, false);
+            //var bVisCol = opTable.fnSettings().aoColumns[13].bVisible;
+            opTable.fnSetColumnVis(13, false);
 
-		for (colNo = 0; colNo <= i; colNo++) {
-			$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-			if (opTable.fnSettings().aoColumns[colNo].bVisible) {
-				$("#printiCol" + colNo + "-sort").show();
-			} else {
-				$("#printiCol" + colNo + "-sort").hide();
-			}
-		}
-		});
-		
+            for (colNo = 0; colNo <= i; colNo++) {
+                $("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+                if (opTable.fnSettings().aoColumns[colNo].bVisible) {
+                    $("#printiCol" + colNo + "-sort").show();
+                } else {
+                    $("#printiCol" + colNo + "-sort").hide();
+                }
+            }
+        });
+
         $("#state, #printState").select2({
             placeholder: "<?php echo _("Select Province"); ?>"
         });
@@ -448,31 +448,31 @@ $state = $geoLocationDb->getProvinces("yes");
             });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
-       
-        		/*Hide Province, District Columns */
-		var bVisCol = oTable.fnSettings().aoColumns[9].bVisible;
-		oTable.fnSetColumnVis(9, bVisCol ? false : true);
-		var bVisCol = oTable.fnSettings().aoColumns[10].bVisible;
-		oTable.fnSetColumnVis(10, bVisCol ? false : true);
-		var bVisCol = oTable.fnSettings().aoColumns[13].bVisible;
-		oTable.fnSetColumnVis(13, bVisCol ? false : true);
-       // loadPrintedVlRequestData();
+
+        /*Hide Province, District Columns */
+        //var bVisCol = oTable.fnSettings().aoColumns[9].bVisible;
+        oTable.fnSetColumnVis(9, false);
+        //var bVisCol = oTable.fnSettings().aoColumns[10].bVisible;
+        oTable.fnSetColumnVis(10, false);
+        //var bVisCol = oTable.fnSettings().aoColumns[13].bVisible;
+        oTable.fnSetColumnVis(13, false);
+        // loadPrintedVlRequestData();
         $(".checkRows").change(function() {
             console.log("CHECK");
             var checkBoxes = document.getElementsByName("chk[]");
             len = checkBoxes.length;
-            if(len > 0){
+            if (len > 0) {
                 $('.result-pdf-without-print').show();
-            }else{
+            } else {
                 $('.result-pdf-without-print').hide();
             }
         });
         $(".checkPrintedRows").change(function() {
             var checkBoxes = document.getElementsByName("chkPrinted[]");
             len = checkBoxes.length;
-            if(len > 0){
+            if (len > 0) {
                 $('.result-pdf-without-printed').show();
-            }else{
+            } else {
                 $('.result-pdf-without-printed').hide();
             }
         });
@@ -502,13 +502,13 @@ $state = $geoLocationDb->getProvinces("yes");
             $(this).fadeOut('slow')
         });
         for (colNo = 0; colNo <= i; colNo++) {
-			$("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-			if (oTable.fnSettings().aoColumns[colNo].bVisible) {
-				$("#iCol" + colNo + "-sort").show();
-			} else {
-				$("#iCol" + colNo + "-sort").hide();
-			}
-		}
+            $("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+            if (oTable.fnSettings().aoColumns[colNo].bVisible) {
+                $("#iCol" + colNo + "-sort").show();
+            } else {
+                $("#iCol" + colNo + "-sort").hide();
+            }
+        }
     });
 
     function fnShowHide(iCol) {
