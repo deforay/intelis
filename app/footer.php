@@ -1,11 +1,16 @@
+<?php
 
+$supportEmail = trim($general->getGlobalConfig('support_email'));
 
-	
+?>
+
 <footer class="main-footer">
 
 
-	<small>This project is supported by the U.S. President’s Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
-	<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; ?>', 900, 520);">Support</a></small>
+	<small>This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
+	<?php if (!empty($supportEmail)) { ?>
+		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>', 900, 520);">Support</a></small>
+	<?php } ?>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php
 
@@ -39,25 +44,24 @@
 
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
-<script src="/assets/js/select2.js"></script>
+<script type="text/javascript" src="/assets/js/select2.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
-<script src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js")?>'></script>
-<script src="/assets/js/app.min.js"></script>
-<script src="/assets/js/deforayValidation.js"></script>
-<script src="/assets/js/jquery.maskedinput.js"></script>
-<script src="/assets/js/jquery.blockUI.js"></script>
-<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js") ?>'></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
 
 
 <!-- HTML2CANVAS -->
 
 <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-</script>
 
 <script type="text/javascript">
 	window.additionalXHRParams = {
@@ -809,27 +813,32 @@
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');
 	}
-	
-	function screenshot(supportId,attached){
-		if(supportId!="" && attached=='yes'){
+
+	function screenshot(supportId, attached) {
+		if (supportId != "" && attached == 'yes') {
 			closeModal();
 			html2canvas(document.querySelector("#capture")).then(canvas => {
 				dataURL = canvas.toDataURL();
 				$.blockUI();
-				$.post("/support/saveScreenshot.php", {image:dataURL,supportId:supportId},
-				function(data) {
-					$.unblockUI();
-					alert("Submitted successfully");
-				});
+				$.post("/support/saveScreenshot.php", {
+						image: dataURL,
+						supportId: supportId
+					},
+					function(data) {
+						$.unblockUI();
+						alert("<?php _("Thank you. Your message has been submitted."); ?>");
+					});
 			});
-		}else{
+		} else {
 			closeModal();
 			$.blockUI();
-			$.post("/support/saveScreenshot.php", {supportId:supportId},
-			function(data) {
-				$.unblockUI();
-				alert("Submitted successfully");
-			});
+			$.post("/support/saveScreenshot.php", {
+					supportId: supportId
+				},
+				function(data) {
+					$.unblockUI();
+					alert("<?php _("Thank you. Your message has been submitted."); ?>");
+				});
 		}
 	}
 </script>
