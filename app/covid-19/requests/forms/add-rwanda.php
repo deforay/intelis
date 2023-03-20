@@ -393,7 +393,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+                                            <input class="form-control date isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
                                     </tr>
 
@@ -719,6 +719,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     $(document).ready(function() {
+        autoSelectSingleOption('facilityId');
+        autoSelectSingleOption('specimenType');
         $("#patientId").on('input', function() {
             $.post("/common/patient-last-request-details.php", {
                     patientId: $.trim($(this).val()),

@@ -10,7 +10,12 @@ if(isset($_POST['testType']) && $_POST['testType']!='')
     $patientId = $_POST['patientId'];
     $result = $app->getLastRequestForPatientID($test,$patientId);
     if(count($result)>0)
+    {
         echo json_encode($result);
-            else
+    }
+    else
+    {
         echo "0";
+    }
+        
 
