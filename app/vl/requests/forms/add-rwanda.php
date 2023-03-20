@@ -711,19 +711,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
 
-     function autoSelectSingleOption(id) {
-          selValue = $('#' + id).find("option").not(':empty').length;
-          if (selValue === 1) {
-               $('#' + id).find("option").each(function() {
-                    if ((this.value) != "") {
-                         $('#' + id).val(this.value).trigger('change');
-                    }
-               });
-          }
-     }
      $(document).ready(function() {
-          // autoSelect('province');
-          // autoSelect('district');
           autoSelectSingleOption('fName');
           autoSelectSingleOption('specimenType');
 
