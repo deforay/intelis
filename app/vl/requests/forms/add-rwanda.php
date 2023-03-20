@@ -734,6 +734,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    $("#artNoGroup").append('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
                                         '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
                                         '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
+                                        '<br>Total No. of times Patient tested for VL : ' + obj.no_of_tested_time +
                                         '</small>');
                               } else {
                                    if (artNo.length < 10) {
