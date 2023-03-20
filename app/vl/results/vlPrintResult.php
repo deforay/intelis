@@ -878,7 +878,7 @@ $state = $geoLocationDb->getProvinces("yes");
 				} else {
 					$.unblockUI();
 					oTable.fnDraw();
-					opTable.fnDraw();
+					//opTable.fnDraw();
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});

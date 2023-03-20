@@ -57,7 +57,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                 <div class="bs-example bs-example-tabs">
                                     <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                                         <li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _("Results not yet Printed"); ?> </a></li>
-                                        <li><a href="#printedData" data-toggle="tab"><?php echo _("Results already Printed"); ?> </a></li>
+                                        <li><a href="#printedData" data-toggle="tab" class="printedData"><?php echo _("Results already Printed"); ?> </a></li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
@@ -386,6 +386,26 @@ $state = $geoLocationDb->getProvinces("yes");
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
+        var i = '<?php echo $i; ?>';
+		$(".printedData").click(function(){
+			loadPrintedVlRequestData();
+				/*Hide Province, District Columns */
+		var bVisCol = opTable.fnSettings().aoColumns[7].bVisible;
+		opTable.fnSetColumnVis(7, bVisCol ? false : true);
+		var bVisCol = opTable.fnSettings().aoColumns[8].bVisible;
+		opTable.fnSetColumnVis(8, bVisCol ? false : true);
+		var bVisCol = opTable.fnSettings().aoColumns[12].bVisible;
+		opTable.fnSetColumnVis(12, bVisCol ? false : true);
+
+		for (colNo = 0; colNo <= i; colNo++) {
+			$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+			if (opTable.fnSettings().aoColumns[colNo].bVisible) {
+				$("#printiCol" + colNo + "-sort").show();
+			} else {
+				$("#printiCol" + colNo + "-sort").hide();
+			}
+		}
+		});
         $("#state, #printState").select2({
 			placeholder: "<?php echo _("Select Province"); ?>"
 		});
@@ -421,7 +441,14 @@ $state = $geoLocationDb->getProvinces("yes");
             });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
-        loadPrintedVlRequestData();
+         /*Hide Province, District Columns */
+		var bVisCol = oTable.fnSettings().aoColumns[7].bVisible;
+		oTable.fnSetColumnVis(7, bVisCol ? false : true);
+		var bVisCol = oTable.fnSettings().aoColumns[8].bVisible;
+		oTable.fnSetColumnVis(8, bVisCol ? false : true);
+		var bVisCol = oTable.fnSettings().aoColumns[12].bVisible;
+		oTable.fnSetColumnVis(12, bVisCol ? false : true);
+        //loadPrintedVlRequestData();
         $(".showhideCheckBox").change(function() {
             if ($(this).attr('checked')) {
                 idpart = $(this).attr('data-showhide');
@@ -447,7 +474,6 @@ $state = $geoLocationDb->getProvinces("yes");
         $("#printShowhide").hover(function() {}, function() {
             $(this).fadeOut('slow')
         });
-        var i = <?php echo $i; ?>;
         for (colNo = 0; colNo <= i; colNo++) {
             $("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
             if (oTable.fnSettings().aoColumns[colNo].bVisible) {
@@ -456,14 +482,7 @@ $state = $geoLocationDb->getProvinces("yes");
                 $("#iCol" + colNo + "-sort").hide();
             }
         }
-        for (colNo = 0; colNo <= i; colNo++) {
-            $("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-            if (opTable.fnSettings().aoColumns[colNo].bVisible) {
-                $("#printiCol" + colNo + "-sort").show();
-            } else {
-                $("#printiCol" + colNo + "-sort").hide();
-            }
-        }
+       
     });
 
     function fnShowHide(iCol) {
@@ -656,6 +675,9 @@ $state = $geoLocationDb->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
@@ -749,7 +771,7 @@ $state = $geoLocationDb->getProvinces("yes");
                 } else {
                     $.unblockUI();
                     oTable.fnDraw();
-                    opTable.fnDraw();
+                   // opTable.fnDraw();
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });

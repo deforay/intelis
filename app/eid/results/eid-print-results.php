@@ -52,7 +52,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                 <div class="bs-example bs-example-tabs">
                                     <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                                         <li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _("Results not yet Printed"); ?> </a></li>
-                                        <li><a href="#printedData" data-toggle="tab"><?php echo _("Results already Printed"); ?> </a></li>
+                                        <li><a href="#printedData" data-toggle="tab" class="printedData"><?php echo _("Results already Printed"); ?> </a></li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
@@ -145,10 +145,16 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                        
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Child's ID"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label> <br>
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Child's Name"); ?></label> <br>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Mother's ID"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Mother's Name"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
@@ -163,10 +169,7 @@ $state = $geoLocationDb->getProvinces("yes");
 															<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
 														</div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Last Modified On"); ?></label>
@@ -179,7 +182,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                                 </div>
                                             </span>
 
-                                            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                                            <table id="vlRequestDataTables" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -298,34 +301,37 @@ $state = $geoLocationDb->getProvinces("yes");
                                                         <?php } ?>
                                                      
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Child's ID"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_first_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label> <br>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Child's Name"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Mother's ID"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="mother_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Mother's Name"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Testing Lab"); ?></label>
+                                                        </div>
+                                                        <div class="col-md-3">
+															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
+															<input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("District/Country"); ?></label>
 														</div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label> <br>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Result"); ?></label> <br>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="result" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Last Modified On"); ?></label>
                                                         </div>
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Last Modified On"); ?></label>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="status_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
+                                                            <input type="checkbox" onclick="javascript:printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
                                                         </div>
 
                                                     </div>
@@ -386,6 +392,27 @@ $state = $geoLocationDb->getProvinces("yes");
     var oTable = null;
     var opTable = null;
     $(document).ready(function() {
+        var i = '<?php echo $i; ?>';
+		$(".printedData").click(function(){
+			loadPrintedVlRequestData();
+				/*Hide Province, District Columns */
+		var bVisCol = opTable.fnSettings().aoColumns[9].bVisible;
+		opTable.fnSetColumnVis(9, bVisCol ? false : true);
+		var bVisCol = opTable.fnSettings().aoColumns[10].bVisible;
+		opTable.fnSetColumnVis(10, bVisCol ? false : true);
+		var bVisCol = opTable.fnSettings().aoColumns[13].bVisible;
+		opTable.fnSetColumnVis(13, bVisCol ? false : true);
+
+		for (colNo = 0; colNo <= i; colNo++) {
+			$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+			if (opTable.fnSettings().aoColumns[colNo].bVisible) {
+				$("#printiCol" + colNo + "-sort").show();
+			} else {
+				$("#printiCol" + colNo + "-sort").hide();
+			}
+		}
+		});
+		
         $("#state, #printState").select2({
             placeholder: "<?php echo _("Select Province"); ?>"
         });
@@ -421,7 +448,15 @@ $state = $geoLocationDb->getProvinces("yes");
             });
         $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
         loadVlRequestData();
-        loadPrintedVlRequestData();
+       
+        		/*Hide Province, District Columns */
+		var bVisCol = oTable.fnSettings().aoColumns[9].bVisible;
+		oTable.fnSetColumnVis(9, bVisCol ? false : true);
+		var bVisCol = oTable.fnSettings().aoColumns[10].bVisible;
+		oTable.fnSetColumnVis(10, bVisCol ? false : true);
+		var bVisCol = oTable.fnSettings().aoColumns[13].bVisible;
+		oTable.fnSetColumnVis(13, bVisCol ? false : true);
+       // loadPrintedVlRequestData();
         $(".checkRows").change(function() {
             console.log("CHECK");
             var checkBoxes = document.getElementsByName("chk[]");
@@ -466,23 +501,14 @@ $state = $geoLocationDb->getProvinces("yes");
         $("#printShowhide").hover(function() {}, function() {
             $(this).fadeOut('slow')
         });
-        var i = '<?php echo $i; ?>';
         for (colNo = 0; colNo <= i; colNo++) {
-            $("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-            if (oTable.fnSettings().aoColumns[colNo].bVisible) {
-                $("#iCol" + colNo + "-sort").show();
-            } else {
-                $("#iCol" + colNo + "-sort").hide();
-            }
-        }
-        for (colNo = 0; colNo <= i; colNo++) {
-            $("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-            if (opTable.fnSettings().aoColumns[colNo].bVisible) {
-                $("#printiCol" + colNo + "-sort").show();
-            } else {
-                $("#printiCol" + colNo + "-sort").hide();
-            }
-        }
+			$("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+			if (oTable.fnSettings().aoColumns[colNo].bVisible) {
+				$("#iCol" + colNo + "-sort").show();
+			} else {
+				$("#iCol" + colNo + "-sort").hide();
+			}
+		}
     });
 
     function fnShowHide(iCol) {
@@ -497,7 +523,7 @@ $state = $geoLocationDb->getProvinces("yes");
 
     function loadVlRequestData() {
         $.blockUI();
-        oTable = $('#vlRequestDataTable').dataTable({
+        oTable = $('#vlRequestDataTables').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -789,7 +815,7 @@ $state = $geoLocationDb->getProvinces("yes");
                 } else {
                     $.unblockUI();
                     oTable.fnDraw();
-                    opTable.fnDraw();
+                    //opTable.fnDraw();
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });
