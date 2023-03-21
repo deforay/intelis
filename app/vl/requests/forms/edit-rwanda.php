@@ -10,7 +10,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
           $maxLength = "maxlength=" . $maxLength;
      }
 } else {
-     $sampleClass = '';
+     $sampleClass = ''; 
      $maxLength = '';
      if ($arr['max_length'] != '') {
           $maxLength = $arr['max_length'];
@@ -465,51 +465,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-8">
-                                                                      <div class="form-group">
-                                                                           <div class="col-lg-12">
-                                                                                <label class="radio-inline">
-                                                                                     <?php
-                                                                                     $checked = '';
-                                                                                     $display = '';
-                                                                                     $vlValue = '';
-                                                                                     if (trim($vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
-                                                                                          $checked = 'checked="checked"';
-                                                                                          $display = 'block';
-                                                                                          if ($vlQueryInfo['last_vl_result_failure_ac'] != null && trim($vlQueryInfo['last_vl_result_failure_ac']) != '' && trim($vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim($vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
-                                                                                               $vlValue = $vlQueryInfo['last_vl_result_failure_ac'];
-                                                                                          }
-                                                                                     } else {
-                                                                                          $checked = '';
-                                                                                          $display = 'none';
-                                                                                     }
-                                                                                     ?>
-                                                                                     <input type="radio" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
-                                                                                     <strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
-                                                                                </label>
-                                                                           </div>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row repeatTesting hideTestData well" style="display: <?php echo $display; ?>;">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label">Date of Last VL Test</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
-                                                                           (copies/ml)<br>
-                                                                           <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlQueryInfo['last_vl_result_failure_ac']) == '<20') ? '' : 'disabled="disabled"'; ?> title="Please check VL Result">
-                                                                           < 20<br>
-                                                                                <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlQueryInfo['last_vl_result_failure_ac']) == 'tnd') ? '' : 'disabled="disabled"'; ?> title="Please check VL Result"> Target Not Detected
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">
                                                                            <div class="col-lg-12">
@@ -554,6 +509,52 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       </div>
                                                                  </div>
                                                             </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-8">
+                                                                      <div class="form-group">
+                                                                           <div class="col-lg-12">
+                                                                                <label class="radio-inline">
+                                                                                     <?php
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     $vlValue = '';
+                                                                                     if (trim($vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                          if ($vlQueryInfo['last_vl_result_failure_ac'] != null && trim($vlQueryInfo['last_vl_result_failure_ac']) != '' && trim($vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim($vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
+                                                                                               $vlValue = $vlQueryInfo['last_vl_result_failure_ac'];
+                                                                                          }
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                     <input type="radio" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('repeatTesting');">
+                                                                                     <strong>Control VL test after adherence counselling addressing suspected treatment failure </strong>
+                                                                                </label>
+                                                                           </div>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row repeatTesting hideTestData well" style="display: <?php echo $display; ?>;">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
+                                                                           (copies/ml)<br>
+                                                                           <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlQueryInfo['last_vl_result_failure_ac']) == '<20') ? '' : 'disabled="disabled"'; ?> title="Please check VL Result">
+                                                                           < 20<br>
+                                                                                <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim($vlQueryInfo['last_vl_result_failure_ac']) == '') || trim($vlQueryInfo['last_vl_result_failure_ac']) == 'tnd') ? '' : 'disabled="disabled"'; ?> title="Please check VL Result"> Target Not Detected
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            
                                                             <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">

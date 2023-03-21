@@ -387,36 +387,6 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row">
-                                                            <div class="col-md-8">
-                                                                 <div class="form-group">
-                                                                      <div class="col-lg-12">
-                                                                           <label class="radio-inline">
-                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Please check viral load indication testing type" onclick="showTesting('repeatTesting');">
-                                                                                <strong>Repeat VL test after suspected treatment failure adherence counselling </strong>
-                                                                           </label>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row repeatTesting hideTestData well" style="display:none;">
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)<br>
-                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL Result">
-                                                                      < 20<br>
-                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row">
                                                             <div class="col-md-6">
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
@@ -446,6 +416,37 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                        </div>
+                                                       <div class="row">
+                                                            <div class="col-md-8">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="failure" title="Please check viral load indication testing type" onclick="showTesting('repeatTesting');">
+                                                                                <strong>Control VL test after adherence counselling addressing suspected treatment failure </strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row repeatTesting hideTestData well" style="display:none;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
+                                                                      (copies/ml)<br>
+                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL Result">
+                                                                      < 20<br>
+                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                      
                                                        <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -723,7 +724,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small><br>');
                }
                if (artNo.length > 3) {
-
+ 
                     $.post("/common/patient-last-request-details.php", {
                               testType: 'vl',
                               patientId: artNo,
