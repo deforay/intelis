@@ -60,7 +60,7 @@ if ($id > 0) {
     $tQuery = "SELECT * from global_config where name='header'";
     $tResult = $db->query($tQuery);
 
-    $bQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
+    $bQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine LEFT JOIN user_details as u ON u.user_id=b_d.created_by where batch_id=$id";
     $bResult = $db->query($bQuery);
 
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
@@ -74,6 +74,7 @@ if ($id > 0) {
     $dateResult = $db->query($dateQuery);
     $resulted = '';
     $reviewed = '';
+    $createdBy = '';
     if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != null && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
         $resulted = $general->humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
@@ -82,17 +83,19 @@ if ($id > 0) {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
         $reviewed = $general->humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
+   
     if (count($bResult) > 0) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
-            public function setHeading($logo, $text, $batch, $resulted, $reviewed, $worksheetName)
+            public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy,$worksheetName)
             {
                 $this->logo = $logo;
                 $this->text = $text;
                 $this->batch = $batch;
                 $this->resulted = $resulted;
                 $this->reviewed = $reviewed;
+                $this->createdBy = $createdBy;
                 $this->worksheetName = $worksheetName;
             }
             public function imageExists($filePath)
@@ -120,6 +123,7 @@ if ($id > 0) {
                 $this->SetFont('helvetica', '', 9);
                 $this->writeHTMLCell(0, 0, 144, 10, 'Result On : ' . $this->resulted, 0, 0, 0, true, 'C', true);
                 $this->writeHTMLCell(0, 0, 144, 16, 'Reviewed On : ' . $this->reviewed, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 144, 22, 'Created By : ' . $this->createdBy, 0, 0, 0, true, 'C', true);
                 $html = '<hr/>';
                 $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J', true);
             }
@@ -139,7 +143,7 @@ if ($id > 0) {
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed, $worksheetName);
+        $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed,$bResult[0]['user_name'], $worksheetName);
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);

@@ -3408,3 +3408,7 @@ ALTER TABLE `form_hepatitis` CHANGE `request_created_datetime` `request_created_
 -- Amit 17-Mar-2023
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES ('Interpret and Convert VL Results', 'vl_interpret_and_convert_results', 'no', 'VL', 'yes', null, null, 'active');
+
+
+-- Jeyabanu 21-Mar-2023
+ALTER TABLE `batch_details` ADD `created_by` VARCHAR(256) NULL DEFAULT NULL AFTER `label_order`;

@@ -22,6 +22,7 @@ try {
                 'batch_code' => $_POST['batchCode'],
                 'batch_code_key' => $_POST['batchCodeKey'],
                 'test_type' => 'hepatitis',
+                'created_by' => $_SESSION['userId'],
                 'request_created_datetime' => $db->now()
             );
 

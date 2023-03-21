@@ -19,6 +19,7 @@ try {
                 'batch_code_key' => $_POST['batchCodeKey'],
                 'position_type' => $_POST['positions'],
                 'test_type' => 'eid',
+                'created_by' => $_SESSION['userId'],
                 'request_created_datetime' => $db->now()
             );
 
