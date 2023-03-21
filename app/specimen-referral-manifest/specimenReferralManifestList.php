@@ -138,7 +138,6 @@ require_once(APPLICATION_PATH . '/header.php');
 	function generateManifestPDF(pId, frmSrc) {
 		var ids = $("#checkedPackages").val();
 		var module = '<?php echo base64_decode($_GET['t']); ?>';
-		alert(module);
 		if (module == 'vl') {
 			manifestFileName = "generateVLManifest.php";
 		} else if (module == 'eid') {
