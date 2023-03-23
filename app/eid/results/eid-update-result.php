@@ -48,6 +48,9 @@ $id = base64_decode($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
+
 
 $disable = "disabled = 'disabled'";
 

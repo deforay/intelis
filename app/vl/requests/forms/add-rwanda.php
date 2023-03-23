@@ -446,7 +446,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                      
+
                                                        <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -721,10 +721,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                let artNo = $.trim($(this).val());
 
                if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small><br>');
+                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
                }
                if (artNo.length > 3) {
- 
+
                     $.post("/common/patient-last-request-details.php", {
                               testType: 'vl',
                               patientId: artNo,
@@ -732,14 +732,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          function(data) {
                               if (data != "0") {
                                    obj = $.parseJSON(data);
-                                   $("#artNoGroup").append('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
-                                        '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
-                                        '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
-                                        '<br>Total No. of times Patient tested for VL : ' + obj.no_of_tested_time +
-                                        '</small>');
+                                   if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                   }
+                                   if (obj.request_created_datetime != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                   }
+                                   if (obj.sample_collection_date != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                   }
+                                   if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                   }
                               } else {
                                    if (artNo.length < 10) {
-                                        $("#artNoGroup").html('<small style="color:red">Patient ART No. should be 10 characters long</small><br>');
+                                        $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
                                    } else {
                                         $("#artNoGroup").html('');
                                    }
