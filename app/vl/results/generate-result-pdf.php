@@ -166,6 +166,7 @@ class MYPDF extends TCPDF
     // Page number
     //$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
     $this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    
   }
 }
 

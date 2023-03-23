@@ -3412,3 +3412,7 @@ VALUES ('Interpret and Convert VL Results', 'vl_interpret_and_convert_results', 
 
 -- Jeyabanu 21-Mar-2023
 ALTER TABLE `batch_details` ADD `created_by` VARCHAR(256) NULL DEFAULT NULL AFTER `label_order`;
+
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('VL Report QR Code', 'vl_report_qr_code', 'yes', 'vl', 'no', NULL, NULL, 'active');
+
+ALTER TABLE `form_vl` CHANGE `data_sync` `data_sync` INT NOT NULL DEFAULT '0';
