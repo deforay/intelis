@@ -28,7 +28,7 @@ class Eid
         $vlsmSystemConfig = $general->getSystemConfig();
 
         $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -132,14 +132,14 @@ class Eid
     public function getEidResults($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_eid_results where status='active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $query .= " ORDER BY result_id";
         $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
-            $response[$row['result']] = $row['result'];
+            $response[$row['result_id']] = $row['result'];
         }
         return $response;
     }
@@ -147,7 +147,7 @@ class Eid
     public function getEidSampleTypes($updatedDateTime = null)
     {
         $query = "SELECT * FROM r_eid_sample_type where status='active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -371,10 +371,10 @@ class Eid
             }
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                    echo 0;
-                    exit();
+                echo 0;
+                exit();
             }
-          
+
             $rowData = false;
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
@@ -467,7 +467,7 @@ class Eid
                 $eidData['form_attributes'] = json_encode($formAttributes);
             }
             $id = 0;
-           
+
             if ($rowData) {
                 // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
                 // $id = $this->db->update("form_eid", $eidData);

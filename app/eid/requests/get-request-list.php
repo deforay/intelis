@@ -2,23 +2,15 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+
+
+$eidModel = new \Vlsm\Models\Eid();
+$eidResults = $eidModel->getEidResults();
 
 $general = new \Vlsm\Models\General();
+$barCodeEnabled = $general->getGlobalConfig('bar_code_printing');
+
+
 $tableName = "form_eid";
 $primaryKey = "eid_id";
 
@@ -32,7 +24,7 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'standalone') {
+} else if ($_SESSION['instanceType'] == 'standalone') {
      $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'labName', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
@@ -366,7 +358,7 @@ foreach ($rResult as $aRow) {
 
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
-     $row[] = ($aRow['result']);
+     $row[] = $eidResults[$aRow['result']];
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['eid_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
@@ -389,7 +381,7 @@ foreach ($rResult as $aRow) {
           $sync = "";
      }
 
-     if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
+     if (isset($barCodeEnabled) && $barCodeEnabled != "off") {
           $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
           $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }

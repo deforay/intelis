@@ -3379,7 +3379,7 @@ UPDATE `system_config` SET `value` = '5.1.2' WHERE `system_config`.`name` = 'sc_
 
 
 -- Jeyabanu 10-03-2023
-ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
 VALUES ('Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', 'VL', 'no', null, null, 'active');
@@ -3415,6 +3415,9 @@ ALTER TABLE `batch_details` ADD `created_by` VARCHAR(256) NULL DEFAULT NULL AFTE
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('VL Report QR Code', 'vl_report_qr_code', 'yes', 'vl', 'no', NULL, NULL, 'active');
 
-ALTER TABLE `form_vl` CHANGE `data_sync` `data_sync` INT NOT NULL DEFAULT '0';
+ALTER TABLE `form_vl` CHANGE `data_sync` `data_sync` INT NOT NULL DEFAULT 0;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Key', 'key', null, 'general', 'yes', NULL, NULL, 'active');
+-- Amit 23-Mar-2023
+ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
+ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
