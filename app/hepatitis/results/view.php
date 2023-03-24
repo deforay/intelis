@@ -4,10 +4,11 @@ $general = new \Vlsm\Models\General();
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = General::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+//$data = explode('&&&', urldecode($decryption));
 
 $invalidRequest = _("INVALID REQUEST");
 
-if (empty($data) || empty($data[0])) {
+if (empty($decryptedString)) {
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }
 
@@ -15,20 +16,21 @@ $uniqueId = $decryptedString;
 
 $db = MysqliDb::getInstance();
 $db->where("unique_id", $uniqueId);
-$res = $db->getOne("form_covid19", "covid19_id");
+$res = $db->getOne("form_vl", "vl_sample_id");
 
 if (empty($res)) {
     http_response_code(400);
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }
 
-$id = $res['covid19_id'];
+$id = $res['vl_sample_id'];
 ?>
 <style>
     #the-canvas {
         border: 1px solid black;
         direction: ltr;
         margin-left: 15%;
+        margin-top:50px;
     }
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
@@ -44,7 +46,7 @@ $id = $res['covid19_id'];
     function convertSearchResultToPdf(id) {
 
         <?php
-        $path = '/covid-19/results/generate-result-pdf.php';
+        $path = '/vl/results/generate-result-pdf.php';
         ?>
 
         $.post("<?php echo $path; ?>", {

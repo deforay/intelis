@@ -1,4 +1,5 @@
 <?php
+use Vlsm\Models\General;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
 $hepatitisDb = new \Vlsm\Models\Hepatitis();
@@ -423,8 +424,13 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table>';
+        if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync'] == 0) {
+            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+        } else {
+            $generatedAtTestingLab = "";
+        }
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab .'</td>';
         $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -437,6 +443,14 @@ if (sizeof($requestResult) > 0) {
 
         if (($result['hcv_vl_count'] != '' || $result['hbv_vl_count'] != '') || (($result['hcv_vl_count'] == '' || $result['hbv_vl_count'] == '') && $result['result_status'] == '4')) {
             $pdf->writeHTML($html);
+            if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+                $keyFromGlobalConfig = $general->getGlobalConfig('key');
+                if(!empty($keyFromGlobalConfig)){
+                     $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                     $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, $style, 'N');
+                }
+           }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");

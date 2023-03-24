@@ -1,4 +1,5 @@
 <?php
+use Vlsm\Models\General;
 
 // this file is included in eid/results/generate-result-pdf.php
 $eidModel = new \Vlsm\Models\Eid();
@@ -342,8 +343,13 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table>';
+        if ($_SESSION['instanceType'] == 'vluser') {
+            $generatedAtTestingLab = ' | '._("Report generated at Testing Lab");
+        } else {
+            $generatedAtTestingLab = "";
+        }
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab .'</td>';
         $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -355,6 +361,14 @@ if (sizeof($requestResult) > 0) {
         $html .= '</table>';
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
             $pdf->writeHTML($html);
+            if (isset($arr['eid_report_qr_code']) && $arr['eid_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+                $keyFromGlobalConfig = $general->getGlobalConfig('key');
+                if(!empty($keyFromGlobalConfig)){
+                     $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                     $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
+                }
+           }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");

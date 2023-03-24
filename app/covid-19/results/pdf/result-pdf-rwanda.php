@@ -1,4 +1,5 @@
 <?php
+use Vlsm\Models\General;
 
 // this file is included in covid-19/results/generate-result-pdf.php
 $covid19Obj = new \Vlsm\Models\Covid19();
@@ -402,7 +403,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:2px;"></td>';
         $html .= '</tr>';
-        if ($_SESSION['instanceType'] == 'vluser' && $result['dataSync'] == 0) {
+        if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync'] == 0) {
             $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
@@ -423,6 +424,14 @@ if (sizeof($requestResult) > 0) {
         $html .= '</table>';
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
             $pdf->writeHTML($html);
+            if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+                $keyFromGlobalConfig = $general->getGlobalConfig('key');
+                if(!empty($keyFromGlobalConfig)){
+                     $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                     $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, $style, 'N');
+                }
+           }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");
