@@ -1,26 +1,18 @@
 <?php
-$ciphering = "AES-128-CTR";
-$iv_length = openssl_cipher_iv_length($ciphering);
-$encryption = $_GET['q'];
-$options = 0;
-$decryption_iv = SYSTEM_CONFIG['tryCrypt'];
-$decryption_key = SYSTEM_CONFIG['tryCrypt'];
-$decryption = openssl_decrypt(
-    $encryption,
-    $ciphering,
-    $decryption_key,
-    $options,
-    $decryption_iv
-);
-$data = explode('&&&', urldecode($decryption));
+use Vlsm\Models\General;
+$general = new \Vlsm\Models\General();
+
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
+$decryptedString = General::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+//$data = explode('&&&', urldecode($decryption));
 
 $invalidRequest = _("INVALID REQUEST");
 
-if (empty($data) || empty($data[0])) {
+if (empty($decryptedString)) {
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }
 
-$uniqueId = $data[0];
+$uniqueId = $decryptedString;
 
 $db = MysqliDb::getInstance();
 $db->where("unique_id", $uniqueId);

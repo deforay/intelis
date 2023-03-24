@@ -1,7 +1,7 @@
 <?php
 
 // This file is included in /vl/results/generate-result-pdf.php
-
+use Vlsm\Models\General;
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
@@ -418,8 +418,8 @@ if (sizeof($requestResult) > 0) {
           $html .= '<tr>';
           $html .= '<td colspan="3">';
           $html .= '<table>';
-          if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync']==0) {
-               $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+          if ($_SESSION['instanceType'] == 'vluser') {
+               $generatedAtTestingLab = _("Report generated at Testing Lab");
            } else {
                $generatedAtTestingLab = "";
            }
@@ -437,22 +437,13 @@ if (sizeof($requestResult) > 0) {
           $html .= '</table>';
           if ($vlResult != '') {
                $pdf->writeHTML($html);
-               if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
-                    $ciphering = "AES-128-CTR";
-                    $iv_length = openssl_cipher_iv_length($ciphering);
-                    $options = 0;
-                    $simple_string = $result['unique_id'] . "&&&qr";
-                    $encryption_iv = SYSTEM_CONFIG['tryCrypt'];
-                    $encryption_key = SYSTEM_CONFIG['tryCrypt'];
-                    $Cid = openssl_encrypt(
-                    $simple_string,
-                    $ciphering,
-                    $encryption_key,
-                    $options,
-                    $encryption_iv
-                    );
-                    $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
-                    $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $Cid, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
+               if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
+                    if(!empty($keyFromGlobalConfig)){
+                         $keyFromGlobalConfig = $general->getGlobalConfig('key');
+                         $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                         $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                         $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
+                    }
                }
                $pdf->lastPage();
                $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
