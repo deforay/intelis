@@ -24,9 +24,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name");
+    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name","Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
-        $headings = array('Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name");
+        $headings = array('Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name","Sample Status");
     }
 
     $colNo = 1;
@@ -77,9 +77,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
     $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
     $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+    $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
     if ($_SESSION['instanceType'] != 'standalone') {
-        $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+        $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
     }
+    
 
     foreach ($rResult as $aRow) {
         $row = array();
@@ -100,11 +102,12 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
         }
-        $row[] = ($patientFname);
+        $row[] = $aRow['facility_name'];
         $row[] = $aRow['child_id'];
         $row[] = ($aRow['child_name']);
         $row[] = $sampleCollectionDate;
         $row[] = ($aRow['labName']);
+        $row[] = ($aRow['status_name']);
         $output[] = $row;
     }
 
