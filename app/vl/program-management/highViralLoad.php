@@ -448,6 +448,7 @@ $state = $geoLocationDb->getProvinces("yes");
 														<th><?php echo _("Patient Name");?></th>
 														<th><?php echo _("Sample Collection Date");?></th>
 														<th><?php echo _("VL Lab Name");?></th>
+														<th><?php echo _("Sample Status");?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -822,6 +823,9 @@ startDate: moment().subtract(28, 'days'),
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

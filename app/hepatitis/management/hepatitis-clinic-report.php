@@ -381,6 +381,8 @@ $state = $geoLocationDb->getProvinces("yes");
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("VL Lab Name"); ?></th>
+														<th><?php echo _("Sample Status"); ?></th>
+
 													</tr>
 												</thead>
 												<tbody>
@@ -729,6 +731,9 @@ $state = $geoLocationDb->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

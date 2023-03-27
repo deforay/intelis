@@ -109,7 +109,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * SQL queries
          * Get data to display
         */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status!=4 AND vl.sample_code is NOT NULL AND (vl.result IS NULL OR vl.result='')";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,ts.status_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where vl.result_status!=4 AND vl.sample_code is NOT NULL AND (vl.result IS NULL OR vl.result='')";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode']) != '') {
@@ -228,6 +229,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($childName);
     $row[] = $aRow['sample_collection_date'];
     $row[] = ($aRow['labName']);
+    $row[] = ($aRow['status_name']);
     $output['aaData'][] = $row;
 }
 echo json_encode($output);
