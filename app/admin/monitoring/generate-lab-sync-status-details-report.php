@@ -43,7 +43,7 @@ $borderStyle = array(
 foreach ($headings as $field => $value) {
     $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->getStyle($colNo . 1)->applyFromArray($borderStyle);
-    // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+    // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
     // $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
     $colNo++;
 }
@@ -74,7 +74,7 @@ foreach ($output as $rowNo => $rowData) {
         $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
         $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-        // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
         // $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
         $colNo++;
     }

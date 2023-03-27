@@ -175,7 +175,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
 			$sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
 			$sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-			$sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+			// $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
 			// $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
 			$sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;

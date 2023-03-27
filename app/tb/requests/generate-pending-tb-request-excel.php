@@ -215,7 +215,7 @@ foreach ($output as $rowNo => $rowData) {
             ->applyFromArray($borderStyle);
         $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . $start)
             ->applyFromArray($borderStyle);
-        // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
         // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 4))
             ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
