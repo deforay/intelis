@@ -343,7 +343,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table>';
-        if ($_SESSION['instanceType'] == 'vluser') {
+        if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync']==0) {
             $generatedAtTestingLab = ' | '._("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
