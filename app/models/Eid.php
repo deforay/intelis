@@ -131,7 +131,7 @@ class Eid
 
     public function getEidResults($updatedDateTime = null): array
     {
-        $query = "SELECT * FROM r_eid_results where status='active' ";
+        $query = "SELECT * FROM r_eid_results WHERE status='active' ";
         if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
@@ -340,8 +340,8 @@ class Eid
                     $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
                     $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
                     $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+                    // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
+                    // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
                     $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                     $colNo++;
                 }

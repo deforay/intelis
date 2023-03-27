@@ -23,9 +23,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'standalone') {
     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-       unset($aColumns[$key]);
-         unset($orderColumns[$key]);
-   }
+        unset($aColumns[$key]);
+        unset($orderColumns[$key]);
+    }
 }
 // print_r($orderColumns);die;
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -145,14 +145,14 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     }
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+    $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['childId']) && $_POST['childId'] != "") {
-    $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+    $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
 }
 if (isset($_POST['childName']) && $_POST['childName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
@@ -286,7 +286,7 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-   // $row[] = $aRow['batch_code'];
+    // $row[] = $aRow['batch_code'];
     $row[] = $aRow['child_id'];
     $row[] = $aRow['child_name'];
     $row[] = $aRow['mother_id'];

@@ -93,7 +93,7 @@ try {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
                     $user->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
-                    header("Location:/login/login.php"); 
+                    header("Location:/login/login.php");
                 }
             }
 
@@ -152,9 +152,9 @@ try {
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
                 $_SESSION['facilityMap'] = $facilityDb->getUserFacilityMap($userRow['user_id']);
-                $_SESSION['mappedProvinces']=null;
+                $_SESSION['mappedProvinces'] = null;
                 if (!empty($_SESSION['facilityMap'])) {
-                    $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id FROM facility_details as f WHERE f.facility_id IN (".$_SESSION['facilityMap'].")");
+                    $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id FROM facility_details as f WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
                     $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
                 }
                 $_SESSION['crossLoginPass'] = null;
@@ -203,7 +203,6 @@ try {
                 }
 
                 header("Location:" . $redirect);
-                
             } else {
                 $user->userHistoryLog($userName, 'failed');
 

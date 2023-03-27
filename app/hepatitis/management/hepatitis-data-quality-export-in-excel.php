@@ -117,8 +117,8 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
                $rRowCount = $rowNo + 4;
                $cellName = $sheet->getCellByColumnAndRow($colNo,$rRowCount)->getColumn();
                $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-               $sheet->getDefaultRowDimension()->setRowHeight(18);
-               $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+               // $sheet->getDefaultRowDimension()->setRowHeight(18);
+               // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
                $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
                $colNo++;

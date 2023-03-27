@@ -87,8 +87,8 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             $rRowCount = $rowNo + 4;
             $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
             $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-            $sheet->getDefaultRowDimension()->setRowHeight(18);
-            $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+            // $sheet->getDefaultRowDimension()->setRowHeight(18);
+            // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
             $value = html_entity_decode($value);
             if (is_numeric($value)) {
                 $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC;

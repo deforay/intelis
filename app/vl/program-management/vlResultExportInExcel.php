@@ -253,7 +253,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			// $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
 			// $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
 			// $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-			// $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+			// // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
 			$sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}

@@ -1,17 +1,17 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 ob_start();
-  
 
 
- 
-$general=new \Vlsm\Models\General();
+
+
+$general = new \Vlsm\Models\General();
 
 //system config
-$systemConfigQuery ="SELECT * from system_config";
-$systemConfigResult=$db->query($systemConfigQuery);
+$systemConfigQuery = "SELECT * from system_config";
+$systemConfigResult = $db->query($systemConfigQuery);
 $sarr = array();
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""){
+if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -59,9 +59,9 @@ if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""
 
      $sheet->mergeCells('A1:E1');
      $nameValue = '';
-     foreach($_POST as $key=>$value){
-          if(trim($value)!='' && trim($value)!='-- Select --'){
-               $nameValue .= str_replace("_"," ",$key)." : ".$value."&nbsp;&nbsp;";
+     foreach ($_POST as $key => $value) {
+          if (trim($value) != '' && trim($value) != '-- Select --') {
+               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
      $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -73,24 +73,24 @@ if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
-        $row = array();
-        $row[] = ($aRow['labname']);
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['rejection_reason_name']);
-        $row[] = strtoupper($aRow['rejection_type']);
-        $row[] = $aRow['total'];
-        $output[] = $row;
+          $row = array();
+          $row[] = ($aRow['labname']);
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['rejection_reason_name']);
+          $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = $aRow['total'];
+          $output[] = $row;
      }
 
-     $start = (count($output))+2;
+     $start = (count($output)) + 2;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           foreach ($rowData as $field => $value) {
                $rRowCount = $rowNo + 4;
-               $cellName = $sheet->getCellByColumnAndRow($colNo,$rRowCount)->getColumn();
+               $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
                $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-               $sheet->getDefaultRowDimension()->setRowHeight(18);
-               $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+               // // $sheet->getDefaultRowDimension()->setRowHeight(18);
+               // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
                $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
                $colNo++;
@@ -100,6 +100,4 @@ if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""
      $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
-
 }
-?>

@@ -1,11 +1,11 @@
 <?php
+
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
-
-
-
 
 $general = new \Vlsm\Models\General();
 
@@ -25,18 +25,15 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$sheet = $excel->getActiveSheet();
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason","Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-		}
-		else
-		{
-			$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type","Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+			$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		} else {
+			$headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 		}
 	} else {
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type","Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-		}
-		else{
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type","Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		} else {
+			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 		}
 	}
 
@@ -76,17 +73,21 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
-	$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+	$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
+	$sheet->getCell($sheetColumn . '1')
+		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->getCell($sheetColumn . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
-			$sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->getCell($sheetColumn . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}
 	}
@@ -96,7 +97,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	foreach ($rResult as $aRow) {
 		$row = array();
 		if ($arr['vl_form'] == 1) {
-			// Get testing platform and test method 
+			// Get testing platform and test method
 			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";
 			$covid19TestInfo = $db->rawQuery($covid19TestQuery);
 			foreach ($covid19TestInfo as $indexKey => $rows) {
@@ -212,12 +213,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$colNo = 1;
 		foreach ($rowData as $field => $value) {
 			$rRowCount = $rowNo + 4;
-			$cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-			$sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-			$sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-			$sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-			$sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-			$sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
+			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
+			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
+			$sheet->getCell($sheetColumn . ($rowNo + 4))
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}
 	}

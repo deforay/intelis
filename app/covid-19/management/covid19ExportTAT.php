@@ -115,8 +115,8 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
       $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
       $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-      $sheet->getDefaultRowDimension()->setRowHeight(18);
-      $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+      // // $sheet->getDefaultRowDimension()->setRowHeight(18);
+      // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
       $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
       $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
       $colNo++;
