@@ -4,6 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 $general = new \Vlsm\Models\General();
 
 $covid19Obj = new \Vlsm\Models\Covid19();
@@ -63,7 +65,11 @@ else
 {
     $headings = array(_("S. No."), _("Sample Code"), _("Remote Sample Code"), _("Testing Lab Name"), _("Testing Point"), _("Lab staff Assigned"), _("Source Of Alert / POE"), _("Health Facility/POE County"), _("Health Facility/POE State"), _("Health Facility/POE"), _("Patient DoB"), _("Patient Age"), _("Patient Gender"), _("Is Patient Pregnant"), _("Patient Phone No."), _("Patient Email"), _("Patient Address"), _("Patient State"), _("Patient County"), _("Patient City/Village"), _("Nationality"), _("Fever/Temperature"), _("Temprature Measurement"), _("Symptoms Detected"), _("Medical History"), _("Comorbidities"), _("Recenty Hospitalized?"), _("Patient Lives With Children"), _("Patient Cares for Children"), _("Close Contacts"), _("Has Recent Travel History"), _("Country Names"), _("Travel Return Date"), _("Airline"), _("Seat No."), _("Arrival Date/Time"), _("Departure Airport"), _("Transit"), _("Reason of Visit"), _("Number of Days Sick"), _("Date of Symptoms Onset"), _("Date of Initial Consultation"), _("Sample Collection Date"), _("Reason for Test Request"), _("Date specimen received"), _("Date specimen registered"), _("Specimen Condition"), _("Specimen Status"), _("Specimen Type"), _("Sample Tested Date"), _("Testing Platform"), _("Test Method"), _("Result"), _("Date result released"));
 }
-
+if ($_SESSION['instanceType'] == 'standalone') {
+    if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        unset($headings[$key]);
+    }
+}
 
 $colNo = 1;
 
@@ -101,17 +107,20 @@ foreach ($_POST as $key => $value) {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }
@@ -277,12 +286,11 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = $rowNo + 4;
-        $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-        $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-        $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-        $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheetColumn = Coordinate::stringFromColumnIndex($colNo);
+			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
+			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
+			$sheet->getCell($sheetColumn . ($rowNo + 4))
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }

@@ -3,7 +3,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
+
 $general = new \Vlsm\Models\General();
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -31,40 +34,27 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
-if ($_SESSION['instanceType'] == 'standalone') {
     if ($arr['vl_form'] == 1) {
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
         }
         else{
-            $headings = array("S. No.", "Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
         }
     } else {
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
         }
         else{
-            $headings = array("S. No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
         }
     }
-} else {
-    if ($arr['vl_form'] == 1) {
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-        }
-        else{
-            $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-        }
-    } else {
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-        }
-        else{
-            $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-        }
-    }
-}
 
+    if ($_SESSION['instanceType'] == 'standalone') {
+        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+            unset($headings[$key]);
+        }
+    }
 $colNo = 1;
 
 $styleArray = array(
@@ -101,17 +91,19 @@ foreach ($_POST as $key => $value) {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-if ($_POST['withAlphaNum'] == 'yes') {
+$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }
@@ -269,12 +261,11 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = $rowNo + 4;
-        $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-        $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-        $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-        $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheetColumn = Coordinate::stringFromColumnIndex($colNo);
+			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
+			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
+			$sheet->getCell($sheetColumn . ($rowNo + 4))
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }
