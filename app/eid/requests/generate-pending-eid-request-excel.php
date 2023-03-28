@@ -1,6 +1,8 @@
 <?php
 
 use Vlsm\Utilities\DateUtils;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -112,17 +114,20 @@ foreach ($_POST as $key => $value) {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }
@@ -243,12 +248,11 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = $rowNo + 4;
-        $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-        $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-        $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-        $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheetColumn = Coordinate::stringFromColumnIndex($colNo);
+			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
+			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
+			$sheet->getCell($sheetColumn . ($rowNo + 4))
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $colNo++;
     }
 }
