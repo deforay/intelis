@@ -252,9 +252,10 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$colNo = 1;
 		$rRowCount = $rowNo + 4;
 		foreach ($rowData as $field => $value) {
-			$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-			$sheet->getCell($sheetColumn . $rRowCount)
-					->setValue(html_entity_decode($value));
+			$sheet->setCellValue(
+				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+				html_entity_decode($value)
+			);
 			$colNo++;
 		}
 	}
