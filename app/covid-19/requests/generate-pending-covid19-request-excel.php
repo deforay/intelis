@@ -15,7 +15,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 // echo "<pre>";print_r($arr);die;
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
+/*$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
           rtr.test_reason_name,
           rst.sample_name,
           f.facility_name,
@@ -51,8 +51,10 @@ if (isset($_SESSION['covid19RequestData']['sWhere']) && !empty($_SESSION['covid1
 
 if (isset($_SESSION['covid19RequestData']['sOrder']) && !empty($_SESSION['covid19RequestData']['sOrder'])) {
     $sQuery = $sQuery . " ORDER BY " . $_SESSION['covid19RequestData']['sOrder'];
-}
+}*/
 // die($sQuery);
+$sQuery = $_SESSION['covid19RequestSearchResultQuery'];
+
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -284,13 +286,12 @@ foreach ($rResult as $aRow) {
 $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
+    $rRowCount = $rowNo + 4;
     foreach ($rowData as $field => $value) {
-        $rRowCount = $rowNo + 4;
-        $sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
-			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
-			$sheet->getCell($sheetColumn . ($rowNo + 4))
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue(
+            Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+            html_entity_decode($value)
+        );
         $colNo++;
     }
 }

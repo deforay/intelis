@@ -7,7 +7,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 ini_set('memory_limit', -1);
 $general = new \Vlsm\Models\General();
 $dateTimeUtil = new DateUtils();
-
+/*
 $sQuery = "SELECT  
                         vl.vl_sample_id,
                         vl.sample_code,
@@ -72,8 +72,8 @@ if (isset($_SESSION['vlRequestData']['sWhere']) && !empty($_SESSION['vlRequestDa
 
 if (isset($_SESSION['vlRequestData']['sOrder']) && !empty($_SESSION['vlRequestData']['sOrder'])) {
 	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlRequestData']['sOrder'];
-}
-
+}*/
+$sQuery = $_SESSION['vlRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -293,13 +293,12 @@ foreach ($rResult as $aRow) {
 $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
+	$rRowCount = $rowNo + 4;
 	foreach ($rowData as $field => $value) {
-		$rRowCount = $rowNo + 4;
-		$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
-			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
-			$sheet->getCell($sheetColumn . ($rowNo + 4))
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$sheet->setCellValue(
+            Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+            html_entity_decode($value)
+        );
 		$colNo++;
 	}
 }

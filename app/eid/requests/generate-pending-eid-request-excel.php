@@ -24,7 +24,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-
+/*
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,
      b.batch_code,
      ts.status_name,
@@ -57,9 +57,10 @@ if (isset($_SESSION['eidRequestData']['sWhere']) && !empty($_SESSION['eidRequest
 
 if (isset($_SESSION['eidRequestData']['sOrder']) && !empty($_SESSION['eidRequestData']['sOrder'])) {
     $sQuery = $sQuery . " ORDER BY " . $_SESSION['eidRequestData']['sOrder'];
-}
+}*/
+
 // die($sQuery);
-$rResult = $db->rawQuery($sQuery);
+$rResult = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
@@ -246,13 +247,12 @@ foreach ($rResult as $aRow) {
 $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
+    $rRowCount = $rowNo + 4;
     foreach ($rowData as $field => $value) {
-        $rRowCount = $rowNo + 4;
-        $sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
-			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
-			$sheet->getCell($sheetColumn . ($rowNo + 4))
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue(
+            Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+            html_entity_decode($value)
+        );
         $colNo++;
     }
 }

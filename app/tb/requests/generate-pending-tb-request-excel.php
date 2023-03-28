@@ -12,7 +12,7 @@ $tbResults = $general->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-
+/*
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
@@ -24,9 +24,12 @@ if (isset($_SESSION['tbRequestData']['sWhere']) && !empty($_SESSION['tbRequestDa
 }
 if (isset($_SESSION['tbRequestData']['sOrder']) && !empty($_SESSION['tbRequestData']['sOrder'])) {
     $sQuery = $sQuery . " ORDER BY " . $_SESSION['tbRequestData']['sOrder'];
-}
+}*/
 // die($sQuery);
+$sQuery = $_SESSION['tbRequestSearchResultQuery'];
+
 $rResult = $db->rawQuery($sQuery);
+
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
@@ -206,16 +209,12 @@ foreach ($rResult as $aRow) {
 $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
+    $rRowCount = $rowNo + 4;
     foreach ($rowData as $field => $value) {
-        $rRowCount = $rowNo + 4;
-        $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . $rRowCount)
-            ->applyFromArray($borderStyle);
-        $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . $start)
-            ->applyFromArray($borderStyle);
-        // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-        // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 4))
-            ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue(
+            Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+            html_entity_decode($value)
+        );
         $colNo++;
     }
 }

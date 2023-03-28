@@ -16,7 +16,8 @@ $sarr = $general->getSystemConfig();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-$sessionQuery = (isset($_SESSION['hepatitisRequestSearchResultQuery']) && $_SESSION['hepatitisRequestSearchResultQuery'] != "") ? $_SESSION['hepatitisRequestSearchResultQuery'] : $_SESSION['hepatitisResultQuery'];
+//$sessionQuery = (isset($_SESSION['hepatitisRequestSearchResultQuery']) && $_SESSION['hepatitisRequestSearchResultQuery'] != "") ? $_SESSION['hepatitisRequestSearchResultQuery'] : $_SESSION['hepatitisResultQuery'];
+$sessionQuery = $_SESSION['hepatitisResultQuery'];
 if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$rResult = $db->rawQuery($sessionQuery);
 
@@ -196,13 +197,12 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$start = (count($output)) + 2;
 	foreach ($output as $rowNo => $rowData) {
 		$colNo = 1;
+		$rRowCount = $rowNo + 4;
 		foreach ($rowData as $field => $value) {
-			$rRowCount = $rowNo + 4;
-			$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-			$sheet->getStyle($sheetColumn . $rRowCount)->applyFromArray($borderStyle);
-			$sheet->getStyle($sheetColumn . $start)->applyFromArray($borderStyle);
-			$sheet->getCell($sheetColumn . ($rowNo + 4))
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue(
+				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+				html_entity_decode($value)
+			);
 			$colNo++;
 		}
 	}
