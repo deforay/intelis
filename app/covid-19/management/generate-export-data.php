@@ -73,20 +73,20 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
-	$sheetColumn = Coordinate::stringFromColumnIndex($colNo);
-	$sheet->getCell($sheetColumn . '1')
+
+	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
 		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->getCell($sheetColumn . '3')
+			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
 				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
-			$sheet->getCell($sheetColumn . '3')
+			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
 				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$colNo++;
 		}
