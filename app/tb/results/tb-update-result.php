@@ -141,7 +141,7 @@ if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_
 }
 $fileArray = array(
     1 => 'forms/update-southsudan.php',
-    2 => 'forms/update-zimbabwe.php',
+    2 => 'forms/update-sierraleone.php',
     3 => 'forms/update-drc.php',
     4 => 'forms/update-zambia.php',
     5 => 'forms/update-png.php',

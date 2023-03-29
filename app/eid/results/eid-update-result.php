@@ -120,7 +120,7 @@ if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispa
 
 $fileArray = array(
 	1 => 'forms/update-southsudan-result.php',
-	2 => 'forms/update-zimbabwe-result.php',
+	2 => 'forms/update-sierraleone-result.php',
 	3 => 'forms/update-drc-result.php',
 	4 => 'forms/update-zambia-result.php',
 	5 => 'forms/update-png-result.php',

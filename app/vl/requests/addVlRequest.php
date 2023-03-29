@@ -86,7 +86,7 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 // if ($arr['vl_form'] == 1) {
 //     require('forms/add-ssudan.php');
 // } else if ($arr['vl_form'] == 2) {
-//     require('forms/add-zimbabwe.php');
+//     require('forms/add-sierraleone.php');
 // } else if ($arr['vl_form'] == 3) {
 //     require('forms/add-drc.php');
 // } else if ($arr['vl_form'] == 4) {
@@ -104,7 +104,7 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
-    2 => 'forms/add-zimbabwe.php',
+    2 => 'forms/add-sierraleone.php',
     3 => 'forms/add-drc.php',
     4 => 'forms/add-zambia.php',
     5 => 'forms/add-png.php',

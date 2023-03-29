@@ -98,7 +98,7 @@ if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result
 }
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
-    2 => 'forms/edit-zimbabwe.php',
+    2 => 'forms/edit-sierraleone.php',
     3 => 'forms/edit-drc.php',
     4 => 'forms/edit-zambia.php',
     5 => 'forms/edit-png.php',

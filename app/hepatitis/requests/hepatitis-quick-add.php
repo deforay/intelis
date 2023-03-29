@@ -69,7 +69,7 @@ $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "sta
 
 $fileArray = array(
     1 => 'forms/quick-add-southsudan.php',
-    2 => 'forms/quick-add-zimbabwe.php',
+    2 => 'forms/quick-add-sierraleone.php',
     3 => 'forms/quick-add-drc.php',
     4 => 'forms/quick-add-zambia.php',
     5 => 'forms/quick-add-png.php',

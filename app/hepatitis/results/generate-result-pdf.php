@@ -255,7 +255,7 @@ class Pdf_concat extends FPDI
 
 $fileArray = array(
 	1 => 'pdf/result-pdf-ssudan.php',
-	2 => 'pdf/result-pdf-zm.php',
+	2 => 'pdf/result-pdf-sierraleone.php',
 	3 => 'pdf/result-pdf-drc.php',
 	4 => 'pdf/result-pdf-zam.php',
 	5 => 'pdf/result-pdf-png.php',
