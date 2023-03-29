@@ -258,7 +258,7 @@ class Pdf_concat extends FPDI
 if ($arr['vl_form'] == 1) {
   include('pdf/result-pdf-ssudan.php');
 } else if ($arr['vl_form'] == 2) {
-  include('pdf/result-pdf-zimbabwe.php');
+  include('pdf/result-pdf-sierraleone.php');
 } else if ($arr['vl_form'] == 3) {
   include('pdf/result-pdf-drc.php');
 } else if ($arr['vl_form'] == 4) {

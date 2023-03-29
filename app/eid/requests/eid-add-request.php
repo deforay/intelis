@@ -69,7 +69,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
-    2 => 'forms/add-zimbabwe.php',
+    2 => 'forms/add-sierraleone.php',
     3 => 'forms/add-drc.php',
     4 => 'forms/add-zambia.php',
     5 => 'forms/add-png.php',

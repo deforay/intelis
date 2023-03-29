@@ -29,7 +29,7 @@ class Tb
         $vlsmSystemConfig = $general->getSystemConfig();
 
         $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if($dateUtils->verifyIfDateValid($sampleCollectionDate) === false){
+        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -135,9 +135,9 @@ class Tb
     public function getTbSampleTypes($updatedDateTime = null)
     {
         $query = "SELECT * FROM r_tb_sample_type where status='active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
-        } 
+        }
         $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
@@ -186,9 +186,9 @@ class Tb
         if ($type != null) {
             $query .= " AND result_type = '" . $type . "' ";
         }
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
-        } 
+        }
         $query .= " ORDER BY result_id DESC";
         $results = $this->db->rawQuery($query);
         $response = array();
@@ -201,9 +201,9 @@ class Tb
     public function getTbReasonsForTesting($updatedDateTime = null)
     {
         $query = "SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
-        } 
+        }
         $results = $this->db->rawQuery($query);
         $response = array();
         foreach ($results as $row) {
@@ -270,8 +270,8 @@ class Tb
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
 
-                    echo 0;
-                    exit();
+                echo 0;
+                exit();
             }
 
 
@@ -352,7 +352,7 @@ class Tb
             }
 
             $id = 0;
-           
+
             if ($rowData) {
                 // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
                 // $id = $this->db->update("form_tb", $tbData);

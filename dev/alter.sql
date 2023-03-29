@@ -3427,3 +3427,5 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
 ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
 
+-- Amit 29-Mar-2023
+UPDATE `s_available_country_forms` SET `form_name` = 'Sierra Leone Form' WHERE `s_available_country_forms`.`vlsm_country_id` = 2;
