@@ -781,7 +781,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
-         
         
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -792,6 +791,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
                     $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
+          });
+
+          $("#labId").on('change', function() {
                if ($("#labId").val() != "") {
                     $.post("/includes/get-sample-type.php", {
                               facilityId: $('#labId').val(),
@@ -804,6 +806,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          });
                }
           });
+
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,

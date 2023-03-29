@@ -6,6 +6,8 @@ ob_start();
 
 $general = new \Vlsm\Models\General();
 $vlModel = new \Vlsm\Models\Vl();
+$dateUtils = new \Vlsm\Utilities\DateUtils();
+
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -170,8 +172,7 @@ try {
         $_POST['vlLog'] = '';
     }
 
-    if (
-        (isset($_POST['failed']) && $_POST['failed'] == 'yes')
+    if ((isset($_POST['failed']) && $_POST['failed'] == 'yes')
         || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])
     ) {
         $finalResult = $_POST['vlResult'] ?: 'Failed';
@@ -258,6 +259,26 @@ try {
     } else {
         $_POST['approvedOn'] = null;
     }
+    
+    
+    if(isset($_POST['dob']) && $_POST['dob'] != '')
+    {
+        $ageInfo = $dateUtils->ageInYearMonthDays($_POST['dob']);
+        $ageInYears = $ageInfo['year'];
+        if($ageInYears < 1){
+            $ageInMonths = ($ageInYears * 12) + $ageInfo['months'];
+        }
+        else
+        {
+            $ageInMonths = 0;
+        }
+    }
+    else
+    {
+        $ageInYears = $_POST['ageInYears'];
+        $ageInMonths = $_POST['ageInMonths'];
+    }
+   
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 7,
@@ -268,8 +289,8 @@ try {
         'sample_collection_date' => $_POST['sampleCollectionDate'],
         'patient_gender' => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] :  null,
         'patient_dob' => $_POST['dob'],
-        'patient_age_in_years' => (isset($_POST['ageInYears']) && $_POST['ageInYears'] != '') ? $_POST['ageInYears'] :  null,
-        'patient_age_in_months' => (isset($_POST['ageInMonths']) && $_POST['ageInMonths'] != '') ? $_POST['ageInMonths'] :  null,
+        'patient_age_in_years' => $ageInYears,
+        'patient_age_in_months' => $ageInMonths,
         'is_patient_pregnant' => (isset($_POST['patientPregnant']) && $_POST['patientPregnant'] != '') ? $_POST['patientPregnant'] :  null,
         'is_patient_breastfeeding' => (isset($_POST['breastfeeding']) && $_POST['breastfeeding'] != '') ? $_POST['breastfeeding'] :  null,
         'patient_art_no' => (isset($_POST['artNo']) && $_POST['artNo'] != '') ? $_POST['artNo'] :  null,

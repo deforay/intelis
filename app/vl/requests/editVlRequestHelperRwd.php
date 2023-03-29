@@ -8,6 +8,8 @@ ob_start();
 //echo "<pre>";var_dump($_POST);die;
 $general = new \Vlsm\Models\General();
 $vlModel = new \Vlsm\Models\Vl();
+$dateUtils = new \Vlsm\Utilities\DateUtils();
+
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -273,6 +275,24 @@ try {
         $_POST['reviewedOn'] = null;
     }
 
+    if(isset($_POST['dob']) && $_POST['dob'] != '')
+    {
+        $ageInfo = $dateUtils->ageInYearMonthDays($_POST['dob']);
+        $ageInYears = $ageInfo['year'];
+        if($ageInYears < 1){
+            $ageInMonths = ($ageInYears * 12) + $ageInfo['months'];
+        }
+        else
+        {
+            $ageInMonths = 0;
+        }
+    }
+    else
+    {
+        $ageInYears = $_POST['ageInYears'];
+        $ageInMonths = $_POST['ageInMonths'];
+    }
+
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] : 'no',
@@ -282,8 +302,8 @@ try {
         //'patient_first_name'=>(isset($_POST['patientFirstName']) && $_POST['patientFirstName']!='') ? $_POST['patientFirstName'] :  null,
         'patient_gender' => (isset($_POST['gender']) && $_POST['gender'] != '') ? $_POST['gender'] : null,
         'patient_dob' => $_POST['dob'],
-        'patient_age_in_years' => (isset($_POST['ageInYears']) && $_POST['ageInYears'] != '') ? $_POST['ageInYears'] : null,
-        'patient_age_in_months' => (isset($_POST['ageInMonths']) && $_POST['ageInMonths'] != '') ? $_POST['ageInMonths'] : null,
+        'patient_age_in_years' => $ageInYears,
+        'patient_age_in_months' => $ageInMonths,
         'is_patient_pregnant' => (isset($_POST['patientPregnant']) && $_POST['patientPregnant'] != '') ? $_POST['patientPregnant'] : null,
         'is_patient_breastfeeding' => (isset($_POST['breastfeeding']) && $_POST['breastfeeding'] != '') ? $_POST['breastfeeding'] : null,
         'patient_art_no' => (isset($_POST['artNo']) && $_POST['artNo'] != '') ? $_POST['artNo'] : null,

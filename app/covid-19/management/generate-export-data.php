@@ -1,6 +1,5 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -8,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $general = new \Vlsm\Models\General();
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 $covid19Obj = new \Vlsm\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -52,16 +52,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		)
 	);
 
-	$borderStyle = array(
-		'alignment' => array(
-			'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-			),
-		)
-	);
 
 	$sheet->mergeCells('A1:AG1');
 	$nameValue = '';
