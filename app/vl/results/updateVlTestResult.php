@@ -241,7 +241,7 @@ $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName
 if ($arr['vl_form'] == 1) {
 	include('forms/update-southsudan-result.php');
 } else if ($arr['vl_form'] == 2) {
-	include('forms/update-zimbabwe-result.php');
+	include('forms/update-sierraleone-result.php');
 } else if ($arr['vl_form'] == 3) {
 	include('forms/update-drc-result.php');
 } else if ($arr['vl_form'] == 4) {

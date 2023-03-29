@@ -3428,4 +3428,7 @@ ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL
 ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
 
 -- Amit 29-Mar-2023
-UPDATE `s_available_country_forms` SET `form_name` = 'Sierra Leone Form' WHERE `s_available_country_forms`.`vlsm_country_id` = 2;
+UPDATE `s_available_country_forms` SET `form_name` = 'Sierra Leone' WHERE `vlsm_country_id` = 2;
+UPDATE `s_available_country_forms` SET `form_name` = 'Democratic Republic of the Congo' WHERE `vlsm_country_id` = 3;
+UPDATE `s_available_country_forms` SET `form_name` = REPLACE(form_name, "Form", "");
+UPDATE `s_available_country_forms` SET `form_name` = REPLACE(form_name, "FORM", "");

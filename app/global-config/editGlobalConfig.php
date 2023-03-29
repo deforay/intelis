@@ -9,14 +9,14 @@ $general = new \Vlsm\Models\General();
 $localeLists = $general->getLocaleLists();
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
 $instanceResult = $db->query($instanceQuery);
-$fType = "SELECT * FROM facility_type";
-$fTypeResult = $db->rawQuery($fType);
+// $fType = "SELECT * FROM facility_type";
+// $fTypeResult = $db->rawQuery($fType);
 
-$formQuery = "SELECT * FROM s_available_country_forms";
+$formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
 $formResult = $db->query($formQuery);
 $globalConfigQuery = "SELECT * from global_config";
 $configResult = $db->query($globalConfigQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -114,7 +114,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															?>
 																<img src="/uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
 															<?php } else { ?>
-																
+
 															<?php } ?>
 														</div>
 														<div>
@@ -149,7 +149,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="form-group">
 											<label for="vl_form" class="col-lg-4 control-label"><?php echo _("Choose Country of Installation"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form'); ?>">
+												<select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form'); ?>">
 													<?php
 													foreach ($formResult as $val) {
 													?>
@@ -210,7 +210,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														?>
 															<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
 														<?php } else { ?>
-															
+
 														<?php } ?>
 													</div>
 													<div>
@@ -1328,6 +1328,10 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+
+
+		$(".select2").select2();
+
 		var editSet = '<?php if (isset($_GET['e'])) {
 							echo $_GET['e'];
 						} ?>'

@@ -106,7 +106,7 @@ $disable = "disabled = 'disabled'";
 if ($arr['vl_form'] == 1) {
 	require('forms/update-southsudan-result.php');
 } else if ($arr['vl_form'] == 2) {
-	require('forms/update-zimbabwe-result.php');
+	require('forms/update-sierraleone-result.php');
 } else if ($arr['vl_form'] == 3) {
 	require('forms/update-drc-result.php');
 } else if ($arr['vl_form'] == 4) {
