@@ -6,9 +6,10 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
-$systemConfigQuery = "SELECT * FROM system_config";
+$systemConfigQuery = "SELECT * FROM system_config"; 
 $systemConfigResult = $db->query($systemConfigQuery);
 $sarr = array();
 // now we create an associative array so that we can easily create view variables
@@ -24,9 +25,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $output = array();
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.","Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name","Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
-     }
+     if ($_SESSION['instanceType'] == 'standalone') {
+		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+			unset($headings[$key]);
+		}
+	}
 
      $colNo = 1;
 
@@ -46,16 +49,6 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           )
      );
 
-     $borderStyle = array(
-          'alignment' => array(
-               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-          ),
-          'borders' => array(
-               'outline' => array(
-                    'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-               ),
-          )
-     );
 
      $sheet->mergeCells('A1:AE1');
      $nameValue = '';
@@ -74,10 +67,12 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
-     $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+     ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
-          $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+                    ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -136,14 +131,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $start = (count($output)) + 2;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
+          $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
-               $rRowCount = $rowNo + 4;
-               $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-               $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-               // // $sheet->getDefaultRowDimension()->setRowHeight(18);
-               // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-               $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-               $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+               $sheet->setCellValue(
+                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                html_entity_decode($value));
                $colNo++;
           }
      }

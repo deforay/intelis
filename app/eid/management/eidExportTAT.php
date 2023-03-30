@@ -8,6 +8,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' AND DATE(vl.sample_collection_date) NOT LIKE '0000-00-00')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00')
@@ -47,17 +48,6 @@ $styleArray = array(
 	)
 );
 
-$borderStyle = array(
-	'alignment' => array(
-		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-		),
-	)
-);
-
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
@@ -65,10 +55,11 @@ foreach ($_POST as $key => $value) {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-
+$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 foreach ($headings as $field => $value) {
-	$sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	$colNo++;
 }
 $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
@@ -120,15 +111,12 @@ foreach ($rResult as $aRow) {
 $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
+	$rRowCount = $rowNo + 4;
 	foreach ($rowData as $field => $value) {
-		$rRowCount = $rowNo + 4;
-		$cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-		$sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-		$sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-		// $sheet->getDefaultRowDimension()->setRowHeight(18);
-		// $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-		$sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		$sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+		$sheet->setCellValue(
+			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+			html_entity_decode($value)
+		);
 		$colNo++;
 	}
 }

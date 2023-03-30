@@ -8,6 +8,7 @@ ob_start();
 
 
 $general = new \Vlsm\Models\General();
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -47,30 +48,22 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         ),
     );
 
-    $borderStyle = array(
-        'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        ),
-        'borders' => array(
-            'outline' => array(
-                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-            ),
-        ),
-    );
 
-    $sheet->mergeCells('A1:AE1');
+    $sheet->mergeCells('A1:AE1'); 
     $nameValue = '';
     foreach ($_POST as $key => $value) {
         if (trim($value) != '' && trim($value) != '-- Select --') {
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
         }
     }
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+     ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
-    foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-        $colNo++;
-    }
+     foreach ($headings as $field => $value) {
+          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+                    ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+          $colNo++;
+     }
     $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
     $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
     $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
@@ -113,16 +106,13 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $start = (count($output)) + 2;
     foreach ($output as $rowNo => $rowData) {
         $colNo = 1;
-        foreach ($rowData as $field => $value) {
-            $rRowCount = $rowNo + 4;
-            $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-            $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-            // // $sheet->getDefaultRowDimension()->setRowHeight(18);
-            // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-            $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
-            $colNo++;
-        }
+        $rRowCount = $rowNo + 4;
+          foreach ($rowData as $field => $value) {
+               $sheet->setCellValue(
+                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                html_entity_decode($value));
+               $colNo++;
+          }
     }
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'VLSM-Covid-19-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
