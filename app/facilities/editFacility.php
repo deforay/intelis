@@ -29,21 +29,22 @@ $chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map
 $chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
 
 $fType = $facilityInfo['facility_type'];
-$vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
-$vlfmResult = $db->rawQuery($vlfmQuery);
+// $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
+// $vlfmResult = $db->rawQuery($vlfmQuery);
 
-$uQuery = "SELECT * FROM user_details";
-if (isset($vlfmResult[0]['userId'])) {
-	$exp = explode(",", $vlfmResult[0]['userId']);
-	foreach ($exp as $ex) {
-		$noUserId[] = "'" . $ex . "'";
-	}
-	$imp = implode(",", $noUserId);
-	$uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
-}
-$uResult = $db->rawQuery($uQuery);
 
-$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
+// $uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
+// if (isset($vlfmResult[0]['userId'])) {
+// 	$exp = explode(",", $vlfmResult[0]['userId']);
+// 	foreach ($exp as $ex) {
+// 		$noUserId[] = "'" . $ex . "'";
+// 	}
+// 	$imp = implode(",", $noUserId);
+// 	$uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
+// }
+// $uResult = $db->rawQuery($uQuery);
+
+//$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
 
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', array($id));
 $attrValue = json_decode($testTypeInfo[0]['attributes']);
@@ -845,7 +846,8 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	function getFacilityUser() {
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
-					fType: $("#facilityType").val()
+					fType: $("#facilityType").val(),
+					facilityId: <?= $id; ?>,
 				},
 				function(data) {
 					$("#userDetails").html(data);

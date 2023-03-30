@@ -3,20 +3,18 @@
 $db = MysqliDb::getInstance();
 
 $fType = ($_POST['fType'] == 1) ? 4 : 1;
+$facilityId = $_POST['facilityId'];
 $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId
                 FROM user_facility_map as vlfm
                 JOIN facility_details as fd ON fd.facility_id=vlfm.facility_id
-                WHERE facility_type = ?";
-$vlfmResult = $db->rawQuery($vlfmQuery, array($fType));
-$uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-if (isset($vlfmResult[0]['userId'])) {
-    $exp = explode(",", $vlfmResult[0]['userId']);
-    foreach ($exp as $ex) {
-        $noUserId[] = "'" . $ex . "'";
-    }
-    $imp = implode(",", $noUserId);
-    $uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
-}
+                WHERE fd.facility_id = ?";
+$vlfmResult = $db->rawQueryOne($vlfmQuery, array($facilityId));
+
+$selectedUserIds = !empty($vlfmResult['userId']) ? explode(",", $vlfmResult['userId']) : [];
+
+
+$uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER by user_name";
+
 $uResult = $db->rawQuery($uQuery);
 ?>
 <div class="col-md-12 col-lg-12">
@@ -26,7 +24,7 @@ $uResult = $db->rawQuery($uQuery);
             <?php
             foreach ($uResult as $uName) {
             ?>
-                <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
+                <option value="<?= $uName['user_id']; ?>" <?php echo (in_array($uName['user_id'], $selectedUserIds) ? "selected='selected'" : ''); ?>><?= ($uName['user_name']); ?></option>
             <?php
             }
             ?>
@@ -55,5 +53,9 @@ $uResult = $db->rawQuery($uQuery);
                 return value.length > 3;
             }
         });
+        setTimeout(function() {
+            $("#search_rightSelected").trigger('click');
+        }, 300);
+
     });
 </script>

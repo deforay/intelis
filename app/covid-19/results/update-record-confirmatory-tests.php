@@ -21,7 +21,7 @@ $importResult = $db->query($importQuery);
 $fQuery = "SELECT * FROM facility_details where status='active'";
 $fResult = $db->rawQuery($fQuery);
 
-$userQuery = "SELECT * FROM user_details where status='active'";
+$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
 $userResult = $db->rawQuery($userQuery);
 
 //get lab facility details

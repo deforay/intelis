@@ -26,7 +26,7 @@ $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
 
 
-$userQuery = "SELECT * FROM user_details WHERE `status` = 'active'";
+$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
 $userResult = $db->rawQuery($userQuery);
 
 
