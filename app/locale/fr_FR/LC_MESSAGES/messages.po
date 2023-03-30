@@ -7732,7 +7732,7 @@ msgid ""
 msgstr ""
 
 #: facilities/editFacility.php:660
-msgid "User Facility Map Details"
+msgid "User-Facility Map"
 msgstr ""
 
 #: facilities/editFacility.php:925

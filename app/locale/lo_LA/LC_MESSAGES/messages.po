@@ -4721,7 +4721,7 @@ msgid "80x80"
 msgstr "80x80"
 
 #: facilities/editFacility.php:625
-msgid "User Facility Map Details"
+msgid "User-Facility Map"
 msgstr "User Facility Map ລາຍລະອຽດ"
 
 #: facilities/editFacility.php:869

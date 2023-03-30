@@ -655,41 +655,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						</table>
 					</div>
 
-					<div class="row" id="userDetails">
-						<?php if (($facilityInfo['facility_type'] == 1 || $facilityInfo['facility_type'] == 4) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-							<h4><?php echo _("User Facility Map Details"); ?></h4>
-							<div class="col-xs-5">
-								<select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($uResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</div>
-
-							<div class="col-xs-2">
-								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-							</div>
-
-							<div class="col-xs-5">
-								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($selectedResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>" selected="selected"><?php echo ($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</div>
-						<?php } ?>
-					</div>
+					<div class="row" id="userDetails"></div>
 					<div class="row" id="testDetails" style="display:none;">
 						<?php echo $div; ?>
 					</div>
@@ -714,6 +680,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
@@ -1030,4 +997,3 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
