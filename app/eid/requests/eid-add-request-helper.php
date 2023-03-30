@@ -100,18 +100,9 @@ try {
 		$_POST['sampleCode'] = null;
 	}
 
-	if ($_SESSION['instanceType'] == 'remoteuser') {
-		$sampleCode = 'remote_sample_code';
-		$sampleCodeKey = 'remote_sample_code_key';
-	} else {
-		$sampleCode = 'sample_code';
-		$sampleCodeKey = 'sample_code_key';
-	}
-
-
 	if (isset($_POST['motherViralLoadCopiesPerMl']) && $_POST['motherViralLoadCopiesPerMl'] != "") {
 		$motherVlResult = $_POST['motherViralLoadCopiesPerMl'];
-	} else if (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
+	} elseif (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
 		$motherVlResult = $_POST['motherViralLoadText'];
 	} else {
 		$motherVlResult = null;
@@ -150,8 +141,6 @@ try {
 	$eidData = array(
 		'vlsm_instance_id' 									=> $instanceId,
 		'vlsm_country_id' 									=> $_POST['formId'],
-		'sample_code_key' 									=> isset($_POST['sampleCodeKey']) ? $_POST['sampleCodeKey'] : null,
-		'sample_code_format' 								=> isset($_POST['sampleCodeFormat']) ? $_POST['sampleCodeFormat'] : null,
 		'facility_id' 										=> isset($_POST['facilityId']) ? $_POST['facilityId'] : null,
 		'province_id' 										=> isset($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' 											=> isset($_POST['labId']) ? $_POST['labId'] : null,
