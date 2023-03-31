@@ -486,17 +486,28 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row rmTesting hideTestData" style="display:none;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="rmLastVLTestSampleType" class="col-lg-4 control-label">Sample Type </label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="rmLastVLTestSampleType" id="rmLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                           <option value=""> -- Select -- </option>
+                                                                           <?php foreach ($sResult as $name) { ?>
+                                                                                <option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+                                                                           <?php } ?>
+                                                                      </select>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -513,17 +524,28 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row repeatTesting hideTestData" style="display:none;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="repeatLastVLTestSampleType" class="col-lg-4 control-label">Sample Type</label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="repeatLastVLTestSampleType" id="repeatLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                           <option value=""> -- Select -- </option>
+                                                                           <?php foreach ($sResult as $name) { ?>
+                                                                                <option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+                                                                           <?php } ?>
+                                                                      </select>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -540,17 +562,27 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row suspendTreatment hideTestData" style="display: none;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="suspendLastVLTestSampleType" class="col-lg-4 control-label">Sample Type</label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="suspendLastVLTestSampleType" id="suspendLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                           <option value=""> -- Select -- </option>
+                                                                           <?php foreach ($sResult as $name) { ?>
+                                                                           <?php } ?>
+                                                                      </select>
                                                                  </div>
                                                             </div>
                                                        </div>

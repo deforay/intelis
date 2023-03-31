@@ -593,19 +593,30 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row rmTesting hideTestData" style="display:<?php echo $display; ?>;">
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
 													</div>
 												</div>
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
+												<div class="col-md-4">
+                                                                 <label for="rmLastVLTestSampleType" class="col-lg-4 control-label">Sample Type </label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="rmLastVLTestSampleType" id="rmLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                           <option value=""> -- Select -- </option>
+                                                                           <?php foreach ($sResult as $name) { ?>
+                                                                                <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_routine'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+                                                                           <?php } ?>
+                                                                      </select>
+                                                                 </div>
+                                                            </div>
 											</div>
 											<div class="row">
 												<div class="col-md-8">
@@ -631,19 +642,30 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row repeatTesting hideTestData" style="display: <?php echo $display; ?>;">
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
 													</div>
 												</div>
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
+												<div class="col-md-4">
+                                                        <label for="repeatLastVLTestSampleType" class="col-lg-4 control-label">Sample Type</label>
+                                                            <div class="col-lg-7">
+                                                                <select name="repeatLastVLTestSampleType" id="repeatLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                    <option value=""> -- Select -- </option>
+                                                                    <?php foreach ($sResult as $name) { ?>
+                                                                    <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure_ac'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                        </div>
+                                                </div>
 											</div>
 											<div class="row">
 												<div class="col-md-6">
@@ -669,19 +691,30 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row suspendTreatment hideTestData" style="display: <?php echo $display; ?>;">
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
 													</div>
 												</div>
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" />
 														(copies/ml)
 													</div>
 												</div>
+												<div class="col-md-4">
+                                                    <label for="suspendLastVLTestSampleType" class="col-lg-4 control-label">Sample Type</label>
+                                                    <div class="col-lg-7">
+                                                    	<select name="suspendLastVLTestSampleType" id="suspendLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
+                                                                <option value=""> -- Select -- </option>
+                                                                <?php foreach ($sResult as $name) { ?>
+                                                                <option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+                                                                <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
 											</div>
 											<div class="row">
 												<div class="col-md-4">
