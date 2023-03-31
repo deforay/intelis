@@ -3,7 +3,7 @@
 require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-$userQuery = "SELECT * FROM user_details WHERE `status`='active'";
+$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
 $userResult = $db->rawQuery($userQuery);
 $tQuery = "SELECT module, sample_review_by FROM temp_sample_import WHERE imported_by =? limit 1";
 

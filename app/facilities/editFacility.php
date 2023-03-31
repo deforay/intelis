@@ -29,21 +29,22 @@ $chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map
 $chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
 
 $fType = $facilityInfo['facility_type'];
-$vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
-$vlfmResult = $db->rawQuery($vlfmQuery);
+// $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
+// $vlfmResult = $db->rawQuery($vlfmQuery);
 
-$uQuery = "SELECT * FROM user_details";
-if (isset($vlfmResult[0]['userId'])) {
-	$exp = explode(",", $vlfmResult[0]['userId']);
-	foreach ($exp as $ex) {
-		$noUserId[] = "'" . $ex . "'";
-	}
-	$imp = implode(",", $noUserId);
-	$uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
-}
-$uResult = $db->rawQuery($uQuery);
 
-$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
+// $uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
+// if (isset($vlfmResult[0]['userId'])) {
+// 	$exp = explode(",", $vlfmResult[0]['userId']);
+// 	foreach ($exp as $ex) {
+// 		$noUserId[] = "'" . $ex . "'";
+// 	}
+// 	$imp = implode(",", $noUserId);
+// 	$uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
+// }
+// $uResult = $db->rawQuery($uQuery);
+
+//$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
 
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', array($id));
 $attrValue = json_decode($testTypeInfo[0]['attributes']);
@@ -655,41 +656,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						</table>
 					</div>
 
-					<div class="row" id="userDetails">
-						<?php if (($facilityInfo['facility_type'] == 1 || $facilityInfo['facility_type'] == 4) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-							<h4><?php echo _("User Facility Map Details"); ?></h4>
-							<div class="col-xs-5">
-								<select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($uResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</div>
-
-							<div class="col-xs-2">
-								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-							</div>
-
-							<div class="col-xs-5">
-								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($selectedResult as $uName) {
-									?>
-										<option value="<?php echo $uName['user_id']; ?>" selected="selected"><?php echo ($uName['user_name']); ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</div>
-						<?php } ?>
-					</div>
+					<div class="row" id="userDetails"></div>
 					<div class="row" id="testDetails" style="display:none;">
 						<?php echo $div; ?>
 					</div>
@@ -714,6 +681,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 <!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
@@ -878,7 +846,8 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	function getFacilityUser() {
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
-					fType: $("#facilityType").val()
+					fType: $("#facilityType").val(),
+					facilityId: <?= $id; ?>,
 				},
 				function(data) {
 					$("#userDetails").html(data);
@@ -1030,4 +999,3 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
