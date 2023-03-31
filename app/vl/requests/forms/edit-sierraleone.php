@@ -421,32 +421,84 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="box-body">
 										<div class="row">
 											<div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">How long has this Patient been on treatment?</label>
+                                                                 <select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
+                                                                      <option value=""> — Select-- </option>
+                                                                      <option value="6 Months - < 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - < 1 year') ? "selected='selected'" : "" ?>> 6 Months - < 1 year </option>   
+                                                                      <option value="1 - 2 years" <?php echo ($vlQueryInfo['treatment_duration'] == '1 - 2 years') ? "selected='selected'" : "" ?>> 1 - 2 years </option>
+                                                                      <option value="2 - < 5 years" <?php echo ($vlQueryInfo['treatment_duration'] == '2 - < 5 years') ? "selected='selected'" : "" ?>> 2 - < 5 years </option>
+                                                                      <option value="5 years and above" <?php echo ($vlQueryInfo['treatment_duration'] == '5 years and above') ? "selected='selected'" : "" ?>> 5 years and above </option>
+                                                                 </select>
+                                                            </div>
+                                            </div>
+											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
 													<label for="">Date of Treatment Initiation</label>
 													<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" onchange="checkARTInitiationDate();">
 												</div>
 											</div>
+														<div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Indication for Treatment Initiation</label>
+                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;">
+                                                                 <option value=""> — Select-- </option>
+                                                                 <option value="PMTCT" <?php echo ($vlQueryInfo['treatment_indication'] == 'PMTCT') ? "selected='selected'" : "" ?>> PMTCT </option>     
+                                                                 <option value="Child under 15 years" <?php echo ($vlQueryInfo['treatment_indication'] == 'Child under 15 years') ? "selected='selected'" : "" ?>> Child under 15 years </option>
+                                                                 <option value="CD4 less than 500" <?php echo ($vlQueryInfo['treatment_indication'] == 'CD4 less than 500') ? "selected='selected'" : "" ?>> CD4 less than 500 </option>
+                                                                 <option value="TB Infection" <?php echo ($vlQueryInfo['treatment_indication'] == 'TB Infection') ? "selected='selected'" : "" ?>> TB Infection </option>
+                                                                 <option value="Other" <?php echo ($vlQueryInfo['treatment_indication'] == 'Other') ? "selected='selected'" : "" ?>> Other </option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+
+													   <div class="col-xs-3 col-md-3">
+															<div class="form-group">
+																<label for="artRegimen">Current Regimen</label>
+																<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
+																	<option value="">-- Select --</option>
+																	<?php foreach ($artRegimenResult as $heading) { ?>
+																		<optgroup label="<?php echo ($heading['headings']); ?>">
+																			<?php foreach ($aResult as $regimen) {
+																				if ($heading['headings'] == $regimen['headings']) { ?>
+																					<option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+																			<?php }
+																			} ?>
+																		</optgroup>
+																	<?php }
+																	if ($sarr['sc_user_type'] != 'vluser') {  ?>
+																		<option value="other">Other</option>
+																	<?php } ?>
+																</select>
+																<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+															</div>
+														</div>
+										</div>
+                                        <div class="row">
+											
 											<div class="col-xs-3 col-md-3">
-												<div class="form-group">
-													<label for="artRegimen">Current Regimen</label>
-													<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
-														<option value="">-- Select --</option>
-														<?php foreach ($artRegimenResult as $heading) { ?>
-															<optgroup label="<?php echo ($heading['headings']); ?>">
-																<?php foreach ($aResult as $regimen) {
-																	if ($heading['headings'] == $regimen['headings']) { ?>
-																		<option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
-																<?php }
-																} ?>
-															</optgroup>
-														<?php }
-														if ($sarr['sc_user_type'] != 'vluser') {  ?>
-															<option value="other">Other</option>
-														<?php } ?>
-													</select>
-													<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
-												</div>
-											</div>
+                                                            <div class="form-group">
+                                                                 <label for="">Which Treatment Line is Patient On? </label>
+                                                                 <select name="lineOfTreatment" id="lineOfTreatment" class="form-control" title="Please Select Line of Treatment">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == '1') ? "selected='selected'" : "" ?>>First</option>
+                                                                      <option value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == '2') ? "selected='selected'" : "" ?>>Second</option>
+                                                                      <option value="3" <?php echo ($vlQueryInfo['line_of_treatment'] == '3') ? "selected='selected'" : "" ?>>Third</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">If not on first line, how was failure assessed? </label>
+                                                                 <select name="lineOfTreatmentFailureAssessed" id="lineOfTreatmentFailureAssessed" class="form-control" title="Please Select Failure Assessed">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="N/A" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'N/A') ? "selected='selected'" : "" ?>>N/A</option>
+                                                                      <option value="Virological" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'Virological') ? "selected='selected'" : "" ?>>Virological</option>
+                                                                      <option value="Immunological" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'Immunological') ? "selected='selected'" : "" ?>>Immunological</option>
+                                                                      <option value="Clinical" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'Clinical') ? "selected='selected'" : "" ?>>Clinical</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
 													<label for="">Date of Initiation of Current Regimen </label>
@@ -488,12 +540,26 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</label>
 												</div>
 											</div>
-											<div class="col-xs-3 col-md-3" style="display:none;">
-												<div class="form-group">
-													<label for="">How long has this patient been on treatment ? </label>
-													<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?php echo $vlQueryInfo['treatment_initiation']; ?>" />
-												</div>
-											</div>
+											<div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Patient has active TB </label>
+                                                                 <select name="activeTB" id="activeTB" class="form-control" title="Please check if Patient has active TB or not">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="yes" <?php echo ($vlQueryInfo['patient_has_active_tb'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
+                                                                      <option value="no" <?php echo ($vlQueryInfo['patient_has_active_tb'] == 'no') ? "selected='selected'" : "" ?>>No</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3 tbPhaseBox" style="display:none;">
+                                                            <div class="form-group">
+                                                                 <label for="">If yes, which Phase? </label>
+                                                                 <select name="tbPhase" id="tbPhase" class="form-control" title="Please Select the Phase of TB">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="initiation" <?php echo ($vlQueryInfo['patient_active_tb_phase'] == 'initiation') ? "selected='selected'" : "" ?>>Initiation</option>
+                                                                      <option value="continuation" <?php echo ($vlQueryInfo['patient_active_tb_phase'] == 'continuation') ? "selected='selected'" : "" ?>>Continuation</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
 										</div>
 									</div>
 									<div class="box box-primary">
@@ -896,6 +962,18 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$(document).ready(function() {
 		hivDetectionChange();
+		$('#activeTB').on('change',function(){
+        if($(this).val()=='yes')
+		{
+            $('.tbPhaseBox').show();
+		}
+        else
+		{
+			$('#tbPhase').val("");
+            $('.tbPhaseBox').hide();
+		}
+         });
+		 $('#activeTB').trigger('change');
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {

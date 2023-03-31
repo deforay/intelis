@@ -326,8 +326,33 @@ $sFormat = '';
                                                   <div class="row">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
+                                                                 <label for="">How long has this Patient been on treatment?</label>
+                                                                 <select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
+                                                                      <option value=""> — Select-- </option>
+                                                                      <option value="6 Months - < 1 year"> 6 Months - < 1 year </option>   
+                                                                      <option value="1 - 2 years"> 1 - 2 years </option>
+                                                                      <option value="2 - < 5 years"> 2 - < 5 years </option>
+                                                                      <option value="5 years and above"> 5 years and above </option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
                                                                  <label for="">Date of Treatment Initiation</label>
                                                                  <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" style="width:100%;" onchange="checkARTInitiationDate();">
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Indication for Treatment Initiation</label>
+                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;">
+                                                                 <option value=""> — Select-- </option>
+                                                                 <option value="PMTCT"> PMTCT </option>     
+                                                                 <option value="Child under 15 years"> Child under 15 years </option>
+                                                                 <option value="CD4 less than 500"> CD4 less than 500 </option>
+                                                                 <option value="TB Infection"> TB Infection </option>
+                                                                 <option value="Other"> Other </option>
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -353,6 +378,31 @@ $sFormat = '';
                                                                       <?php } ?>
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">                                                       
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Which Treatment Line is Patient On? </label>
+                                                                 <select name="lineOfTreatment" id="lineOfTreatment" class="form-control" title="Please Select Line of Treatment">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="1">First</option>
+                                                                      <option value="2">Second</option>
+                                                                      <option value="3">Third</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">If not on first line, how was failure assessed? </label>
+                                                                 <select name="lineOfTreatmentFailureAssessed" id="lineOfTreatmentFailureAssessed" class="form-control" title="Please Select Failure Assessed">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="N/A">N/A</option>
+                                                                      <option value="Virological">Virological</option>
+                                                                      <option value="Immunological">Immunological</option>
+                                                                      <option value="Clinical">Clinical</option>
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -396,10 +446,24 @@ $sFormat = '';
                                                                  </label>
                                                             </div>
                                                        </div>
-                                                       <div class="col-xs-3 col-md-3" style="display:none;">
+                                                       <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">How long has this patient been on treatment ? </label>
-                                                                 <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
+                                                                 <label for="">Patient has active TB </label>
+                                                                 <select name="activeTB" id="activeTB" class="form-control" title="Please check if Patient has active TB or not">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="yes">Yes</option>
+                                                                      <option value="no">No</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3 tbPhaseBox" style="display:none;">
+                                                            <div class="form-group">
+                                                                 <label for="">If yes, which Phase? </label>
+                                                                 <select name="tbPhase" id="tbPhase" class="form-control" title="Please Select the Phase of TB">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="initiation">Initiation</option>
+                                                                      <option value="continuation">Continuation</option>
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                   </div>
@@ -781,7 +845,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
-         
+
+         $('#activeTB').on('change',function(){
+          if($(this).val()=='yes')
+               $('.tbPhaseBox').show();
+                    else
+               $('.tbPhaseBox').hide();
+         });
         
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
