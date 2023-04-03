@@ -3448,3 +3448,6 @@ ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL D
 
 ALTER TABLE `form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
 ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`
+
+ALTER TABLE `form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;
+ALTER TABLE `audit_form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;

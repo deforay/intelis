@@ -266,7 +266,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
                                                 <?php } ?>
-
                                             </select>
                                         </td>
 
@@ -277,6 +276,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
                                                 <option value="unknown"> Unknown </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes"> Yes </option>
+                                                <option value="no"> No </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row" class="labels">Infant On CTX Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes"> Yes </option>
+                                                <option value="no"> No </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -695,11 +712,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         if(data!=0)
                         {
                             $('.testingPoint').show();
+                            $("#labTestingPoint").addClass("isRequired");
                             $("#labTestingPoint").html(data);
                         }
                         else
                         {
                             $('.testingPoint').hide();
+                            $("#labTestingPoint").removeClass("isRequired");
                             $("#labTestingPoint").html("");
                         }
                     });

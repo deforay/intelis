@@ -172,6 +172,8 @@ try {
 		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
 		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
 		'has_infant_stopped_breastfeeding' 					=> isset($_POST['hasInfantStoppedBreastfeeding']) ? $_POST['hasInfantStoppedBreastfeeding'] : null,
+		'infant_on_pmtct_prophylaxis' 						=> isset($_POST['infantOnPMTCTProphylaxis']) ? $_POST['infantOnPMTCTProphylaxis'] : null,
+		'infant_on_ctx_prophylaxis'							=> isset($_POST['infantOnCTXProphylaxis']) ? $_POST['infantOnCTXProphylaxis'] : null,
 		'age_breastfeeding_stopped_in_months' 				=> isset($_POST['ageBreastfeedingStopped']) ? $_POST['ageBreastfeedingStopped'] : null,
 		'choice_of_feeding' 								=> isset($_POST['choiceOfFeeding']) ? $_POST['choiceOfFeeding'] : null,
 		'is_cotrimoxazole_being_administered_to_the_infant'	=> isset($_POST['isCotrimoxazoleBeingAdministered']) ? $_POST['isCotrimoxazoleBeingAdministered'] : null,

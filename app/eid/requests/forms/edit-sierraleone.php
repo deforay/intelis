@@ -302,6 +302,24 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row" class="labels">Infant On CTX Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
                                         <td>
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
@@ -673,11 +691,13 @@ function getTestingPoint()
                         if(data!=0)
                         {
                             $('.testingPoint').show();
+                            $("#labTestingPoint").addClass("isRequired");
                             $("#labTestingPoint").html(data);
                         }
                         else
                         {
                             $('.testingPoint').hide();
+                            $("#labTestingPoint").removeClass("isRequired");
                             $("#labTestingPoint").html("");
                         }
                     });
