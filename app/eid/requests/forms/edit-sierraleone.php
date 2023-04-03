@@ -160,14 +160,20 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <?php } ?>
+                                    </tr>
+                                    <tr class="testingPoint" style="display:none;">
+                                        <td class="labels"><label for="labTestingPoint">Lab Testing Points</label> </td>
+                                        <td>
+                                            <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control" title="Please select the Lab Testing Points" style="width:100%;">
+                                               
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
                                 <br>
@@ -395,23 +401,18 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </div>
                                     <table class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <td><label for="labId" class="labels">Testing Laboratory <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
+                                           
                                             <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <td class="labels"><label>Machine used to test </label></td>
                                             <td>
                                                 <select class="form-control result-optional" id="machineName" name="machineName" title="Please select the machine name"></select>
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="labels">Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if sample is rejected or not">
@@ -420,9 +421,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr class="rejected" style="display: none;">
-                                            <th class="rejected labels" style="display: none;">Reason for Rejection</th>
+                                            <td class="rejected labels" style="display: none;">Reason for Rejection</td>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the sample rejection reason">
                                                     <option value="">-- Select --</option>
@@ -438,6 +437,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     <?php }  ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr class="rejected" style="display: none;">
+                                            
                                             <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
                                             <td class="rejected" style="display: none;"><input value="<?php echo $general->humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
@@ -515,6 +517,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="1" />
                         <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo $eidInfo['eid_id']; ?>" />
+                        <input type="hidden" name="oldLabTestingPoint" id="oldLabTestingPoint" value="<?php echo $eidInfo['lab_testing_point']; ?>" />
                         <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />
                         <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $eidInfo['result_status']; ?>" />
                         <input type="hidden" name="provinceCode" id="provinceCode" />
@@ -659,10 +662,29 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         }
     }
 
-
+function getTestingPoint()
+{
+    $.post("/includes/get-testing-points.php", {
+                        facilityId: $("#labId").val(),
+                        testType: 'eid',
+                        oldTestingPoint :$("#oldLabTestingPoint").val()
+                    },
+                    function(data) {
+                        if(data!=0)
+                        {
+                            $('.testingPoint').show();
+                            $("#labTestingPoint").html(data);
+                        }
+                        else
+                        {
+                            $('.testingPoint').hide();
+                            $("#labTestingPoint").html("");
+                        }
+                    });
+}
 
     $(document).ready(function() {
-
+        getTestingPoint();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
@@ -670,7 +692,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
-
+        });
+            $("#labId").on('change', function() {
             if ($("#labId").val() != "") {
                 $.post("/includes/get-sample-type.php", {
                         facilityId: $('#labId').val(),
@@ -683,6 +706,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                         }
                     });
             }
+            getTestingPoint();
         });
 
         $("#labId,#facilityId,#sampleCollectionDate").trigger('change');

@@ -3445,3 +3445,6 @@ ALTER TABLE `audit_form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AF
 ALTER TABLE `audit_form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
 ALTER TABLE `audit_form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
 ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`
+
+ALTER TABLE `form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`
