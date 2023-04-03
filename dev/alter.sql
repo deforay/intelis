@@ -3445,3 +3445,8 @@ ALTER TABLE `audit_form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AF
 ALTER TABLE `audit_form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
 ALTER TABLE `audit_form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
 ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`
+
+
+-- Amit 03-Apr-2023
+ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
+
