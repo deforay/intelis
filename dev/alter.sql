@@ -3432,3 +3432,16 @@ UPDATE `s_available_country_forms` SET `form_name` = 'Sierra Leone' WHERE `vlsm_
 UPDATE `s_available_country_forms` SET `form_name` = 'Democratic Republic of the Congo' WHERE `vlsm_country_id` = 3;
 UPDATE `s_available_country_forms` SET `form_name` = REPLACE(form_name, "Form", "");
 UPDATE `s_available_country_forms` SET `form_name` = REPLACE(form_name, "FORM", "");
+
+-- Jeyabanu 30-Mar-2023
+ALTER TABLE `form_vl` ADD `treatment_duration` TEXT NULL DEFAULT NULL AFTER `treatment_initiated_date`;
+ALTER TABLE `form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AFTER `treatment_duration`;
+ALTER TABLE `form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
+ALTER TABLE `form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
+ALTER TABLE `form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`;
+
+ALTER TABLE `audit_form_vl` ADD `treatment_duration` TEXT NULL DEFAULT NULL AFTER `treatment_initiated_date`;
+ALTER TABLE `audit_form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AFTER `treatment_duration`;
+ALTER TABLE `audit_form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
+ALTER TABLE `audit_form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
+ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`
