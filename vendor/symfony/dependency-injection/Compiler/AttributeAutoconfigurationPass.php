@@ -64,11 +64,11 @@ final class AttributeAutoconfigurationPass extends AbstractRecursivePass
 
             foreach (['class', 'method', 'property', 'parameter'] as $symbol) {
                 if (['Reflector'] !== $types) {
-                    if (!\in_array('Reflection'.($symbol), $types, true)) {
+                    if (!\in_array('Reflection'.ucfirst($symbol), $types, true)) {
                         continue;
                     }
                     if (!($targets & \constant('Attribute::TARGET_'.strtoupper($symbol)))) {
-                        throw new LogicException(sprintf('Invalid type "Reflection%s" on argument "$%s": attribute "%s" cannot target a '.$symbol.' in "%s" on line "%d".', ($symbol), $reflectorParameter->getName(), $attributeName, $callableReflector->getFileName(), $callableReflector->getStartLine()));
+                        throw new LogicException(sprintf('Invalid type "Reflection%s" on argument "$%s": attribute "%s" cannot target a '.$symbol.' in "%s" on line "%d".', ucfirst($symbol), $reflectorParameter->getName(), $attributeName, $callableReflector->getFileName(), $callableReflector->getStartLine()));
                     }
                 }
                 $this->{$symbol.'AttributeConfigurators'}[$attributeName] = $callable;
