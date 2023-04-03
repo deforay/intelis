@@ -158,6 +158,7 @@ try {
 		'facility_id' 										=> isset($_POST['facilityId']) ? $_POST['facilityId'] : null,
 		'province_id' 										=> isset($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' 											=> isset($_POST['labId']) ? $_POST['labId'] : null,
+		'lab_testing_point' 								=> isset($_POST['labTestingPoint']) ? $_POST['labTestingPoint'] : null,
 		//'implementing_partner' 								=> !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
 		//'funding_source' 									=> !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
 		'mother_id' 										=> isset($_POST['mothersId']) ? $_POST['mothersId'] : null,

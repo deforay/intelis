@@ -150,7 +150,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-
+                                    </tr>
+                                    <tr class="testingPoint" style="display:none;">
+                                        <td class="labels"><label for="labTestingPoint">Lab Testing Points</label> </td>
+                                        <td>
+                                            <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control" title="Please select the Lab Testing Points" style="width:100%;">
+                                               
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
                                 <br>
@@ -664,10 +671,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
+        });
 
-            if ($("#labId").val() != "") {
+        $("#labId").on('change', function() {
+            var labId = $("#labId").val();
+            if (labId != "") {
                 $.post("/includes/get-sample-type.php", {
-                        facilityId: $('#labId').val(),
+                        facilityId: labId,
                         testType: 'eid'
                     },
                     function(data) {
@@ -676,6 +686,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         }
                     });
             }
+
+            $.post("/includes/get-testing-points.php", {
+                        facilityId: labId,
+                        testType: 'eid'
+                    },
+                    function(data) {
+                        if(data!=0)
+                        {
+                            $('.testingPoint').show();
+                            $("#labTestingPoint").html(data);
+                        }
+                        else
+                        {
+                            $('.testingPoint').hide();
+                            $("#labTestingPoint").html("");
+                        }
+                    });
+
         });
 
         $('#sampleCollectionDate').datetimepicker({

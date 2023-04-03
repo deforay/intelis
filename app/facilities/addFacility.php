@@ -505,9 +505,10 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 	</section>
 	<!-- /.content -->
 </div>
-
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#testType").multipleSelect({
