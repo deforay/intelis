@@ -724,6 +724,7 @@ if($treatmentInd[1]=="Other")
                                                     </div>
                                                 </div>
 											</div>
+											<p>&nbsp;</p>
 											<div class="row">
 												<div class="col-md-4">
 													<label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>

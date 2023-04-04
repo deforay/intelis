@@ -3455,5 +3455,9 @@ ALTER TABLE `audit_form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT
 ALTER TABLE `form_eid` ADD `pcr_test_number` INT NULL DEFAULT NULL AFTER `pcr_test_performed_before`;
 ALTER TABLE `audit_form_eid` ADD `pcr_test_number` INT NULL DEFAULT NULL AFTER `pcr_test_performed_before`;
 
+ALTER TABLE `form_eid` ADD `reason_for_repeat_pcr_other` TEXT NULL DEFAULT NULL AFTER `reason_for_pcr`;
+ALTER TABLE `audit_form_eid` ADD `reason_for_repeat_pcr_other` TEXT NULL DEFAULT NULL AFTER `reason_for_pcr`;
+
+
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;

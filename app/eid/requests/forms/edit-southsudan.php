@@ -327,15 +327,17 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation of positive first EID PCR test result </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?php echo $eidInfo['reason_for_repeat_pcr_other']; ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>
@@ -540,6 +542,19 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     facilityName = true;
     machineName = true;
 
+    function checkPCRTestReason()
+    {
+        var otherReason = $("#pcrTestReason").val();
+        if (otherReason == 'Other') {
+            $(".reasonForRepeatPcrOther").show();
+            $("#reasonForRepeatPcrOther").addClass("isRequired");
+            $("#reasonForRepeatPcrOther").focus();
+        } else {
+            $(".reasonForRepeatPcrOther").hide();
+            $("#reasonForRepeatPcrOther").removeClass("isRequired");
+            $('#reasonForRepeatPcrOther').val("");
+        }
+    }
     function getfacilityDetails(obj) {
         $.blockUI();
         var cName = $("#facilityId").val();
@@ -662,7 +677,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
     $(document).ready(function() {
-
+    checkPCRTestReason();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

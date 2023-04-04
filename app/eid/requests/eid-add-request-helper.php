@@ -172,6 +172,7 @@ try {
 		'previous_pcr_result' 								=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
 		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
 		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
+		'reason_for_repeat_pcr_other' 						=> isset($_POST['reasonForRepeatPcrOther']) ? $_POST['reasonForRepeatPcrOther'] : null,
 		'has_infant_stopped_breastfeeding' 					=> isset($_POST['hasInfantStoppedBreastfeeding']) ? $_POST['hasInfantStoppedBreastfeeding'] : null,
 		'infant_on_pmtct_prophylaxis' 						=> isset($_POST['infantOnPMTCTProphylaxis']) ? $_POST['infantOnPMTCTProphylaxis'] : null,
 		'infant_on_ctx_prophylaxis'							=> isset($_POST['infantOnCTXProphylaxis']) ? $_POST['infantOnCTXProphylaxis'] : null,
