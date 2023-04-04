@@ -3444,10 +3444,10 @@ ALTER TABLE `audit_form_vl` ADD `treatment_duration` TEXT NULL DEFAULT NULL AFTE
 ALTER TABLE `audit_form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AFTER `treatment_duration`;
 ALTER TABLE `audit_form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
 ALTER TABLE `audit_form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
-ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`
+ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`;
 
 ALTER TABLE `form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
-ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`
+ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
 
 ALTER TABLE `form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;
 ALTER TABLE `audit_form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;
