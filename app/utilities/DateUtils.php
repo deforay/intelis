@@ -24,14 +24,16 @@ class DateUtils
                 $dateTime = DateTimeImmutable::createFromFormat($format, $date);
                 if ($strict) {
                     $errors = DateTimeImmutable::getLastErrors();
-                    if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
-                        //error_log("Invalid date format ($format) :: $date");
+                    if (
+                        empty($dateTime) || $dateTime === false
+                        || !empty($errors['warning_count'])
+                        || !empty($errors['error_count'])
+                    ) {
                         $response = false;
                     }
                 }
                 $response = $dateTime !== false;
             } catch (Exception $e) {
-                //error_log("Invalid date format ($format) :: $date :: " . $e->getMessage());
                 $response = false;
             }
         }
@@ -50,14 +52,16 @@ class DateUtils
             try {
                 $dateTime = new DateTimeImmutable($date);
                 $errors = DateTimeImmutable::getLastErrors();
-                if (!empty($errors['warning_count']) || !empty($errors['error_count'])) {
-                    //error_log("Invalid date :: $date");
+                if (
+                    empty($dateTime) || $dateTime === false
+                    || !empty($errors['warning_count'])
+                    || !empty($errors['error_count'])
+                ) {
                     $response = false;
                 } else {
                     $response = true;
                 }
             } catch (Exception $e) {
-                //error_log("Invalid date :: $date :: " . $e->getMessage());
                 $response = false;
             }
         }
@@ -65,7 +69,7 @@ class DateUtils
         return $response;
     }
 
-    // Returns the given date in d-M-Y format 
+    // Returns the given date in d-M-Y format
     // (with or without time depending on the $includeTime parameter)
     public function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
     {

@@ -62,10 +62,8 @@ if ($value != '') {
                 }
             }
         } catch (\Exception $e) {
-            error_log($exc->getMessage());
-            error_log($exc->getTraceAsString());
-            $sQuery = "SELECT * from $tableName where $fieldName= ? and $table[0]!= ?";
-            error_log($sQuery);
+            error_log($e->getMessage());
+            error_log($e->getTraceAsString());
         }
     }
 }

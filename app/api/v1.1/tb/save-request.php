@@ -326,7 +326,7 @@ try {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
-            'source_of_request'                   => "app"
+            'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
         if ($rowData) {
             $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? $general->isoDateFormat($data['updatedOn'], true) : $general->getCurrentDateTime();

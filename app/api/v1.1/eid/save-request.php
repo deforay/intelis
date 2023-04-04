@@ -364,7 +364,7 @@ try {
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => isset($data['sampleRejectionReason']) ? $data['sampleRejectionReason'] : null,
             'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? $general->isoDateFormat($data['rejectionDate']) : null,
-            'source_of_request'                                 => "app"
+            'source_of_request'                                 => $data['sourceOfRequest'] ?? "API"
         );
 
         if ($rowData) {
