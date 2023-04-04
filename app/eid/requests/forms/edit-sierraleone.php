@@ -49,7 +49,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
+//$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
 
 //suggest sample id when lab user add request sample
 $sampleSuggestion = '';
@@ -64,7 +64,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';
 }
-
+$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
+$artRegimenResult = $db->rawQuery($artRegimenQuery);
+$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+$aResult = $db->query($aQuery);
 ?>
 
 
@@ -252,17 +255,39 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important" class="labels">ART given to the Mother during:</th>
+                                        <th style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
-                                            <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Labour/Delivery <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Postnatal <br>
-                                            <!-- <input type="checkbox" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>  onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Unknown
+                                        <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                        </select>
+                                    </tr>
+                                    <tr class="motherRegimen" style="display:none;">
+                                    <th scope="row" class="labels">Mother's Regimen</th>
+                                        <td>
+                                        <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                                                <?php
+                                                                                foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) {
+                                                                                ?>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php
+                                                                                     }
+                                                                                }
+                                                                                ?>
+                                                                           </optgroup>
+                                                                      <?php }
+                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                           <option value="other">Other</option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                         </td>
                                     </tr>
-
                                     <tr>
                                         <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -563,6 +588,29 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     provinceName = true;
     facilityName = true;
     machineName = true;
+    function showRegimen()
+    {
+        if($("#motherTreatment").val()=="yes")
+            $(".motherRegimen").show();
+                else
+                {
+            $(".motherRegimen").hide();
+            $('#motherRegimen').val("");
+                }
+    }
+
+    function checkMotherARTRegimenValue() {
+        var motherRegimen = $("#motherRegimen").val();
+        if (motherRegimen == 'other') {
+            $(".newArtRegimen").show();
+            $("#newArtRegimen").addClass("isRequired");
+            $("#newArtRegimen").focus();
+        } else {
+            $(".newArtRegimen").hide();
+            $("#newArtRegimen").removeClass("isRequired");
+            $('#newArtRegimen').val("");
+        }
+    }
     function checkPCRTestReason()
     {
         var otherReason = $("#pcrTestReason").val();
@@ -722,6 +770,7 @@ function getTestingPoint()
     $(document).ready(function() {
         getTestingPoint();
         checkPCRTestReason();
+        showRegimen();
         if($("#pcrTestNumber").val()==1)
         {
             $("#prePcrTestResult").val("");

@@ -89,6 +89,22 @@ try {
 		$_POST['motherTreatmentInitiationDate'] = null;
 	}
 
+	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
+        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
+        $artResult = $db->rawQuery($artQuery);
+        if (!isset($artResult[0]['art_id'])) {
+            $data = array(
+                'art_code' => $_POST['newArtRegimen'],
+                'parent_art' => '1',
+                'updated_datetime' => $general->getCurrentDateTime(),
+            );
+            $result = $db->insert('r_vl_art_regimen', $data);
+            $_POST['motherRegimen'] = $_POST['newArtRegimen'];
+        } else {
+            $_POST['motherRegimen'] = $artResult[0]['art_code'];
+        }
+    }
+
 	if (isset($_POST['previousPCRTestDate']) && trim($_POST['previousPCRTestDate']) != "") {
 		$previousPCRTestDate = explode(" ", $_POST['previousPCRTestDate']);
 		$_POST['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
@@ -154,7 +170,8 @@ try {
 		'mother_name'	 									=> isset($_POST['mothersName']) ? $_POST['mothersName'] : null,
 		'mother_dob' 										=> isset($_POST['mothersDob']) ? $_POST['mothersDob'] : null,
 		'mother_marital_status' 							=> isset($_POST['mothersMaritalStatus']) ? $_POST['mothersMaritalStatus'] : null,
-		'mother_treatment' 									=> isset($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : null,
+		'mother_treatment' 									=> isset($_POST['motherTreatment']) ? $_POST['motherTreatment'] : null,
+		'mother_regimen' 									=> (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] :  null,
 		'mother_treatment_other' 							=> isset($_POST['motherTreatmentOther']) ? $_POST['motherTreatmentOther'] : null,
 		'mother_treatment_initiation_date' 					=> isset($_POST['motherTreatmentInitiationDate']) ? $_POST['motherTreatmentInitiationDate'] : null,
 		'child_id' 											=> isset($_POST['childId']) ? $_POST['childId'] : null,
