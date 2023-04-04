@@ -325,16 +325,17 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                         </td>
 
-                                        <th scope="row" class="labels">PCR test performed on child before :</th>
+                                        <th scope="row" class="labels">Type of Test :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control" name="pcrTestNumber" id="pcrTestNumber">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" <?php echo ($eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                <option value="no" <?php echo ($eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                <option value="1" <?php echo ($eidInfo['pcr_test_number'] == '1') ? "selected='selected'" : ""; ?>> 1st PCR </option>
+                                                <option value="2" <?php echo ($eidInfo['pcr_test_number'] == '2') ? "selected='selected'" : ""; ?>> 2nd PCR </option>
+                                                <option value="3" <?php echo ($eidInfo['pcr_test_number'] == '3') ? "selected='selected'" : ""; ?>> 3rd PCR </option>
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="pcrBox">
                                         <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -350,8 +351,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                    <tr class="pcrBox">
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
@@ -703,8 +704,34 @@ function getTestingPoint()
                     });
 }
 
+
     $(document).ready(function() {
         getTestingPoint();
+        if($("#pcrTestNumber").val()==1)
+        {
+            $("#prePcrTestResult").val("");
+            $("#previousPCRTestDate").val("");
+            $("#pcrTestReason").val("");
+            $('.pcrBox').hide();
+        }
+            else
+            {
+                $('.pcrBox').show();
+            }
+
+        $("#pcrTestNumber").on("change",function(){
+            if($("#pcrTestNumber").val()==1)
+        {
+            $("#prePcrTestResult").val("");
+            $("#previousPCRTestDate").val("");
+            $("#pcrTestReason").val("");
+            $('.pcrBox').hide();
+        }
+            else
+            {
+                $('.pcrBox').show();
+            }
+        });
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

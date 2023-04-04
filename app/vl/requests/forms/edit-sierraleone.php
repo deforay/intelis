@@ -153,7 +153,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	}
 }
-
+$newValue="";
+$treatmentInd = explode("_",$vlQueryInfo['treatment_indication']);
+if($treatmentInd[1]=="Other")
+{
+	$newValue = $treatmentInd[0];
+	$vlQueryInfo['treatment_indication'] = "Other";
+}
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -441,7 +447,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="">Indication for Treatment Initiation</label>
-                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;">
+                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
                                                                  <option value=""> — Select-- </option>
                                                                  <option value="PMTCT" <?php echo ($vlQueryInfo['treatment_indication'] == 'PMTCT') ? "selected='selected'" : "" ?>> PMTCT </option>     
                                                                  <option value="Child under 15 years" <?php echo ($vlQueryInfo['treatment_indication'] == 'Child under 15 years') ? "selected='selected'" : "" ?>> Child under 15 years </option>
@@ -449,6 +455,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  <option value="TB Infection" <?php echo ($vlQueryInfo['treatment_indication'] == 'TB Infection') ? "selected='selected'" : "" ?>> TB Infection </option>
                                                                  <option value="Other" <?php echo ($vlQueryInfo['treatment_indication'] == 'Other') ? "selected='selected'" : "" ?>> Other </option>
                                                                  </select>
+																 <input type="text" class="form-control newTreatmentIndication" name="newTreatmentIndication" id="newTreatmentIndication" value="<?php echo $newValue; ?>" placeholder="Treatment Initiation" title="Please enter Indication for Treatment Initiation" style="width:100%;display:none;margin-top:2px;">
+
                                                             </div>
                                                        </div>
 
@@ -992,9 +1000,21 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
-
+	function checkIndicationForTreatmentValue() {
+        var treatmentIndication = $("#treatmentIndication").val();
+        if (treatmentIndication == 'Other') {
+            $(".newTreatmentIndication").show();
+            $("#newTreatmentIndication").addClass("isRequired");
+            $("#newTreatmentIndication").focus();
+        } else {
+            $(".newTreatmentIndication").hide();
+            $("#newTreatmentIndication").removeClass("isRequired");
+            $('#newTreatmentIndication').val("");
+        }
+    }
 	$(document).ready(function() {
 		hivDetectionChange();
+		checkIndicationForTreatmentValue();
 		$('#activeTB').on('change',function(){
         if($(this).val()=='yes')
 		{

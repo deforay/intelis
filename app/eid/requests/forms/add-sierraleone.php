@@ -303,16 +303,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
 
-                                        <th scope="row" class="labels">PCR test performed on child before :</th>
+                                        <th scope="row" class="labels">Type of Test :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control" name="pcrTestNumber" id="pcrTestNumber">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
+                                                <option value="1"> 1st PCR </option>
+                                                <option value="2"> 2nd PCR </option>
+                                                <option value="3"> 3rd PCR </option>
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="pcrBox">
                                         <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -328,8 +329,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                    <tr class="pcrBox">
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
@@ -681,6 +682,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
+        $('.pcrBox').hide();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
@@ -723,6 +725,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         }
                     });
 
+        });
+
+        $("#pcrTestNumber").on("change",function(){
+            if($(this).val()==1)
+                    $('.pcrBox').hide();
+                else
+                    $('.pcrBox').show();
         });
 
         $('#sampleCollectionDate').datetimepicker({

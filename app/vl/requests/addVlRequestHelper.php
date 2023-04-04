@@ -254,6 +254,11 @@ try {
         $_POST['reviewedOn'] = null;
     }
 
+    if(isset($_POST['treatmentIndication']) && $_POST['treatmentIndication']=="Other")
+    {
+        $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'].'_Other';
+    }
+
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
 
     $vldata = array(
