@@ -10,6 +10,7 @@ namespace Vlsm\Models;
 
 use Ramsey\Uuid\Uuid;
 use Vlsm\Utilities\DateUtils;
+use ZipArchive;
 
 class General
 {
@@ -836,6 +837,13 @@ class General
                     . DIRECTORY_SEPARATOR
                     . $transactionId . '.json';
                 file_put_contents($path, $requestData);
+
+                $zip = new ZipArchive();
+                if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
+                    $zip->addFile($path);
+                    $zip->close();
+                    unlink($path);
+                }
             }
 
             if (!empty($responseData) && $responseData != '[]') {
@@ -845,6 +853,13 @@ class General
                     . DIRECTORY_SEPARATOR
                     . $transactionId . '.json';
                 file_put_contents($path, $responseData);
+
+                $zip = new ZipArchive();
+                if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
+                    $zip->addFile($path);
+                    $zip->close();
+                    unlink($path);
+                }
             }
 
             $data = array(

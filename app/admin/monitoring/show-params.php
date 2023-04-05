@@ -6,12 +6,23 @@ $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
-if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
-    $request = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+$zip = new ZipArchive;
+if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
+
+    $res = $zip->open(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    if ($res === true) {
+        $request = $zip->getFromName(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json');
+    }
 }
-if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
-    $response = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
+
+    $res = $zip->open(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    if ($res === true) {
+        $response = $zip->getFromName(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json');
+    }
 }
+
+$zip->close();
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />

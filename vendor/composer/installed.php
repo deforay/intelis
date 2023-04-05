@@ -19,6 +19,12 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'container-interop/container-interop' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^1.2.0',
+            ),
+        ),
         'crunzphp/crunz' => array(
             'pretty_version' => 'v3.4.1',
             'version' => '3.4.1.0',
@@ -124,6 +130,33 @@
             'reference' => '514025c5ebbdb8a058745b573b4a1e81d685802c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../halaxa/json-machine',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-filter' => array(
+            'pretty_version' => '2.22.0',
+            'version' => '2.22.0.0',
+            'reference' => 'c48e8a392a81de7d211026c078dce0e8bc57e2e3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-filter',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-servicemanager' => array(
+            'pretty_version' => '3.17.0',
+            'version' => '3.17.0.0',
+            'reference' => '360be5f16955dd1edbcce1cfaa98ed82a17f02ec',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-servicemanager',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-stdlib' => array(
+            'pretty_version' => '3.13.0',
+            'version' => '3.13.0.0',
+            'reference' => '66a6d03c381f6c9f1dd988bf8244f9afb9380d76',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-stdlib',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -245,6 +278,7 @@
             'dev_requirement' => false,
             'provided' => array(
                 0 => '1.0',
+                1 => '^1.0',
             ),
         ),
         'psr/event-dispatcher' => array(
