@@ -836,13 +836,13 @@ class General
                     . 'requests'
                     . DIRECTORY_SEPARATOR
                     . $transactionId . '.json';
-                file_put_contents($path, $requestData);
+                //file_put_contents($path, $requestData);
 
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
-                    $zip->addFile($path);
+                    $zip->addFromString(basename($path), $requestData);
                     $zip->close();
-                    unlink($path);
+                    //unlink($path);
                 }
             }
 
@@ -852,13 +852,13 @@ class General
                     . 'responses'
                     . DIRECTORY_SEPARATOR
                     . $transactionId . '.json';
-                file_put_contents($path, $responseData);
+                //file_put_contents($path, $responseData);
 
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
-                    $zip->addFile($path);
+                    $zip->addFromString(basename($path), $responseData);
                     $zip->close();
-                    unlink($path);
+                    //unlink($path);
                 }
             }
 

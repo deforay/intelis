@@ -46,7 +46,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 ?>
 
 <!-- LOGIN PAGE -->
-<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>
+<?php $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateUUID(); ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE']; ?>">
 
@@ -180,7 +180,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<script type="text/javascript">
 		window.additionalXHRParams = {
 			layout: 0,
-			'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>'
+			'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateUUID(); ?>'
 		};
 
 		$.ajaxSetup({

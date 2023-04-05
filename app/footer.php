@@ -66,7 +66,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <script type="text/javascript">
 	window.additionalXHRParams = {
 		layout: 0,
-		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?: $general->generateUUID(); ?>'
+		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateUUID(); ?>'
 	};
 
 	$.ajaxSetup({
