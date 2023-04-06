@@ -111,8 +111,8 @@ try {
                 }
             } catch (\Exception $e) {
                 error_log($db->getLastError());
-                error_log($exc->getMessage());
-                error_log($exc->getTraceAsString());
+                error_log($e->getMessage());
+                error_log($e->getTraceAsString());
                 continue;
             }
 
@@ -153,6 +153,6 @@ try {
     echo $payload;
 } catch (\Exception $e) {
     error_log($db->getLastError());
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    error_log($e->getMessage());
+    error_log($e->getTraceAsString());
 }

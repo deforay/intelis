@@ -405,7 +405,7 @@ try {
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  null,
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
-            'source_of_request'                     => "app"
+            'source_of_request'                     => $data['sourceOfRequest'] ?? "API"
         );
 
 

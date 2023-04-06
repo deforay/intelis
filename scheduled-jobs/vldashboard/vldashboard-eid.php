@@ -78,7 +78,6 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    var_dump($result);
     $deResult = json_decode($result, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
