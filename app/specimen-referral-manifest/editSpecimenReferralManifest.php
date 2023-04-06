@@ -64,7 +64,7 @@ if (!empty($facilityMap)) {
 }
 
 $query = $query . " ORDER BY vl.request_created_datetime ASC";
- echo $query;die;
+
 $result = $db->rawQuery($query);
 // if($sarr['sc_user_type']=='remoteuser'){
 //   $sCode = 'remote_sample_code';
