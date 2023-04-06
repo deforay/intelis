@@ -73,6 +73,7 @@ class MYPDF extends TCPDF
 if (trim($id) != '') {
 
     $sQuery = "SELECT remote_sample_code, 
+                        pd.number_of_samples,
                         fd.facility_name as clinic_name, 
                         fd.facility_district, 
                         patient_first_name,
