@@ -164,11 +164,12 @@ if (trim($id) != '') {
         
         // add a page
         $pdf->AddPage();
-
+    if($arr['vl_form']==2)
+    {
         //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
         $pdf->WriteHTML('<b>FACILITY RELEASER INFORMATION</b>');
 
-        $tbl1 = '<p></p>';
+        $tbl1 = '<br>';
         $tbl1.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
         $tbl1.='<tr>
         <td align="left"> Releaser Name :  '.$result[0]['releaser_name'].'</td>
@@ -187,15 +188,15 @@ if (trim($id) != '') {
 
         $pdf->WriteHTML('<p></p><b>SPECIMEN PACKAGING</b>');
 
-        $tbl2 = '<p></p>';
+        $tbl2 = '<br>';
         $tbl2.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
         $tbl2.='<tr>
         <td align="left"> Number of specimen included :  '.$result[0]['number_of_samples'].'</td>
         <td align="left"> Forms completed and included :  Yes / No</td>     
         </tr>
         <tr>
-        <td align="left"> Packaged By :  .............</td>
-        <td align="left"> Date :  .............</td>
+        <td align="left"> Packaged By :  ..................</td>
+        <td align="left"> Date :  ...................</td>
         </tr>';
         $tbl2.='</table>';
 
@@ -203,7 +204,7 @@ if (trim($id) != '') {
 
         $pdf->WriteHTML('<p></p><b>CHAIN OF CUSTODY : </b>(persons relinquishing and receiving specimen fill their respective sections)');
         $pdf->WriteHTML('<p></p><b>To be completed at facility in the presence of specimen courier</b>');
-        $tbl3 = '<br><br>';
+        $tbl3 = '<br>';
         $tbl3 .= '<table border="1">
         <tr>
             <td colspan="2">Relinquished By (Laboratory)</td>
@@ -215,26 +216,26 @@ if (trim($id) != '') {
             <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
             <td align="left"> Date : <br><p></p><br> Time :</td>
         </tr>
-    </table>';
-    $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C', true);
+        </table>';
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C', true);
 
-    $pdf->WriteHTML('<p></p><b>To be completed at testing laboratory by specimen reception personnel</b>');
-        $tbl4 = '<br><br>';
-        $tbl4 .= '<table border="1">
-        <tr>
-            <td colspan="2">Relinquished By (Courier)</td>
-            <td colspan="2">Received By (Laboratory)</td>
-        </tr>
-        <tr>
-            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-            <td align="left"> Date : <br><p></p><br> Time :</td>
-            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-            <td align="left"> Date : <br><p></p><br> Time :</td>
-        </tr>
-    </table>';
-    $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C', true);
+        $pdf->WriteHTML('<p></p><b>To be completed at testing laboratory by specimen reception personnel</b>');
+            $tbl4 = '<br>';
+            $tbl4 .= '<table border="1">
+            <tr>
+                <td colspan="2">Relinquished By (Courier)</td>
+                <td colspan="2">Received By (Laboratory)</td>
+            </tr>
+            <tr>
+                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+                <td align="left"> Date : <br><p></p><br> Time :</td>
+                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+                <td align="left"> Date : <br><p></p><br> Time :</td>
+            </tr>
+        </table>';
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C', true);
 
-
+    }
         $tbl = '';
 
 
@@ -244,7 +245,7 @@ if (trim($id) != '') {
 
         if (isset($result) && !empty($result) && sizeof($result) > 0) {
 
-            $tbl .= '<p></p><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
+            $tbl .= '<br><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
             $tbl .=     '<tr nobr="true">
                         <td  style="font-size:11px;width:5%;"><strong>S/N</strong></td>
                         <td  style="font-size:11px;width:12%;"><strong>SAMPLE ID</strong></td>
