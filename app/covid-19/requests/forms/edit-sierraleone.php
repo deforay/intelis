@@ -276,8 +276,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                                     </tr>
                                     <tr>
-                                        <th scope="row">Boma/Village</th>
-                                        <td><input class="form-control" value="<?php echo $covid19Info['patient_city']; ?>" id="patientCity" name="patientCity" placeholder="Case Boma/Village" title="Please enter the Case Boma/Village" style="width:100%;"></td>
+                                        <th scope="row">Village</th>
+                                        <td><input class="form-control" value="<?php echo $covid19Info['patient_city']; ?>" id="patientCity" name="patientCity" placeholder="Case Village" title="Please enter the Case Village" style="width:100%;"></td>
                                         <th scope="row">Nationality</th>
                                         <td>
                                             <select name="patientNationality" id="patientNationality" class="form-control" title="Please choose nationality" style="width:100%">
@@ -288,7 +288,35 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr>
                                         <th scope="row">Passport Number</th>
                                         <td><input class="form-control" id="patientPassportNumber" name="patientPassportNumber" value="<?php echo $covid19Info['patient_passport_number']; ?>" placeholder="Passport Number" title="Please enter Passport Number" style="width:100%;"></td>
-
+                                        <th scope="row"><label for="vaccinationStatus">Vaccination Status </label></th>
+                                        <td>
+                                            <select class="form-control" name="vaccinationStatus" id="vaccinationStatus" title="Please select the Status of Vaccination" onchange="vaccinationInfoShow();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='yes' <?php echo ($covid19Info['vaccination_status'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value='no' <?php echo ($covid19Info['vaccination_status'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="vaccinationInfo" style="display:none;">
+                                        <th scope="row"><label for="vaccinationDosage">Vaccination Dosage</label></th>
+                                        <td>
+                                             <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='first' <?php echo ($covid19Info['vaccination_dosage'] == 'first') ? "selected='selected'" : ""; ?>> First </option>
+                                                <option value='second' <?php echo ($covid19Info['vaccination_dosage'] == 'second') ? "selected='selected'" : ""; ?>> Second </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row"><label for="vaccinationType">Vaccination Type </label></th>
+                                        <td>
+                                            <select class="form-control" name="vaccinationType" id="vaccinationType" title="Please select the Type of Vaccination" onchange="addNewVaccinationType();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='jansen & jansen' <?php echo ($covid19Info['vaccination_type'] == 'jansen & jansen') ? "selected='selected'" : ""; ?>> JANSEN & JANSEN </option>
+                                                <option value='astrazeneca' <?php echo ($covid19Info['vaccination_type'] == 'astrazeneca') ? "selected='selected'" : ""; ?>> ASTRAZENECA </option>
+                                                <option value='sinopham' <?php echo ($covid19Info['vaccination_type'] == 'sinopham') ? "selected='selected'" : ""; ?>> SINOPHAM </option>
+                                                <option value='pfeizer' <?php echo ($covid19Info['vaccination_type'] == 'pfeizer') ? "selected='selected'" : ""; ?>> PFEIZER </option>
+                                                <option value='other' <?php echo ($covid19Info['vaccination_type'] == 'other') ? "selected='selected'" : ""; ?>> OTHERS </option>
+                                            </select>
+                                            <input type="text" class="form-control vaccinationTypeOther" name="vaccinationTypeOther" id="vaccinationTypeOther" value="<?php echo $covid19Info['vaccination_type_other']; ?>" placeholder="Enter Type of Vaccination" title="Please enter Type of Vaccination" style="margin-top:4px;display:none;" />
                                     </tr>
                                 </table>
 
@@ -315,7 +343,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value="RDT-Antibody" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
                                                 <option value="RDT-Antigen" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
                                                 <option value="ELISA" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
-                                            </select>
                                             </select>
                                         </td>
                                         <th scope="row">Reason for Test Request <span class="mandatory">*</span></th>
@@ -809,7 +836,38 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
+    function addNewVaccinationType()
+    {
+        var vaccinationType = $("#vaccinationType").val();
+        if (vaccinationType == 'other') {
+            $(".vaccinationTypeOther").show();
+            $("#vaccinationTypeOther").addClass("isRequired");
+            $("#vaccinationTypeOther").focus();
+        } else {
+            $(".vaccinationTypeOther").hide();
+            $("#vaccinationTypeOther").removeClass("isRequired");
+            $('#vaccinationTypeOther').val("");
+        }
+    }
+
+    function vaccinationInfoShow()
+    {
+        status = $("#vaccinationStatus").val();
+        if(status=="yes"){
+            $('.vaccinationInfo').show();
+        }
+        else
+        {
+            $('.vaccinationInfo').hide();
+            $("#vaccinationTypeOther").val("");
+            $("#vaccinationType").val("");
+            $("#vaccinationDosage").val("");
+        }
+    }
+
     $(document).ready(function() {
+        addNewVaccinationType();
+        vaccinationInfoShow();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

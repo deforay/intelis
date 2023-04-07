@@ -74,7 +74,7 @@ if (trim($id) != '') {
 
     $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,CONCAT(patient_name,patient_surname) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name,u_d.user_name as releaser_name,
                 u_d.phone_number as phone,u_d.email as email,DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
-                from package_details as pd 
+                from package_details as pd
                 Join form_covid19 as vl ON vl.sample_package_id=pd.package_id
                 Join facility_details as fd ON fd.facility_id=vl.facility_id
                 Join facility_details as l ON l.facility_id=vl.lab_id

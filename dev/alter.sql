@@ -3464,3 +3464,16 @@ ALTER TABLE `audit_form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `
 
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
+
+-- Jeyabanu 06-Apr-2023
+ALTER TABLE `form_covid19` ADD `vaccination_status` TEXT NULL DEFAULT NULL AFTER `patient_passport_number`;
+ALTER TABLE `form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL AFTER `vaccination_status`;
+ALTER TABLE `form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
+ALTER TABLE `form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
+ALTER TABLE `form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL DEFAULT NULL AFTER `specimen_type`;
+
+ALTER TABLE `audit_form_covid19` ADD `vaccination_status` TEXT NULL DEFAULT NULL AFTER `patient_passport_number`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL AFTER `vaccination_status`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
+ALTER TABLE `audit_form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL DEFAULT NULL AFTER `specimen_type`;
