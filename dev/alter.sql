@@ -3464,3 +3464,18 @@ ALTER TABLE `audit_form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `
 
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
+
+-- Amit 07-Apr-2023
+ALTER TABLE `form_vl` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
+ALTER TABLE `audit_form_vl` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_covid19` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_hepatitis` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `locked` `locked` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
