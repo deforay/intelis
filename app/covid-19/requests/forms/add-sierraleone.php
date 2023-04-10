@@ -291,11 +291,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value='jansen & jansen'> JANSEN & JANSEN </option>
                                                 <option value='astrazeneca'> ASTRAZENECA </option>
                                                 <option value='sinopham'> SINOPHAM </option>
-                                                <option value='pfeizer'> PFEIZER </option>
+                                                <option value='pfizer'> PFIZER </option>
                                                 <option value='other'> OTHERS </option>
                                             </select>
                                             <input type="text" class="form-control vaccinationTypeOther" name="vaccinationTypeOther" id="vaccinationTypeOther" placeholder="Enter Type of Vaccination" title="Please enter Type of Vaccination" style="margin-top:4px;display:none;" />
-                                    </tr>
+                                        </td>
+                                        </tr>
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
@@ -348,7 +349,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
+                                        <td>
+                                             <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='yes'> Yes </option>
+                                                <option value='no'> No </option>
+                                                <option value='unknown'> Unknown </option>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
+                                    <th scope="row"><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -357,8 +370,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 } ?>
                                             </select>
                                         </td>
-                                        <th scope="row"></th>
-                                        <td></td>
+                                       
                                     </tr>
                                 </table>
                             </div>

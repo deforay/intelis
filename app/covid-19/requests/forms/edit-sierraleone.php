@@ -313,7 +313,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value='jansen & jansen' <?php echo ($covid19Info['vaccination_type'] == 'jansen & jansen') ? "selected='selected'" : ""; ?>> JANSEN & JANSEN </option>
                                                 <option value='astrazeneca' <?php echo ($covid19Info['vaccination_type'] == 'astrazeneca') ? "selected='selected'" : ""; ?>> ASTRAZENECA </option>
                                                 <option value='sinopham' <?php echo ($covid19Info['vaccination_type'] == 'sinopham') ? "selected='selected'" : ""; ?>> SINOPHAM </option>
-                                                <option value='pfeizer' <?php echo ($covid19Info['vaccination_type'] == 'pfeizer') ? "selected='selected'" : ""; ?>> PFEIZER </option>
+                                                <option value='pfizer' <?php echo ($covid19Info['vaccination_type'] == 'pfizer') ? "selected='selected'" : ""; ?>> PFIZER </option>
                                                 <option value='other' <?php echo ($covid19Info['vaccination_type'] == 'other') ? "selected='selected'" : ""; ?>> OTHERS </option>
                                             </select>
                                             <input type="text" class="form-control vaccinationTypeOther" name="vaccinationTypeOther" id="vaccinationTypeOther" value="<?php echo $covid19Info['vaccination_type_other']; ?>" placeholder="Enter Type of Vaccination" title="Please enter Type of Vaccination" style="margin-top:4px;display:none;" />
@@ -371,18 +371,28 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $covid19Info['specimen_type']); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
+                                        <td>
+                                             <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='yes' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value='no' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                <option value='unknown' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
+                                    <th scope="row"><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
                                                 <?php foreach (range(1, 5) as $element) {
-                                                    $selected = (isset($covid19Info['test_number']) && $covid19Info['test_number'] == $element) ? "selected='selected'" : "";
-                                                    echo '<option value="' . $element . '" ' . $selected . '>' . $element . '</option>';
+                                                    echo '<option value="' . $element . '">' . $element . '</option>';
                                                 } ?>
                                             </select>
                                         </td>
-                                        <th scope="row"></th>
-                                        <td></td>
+                                       
                                     </tr>
                                 </table>
                             </div>

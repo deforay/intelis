@@ -170,6 +170,7 @@ try {
 		'reason_for_covid19_test'             => !empty($_POST['reasonForCovid19Test']) ? $_POST['reasonForCovid19Test'] : null,
 		'type_of_test_requested'              => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,
 		'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
+		'specimen_taken_before_antibiotics'   => !empty($_POST['specimenTakenBeforeAntibiotics']) ? $_POST['specimenTakenBeforeAntibiotics'] : null,
 		'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
 		'sample_dispatched_datetime'          => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
 		'health_outcome'              		  => !empty($_POST['healthOutcome']) ? $_POST['healthOutcome'] : null,
