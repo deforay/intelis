@@ -343,7 +343,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -380,7 +380,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
-                                            <td>Rejection Date<span class="mandatory">*</span></td>
+                                            <td><label for="rejectionDate">Rejection Date</label><span class="mandatory">*</span></td>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
                                             <td></td>

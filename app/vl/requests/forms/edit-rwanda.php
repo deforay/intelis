@@ -612,7 +612,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             </div>
                                                        </div>
                                                   </div>
-                                                  <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                                                  <?php if ($usersModel->isAllowed('updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                        <div class="box box-primary">
                                                             <div class="box-header with-border">
                                                                  <h3 class="box-title">Laboratory Information</h3>
