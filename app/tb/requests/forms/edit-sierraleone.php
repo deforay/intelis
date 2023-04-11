@@ -63,7 +63,7 @@ $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$selected = "";
 	if ($tbInfo['geo_id'] == $provinceName['geo_id']) {
-		$selected = "selected='selected'";
+		$selected = "selected='selected'"; 
 	}
 	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
 }
@@ -389,6 +389,34 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</select>
 										</td>
 									</tr>
+									<tr>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Number of sputum samples sent with this form 
+											</label>
+										</th>
+										<td>
+										<input type="text" value="<?php echo $tbInfo['number_of_sputum_samples']; ?>" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+										</td>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Date of collection of first sputum samples
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" value="<?php echo $tbInfo['first_sputum_samples_collection_date']; ?>" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+									</td>
+									</tr>
+									<tr>
+									<th scope="row">
+											<label class="label-control">
+											Name of signature of person requesting examination 
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" value="<?php echo $tbInfo['sample_requestor_name']; ?>" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+										</td>
+									</tr>
 								</table>
 							</div>
 						</div>
@@ -430,7 +458,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="testedBy">Date Of Result</label></th>
+											<td>
+											<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+											</td>
+											
+										</tr>
+										<tr>
+										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -438,7 +473,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
-										</tr>
+							</tr>
 										<tr class="show-rejection" style="display:none;">
 											<th class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
@@ -800,6 +835,20 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
             timeFormat: "HH:mm",
             minDate: minDate,
 			startDate: minDate,
+        });
+
+		$("#firstSputumSamplesCollectionDate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            onSelect: function(dateText, inst) {
+                //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                $(this).change();
+            }
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
         });
 
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {

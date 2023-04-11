@@ -365,18 +365,46 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<option value="MTB/RIF ULTRA">MTB/RIF ULTRA</option>
 													<option value="TB LAM">TB LAM</option>
 												</optgroup>
-												<option value="Culture">Culture</option>
+												<option value="Culture">Culture</option> 
 												<option value="Drug Susceptibility">Drug Susceptibility</option>
 												<option value="Line probe assay">Line probe assay</option>
 											</select>
 										</td>
 									</tr>
+									<tr>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Number of sputum samples sent with this form 
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+										</td>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Date of collection of first sputum samples
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+									</td>
+									</tr>
+									<tr>
+									<th scope="row">
+											<label class="label-control">
+											Name of signature of person requesting examination 
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+										</td>
+
+									</tr>
 								</table>
 							</div>
 						</div>
 						<?php if ($usersModel->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							<?php // if (false) { 
-							?>
+							
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -413,7 +441,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="resultDate">Date Of Result</label></th>
+											<td>
+											<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+											</td>
+											
+										</tr>
+										<tr>
+										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -748,6 +783,20 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+		$("#firstSputumSamplesCollectionDate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            onSelect: function(dateText, inst) {
+                //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                $(this).change();
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
