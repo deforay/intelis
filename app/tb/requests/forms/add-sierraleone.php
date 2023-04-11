@@ -1,3 +1,7 @@
+<style>
+	.followUp { display: inline-flex; list-style: none; padding: 0px; margin:5px; }
+	.followUp li { margin-right:5px;}
+</style>
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -276,8 +280,41 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: none;">
-												<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+											<ul class="followUp">
+												<li>
+													<label>Month Of Treatment</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+												</li>
+												<li>
+												<label>Patient's District TB No.</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+												<label>Patient's MDR No.</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+												</li>
+											</ul>												
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="hivStatus">HIV Status</label></th>
+										<td>
+											<select class="form-control" name="hivStatus" id="hivStatus" title="Please select HIV Status">
+												<option value=''> -- Select -- </option>
+												<option value='yes'> Yes </option>
+												<option value='no'> No </option>
+												<option value='unknown'> Unknown </option>
+											</select>
+										</td>
+										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
+										<td>
+											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
+											<option value=''> -- Select -- </option>
+												<option value='yes'> Yes </option>
+												<option value='no'> No </option>
+												<option value='unknown'> Unknown </option>
+											</select>
 										</td>
 									</tr>
 								</table>
@@ -328,15 +365,46 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<option value="MTB/RIF ULTRA">MTB/RIF ULTRA</option>
 													<option value="TB LAM">TB LAM</option>
 												</optgroup>
+												<option value="Culture">Culture</option> 
+												<option value="Drug Susceptibility">Drug Susceptibility</option>
+												<option value="Line probe assay">Line probe assay</option>
 											</select>
 										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Number of sputum samples sent with this form 
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+										</td>
+										<th scope="row">
+											<label class="label-control" for="testTypeRequested">
+											Date of collection of first sputum samples
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+									</td>
+									</tr>
+									<tr>
+									<th scope="row">
+											<label class="label-control">
+											Name of signature of person requesting examination 
+											</label>
+										</th>
+										<td>
+										<input type="text" class="form-control" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+										</td>
+
 									</tr>
 								</table>
 							</div>
 						</div>
 						<?php if ($usersModel->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							<?php // if (false) { 
-							?>
+							
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -373,7 +441,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="resultDate">Date Of Result</label></th>
+											<td>
+											<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+											</td>
+											
+										</tr>
+										<tr>
+										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -708,6 +783,20 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+		$("#firstSputumSamplesCollectionDate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            onSelect: function(dateText, inst) {
+                //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                $(this).change();
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

@@ -3461,10 +3461,18 @@ ALTER TABLE `audit_form_eid` ADD `reason_for_repeat_pcr_other` TEXT NULL DEFAULT
 ALTER TABLE `form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `mother_treatment`;
 ALTER TABLE `audit_form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `mother_treatment`;
 
+ALTER TABLE `form_tb` ADD `previously_treated_for_tb` TEXT NULL DEFAULT NULL AFTER `hiv_status`;
+ALTER TABLE `audit_form_tb` ADD `previously_treated_for_tb` TEXT NULL DEFAULT NULL AFTER `hiv_status`;
+
+ALTER TABLE `form_tb` ADD `number_of_sputum_samples` INT NULL DEFAULT NULL AFTER `tests_requested`;
+ALTER TABLE `audit_form_tb` ADD `number_of_sputum_samples` INT NULL DEFAULT NULL AFTER `tests_requested`;
+
+ALTER TABLE `form_tb` ADD `first_sputum_samples_collection_date` DATE NULL DEFAULT NULL AFTER `number_of_sputum_samples`;
+ALTER TABLE `audit_form_tb` ADD `first_sputum_samples_collection_date` DATE NULL DEFAULT NULL AFTER `number_of_sputum_samples`;
+
+ALTER TABLE `form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `audit_form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `tested_by`;
 
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
-
-
-
 

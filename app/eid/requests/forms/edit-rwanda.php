@@ -380,7 +380,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                             </div>
                         </div>
-                        <?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
