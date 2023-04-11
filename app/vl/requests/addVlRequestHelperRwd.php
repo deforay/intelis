@@ -259,30 +259,24 @@ try {
     } else {
         $_POST['approvedOn'] = null;
     }
-    
-    
-    if(isset($_POST['dob']) && $_POST['dob'] != '')
-    {
+
+
+    if (isset($_POST['dob']) && $_POST['dob'] != '') {
         $ageInfo = $dateUtils->ageInYearMonthDays($_POST['dob']);
         $ageInYears = $ageInfo['year'];
-        if($ageInYears < 1){
+        if ($ageInYears < 1) {
             $ageInMonths = ($ageInYears * 12) + $ageInfo['months'];
-        }
-        else
-        {
+        } else {
             $ageInMonths = 0;
         }
-    }
-    else
-    {
+    } else {
         $ageInYears = $_POST['ageInYears'];
         $ageInMonths = $_POST['ageInMonths'];
     }
-   
+
     $vldata = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => 7,
-        'sample_code_title' => (isset($_POST['sampleCodeTitle']) && $_POST['sampleCodeTitle'] != '') ? $_POST['sampleCodeTitle'] :  'auto',
         'sample_reordered' => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
         'facility_id' => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] :  null,
         'province_id' => (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] :  null,

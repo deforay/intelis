@@ -41,7 +41,6 @@ $removeKeys = array(
   'sample_code',
   'sample_code_key',
   'sample_code_format',
-  'sample_code_title',
   'sample_batch_id',
   'sample_received_at_vl_lab_datetime',
   'eid_test_platform',

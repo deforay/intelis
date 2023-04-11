@@ -343,7 +343,7 @@ try {
         'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
         'vl_test_number' => $_POST['viralLoadNo'],
         'sample_collection_date' => $_POST['sampleCollectionDate'],
-        'date_dispatched_from_clinic_to_lab' => $_POST['dateDispatchedFromClinicToLab'],
+        'sample_dispatched_datetime' => $_POST['dateDispatchedFromClinicToLab'],
         //'result_printed_datetime'=>$_POST['sampleTestingDateAtLab'],
         'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
         'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
