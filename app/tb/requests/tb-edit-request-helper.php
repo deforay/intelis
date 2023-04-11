@@ -146,6 +146,8 @@ try {
         'patient_gender'                      => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age'                         => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'reason_for_tb_test'                  => !empty($reason) ? json_encode($reason) : null,
+        'hiv_status'                          => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
+        'previously_treated_for_tb'           => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,

@@ -1,3 +1,7 @@
+<style>
+	.followUp { display: inline-flex; list-style: none; padding: 0px; margin:5px; }
+	.followUp li { margin-right:5px;}
+</style>
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -72,7 +76,9 @@ $typeOfPatient = json_decode($tbInfo['patient_type']);
 $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode($tbInfo['tests_requested']);
 $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
-$followup = (array)$reasonForTbTest->elaboration->followup;
+$followupArr = (array)$reasonForTbTest->elaboration;
+$followup = (array)$followupArr['follow-up'];
+
 $attributes = null;
 if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$db->where("f.facility_id", $tbInfo['lab_id']);
@@ -284,14 +290,48 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($followup) && count(array_filter($followup)) > 0 ) ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>
 										<td style="float: left;text-align: center;">
-											<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
-												<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim($followup['value']) != "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+										
+											<div class="follow-up hide-reasons" style="display: <?php echo (isset($followup) && count(array_filter($followup)) > 0) ? "block" : "none"; ?>;">
+											<ul class="followUp">
+												<li>
+													<label>Month Of Treatment</label>
+													<input type="text" value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim($followup['month-of-treatment']) != "") ? $followup['month-of-treatment'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+												</li>
+												<li>
+												<label>Patient's District TB No.</label>
+													<input type="text" value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim($followup['patient-district-tb-no']) != "") ? $followup['patient-district-tb-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+												<label>Patient's MDR No.</label>
+													<input type="text" value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim($followup['patient-mdr-no']) != "") ? $followup['patient-mdr-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+												</li>
+											</ul>												
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="hivStatus">HIV Status</label></th>
+										<td>
+											<select class="form-control" name="hivStatus" id="hivStatus" title="Please select HIV Status">
+												<option value=''> -- Select -- </option>
+												<option value='yes' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+												<option value='no' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+												<option value='unknown' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
+											</select>
+										</td>
+										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
+										<td>
+											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
+											<option value=''> -- Select -- </option>
+												<option value='yes' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+												<option value='no' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+												<option value='unknown' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
+											</select>
 										</td>
 									</tr>
 								</table>
@@ -343,6 +383,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="MTB/RIF ULTRA" <?php echo (isset($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
 													<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
 												</optgroup>
+												<option value="Culture" <?php echo (isset($tbInfo['tests_requested']) && in_array("Culture", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Culture</option>
+												<option value="Drug Susceptibility" <?php echo (isset($tbInfo['tests_requested']) && in_array("Drug Susceptibility", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Drug Susceptibility</option>
+												<option value="Line probe assay" <?php echo (isset($tbInfo['tests_requested']) && in_array("Line probe assay", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Line probe assay</option>
 											</select>
 										</td>
 									</tr>
@@ -876,7 +919,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	function checkSubReason(obj, show, opUncheck) {
 		$('.reason-checkbox').prop("checked", false);
 		if (opUncheck == "followup-uncheck") {
-			$('#followUp').val("");
+			$('.followup-uncheck').val("");
 			$("#xPertMTMResult").prop('disabled', false);
 		} else {
 			$("#xPertMTMResult").prop('disabled', true);

@@ -1,3 +1,7 @@
+<style>
+	.followUp { display: inline-flex; list-style: none; padding: 0px; margin:5px; }
+	.followUp li { margin-right:5px;}
+</style>
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -276,8 +280,41 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: none;">
-												<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+											<ul class="followUp">
+												<li>
+													<label>Month Of Treatment</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+												</li>
+												<li>
+												<label>Patient's District TB No.</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+												<label>Patient's MDR No.</label>
+													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+												</li>
+											</ul>												
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="hivStatus">HIV Status</label></th>
+										<td>
+											<select class="form-control" name="hivStatus" id="hivStatus" title="Please select HIV Status">
+												<option value=''> -- Select -- </option>
+												<option value='yes'> Yes </option>
+												<option value='no'> No </option>
+												<option value='unknown'> Unknown </option>
+											</select>
+										</td>
+										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
+										<td>
+											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
+											<option value=''> -- Select -- </option>
+												<option value='yes'> Yes </option>
+												<option value='no'> No </option>
+												<option value='unknown'> Unknown </option>
+											</select>
 										</td>
 									</tr>
 								</table>
@@ -328,6 +365,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<option value="MTB/RIF ULTRA">MTB/RIF ULTRA</option>
 													<option value="TB LAM">TB LAM</option>
 												</optgroup>
+												<option value="Culture">Culture</option>
+												<option value="Drug Susceptibility">Drug Susceptibility</option>
+												<option value="Line probe assay">Line probe assay</option>
 											</select>
 										</td>
 									</tr>
