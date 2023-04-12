@@ -3476,3 +3476,24 @@ ALTER TABLE `audit_form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
 
+-- Amit 12-Apr-2023
+ALTER TABLE `form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `audit_form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+UPDATE `form_vl` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_eid` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_covid19` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_hepatitis` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_tb` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+
+
+
