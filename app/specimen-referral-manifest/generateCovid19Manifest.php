@@ -148,44 +148,43 @@ if (trim($id) != '') {
         $pdf->AddPage();
 
 
-        if($arr['vl_form']==2)
-        {
+        if ($arr['vl_form'] == 2) {
             //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
             $pdf->WriteHTML('<b>FACILITY RELEASER INFORMATION</b>');
-    
+
             $tbl1 = '<br>';
-            $tbl1.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-            $tbl1.='<tr>
-            <td align="left"> Releaser Name :  '.$result[0]['releaser_name'].'</td>
-            <td align="left"> Date :  '.$result[0]['created_date'].'</td>     
+            $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+            $tbl1 .= '<tr>
+            <td align="left"> Releaser Name :  ' . $result[0]['releaser_name'] . '</td>
+            <td align="left"> Date :  ' . $result[0]['created_date'] . '</td>     
             </tr>
             <tr>
-            <td align="left"> Phone No. :  '.$result[0]['phone'].'</td>
-            <td align="left"> Email :  '.$result[0]['email'].'</td>
+            <td align="left"> Phone No. :  ' . $result[0]['phone'] . '</td>
+            <td align="left"> Email :  ' . $result[0]['email'] . '</td>
             </tr>
             <tr>
-            <td align="left"> Facility Name :  '.$result[0]['clinic_name'].'</td>
-            <td align="left"> District :  '.$result[0]['facility_district'].'</td>     
+            <td align="left"> Facility Name :  ' . $result[0]['clinic_name'] . '</td>
+            <td align="left"> District :  ' . $result[0]['facility_district'] . '</td>     
             </tr>';
-            $tbl1.='</table>';
+            $tbl1 .= '</table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C', true);
-    
+
             $pdf->WriteHTML('<p></p><b>SPECIMEN PACKAGING</b>');
-    
+
             $tbl2 = '<br>';
-            $tbl2.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-            $tbl2.='<tr>
-            <td align="left"> Number of specimen included :  '.$result[0]['number_of_samples'].'</td>
+            $tbl2 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+            $tbl2 .= '<tr>
+            <td align="left"> Number of specimen included :  ' . $result[0]['number_of_samples'] . '</td>
             <td align="left"> Forms completed and included :  Yes / No</td>     
             </tr>
             <tr>
             <td align="left"> Packaged By :  ..................</td>
             <td align="left"> Date :  ...................</td>
             </tr>';
-            $tbl2.='</table>';
-    
+            $tbl2 .= '</table>';
+
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C', true);
-    
+
             $pdf->WriteHTML('<p></p><b>CHAIN OF CUSTODY : </b>(persons relinquishing and receiving specimen fill their respective sections)');
             $pdf->WriteHTML('<p></p><b>To be completed at facility in the presence of specimen courier</b>');
             $tbl3 = '<br>';
@@ -202,10 +201,10 @@ if (trim($id) != '') {
             </tr>
             </table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C', true);
-    
+
             $pdf->WriteHTML('<p></p><b>To be completed at testing laboratory by specimen reception personnel</b>');
-                $tbl4 = '<br>';
-                $tbl4 .= '<table border="1">
+            $tbl4 = '<br>';
+            $tbl4 .= '<table border="1">
                 <tr>
                     <td colspan="2">Relinquished By (Courier)</td>
                     <td colspan="2">Received By (Laboratory)</td>
@@ -218,23 +217,21 @@ if (trim($id) != '') {
                 </tr>
             </table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C', true);
-    
         }
 
         $tbl = '';
-        
+
         $tbl .= '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];
-        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($result[0]['package_code'], 'C39').'">';
+        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code'], 'C39') . '">';
         $tbl .=  '</span><br>';
-        if(isset($result) && !empty($result) && sizeof($result) > 0){
+        if (isset($result) && !empty($result)) {
 
             $tbl .= '<table style="width:100%;border:1px solid #333;">
                 
                     <tr nobr="true">';
-                    if($showPatientName=="yes")
-                    {
+            if ($showPatientName == "yes") {
 
-                        $tbl .= ' <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
+                $tbl .= ' <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
                         <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
                         <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
                         <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Patient Name</em></strong></td>
@@ -244,9 +241,8 @@ if (trim($id) != '') {
                         <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
                         <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
                         <td align="center" style="font-size:11px;width:22%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
-                    }
-                    else{
-                        $tbl .= ' <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
+            } else {
+                $tbl .= ' <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
                         <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
                         <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
                         <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
@@ -255,11 +251,11 @@ if (trim($id) != '') {
                         <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
                         <!-- <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
                         <td align="center" style="font-size:11px;width:25%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
-                    }
-                        $tbl .=' </tr>';
-    
+            }
+            $tbl .= ' </tr>';
+
             $sampleCounter = 1;
-                    
+
             foreach ($result as $sample) {
                 //var_dump($sample);die;
                 $collectionDate = '';
@@ -278,9 +274,8 @@ if (trim($id) != '') {
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                 // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['facility_district']) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
-                if($showPatientName=="yes")
-                {
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
+                if ($showPatientName == "yes") {
+                    $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
                 }
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';

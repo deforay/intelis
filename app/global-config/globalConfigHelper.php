@@ -239,48 +239,6 @@ try {
         }
     }
 
-    //update all sample code in database
-    // if (isset($_POST['sample_code_prefix']) && trim($_POST['sample_code_prefix']) != '' && ($_POST['vl_form'] == 7 || $_POST['vl_form'] == 3 || $_POST['vl_form'] == 4)) {
-    //     if (($configResult[0]['value'] != $_POST['sample_code']) || ($_POST['vl_form'] != $configFormResult[0]['value'])) {
-    //         $prefix = trim($_POST['sample_code_prefix']);
-    //         $vlDistinctQuery = "SELECT DISTINCT DATE_FORMAT( request_created_datetime,'%Y-%m' ) as month FROM form_vl where vlsm_country_id=" . $_POST['vl_form'];
-    //         $distnictResult = $db->rawQuery($vlDistinctQuery);
-    //         if ($distnictResult) {
-    //             $increment = 1;
-    //             foreach ($distnictResult as $month) {
-    //                 $y = explode("-", $month['month']);
-    //                 if ($_POST['sample_code'] == 'YY') {
-    //                     $dtYr = substr($y[0], 2);
-    //                     $start_date = date('Y-01-01');
-    //                     $end_date = date('Y-12-31');
-    //                 } else if ($_POST['sample_code'] == 'MMYY') {
-    //                     $increment = 1;
-    //                     $dtYr = $y[1] . substr($y[0], 2);
-    //                     $start_date = date($month['month'] . '-01');
-    //                     $end_date = date($month['month'] . '-31');
-    //                 }
-    //                 if ($_POST['vl_form'] == 7) {
-    //                     $start_date = date('Y-01-01');
-    //                     $end_date = date('Y-12-31');
-    //                 }
-    //                 $vlQuery = 'select sample_code,vl_sample_id from form_vl as vl where vl.vlsm_country_id=' . $_POST['vl_form'] . ' AND DATE(vl.request_created_datetime) >= "' . $start_date . '" AND DATE(vl.request_created_datetime) <= "' . $end_date . '" order by vl_sample_id';
-    //                 $svlResult = $db->query($vlQuery);
-
-    //                 foreach ($svlResult as $sample) {
-    //                     $maxId = $increment;
-    //                     $strparam = strlen($maxId);
-    //                     $zeros = substr("000", $strparam);
-    //                     $maxId = $zeros . $maxId;
-    //                     $sampleCode = $prefix . $dtYr . $maxId;
-    //                     $vlData = array('sample_code' => $sampleCode, 'sample_code_title' => $_POST['sample_code'], 'sample_code' => $sampleCode, 'sample_code_format' => $prefix . $dtYr, 'sample_code_key' => $maxId);
-    //                     $db = $db->where('vl_sample_id', $sample['vl_sample_id']);
-    //                     $id = $db->update('form_vl', $vlData);
-    //                     $increment++;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
     $_SESSION['alertMsg'] = _("Configuration updated successfully");
 
     //Add event log

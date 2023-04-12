@@ -57,11 +57,11 @@ if ($arr['sample_code'] == 'MMYY') {
   $end_date = date('Y-12-31');
 }
 //Set Dispatched From Clinic To Lab Date
-if (isset($vlQueryInfo['date_dispatched_from_clinic_to_lab']) && trim($vlQueryInfo['date_dispatched_from_clinic_to_lab']) != '' && $vlQueryInfo['date_dispatched_from_clinic_to_lab'] != '0000-00-00 00:00:00') {
-  $expStr = explode(" ", $vlQueryInfo['date_dispatched_from_clinic_to_lab']);
-  $vlQueryInfo['date_dispatched_from_clinic_to_lab'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+  $expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
+  $vlQueryInfo['sample_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-  $vlQueryInfo['date_dispatched_from_clinic_to_lab'] = '';
+  $vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 if (isset($vlQueryInfo['requesting_date']) && trim($vlQueryInfo['requesting_date']) != '' && $vlQueryInfo['requesting_date'] != '0000-00-00') {
   $vlQueryInfo['requesting_date'] = $general->humanReadableDateFormat($vlQueryInfo['requesting_date']);
