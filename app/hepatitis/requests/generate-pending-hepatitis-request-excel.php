@@ -44,10 +44,10 @@ $sheet = $excel->getActiveSheet();
         }
     } else {
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
         }
         else{
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
         }
     }
 
@@ -250,8 +250,8 @@ foreach ($rResult as $aRow) {
         $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
         $row[] = $resultDispatchedDate;
         $row[] = ($aRow['lab_tech_comments']);
-        $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-        $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+      //  $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+      //  $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
     }
     $output[] = $row;
     $no++;
