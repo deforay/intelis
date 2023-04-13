@@ -345,7 +345,7 @@ $sFormat = '';
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="">Indication for Treatment Initiation</label>
-                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;">
+                                                                 <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
                                                                  <option value=""> — Select-- </option>
                                                                  <option value="PMTCT"> PMTCT </option>     
                                                                  <option value="Child under 15 years"> Child under 15 years </option>
@@ -353,6 +353,7 @@ $sFormat = '';
                                                                  <option value="TB Infection"> TB Infection </option>
                                                                  <option value="Other"> Other </option>
                                                                  </select>
+                                                                 <input type="text" class="form-control newTreatmentIndication" name="newTreatmentIndication" id="newTreatmentIndication" placeholder="Treatment Initiation" title="Please enter Indication for Treatment Initiation" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -586,6 +587,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                        </div>
+                                                       <p>&nbsp;</p>
                                                        <div class="row">
                                                             <div class="col-md-4">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician</label>
@@ -876,6 +878,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      let provinceName = true;
      let facilityName = true;
+     function checkIndicationForTreatmentValue() {
+        var treatmentIndication = $("#treatmentIndication").val();
+        if (treatmentIndication == 'Other') {
+            $(".newTreatmentIndication").show();
+            $("#newTreatmentIndication").addClass("isRequired");
+            $("#newTreatmentIndication").focus();
+        } else {
+            $(".newTreatmentIndication").hide();
+            $("#newTreatmentIndication").removeClass("isRequired");
+            $('#newTreatmentIndication').val("");
+        }
+    }
      $(document).ready(function() {
 
          $('#activeTB').on('change',function(){
@@ -1209,6 +1223,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
      }
+
+
      $("input:radio[name=gender]").click(function() {
           if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
                $('.femaleSection').hide();

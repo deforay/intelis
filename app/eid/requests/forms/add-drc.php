@@ -303,10 +303,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									<tr>
 										<th scope="row">Bébé a reçu:<br>(Cocher tout ce qui est reçu, Rien, ou inconnu)</th>
 										<td>
-											<input type="checkbox" name="childTreatment" value="Nothing" />&nbsp;Rien &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment" value="AZT" />&nbsp;AZT &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment" value="NVP" />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" name="childTreatment[]" value="Nothing" />&nbsp;Rien &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" name="childTreatment[]" value="AZT" />&nbsp;AZT &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" name="childTreatment[]" value="NVP" />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" name="childTreatment[]" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
 									</tr>
 									<tr>

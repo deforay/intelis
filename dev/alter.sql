@@ -3444,12 +3444,56 @@ ALTER TABLE `audit_form_vl` ADD `treatment_duration` TEXT NULL DEFAULT NULL AFTE
 ALTER TABLE `audit_form_vl` ADD `treatment_indication` TEXT NULL DEFAULT NULL AFTER `treatment_duration`;
 ALTER TABLE `audit_form_vl` ADD `patient_has_active_tb` TEXT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
 ALTER TABLE `audit_form_vl` ADD `patient_active_tb_phase` TEXT NULL DEFAULT NULL AFTER `patient_has_active_tb`;
-ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`
+ALTER TABLE `audit_form_vl` ADD `line_of_treatment_failure_assessed` TEXT NULL DEFAULT NULL AFTER `line_of_treatment`;
 
 ALTER TABLE `form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
-ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`
+ALTER TABLE `audit_form_eid` ADD `lab_testing_point` TEXT NULL DEFAULT NULL AFTER `lab_id`;
 
+ALTER TABLE `form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;
+ALTER TABLE `audit_form_eid` ADD `infant_on_pmtct_prophylaxis` TEXT NULL DEFAULT NULL AFTER `has_infant_stopped_breastfeeding`, ADD `infant_on_ctx_prophylaxis` TEXT NULL DEFAULT NULL AFTER `infant_on_pmtct_prophylaxis`;
 
+ALTER TABLE `form_eid` ADD `pcr_test_number` INT NULL DEFAULT NULL AFTER `pcr_test_performed_before`;
+ALTER TABLE `audit_form_eid` ADD `pcr_test_number` INT NULL DEFAULT NULL AFTER `pcr_test_performed_before`;
+
+ALTER TABLE `form_eid` ADD `reason_for_repeat_pcr_other` TEXT NULL DEFAULT NULL AFTER `reason_for_pcr`;
+ALTER TABLE `audit_form_eid` ADD `reason_for_repeat_pcr_other` TEXT NULL DEFAULT NULL AFTER `reason_for_pcr`;
+
+ALTER TABLE `form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `mother_treatment`;
+ALTER TABLE `audit_form_eid` ADD `mother_regimen` TEXT NULL DEFAULT NULL AFTER `mother_treatment`;
+
+ALTER TABLE `form_tb` ADD `previously_treated_for_tb` TEXT NULL DEFAULT NULL AFTER `hiv_status`;
+ALTER TABLE `audit_form_tb` ADD `previously_treated_for_tb` TEXT NULL DEFAULT NULL AFTER `hiv_status`;
+
+ALTER TABLE `form_tb` ADD `number_of_sputum_samples` INT NULL DEFAULT NULL AFTER `tests_requested`;
+ALTER TABLE `audit_form_tb` ADD `number_of_sputum_samples` INT NULL DEFAULT NULL AFTER `tests_requested`;
+
+ALTER TABLE `form_tb` ADD `first_sputum_samples_collection_date` DATE NULL DEFAULT NULL AFTER `number_of_sputum_samples`;
+ALTER TABLE `audit_form_tb` ADD `first_sputum_samples_collection_date` DATE NULL DEFAULT NULL AFTER `number_of_sputum_samples`;
+
+ALTER TABLE `form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `tested_by`;
+ALTER TABLE `audit_form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `tested_by`;
 
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
+
+-- Amit 12-Apr-2023
+ALTER TABLE `form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `audit_form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+UPDATE `form_vl` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_eid` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_covid19` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_hepatitis` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_tb` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+
+
+

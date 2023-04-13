@@ -98,20 +98,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-                        vl.vl_sample_id,
-                        vl.sample_code,
-                        vl.remote_sample_code,
-                        vl.app_sample_code,
-                        vl.patient_art_no,
-                        vl.patient_first_name,
-                        vl.patient_middle_name,
-                        vl.patient_last_name,
-                        vl.sample_collection_date,
-                        vl.result,
-                        vl.last_modified_datetime,
-                        vl.result_status,
-                        vl.locked,
-                        vl.data_sync,
+                        vl.*,
                         s.sample_name,
                         b.batch_code,
                         ts.status_name,
@@ -119,7 +106,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         l.facility_name as lab_name,
                         f.facility_code,
                         f.facility_state,
-                        f.facility_district
+                        f.facility_district,
+                        fs.funding_source_name,
+                        i.i_partner_name 
                         
                         FROM form_vl as vl 
                         
@@ -127,7 +116,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
                         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
                         LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+                        LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
+                        LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
 
 $start_date = '';
 $end_date = '';

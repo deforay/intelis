@@ -49,7 +49,10 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-
+$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
+$artRegimenResult = $db->rawQuery($artRegimenQuery);
+$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+$aResult = $db->query($aQuery);
 ?>
 
 <div class="content-wrapper">
@@ -231,17 +234,46 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important" class="labels">ART given to the Mother during:</th>
+                                        <th style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
-                                            <input type="checkbox" name="motherTreatment[]" value="No ART given" /> No ART given <br>
+                                        <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes"> Yes </option>
+                                                <option value="no"> No </option>
+                                            </select>
+                                            <!--<input type="checkbox" name="motherTreatment[]" value="No ART given" /> No ART given <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" /> Pregnancy <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" /> Labour/Delivery <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Postnatal" /> Postnatal <br>
-                                            <!-- <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown
+                                            <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> 
+                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown-->
                                         </td>
                                     </tr>
-
+                                    <tr class="motherRegimen" style="display:none;">
+                                    <th scope="row" class="labels">Mother's Regimen</th>
+                                        <td>
+                                        <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                                                <?php
+                                                                                foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) {
+                                                                                ?>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php
+                                                                                     }
+                                                                                }
+                                                                                ?>
+                                                                           </optgroup>
+                                                                      <?php }
+                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                           <option value="other">Other</option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -266,7 +298,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
                                                 <?php } ?>
-
                                             </select>
                                         </td>
 
@@ -281,14 +312,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
+                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis</th>
                                         <td>
-                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                            <select class="form-control" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes"> Yes </option>
+                                                <option value="no"> No </option>
+                                            </select>
                                         </td>
-
-                                        <th scope="row" class="labels">PCR test performed on child before :</th>
+                                        <th scope="row" class="labels">Infant On CTX Prophylaxis</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -296,6 +330,22 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
+                                        <td>
+                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                        </td>
+
+                                        <th scope="row" class="labels">Type of Test :</th>
+                                        <td>
+                                            <select class="form-control" name="pcrTestNumber" id="pcrTestNumber">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="1"> 1st PCR </option>
+                                                <option value="2"> 2nd PCR </option>
+                                                <option value="3"> 3rd PCR </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="pcrBox">
                                         <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -311,16 +361,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                    <tr class="pcrBox">
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>
@@ -511,6 +563,27 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     facilityName = true;
     machineName = true;
 
+    function showRegimen()
+    {
+        if($("#motherTreatment").val()=="yes")
+            $(".motherRegimen").show();
+                else
+            $(".motherRegimen").hide();
+    }
+
+    function checkMotherARTRegimenValue() {
+        var motherRegimen = $("#motherRegimen").val();
+        if (motherRegimen == 'other') {
+            $(".newArtRegimen").show();
+            $("#newArtRegimen").addClass("isRequired");
+            $("#newArtRegimen").focus();
+        } else {
+            $(".newArtRegimen").hide();
+            $("#newArtRegimen").removeClass("isRequired");
+            $('#newArtRegimen').val("");
+        }
+    }
+
     function getfacilityDetails(obj) {
 
         $.blockUI();
@@ -663,7 +736,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
+    function checkPCRTestReason()
+    {
+        var otherReason = $("#pcrTestReason").val();
+        if (otherReason == 'Other') {
+            $(".reasonForRepeatPcrOther").show();
+            $("#reasonForRepeatPcrOther").addClass("isRequired");
+            $("#reasonForRepeatPcrOther").focus();
+        } else {
+            $(".reasonForRepeatPcrOther").hide();
+            $("#reasonForRepeatPcrOther").removeClass("isRequired");
+            $('#reasonForRepeatPcrOther').val("");
+        }
+    }
     $(document).ready(function() {
+        $('.pcrBox').hide();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
@@ -695,15 +782,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         if(data!=0)
                         {
                             $('.testingPoint').show();
+                            $("#labTestingPoint").addClass("isRequired");
                             $("#labTestingPoint").html(data);
                         }
                         else
                         {
                             $('.testingPoint').hide();
+                            $("#labTestingPoint").removeClass("isRequired");
                             $("#labTestingPoint").html("");
                         }
                     });
 
+        });
+
+        $("#pcrTestNumber").on("change",function(){
+            if($(this).val()==1)
+                    $('.pcrBox').hide();
+                else
+                    $('.pcrBox').show();
         });
 
         $('#sampleCollectionDate').datetimepicker({

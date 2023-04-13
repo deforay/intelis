@@ -254,12 +254,16 @@ try {
         $_POST['reviewedOn'] = null;
     }
 
+    if(isset($_POST['treatmentIndication']) && $_POST['treatmentIndication']=="Other")
+    {
+        $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'].'_Other';
+    }
+
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
 
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId,
         'vlsm_country_id'                       => 1,
-        'sample_code_title'                     => (isset($_POST['sampleCodeTitle']) && $_POST['sampleCodeTitle'] != '') ? $_POST['sampleCodeTitle'] :  'auto',
         'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
         'sample_code_format'                    => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,
         'facility_id'                           => (isset($_POST['fName']) && $_POST['fName'] != '') ? $_POST['fName'] :  null,

@@ -146,7 +146,7 @@ try {
         vl.external_sample_code                                         as serialNo,
         vl.is_patient_new                                    as isPatientNew,
         vl.has_patient_changed_regimen                       as hasChangedRegimen,
-        vl.date_dispatched_from_clinic_to_lab                as dateDispatchedFromClinicToLab,
+        vl.sample_dispatched_datetime                as dateDispatchedFromClinicToLab,
         vl.vl_test_number                                    as viralLoadNo,
         vl.last_viral_load_result                            as lastViralLoadResult,
         vl.last_viral_load_date                              as lastViralLoadTestDate,

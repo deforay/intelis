@@ -22,14 +22,14 @@ $sarr = $general->getSystemConfig();
 
 $skin = "skin-blue";
 
-$logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>VLSM</span>";
+$logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = _("Lab Sample Management Module");
 $shortName = _("Sample Management");
 if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$skin = "skin-red";
 	$systemType = _("Remote Sample Tracking Module");
-	$logoName = "<span class='fa fa-medkit'></span> VLSTS";
+	$logoName = "<span class='fa fa-medkit'></span> STS";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _("Sample Tracking");
 }

@@ -6,12 +6,25 @@ $general = new \Vlsm\Models\General();
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
-if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
-    $request = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+$zip = new ZipArchive();
+$request = $response = [];
+$folder = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
+if (file_exists($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
+    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    if ($res === true) {
+        $request = $zip->getFromName($result['transaction_id'] . '.json');
+    }
 }
-if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json')){
-    $response = file_get_contents(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'].'.json');
+$zip->close();
+
+$zip = new ZipArchive();
+if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
+    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    if ($res === true) {
+        $response = $zip->getFromName($result['transaction_id'] . '.json');
+    }
 }
+$zip->close();
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
@@ -40,10 +53,10 @@ if(file_exists(UPLOAD_PATH.DIRECTORY_SEPARATOR.'track-api' . DIRECTORY_SEPARATOR
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($request ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson($request ?? []); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($response ?: array()); ?></pre>
+                    <pre><?= $general->prettyJson($response ?? []); ?></pre>
                 </div>
             </div>
     </section>

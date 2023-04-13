@@ -8,7 +8,7 @@ ob_start();
 // $fundingSourceList = $db->query($fundingSourceQry);
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
-$nationalityResult = $db->query($nationalityQry);
+$nationalityResult = $db->query($nationalityQry); 
 
 foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
@@ -254,8 +254,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                        <th scope="row">Boma/Village</th>
-                                        <td><input class="form-control" id="patientCity" name="patientCity" placeholder="Case Boma/Village" title="Please enter the Case Boma/Village" style="width:100%;"></td>
+                                        <th scope="row">Village</th>
+                                        <td><input class="form-control" id="patientCity" name="patientCity" placeholder="Case Village" title="Please enter the Case Village" style="width:100%;"></td>
                                         <th scope="row">Nationality</th>
                                         <td>
                                             <select name="patientNationality" id="patientNationality" class="form-control" title="Please choose nationality" style="width:100%">
@@ -266,9 +266,37 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row">Passport Number</th>
                                         <td><input class="form-control" id="patientPassportNumber" name="patientPassportNumber" placeholder="Passport Number" title="Please enter Passport Number" style="width:100%;"></td>
-
+                                        <th scope="row"><label for="vaccinationStatus">Vaccination Status </label></th>
+                                        <td>
+                                            <select class="form-control" name="vaccinationStatus" id="vaccinationStatus" title="Please select the Status of Vaccination" onchange="vaccinationInfoShow();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='yes'> Yes </option>
+                                                <option value='no'> No </option>
+                                            </select>
+                                        </td>
                                     </tr>
-
+                                    <tr class="vaccinationInfo" style="display:none;">
+                                        <th scope="row"><label for="vaccinationDosage">Vaccination Dosage</label></th>
+                                        <td>
+                                             <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='first'> First </option>
+                                                <option value='second'> Second </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row"><label for="vaccinationType">Vaccination Type </label></th>
+                                        <td>
+                                            <select class="form-control" name="vaccinationType" id="vaccinationType" title="Please select the Type of Vaccination" onchange="addNewVaccinationType();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='jansen & jansen'> JANSEN & JANSEN </option>
+                                                <option value='astrazeneca'> ASTRAZENECA </option>
+                                                <option value='sinopham'> SINOPHAM </option>
+                                                <option value='pfizer'> PFIZER </option>
+                                                <option value='other'> OTHERS </option>
+                                            </select>
+                                            <input type="text" class="form-control vaccinationTypeOther" name="vaccinationTypeOther" id="vaccinationTypeOther" placeholder="Enter Type of Vaccination" title="Please enter Type of Vaccination" style="margin-top:4px;display:none;" />
+                                        </td>
+                                        </tr>
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
@@ -321,7 +349,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
+                                        <td>
+                                             <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='yes'> Yes </option>
+                                                <option value='no'> No </option>
+                                                <option value='unknown'> Unknown </option>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
+                                    <th scope="row"><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -330,8 +370,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 } ?>
                                             </select>
                                         </td>
-                                        <th scope="row"></th>
-                                        <td></td>
+                                       
                                     </tr>
                                 </table>
                             </div>
@@ -972,6 +1011,29 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <?php
             } ?>
         }
+    }
+
+    function addNewVaccinationType()
+    {
+        var vaccinationType = $("#vaccinationType").val();
+        if (vaccinationType == 'other') {
+            $(".vaccinationTypeOther").show();
+            $("#vaccinationTypeOther").addClass("isRequired");
+            $("#vaccinationTypeOther").focus();
+        } else {
+            $(".vaccinationTypeOther").hide();
+            $("#vaccinationTypeOther").removeClass("isRequired");
+            $('#vaccinationTypeOther').val("");
+        }
+    }
+
+    function vaccinationInfoShow()
+    {
+        status = $("#vaccinationStatus").val();
+        if(status=="yes")
+            $('.vaccinationInfo').show();
+        else
+            $('.vaccinationInfo').hide();
     }
 
     $(document).ready(function() {

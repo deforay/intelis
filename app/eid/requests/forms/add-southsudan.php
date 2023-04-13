@@ -305,15 +305,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>
@@ -503,6 +504,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     provinceName = true;
     facilityName = true;
     machineName = true;
+
+    function checkPCRTestReason()
+    {
+        var otherReason = $("#pcrTestReason").val();
+        if (otherReason == 'Other') {
+            $(".reasonForRepeatPcrOther").show();
+            $("#reasonForRepeatPcrOther").addClass("isRequired");
+            $("#reasonForRepeatPcrOther").focus();
+        } else {
+            $(".reasonForRepeatPcrOther").hide();
+            $("#reasonForRepeatPcrOther").removeClass("isRequired");
+            $('#reasonForRepeatPcrOther').val("");
+        }
+    }
 
     function getfacilityDetails(obj) {
 

@@ -49,7 +49,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
+//$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
 
 //suggest sample id when lab user add request sample
 $sampleSuggestion = '';
@@ -64,7 +64,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';
 }
-
+$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
+$artRegimenResult = $db->rawQuery($artRegimenQuery);
+$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+$aResult = $db->query($aQuery);
 ?>
 
 
@@ -252,17 +255,39 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important" class="labels">ART given to the Mother during:</th>
+                                        <th style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
-                                            <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" <?php echo in_array('Labour/Delivery', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Labour/Delivery <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Postnatal" <?php echo in_array('Postnatal', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Postnatal <br>
-                                            <!-- <input type="checkbox" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>  onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Unknown
+                                        <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                        </select>
+                                    </tr>
+                                    <tr class="motherRegimen" style="display:none;">
+                                    <th scope="row" class="labels">Mother's Regimen</th>
+                                        <td>
+                                        <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                                                <?php
+                                                                                foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) {
+                                                                                ?>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php
+                                                                                     }
+                                                                                }
+                                                                                ?>
+                                                                           </optgroup>
+                                                                      <?php }
+                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                                           <option value="other">Other</option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                         </td>
                                     </tr>
-
                                     <tr>
                                         <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -302,21 +327,40 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row" class="labels">Infant On CTX Prophylaxis</th>
+                                        <td>
+                                            <select class="form-control" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                <option value="no" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
                                         <td>
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                         </td>
 
-                                        <th scope="row" class="labels">PCR test performed on child before :</th>
+                                        <th scope="row" class="labels">Type of Test :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
+                                            <select class="form-control" name="pcrTestNumber" id="pcrTestNumber">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="yes" <?php echo ($eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                <option value="no" <?php echo ($eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                <option value="1" <?php echo ($eidInfo['pcr_test_number'] == '1') ? "selected='selected'" : ""; ?>> 1st PCR </option>
+                                                <option value="2" <?php echo ($eidInfo['pcr_test_number'] == '2') ? "selected='selected'" : ""; ?>> 2nd PCR </option>
+                                                <option value="3" <?php echo ($eidInfo['pcr_test_number'] == '3') ? "selected='selected'" : ""; ?>> 3rd PCR </option>
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="pcrBox">
                                         <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -332,16 +376,18 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo $general->humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row" class="labels">Reason for 2nd PCR :</th>
+                                    <tr class="pcrBox">
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation of positive first EID PCR test result </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?php echo $eidInfo['reason_for_repeat_pcr_other']; ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>
@@ -542,7 +588,42 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     provinceName = true;
     facilityName = true;
     machineName = true;
+    function showRegimen()
+    {
+        if($("#motherTreatment").val()=="yes")
+            $(".motherRegimen").show();
+                else
+                {
+            $(".motherRegimen").hide();
+            $('#motherRegimen').val("");
+                }
+    }
 
+    function checkMotherARTRegimenValue() {
+        var motherRegimen = $("#motherRegimen").val();
+        if (motherRegimen == 'other') {
+            $(".newArtRegimen").show();
+            $("#newArtRegimen").addClass("isRequired");
+            $("#newArtRegimen").focus();
+        } else {
+            $(".newArtRegimen").hide();
+            $("#newArtRegimen").removeClass("isRequired");
+            $('#newArtRegimen').val("");
+        }
+    }
+    function checkPCRTestReason()
+    {
+        var otherReason = $("#pcrTestReason").val();
+        if (otherReason == 'Other') {
+            $(".reasonForRepeatPcrOther").show();
+            $("#reasonForRepeatPcrOther").addClass("isRequired");
+            $("#reasonForRepeatPcrOther").focus();
+        } else {
+            $(".reasonForRepeatPcrOther").hide();
+            $("#reasonForRepeatPcrOther").removeClass("isRequired");
+            $('#reasonForRepeatPcrOther').val("");
+        }
+    }
     function getfacilityDetails(obj) {
         $.blockUI();
         var cName = $("#facilityId").val();
@@ -673,18 +754,48 @@ function getTestingPoint()
                         if(data!=0)
                         {
                             $('.testingPoint').show();
+                            $("#labTestingPoint").addClass("isRequired");
                             $("#labTestingPoint").html(data);
                         }
                         else
                         {
                             $('.testingPoint').hide();
+                            $("#labTestingPoint").removeClass("isRequired");
                             $("#labTestingPoint").html("");
                         }
                     });
 }
 
+
     $(document).ready(function() {
         getTestingPoint();
+        checkPCRTestReason();
+        showRegimen();
+        if($("#pcrTestNumber").val()==1)
+        {
+            $("#prePcrTestResult").val("");
+            $("#previousPCRTestDate").val("");
+            $("#pcrTestReason").val("");
+            $('.pcrBox').hide();
+        }
+            else
+            {
+                $('.pcrBox').show();
+            }
+
+        $("#pcrTestNumber").on("change",function(){
+            if($("#pcrTestNumber").val()==1)
+        {
+            $("#prePcrTestResult").val("");
+            $("#previousPCRTestDate").val("");
+            $("#pcrTestReason").val("");
+            $('.pcrBox').hide();
+        }
+            else
+            {
+                $('.pcrBox').show();
+            }
+        });
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

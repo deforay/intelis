@@ -63,6 +63,13 @@ try {
         $_POST['sampleDispatchedDate'] = null;
     }
 
+    if (isset($_POST['resultDate']) && trim($_POST['resultDate']) != "") {
+        $resultDate = explode(" ", $_POST['resultDate']);
+        $_POST['resultDate'] = $general->isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['resultDate'] = null;
+    }
+//echo '<pre>'; print_r($_POST); die;
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -103,6 +110,10 @@ try {
     }
     if (!empty($_POST['patientDob'])) {
         $_POST['patientDob'] = $general->isoDateFormat($_POST['patientDob']);
+    }
+
+    if (!empty($_POST['firstSputumSamplesCollectionDate'])) {
+        $_POST['firstSputumSamplesCollectionDate'] = $general->isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
     }
 
     if (!empty($_POST['result'])) {
@@ -153,7 +164,12 @@ try {
         'patient_gender'                      => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age'                         => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'reason_for_tb_test'                  => !empty($reason) ? json_encode($reason) : null,
+        'hiv_status'                          => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
+        'previously_treated_for_tb'           => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
+        'number_of_sputum_samples'            => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
+        'first_sputum_samples_collection_date'=> !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
+        'sample_requestor_name'               => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
         'sample_dispatched_datetime'          => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
@@ -172,6 +188,7 @@ try {
         'other_specimen_type'                 => (isset($_POST['specimenTypeOther']) && $_POST['specimenTypeOther'] != "") ? $_POST['specimenTypeOther'] : null,
         'other_patient_type'                  => (isset($_POST['typeOfPatientOther']) && $_POST['typeOfPatientOther'] != "") ? $_POST['typeOfPatientOther'] : null,
         'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
+        'result_date'                         => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
         'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
         'result_status'                       => $status,
         'data_sync'                           => 0,

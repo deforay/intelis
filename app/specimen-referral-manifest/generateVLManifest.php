@@ -73,6 +73,7 @@ class MYPDF extends TCPDF
 if (trim($id) != '') {
 
     $sQuery = "SELECT remote_sample_code, 
+                        pd.number_of_samples,
                         fd.facility_name as clinic_name, 
                         fd.facility_district, 
                         patient_first_name,
@@ -84,12 +85,17 @@ if (trim($id) != '') {
                         sample_collection_date,
                         patient_gender,
                         patient_art_no,pd.package_code, 
-                        l.facility_name as lab_name 
+                        l.facility_name as lab_name,
+                        u_d.user_name as releaser_name,
+                        u_d.phone_number as phone,
+                        u_d.email as email,
+                        DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
                 FROM package_details as pd 
                 LEFT JOIN form_vl as vl ON vl.sample_package_id=pd.package_id 
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id 
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
                 LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.sample_type 
+                LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by 
                 WHERE pd.package_id IN($id)";
 
     $result = $db->query($sQuery);
@@ -156,18 +162,91 @@ if (trim($id) != '') {
         // set font
         $pdf->SetFont('helvetica', '', 10);
         $pdf->setPageOrientation('L');
+        
         // add a page
         $pdf->AddPage();
+    if($arr['vl_form']==2)
+    {
+        //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
+        $pdf->WriteHTML('<b>FACILITY RELEASER INFORMATION</b>');
+
+        $tbl1 = '<br>';
+        $tbl1.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+        $tbl1.='<tr>
+        <td align="left"> Releaser Name :  '.$result[0]['releaser_name'].'</td>
+        <td align="left"> Date :  '.$result[0]['created_date'].'</td>     
+        </tr>
+        <tr>
+        <td align="left"> Phone No. :  '.$result[0]['phone'].'</td>
+        <td align="left"> Email :  '.$result[0]['email'].'</td>
+        </tr>
+        <tr>
+        <td align="left"> Facility Name :  '.$result[0]['clinic_name'].'</td>
+        <td align="left"> District :  '.$result[0]['facility_district'].'</td>     
+        </tr>';
+        $tbl1.='</table>';
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C', true);
+
+        $pdf->WriteHTML('<p></p><b>SPECIMEN PACKAGING</b>');
+
+        $tbl2 = '<br>';
+        $tbl2.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+        $tbl2.='<tr>
+        <td align="left"> Number of specimen included :  '.$result[0]['number_of_samples'].'</td>
+        <td align="left"> Forms completed and included :  Yes / No</td>     
+        </tr>
+        <tr>
+        <td align="left"> Packaged By :  ..................</td>
+        <td align="left"> Date :  ...................</td>
+        </tr>';
+        $tbl2.='</table>';
+
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C', true);
+
+        $pdf->WriteHTML('<p></p><b>CHAIN OF CUSTODY : </b>(persons relinquishing and receiving specimen fill their respective sections)');
+        $pdf->WriteHTML('<p></p><b>To be completed at facility in the presence of specimen courier</b>');
+        $tbl3 = '<br>';
+        $tbl3 .= '<table border="1">
+        <tr>
+            <td colspan="2">Relinquished By (Laboratory)</td>
+            <td colspan="2">Received By (Courier)</td>
+        </tr>
+        <tr>
+            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+            <td align="left"> Date : <br><p></p><br> Time :</td>
+            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+            <td align="left"> Date : <br><p></p><br> Time :</td>
+        </tr>
+        </table>';
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C', true);
+
+        $pdf->WriteHTML('<p></p><b>To be completed at testing laboratory by specimen reception personnel</b>');
+            $tbl4 = '<br>';
+            $tbl4 .= '<table border="1">
+            <tr>
+                <td colspan="2">Relinquished By (Courier)</td>
+                <td colspan="2">Received By (Laboratory)</td>
+            </tr>
+            <tr>
+                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+                <td align="left"> Date : <br><p></p><br> Time :</td>
+                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
+                <td align="left"> Date : <br><p></p><br> Time :</td>
+            </tr>
+        </table>';
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C', true);
+
+    }
         $tbl = '';
 
 
-        $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['package_code'];
+        $tbl .= '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code'], 'C39') . '">';
         $tbl .=  '</span><br>';
 
         if (isset($result) && !empty($result) && sizeof($result) > 0) {
 
-            $tbl .= '<table nobr="true" style="width:100%;" border="1" cellpadding="2">';
+            $tbl .= '<br><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
             $tbl .=     '<tr nobr="true">
                         <td  style="font-size:11px;width:5%;"><strong>S/N</strong></td>
                         <td  style="font-size:11px;width:12%;"><strong>SAMPLE ID</strong></td>

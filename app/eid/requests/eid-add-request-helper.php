@@ -89,6 +89,22 @@ try {
 		$_POST['motherTreatmentInitiationDate'] = null;
 	}
 
+	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
+        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
+        $artResult = $db->rawQuery($artQuery);
+        if (!isset($artResult[0]['art_id'])) {
+            $data = array(
+                'art_code' => $_POST['newArtRegimen'],
+                'parent_art' => '1',
+                'updated_datetime' => $general->getCurrentDateTime(),
+            );
+            $result = $db->insert('r_vl_art_regimen', $data);
+            $_POST['motherRegimen'] = $_POST['newArtRegimen'];
+        } else {
+            $_POST['motherRegimen'] = $artResult[0]['art_code'];
+        }
+    }
+
 	if (isset($_POST['previousPCRTestDate']) && trim($_POST['previousPCRTestDate']) != "") {
 		$previousPCRTestDate = explode(" ", $_POST['previousPCRTestDate']);
 		$_POST['previousPCRTestDate'] = $general->isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
@@ -155,6 +171,7 @@ try {
 		'mother_dob' 										=> isset($_POST['mothersDob']) ? $_POST['mothersDob'] : null,
 		'mother_marital_status' 							=> isset($_POST['mothersMaritalStatus']) ? $_POST['mothersMaritalStatus'] : null,
 		'mother_treatment' 									=> isset($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : null,
+		'mother_regimen' 									=> (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] :  null,
 		'mother_treatment_other' 							=> isset($_POST['motherTreatmentOther']) ? $_POST['motherTreatmentOther'] : null,
 		'mother_treatment_initiation_date' 					=> isset($_POST['motherTreatmentInitiationDate']) ? $_POST['motherTreatmentInitiationDate'] : null,
 		'child_id' 											=> isset($_POST['childId']) ? $_POST['childId'] : null,
@@ -163,15 +180,19 @@ try {
 		'child_gender' 										=> isset($_POST['childGender']) ? $_POST['childGender'] : null,
 		'child_age' 										=> isset($_POST['childAge']) ? $_POST['childAge'] : null,
 		'child_treatment' 									=> isset($_POST['childTreatment']) ? implode(",", $_POST['childTreatment']) : null,
-		'child_treatment_other' 							=> isset($_POST['childTreatmentOther']) ? implode(",", $_POST['childTreatmentOther']) : null,
+		'child_treatment_other' 							=> isset($_POST['childTreatmentOther']) ? $_POST['childTreatmentOther'] : null,
 		'mother_cd4' 										=> isset($_POST['mothercd4']) ? $_POST['mothercd4'] : null,
 		'mother_vl_result' 									=> $motherVlResult,
 		'mother_hiv_status' 								=> isset($_POST['mothersHIVStatus']) ? $_POST['mothersHIVStatus'] : null,
-		'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
+		//'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
+		'pcr_test_number' 									=> isset($_POST['pcrTestNumber']) ? $_POST['pcrTestNumber'] : null,
 		'previous_pcr_result' 								=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
 		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
 		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
+		'reason_for_repeat_pcr_other' 						=> isset($_POST['reasonForRepeatPcrOther']) ? $_POST['reasonForRepeatPcrOther'] : null,
 		'has_infant_stopped_breastfeeding' 					=> isset($_POST['hasInfantStoppedBreastfeeding']) ? $_POST['hasInfantStoppedBreastfeeding'] : null,
+		'infant_on_pmtct_prophylaxis' 						=> isset($_POST['infantOnPMTCTProphylaxis']) ? $_POST['infantOnPMTCTProphylaxis'] : null,
+		'infant_on_ctx_prophylaxis'							=> isset($_POST['infantOnCTXProphylaxis']) ? $_POST['infantOnCTXProphylaxis'] : null,
 		'age_breastfeeding_stopped_in_months' 				=> isset($_POST['ageBreastfeedingStopped']) ? $_POST['ageBreastfeedingStopped'] : null,
 		'choice_of_feeding' 								=> isset($_POST['choiceOfFeeding']) ? $_POST['choiceOfFeeding'] : null,
 		'is_cotrimoxazole_being_administered_to_the_infant'	=> isset($_POST['isCotrimoxazoleBeingAdministered']) ? $_POST['isCotrimoxazoleBeingAdministered'] : null,

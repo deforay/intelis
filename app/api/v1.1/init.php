@@ -43,7 +43,7 @@ if (empty($user) || empty($user['user_id'])) {
     echo json_encode($response);
     exit(0);
 }
-$updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "")?$input['latestDateTime']:null;
+$updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
 /* Status name list */
 $statusList = array();
 $tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";
@@ -56,7 +56,7 @@ $status = false;
 /* Funding Source List */
 $fundingSourceList = array();
 $fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ";
-if($updatedDateTime){
+if ($updatedDateTime) {
     $fundingSourceQry .= " AND updated_datetime >= '$updatedDateTime'";
 }
 $fundingSourceQry .= " ORDER BY funding_source_name ASC";
@@ -68,7 +68,7 @@ foreach ($fundingSourceResult as $funding) {
 /* Implementing Partner Details */
 $implementingPartnerList = array();
 $implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ";
-if($updatedDateTime){
+if ($updatedDateTime) {
     $implementingPartnerQry .= " AND updated_datetime >= '$updatedDateTime'";
 }
 $implementingPartnerQry .= " ORDER BY i_partner_name ASC";
@@ -194,7 +194,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
-    if($updatedDateTime){
+    if ($updatedDateTime) {
         $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $rejectionTypeQuery .= " GROUP BY rejection_type";
@@ -203,7 +203,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -274,7 +274,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
-    if($updatedDateTime){
+    if ($updatedDateTime) {
         $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
@@ -282,7 +282,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -319,7 +319,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
     $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active' ";
-    if($updatedDateTime){
+    if ($updatedDateTime) {
         $aQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $aResult = $db->query($aQuery);
@@ -339,7 +339,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
-    if($updatedDateTime){
+    if ($updatedDateTime) {
         $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $rejectionQuery .= " GROUP BY rejection_type";
@@ -348,7 +348,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -406,7 +406,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
-    if($updatedDateTime){
+    if ($updatedDateTime) {
         $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $rejectionTypeQuery .= " GROUP BY rejection_type";
@@ -415,7 +415,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
         }
         $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -456,11 +456,10 @@ if ($status) {
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),
-        'error' => 'Some test types was inactive from the server.',
+        'error' => 'Please contact system administrator.',
         'data' => array()
     );
     http_response_code(401);
-    echo json_encode($payload);
     // exit(0);
 }
 
@@ -469,5 +468,15 @@ if (isset($user['token_updated']) && $user['token_updated'] === true) {
 } else {
     $payload['token'] = null;
 }
-$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$trackId = $general->addApiTracking(
+    $transactionId,
+    $user['user_id'],
+    1,
+    'init',
+    'common',
+    $_SERVER['REQUEST_URI'],
+    $input,
+    $payload,
+    'json'
+);
 echo json_encode($payload);
