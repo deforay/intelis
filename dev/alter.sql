@@ -3476,6 +3476,25 @@ ALTER TABLE `audit_form_tb` ADD `result_date` DATETIME NULL DEFAULT NULL AFTER `
 -- Amit 03-Apr-2023
 ALTER TABLE `log_result_updates` CHANGE `user_id` `user_id` TEXT NULL DEFAULT NULL;
 
+-- Amit 12-Apr-2023
+ALTER TABLE `form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+ALTER TABLE `audit_form_vl` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_eid` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_covid19` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_hepatitis` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `audit_form_tb` CHANGE `locked` `locked` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+UPDATE `form_vl` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_eid` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_covid19` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_hepatitis` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+UPDATE `form_tb` SET locked = 'no' WHERE locked is null or locked not like 'yes';
+
 -- ilahir 13-Apr-2023
 
 CREATE TABLE `r_test_types` (
@@ -3499,3 +3518,5 @@ INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('test-
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'test-type', 'testType.php', 'Access'), (NULL, 'test-type', 'addTestType.php', 'Add');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'test-type', 'editTestType.php', 'Edit');
+
+
