@@ -244,6 +244,10 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
 }
 
+if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
+     $sWhere[] = ' (vl.is_sample_rejected like "'.$_POST['rejectedSamples'].'" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+}
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
@@ -257,7 +261,7 @@ if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-// die($sQuery);
+ //die($sQuery);
 if (isset($sOrder) && $sOrder != "") {
      $_SESSION['hepatitisRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;

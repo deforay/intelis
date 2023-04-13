@@ -267,6 +267,9 @@ if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
 if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
      $sWhere[] = ' vl.mother_name like "%'.$_POST['motherName'].'%"';
 }
+if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
+     $sWhere[] = ' (vl.is_sample_rejected like "'.$_POST['rejectedSamples'].'" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+}
 
 $sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {

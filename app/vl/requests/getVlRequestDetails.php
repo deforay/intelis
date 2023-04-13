@@ -284,7 +284,12 @@ if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
-
+if (!isset($_POST['recencySamples'])  || empty($_POST['recencySamples']) || $_POST['recencySamples'] == no) {
+     $sWhere[] = " reason_for_vl_testing != 9999 ";
+}
+if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
+     $sWhere[] = ' (vl.is_sample_rejected like "'.$_POST['rejectedSamples'].'" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+}
 if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {
      $sRequestCreatedDatetime = '';
      $eRequestCreatedDatetime = '';
@@ -333,7 +338,7 @@ $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+ //die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
