@@ -809,7 +809,12 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".tb-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tb-results").addClass('active');
-	} else {
+	} else if (splitsUrl == 'testType.php' || splitsUrl == 'addTestType.php' || splitsUrl == 'editTestType.php') {
+		$(".system-config-menu,.manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".testTypeConfigurationMenu").addClass('active');
+	}
+	else {
 		$(".allMenu").removeClass('active');
 		$(".dashboardMenu").addClass('active');
 	}
