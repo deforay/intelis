@@ -80,7 +80,7 @@ class DRC_PDF extends MYPDF
     }
 }
 
-$users = new \Vlsm\Models\Users();
+$users = new \App\Models\Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

@@ -23,7 +23,7 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $ranNumber = \App\Models\General::generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
@@ -75,7 +75,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $testingDateArray = \Vlsm\Helpers\Results::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $testingDateArray = \App\Helpers\Results::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
                         }
@@ -240,7 +240,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new \Vlsm\Models\Users();
+                $usersModel = new \App\Models\Users();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 

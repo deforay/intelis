@@ -10,6 +10,16 @@
             "homepage": "https://deforay.com"
         }
     ],
+    "scripts": {
+        "development-disable": [
+            "@putenv APPLICATION_ENV=production",
+            "composer install --prefer-dist"
+        ],
+        "development-enable": [
+            "@putenv APPLICATION_ENV=development",
+            "composer install --prefer-dist"
+        ]
+    },
     "require": {
         "ext-gd": "*",
         "ext-json": "*",
@@ -33,7 +43,10 @@
         "ramsey/uuid": "^4.2",
         "phpseclib/phpseclib": "^3.0",
         "hackzilla/password-generator": "^1.6",
-        "laminas/laminas-filter": "^2.22"
+        "laminas/laminas-filter": "^2.22",
+        "symfony/string": "^5.4",
+        "laminas/laminas-config": "^3.7",
+        "filp/whoops": "^2.15"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
@@ -41,10 +54,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Vlsm\\Models\\": "app/models/",
-            "Vlsm\\Interop\\": "app/interop/",
-            "Vlsm\\Helpers\\": "app/helpers/",
-            "Vlsm\\Utilities\\": "app/utilities/"
+            "App\\Models\\": "app/models/",
+            "App\\Interop\\": "app/interop/",
+            "App\\Helpers\\": "app/helpers/",
+            "App\\Utilities\\": "app/utilities/",
+            "App\\Exceptions\\": "app/exceptions/"
         }
     }
 }

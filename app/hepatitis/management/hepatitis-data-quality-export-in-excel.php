@@ -7,7 +7,7 @@ ob_start();
 
 
  
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config

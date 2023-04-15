@@ -3,7 +3,7 @@ ob_start();
 require_once(APPLICATION_PATH . '/header.php');
 
 $db = MysqliDb::getInstance();
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");

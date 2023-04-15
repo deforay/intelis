@@ -13,9 +13,9 @@ for ($i = 0; $i < sizeof($cResult); $i++) {
     $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$app = new \App\Models\App();
 $sampleCodes = $facilityIds = array();
 $labId = null;
 
@@ -24,7 +24,7 @@ $transactionId = $general->generateUUID();
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_eid'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['name'] . "' AND table_name='form_eid'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 

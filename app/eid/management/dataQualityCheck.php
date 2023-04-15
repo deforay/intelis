@@ -21,7 +21,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_eid";
 $primaryKey = "eid_id";
 

@@ -12,8 +12,8 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-$general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$app = new \App\Models\App();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -94,7 +94,7 @@ $commonDataToSync = array(
 
 $url = $remoteUrl . '/remote/remote/commonData.php';
 
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == true) {
+if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
@@ -129,7 +129,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] == t
     );
 }
 
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] == true) {
+if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $payload['eidRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_rejection_reasons');
     $payload['eidSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_eid_sample_type');
     $payload['eidResultsLastModified'] = $general->getLastModifiedDateTime('r_eid_results ');
@@ -158,7 +158,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 }
 
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] == true) {
+if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $payload['covid19RejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_rejection_reasons');
     $payload['covid19SampleTypesLastModified'] = $general->getLastModifiedDateTime('r_covid19_sample_type');
     $payload['covid19ComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_covid19_comorbidities');
@@ -202,7 +202,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     );
 }
 
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] == true) {
+if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $payload['hepatitisRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_rejection_reasons');
     $payload['hepatitisSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_sample_type');
     $payload['hepatitisComorbiditiesLastModified'] = $general->getLastModifiedDateTime('r_hepatitis_comorbidities');
@@ -276,7 +276,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
-            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['dbName'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
             $columnList = array_map('current', $db->rawQuery($tableColumns));
             
             foreach ($dataValues as $tableDataValues) {

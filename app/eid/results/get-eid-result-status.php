@@ -5,12 +5,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $sarr = $general->getSystemConfig();
 
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 

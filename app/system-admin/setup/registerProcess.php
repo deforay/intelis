@@ -12,7 +12,7 @@ $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
 $secretKey = trim($_POST['secretKey']);
 
-$user = new \Vlsm\Models\Users();
+$user = new \App\Models\Users();
 
 $userPassword = $user->passwordHash($password);
 

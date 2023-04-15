@@ -5,8 +5,8 @@ $title = _("Hepatitis | View All Requests");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();

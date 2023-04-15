@@ -2,10 +2,10 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalDb = new \Vlsm\Models\General();
-$covid19Db = new \Vlsm\Models\Covid19();
-$facilityDb = new \Vlsm\Models\Facilities();
-$userDb = new \Vlsm\Models\Users();
+$generalDb = new \App\Models\General();
+$covid19Db = new \App\Models\Covid19();
+$facilityDb = new \App\Models\Facilities();
+$userDb = new \App\Models\Users();
 $code = $covid19Db->generateCovid19QcCode();
 $testingLabs = $facilityDb->getTestingLabs("covid19");
 $users = $userDb->getAllUsers(null, null, "drop-down");

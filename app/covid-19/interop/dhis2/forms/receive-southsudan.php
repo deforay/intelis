@@ -42,13 +42,13 @@ $eventsDataElementMapping = [
 ];
 
 
-$general = new \Vlsm\Models\General();
-$covid19Model = new \Vlsm\Models\Covid19();
+$general = new \App\Models\General();
+$covid19Model = new \App\Models\Covid19();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
-$dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $receivedCounter = 0;
 $processedCounter = 0;

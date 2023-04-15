@@ -1,6 +1,6 @@
 <?php
-$geoDb = new \Vlsm\Models\GeoLocations($db);
-$generalDb = new \Vlsm\Models\General($db);
+$geoDb = new \App\Models\GeoLocations($db);
+$generalDb = new \App\Models\General($db);
 $text = '';
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];

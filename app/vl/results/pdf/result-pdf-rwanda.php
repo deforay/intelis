@@ -1,7 +1,7 @@
 <?php
 
 // This file is included in /vl/results/generate-result-pdf.php
-use Vlsm\Models\General;
+use App\Models\General;
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
      $_SESSION['rVal'] = $general->generateRandomString(6);

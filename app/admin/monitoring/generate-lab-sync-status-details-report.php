@@ -1,9 +1,9 @@
 <?php
 
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $dateTimeUtil = new DateUtils();
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();

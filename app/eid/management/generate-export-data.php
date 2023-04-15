@@ -1,6 +1,6 @@
 <?php
 
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
@@ -10,10 +10,10 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $dateTimeUtil = new DateUtils();
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {

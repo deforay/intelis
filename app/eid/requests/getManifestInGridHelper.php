@@ -18,8 +18,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
-$eidModel = new \Vlsm\Models\Eid();
+$general = new \App\Models\General();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 $tableName = "form_eid";
 $primaryKey = "eid_id";

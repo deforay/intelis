@@ -2,7 +2,7 @@
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $lName = $_POST['lName'];
 $testType = $_POST['testType'];

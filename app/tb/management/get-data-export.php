@@ -20,8 +20,9 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
-$tbResults = $general->getTbResults();
+$general = new \App\Models\General();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 
 $tableName = "form_tb";
 $primaryKey = "tb_id";

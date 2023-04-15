@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "activity_log";
 $primaryKey = "log_id";
 

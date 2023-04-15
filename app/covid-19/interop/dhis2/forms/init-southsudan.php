@@ -2,7 +2,7 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-init.php
 
-$dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $instanceId = 'dhis2';
 
 //tkIsR0Lo23H

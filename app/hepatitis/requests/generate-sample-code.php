@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$hepatitisModel = new \Vlsm\Models\Hepatitis();
+$hepatitisModel = new \App\Models\Hepatitis();
 
 $sampleCollectionDate = $province = '';
 

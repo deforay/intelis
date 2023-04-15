@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();

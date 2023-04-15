@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 
 /**
@@ -52,11 +52,11 @@ class Vl
         }
 
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \Vlsm\Utilities\DateUtils();
+        $dateUtils = new \App\Utilities\DateUtils();
         if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
@@ -100,7 +100,7 @@ class Vl
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $geoLocations = new \App\Models\GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -267,7 +267,7 @@ class Vl
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -354,7 +354,7 @@ class Vl
             return $result;
         }
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -428,7 +428,7 @@ class Vl
     {
         try {
 
-            $general = new \Vlsm\Models\General();
+            $general = new \App\Models\General();
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();

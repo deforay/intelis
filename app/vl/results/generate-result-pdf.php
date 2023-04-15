@@ -9,8 +9,8 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
 
 $arr = $general->getGlobalConfig();
 

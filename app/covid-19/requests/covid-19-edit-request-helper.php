@@ -8,9 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
-$patientsModel = new \Vlsm\Models\Patients();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
+$patientsModel = new \App\Models\Patients();
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -378,7 +378,7 @@ try {
 				'timestamp' => time(),
 				'message' => 'Successfully updated.'
 			);
-			$app = new \Vlsm\Models\App();
+			$app = new \App\Models\App();
 			$trackId = $app->addApiTracking($user['user_id'], 1, 'update-record', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {

@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";

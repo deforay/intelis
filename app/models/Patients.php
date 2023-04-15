@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -46,7 +46,7 @@ class Patients
 
     public function savePatient($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         $data['patient_code'] = $params['patientId'];
 
@@ -79,7 +79,7 @@ class Patients
 
     public function updatePatient($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         $data['patient_code'] = $params['patientId'];
 

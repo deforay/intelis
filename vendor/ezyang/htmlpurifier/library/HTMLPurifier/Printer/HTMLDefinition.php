@@ -236,14 +236,14 @@ class HTMLPurifier_Printer_HTMLDefinition extends HTMLPurifier_Printer
 
             $ret .= $this->element(
                 'td',
-                '<em>' . ($def->type) . '</em>: ' .
+                '<em>' . ucfirst($def->type) . '</em>: ' .
                 $def->dtd_regex
             );
 
         } else {
             $ret .= $this->element(
                 'td',
-                '<em>' . ($def->type) . '</em>: ' .
+                '<em>' . ucfirst($def->type) . '</em>: ' .
                 $this->escape($this->listifyTagLookup($elements)),
                 null,
                 0

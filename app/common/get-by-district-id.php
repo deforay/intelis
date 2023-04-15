@@ -1,5 +1,5 @@
 <?php
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$geoLocationDb = new \App\Models\GeoLocations();
 $list = array();
 
 if(isset($_POST['districtId']))

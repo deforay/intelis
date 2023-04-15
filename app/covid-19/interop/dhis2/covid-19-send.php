@@ -2,7 +2,7 @@
 
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 

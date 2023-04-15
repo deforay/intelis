@@ -3,7 +3,7 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_vl_test_failure_reasons";
 $primaryKey = "failure_id";

@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "qc_covid19";
 $tableName1 = "qc_covid19_tests";
 $primaryKey = "qc_id";

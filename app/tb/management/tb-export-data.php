@@ -4,9 +4,9 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -32,8 +32,8 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-
-$tbResults = $general->getTbResults();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';
 } else {
@@ -77,18 +77,18 @@ $state = $geoLocationDb->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
-							
+
 						</tr>
 						<tr>
-						<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
-                </select>
+								<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+								</select>
 							</td>
 							<th><?php echo _("Facility Name"); ?></th>
 							<td>
@@ -102,10 +102,10 @@ $state = $geoLocationDb->getProvinces("yes");
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Sample Test Date"); ?></th>
+							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -123,10 +123,10 @@ $state = $geoLocationDb->getProvinces("yes");
 							<td>
 								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Status"); ?></th>
+							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _("All Status"); ?></option>
@@ -161,10 +161,10 @@ $state = $geoLocationDb->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Implementing Partners"); ?></th>
+							<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="filter-input form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -183,18 +183,18 @@ $state = $geoLocationDb->getProvinces("yes");
 								</select>
 
 							</td>
-						<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 							</td>
-							
-									</tr>
-									<tr>
-									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+
+						</tr>
+						<tr>
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-									</tr>
+						</tr>
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
@@ -254,7 +254,7 @@ $state = $geoLocationDb->getProvinces("yes");
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -375,7 +375,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			}
 		}
 
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -552,9 +552,9 @@ $state = $geoLocationDb->getProvinces("yes");
 	}
 
 	function exportInexcel(fileName) {
-		if(searchExecuted === false){
-     		searchVlRequestData();
-  		}
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
@@ -588,38 +588,38 @@ $state = $geoLocationDb->getProvinces("yes");
 			alert("<?php echo _("Please select Sample Test Date Range"); ?>");
 		}
 	}
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facilityName").html('');
+
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facilityName").html('');
 		$("#testingLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
 				$("#testingLab").html(Obj['labs']);
-				});
+			});
 	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$("#testingLab").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['facilities']);
-			$("#testingLab").html(Obj['labs']);
-				});
+
+	function getByDistrict(districtId) {
+		$("#facilityName").html('');
+		$("#testingLab").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+			});
 	}
 </script>
 <?php

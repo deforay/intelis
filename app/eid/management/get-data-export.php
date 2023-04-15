@@ -3,8 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \Vlsm\Models\General();
-$eidModel = new \Vlsm\Models\Eid();
+$general = new \App\Models\General();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 $sarr = $general->getSystemConfig();

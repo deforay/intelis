@@ -7,8 +7,8 @@ ob_start();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-$general = new \Vlsm\Models\General();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$hepatitisDb = new \App\Models\Hepatitis();
 
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();

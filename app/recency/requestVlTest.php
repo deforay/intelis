@@ -22,7 +22,7 @@ try {
     
     
 
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');

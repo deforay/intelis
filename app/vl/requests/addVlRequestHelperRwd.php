@@ -4,9 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
-$dateUtils = new \Vlsm\Utilities\DateUtils();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
+$dateUtils = new \App\Utilities\DateUtils();
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";

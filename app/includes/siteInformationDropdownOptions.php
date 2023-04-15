@@ -6,9 +6,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersDb = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$usersDb = new \App\Models\Users();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 

@@ -20,14 +20,14 @@ if (session_status() == PHP_SESSION_NONE) {
 // for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 //      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 // }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $tableName = "form_covid19";

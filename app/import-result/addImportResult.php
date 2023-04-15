@@ -7,7 +7,7 @@ $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 

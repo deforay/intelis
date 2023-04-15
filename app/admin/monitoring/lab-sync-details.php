@@ -2,8 +2,8 @@
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$facilityDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$facilityDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 $facilityDetails = $facilityDb->getAllFacilities();
 foreach ($facilityDetails as $row) {
     $facilityNameList[$row['facility_id']] = $row['facility_name'];

@@ -14,8 +14,8 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
 
 $arr = $general->getGlobalConfig();
 

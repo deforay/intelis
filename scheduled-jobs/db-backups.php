@@ -36,10 +36,10 @@ if (!is_dir($backupFolder)) {
 }
 $randomString = $general->generateRandomString(12);
 $baseFileName = 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
-$password = hash('sha1', SYSTEM_CONFIG['dbPassword'] . $randomString);
+$password = hash('sha1', SYSTEM_CONFIG['database']['password'] . $randomString);
 
 try {
-    exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['dbUser'] . ' --password="' . SYSTEM_CONFIG['dbPassword'] . '" --host=' . SYSTEM_CONFIG['dbHost'] . ' --port=' . SYSTEM_CONFIG['dbPort'] . ' --databases ' . SYSTEM_CONFIG['dbName'] . '  > ' . $baseFileName);
+    exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['database']['username'] . ' --password="' . SYSTEM_CONFIG['database']['password'] . '" --host=' . SYSTEM_CONFIG['database']['host'] . ' --port=' . SYSTEM_CONFIG['database']['port'] . ' --databases ' . SYSTEM_CONFIG['database']['name']. '  > ' . $baseFileName);
 
     exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
 
@@ -50,8 +50,8 @@ try {
 
     if (isset(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] == true) {
         $baseFileName = 'interfacing-' . date("dmYHis") . '-' . $randomString . '.sql';
-        $password = hash('sha1', SYSTEM_CONFIG['interfacing']['dbPassword'] . $randomString);
-        exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['dbUser'] . ' --password="' . SYSTEM_CONFIG['interfacing']['dbPassword'] . '" --host=' . SYSTEM_CONFIG['interfacing']['dbHost'] . ' --port=' . SYSTEM_CONFIG['interfacing']['dbPort'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['dbName'] . '  > ' . $baseFileName);
+        $password = hash('sha1', SYSTEM_CONFIG['interfacing']['database']['password'] . $randomString);
+        exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['database']['username'] . ' --password="' . SYSTEM_CONFIG['interfacing']['database']['password'] . '" --host=' . SYSTEM_CONFIG['interfacing']['database']['host'] . ' --port=' . SYSTEM_CONFIG['interfacing']['database']['port'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['database']['name'] . '  > ' . $baseFileName);
         exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
         if (!empty($sftp) && $sftp !== false) {
             $sftp->chdir(SYSTEM_CONFIG['sftp']['path']);

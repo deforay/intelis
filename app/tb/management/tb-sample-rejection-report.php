@@ -6,7 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');

@@ -6,7 +6,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -248,7 +248,7 @@ try {
      );
 
 
-     $vlDb = new \Vlsm\Models\Vl();
+     $vlDb = new \App\Models\Vl();
      $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
 
      if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {

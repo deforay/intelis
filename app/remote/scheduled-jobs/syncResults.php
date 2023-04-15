@@ -6,8 +6,8 @@ if (php_sapi_name() == 'cli') {
     require_once(dirname(__FILE__) . "/../../../startup.php");
 }
 
-$general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$app = new \App\Models\App();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -162,7 +162,7 @@ try {
 
         $forms = array_column($c19LabResult, 'covid19_id');
 
-        $covid19Obj = new \Vlsm\Models\Covid19();
+        $covid19Obj = new \App\Models\Covid19();
         $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
         $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
         $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
@@ -222,7 +222,7 @@ try {
 
         // $forms = array_column($hepLabResult, 'hepatitis_id');
 
-        // $hepatitisObj = new \Vlsm\Models\Hepatitis();
+        // $hepatitisObj = new \App\Models\Hepatitis();
         // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
         // $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
 

@@ -4,10 +4,10 @@ $title = _("View All Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$geoLocationDb = new \App\Models\GeoLocations();
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 

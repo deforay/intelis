@@ -6,7 +6,7 @@
  * @author Thana
  */
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 class GeoLocations
 {
@@ -92,7 +92,7 @@ class GeoLocations
 
     function addGeoLocation($geoName, $parent = 0)
     {
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
 
         $data = array(
             'geo_name'         => $geoName,

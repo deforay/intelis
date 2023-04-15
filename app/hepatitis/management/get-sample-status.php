@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $userType = $general->getSystemConfig('sc_user_type');
 

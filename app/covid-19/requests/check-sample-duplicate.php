@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $systemType = $general->getSystemConfig('sc_user_type');
 
 $tableName = $_POST['tableName'];

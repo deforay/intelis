@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 
 $tableName = "form_covid19";
 $tableName1 = "activity_log";

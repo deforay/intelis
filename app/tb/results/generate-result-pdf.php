@@ -11,10 +11,12 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$tbObj = new \Vlsm\Models\Tb();
-$geoObj = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$tbObj = new \App\Models\Tb();
+$geoObj = new \App\Models\GeoLocations();
+$tbModel = new \App\Models\Tb();
+//$tbResults = $tbModel->getTbResults();
 
 $arr = $general->getGlobalConfig();
 
@@ -266,7 +268,7 @@ class Watermark extends PDF_Rotate
 }
 class Pdf_concat extends FPDI
 {
-    var $files = array();
+    public array $files;
     function setFiles($files)
     {
         $this->files = $files;
@@ -285,7 +287,7 @@ class Pdf_concat extends FPDI
     }
 }
 $resultFilename = '';
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
@@ -296,7 +298,7 @@ if (sizeof($requestResult) > 0) {
     $page = 1;
 
     foreach ($requestResult as $result) {
-        $tbResults = $general->getTbResults();
+
         $countryFormId = $general->getGlobalConfig('vl_form');
 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";

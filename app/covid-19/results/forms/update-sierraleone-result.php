@@ -26,7 +26,7 @@ foreach ($testPlatformResult as $row) {
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $specimenTypeResult = $covid19Obj->getCovid19SampleTypes();

@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
    session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_covid19";
 $configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);

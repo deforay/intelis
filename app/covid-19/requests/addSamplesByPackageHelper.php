@@ -1,6 +1,6 @@
 <?php
-$general = new \Vlsm\Models\General();
-$covid19Obj = new \Vlsm\Models\Covid19();
+$general = new \App\Models\General();
+$covid19Obj = new \App\Models\Covid19();
 
 
 $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_covid19 where covid19_id IN (" . $_POST['sampleId'] . ") ORDER BY covid19_id";

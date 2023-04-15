@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -23,7 +23,7 @@ $transactionId = $general->generateUUID();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 
-$facilityDb = new \Vlsm\Models\Facilities();
+$facilityDb = new \App\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -52,7 +52,7 @@ if ($db->count > 0) {
   $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
   $facilityIds = array_column($covid19RemoteResult, 'facility_id');
 
-  $covid19Obj = new \Vlsm\Models\Covid19();
+  $covid19Obj = new \App\Models\Covid19();
   $symptoms = $covid19Obj->getCovid19SymptomsByFormId($sampleIds);
   $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($sampleIds);
   $testResults = $covid19Obj->getCovid19TestsByFormId($sampleIds);

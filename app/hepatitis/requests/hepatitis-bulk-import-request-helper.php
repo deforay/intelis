@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $arr = array();
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';
@@ -17,7 +17,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    $ranNumber = \App\Models\General::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 

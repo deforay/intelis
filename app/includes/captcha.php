@@ -1,3 +1,3 @@
 <?php
-$captcha = new \Vlsm\Utilities\Captcha();
+$captcha = new \App\Utilities\Captcha();
 echo $captcha->getCaptcha();

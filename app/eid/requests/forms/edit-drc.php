@@ -14,7 +14,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 

@@ -2,7 +2,7 @@
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configResult = $db->rawQuery($configQuery);
 $formId = 0;

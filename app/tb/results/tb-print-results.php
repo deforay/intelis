@@ -5,9 +5,9 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 $testingLabs = $facilitiesDb->getTestingLabs('tb');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

@@ -6,9 +6,9 @@ require_once(APPLICATION_PATH . '/header.php');
 $sCode = $labFieldDisabled = '';
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
-$vlDb = new \Vlsm\Models\Vl();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
+$vlDb = new \App\Models\Vl();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');

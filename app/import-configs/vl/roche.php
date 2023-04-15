@@ -21,7 +21,7 @@ try {
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    // $ranNumber         = \Vlsm\Models\General::generateRandomString(12);
+    // $ranNumber         = \App\Models\General::generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
     $fileName          = $_POST['fileName'] . "." . $extension;
 

@@ -5,7 +5,7 @@ $title = "Edit Batch Position";
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("location:eid-batches.php");

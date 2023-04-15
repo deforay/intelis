@@ -4,6 +4,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+
+use Laminas\Config\Config;
+
+
 /**
  * This makes our life easier when dealing with paths. Everything is relative
  * to the application root now.
@@ -38,22 +42,51 @@ set_include_path(implode(PATH_SEPARATOR, array(
 require_once(APPLICATION_PATH . '/system/system.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
 
+if (APPLICATION_ENV === 'development') {
 
-define('SYSTEM_CONFIG', require_once(ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php"));
+    $whoops = new Whoops\Run;
+
+    // We want the error page to be shown by default, if this is a
+    // regular request, so that's the first thing to go into the stack:
+    $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
+
+    // Now, we want a second handler that will run before the error page,
+    // and immediately return an error message in JSON format, if something
+    // goes awry.
+    if (Whoops\Util\Misc::isAjaxRequest()) {
+        $jsonHandler = new Whoops\Handler\JsonResponseHandler;
+
+        // You can also tell JsonResponseHandler to give you a full stack trace:
+        // $jsonHandler->addTraceToOutput(true);
+
+        // Return a result compliant to the json:api spec
+        // re: http://jsonapi.org/examples/#error-objects
+        // tl;dr: error[] becomes errors[[]]
+        $jsonHandler->setJsonApi(true);
+        $whoops->pushHandler($jsonHandler);
+    }
+    $whoops->register();
+}
+
+defined('CONFIG_FILE') ||
+    define('CONFIG_FILE', ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php");
+
+defined('SYSTEM_CONFIG') ||
+    define('SYSTEM_CONFIG', (new Config(include(CONFIG_FILE), true))->toArray());
 
 // Database Connection
 $db = new MysqliDb(array(
-    'host' => SYSTEM_CONFIG['dbHost'],
-    'username' => SYSTEM_CONFIG['dbUser'],
-    'password' => SYSTEM_CONFIG['dbPassword'],
-    'db' =>  SYSTEM_CONFIG['dbName'],
-    'port' => (!empty(SYSTEM_CONFIG['dbPort']) ? SYSTEM_CONFIG['dbPort'] : 3306),
-    'charset' => (!empty(SYSTEM_CONFIG['dbCharset']) ? SYSTEM_CONFIG['dbCharset'] : 'utf8mb4')
+    'host' => SYSTEM_CONFIG['database']['host'],
+    'username' => SYSTEM_CONFIG['database']['username'],
+    'password' => SYSTEM_CONFIG['database']['password'],
+    'db' =>  SYSTEM_CONFIG['database']['name'],
+    'port' => (!empty(SYSTEM_CONFIG['database']['port']) ? SYSTEM_CONFIG['database']['port'] : 3306),
+    'charset' => (!empty(SYSTEM_CONFIG['database']['charset']) ? SYSTEM_CONFIG['database']['charset'] : 'utf8mb4')
 ));
 
 // Locale
 if (empty($_SESSION['APP_LOCALE'])) {
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
     $_SESSION['APP_LOCALE'] = $general->getGlobalConfig('app_locale');
     $_SESSION['APP_LOCALE'] = !empty($_SESSION['APP_LOCALE']) ? $_SESSION['APP_LOCALE'] : 'en_US';
 }

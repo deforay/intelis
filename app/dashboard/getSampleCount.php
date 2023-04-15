@@ -1,7 +1,7 @@
 <?php
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 
 $facilityInfo = $facilityDb->getAllFacilities();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";

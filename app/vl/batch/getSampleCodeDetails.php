@@ -1,6 +1,6 @@
 <?php
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $start_date = '';
 $end_date = '';
 $urgent = isset($_POST['urgent']) ? $_POST['urgent'] : null;

@@ -20,12 +20,12 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 ```php
 // config.production.php
 // Database Settings
-$systemConfig['dbHost']     = 'localhost';
-$systemConfig['dbUser']     = 'dbuser';
-$systemConfig['dbPassword'] = 'dbpassword';
-$systemConfig['dbName']     = 'vlsm';
-$systemConfig['dbPort']     = 3306;
-$systemConfig['dbCharset']  = 'utf8mb4';
+$systemConfig['database']['host']     = 'localhost';
+$systemConfig['database']['username'] = 'dbuser';
+$systemConfig['database']['password'] = 'dbpassword';
+$systemConfig['database']['name']     = 'vlsm';
+$systemConfig['database']['port']     = 3306;
+$systemConfig['database']['charset']  = 'utf8mb4';
 ```
 * You can enable or disable VL,EID, Covid-19 etc. modules by changing the following variables in config.production.php. If a module is disabled, then it does not appear on the User Interface.
 

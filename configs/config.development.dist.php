@@ -22,12 +22,12 @@ $systemConfig['instanceName'] = '';
 
 
 // Database Settings
-$systemConfig['dbHost']     = '';
-$systemConfig['dbUser']     = 'root';
-$systemConfig['dbPassword'] = 'zaq12345';
-$systemConfig['dbName']     = 'vlsm';
-$systemConfig['dbPort']     = 3306;
-$systemConfig['dbCharset'] = 'utf8mb4';
+$systemConfig['database']['host']     = '';
+$systemConfig['database']['username']     = 'root';
+$systemConfig['database']['password'] = 'zaq12345';
+$systemConfig['database']['name']     = 'vlsm';
+$systemConfig['database']['port']     = 3306;
+$systemConfig['database']['charset'] = 'utf8mb4';
 
 
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
@@ -55,12 +55,12 @@ $systemConfig['interfacing'] = array();
 $systemConfig['interfacing']['enabled'] = false;
 
 // Interfacing Database Details (not needed if above feature set to false)
-$systemConfig['interfacing']['dbHost'] = '';
-$systemConfig['interfacing']['dbUser'] = '';
-$systemConfig['interfacing']['dbPassword'] = '';
-$systemConfig['interfacing']['dbName'] = 'interfacing';
-$systemConfig['interfacing']['dbPort'] = 3306;
-$systemConfig['interfacing']['dbCharset'] = 'utf8mb4';
+$systemConfig['interfacing']['database']['host'] = '';
+$systemConfig['interfacing']['database']['username'] = '';
+$systemConfig['interfacing']['database']['password'] = '';
+$systemConfig['interfacing']['database']['name'] = 'interfacing';
+$systemConfig['interfacing']['database']['port'] = 3306;
+$systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 
 $systemConfig['recency'] = array();
 

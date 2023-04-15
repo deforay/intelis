@@ -2,7 +2,7 @@
 
 // imported in importedStatistics.php
 
-$eidObj = new \Vlsm\Models\Eid();
+$eidObj = new \App\Models\Eid();
 $eidResults = $eidObj->getEidResults();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 

@@ -8,9 +8,9 @@ ob_start();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-$general = new \Vlsm\Models\General();
-
-$tbResults = $general->getTbResults();
+$general = new \App\Models\General();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

@@ -9,11 +9,14 @@ if (!isset($_SESSION['userId'])) {
 	}
 }
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$facilitiesModel = new \Vlsm\Models\Facilities();
+error_reporting(E_ALL ^ E_NOTICE);  
 
-$_SESSION['module'] = $_SESSION['module'] ?: array();
+
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$facilitiesModel = new \App\Models\Facilities();
+
+$_SESSION['module'] = $_SESSION['module'] ?? array();
 
 $syncLatestTime = $general->getLastSyncDateTime();
 

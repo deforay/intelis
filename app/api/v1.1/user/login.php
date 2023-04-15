@@ -2,9 +2,9 @@
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$app = new \App\Models\App();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $transactionId = $general->generateUUID();

@@ -159,7 +159,7 @@ try {
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
 
-                    $vlDb = new \Vlsm\Models\Vl();
+                    $vlDb = new \App\Models\Vl();
                     $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
@@ -265,7 +265,7 @@ try {
                 }
             }
 
-            $vlDb = new \Vlsm\Models\Vl();
+            $vlDb = new \App\Models\Vl();
             $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {

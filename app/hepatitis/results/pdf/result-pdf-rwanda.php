@@ -1,8 +1,8 @@
 <?php
-use Vlsm\Models\General;
+use App\Models\General;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$hepatitisDb = new \App\Models\Hepatitis();
 //$hepatitisResults = $hepatitisDb->getHepatitisResults();
 
 $resultFilename = '';

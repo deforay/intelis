@@ -1,6 +1,6 @@
 <?php
-use Vlsm\Models\General;
-$general = new \Vlsm\Models\General();
+use App\Models\General;
+$general = new \App\Models\General();
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = General::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));

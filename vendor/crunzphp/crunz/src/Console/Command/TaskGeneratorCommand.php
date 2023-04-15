@@ -216,7 +216,7 @@ class TaskGeneratorCommand extends Command
             $projectRootDirectory,
             'src',
             'Stubs',
-            \($this->type() . 'Task.php')
+            \ucfirst($this->type() . 'Task.php')
         );
 
         return $this->filesystem

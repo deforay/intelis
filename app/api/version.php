@@ -1,6 +1,6 @@
 <?php
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 session_unset(); // no need of session in json response
 //header('Content-Type: application/json; charset=utf-8');

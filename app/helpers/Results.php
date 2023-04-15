@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Helpers;
+namespace App\Helpers;
 
 use Exception;
 use DateTimeImmutable;
@@ -22,7 +22,7 @@ class Results
             return null;
         }
 
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         if ($interpretFormat === true) {
             $find =     ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];

@@ -19,9 +19,10 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$tbResults = $general->getTbResults();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 
 $tableName = "form_tb";
 $primaryKey = "tb_id";
@@ -102,7 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -156,14 +157,14 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+    $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-    $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+    $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
@@ -283,13 +284,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-   // $row[] = $aRow['batch_code'];
+    // $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = ($patientFname . " " . $patientLname);
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['labName']);
     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['facility_district']);
     $row[] = $tbResults[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {

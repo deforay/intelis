@@ -6,7 +6,7 @@ ini_set('max_execution_time', -1);
 
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $payload = array();
 

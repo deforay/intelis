@@ -6,8 +6,8 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vl_result_category = null;

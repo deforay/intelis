@@ -3,7 +3,7 @@
 ob_start();
  
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $activeTestModules = $general->getActiveTestModules();
 $activeModules = array('admin', 'common');

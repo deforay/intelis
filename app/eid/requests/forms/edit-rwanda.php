@@ -15,7 +15,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -60,7 +60,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = isset($_GET['c']) ? $_GET['c'] : null;
 if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
-    $vlObj = new \Vlsm\Models\Eid();
+    $vlObj = new \App\Models\Eid();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = $general->humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

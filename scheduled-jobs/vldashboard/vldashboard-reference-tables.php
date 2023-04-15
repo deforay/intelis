@@ -7,7 +7,7 @@ require_once(__DIR__ . "/../../startup.php");
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $data = array();
 

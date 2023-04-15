@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_implementation_partners";
 $primaryKey = "i_partner_id";

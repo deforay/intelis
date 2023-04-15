@@ -4,7 +4,7 @@ try {
       
 
 
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';

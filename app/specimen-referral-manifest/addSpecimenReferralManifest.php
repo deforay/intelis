@@ -5,13 +5,13 @@ $title = "Add New Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);
 
-$usersDb = new \Vlsm\Models\Users();
+$usersDb = new \App\Models\Users();
 $usersList = array();
 $users = $usersDb->getActiveUsers();
 foreach ($users as $u) {
@@ -20,21 +20,21 @@ foreach ($users as $u) {
 $facilities = $facilitiesDb->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
-	$vlDb = new \Vlsm\Models\Vl($db);
+	$vlDb = new \App\Models\Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$eidDb = new \Vlsm\Models\Eid($db);
+	$eidDb = new \App\Models\Eid($db);
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
-	$covid19Db = new \Vlsm\Models\Covid19($db);
+	$covid19Db = new \App\Models\Covid19($db);
 	$sampleTypes = $covid19Db->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
-	$hepDb = new \Vlsm\Models\Hepatitis($db);
+	$hepDb = new \App\Models\Hepatitis($db);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
-	$tbDb = new \Vlsm\Models\Tb($db);
+	$tbDb = new \App\Models\Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));

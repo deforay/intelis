@@ -4,7 +4,7 @@ ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_hepatitis";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";

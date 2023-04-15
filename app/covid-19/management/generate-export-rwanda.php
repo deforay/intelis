@@ -6,12 +6,12 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();
 $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
 

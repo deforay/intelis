@@ -6,11 +6,11 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 $vl_result_category = null;
-$vlModel = new \Vlsm\Models\Vl();
+$vlModel = new \App\Models\Vl();
 
 
 try {

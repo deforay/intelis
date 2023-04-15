@@ -2,16 +2,16 @@
 
 require_once(dirname(__FILE__) . "/../../../startup.php");
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$app = new \App\Models\App();
 
 try {
     //this file receives the lab results and updates in the remote db
     $jsonResponse = file_get_contents('php://input');
 
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_vl'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['name'] . "' AND table_name='form_vl'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 

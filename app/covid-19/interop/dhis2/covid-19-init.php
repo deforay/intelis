@@ -3,14 +3,14 @@
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$dhis2 = new \Vlsm\Interop\Dhis2(
+$dhis2 = new \App\Interop\Dhis2(
     $interopConfig['DHIS2']['url'],
     $interopConfig['DHIS2']['user'],
     $interopConfig['DHIS2']['password']
 );
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

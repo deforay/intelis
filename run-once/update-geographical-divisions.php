@@ -4,7 +4,7 @@
 
 require_once(__DIR__ . '/../startup.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 /* Save Province / State details to geolocation table */
 $query = "SELECT DISTINCT facility_state FROM facility_details WHERE facility_state not in (SELECT geo_name FROM geographical_divisions WHERE geo_parent = 0) ORDER BY facility_state ASC";

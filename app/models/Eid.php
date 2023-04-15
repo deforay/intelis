@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -23,11 +23,11 @@ class Eid
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \Vlsm\Utilities\DateUtils();
+        $dateUtils = new \App\Utilities\DateUtils();
         if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
@@ -70,7 +70,7 @@ class Eid
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $geoLocations = new \App\Models\GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -160,9 +160,9 @@ class Eid
 
     public function generateExcelExport($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
-        $eidModel = new \Vlsm\Models\Eid();
+        $eidModel = new \App\Models\Eid();
         $eidResults = $eidModel->getEidResults();
 
         //$sarr = $general->getSystemConfig();
@@ -355,7 +355,7 @@ class Eid
 
     public function insertSampleCode($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

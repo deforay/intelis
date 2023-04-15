@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $db = MysqliDb::getInstance();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {

@@ -3,15 +3,15 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 
-$dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $transactionId = $general->generateUUID();
 
-$hepatitisModel = new \Vlsm\Models\Hepatitis();
+$hepatitisModel = new \App\Models\Hepatitis();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 

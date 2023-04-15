@@ -13,7 +13,7 @@ if ($count == 0) {
 	header("location:/setup/index.php");
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

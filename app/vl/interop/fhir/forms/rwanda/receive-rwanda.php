@@ -13,13 +13,13 @@ function prettyJson($json)
 }
 
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use Vlsm\Interop\Fhir;
+use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
+$facilityDb = new \App\Models\Facilities();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();

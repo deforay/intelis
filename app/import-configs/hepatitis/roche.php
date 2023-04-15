@@ -23,7 +23,7 @@ try {
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $ranNumber = \App\Models\General::generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
 
 
@@ -210,7 +210,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new \Vlsm\Models\Users();
+                $usersModel = new \App\Models\Users();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 

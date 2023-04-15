@@ -4,8 +4,8 @@ $title = _("EID | Clinics Report");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');

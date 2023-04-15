@@ -19,7 +19,7 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
 
-$facilityDb = new \Vlsm\Models\Facilities();
+$facilityDb = new \App\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -50,7 +50,7 @@ if ($db->count > 0) {
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
     $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-    $hepatitisObj = new \Vlsm\Models\Hepatitis();
+    $hepatitisObj = new \App\Models\Hepatitis();
     $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($sampleIds);
     $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
 

@@ -22,7 +22,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tbResults = $general->getTbResults();
 
 

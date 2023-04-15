@@ -2,7 +2,7 @@
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 

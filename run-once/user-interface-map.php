@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../startup.php');
 
 $db = \MysqliDb::getInstance();
 
-$usersDb = new \Vlsm\Models\Users();
+$usersDb = new \App\Models\Users();
 
 
 $sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_name as interface_user_name    

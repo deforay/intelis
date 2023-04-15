@@ -9,9 +9,9 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 
 $db  = MysqliDb::getInstance();
 
-$usersModel = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
-$vlDb = new \Vlsm\Models\Vl();
+$usersModel = new \App\Models\Users();
+$general = new \App\Models\General();
+$vlDb = new \App\Models\Vl();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -23,16 +23,16 @@ if (empty($labId)) {
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (!empty(SYSTEM_CONFIG['interfacing']['dbHost']) && !empty(SYSTEM_CONFIG['interfacing']['dbUser'])) {
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
 
     $mysqlConnected = true;
     $db->addConnection('interface', array(
-        'host' => SYSTEM_CONFIG['interfacing']['dbHost'],
-        'username' => SYSTEM_CONFIG['interfacing']['dbUser'],
-        'password' => SYSTEM_CONFIG['interfacing']['dbPassword'],
-        'db' =>  SYSTEM_CONFIG['interfacing']['dbName'],
-        'port' => (!empty(SYSTEM_CONFIG['interfacing']['dbPort']) ? SYSTEM_CONFIG['interfacing']['dbPort'] : 3306),
-        'charset' => (!empty(SYSTEM_CONFIG['interfacing']['dbCharset']) ? SYSTEM_CONFIG['interfacing']['dbCharset'] : 'utf8mb4')
+        'host' => SYSTEM_CONFIG['interfacing']['database']['host'],
+        'username' => SYSTEM_CONFIG['interfacing']['database']['username'],
+        'password' => SYSTEM_CONFIG['interfacing']['database']['password'],
+        'db' =>  SYSTEM_CONFIG['interfacing']['database']['name'],
+        'port' => (!empty(SYSTEM_CONFIG['interfacing']['database']['port']) ? SYSTEM_CONFIG['interfacing']['database']['port'] : 3306),
+        'charset' => (!empty(SYSTEM_CONFIG['interfacing']['database']['charset']) ? SYSTEM_CONFIG['interfacing']['database']['charset'] : 'utf8mb4')
     ));
 }
 

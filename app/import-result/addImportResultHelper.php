@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $machineImportScript = ($_POST['fileName']);
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $arr = $general->getGlobalConfig();
 /* echo "<pre>";
 print_r($machineImportScript);

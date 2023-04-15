@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;

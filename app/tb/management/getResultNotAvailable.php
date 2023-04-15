@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 $tableName="form_tb";
 $primaryKey="tb_id";
 //config  query

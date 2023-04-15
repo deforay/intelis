@@ -6,9 +6,9 @@ ob_start();
 
 
 //echo "<pre>";var_dump($_POST);die;
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
-$dateUtils = new \Vlsm\Utilities\DateUtils();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
+$dateUtils = new \App\Utilities\DateUtils();
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";

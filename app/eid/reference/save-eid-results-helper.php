@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_eid_results";
 $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;

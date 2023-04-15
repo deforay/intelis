@@ -1,7 +1,7 @@
 <?php
 
-$general = new \Vlsm\Models\General();
-$vlObj = new \Vlsm\Models\Vl();
+$general = new \App\Models\General();
+$vlObj = new \App\Models\Vl();
 
 
 $sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'] . ")";

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $id = base64_decode($_GET['id']);
 
 $showPatientName = false;

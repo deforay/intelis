@@ -2,7 +2,7 @@
   
 
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 $artNo=$_POST['artPatientNo'];
 
 $count = 0;

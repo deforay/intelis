@@ -29,9 +29,9 @@ $id = base64_decode($_GET['id']);
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$userDb = new \Vlsm\Models\Users();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$facilitiesDb = new \App\Models\Facilities();
+$userDb = new \App\Models\Users();
+$hepatitisDb = new \App\Models\Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

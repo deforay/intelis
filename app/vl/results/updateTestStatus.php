@@ -1,6 +1,6 @@
 <?php
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 try {
 
@@ -36,7 +36,7 @@ try {
 
 
 
-        $vlDb = new \Vlsm\Models\Vl();
+        $vlDb = new \App\Models\Vl();
         $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
             $status['result_status'] = 5;

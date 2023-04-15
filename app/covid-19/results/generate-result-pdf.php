@@ -11,9 +11,9 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$covid19Obj = new \Vlsm\Models\Covid19();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$covid19Obj = new \App\Models\Covid19();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -336,7 +336,7 @@ if (sizeof($requestResult) > 0) {
 		$expStr = explode(" ", $printedTime);
 		$printDate = $general->humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Obj = new \Vlsm\Models\Covid19();
+		$covid19Obj = new \App\Models\Covid19();
 		$covid19Results = $covid19Obj->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 

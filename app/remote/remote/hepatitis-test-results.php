@@ -5,16 +5,16 @@ require_once(dirname(__FILE__) . "/../../../startup.php");
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$app = new \App\Models\App();
 
 $transactionId = $general->generateUUID();
 
 $sampleCodes = $facilityIds = array();
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_hepatitis'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['name'] . "' AND table_name='form_hepatitis'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
     $counter = 0;

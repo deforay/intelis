@@ -23,7 +23,7 @@ foreach ($testPlatformResult as $row) {
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$tbObj = new \Vlsm\Models\Tb();
+$tbObj = new \App\Models\Tb();
 $tbXPertResults = $tbObj->getTbResults('x-pert');
 $tbLamResults = $tbObj->getTbResults('lam');
 $specimenTypeResult = $tbObj->getTbSampleTypes();

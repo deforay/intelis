@@ -18,8 +18,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
-$hepatitisObj = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$hepatitisObj = new \App\Models\Hepatitis();
 $hepatitisResults = $hepatitisObj->getHepatitisResults();
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";

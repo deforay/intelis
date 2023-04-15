@@ -17,7 +17,7 @@ if ($_POST['testType'] == 'vl') {
     $table = 'form_tb';
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 try {
     if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && count($_POST['packageCode']) > 0) {
         $value = array(

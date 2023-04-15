@@ -94,7 +94,7 @@ if (!class_exists('DRC_PDF')) {
         }
     }
 }
-$users = new \Vlsm\Models\Users();
+$users = new \App\Models\Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -348,7 +348,7 @@ $html .= '</tr>';
 
 
 if (empty($result['lab_manager'])) {
-    $facilityDb = new \Vlsm\Models\Facilities();
+    $facilityDb = new \App\Models\Facilities();
     $labDetails = $facilityDb->getFacilityById($result['lab_id']);
     if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
         $result['lab_manager'] = $labDetails['contact_person'];

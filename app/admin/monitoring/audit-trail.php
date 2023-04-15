@@ -11,7 +11,7 @@
 <?php
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $activeTestModules = $general->getActiveTestModules();
 
@@ -28,7 +28,7 @@ if (isset($_POST['testType'])) {
 function getColumns($db, $tableName)
 {
 	$columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=? order by ordinal_position";
-	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['dbName'], $tableName));
+	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['database']['name'], $tableName));
 }
 
 function getColumnValues($db, $tableName, $sampleCode)

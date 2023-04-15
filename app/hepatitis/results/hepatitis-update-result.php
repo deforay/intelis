@@ -6,10 +6,10 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$userDb = new \Vlsm\Models\Users();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$userDb = new \App\Models\Users();
+$hepatitisDb = new \App\Models\Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

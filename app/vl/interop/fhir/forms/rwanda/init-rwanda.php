@@ -3,12 +3,12 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use Vlsm\Interop\Fhir;
+use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -29,7 +29,7 @@ $metaResource = $parser->parse($json);
 $db = MysqliDb::getInstance();
 
 $entries = $metaResource->getEntry();
-$facilityDb = new \Vlsm\Models\Facilities();
+$facilityDb = new \App\Models\Facilities();
 
 foreach ($entries as $entry) {
     $resource = $entry->getResource();

@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $tblName = 's_vlsm_instance';
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 if (isset($_POST['instance_facility_name']) && trim($_POST['instance_facility_name']) != "") {
     $instanceName = $_POST['instance_facility_name'];

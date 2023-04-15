@@ -1,6 +1,6 @@
 <?php
 
-$systemConfig = array();
+$systemConfig = [];
 
 // System Locale
 $systemConfig['locale'] = 'en_US';
@@ -21,12 +21,12 @@ $systemConfig['instanceName'] = '';
 
 
 // Database Settings
-$systemConfig['dbHost']     = '';
-$systemConfig['dbUser']     = '';
-$systemConfig['dbPassword'] = '';
-$systemConfig['dbName']     = 'vlsm';
-$systemConfig['dbPort']     = 3306;
-$systemConfig['dbCharset'] = 'utf8mb4';
+$systemConfig['database']['host']     = '';
+$systemConfig['database']['username'] = '';
+$systemConfig['database']['password'] = '';
+$systemConfig['database']['name']     = 'vlsm';
+$systemConfig['database']['port']     = 3306;
+$systemConfig['database']['charset']  = 'utf8mb4';
 
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt'] = 'PUT-A-RANDOM-STRING-HERE';
@@ -50,7 +50,7 @@ $systemConfig['sftp']['path'] = ''; // eg. '/home/username/backups/labname'
 $systemConfig['sftp']['username'] = ''; // eg. 'username'
 $systemConfig['sftp']['privateKey'] = ''; // path to the private key file (recommended method to connect to SFTP)
 $systemConfig['sftp']['privateKeyPassphrase'] = ''; // if passphrase was set for the private key
-$systemConfig['sftp']['password'] = ''; // Optional -- Password for SFTP, if privateKey is not provided (not recommended)
+$systemConfig['sftp']['password'] = ''; // Optional Password for SFTP, if privateKey is not provided (not recommended)
 
 
 
@@ -63,12 +63,12 @@ $systemConfig['interfacing'] = array();
 $systemConfig['interfacing']['enabled'] = false;
 
 // Interfacing Database Details (not needed if above feature set to false)
-$systemConfig['interfacing']['dbHost'] = '';
-$systemConfig['interfacing']['dbUser'] = '';
-$systemConfig['interfacing']['dbPassword'] = '';
-$systemConfig['interfacing']['dbName'] = 'interfacing';
-$systemConfig['interfacing']['dbPort'] = 3306;
-$systemConfig['interfacing']['dbCharset'] = 'utf8mb4';
+$systemConfig['interfacing']['database']['host'] = '';
+$systemConfig['interfacing']['database']['username'] = '';
+$systemConfig['interfacing']['database']['password'] = '';
+$systemConfig['interfacing']['database']['name'] = 'interfacing';
+$systemConfig['interfacing']['database']['port'] = 3306;
+$systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 
 $systemConfig['interfacing']['sqlite3Path'] = '';
 
@@ -84,13 +84,13 @@ $systemConfig['recency']['url'] = '';
 
 
 
-// Enable/Disable Recency Viral Load tests sync 
+// Enable/Disable Recency Viral Load tests sync
 // true => Enabled
 // false => Disabled
 $systemConfig['recency']['vlsync'] = false;
 
 
-// This Salt should match the Salt on Recency Web app 
+// This Salt should match the Salt on Recency Web app
 $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
 return $systemConfig;

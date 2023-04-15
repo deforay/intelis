@@ -902,7 +902,7 @@ class Xlsx extends BaseReader
                             if (!$this->readDataOnly && $xmlSheetNS && $xmlSheetNS->sheetProtection) {
                                 $protAttr = $xmlSheetNS->sheetProtection->attributes() ?? [];
                                 foreach ($protAttr as $key => $value) {
-                                    $method = 'set' . ($key);
+                                    $method = 'set' . ucfirst($key);
                                     $docSheet->getProtection()->$method(self::boolean((string) $value));
                                 }
                             }

@@ -7,7 +7,7 @@ if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
     exit(0);
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 $instanceId = $instanceResult['vlsm_instance_id'];

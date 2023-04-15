@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 $configQuery="SELECT `value` FROM global_config where name ='vl_form'";
 $configResult=$db->query($configQuery);
 $tableName="form_vl";

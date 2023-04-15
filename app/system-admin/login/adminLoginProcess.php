@@ -7,7 +7,7 @@ ob_start();
 $tableName = "system_admin";
 $adminUsername = trim($_POST['username']);
 $adminPassword = trim($_POST['password']);
-$user = new \Vlsm\Models\Users();
+$user = new \App\Models\Users();
 
 
 try {

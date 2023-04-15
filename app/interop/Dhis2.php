@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Vlsm\Interop;
+namespace App\Interop;
 
 class Dhis2
 {

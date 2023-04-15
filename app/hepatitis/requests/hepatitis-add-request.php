@@ -32,10 +32,10 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-// $general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
-$userDb = new \Vlsm\Models\Users();
+// $general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$hepatitisDb = new \App\Models\Hepatitis();
+$userDb = new \App\Models\Users();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

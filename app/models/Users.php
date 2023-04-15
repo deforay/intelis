@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -262,7 +262,7 @@ class Users
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new \Vlsm\Models\General();
+            $general = new \App\Models\General();
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -317,7 +317,7 @@ class Users
                 $lastTokenDate = new \DateTime($result['api_token_generated_datetime']);
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
-                $general = new \Vlsm\Models\General($this->db);
+                $general = new \App\Models\General($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
                 $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
 
@@ -375,7 +375,7 @@ class Users
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;

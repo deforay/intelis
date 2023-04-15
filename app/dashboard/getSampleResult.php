@@ -1,7 +1,7 @@
 <?php
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 
 
 $cDate = date('Y-m-d');

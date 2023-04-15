@@ -8,8 +8,8 @@ $tableName1 = "form_covid19";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
-$covid19Obj = new \Vlsm\Models\Covid19();
-$facilityDb = new \Vlsm\Models\Facilities();
+$covid19Obj = new \App\Models\Covid19();
+$facilityDb = new \App\Models\Facilities();
 
 
 try {

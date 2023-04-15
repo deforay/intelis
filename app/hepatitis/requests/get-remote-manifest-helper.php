@@ -2,7 +2,7 @@
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $sampleData = array();
 $sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis WHERE sample_code IS NULL AND (sample_package_code LIKE "' . $_POST['samplePackageCode'] . '" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '")';
 $sampleResult = $db->query($sampleQuery);

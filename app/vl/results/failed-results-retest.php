@@ -3,7 +3,7 @@
 
 // echo "<pre>";print_r($_POST['bulkIds']);die;
 try {
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;

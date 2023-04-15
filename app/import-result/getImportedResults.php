@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -19,12 +19,12 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = new \Vlsm\Models\Eid();
+    $eidObj = new \App\Models\Eid();
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    $covid19Obj = new \Vlsm\Models\Covid19();
+    $covid19Obj = new \App\Models\Covid19();
     $covid19Results = $covid19Obj->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";

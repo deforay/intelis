@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
 //print_r($_POST); die;

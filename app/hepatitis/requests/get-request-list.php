@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $gconfig = $general->getGlobalConfig();
@@ -286,7 +286,7 @@ if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_
      $editRequest = true;
      $syncRequest = true;
 }
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$hepatitisDb = new \App\Models\Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $vlResult = '';

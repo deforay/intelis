@@ -12,7 +12,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$eidObj = new \Vlsm\Models\Eid();
+$eidObj = new \App\Models\Eid();
 $eidResults = $eidObj->getEidResults();
 
 

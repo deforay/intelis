@@ -6,10 +6,10 @@
  * @author Amit
  */
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 use Ramsey\Uuid\Uuid;
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 use ZipArchive;
 
 class General
@@ -78,18 +78,6 @@ class General
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true)
     {
-        // $uuid = sprintf(
-        //     '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0x0C2f) | 0x4000,
-        //     random_int(0, 0x3fff) | 0x8000,
-        //     random_int(0, 0x2Aff),
-        //     random_int(0, 0xffD3),
-        //     random_int(0, 0xff4B)
-        // );
-
         $uuid = Uuid::uuid4();
         $uuid = $uuid->toString();
 
@@ -369,16 +357,6 @@ class General
         return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
     }
 
-    public function getTbResults()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_tb_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
-    }
-
     public function startsWith($string, $startString)
     {
         $len = strlen($startString);
@@ -510,7 +488,7 @@ class General
 
     public function getLocaleLists()
     {
-        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale';
+        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
         $localeLists = scandir($path);
         foreach (array(".", "..", ".DS_Store") as $delVal) {
             if (($key = array_search($delVal, $localeLists)) !== false) {

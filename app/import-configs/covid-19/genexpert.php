@@ -4,7 +4,7 @@
 
 use League\Csv\Reader;
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 try {
 
@@ -31,7 +31,7 @@ try {
         throw new Exception("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    // $ranNumber = \App\Models\General::generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
 
@@ -137,7 +137,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new \Vlsm\Models\Users();
+                $usersModel = new \App\Models\Users();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 

@@ -6,9 +6,9 @@ $title = _("Hepatitis | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General(); 
+$general = new \App\Models\General(); 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 
 $sarr = $general->getSystemConfig();
 

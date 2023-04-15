@@ -1,6 +1,6 @@
 <?php
 
-use Vlsm\Models\Vl;
+use App\Models\Vl;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -9,8 +9,8 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 

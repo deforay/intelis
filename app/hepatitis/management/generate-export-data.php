@@ -8,9 +8,9 @@ ob_start();
 
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$hepatitisObj = new \Vlsm\Models\Hepatitis();
+$hepatitisObj = new \App\Models\Hepatitis();
 $hepatitisResults = $hepatitisObj->gethepatitisResults();
 $sarr = $general->getSystemConfig();
 /* Global config data */

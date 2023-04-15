@@ -2,14 +2,14 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
-$geolocation = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$geolocation = new \App\Models\GeoLocations();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
-$usersModel = new \Vlsm\Models\Users();
+$usersModel = new \App\Models\Users();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = array();

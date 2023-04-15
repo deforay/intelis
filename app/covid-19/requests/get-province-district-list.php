@@ -1,6 +1,6 @@
 <?php
-$geoDb = new \Vlsm\Models\GeoLocations($db);
-$generalDb = new \Vlsm\Models\General($db);
+$geoDb = new \App\Models\GeoLocations($db);
+$generalDb = new \App\Models\General($db);
 $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {
     $field = "patient_district";

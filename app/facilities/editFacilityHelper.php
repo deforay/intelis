@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General();
-$geolocation = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$geolocation = new \App\Models\GeoLocations();
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);
@@ -208,7 +208,7 @@ try {
 			$imageName = "logo-" . $string . $extension;
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName)) {
 
-				$resizeObj = new \Vlsm\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
+				$resizeObj = new \App\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
 				$resizeObj->resizeToWidth(100);
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
@@ -262,7 +262,7 @@ try {
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
 
-							$resizeObj = new \Vlsm\Utilities\ImageResize($pathname . $imageName);
+							$resizeObj = new \App\Utilities\ImageResize($pathname . $imageName);
 							$resizeObj->resizeToWidth(100);
 							$resizeObj->save($pathname . $imageName);
 

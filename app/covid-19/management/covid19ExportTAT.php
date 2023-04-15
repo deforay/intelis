@@ -7,7 +7,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) != "") {

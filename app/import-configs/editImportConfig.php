@@ -4,8 +4,8 @@ ob_start();
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
-$userDb = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
+$userDb = new \App\Models\Users();
+$general = new \App\Models\General();
 
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from instruments where config_id=?";

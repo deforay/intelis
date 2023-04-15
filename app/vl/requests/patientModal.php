@@ -2,7 +2,7 @@
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_vl as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";

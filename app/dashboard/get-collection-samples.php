@@ -1,5 +1,5 @@
 <?php
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;

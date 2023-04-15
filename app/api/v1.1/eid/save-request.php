@@ -7,10 +7,10 @@ header('Content-Type: application/json');
 
 try {
 
-    $general = new \Vlsm\Models\General();
-    $userDb = new \Vlsm\Models\Users();
-    $app = new \Vlsm\Models\App();
-    $eidModel = new \Vlsm\Models\Eid();
+    $general = new \App\Models\General();
+    $userDb = new \App\Models\Users();
+    $app = new \App\Models\App();
+    $eidModel = new \App\Models\Eid();
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();

@@ -5,11 +5,11 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
-$userDb = new \Vlsm\Models\Users();
-$facilityDb = new \Vlsm\Models\Facilities();
-$c19Db = new \Vlsm\Models\Covid19();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$userDb = new \App\Models\Users();
+$facilityDb = new \App\Models\Facilities();
+$c19Db = new \App\Models\Covid19();
+$app = new \App\Models\App();
 $arr = $general->getGlobalConfig();
 
 $transactionId = $general->generateUUID();

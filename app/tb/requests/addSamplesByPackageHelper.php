@@ -4,8 +4,8 @@
 
 
 
-$general = new \Vlsm\Models\General();
-$tbObj = new \Vlsm\Models\Tb();
+$general = new \App\Models\General();
+$tbObj = new \App\Models\Tb();
 
 
 $sampleQuery = "SELECT tb_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_tb where tb_id IN (" . $_POST['sampleId'] . ") ORDER BY tb_id";

@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
+$userDb = new \App\Models\Users();
+$general = new \App\Models\General();
 
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
@@ -38,7 +38,7 @@ try {
             $imageName = "usign-" . $data['user_id'] . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new \Vlsm\Utilities\ImageResize($signatureImagePath);
+                $resizeObj = new \App\Utilities\ImageResize($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;

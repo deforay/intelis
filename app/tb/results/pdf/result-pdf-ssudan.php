@@ -73,7 +73,7 @@ class SouthSudan_PDF extends MYPDF
 }
 
 
-$dateUtils = new \Vlsm\Utilities\DateUtils();
+$dateUtils = new \App\Utilities\DateUtils();
 $tbLamResults = $tbObj->getTbResults('lam');
 $tbXPertResults = $tbObj->getTbResults('x-pert');
 
