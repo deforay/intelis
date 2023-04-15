@@ -233,6 +233,15 @@ foreach ($srcResults as $list) {
 							</td>
                                     </tr>
 						<tr>
+							<td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no" selected="selected"><?php echo _("No"); ?></option>
+								</select>
+							</td>
+									</tr>
+						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
@@ -585,6 +594,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "hidesrcofreq",
 					"value": '<?php echo $hidesrcofreq; ?>'
+				});
+				aoData.push({
+					"name": "rejectedSamples",
+					"value": $("#rejectedSamples").val()
 				});
 				$.ajax({
 					"dataType": 'json',

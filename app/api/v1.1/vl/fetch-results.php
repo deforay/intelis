@@ -33,7 +33,7 @@ $arr = $general->getGlobalConfig();
 $user = null;
 
 /* For API Tracking params */
-$requestUrl .= $_SERVER['HTTP_HOST'];
+$requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $input = json_decode($params, true);
@@ -221,10 +221,12 @@ try {
         $where[] = " (vl.patient_first_name like '" . $input['patientName'] . "' OR vl.patient_last_name like '" . $input['patientName'] . "')";
     }
 
-    $sampleStatus = $input['sampleStatus'];
-    if (!empty($sampleStatus)) {
-        $sampleStatus = implode("','", $sampleStatus);
-        $where[] = " vl.result_status IN ('$sampleStatus') ";
+    if (!empty($input['sampleStatus'])) {
+        $sampleStatus = $input['sampleStatus'];
+        if (!empty($sampleStatus)) {
+            $sampleStatus = implode("','", $sampleStatus);
+            $where[] = " vl.result_status IN ('$sampleStatus') ";
+        }
     }
 
     $where = " WHERE " . implode(" AND ", $where);
