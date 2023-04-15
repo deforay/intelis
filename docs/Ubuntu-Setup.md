@@ -28,7 +28,7 @@ Run the following commands in the terminal:
 
 ```
 sudo apt install apache2 -y;
-sudo a2enmod rewrite headers deflate;
+sudo a2enmod rewrite headers deflate env;
 sudo service apache2 restart;
 sudo setfacl -R -m u:www-data:rwx /var/www;
 ```

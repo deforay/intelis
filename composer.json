@@ -10,16 +10,6 @@
             "homepage": "https://deforay.com"
         }
     ],
-    "scripts": {
-        "development-disable": [
-            "@putenv APPLICATION_ENV=production",
-            "composer install --prefer-dist"
-        ],
-        "development-enable": [
-            "@putenv APPLICATION_ENV=development",
-            "composer install --prefer-dist"
-        ]
-    },
     "require": {
         "ext-gd": "*",
         "ext-json": "*",
