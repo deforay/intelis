@@ -93,4 +93,9 @@ $systemConfig['recency']['vlsync'] = false;
 // This Salt should match the Salt on Recency Web app
 $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
+
+$systemConfig['system'] =[
+    'debug_mode' => false
+];
+
 return $systemConfig;

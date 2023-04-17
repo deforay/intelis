@@ -83,4 +83,11 @@ $systemConfig['recency']['crosslogin'] = false;
 // This Salt should match the Salt on Recency Web app 
 $systemConfig['recency']['crossloginSalt'] = "PUT-A-RANDOM-STRING-HERE";
 
+
+
+$systemConfig['system'] =[
+    'debug_mode' => true
+];
+
+
 return $systemConfig;

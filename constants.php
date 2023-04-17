@@ -29,5 +29,3 @@ defined('TEMP_PATH')
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
 
-defined('CONFIG_FILE') ||
-    define('CONFIG_FILE', ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php");

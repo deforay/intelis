@@ -51,10 +51,10 @@ class System
     }
 
     // Setup debugging
-    public function debug($debug = false)
+    public function debug($debugMode = false)
     {
 
-        if ($debug) {
+        if ($debugMode) {
 
             $whoops = new \Whoops\Run;
 
