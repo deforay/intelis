@@ -88,7 +88,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         ];
         $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='form_vl'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -260,7 +260,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='form_eid'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_eid'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
 
@@ -427,7 +427,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         );
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='form_covid19'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_covid19'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
@@ -647,7 +647,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
 
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='form_hepatitis'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_hepatitis'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);
@@ -849,7 +849,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             'data_sync'
         );
 
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='form_tb'";
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_tb'";
         $allColResult = $db->rawQuery($allColumns);
         $columnList = array_map('current', $allColResult);
         $columnList = array_diff($columnList, $removeKeys);

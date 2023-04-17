@@ -25,7 +25,7 @@ $systemConfig['instanceName'] = '';
 $systemConfig['database']['host']     = '';
 $systemConfig['database']['username']     = 'root';
 $systemConfig['database']['password'] = 'zaq12345';
-$systemConfig['database']['name']     = 'vlsm';
+$systemConfig['database']['db']     = 'vlsm';
 $systemConfig['database']['port']     = 3306;
 $systemConfig['database']['charset'] = 'utf8mb4';
 
@@ -58,7 +58,7 @@ $systemConfig['interfacing']['enabled'] = false;
 $systemConfig['interfacing']['database']['host'] = '';
 $systemConfig['interfacing']['database']['username'] = '';
 $systemConfig['interfacing']['database']['password'] = '';
-$systemConfig['interfacing']['database']['name'] = 'interfacing';
+$systemConfig['interfacing']['database']['db'] = 'interfacing';
 $systemConfig['interfacing']['database']['port'] = 3306;
 $systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 

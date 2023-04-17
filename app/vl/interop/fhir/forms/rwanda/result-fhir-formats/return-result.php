@@ -21,7 +21,7 @@ return '{
                         "system": "http://openhie.org/fhir/lab-integration/test-order-number",
                         "value": "' . $row['external_sample_code'] . '"
                     }
-                ],        
+                ],
                 "requester": {
                     "reference": "Organization/' . $fhirFacilityId . '"
                 },

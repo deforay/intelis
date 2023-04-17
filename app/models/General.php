@@ -19,7 +19,7 @@ class General
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public function setDb($db)

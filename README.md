@@ -23,7 +23,7 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 $systemConfig['database']['host']     = 'localhost';
 $systemConfig['database']['username'] = 'dbuser';
 $systemConfig['database']['password'] = 'dbpassword';
-$systemConfig['database']['name']     = 'vlsm';
+$systemConfig['database']['db']     = 'vlsm';
 $systemConfig['database']['port']     = 3306;
 $systemConfig['database']['charset']  = 'utf8mb4';
 ```

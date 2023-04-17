@@ -30,14 +30,38 @@ defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
 
 
-// Setup Autoloader
-// set_include_path(implode(PATH_SEPARATOR, array(
-//     realpath(__DIR__ . '/vendor'),
-//     get_include_path()
-// )));
-
 require_once(APPLICATION_PATH . '/system/system.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
+
+
+defined('CONFIG_FILE') ||
+    define('CONFIG_FILE', ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php");
+
+defined('SYSTEM_CONFIG') ||
+    define('SYSTEM_CONFIG', \Laminas\Config\Factory::fromFile(CONFIG_FILE));
+
+// Database Connection
+$db = new MysqliDb(SYSTEM_CONFIG['database']);
+
+$general = new \App\Models\General($db);
+
+// Setup Locale and Translation
+$_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
+    $general->getGlobalConfig('app_locale') ?? 'en_US';
+
+putenv('LC_ALL=' . $_SESSION['APP_LOCALE']);
+putenv('LANGUAGE=' . $_SESSION['APP_LOCALE']);
+setlocale(LC_ALL, $_SESSION['APP_LOCALE']);
+$domain = "messages";
+bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales');
+bind_textdomain_codeset($domain, 'UTF-8');
+textdomain($domain);
+
+// Setup Timezone
+$_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
+    $general->getGlobalConfig('default_time_zone') ?? 'UTC';
+date_default_timezone_set($_SESSION['APP_TIMEZONE']);
+
 
 if (APPLICATION_ENV === 'development') {
 
@@ -64,38 +88,3 @@ if (APPLICATION_ENV === 'development') {
     }
     $whoops->register();
 }
-
-defined('CONFIG_FILE') ||
-    define('CONFIG_FILE', ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php");
-
-defined('SYSTEM_CONFIG') ||
-    define('SYSTEM_CONFIG', (new Laminas\Config\Config(include(CONFIG_FILE), true))->toArray());
-
-// Database Connection
-$db = new MysqliDb(array(
-    'host' => SYSTEM_CONFIG['database']['host'],
-    'username' => SYSTEM_CONFIG['database']['username'],
-    'password' => SYSTEM_CONFIG['database']['password'],
-    'db' =>  SYSTEM_CONFIG['database']['name'],
-    'port' => (!empty(SYSTEM_CONFIG['database']['port']) ?? 3306),
-    'charset' => (!empty(SYSTEM_CONFIG['database']['charset']) ?? 'utf8mb4')
-));
-
-$general = new \App\Models\General();
-
-// Setup Locale and Translation
-$_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
-    $general->getGlobalConfig('app_locale') ?? 'en_US';
-
-putenv('LC_ALL=' . $_SESSION['APP_LOCALE']);
-putenv('LANGUAGE=' . $_SESSION['APP_LOCALE']);
-setlocale(LC_ALL, $_SESSION['APP_LOCALE']);
-$domain = "messages";
-bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale');
-bind_textdomain_codeset($domain, 'UTF-8');
-textdomain($domain);
-
-// Setup Timezone
-$_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
-    $general->getGlobalConfig('default_time_zone') ?? 'UTC';
-date_default_timezone_set($_SESSION['APP_TIMEZONE']);

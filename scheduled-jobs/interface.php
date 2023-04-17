@@ -26,14 +26,7 @@ $sqliteConnected = false;
 if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
 
     $mysqlConnected = true;
-    $db->addConnection('interface', array(
-        'host' => SYSTEM_CONFIG['interfacing']['database']['host'],
-        'username' => SYSTEM_CONFIG['interfacing']['database']['username'],
-        'password' => SYSTEM_CONFIG['interfacing']['database']['password'],
-        'db' =>  SYSTEM_CONFIG['interfacing']['database']['name'],
-        'port' => (!empty(SYSTEM_CONFIG['interfacing']['database']['port']) ? SYSTEM_CONFIG['interfacing']['database']['port'] : 3306),
-        'charset' => (!empty(SYSTEM_CONFIG['interfacing']['database']['charset']) ? SYSTEM_CONFIG['interfacing']['database']['charset'] : 'utf8mb4')
-    ));
+    $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
@@ -108,7 +101,7 @@ if (count($interfaceInfo) > 0) {
         $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", array($result['machine_used']));
 
         if (empty($instrumentDetails) || $instrumentDetails === false) {
-            $sql="SELECT * FROM instruments
+            $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
             $instrumentDetails = $db->rawQueryOne($sql, array($result['machine_used']));
