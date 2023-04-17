@@ -296,7 +296,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);
-    $row[] = $eidResults[$aRow['result']];
+    $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
