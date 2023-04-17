@@ -104,6 +104,7 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 										<th style="text-align:center;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:15%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
@@ -116,6 +117,7 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 									<tr>
 										<td>
 											<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name'][$i]; ?>"/>
+											<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttribute['field_id'][$i]; ?>"/>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type');?>">
@@ -130,6 +132,17 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 												<option value="yes" <?php echo ($testAttribute['mandatory_field'][$i] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes");?></option>
 												<option value="no" <?php echo ($testAttribute['mandatory_field'][$i] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No");?></option>
 											</select>
+										</td>
+										<td>
+											<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section');?>" onchange="checkSection('<?php echo $i ?>')">
+												<option value=""> <?php echo _("-- Select --");?> </option>
+												<option value="facility" <?php echo ($testAttribute['section'][$i] == 'facility') ? "selected='selected'" : "" ?>><?php echo _("Facility");?></option>
+												<option value="patient" <?php echo ($testAttribute['section'][$i] == 'patient') ? "selected='selected'" : "" ?>><?php echo _("Patient");?></option>
+												<option value="specimen" <?php echo ($testAttribute['section'][$i] == 'specimen') ? "selected='selected'" : "" ?>><?php echo _("Specimen");?></option>
+												<option value="lap" <?php echo ($testAttribute['section'][$i] == 'lap') ? "selected='selected'" : "" ?>><?php echo _("Lab");?></option>
+												<option value="other" <?php echo ($testAttribute['section'][$i] == 'other') ? "selected='selected'" : "" ?>><?php echo _("Other");?></option>
+											</select>
+											<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'other') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'other') ? $testAttribute['section_other'][$i] : "" ?>"/>
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -267,7 +280,7 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 </div>
 
 <script type="text/javascript">
-	tableRowId = <?php echo $n; ?>;
+	tableRowId = <?php echo $n+1; ?>;
 
 	$(document).ready(function() {
 		$('input').tooltip();
@@ -310,11 +323,12 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 		var c = a.insertCell(1);
 		var d = a.insertCell(2);
 		var e = a.insertCell(3);
+		var f = a.insertCell(4);
 		
-		e.setAttribute("align", "center");
-		e.setAttribute("style", "vertical-align:middle");
+		f.setAttribute("align", "center");
+		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ >';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId'+tableRowId+'" class="form-control isRequired" />';
 		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type');?>">\
 							<option value=""> <?php echo _("-- Select --");?> </option>\
 							<option value="number"><?php echo _("Number");?></option>\
@@ -325,8 +339,18 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 							<option value="yes"><?php echo _("Yes");?></option>\
 							<option value="no" selected><?php echo _("No");?></option>\
 						</select>';
-		e.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section');?>" onchange="checkSection(' + tableRowId + ')">\
+						<option value=""> <?php echo _("-- Select --");?> </option>\
+						<option value="facility"><?php echo _("Facility");?></option>\
+						<option value="patient"><?php echo _("Patient");?></option>\
+						<option value="specimen"><?php echo _("Specimen");?></option>\
+						<option value="lap"><?php echo _("Lab");?></option>\
+						<option value="other"><?php echo _("Other");?></option>\
+					</select>\
+					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
+		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
+		generateRandomString(tableRowId);
 		tableRowId++;
 	}
 
@@ -366,6 +390,26 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
 		}
+	}
+	function checkSection(rowId){
+		sectionVal=$("#section"+rowId).val();
+		if(sectionVal=="other"){
+			$("#sectionOther"+rowId).addClass("isRequired");
+			$("#sectionOther"+rowId).show();
+		}else{
+			$("#sectionOther"+rowId).hide();
+			$("#sectionOther"+rowId).removeClass("isRequired");
+			$("#sectionOther"+rowId).val('');
+		}
+	}
+
+	function generateRandomString(rowId) {
+		$.post("/includes/generateRandomString.php", {
+				format: "html"
+			},
+			function(data) {
+				$("#fieldId"+rowId).val(data);
+			});
 	}
 </script>
 
