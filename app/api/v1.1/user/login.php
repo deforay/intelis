@@ -56,7 +56,7 @@ try {
                 }
             }
 
-            if ($userResult['status'] != 'active' || $passwordCheck == false) {
+            if ($userResult['status'] != 'active' || $passwordCheck === false) {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
@@ -84,7 +84,7 @@ try {
                     unset($userResult['password']);
                     unset($userResult['hash_algorithm']);
                     unset($userResult['app_access']);
-                    
+
                     $data['user'] = $userResult;
                     $data['form'] = $general->getGlobalConfig('vl_form');
                     $data['api_token'] = $tokenData['token'];

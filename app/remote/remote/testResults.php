@@ -11,7 +11,7 @@ try {
     $jsonResponse = file_get_contents('php://input');
 
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['name'] . "' AND table_name='form_vl'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_vl'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 

@@ -13,7 +13,7 @@ $transactionId = $general->generateUUID();
 
 $sampleCodes = $facilityIds = array();
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['name'] . "' AND table_name='form_tb'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_tb'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 

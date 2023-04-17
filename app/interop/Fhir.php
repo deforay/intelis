@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Interop;
 
 use GuzzleHttp\Client;

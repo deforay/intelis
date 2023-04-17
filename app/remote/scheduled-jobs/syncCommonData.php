@@ -276,7 +276,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $id = $db->delete('testing_labs');
             }
 
-            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['name'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
             $columnList = array_map('current', $db->rawQuery($tableColumns));
             
             foreach ($dataValues as $tableDataValues) {
