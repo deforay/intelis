@@ -142,11 +142,11 @@ try {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-        $approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-        $_POST['approvedOnDateTime'] = $general->isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+        $approvedOn = explode(" ", $_POST['approvedOn']);
+        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
-        $_POST['approvedOnDateTime'] = null;
+        $_POST['approvedOn'] = null;
     }
 
 
@@ -302,7 +302,7 @@ try {
         'last_vl_sample_type_failure'           => (isset($_POST['suspendLastVLTestSampleType']) && $_POST['suspendLastVLTestSampleType'] != '') ? $_POST['suspendLastVLTestSampleType'] :  null,
         'request_clinician_name'                => (isset($_POST['reqClinician']) && $_POST['reqClinician'] != '') ? $_POST['reqClinician'] :  null,
         'request_clinician_phone_number'        => (isset($_POST['reqClinicianPhoneNumber']) && $_POST['reqClinicianPhoneNumber'] != '') ? $_POST['reqClinicianPhoneNumber'] :  null,
-        //'test_requested_on'                     => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->isoDateFormat($_POST['requestDate']) :  null,
+        'test_requested_on'                     => (isset($_POST['requestDate']) && $_POST['requestDate'] != '') ? $general->isoDateFormat($_POST['requestDate']) :  null,
         'vl_focal_person'                       => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] :  null,
         'vl_focal_person_phone_number'          => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  null,
         'lab_id'                                => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  null,
@@ -325,7 +325,7 @@ try {
         'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by'                             => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
         'result_approved_by'                    => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-        'result_approved_datetime'              => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  null,
+        'result_approved_datetime'              => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
         'lab_tech_comments'                     => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  null,
         'result_status'                         => $resultStatus,
         'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
