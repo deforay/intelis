@@ -225,14 +225,12 @@ if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSIO
 foreach ($rResult as $aRow) {
 
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';
     }

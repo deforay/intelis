@@ -11,9 +11,9 @@
   <script src="/assets/js/deforayModal.js"></script>
   <?php
   ob_start();
-  
-  
-  
+
+
+
   $id = base64_decode($_GET['id']);
   $general = new \App\Models\General();
   $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
@@ -23,8 +23,7 @@
   $vlResult = $db->query($vlInfo);
 
   if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
-    $xplodDate = explode(" ", $vlResult[0]['sample_collection_date']);
-    $vlResult[0]['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+    $vlResult[0]['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlResult[0]['sample_collection_date']);
   } else {
     $vlResult[0]['sample_collection_date'] = '';
   }
@@ -38,7 +37,7 @@
 
     <!-- Main content -->
     <section class="content">
-      
+
       <div class="box box-default">
         <div class="box-header with-border">
           <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -48,7 +47,7 @@
           <!-- form start -->
           <div class="form-horizontal" id="contactNotes">
             <div class="box-body">
-              <table class="table" aria-hidden="true" >
+              <table class="table" aria-hidden="true">
                 <tr>
                   <td><strong>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
                   <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong></td>
@@ -93,7 +92,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                   <h3>Contact Notes History</h3>
-                  <table id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true" >
+                  <table id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true">
                     <thead>
                       <tr>
                         <th>Contact Notes</th>

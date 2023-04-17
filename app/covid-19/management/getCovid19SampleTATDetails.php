@@ -246,32 +246,27 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 	if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['sample_collection_date']);
-		$aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['sample_received_at_vl_lab_datetime']);
-		$aRow['sample_received_at_vl_lab_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$aRow['sample_received_at_vl_lab_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	} else {
 		$aRow['sample_received_at_vl_lab_datetime'] = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-		$aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$aRow['sample_tested_datetime'] = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['result_printed_datetime']);
-		$aRow['result_printed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$aRow['result_printed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$aRow['result_mail_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$aRow['result_mail_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}

@@ -301,8 +301,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['hbv_vl_count'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';
     }

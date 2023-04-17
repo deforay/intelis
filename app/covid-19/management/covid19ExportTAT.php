@@ -65,26 +65,22 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
     }
     if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-      $xplodDate = explode(" ", $aRow['sample_received_at_vl_lab_datetime']);
-      $sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+      $sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     } else {
       $sampleRecievedDate = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-      $xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-      $testDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+      $testDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     } else {
       $testDate = '';
     }
     if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-      $xplodDate = explode(" ", $aRow['result_printed_datetime']);
-      $printDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+      $printDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
     } else {
       $printDate = '';
     }
     if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-      $xplodDate = explode(" ", $aRow['result_mail_datetime']);
-      $mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+      $mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
     } else {
       $mailDate = '';
     }

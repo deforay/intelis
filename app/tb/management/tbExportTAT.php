@@ -8,6 +8,7 @@ ob_start();
 
 
 $general = new \App\Models\General();
+
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 /*
@@ -58,10 +59,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+	->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 foreach ($headings as $field => $value) {
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	$colNo++;
 }
 $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
@@ -76,26 +77,22 @@ foreach ($rResult as $aRow) {
 		$sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
 	}
 	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['sample_received_at_lab_datetime']);
-		$sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-		$testDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$testDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['result_printed_datetime']);
-		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$printDate = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+		$mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$mailDate = '';
 	}
@@ -114,12 +111,13 @@ $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
 	$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value));
-			$colNo++;
-		}
+	foreach ($rowData as $field => $value) {
+		$sheet->setCellValue(
+			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+			html_entity_decode($value)
+		);
+		$colNo++;
+	}
 }
 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'TB-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';

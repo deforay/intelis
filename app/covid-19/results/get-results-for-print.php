@@ -3,21 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$formConfigQuery = "SELECT * from global_config where name='vl_form'";
-$configResult = $db->query($formConfigQuery);
-$arr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-    $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * FROM system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 $general = new \App\Models\General();
 
 $covid19Obj = new \App\Models\Covid19();
@@ -34,7 +19,7 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'C
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instanceType'] == 'standalone') {
+} elseif ($_SESSION['instanceType'] == 'standalone') {
     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
         unset($aColumns[$key]);
     }
@@ -117,7 +102,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name, f.facility_district,f.facility_state,
             l_f.facility_name as labName,
-            UPPER(s.sample_name) as sample_name, 
+            UPPER(s.sample_name) as sample_name,
             l_f.facility_logo as facilityLogo,
             l_f.header_text as headerText,
             l_f.report_format as reportFormat,
@@ -126,17 +111,17 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             u_d.user_name as reviewedBy,
             a_u_d.user_name as approvedBy,
             c.iso_name as nationality,
-            rs.rejection_reason_name 
-            FROM form_covid19 as vl 
+            rs.rejection_reason_name
+            FROM form_covid19 as vl
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-            INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
+            INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
             INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-            LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type 
-            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-            LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+            LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+            LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 $start_date = '';
 $end_date = '';
@@ -299,15 +284,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_district']);
     $row[] = ($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
-
-    if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
-    } else {
-        $aRow['last_modified_datetime'] = '';
-    }
-
-    $row[] = $aRow['last_modified_datetime'];
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     $row[] = ($aRow['status_name']);
     $row[] = $print;
     $output['aaData'][] = $row;

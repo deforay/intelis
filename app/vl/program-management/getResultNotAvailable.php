@@ -207,8 +207,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }

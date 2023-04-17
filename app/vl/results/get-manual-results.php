@@ -23,9 +23,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'standalone') {
      if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-		unset($aColumns[$key]);
+          unset($aColumns[$key]);
           unset($orderColumns[$key]);
-	}
+     }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -46,15 +46,15 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 */
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
-	$sOrder = "";
-	for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-		if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-			if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
-               $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+     $sOrder = "";
+     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
+          if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
+               if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+                    $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-		}
-	}
-	$sOrder = substr_replace($sOrder, "", -2);
+          }
+     }
+     $sOrder = substr_replace($sOrder, "", -2);
 }
 //echo $sOrder;
 /*
@@ -183,14 +183,14 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+     $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
@@ -251,7 +251,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 
 // Only approved results can be printed
 if (!isset($_POST['status']) || trim($_POST['status']) == '') {
-    $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+     $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      $sWhere[] = " vl.result_status!=9 ";
 }
@@ -318,7 +318,7 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-        $row[] = $aRow['batch_code'];
+     $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
@@ -326,8 +326,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }
