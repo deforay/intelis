@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../../startup.php");
+require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 $general = new \App\Models\General();
 $usersModel = new \App\Models\Users();

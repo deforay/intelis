@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'startup.php');
+require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {

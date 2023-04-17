@@ -2,7 +2,7 @@
 //this file gets the requests from the remote server and updates the local database
 
 if (php_sapi_name() == 'cli') {
-    require_once(dirname(__FILE__) . "/../../../startup.php");
+    require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 }
 
 

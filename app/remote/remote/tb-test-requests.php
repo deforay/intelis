@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . "/../../../startup.php");
+require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
 
 $origData = $jsonData = file_get_contents('php://input');

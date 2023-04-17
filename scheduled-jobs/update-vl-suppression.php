@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 $vlDb = new \App\Models\Vl();
 

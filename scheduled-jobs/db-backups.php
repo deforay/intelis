@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 use phpseclib3\Net\SFTP;
 use phpseclib3\Crypt\PublicKeyLoader;

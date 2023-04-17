@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../../../../startup.php");
+require_once(__DIR__ . "/../../../../bootstrap.php");
 
 if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
     http_response_code(403);

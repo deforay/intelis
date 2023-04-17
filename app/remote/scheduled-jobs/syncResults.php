@@ -3,7 +3,7 @@
 //this file gets the data from the local database and updates the remote database
 
 if (php_sapi_name() == 'cli') {
-    require_once(dirname(__FILE__) . "/../../../startup.php");
+    require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 }
 
 $general = new \App\Models\General();

@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . '/../startup.php');
+require_once(__DIR__ . '/../bootstrap.php');
 
 $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
 

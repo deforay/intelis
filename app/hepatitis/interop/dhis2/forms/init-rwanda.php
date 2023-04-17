@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../../../../../startup.php");
+require_once(__DIR__ . "/../../../../../bootstrap.php");
 
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-init.php

@@ -2,7 +2,7 @@
 
 // ini_set('memory_limit', -1);
 
-require_once(__DIR__ . '/../startup.php');
+require_once(__DIR__ . '/../bootstrap.php');
 
 $general = new \App\Models\General();
 
