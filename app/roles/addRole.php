@@ -5,7 +5,7 @@ ob_start();
 require_once(APPLICATION_PATH . '/header.php');
 $general = new \App\Models\General();
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 $activeModules = array('admin', 'common');
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {

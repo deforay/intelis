@@ -30,6 +30,7 @@ Run the following commands in the terminal:
 sudo apt install apache2 -y;
 sudo a2enmod rewrite headers deflate env;
 sudo service apache2 restart;
+sudo setfacl -R -m u:$USER:rwx /var/www;
 sudo setfacl -R -m u:www-data:rwx /var/www;
 ```
 
@@ -79,8 +80,7 @@ Now let us install PHP 7.4:
 
 ```
 sudo apt update;
-sudo apt -y install php7.4 openssl php7.4-common php7.4-cli php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type phpmyadmin;
-sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-enabled/phpmyadmin.conf;
+sudo apt -y install php7.4 openssl php7.4-common php7.4-cli php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type;
 sudo service apache2 restart;
 
 ```

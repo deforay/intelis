@@ -145,12 +145,12 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		}
 
 		if ($aRow['patient_name'] != '') {
-			$patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}

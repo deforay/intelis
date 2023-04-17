@@ -6,7 +6,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $userDb = new \App\Models\Users();
 $general = new \App\Models\General();
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>

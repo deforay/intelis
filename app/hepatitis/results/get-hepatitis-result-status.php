@@ -221,8 +221,8 @@ foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = '';
     }
 
-    $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-    $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+    $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+    $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
 
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">

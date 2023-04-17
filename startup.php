@@ -44,18 +44,11 @@ defined('SYSTEM_CONFIG') ||
 $db = new MysqliDb(SYSTEM_CONFIG['database']);
 
 $general = new \App\Models\General($db);
+$system = new \App\Models\System($db);
 
 // Setup Locale and Translation
-$_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
-    $general->getGlobalConfig('app_locale') ?? 'en_US';
 
-putenv('LC_ALL=' . $_SESSION['APP_LOCALE']);
-putenv('LANGUAGE=' . $_SESSION['APP_LOCALE']);
-setlocale(LC_ALL, $_SESSION['APP_LOCALE']);
-$domain = "messages";
-bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales');
-bind_textdomain_codeset($domain, 'UTF-8');
-textdomain($domain);
+$system->setupTranslation();
 
 // Setup Timezone
 $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??

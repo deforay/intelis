@@ -105,8 +105,8 @@ foreach ($headings as $field => $value) {
           } else {
                $decrypt = 'sample_code';
           }
-          $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]);
-          $patientMname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow[$decrypt]);
+          $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]);
+          $patientMname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow[$decrypt]);
           $row[] = $aRow['sample_code'];
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];

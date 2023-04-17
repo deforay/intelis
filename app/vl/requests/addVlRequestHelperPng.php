@@ -227,8 +227,8 @@ try {
           $vldata['source_of_request'] = 'api';
      }
 
-     //$vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFname'], $vldata['patient_art_no']);
-     //$vldata['patient_last_name'] = $general->crypto('encrypt', $_POST['surName'], $vldata['patient_art_no']);
+     //$vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFname'], $vldata['patient_art_no']);
+     //$vldata['patient_last_name'] = $general->crypto('doNothing', $_POST['surName'], $vldata['patient_art_no']);
 
 
      $vlDb = new \App\Models\Vl();

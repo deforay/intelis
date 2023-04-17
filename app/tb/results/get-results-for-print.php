@@ -277,8 +277,8 @@ foreach ($rResult as $aRow) {
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['tb_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
     }
 
-    $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']);
+    $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
+    $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);
 
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {

@@ -367,7 +367,7 @@ try {
         $vldata['result_status'] = 4;
     }
 
-    $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
+    $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
 
     //var_dump($vldata);die;
 

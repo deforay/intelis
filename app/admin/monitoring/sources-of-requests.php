@@ -14,7 +14,7 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 ?>
 <style>

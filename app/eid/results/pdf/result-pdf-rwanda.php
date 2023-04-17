@@ -205,7 +205,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
         $html .= '<tr>';
 
-        $patientFname = ($general->crypto('decrypt', $result['child_name'], $result['child_id']));
+        $patientFname = ($general->crypto('doNothing', $result['child_name'], $result['child_id']));
 
 
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . '</td>';

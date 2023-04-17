@@ -350,8 +350,8 @@ if (sizeof($requestResult) > 0) {
 		$facilityInfo = $db->rawQueryOne($facilityQuery);
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
-		$patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-		$patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
 		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));

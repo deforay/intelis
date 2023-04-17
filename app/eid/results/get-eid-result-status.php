@@ -218,7 +218,7 @@ foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = '';
     }
 
-    $childName = ($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
+    $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow['child_id']));
 
 
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['eid_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">

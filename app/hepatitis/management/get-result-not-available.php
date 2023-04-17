@@ -217,7 +217,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
             }else{
                 $decrypt = 'sample_code';
             }
-            $patientName = $general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]);
+            $patientName = $general->crypto('doNothing',$aRow['patient_name'],$aRow[$decrypt]);
           
             $row = array();
 

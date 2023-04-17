@@ -27,33 +27,6 @@ class General
         $this->db = $db;
     }
 
-    public function getActiveTestModules(): array
-    {
-        $response = array();
-
-        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-            $response[] = 'vl';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-            $response[] = 'eid';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-            $response[] = 'covid19';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-            $response[] = 'hepatitis';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-            $response[] = 'tb';
-        }
-
-        return $response;
-    }
-
     public static function generateRandomString($length = 32)
     {
         $randomString = '';
@@ -277,35 +250,15 @@ class General
         return $plain;
     }
 
-    public function crypto($action, $inputString, $secretIv)
+    public function crypto($action, $inputString, $key)
     {
-
-        return $inputString;
-
-        if (empty($inputString)) {
-            return "";
+        if (empty($inputString) || $action === 'doNothing') {
+            return $inputString;
+        } elseif ($action === 'encrypt') {
+            return self::encrypt($inputString, $key);
+        } elseif ($action === 'decrypt') {
+            return self::decrypt($inputString, $key);
         }
-
-        $output = false;
-        $encrypt_method = "AES-256-CBC";
-        $secret_key = 'rXBCNkAzkHXGBKEReqrTfPhGDqhzxgDRQ7Q0XqN6BVvuJjh1OBVvuHXGBKEReqrTfPhGDqhzxgDJjh1OB4QcIGAGaml';
-
-        // hash
-        $key = hash('sha256', $secret_key);
-
-        if (empty($secretIv)) {
-            $secretIv = 'sd893urijsdf8w9eurj';
-        }
-        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-        $iv = substr(hash('sha256', $secretIv), 0, 16);
-
-        if ($action == 'encrypt') {
-            $output = openssl_encrypt($inputString, $encrypt_method, $key, 0, $iv);
-            $output = base64_encode($output);
-        } else if ($action == 'decrypt') {
-            $output = openssl_decrypt(base64_decode($inputString), $encrypt_method, $key, 0, $iv);
-        }
-        return $output;
     }
 
     public function activityLog($eventType, $action, $resource)

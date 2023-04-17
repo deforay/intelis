@@ -321,9 +321,9 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
-     $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['child_id']));
-     $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['child_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow['child_id']));
+     $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['child_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['child_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

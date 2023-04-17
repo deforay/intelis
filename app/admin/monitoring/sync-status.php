@@ -8,7 +8,7 @@ $labNameList = $facilityDb->getTestingLabs();
 
 $geoLocationDb = new \App\Models\GeoLocations();
 $stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 ?>
 <style>

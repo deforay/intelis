@@ -86,7 +86,7 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
                $decrypt = 'sample_code';
           }
 
-          $childName = ($general->crypto('decrypt',$aRow['child_name'],$aRow[$decrypt]));
+          $childName = ($general->crypto('doNothing',$aRow['child_name'],$aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){

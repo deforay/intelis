@@ -85,7 +85,7 @@ $colNo++;
                $decrypt = 'sample_code';
           }
 
-          $patientFname = ($general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]));
+          $patientFname = ($general->crypto('doNothing',$aRow['patient_name'],$aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){

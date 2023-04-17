@@ -178,17 +178,17 @@ if ($vlQueryInfo['remote_sample'] == 'yes') {
 }
 
 if ($vlQueryInfo['patient_first_name'] != '') {
-	$patientFirstName = $general->crypto('decrypt', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
+	$patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
 } else {
 	$patientFirstName = '';
 }
 if ($vlQueryInfo['patient_middle_name'] != '') {
-	$patientMiddleName = $general->crypto('decrypt', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
+	$patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
 } else {
 	$patientMiddleName = '';
 }
 if ($vlQueryInfo['patient_last_name'] != '') {
-	$patientLastName = $general->crypto('decrypt', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
+	$patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
 } else {
 	$patientLastName = '';
 }

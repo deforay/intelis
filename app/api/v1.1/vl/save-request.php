@@ -410,13 +410,13 @@ try {
 
 
         if (isset($data['patientFirstName']) && $data['patientFirstName'] != "") {
-            $vlFulldata['patient_first_name'] = $general->crypto('encrypt', $data['patientFirstName'], $vlFulldata['patient_art_no']);
+            $vlFulldata['patient_first_name'] = $general->crypto('doNothing', $data['patientFirstName'], $vlFulldata['patient_art_no']);
         }
         if (isset($data['patientMiddleName']) && $data['patientMiddleName'] != "") {
-            $vlFulldata['patient_middle_name'] = $general->crypto('encrypt', $data['patientMiddleName'], $vlFulldata['patient_art_no']);
+            $vlFulldata['patient_middle_name'] = $general->crypto('doNothing', $data['patientMiddleName'], $vlFulldata['patient_art_no']);
         }
         if (isset($data['patientLastName']) && $data['patientLastName'] != "") {
-            $vlFulldata['patient_last_name'] = $general->crypto('encrypt', $data['patientLastName'], $vlFulldata['patient_art_no']);
+            $vlFulldata['patient_last_name'] = $general->crypto('doNothing', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
 
         // South Sudan specific

@@ -380,7 +380,7 @@ try {
      } elseif ($vldata['vl_result_category'] == 'rejected') {
           $vldata['result_status'] = 4;
      }
-     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
+     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      if (isset($_POST['api']) && $_POST['api'] = "yes") {

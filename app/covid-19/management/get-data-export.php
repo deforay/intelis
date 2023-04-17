@@ -311,8 +311,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

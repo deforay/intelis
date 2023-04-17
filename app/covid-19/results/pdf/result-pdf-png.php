@@ -191,8 +191,8 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">District</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';

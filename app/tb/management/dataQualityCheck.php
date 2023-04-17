@@ -215,7 +215,7 @@ foreach ($rResult as $aRow) {
           $decrypt = 'sample_code';
      }
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
 
      $row = array();
      $row[] = $aRow['sample_code'];

@@ -241,8 +241,8 @@ $html .= '<td colspan="2" style="line-height:14px;font-size:12px;text-align:left
 $html .= '<td style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">ID LABO : <u>' . ($result['labName']) . '</u> /21<br><span style="font-size:10px;font-weight:normal;">LAB ID</span></td>';
 $html .= '</tr>';
 
-$patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-$patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';

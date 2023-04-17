@@ -189,7 +189,7 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow['child_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow['child_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

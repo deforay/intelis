@@ -256,7 +256,7 @@ try {
      } elseif ($vldata['vl_result_category'] == 'rejected') {
           $vldata['result_status'] = 4;
      }
-     $vldata['patient_first_name'] = $general->crypto('encrypt', $_POST['patientFirstName'], $vldata['patient_art_no']);
+     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      if (isset($_POST['indicateVlTesing']) && $_POST['indicateVlTesing'] != '') {
           $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['indicateVlTesing'] . "'";
           $reasonResult = $db->rawQuery($reasonQuery);
