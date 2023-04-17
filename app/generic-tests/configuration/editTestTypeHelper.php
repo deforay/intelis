@@ -15,9 +15,12 @@ $testTypeId = (int) base64_decode($_POST['testTypeId']);
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 try {
     if (!empty($_POST['testStandardName']) && $testTypeId>0) {
+        $testAttribute['field_id']=$_POST['fieldId'];
         $testAttribute['field_name']=$_POST['fieldName'];
         $testAttribute['field_type']=$_POST['fieldType'];
         $testAttribute['mandatory_field']=$_POST['mandatoryField'];
+        $testAttribute['section']=$_POST['section'];
+        $testAttribute['section_other']=$_POST['sectionOther'];
         
         //Result Type
         $testResultAttribute['result_type']=$_POST['resultType'];

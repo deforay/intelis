@@ -96,16 +96,18 @@ require_once(APPLICATION_PATH . '/header.php');
 							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Action"); ?></th>
+										<th style="text-align:center;width:30%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:13%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:13%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:15%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:8%;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
 									<tr>
 										<td>
 											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
+											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 										</td>
 										<td>
 											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type');?>">
@@ -120,6 +122,17 @@ require_once(APPLICATION_PATH . '/header.php');
 												<option value="yes"><?php echo _("Yes");?></option>
 												<option value="no" selected><?php echo _("No");?></option>
 											</select>
+										</td>
+										<td>
+											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section');?>" onchange="checkSection('1')">
+												<option value=""> <?php echo _("-- Select --");?> </option>
+												<option value="facility"><?php echo _("Facility");?></option>
+												<option value="patient"><?php echo _("Patient");?></option>
+												<option value="specimen"><?php echo _("Specimen");?></option>
+												<option value="lap"><?php echo _("Lab");?></option>
+												<option value="other"><?php echo _("Other");?></option>
+											</select>
+											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;"/>
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -236,6 +249,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 	$(document).ready(function() {
 		$('input').tooltip();
+		generateRandomString('1');
 	});
 
 	function validateNow() {
@@ -273,11 +287,11 @@ require_once(APPLICATION_PATH . '/header.php');
 		var c = a.insertCell(1);
 		var d = a.insertCell(2);
 		var e = a.insertCell(3);
-		
-		e.setAttribute("align", "center");
-		e.setAttribute("style", "vertical-align:middle");
+		var f = a.insertCell(4);
+		f.setAttribute("align", "center");
+		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ >';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId'+tableRowId+'" class="form-control isRequired" />';
 		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type');?>">\
 							<option value=""> <?php echo _("-- Select --");?> </option>\
 							<option value="number"><?php echo _("Number");?></option>\
@@ -288,8 +302,18 @@ require_once(APPLICATION_PATH . '/header.php');
 							<option value="yes"><?php echo _("Yes");?></option>\
 							<option value="no" selected><?php echo _("No");?></option>\
 						</select>';
-		e.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section');?>" onchange="checkSection(' + tableRowId + ')">\
+						<option value=""> <?php echo _("-- Select --");?> </option>\
+						<option value="facility"><?php echo _("Facility");?></option>\
+						<option value="patient"><?php echo _("Patient");?></option>\
+						<option value="specimen"><?php echo _("Specimen");?></option>\
+						<option value="lap"><?php echo _("Lab");?></option>\
+						<option value="other"><?php echo _("Other");?></option>\
+					</select>\
+					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
+		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
+		generateRandomString(tableRowId);
 		tableRowId++;
 	}
 
@@ -330,6 +354,27 @@ require_once(APPLICATION_PATH . '/header.php');
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
 		}
+	}
+
+	function checkSection(rowId){
+		sectionVal=$("#section"+rowId).val();
+		if(sectionVal=="other"){
+			$("#sectionOther"+rowId).addClass("isRequired");
+			$("#sectionOther"+rowId).show();
+		}else{
+			$("#sectionOther"+rowId).hide();
+			$("#sectionOther"+rowId).removeClass("isRequired");
+			$("#sectionOther"+rowId).val('');
+		}
+	}
+	
+	function generateRandomString(rowId) {
+		$.post("/includes/generateRandomString.php", {
+				format: "html"
+			},
+			function(data) {
+				$("#fieldId"+rowId).val(data);
+			});
 	}
 </script>
 
