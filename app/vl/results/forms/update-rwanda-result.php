@@ -593,12 +593,11 @@ $disable = "disabled = 'disabled'";
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
 													<div class="col-lg-7">
-														<label class="radio-inline">
-															<input class="labSection" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'checked="checked"' : ''; ?>> Yes
-														</label>
-														<label class="radio-inline">
-															<input class="labSection" id="noResultNo" name="noResult" value="no" title="Please check one" type="radio" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'checked="checked"' : ''; ?>> No
-														</label>
+															<select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                    <option value="">-- Select --</option>
+                                                                    <option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+                                                                    <option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+                                                            </select>
 													</div>
 												</div>
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
