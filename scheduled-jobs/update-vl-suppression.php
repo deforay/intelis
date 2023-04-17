@@ -1,8 +1,8 @@
 <?php
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
-$vlDb = new \Vlsm\Models\Vl();
+$vlDb = new \App\Models\Vl();
 
 $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, result, result_status
 				

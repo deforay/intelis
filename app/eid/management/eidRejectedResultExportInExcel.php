@@ -7,7 +7,7 @@ ob_start();
 
 
  
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
@@ -85,7 +85,7 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
                $decrypt = 'sample_code';
            }
 
-           $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
+           $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){

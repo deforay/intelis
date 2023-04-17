@@ -2,10 +2,10 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
 
 
-$general = new \Vlsm\Models\General();
+
+$general = new \App\Models\General();
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 //config  query
@@ -35,8 +35,12 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_nam
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result');
-    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result');
+    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+        unset($aColumns[$key]);
+    }
+    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+        unset($orderColumns[$key]);
+    }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -102,7 +106,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -130,10 +134,10 @@ if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '
     $s_c_date = explode("to", $_POST['hvlSampleTestDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
@@ -175,9 +179,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 //$sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sWhere) && count($sWhere) >0) {
-    $sWhere = ' AND '. implode(' AND ',$sWhere);
-    $sQuery = $sQuery .' '. $sWhere;
+if (isset($sWhere) && count($sWhere) > 0) {
+    $sWhere = ' AND ' . implode(' AND ', $sWhere);
+    $sQuery = $sQuery . ' ' . $sWhere;
 }
 $sQuery = $sQuery . ' group by vl.covid19_id';
 //echo $sQuery; die();
@@ -218,13 +222,13 @@ $output = array(
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-        $aRow['sample_tested_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_tested_datetime'] = '';
     }
@@ -233,9 +237,9 @@ foreach ($rResult as $aRow) {
     } else {
         $decrypt = 'sample_code';
     }
-    /*$patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow[$decrypt]);
-    $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow[$decrypt]);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow[$decrypt]);*/
+    /*$patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]);
+    $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow[$decrypt]);
+    $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow[$decrypt]);*/
     $row = array();
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {

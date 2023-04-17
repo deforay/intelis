@@ -1962,7 +1962,7 @@ CREATE TABLE `r_hepatitis_sample_rejection_reasons` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_sample_type` (
  `sample_id` int NOT NULL AUTO_INCREMENT,
@@ -1971,7 +1971,7 @@ CREATE TABLE `r_hepatitis_sample_type` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_test_reasons` (
  `test_reason_id` int NOT NULL AUTO_INCREMENT,
@@ -1980,7 +1980,7 @@ CREATE TABLE `r_hepatitis_test_reasons` (
  `test_reason_status` varchar(45) DEFAULT NULL,
  `updated_datetime` datetime DEFAULT NULL,
  PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_results` (
  `result_id` varchar(255) NOT NULL,
@@ -1989,7 +1989,7 @@ CREATE TABLE `r_hepatitis_results` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`result_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `form_hepatitis` ADD `reason_for_vl_test` VARCHAR(255) NULL DEFAULT NULL AFTER `type_of_test_requested`;
 

@@ -2,8 +2,8 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
-$instrumentsDb = new \Vlsm\Models\Instruments();
+$general = new \App\Models\General();
+$instrumentsDb = new \App\Models\Instruments();
 $activeInstruments = $instrumentsDb->getInstruments(null,true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null, "-- Select --");
 ?>

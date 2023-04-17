@@ -2,10 +2,10 @@
 
 ini_set('memory_limit', -1);
 
-require_once(__DIR__ . "/../../startup.php");
+require_once(__DIR__ . "/../../bootstrap.php");
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $lastUpdate = null;
 $output = array();
 
@@ -78,7 +78,7 @@ try {
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(
-            'vl_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : $general->getCurrentDateTime())
+            'vl_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : \App\Utilities\DateUtils::getCurrentDateTime())
         );
 
         $db->update('s_vlsm_instance', $data);

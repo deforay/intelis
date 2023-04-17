@@ -3,15 +3,15 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 
-$dhis2 = new \Vlsm\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $transactionId = $general->generateUUID();
 
-$hepatitisModel = new \Vlsm\Models\Hepatitis();
+$hepatitisModel = new \App\Models\Hepatitis();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -273,12 +273,12 @@ foreach ($trackedEntityInstances as $tracker) {
         //var_dump($uniqueID . " -- " . $formData['hepatitis_test_type']);
         //continue;
 
-        $formData['request_created_datetime'] = $general->getCurrentDateTime();
+        $formData['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
         $updateColumns = array_keys($formData);
 
         $formData['unique_id'] = $uniqueID;
 
-        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanReadableDateFormat($formData['sample_collection_date']));
+        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, \App\Utilities\DateUtils::humanReadableDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -302,7 +302,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
-        $formData['last_modified_datetime'] = $general->getCurrentDateTime();
+        $formData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
 
         $formAttributes = array();

@@ -6,7 +6,7 @@
  * @author Amit
  */
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 class App
 {
@@ -31,7 +31,7 @@ class App
 
     public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new \Vlsm\Models\Facilities($this->db);
+        $facilityDb = new \App\Models\Facilities($this->db);
         $query = "SELECT hf.test_type, 
                         f.facility_id, 
                         f.facility_name, 
@@ -112,7 +112,7 @@ class App
 
     public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new \Vlsm\Models\Facilities($this->db);
+        $facilityDb = new \App\Models\Facilities($this->db);
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl 
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
@@ -170,7 +170,7 @@ class App
 
     public function getProvinceDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new \Vlsm\Models\Facilities($this->db);
+        $facilityDb = new \App\Models\Facilities($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
@@ -208,7 +208,7 @@ class App
 
     public function getDistrictDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new \Vlsm\Models\Facilities($this->db);
+        $facilityDb = new \App\Models\Facilities($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
@@ -279,10 +279,10 @@ class App
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $params = null, $format = null)
     {
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $data = array(
             'requested_by'          => $user ?: 'vlsm-system',
-            'requested_on'          => $general->getCurrentDateTime(),
+            'requested_on'          => \App\Utilities\DateUtils::getCurrentDateTime(),
             'number_of_records'     => $records ?: 0,
             'request_type'          => $type ?: null,
             'test_type'             => $testType ?: null,

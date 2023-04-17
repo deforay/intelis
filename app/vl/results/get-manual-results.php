@@ -3,11 +3,11 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $sarr = $general->getSystemConfig();
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 
 
 $tableName = "form_vl";
@@ -160,10 +160,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -171,10 +171,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      //print_r($s_t_date);die;
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = $general->isoDateFormat(trim($s_t_date[0]));
+          $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
+          $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -310,9 +310,9 @@ foreach ($rResult as $aRow) {
           }
      }
 
-     $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']);
-     $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']);
-     $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']);
+     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
+     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
+     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
@@ -327,7 +327,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

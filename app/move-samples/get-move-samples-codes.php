@@ -2,7 +2,7 @@
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $lName = $_POST['lName'];
 $testType = $_POST['testType'];
@@ -43,10 +43,10 @@ if (isset($scDate) && trim($scDate) != '') {
 	$s_c_date = explode("to", $scDate);
 	//print_r($s_c_date);die;
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
+		$start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
+		$end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
 	}
 
 	if (trim($start_date) == trim($end_date)) {

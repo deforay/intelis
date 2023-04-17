@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 
@@ -21,7 +21,7 @@ try {
 		$data = array(
 			'comorbidity_name' => $_POST['comorbidityName'],
 			'comorbidity_status' => $_POST['comorbidityStatus'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
         $db = $db->where('comorbidity_id', $comorbidityId);

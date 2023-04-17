@@ -1,14 +1,14 @@
 <?php
 
-use Vlsm\Models\General;
+use App\Models\General;
 
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
+$userDb = new \App\Models\Users();
+$general = new \App\Models\General();
 
 
 $userId = base64_decode($_POST['userId']);
@@ -29,7 +29,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
+            $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
@@ -47,7 +47,7 @@ try {
             $imageName = "usign-" . $userId . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new \Vlsm\Utilities\ImageResize($signatureImagePath);
+                $resizeObj = new \App\Utilities\ImageResize($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;

@@ -4,11 +4,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 /* Global config data */
@@ -227,12 +227,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
 
         if ($aRow['patient_name'] != '') {
-            $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+            $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
         } else {
             $patientFname = '';
         }
         if ($aRow['patient_surname'] != '') {
-            $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+            $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
         } else {
             $patientLname = '';
         }
@@ -260,7 +260,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
-        $row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = ($aRow['patient_gender']);
         $row[] = ($aRow['is_patient_pregnant']);
@@ -292,21 +292,21 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $aRow['flight_transit'];
         $row[] = $aRow['reason_of_visit'];
         $row[] = $aRow['number_of_days_sick'];
-        $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
-        $row[] = $general->humanReadableDateFormat($aRow['date_of_initial_consultation']);
-        $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_initial_consultation']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
         $row[] = ($aRow['test_reason_name']);
         $row[] = $subReasonsList;
-        $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-        $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
         $row[] = ($aRow['sample_condition']);
         $row[] = ($aRow['status_name']);
         $row[] = ($aRow['sample_name']);
-        $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
         $row[] = $aRow['covid19_test_platform'];
         $row[] = ($testMethod);
         $row[] = $covid19Results[$aRow['result']];
-        $row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
+        $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 
         $output[] = $row;
         $no++;

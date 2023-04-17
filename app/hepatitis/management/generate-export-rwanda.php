@@ -7,8 +7,8 @@ ob_start();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-$general = new \Vlsm\Models\General();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$hepatitisDb = new \App\Models\Hepatitis();
 
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
@@ -137,12 +137,12 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		}
 
 		if ($aRow['patient_name'] != '') {
-			$patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}
@@ -163,7 +163,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $hepatitisResults[$aRow['result']];
-		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

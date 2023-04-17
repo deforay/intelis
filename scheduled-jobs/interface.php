@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
@@ -9,9 +9,9 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 
 $db  = MysqliDb::getInstance();
 
-$usersModel = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
-$vlDb = new \Vlsm\Models\Vl();
+$usersModel = new \App\Models\Users();
+$general = new \App\Models\General();
+$vlDb = new \App\Models\Vl();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -23,17 +23,10 @@ if (empty($labId)) {
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (!empty(SYSTEM_CONFIG['interfacing']['dbHost']) && !empty(SYSTEM_CONFIG['interfacing']['dbUser'])) {
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
 
     $mysqlConnected = true;
-    $db->addConnection('interface', array(
-        'host' => SYSTEM_CONFIG['interfacing']['dbHost'],
-        'username' => SYSTEM_CONFIG['interfacing']['dbUser'],
-        'password' => SYSTEM_CONFIG['interfacing']['dbPassword'],
-        'db' =>  SYSTEM_CONFIG['interfacing']['dbName'],
-        'port' => (!empty(SYSTEM_CONFIG['interfacing']['dbPort']) ? SYSTEM_CONFIG['interfacing']['dbPort'] : 3306),
-        'charset' => (!empty(SYSTEM_CONFIG['interfacing']['dbCharset']) ? SYSTEM_CONFIG['interfacing']['dbCharset'] : 'utf8mb4')
-    ));
+    $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
@@ -108,7 +101,7 @@ if (count($interfaceInfo) > 0) {
         $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", array($result['machine_used']));
 
         if (empty($instrumentDetails) || $instrumentDetails === false) {
-            $sql="SELECT * FROM instruments
+            $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
             $instrumentDetails = $db->rawQueryOne($sql, array($result['machine_used']));

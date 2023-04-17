@@ -8,8 +8,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 //global config
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 //$formId = $general->getGlobalConfig('vl_form');
 

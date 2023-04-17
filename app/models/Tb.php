@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -23,13 +23,13 @@ class Tb
     public function generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
+        $dateUtils = new \App\Utilities\DateUtils();
+        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -71,7 +71,7 @@ class Tb
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $geoLocations = new \App\Models\GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -179,11 +179,12 @@ class Tb
         return false;
     }
 
+    
 
     public function getTbResults($type = null, $updatedDateTime = null)
     {
         $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
-        if ($type != null) {
+        if (!empty($type)) {
             $query .= " AND result_type = '" . $type . "' ";
         }
         if ($updatedDateTime) {
@@ -253,7 +254,7 @@ class Tb
 
     public function insertSampleCode($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -280,7 +281,7 @@ class Tb
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }

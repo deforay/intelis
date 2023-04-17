@@ -7,7 +7,7 @@ ob_start();
 
 
  
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
@@ -73,7 +73,7 @@ foreach ($headings as $field => $value) {
           $sampleCollectionDate = '';
           if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
                $expStr = explode(" ",$aRow['sample_collection_date']);
-               $sampleCollectionDate =  $general->humanReadableDateFormat($expStr[0]);
+               $sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
           }
 
           if($aRow['remote_sample']=='yes'){
@@ -83,7 +83,7 @@ foreach ($headings as $field => $value) {
                $decrypt = 'sample_code';
           }
 
-          $patientFname = ($general->crypto('decrypt',$aRow['patient_name'],$aRow[$decrypt]));
+          $patientFname = ($general->crypto('doNothing',$aRow['patient_name'],$aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
           if($sarr['sc_user_type']!='standalone'){

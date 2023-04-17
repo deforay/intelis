@@ -1,7 +1,6 @@
 <?php
 
-
-namespace Vlsm\Interop;
+namespace App\Interop;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;

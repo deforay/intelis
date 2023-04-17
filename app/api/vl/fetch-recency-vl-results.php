@@ -10,8 +10,8 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
-$userDb = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$userDb = new \App\Models\Users();
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];

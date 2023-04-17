@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsFemaleQuery']) != "") {
     $filename = '';

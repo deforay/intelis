@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -23,13 +23,12 @@ class Covid19
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
+        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -71,7 +70,7 @@ class Covid19
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $geoLocations = new \App\Models\GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -406,8 +405,8 @@ class Covid19
 
     public function insertSampleCode($params)
     {
-        $general = new \Vlsm\Models\General();
-        $patientsModel = new \Vlsm\Models\Patients();
+        $general = new \App\Models\General();
+        $patientsModel = new \App\Models\Patients();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -434,7 +433,7 @@ class Covid19
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }

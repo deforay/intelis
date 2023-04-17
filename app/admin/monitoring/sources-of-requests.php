@@ -2,8 +2,8 @@
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 $labNameList = $facilityDb->getTestingLabs();
 
 $sources = array(
@@ -14,7 +14,7 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 ?>
 <style>

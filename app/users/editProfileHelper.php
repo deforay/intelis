@@ -1,6 +1,6 @@
 <?php
 
-use Vlsm\Models\General;
+use App\Models\General;
 
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$userModel = new \Vlsm\Models\Users();
+$userModel = new \App\Models\Users();
 $tableName = "user_details";
 $upId = 0;
 

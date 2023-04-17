@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $db = MysqliDb::getInstance();
 $loginId = (trim($_POST['loginId']));
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $ipAddress = $general->getIpAddress();
 $data = 0;
 $ipdata = 0;

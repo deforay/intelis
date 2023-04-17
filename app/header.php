@@ -9,16 +9,20 @@ if (!isset($_SESSION['userId'])) {
 	}
 }
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$facilitiesModel = new \Vlsm\Models\Facilities();
+error_reporting(E_ALL ^ E_NOTICE);  
 
-$_SESSION['module'] = $_SESSION['module'] ?: array();
+
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$facilitiesModel = new \App\Models\Facilities();
+
+$_SESSION['module'] = $_SESSION['module'] ?? array();
 
 $syncLatestTime = $general->getLastSyncDateTime();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+
 
 $skin = "skin-blue";
 
@@ -151,7 +155,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
+<html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
 
 <head>
 	<meta charset="utf-8" />

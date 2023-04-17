@@ -1,7 +1,7 @@
 <?php
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $artNo = $_POST['artPatientNo'];
 //global config
 $cQuery = "SELECT * FROM global_config";

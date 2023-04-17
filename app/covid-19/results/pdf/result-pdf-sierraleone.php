@@ -78,8 +78,8 @@ class SouthSudan_PDF extends MYPDF
 
 
 
-$dateUtils = new \Vlsm\Utilities\DateUtils();
-$covid19Obj = new \Vlsm\Models\Covid19();
+$dateUtils = new \App\Utilities\DateUtils();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');
@@ -102,13 +102,13 @@ if (sizeof($requestResult) > 0) {
         $facilityQuery = "SELECT * from form_covid19 as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where covid19_id= " . $result['covid19_id'] . " GROUP BY fd.facility_id LIMIT 1";
         $facilityInfo = $db->rawQueryOne($facilityQuery);
         // echo "<pre>";print_r($covid19TestInfo);die;
-        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 
-        $currentTime = $general->getCurrentDateTime();
+        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -193,7 +193,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]);
+            $result['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -203,18 +203,18 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-            $sampleReceivedDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $sampleDispatchDate = '';
         $sampleDispatchTime = '';
         if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_printed_datetime']);
-            $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }
 
@@ -233,7 +233,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }

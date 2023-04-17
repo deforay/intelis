@@ -6,7 +6,7 @@
  * @author Thana
  */
 
-namespace Vlsm\Utilities;
+namespace App\Utilities;
 
 use Exception;
 

@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_hepatitis_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 
@@ -16,7 +16,7 @@ try {
             'rejection_type' 			=> $_POST['rejectionType'],
             'rejection_reason_status'	=> $_POST['rejectionReasonStatus'],
             'rejection_reason_code' 	=> $_POST['rejectionReasonCode'],
-			'updated_datetime' 			=> $general->getCurrentDateTime()
+			'updated_datetime' 			=> \App\Utilities\DateUtils::getCurrentDateTime()
 		);
 
 		if(isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != ""){

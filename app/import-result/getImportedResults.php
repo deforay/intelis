@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -19,12 +19,12 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = new \Vlsm\Models\Eid();
+    $eidObj = new \App\Models\Eid();
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    $covid19Obj = new \Vlsm\Models\Covid19();
+    $covid19Obj = new \App\Models\Covid19();
     $covid19Results = $covid19Obj->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";
@@ -251,13 +251,13 @@ foreach ($rResult as $aRow) {
     }
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-        $aRow['sample_tested_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['sample_tested_datetime'] = '';
     }
@@ -307,7 +307,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['facility_name'];
     $row[] = '<input style="width:90%;" type="text" name="batchCode" id="batchCode' . $aRow['temp_sample_id'] . '" value="' . $aRow['batch_code'] . '" onchange="updateBatchCode(this,' . $batchCode . ',' . $aRow['temp_sample_id'] . ');"/>';
     $row[] = $aRow['lot_number'];
-    $row[] = $general->humanReadableDateFormat($aRow['lot_expiration_date']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lot_expiration_date']);
     $row[] = '<span id="rejectReasonName' . $aRow['temp_sample_id'] . '"><input type="hidden" id="rejectedReasonId' . $aRow['temp_sample_id'] . '" name="rejectedReasonId[]"/>'
         . $aRow['rejection_reason_name'] .
         '</span>';

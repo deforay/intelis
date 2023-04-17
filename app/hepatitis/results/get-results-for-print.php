@@ -19,8 +19,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$hepatitisDb = new \App\Models\Hepatitis();
 
 //$hepatitisResults = $hepatitisDb->getHepatitisResults();
 
@@ -36,8 +36,12 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code',
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name',  'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+        unset($aColumns[$key]);
+    }
+    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+        unset($orderColumns[$key]);
+    }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -102,7 +106,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -139,10 +143,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -150,22 +154,22 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = $general->isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+    $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-    $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+    $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
@@ -279,26 +283,26 @@ foreach ($rResult as $aRow) {
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['hepatitis_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
     }
 
-    $patientFname = $general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']);
-    $patientLname = $general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']);
+    $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
+    $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);
 
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-   // $row[] = $aRow['batch_code'];
+    // $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = ($patientFname . " " . $patientLname);
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['labName']);
     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['facility_district']);
     $row[] = $aRow['hcv_vl_count'];
     $row[] = $aRow['hbv_vl_count'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['last_modified_datetime'] = '';
     }

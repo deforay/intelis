@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 $tableName="form_covid19";
 $primaryKey="covid19_id";
 //config  query
@@ -118,10 +118,10 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $s_c_date = explode("to", $_POST['noResultSampleTestDate']);
         //print_r($s_c_date);die;
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+            $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+            $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
         }
 	    if (trim($start_date) == trim($end_date)) {
 			$sWhere[] = '  DATE(vl.sample_collection_date) = "'.$start_date.'"';
@@ -207,7 +207,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         foreach ($rResult as $aRow) {
             if(isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date'])!= '' && $aRow['sample_collection_date']!= '0000-00-00 00:00:00'){
                 $xplodDate = explode(" ",$aRow['sample_collection_date']);
-                $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+                $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
             }else{
                 $aRow['sample_collection_date'] = '';
             }
@@ -217,9 +217,9 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             }else{
                 $decrypt = 'sample_code';
             }
-            /*$patientFname = $general->crypto('decrypt',$aRow['patient_first_name'],$aRow[$decrypt]);
-            $patientMname = $general->crypto('decrypt',$aRow['patient_middle_name'],$aRow[$decrypt]);
-            $patientLname = $general->crypto('decrypt',$aRow['patient_surname'],$aRow[$decrypt]);*/
+            /*$patientFname = $general->crypto('doNothing',$aRow['patient_first_name'],$aRow[$decrypt]);
+            $patientMname = $general->crypto('doNothing',$aRow['patient_middle_name'],$aRow[$decrypt]);
+            $patientLname = $general->crypto('doNothing',$aRow['patient_surname'],$aRow[$decrypt]);*/
             $row = array();
 
             $row[] = $aRow['sample_code'];

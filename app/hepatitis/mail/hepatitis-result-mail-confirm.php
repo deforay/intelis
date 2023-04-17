@@ -4,7 +4,7 @@ ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_hepatitis";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";
@@ -216,11 +216,11 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $xplodDate = explode(" ", $fValueResult[0][$field]);
-                        $fieldValue = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+                        $fieldValue = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
                      }
                   } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
-                        $fieldValue = $general->humanReadableDateFormat($fValueResult[0][$field]);
+                        $fieldValue = \App\Utilities\DateUtils::humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
                      $fieldValue = (str_replace("_", " ", $fValueResult[0][$field]));

@@ -6,10 +6,9 @@
  * @author Amit
  */
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 use Ramsey\Uuid\Uuid;
-use Vlsm\Utilities\DateUtils;
 use ZipArchive;
 
 class General
@@ -19,39 +18,7 @@ class General
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
-    }
-
-    public function setDb($db)
-    {
-        $this->db = $db;
-    }
-
-    public function getActiveTestModules(): array
-    {
-        $response = array();
-
-        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-            $response[] = 'vl';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-            $response[] = 'eid';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-            $response[] = 'covid19';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-            $response[] = 'hepatitis';
-        }
-
-        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-            $response[] = 'tb';
-        }
-
-        return $response;
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public static function generateRandomString($length = 32)
@@ -78,18 +45,6 @@ class General
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true)
     {
-        // $uuid = sprintf(
-        //     '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0xffff),
-        //     random_int(0, 0x0C2f) | 0x4000,
-        //     random_int(0, 0x3fff) | 0x8000,
-        //     random_int(0, 0x2Aff),
-        //     random_int(0, 0xffD3),
-        //     random_int(0, 0xff4B)
-        // );
-
         $uuid = Uuid::uuid4();
         $uuid = $uuid->toString();
 
@@ -103,28 +58,6 @@ class General
     public function generateToken($length = 16)
     {
         return bin2hex(random_bytes($length));
-    }
-
-    /**
-     * Used to format date from dd-mmm-yyyy to yyyy-mm-dd for storing in database
-     *
-     */
-    public function isoDateFormat($date, $includeTime = false)
-    {
-        $utils = new DateUtils();
-        return $utils->isoDateFormat($date, $includeTime);
-    }
-
-    public function humanReadableDateFormat($date, $includeTime = false)
-    {
-        $utils = new DateUtils();
-        return $utils->humanReadableDateFormat($date, $includeTime);
-    }
-
-    public static function getCurrentDateTime($returnFormat = 'Y-m-d H:i:s')
-    {
-        $utils = new DateUtils();
-        return $utils->getCurrentDateTime($returnFormat);
     }
 
     public function removeDirectory($dirname)
@@ -289,35 +222,15 @@ class General
         return $plain;
     }
 
-    public function crypto($action, $inputString, $secretIv)
+    public function crypto($action, $inputString, $key)
     {
-
-        return $inputString;
-
-        if (empty($inputString)) {
-            return "";
+        if (empty($inputString) || $action === 'doNothing') {
+            return $inputString;
+        } elseif ($action === 'encrypt') {
+            return self::encrypt($inputString, $key);
+        } elseif ($action === 'decrypt') {
+            return self::decrypt($inputString, $key);
         }
-
-        $output = false;
-        $encrypt_method = "AES-256-CBC";
-        $secret_key = 'rXBCNkAzkHXGBKEReqrTfPhGDqhzxgDRQ7Q0XqN6BVvuJjh1OBVvuHXGBKEReqrTfPhGDqhzxgDJjh1OB4QcIGAGaml';
-
-        // hash
-        $key = hash('sha256', $secret_key);
-
-        if (empty($secretIv)) {
-            $secretIv = 'sd893urijsdf8w9eurj';
-        }
-        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-        $iv = substr(hash('sha256', $secretIv), 0, 16);
-
-        if ($action == 'encrypt') {
-            $output = openssl_encrypt($inputString, $encrypt_method, $key, 0, $iv);
-            $output = base64_encode($output);
-        } else if ($action == 'decrypt') {
-            $output = openssl_decrypt(base64_decode($inputString), $encrypt_method, $key, 0, $iv);
-        }
-        return $output;
     }
 
     public function activityLog($eventType, $action, $resource)
@@ -330,7 +243,7 @@ class General
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => $this->getCurrentDateTime(),
+            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -342,7 +255,7 @@ class General
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => $this->getCurrentDateTime(),
+            'imported_on' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -367,16 +280,6 @@ class General
         }
 
         return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
-    }
-
-    public function getTbResults()
-    {
-        $results = $this->db->rawQuery("SELECT * FROM r_tb_results where status='active' ORDER BY result_id DESC");
-        $response = array();
-        foreach ($results as $row) {
-            $response[$row['result_id']] = $row['result'];
-        }
-        return $response;
     }
 
     public function startsWith($string, $startString)
@@ -456,16 +359,6 @@ class General
         return $this->db->rawQueryOne($query);
     }
 
-    public function random_color_part()
-    {
-        return str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
-    }
-
-    public function random_color()
-    {
-        return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
-    }
-
     public function getRejectionReasons($testType)
     {
         $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
@@ -510,7 +403,7 @@ class General
 
     public function getLocaleLists()
     {
-        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locale';
+        $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
         $localeLists = scandir($path);
         foreach (array(".", "..", ".DS_Store") as $delVal) {
             if (($key = array_search($delVal, $localeLists)) !== false) {
@@ -618,7 +511,7 @@ class General
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => $this->getCurrentDateTime(),
+            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -865,7 +758,7 @@ class General
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
-                'requested_on'      => $this->getCurrentDateTime(),
+                'requested_on'      => \App\Utilities\DateUtils::getCurrentDateTime(),
                 'number_of_records' => $numberOfRecords ?: 0,
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,

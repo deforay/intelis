@@ -1,8 +1,8 @@
 <?php
 
-require_once(__DIR__ . '/../startup.php');
+require_once(__DIR__ . '/../bootstrap.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
 $timeZone = $_SESSION['APP_TIMEZONE'];

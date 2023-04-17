@@ -2,7 +2,7 @@
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName1 = "batch_details";
 $tableName2 = "form_vl";

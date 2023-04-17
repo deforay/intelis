@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
    session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_hepatitis";
 $configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);
@@ -101,7 +101,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
             $sampleQuery = "SELECT hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = '" . $_POST['sample'][$s] . "'";
             $sampleResult = $db->rawQuery($sampleQuery);
             $db = $db->where('hepatitis_id', $sampleResult[0]['hepatitis_id']);
-            $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => $general->getCurrentDateTime()));
+            $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()));
          }
          //put file in sync path
          if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {

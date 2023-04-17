@@ -7,7 +7,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($formConfigQuery);
 $arr = array();

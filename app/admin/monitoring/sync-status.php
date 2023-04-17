@@ -2,13 +2,13 @@
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 $labNameList = $facilityDb->getTestingLabs();
 
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$geoLocationDb = new \App\Models\GeoLocations();
 $stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 ?>
 <style>

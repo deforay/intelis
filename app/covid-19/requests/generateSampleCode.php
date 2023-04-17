@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$c19Model = new \Vlsm\Models\Covid19();
+$c19Model = new \App\Models\Covid19();
 
 $sampleCollectionDate = $province = '';
 

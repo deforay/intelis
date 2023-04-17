@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General();
-$patientsModel = new \Vlsm\Models\Patients();
+$general = new \App\Models\General();
+$patientsModel = new \App\Models\Patients();
 
 $prefix  = $_POST['patientCodePrefix'];
 

@@ -11,9 +11,9 @@ try {
 } catch (Exception $e) {
 }
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 

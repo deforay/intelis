@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";
@@ -20,7 +20,7 @@ try {
 			'parent_art'        => (isset($_POST['parentArtCode']) && $_POST['parentArtCode'] != "")?$_POST['parentArtCode']:0,
 			'headings'          => $_POST['category'],
 			'art_status'        => $_POST['artStatus'],
-			'updated_datetime'  => $general->getCurrentDateTime()
+			'updated_datetime'  => \App\Utilities\DateUtils::getCurrentDateTime()
 		);
 		if(isset($_POST['artCodeId']) && $_POST['artCodeId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['artCodeId']));

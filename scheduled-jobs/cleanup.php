@@ -1,13 +1,13 @@
 <?php
 
-require_once(__DIR__ . "/../startup.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 $cleanup = array(
     APPLICATION_PATH . DIRECTORY_SEPARATOR .  'backups',
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 );
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $durationToDelete = 180 * 86400; // 180 days
 

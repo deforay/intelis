@@ -1,7 +1,7 @@
 <?php
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
 
 $facilityInfo = $facilityDb->getAllFacilities();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -83,10 +83,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 if ($table == "form_eid") {

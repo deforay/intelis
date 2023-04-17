@@ -99,7 +99,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 				$name = ($usrResult[0]['user_name']);
 			}
 			$expStr = explode(" ", $change['dtime']);
-			$changedDate = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+			$changedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
 		$rch .= '</tbody>';
@@ -530,7 +530,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -568,7 +568,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -606,7 +606,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -751,7 +751,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4 rejectionReason" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date </label>
 													<div class="col-lg-7">
-														<input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
+														<input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
 												<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
@@ -844,9 +844,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 													</div>
 												</div>
 											</div>
@@ -1341,7 +1341,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
 			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
@@ -1357,7 +1357,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields").attr("disabled", false);
@@ -1374,7 +1374,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').removeClass('isRequired');
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
-			$('#approvedOnDateTime').removeClass('isRequired');
+			$('#approvedOn').removeClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		}
 	});

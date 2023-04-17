@@ -6,26 +6,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$tbResults = $general->getTbResults();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-/*
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          LEFT JOIN r_tb_results as rtbr ON rtbr.result_id=vl.result 
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (isset($_SESSION['tbRequestData']['sWhere']) && !empty($_SESSION['tbRequestData']['sWhere'])) {
-    $sQuery = $sQuery . ' WHERE ' . $_SESSION['tbRequestData']['sWhere'];
-}
-if (isset($_SESSION['tbRequestData']['sOrder']) && !empty($_SESSION['tbRequestData']['sOrder'])) {
-    $sQuery = $sQuery . " ORDER BY " . $_SESSION['tbRequestData']['sOrder'];
-}*/
-// die($sQuery);
 $sQuery = $_SESSION['tbRequestSearchResultQuery'];
 
 $rResult = $db->rawQuery($sQuery);
@@ -33,17 +21,17 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
-    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        $headings = array("S. No.", "Sample Code", "Remote Sample Code","Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-    } else {
-        $headings = array("S. No.", "Sample Code","Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-    }
+if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+    $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+} else {
+    $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+}
 
-    if ($_SESSION['instanceType'] == 'standalone') {
-        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+if ($_SESSION['instanceType'] == 'standalone') {
+    if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        unset($headings[$key]);
     }
+}
 $colNo = 1;
 
 $styleArray = array(
@@ -153,12 +141,12 @@ foreach ($rResult as $aRow) {
     }
 
     if ($aRow['patient_name'] != '') {
-        $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
+        $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
     } else {
         $patientFname = '';
     }
     if ($aRow['patient_surname'] != '') {
-        $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+        $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
     } else {
         $patientLname = '';
     }
@@ -187,20 +175,20 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
     }
-    $row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
     $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ($aRow['patient_gender']);
-    $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     $row[] = ($aRow['test_reason_name']);
-    $row[] = $general->humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-    $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = ($aRow['status_name']);
     $row[] = ($aRow['sample_name']);
-    $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     $row[] = ($testPlatform);
     $row[] = ($testMethod);
     $row[] = $tbResults[$aRow['result']];
-    $row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 
     $output[] = $row;
     $no++;

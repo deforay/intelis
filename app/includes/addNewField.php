@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;
@@ -16,7 +16,7 @@ if ($value != '') {
     if(count($rejInfo)==0){
         $data = array(
 			'rejection_type' => $value,
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

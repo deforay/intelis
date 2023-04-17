@@ -1,6 +1,6 @@
 <?php
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $sampleData = array();
 $symptomsQuery = 'SELECT * FROM r_covid19_symptoms where parent_symptom = "' . $_POST['symptomParent'] . '"';
 $covid19Symptoms = $db->query($symptomsQuery);

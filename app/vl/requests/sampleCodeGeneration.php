@@ -3,7 +3,7 @@ ob_start();
 
 
 
-$vLModel = new \Vlsm\Models\Vl();
+$vLModel = new \App\Models\Vl();
 
 $sampleCollectionDate = $province = '';
 

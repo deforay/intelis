@@ -87,7 +87,7 @@ $sFormat = '';
                </div>
                <div class="box-body">
                     <!-- form start -->
-                    <form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="addVlRequestHelperRwd.php">
+                    <form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="addVlRequestHelper.php">
                          <div class="box-body">
                               <div class="box box-primary">
                                    <div class="box-header with-border">
@@ -511,14 +511,14 @@ $sFormat = '';
                                                        </div>
                                                        <div class="box-body">
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <!--<div class="col-md-4">
                                                                       <label for="labId" class="col-lg-5 control-label">Lab Name </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="labId" id="labId" class="form-control" title="Please choose lab">
                                                                                 <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                                            </select>
                                                                       </div>
-                                                                 </div>
+                                                                 </div>-->
                                                                  <div class="col-md-4">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
@@ -530,8 +530,6 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
@@ -544,25 +542,26 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
                                                                       <div class="col-lg-7">
-                                                                           <label class="radio-inline">
-                                                                                <input class="" id="noResultYes" name="noResult" value="yes" title="Please check one" type="radio" <?php echo $labFieldDisabled; ?>> Yes
-                                                                           </label>
-                                                                           <label class="radio-inline">
-                                                                                <input class="" id="noResultNo" name="noResult" value="no" title="Please check one" type="radio" <?php echo $labFieldDisabled; ?>> No
-                                                                           </label>
+                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="yes">Yes</option>
+                                                                                <option value="no">No</option>
+                                                                           </select>
                                                                       </div>
                                                                  </div>
+                                                                   
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
@@ -599,14 +598,16 @@ $sFormat = '';
                                                                            <input type="checkbox" class="specialResults" name="invalid" value="yes" title="Please check invalid" <?php echo $labFieldDisabled; ?>> Invalid-->
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                               
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
+
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
                                                                       <div class="col-lg-7">
@@ -621,33 +622,33 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                           
+                                                            </div>
+                                                            <div class="row">
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="approvedOn">Approved On </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                       </div>
-                                                       <div class="row">
-                                                            <div class="col-md-4">
-                                                                 <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
-                                                                 <div class="col-lg-7">
-                                                                      <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
-                                                                           <option value="">-- Select --</option>
-                                                                           <?php foreach ($userResult as $uName) { ?>
+                                                                 <div class="col-md-4">
+                                                                      <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($userResult as $uName) { ?>
                                                                                 <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                                                                           <?php } ?>
-                                                                      </select>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-4">
+                                                                      <label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
+                                                                      <div class="col-lg-7">
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>></textarea>
+                                                                      </div>
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-8">
-                                                                 <label class="col-lg-2 control-label" for="labComments">Lab Tech. Comments </label>
-                                                                 <div class="col-lg-10">
-                                                                      <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?> style="width: 94% !important;margin-left: 23px;"></textarea>
-                                                                 </div>
-                                                            </div>
-                                                       </div>
                                                   </div>
                                         </div>
                                    <?php } ?>

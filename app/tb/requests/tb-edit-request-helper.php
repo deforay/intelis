@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \Vlsm\Models\General();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $tableName = "form_tb";
 $tableName1 = "activity_log";
@@ -32,7 +32,7 @@ try {
     }
     if (!empty($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        $_POST['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = null;
     }
@@ -40,44 +40,44 @@ try {
     //Set sample received date
     if (!empty($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
     if (!empty($_POST['resultDispatchedDatetime']) && trim($_POST['resultDispatchedDatetime']) != "") {
         $resultDispatchedDatetime = explode(" ", $_POST['resultDispatchedDatetime']);
-        $_POST['resultDispatchedDatetime'] = $general->isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
+        $_POST['resultDispatchedDatetime'] = \App\Utilities\DateUtils::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = null;
     }
     if (!empty($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-        $_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $_POST['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = null;
     }
     if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
         $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-        $_POST['sampleDispatchedDate'] = $general->isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+        $_POST['sampleDispatchedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
     } else {
         $_POST['sampleDispatchedDate'] = null;
     }
     if (isset($_POST['resultDate']) && trim($_POST['resultDate']) != "") {
         $resultDate = explode(" ", $_POST['resultDate']);
-        $_POST['resultDate'] = $general->isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+        $_POST['resultDate'] = \App\Utilities\DateUtils::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['resultDate'] = null;
     }
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-        $_POST['arrivalDateTime'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['arrivalDateTime'] = \App\Utilities\DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = null;
     }
 
     if (!empty($_POST['requestedDate']) && trim($_POST['requestedDate']) != "") {
         $arrivalDate = explode(" ", $_POST['requestedDate']);
-        $_POST['requestedDate'] = $general->isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['requestedDate'] = \App\Utilities\DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['requestedDate'] = null;
     }
@@ -107,11 +107,11 @@ try {
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
-        $_POST['patientDob'] = $general->isoDateFormat($_POST['patientDob']);
+        $_POST['patientDob'] = \App\Utilities\DateUtils::isoDateFormat($_POST['patientDob']);
     }
 
     if (!empty($_POST['firstSputumSamplesCollectionDate'])) {
-        $_POST['firstSputumSamplesCollectionDate'] = $general->isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
+        $_POST['firstSputumSamplesCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
     }
 
     if (!empty($_POST['result'])) {
@@ -120,14 +120,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = \App\Utilities\DateUtils::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = null;
     }
@@ -181,7 +181,7 @@ try {
         'other_patient_type'                  => (isset($_POST['typeOfPatientOther']) && $_POST['typeOfPatientOther'] != "") ? $_POST['typeOfPatientOther'] : null,
         'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
         'result_date'                         => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
-        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
         'result_status'                       => $status,
         'data_sync'                           => 0,
         'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -206,7 +206,7 @@ try {
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
                         'test_result'       => $testResult,
-                        'updated_datetime'  => $general->getCurrentDateTime()
+                        'updated_datetime'  => \App\Utilities\DateUtils::getCurrentDateTime()
                     ));
                 }
             }

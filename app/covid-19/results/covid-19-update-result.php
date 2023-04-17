@@ -6,8 +6,8 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
@@ -57,7 +57,7 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 $disable = "disabled = 'disabled'";
 if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
-	$vlQueryInfo['result_reviewed_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_reviewed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['result_reviewed_datetime'] = '';
 }

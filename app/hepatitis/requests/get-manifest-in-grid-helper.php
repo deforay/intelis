@@ -18,8 +18,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
-$hepatitisObj = new \Vlsm\Models\Hepatitis();
+$general = new \App\Models\General();
+$hepatitisObj = new \App\Models\Hepatitis();
 $hepatitisResults = $hepatitisObj->getHepatitisResults();
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -33,8 +33,12 @@ $orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district',  'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 
 
@@ -178,19 +182,19 @@ foreach ($rResult as $aRow) {
 
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['sample_collection_date']);
-          $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+          $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
      } else {
           $aRow['sample_collection_date'] = '';
      }
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

@@ -3,11 +3,11 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $sarr = $general->getSystemConfig();
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 $tableName = "form_eid";
@@ -127,10 +127,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -138,10 +138,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = $general->isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
@@ -280,7 +280,7 @@ foreach ($rResult as $aRow) {
         $decrypt = 'sample_code';
     }
 
-    // $patientFname = ($general->crypto('decrypt', $aRow['child_name'], $aRow[$decrypt]));
+    // $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {
@@ -296,11 +296,11 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);
-    $row[] = $eidResults[$aRow['result']];
+    $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['last_modified_datetime'] = '';
     }

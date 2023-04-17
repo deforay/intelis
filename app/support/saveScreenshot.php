@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $tableName = "support";
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 try {
 	// File upload folder 

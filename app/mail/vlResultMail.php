@@ -4,8 +4,8 @@ $title = _("Email VL Test Results");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

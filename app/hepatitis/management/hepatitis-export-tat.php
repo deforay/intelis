@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.remote_sample_code, vl.sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
@@ -71,25 +71,25 @@ foreach ($rResult as $aRow) {
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_received_at_vl_lab_datetime']);
-		$sampleRecievedDate = $general->humanReadableDateFormat($xplodDate[0]);
+		$sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['sample_tested_datetime']);
-		$testDate = $general->humanReadableDateFormat($xplodDate[0]);
+		$testDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_printed_datetime']);
-		$printDate = $general->humanReadableDateFormat($xplodDate[0]);
+		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$printDate = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
 		$xplodDate = explode(" ", $aRow['result_mail_datetime']);
-		$mailDate = $general->humanReadableDateFormat($xplodDate[0]);
+		$mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
 	} else {
 		$mailDate = '';
 	}

@@ -228,9 +228,9 @@ class HTMLPurifier_ConfigSchema_Validator
     protected function error($target, $msg)
     {
         if ($target !== false) {
-            $prefix = ($target) . ' in ' . $this->getFormattedContext();
+            $prefix = ucfirst($target) . ' in ' . $this->getFormattedContext();
         } else {
-            $prefix = ($this->getFormattedContext());
+            $prefix = ucfirst($this->getFormattedContext());
         }
         throw new HTMLPurifier_ConfigSchema_Exception(trim($prefix . ' ' . $msg));
     }

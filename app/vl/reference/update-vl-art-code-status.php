@@ -3,7 +3,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_vl_art_regimen";
 try {
     $id = explode(",", $_POST['id']);

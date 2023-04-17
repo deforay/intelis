@@ -2,7 +2,7 @@
 
 // echo "<pre>";print_r($_POST['covid19Id']);die;
 try {
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
@@ -46,7 +46,7 @@ try {
                     'facility_id'           => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
                     'result'                => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
                     'result_status'         => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
-                    'updated_datetime'      => $general->getCurrentDateTime(),
+                    'updated_datetime'      => \App\Utilities\DateUtils::getCurrentDateTime(),
                     'update_by'             => $_SESSION['userId']
                 ));
             }

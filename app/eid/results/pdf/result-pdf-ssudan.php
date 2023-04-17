@@ -1,7 +1,7 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
@@ -17,7 +17,7 @@ if (sizeof($requestResult) > 0) {
     $pages = array();
     $page = 1;
     foreach ($requestResult as $result) {
-        $currentTime = $general->getCurrentDateTime();
+        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -251,7 +251,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">CHILD ID</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $patientFname = ($general->crypto('decrypt', $result['child_name'], $result['child_id']));
+        $patientFname = ($general->crypto('doNothing', $result['child_name'], $result['child_id']));
 
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['labName']) . '</td>';
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';

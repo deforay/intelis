@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
 //print_r($_POST); die;
@@ -21,7 +21,7 @@ try {
         $db->where('test_type', $testType);
        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
-        $currentDateTime = $general->getCurrentDateTime();
+        $currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $data = array();
         foreach ($mappedFacility as $facility) {
             $data[] = array(

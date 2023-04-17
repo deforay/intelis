@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_funding_sources";
 $primaryKey = "funding_source_id";
@@ -17,7 +17,7 @@ try {
 		$data = array(
 			'funding_source_name' 	=> $_POST['fundingSrcName'],
 			'funding_source_status' => $_POST['fundingStatus'],
-			'updated_datetime'		=> $general->getCurrentDateTime()
+			'updated_datetime'		=> \App\Utilities\DateUtils::getCurrentDateTime()
 		);
 		if(isset($_POST['fundingId']) && $_POST['fundingId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['fundingId']));

@@ -15,7 +15,7 @@ if (sizeof($requestResult) > 0) {
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = $general->getCurrentDateTime();
+          $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
@@ -308,7 +308,7 @@ if (sizeof($requestResult) > 0) {
           $html .= '</tr>';
           $html .= '<tr>';
 
-          $patientFname = ($general->crypto('decrypt', $result['patient_first_name'], $result['patient_art_no']));
+          $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
 
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $id = base64_decode($_GET['id']);
 
 $showPatientName = false;
@@ -77,11 +77,11 @@ if ($id > 0) {
     $createdBy = '';
     if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != null && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
-        $resulted = $general->humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $resulted = \App\Utilities\DateUtils::humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     }
     if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != null && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
-        $reviewed = $general->humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
+        $reviewed = \App\Utilities\DateUtils::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
    
     if (count($bResult) > 0) {
@@ -266,7 +266,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= $general->humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -323,7 +323,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= $general->humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -440,7 +440,7 @@ if ($id > 0) {
                     if (trim($sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }
-                    $lotExpirationDate .= $general->humanReadableDateFormat($sample['lot_expiration_date']);
+                    $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sample['lot_expiration_date']);
                 }
                 $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 

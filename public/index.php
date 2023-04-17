@@ -1,8 +1,8 @@
 <?php
 
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'startup.php');
+require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
-// Allow from any origin
+// CORS
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
@@ -10,13 +10,17 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 }
 // Access-Control headers are received during OPTIONS requests
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+    }
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
     exit(0);
 }
 
+
+// ROUTING
 $_SERVER['REQUEST_URI'] = preg_replace('/([\/.])\1+/', '$1', $_SERVER['REQUEST_URI']);
 $requestedPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/");
 
@@ -28,7 +32,7 @@ switch ($requestedPath) {
     default:
         if (is_dir(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
             require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath . '/index.php');
-        } else if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
+        } elseif (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
             require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath);
         } else {
             http_response_code(404);

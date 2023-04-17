@@ -2,9 +2,9 @@
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$app = new \App\Models\App();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $transactionId = $general->generateUUID();
@@ -56,7 +56,7 @@ try {
                 }
             }
 
-            if ($userResult['status'] != 'active' || $passwordCheck == false) {
+            if ($userResult['status'] != 'active' || $passwordCheck === false) {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
@@ -72,7 +72,7 @@ try {
                 //$randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
 
                 // $userData['api_token'] = $randomString;
-                // $userData['api_token_generated_datetime'] = $general->getCurrentDateTime();
+                // $userData['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
                 // $db = $db->where('user_id', $userResult['user_id']);
                 // $upId = $db->update('user_details', $userData);
 
@@ -84,7 +84,7 @@ try {
                     unset($userResult['password']);
                     unset($userResult['hash_algorithm']);
                     unset($userResult['app_access']);
-                    
+
                     $data['user'] = $userResult;
                     $data['form'] = $general->getGlobalConfig('vl_form');
                     $data['api_token'] = $tokenData['token'];

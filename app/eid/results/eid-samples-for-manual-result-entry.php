@@ -3,11 +3,11 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $sarr = $general->getSystemConfig();
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 $tableName = "form_eid";
@@ -22,8 +22,12 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code',
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.eid_id");
@@ -94,7 +98,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -126,56 +130,56 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $sWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     $sWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (trim($start_date) == trim($end_date)) {
+          $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+     } else {
+          $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (trim($start_date) == trim($end_date)) {
-               $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
-     }
+}
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $sWhere[] = '  f.facility_id IN (' . $_POST['facilityName'] . ')';
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $sWhere[] = '  f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+     $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+}
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     if ($_POST['status'] == 'no_result') {
+          $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != 4';
+     } else if ($_POST['status'] == 'result') {
+          $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" AND vl.result_status != 4)';
+     } else {
+          $statusCondition = ' vl.result_status=4';
      }
-     if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-          $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
-     }
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != 4';
-          } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" AND vl.result_status != 4)';
-          } else {
-               $statusCondition = ' vl.result_status=4';
-          }
-          $sWhere[] = $statusCondition;
-     }
+     $sWhere[] = $statusCondition;
+}
 
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          $sWhere[] =  '  vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-     }
-  
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere[] =  '  vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
+
 // Only approved results can be printed
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      if (!isset($_POST['status']) || trim($_POST['status']) == '') {
-               $sWhere[] =  " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
+          $sWhere[] =  " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
      }
 } else {
-   
-          $sWhere[] = " vl.result_status!=9";
+
+     $sWhere[] = " vl.result_status!=9";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -187,13 +191,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      }
 }
 
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' where '. implode(' AND ',$sWhere);
-}
-else
-{
-    $sWhere = "";
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
+     $sWhere = "";
 }
 
 $sQuery = $sQuery . $sWhere;
@@ -251,7 +252,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

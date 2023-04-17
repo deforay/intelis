@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_vl_test_reasons";
 $primaryKey = "test_reason_id";
 try {
@@ -13,7 +13,7 @@ try {
 			'test_reason_name' 		=> $_POST['testReasonName'],
 			'parent_reason' 		=> (isset($_POST['parentReason']) && $_POST['parentReason'] != "")?$_POST['parentReason']:0,
 			'test_reason_status'    => $_POST['testReasonStatus'],
-			'updated_datetime'  	=> $general->getCurrentDateTime(),
+			'updated_datetime'  	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['testReasonId']) && $_POST['testReasonId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['testReasonId']));

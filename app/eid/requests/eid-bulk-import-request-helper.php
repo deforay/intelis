@@ -7,8 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 $arr = array();
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
 
 $tableName = "form_eid";
 // echo "<pre>";print_r($_FILES);die;
@@ -26,7 +26,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = \Vlsm\Models\General::generateRandomString(12);
+    $ranNumber = \App\Models\General::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
@@ -141,10 +141,10 @@ try {
                     'specimen_type'                                     => isset($sampleType['sample_id']) ? $sampleType['sample_id'] : null,
                     'data_sync'                                         => 0,
                     'request_created_by'                                => $_SESSION['userId'],
-                    'request_created_datetime'                          => $general->getCurrentDateTime(),
-                    'sample_registered_at_lab'                          => $general->getCurrentDateTime(),
+                    'request_created_datetime'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'sample_registered_at_lab'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
                     'last_modified_by'                                  => $_SESSION['userId'],
-                    'last_modified_datetime'                            => $general->getCurrentDateTime()
+                    'last_modified_datetime'                            => \App\Utilities\DateUtils::getCurrentDateTime()
                 );
 
                 // echo "<pre>";print_r($sampleCode);die;

@@ -20,9 +20,9 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $tableName = "form_covid19";
@@ -30,14 +30,18 @@ $primaryKey = "covid19_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name','l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name','vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name','vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name','vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -147,10 +151,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 /* Sample recieved date filter */
@@ -160,10 +164,10 @@ if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) !=
      $s_r_date = explode("to", $_POST['sampleRecievedDate']);
      //print_r($s_r_date);die;
      if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = $general->isoDateFormat(trim($s_r_date[0]));
+          $rstart_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[0]));
      }
      if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = $general->isoDateFormat(trim($s_r_date[1]));
+          $rend_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[1]));
      }
 }
 /* Sample tested date filter */
@@ -172,10 +176,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample print date filter */
@@ -184,19 +188,19 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
- }
- if (isset($_POST['district']) && trim($_POST['district']) != '') {
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
- }
+}
 /* Facility Id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
@@ -269,16 +273,15 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
      if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-         // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+          // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
 $sWhere[] = " result_status is NOT NULL";
 
-if(isset($sWhere) && count($sWhere)>0)
-{
-     $sWhere = ' where '. implode(" AND ", $sWhere);
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = ' where ' . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . ' '.$sWhere;
+$sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery;die;
 
 
@@ -311,8 +314,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

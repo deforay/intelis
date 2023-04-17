@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_hepatitis_comorbidities";
 $primaryKey = "comorbidity_id";
 // print_r($_POST);die;
@@ -13,7 +13,7 @@ try {
 		$data = array(
 			'comorbidity_name' 		=> $_POST['comorbidityName'],
 			'comorbidity_status' 	=> $_POST['comorbidityStatus'],
-			'updated_datetime' 	=> $general->getCurrentDateTime(),
+			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['comorbidityId']) && $_POST['comorbidityId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['comorbidityId']));

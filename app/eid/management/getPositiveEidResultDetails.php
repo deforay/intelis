@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
   
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 $tableName="form_eid";
 $primaryKey="eid_id";
 //config  query
@@ -129,10 +129,10 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
         $s_c_date = explode("to", $_POST['hvlSampleTestDate']);
         //print_r($s_c_date);die;
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+            $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+            $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
         }
 	    if (trim($start_date) == trim($end_date)) {
 					$sWhere[] = ' DATE(vl.sample_tested_datetime) = "'.$start_date.'"';
@@ -216,13 +216,13 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
         foreach ($rResult as $aRow) {
             if(isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date'])!= '' && $aRow['sample_collection_date']!= '0000-00-00 00:00:00'){
                 $xplodDate = explode(" ",$aRow['sample_collection_date']);
-                $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+                $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
             }else{
                 $aRow['sample_collection_date'] = '';
             }
             if(isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime'])!= '' && $aRow['sample_tested_datetime']!= '0000-00-00 00:00:00'){
                 $xplodDate = explode(" ",$aRow['sample_tested_datetime']);
-                $aRow['sample_tested_datetime'] = $general->humanReadableDateFormat($xplodDate[0]);
+                $aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
             }else{
                 $aRow['sample_tested_datetime'] = '';
             }
@@ -231,7 +231,7 @@ $thresholdLimit = $arr['viral_load_threshold_limit'];
 			}else{
 				$decrypt = 'sample_code';
             }
-            $childName = $general->crypto('decrypt',$aRow['child_name'],$aRow[$decrypt]);
+            $childName = $general->crypto('doNothing',$aRow['child_name'],$aRow[$decrypt]);
             $row = array();
             $row[] = $aRow['sample_code'];
             if($sarr['sc_user_type']!='standalone'){

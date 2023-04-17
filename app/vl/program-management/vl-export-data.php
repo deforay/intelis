@@ -2,9 +2,9 @@
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

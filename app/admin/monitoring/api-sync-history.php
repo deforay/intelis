@@ -2,7 +2,7 @@
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $syncedTypeResults = $db->rawQuery("SELECT DISTINCT request_type FROM track_api_requests ORDER BY request_type ASC");
 foreach ($syncedTypeResults as $synced) {
 	$syncedType[$synced['request_type']] = (str_replace("-", " ", $synced['request_type']));

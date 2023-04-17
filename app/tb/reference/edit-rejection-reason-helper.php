@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 
@@ -23,7 +23,7 @@ try {
             'rejection_type' => $_POST['rejectionType'],
             'rejection_reason_status' => $_POST['rejectionReasonStatus'],
             'rejection_reason_code' => $_POST['rejectionReasonCode'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
         $db = $db->where('rejection_reason_id', $rejectionReasonId);

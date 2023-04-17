@@ -1,6 +1,6 @@
 <?php
 
-use Vlsm\Models\General;
+use App\Models\General;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,9 +13,9 @@ $userName = ($_POST['username']);
 $password = ($_POST['password']);
 
 
-$general = new \Vlsm\Models\General();
-$facilityDb = new \Vlsm\Models\Facilities();
-$user = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$facilityDb = new \App\Models\Facilities();
+$user = new \App\Models\Users();
 
 
 

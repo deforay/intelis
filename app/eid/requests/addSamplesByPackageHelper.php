@@ -4,8 +4,8 @@
 
 
 
-$general = new \Vlsm\Models\General();
-$eidObj = new \Vlsm\Models\Eid();
+$general = new \App\Models\General();
+$eidObj = new \App\Models\Eid();
 
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";
@@ -21,7 +21,7 @@ foreach ($sampleResult as $sampleRow) {
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = $general->isoDateFormat($testDate[0]);
+        $_POST['testDate'] = \App\Utilities\DateUtils::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -29,7 +29,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $eidObj->generateEIDSampleCode($provinceCode, $general->humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $eidObj->generateEIDSampleCode($provinceCode, \App\Utilities\DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
 
         $eidData['sample_code'] = $sampleData['sampleCode'];
@@ -42,7 +42,7 @@ foreach ($sampleResult as $sampleRow) {
             $eidData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
         $eidData['last_modified_by'] = $_SESSION['userId'];
-        $eidData['last_modified_datetime'] = $general->getCurrentDateTime();
+        $eidData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
         $db = $db->where('eid_id', $sampleRow['eid_id']);
         $id = $db->update('form_eid', $eidData);

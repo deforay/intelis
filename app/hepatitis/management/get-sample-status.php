@@ -1,7 +1,10 @@
 <?php
+
+use App\Utilities\MiscUtils;
+
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $userType = $general->getSystemConfig('sc_user_type');
 
@@ -37,10 +40,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -49,10 +52,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+        $labStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = $general->isoDateFormat(trim($s_c_date[1]));
+        $labEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -61,10 +64,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleTestedDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+        $testedStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
+        $testedEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name 
@@ -626,9 +629,9 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     <?php
                     foreach ($testReasonResult as $tRow) {
                     ?> {
-                            name: '<?php echo ($tRow['test_reason_name']); ?>',
-                            y: <?php echo ($tRow['total']); ?>,
-                            color: '#<?php echo $general->random_color(); ?>',
+                            name: '<?= ($tRow['test_reason_name']); ?>',
+                            y: <?= ($tRow['total']); ?>,
+                            color: '#<?php echo MiscUtils::randomHexColor() ?>',
                         },
                     <?php
                     }

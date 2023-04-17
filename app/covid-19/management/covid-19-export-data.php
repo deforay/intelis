@@ -4,9 +4,9 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -32,7 +32,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';

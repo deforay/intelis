@@ -4,9 +4,9 @@ $title = _("Print VL Results");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');

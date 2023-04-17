@@ -6,7 +6,7 @@
  * @author Thana
  */
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 class GeoLocations
 {
@@ -92,14 +92,14 @@ class GeoLocations
 
     function addGeoLocation($geoName, $parent = 0)
     {
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
 
         $data = array(
             'geo_name'         => $geoName,
             'geo_status'       => 'active',
             'created_by'       => $_SESSION['userId'],
-            'created_on'       => $general->getCurrentDateTime(),
-            'updated_datetime' => $general->getCurrentDateTime(),
+            'created_on'       => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'data_sync'       => 0
         );
         if ($parent > 0) {

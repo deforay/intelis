@@ -6,7 +6,7 @@ if (!isset($_SESSION['userId'])) {
 
 $webRootPath = realpath(WEB_ROOT);
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';

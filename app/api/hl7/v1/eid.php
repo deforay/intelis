@@ -8,7 +8,7 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -440,9 +440,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'                             => $general->getCurrentDateTime(),
-            'sample_registered_at_lab'                             => $general->getCurrentDateTime(),
-            'last_modified_datetime'                             => $general->getCurrentDateTime()
+            'request_created_datetime'                             => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'sample_registered_at_lab'                             => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'                             => \App\Utilities\DateUtils::getCurrentDateTime()
         );
 
         $eidData['source_of_request'] = 'hl7';

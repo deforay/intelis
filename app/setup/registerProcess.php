@@ -11,9 +11,9 @@ $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$user = new \Vlsm\Models\Users();
+$user = new \App\Models\Users();
 
 
 try {

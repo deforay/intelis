@@ -1,14 +1,14 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../../startup.php");
+require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
 
 
-$general = new \Vlsm\Models\General();
-$usersModel = new \Vlsm\Models\Users();
-$app = new \Vlsm\Models\App();
+$general = new \App\Models\General();
+$usersModel = new \App\Models\Users();
+$app = new \App\Models\App();
 
 $transactionId = $general->generateUUID();
 
@@ -16,7 +16,7 @@ $sampleCodes = $facilityIds = array();
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['dbName'] . "' AND table_name='form_covid19'";
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_covid19'";
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 
@@ -72,13 +72,13 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
+            $lab['result_approved_datetime'] =  \App\Utilities\DateUtils::getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
+        $lab['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -161,7 +161,7 @@ $payload = json_encode($sampleCodes);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'covid19', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
-$currentDateTime = $general->getCurrentDateTime();
+$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 
 if (!empty($sampleCodes)) {
     $sql = 'UPDATE form_covid19 SET data_sync = ?,

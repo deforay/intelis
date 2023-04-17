@@ -1,9 +1,9 @@
 <?php
 
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $dateTimeUtil = new DateUtils();
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -64,7 +64,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     $_color = "f08080";
 
-    $aRow['latest'] = $aRow['latest'] ?: $aRow['requested_on'];
+    $aRow['latest'] = $aRow['latest'] ?? $aRow['requested_on'];
     $latest = new DateTimeImmutable($aRow['latest']);
 
     $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
@@ -84,9 +84,9 @@ foreach ($rResult as $aRow) {
 
     $row[] = ($aRow['facility_name']);
     //$row[] = ($aRow['test_type']);
-    $row[] = $general->humanReadableDateFormat($aRow['latest']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['latest']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync']);
     $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - ";
     $output[] = $row;
 

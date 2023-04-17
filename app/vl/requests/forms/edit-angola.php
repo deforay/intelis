@@ -59,12 +59,12 @@ if ($arr['sample_code'] == 'MMYY') {
 //Set Dispatched From Clinic To Lab Date
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
   $expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-  $vlQueryInfo['sample_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+  $vlQueryInfo['sample_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
   $vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 if (isset($vlQueryInfo['requesting_date']) && trim($vlQueryInfo['requesting_date']) != '' && $vlQueryInfo['requesting_date'] != '0000-00-00') {
-  $vlQueryInfo['requesting_date'] = $general->humanReadableDateFormat($vlQueryInfo['requesting_date']);
+  $vlQueryInfo['requesting_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['requesting_date']);
 } else {
   $vlQueryInfo['requesting_date'] = '';
 }
@@ -79,7 +79,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
   for ($c = 0; $c < count($splitChanges); $c++) {
     $getData = explode("##", $splitChanges[$c]);
     $expStr = explode(" ", $getData[2]);
-    $changedDate = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $changedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
     $rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
   }
   $rch .= '</tbody>';
@@ -95,32 +95,32 @@ $lastVlResult = '';
 if ($vlQueryInfo['reason_for_vl_testing'] != '') {
   if ($vlQueryInfo['reason_for_vl_testing'] == 'routine') {
     if (isset($vlQueryInfo['last_vl_date_routine']) && trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_result_routine'];
   } else if ($vlQueryInfo['reason_for_vl_testing'] == 'expose') {
     if (isset($vlQueryInfo['last_vl_date_ecd']) && trim($vlQueryInfo['last_vl_date_ecd']) != '' && $vlQueryInfo['last_vl_date_ecd'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_ecd']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_ecd']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_result_ecd'];
   } else if ($vlQueryInfo['reason_for_vl_testing'] == 'suspect') {
     if (isset($vlQueryInfo['last_vl_date_failure']) && trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_result_failure'];
   } else if ($vlQueryInfo['reason_for_vl_testing'] == 'repetition') {
     if (isset($vlQueryInfo['last_vl_date_failure_ac']) && trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_date_failure_ac'];
   } else if ($vlQueryInfo['reason_for_vl_testing'] == 'clinical') {
     if (isset($vlQueryInfo['last_vl_date_cf']) && trim($vlQueryInfo['last_vl_date_cf']) != '' && $vlQueryInfo['last_vl_date_cf'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_cf']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_cf']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_result_cf'];
   } else if ($vlQueryInfo['reason_for_vl_testing'] == 'immunological') {
     if (isset($vlQueryInfo['last_vl_date_if']) && trim($vlQueryInfo['last_vl_date_if']) != '' && $vlQueryInfo['last_vl_date_if'] != '0000-00-00') {
-      $lastVlDate = $general->humanReadableDateFormat($vlQueryInfo['last_vl_date_if']);
+      $lastVlDate = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_vl_date_if']);
     }
     $lastVlResult = $vlQueryInfo['last_vl_result_if'];
   }

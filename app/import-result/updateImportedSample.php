@@ -3,7 +3,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "temp_sample_import";
 try {
     $result = 0;

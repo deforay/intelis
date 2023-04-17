@@ -3,8 +3,8 @@ ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
-$general = new \Vlsm\Models\General();
-$instrumentsDb = new \Vlsm\Models\Instruments();
+$general = new \App\Models\General();
+$instrumentsDb = new \App\Models\Instruments();
 $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 

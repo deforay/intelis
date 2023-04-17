@@ -2,8 +2,8 @@
 $title = _("User Activity Log");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$userDb = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$userDb = new \App\Models\Users();
 $userNameList = $userDb->getAllUsers(null, null, 'drop-down');
 
 $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");

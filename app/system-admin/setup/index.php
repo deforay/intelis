@@ -8,7 +8,7 @@ if (count($adminCount) != 0) {
 }
 
 $path = '/assets/img/remote-bg.jpg';
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
 

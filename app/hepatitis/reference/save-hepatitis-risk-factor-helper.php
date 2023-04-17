@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_hepatitis_risk_factors";
 $primaryKey = "riskfactor_id";
 // print_r($_POST);die;
@@ -13,7 +13,7 @@ try {
 		$data = array(
 			'riskfactor_name' 		=> $_POST['riskFactorName'],
 			'riskfactor_status' 	=> $_POST['riskFactorStatus'],
-			'updated_datetime' 	=> $general->getCurrentDateTime(),
+			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['riskFactorId']) && $_POST['riskFactorId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['riskFactorId']));

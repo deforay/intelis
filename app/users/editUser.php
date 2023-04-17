@@ -16,7 +16,7 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-$facilityDb = new \Vlsm\Models\Facilities();
+$facilityDb = new \App\Models\Facilities();
 $activeFacilities = array();
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {

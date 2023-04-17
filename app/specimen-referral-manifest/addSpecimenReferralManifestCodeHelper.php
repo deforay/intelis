@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $packageTable = "package_details";
 try {
     if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "") {

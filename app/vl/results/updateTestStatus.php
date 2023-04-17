@@ -1,6 +1,6 @@
 <?php
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 try {
 
@@ -8,8 +8,8 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  $general->getCurrentDateTime(),
-            'last_modified_datetime'     =>  $general->getCurrentDateTime(),
+            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */
@@ -36,7 +36,7 @@ try {
 
 
 
-        $vlDb = new \Vlsm\Models\Vl();
+        $vlDb = new \App\Models\Vl();
         $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
             $status['result_status'] = 5;

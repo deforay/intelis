@@ -20,7 +20,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 
 $tableName = "form_hepatitis";
@@ -34,8 +34,12 @@ $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -99,7 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -145,10 +149,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 /* Sample recieved date filter */
@@ -158,10 +162,10 @@ if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) !=
      $s_r_date = explode("to", $_POST['sampleRecievedDate']);
      //print_r($s_r_date);die;
      if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = $general->isoDateFormat(trim($s_r_date[0]));
+          $rstart_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[0]));
      }
      if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = $general->isoDateFormat(trim($s_r_date[1]));
+          $rend_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[1]));
      }
 }
 $sTestDate = '';
@@ -169,10 +173,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 $sPrintDate = '';
@@ -180,85 +184,85 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 
 
-     //$sQuery = $sQuery.' '.$sWhere;
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
-      }
-      if (isset($_POST['district']) && trim($_POST['district']) != '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
-      }
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $sWhere[] =  ' vl.facility_id = "' . $_POST['facilityName'] . '"';
-     }
+//$sQuery = $sQuery.' '.$sWhere;
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+}
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $sWhere[] =  ' vl.facility_id = "' . $_POST['facilityName'] . '"';
+}
 
-     if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
-          $sWhere[] =  ' vl.lab_id = "' . $_POST['testingLab'] . '"';
-     }
+if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
+     $sWhere[] =  ' vl.lab_id = "' . $_POST['testingLab'] . '"';
+}
 
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (trim($start_date) == trim($end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (trim($start_date) == trim($end_date)) {
+          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
-     if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
-          if (trim($rstart_date) == trim($rend_date)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $rstart_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $rend_date . '"';
-          }
+}
+if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
+     if (trim($rstart_date) == trim($rend_date)) {
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $rstart_date . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $rend_date . '"';
      }
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+}
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (trim($sTestDate) == trim($eTestDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
-     if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-          if (trim($sPrintDate) == trim($eTestDate)) {
-               $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
-          } else {
-               $sWhere[] =  ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          }
+}
+if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
+     if (trim($sPrintDate) == trim($eTestDate)) {
+          $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
+     } else {
+          $sWhere[] =  ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
-     if (isset($_POST['hcvVLoad']) && trim($_POST['hcvVLoad']) != '') {
+}
+if (isset($_POST['hcvVLoad']) && trim($_POST['hcvVLoad']) != '') {
 
-          $sWhere[] =  ' vl.hcv_vl_result = "' . $_POST['hcvVLoad'] . '"';
-     }
-     if (isset($_POST['hbvVLoad']) && trim($_POST['hbvVLoad']) != '') {
+     $sWhere[] =  ' vl.hcv_vl_result = "' . $_POST['hcvVLoad'] . '"';
+}
+if (isset($_POST['hbvVLoad']) && trim($_POST['hbvVLoad']) != '') {
 
-          $sWhere[] = ' vl.hbv_vl_result = "' . $_POST['hbvVLoad'] . '"';
-     }
+     $sWhere[] = ' vl.hbv_vl_result = "' . $_POST['hbvVLoad'] . '"';
+}
 
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
-          $sWhere[] =  ' vl.result_status =' . $_POST['status'];
-     }
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          $sWhere[] =  ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
-     }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
-     }
-     if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
-          $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
-     }
-     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
-     }
-     $sWhere[] = '  vl.result_status!=9';
+if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     $sWhere[] =  ' vl.result_status =' . $_POST['status'];
+}
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     $sWhere[] =  ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+}
+if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+}
+if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
+$sWhere[] = '  vl.result_status!=9';
 
 //$cWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -271,10 +275,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           //$cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 }
-if(!empty($sWhere))
-    $sWhere = ' where ' .implode(' AND ',$sWhere);
+if (!empty($sWhere))
+     $sWhere = ' where ' . implode(' AND ', $sWhere);
 else
-    $sWhere = "";
+     $sWhere = "";
 $sQuery = $sQuery . ' ' . $sWhere;
 // echo $sQuery;die;
 
@@ -332,8 +336,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow['patient_id']));
-     $patientLname = ($general->crypto('decrypt', $aRow['patient_surname'], $aRow['patient_id']));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
      $row = array();
      $row[] = $aRow['sample_code'];

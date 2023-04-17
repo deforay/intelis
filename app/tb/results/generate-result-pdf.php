@@ -11,10 +11,12 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$tbObj = new \Vlsm\Models\Tb();
-$geoObj = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$tbObj = new \App\Models\Tb();
+$geoObj = new \App\Models\GeoLocations();
+$tbModel = new \App\Models\Tb();
+//$tbResults = $tbModel->getTbResults();
 
 $arr = $general->getGlobalConfig();
 
@@ -31,7 +33,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = $general->humanReadableDateFormat($expStr[0]);
+$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['tbPrintQuery'];
@@ -266,7 +268,7 @@ class Watermark extends PDF_Rotate
 }
 class Pdf_concat extends FPDI
 {
-    var $files = array();
+    public array $files;
     function setFiles($files)
     {
         $this->files = $files;
@@ -285,7 +287,7 @@ class Pdf_concat extends FPDI
     }
 }
 $resultFilename = '';
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
@@ -296,7 +298,7 @@ if (sizeof($requestResult) > 0) {
     $page = 1;
 
     foreach ($requestResult as $result) {
-        $tbResults = $general->getTbResults();
+
         $countryFormId = $general->getGlobalConfig('vl_form');
 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";
@@ -306,12 +308,12 @@ if (sizeof($requestResult) > 0) {
         $facilityInfo = $db->rawQueryOne($facilityQuery);
         // echo "<pre>";print_r($tbTestInfo);die;
 
-        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-        $currentTime = $general->getCurrentDateTime();
+        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';

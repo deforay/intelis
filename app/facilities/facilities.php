@@ -5,13 +5,13 @@ require_once(APPLICATION_PATH . '/header.php');
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$geoLocationDb = new \App\Models\GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>

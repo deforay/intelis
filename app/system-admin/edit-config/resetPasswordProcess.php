@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $tableName = "system_admin";
-$user = new \Vlsm\Models\Users();
+$user = new \App\Models\Users();
 
 try {
     $userId = base64_decode($_POST['userId']);

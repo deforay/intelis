@@ -3,10 +3,10 @@ ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$userDb = new \Vlsm\Models\Users();
-$general = new \Vlsm\Models\General();
+$userDb = new \App\Models\Users();
+$general = new \App\Models\General();
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>

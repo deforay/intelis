@@ -701,9 +701,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -1153,7 +1153,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').addClass('isRequired');
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
-               $('#approvedOnDateTime').addClass('isRequired');
+               $('#approvedOn').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
                $("#reasonForFailure").removeClass('isRequired');
           } else if ($(this).val() == 'no') {
@@ -1169,7 +1169,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').addClass('isRequired');
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
-               $('#approvedOnDateTime').addClass('isRequired');
+               $('#approvedOn').addClass('isRequired');
                //$(".hivDetection").trigger("change");
           } else {
                $(".result-fields").attr("disabled", false);
@@ -1186,7 +1186,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').removeClass('isRequired');
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
-               $('#approvedOnDateTime').removeClass('isRequired');
+               $('#approvedOn').removeClass('isRequired');
                //$(".hivDetection").trigger("change");
           }
      });

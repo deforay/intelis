@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_vl_test_failure_reasons";
 $result = 0;
 try {

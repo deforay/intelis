@@ -1,9 +1,9 @@
 <?php
 
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $dateTimeUtil = new DateUtils();
 
 $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -59,8 +59,8 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['testType'];
     $row[] = ($aRow['province']);
     $row[] = ($aRow['district']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync']);
     $output[] = $row;
 
     $no++;

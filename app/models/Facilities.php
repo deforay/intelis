@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 class Facilities
 {
@@ -103,7 +103,9 @@ class Facilities
     // $facilityType = null for getting all mapped facilities
     public function getUserFacilityMap($userId, $facilityType = null)
     {
-        if (empty($userId)) return null;
+        if (empty($userId)) {
+            return null;
+        }
 
         /* if (!empty($facilityType)) {
             $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");

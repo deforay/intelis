@@ -29,8 +29,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('tb');
 $testingLabs = $facilitiesDb->getTestingLabs('tb');
 
@@ -85,7 +85,7 @@ if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || $ar
 if (isset($tbInfo['request_created_datetime']) && trim($tbInfo['request_created_datetime']) != '' && $tbInfo['request_created_datetime'] != '0000-00-00 00:00:00') {
     $requestedDate = $tbInfo['request_created_datetime'];
     $expStr = explode(" ", $tbInfo['request_created_datetime']);
-    $tbInfo['request_created_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $tbInfo['request_created_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $requestedDate = '';
     $tbInfo['request_created_datetime'] = '';
@@ -94,7 +94,7 @@ if (isset($tbInfo['request_created_datetime']) && trim($tbInfo['request_created_
 if (isset($tbInfo['sample_collection_date']) && trim($tbInfo['sample_collection_date']) != '' && $tbInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $tbInfo['sample_collection_date'];
     $expStr = explode(" ", $tbInfo['sample_collection_date']);
-    $tbInfo['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $tbInfo['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $tbInfo['sample_collection_date'] = '';
@@ -103,7 +103,7 @@ if (isset($tbInfo['sample_collection_date']) && trim($tbInfo['sample_collection_
 if (isset($tbInfo['sample_received_at_lab_datetime']) && trim($tbInfo['sample_received_at_lab_datetime']) != '' && $tbInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
     $sampleReceivedDate = $tbInfo['sample_received_at_lab_datetime'];
     $expStr = explode(" ", $tbInfo['sample_received_at_lab_datetime']);
-    $tbInfo['sample_received_at_lab_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $tbInfo['sample_received_at_lab_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleReceivedDate = '';
     $tbInfo['sample_received_at_lab_datetime'] = '';
@@ -111,28 +111,28 @@ if (isset($tbInfo['sample_received_at_lab_datetime']) && trim($tbInfo['sample_re
 
 if (isset($tbInfo['sample_tested_datetime']) && trim($tbInfo['sample_tested_datetime']) != '' && $tbInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $sampleTestedDateTime = explode(" ", $tbInfo['sample_tested_datetime']);
-    $tbInfo['sample_tested_datetime'] = $general->humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
+    $tbInfo['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
 } else {
     $tbInfo['sample_tested_datetime'] = '';
 }
 
 if (isset($tbInfo['sample_dispatched_datetime']) && trim($tbInfo['sample_dispatched_datetime']) != '' && $tbInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $sampleTestedDateTime = explode(" ", $tbInfo['sample_dispatched_datetime']);
-    $tbInfo['sample_dispatched_datetime'] = $general->humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
+    $tbInfo['sample_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
 } else {
     $tbInfo['sample_dispatched_datetime'] = '';
 }
 
 if (isset($tbInfo['result_reviewed_datetime']) && trim($tbInfo['result_reviewed_datetime']) != '' && $tbInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $reviewedOn = explode(" ", $tbInfo['result_reviewed_datetime']);
-    $tbInfo['result_reviewed_datetime'] = $general->humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    $tbInfo['result_reviewed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 } else {
     $tbInfo['result_reviewed_datetime'] = '';
 }
 
 if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_datetime']) != '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $approvedOn = explode(" ", $tbInfo['result_approved_datetime']);
-    $tbInfo['result_approved_datetime'] = $general->humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+    $tbInfo['result_approved_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 } else {
     $tbInfo['result_approved_datetime'] = '';
 }

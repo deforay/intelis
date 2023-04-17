@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

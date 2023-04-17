@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions

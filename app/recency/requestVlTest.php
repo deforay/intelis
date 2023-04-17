@@ -22,7 +22,7 @@ try {
     
     
 
-    $general = new \Vlsm\Models\General();
+    $general = new \App\Models\General();
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');
@@ -75,8 +75,8 @@ try {
         $data['sample_type'] = 2;
         $data['request_created_by'] = $result[8];
         $data['lab_id'] = $result[7];
-        $data['request_created_datetime'] = $general->getCurrentDateTime();
-        $data['last_modified_datetime'] = $general->getCurrentDateTime();
+        $data['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $data['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
         $data['result_status'] = 6;
         $data['data_sync'] = 0;
         $data['recency_vl'] = 'yes';

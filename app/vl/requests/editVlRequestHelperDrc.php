@@ -7,8 +7,8 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
-$vlModel = new \Vlsm\Models\Vl();
+$general = new \App\Models\General();
+$vlModel = new \App\Models\Vl();
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";
@@ -47,7 +47,7 @@ try {
         $allChange = $_POST['reasonForResultChangesHistory'];
     }
     if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
-        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . $general->getCurrentDateTime();
+        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . \App\Utilities\DateUtils::getCurrentDateTime();
     }
     if (trim($allChange) != '' && trim($reasonForChanges) != '') {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
@@ -57,13 +57,13 @@ try {
 
     //Set Date of demand
     if (isset($_POST['dateOfDemand']) && trim($_POST['dateOfDemand']) != "") {
-        $_POST['dateOfDemand'] = $general->isoDateFormat($_POST['dateOfDemand']);
+        $_POST['dateOfDemand'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfDemand']);
     } else {
         $_POST['dateOfDemand'] = null;
     }
     //Set dob
     if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
-        $_POST['dob'] = $general->isoDateFormat($_POST['dob']);
+        $_POST['dob'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dob']);
     } else {
         $_POST['dob'] = null;
     }
@@ -95,7 +95,7 @@ try {
     } else if ($_POST['isPatientNew'] == "yes") {
         //Ser ARV initiation date
         if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-            $_POST['dateOfArtInitiation'] = $general->isoDateFormat($_POST['dateOfArtInitiation']);
+            $_POST['dateOfArtInitiation'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
         } else {
             $_POST['dateOfArtInitiation'] = null;
         }
@@ -107,7 +107,7 @@ try {
         $data = array(
             'art_code' => $_POST['newArtRegimen'],
             'parent_art' => 3,
-            'updated_datetime' => $general->getCurrentDateTime(),
+            'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
         );
 
         $result = $db->insert('r_vl_art_regimen', $data);
@@ -124,7 +124,7 @@ try {
         $_POST['dateOfArvRegimenChange'] = null;
     } else if (trim($_POST['hasChangedRegimen']) == "yes") {
         if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
-            $_POST['dateOfArvRegimenChange'] = $general->isoDateFormat($_POST['dateOfArvRegimenChange']);
+            $_POST['dateOfArvRegimenChange'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfArvRegimenChange']);
         }
     }
     //Set VL Test reason
@@ -150,14 +150,14 @@ try {
     }
     //Set last VL test date
     if (isset($_POST['lastViralLoadTestDate']) && trim($_POST['lastViralLoadTestDate']) != "") {
-        $_POST['lastViralLoadTestDate'] = $general->isoDateFormat($_POST['lastViralLoadTestDate']);
+        $_POST['lastViralLoadTestDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['lastViralLoadTestDate']);
     } else {
         $_POST['lastViralLoadTestDate'] = null;
     }
     //Set sample collection date
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = $general->isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        $_POST['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = null;
     }
@@ -171,7 +171,7 @@ try {
     //Set sample received date
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
@@ -182,7 +182,7 @@ try {
     //             $data = array(
     //                 'rejection_reason_name' => $_POST['newRejectionReason'],
     //                 'rejection_reason_status' => 'active',
-    //                 'updated_datetime' => $general->getCurrentDateTime(),
+    //                 'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
     //             );
     //             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
     //             $_POST['rejectionReason'] = $id;
@@ -194,21 +194,21 @@ try {
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $_POST['sampleTestingDateAtLab'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = null;
     }
     //Set Dispatched From Clinic To Lab Date
     if (isset($_POST['dateDispatchedFromClinicToLab']) && trim($_POST['dateDispatchedFromClinicToLab']) != "") {
         $dispatchedFromClinicToLabDate = explode(" ", $_POST['dateDispatchedFromClinicToLab']);
-        $_POST['dateDispatchedFromClinicToLab'] = $general->isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
+        $_POST['dateDispatchedFromClinicToLab'] = \App\Utilities\DateUtils::isoDateFormat($dispatchedFromClinicToLabDate[0]) . " " . $dispatchedFromClinicToLabDate[1];
     } else {
         $_POST['dateDispatchedFromClinicToLab'] = null;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
-        $_POST['dateOfCompletionOfViralLoad'] = $general->isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+        $_POST['dateOfCompletionOfViralLoad'] = \App\Utilities\DateUtils::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
         $_POST['dateOfCompletionOfViralLoad'] = null;
     }
@@ -279,14 +279,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = $general->isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = $general->isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = \App\Utilities\DateUtils::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = null;
     }
@@ -337,7 +337,7 @@ try {
         'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
         'reason_for_failure' => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $general->getCurrentDateTime() : null,
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? \App\Utilities\DateUtils::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'],
         'data_sync' => 0,
         'last_modified_datetime' => $db->now(),
@@ -365,7 +365,7 @@ try {
 
             //Since Sample Code does not exist, today is the date
             //sample is being registered at the lab.
-            $vldata['sample_registered_at_lab'] = $general->getCurrentDateTime();
+            $vldata['sample_registered_at_lab'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
             //update sample code generation
             $sExpDT = explode(" ", $_POST['sampleCollectionDate']);
@@ -443,7 +443,7 @@ try {
         // 'event_type'=>$eventType,
         // 'action'=>$action,
         // 'resource'=>$resource,
-        // 'date_time'=>$general->getCurrentDateTime()
+        // 'date_time'=>\App\Utilities\DateUtils::getCurrentDateTime()
         // );
         // $db->insert($tableName1,$data);
 

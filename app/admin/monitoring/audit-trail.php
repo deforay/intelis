@@ -11,9 +11,9 @@
 <?php
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$activeTestModules = $general->getActiveTestModules();
+$activeTestModules = \App\Models\System::getActiveTestModules();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
@@ -28,7 +28,7 @@ if (isset($_POST['testType'])) {
 function getColumns($db, $tableName)
 {
 	$columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=? order by ordinal_position";
-	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['dbName'], $tableName));
+	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['database']['db'], $tableName));
 }
 
 function getColumnValues($db, $tableName, $sampleCode)
@@ -64,7 +64,7 @@ $resultColumn = getColumns($db, $tableName);
 
 			<div class="col-xs-12">
 				<div class="box">
-			
+
 					<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 
 						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
@@ -103,54 +103,53 @@ $resultColumn = getColumns($db, $tableName);
 					</form>
 				</div>
 			</div>
-			
+
 			<?php
 			if (!empty($sampleCode)) {
 				$posts = getColumnValues($db, $tableName, $sampleCode);
-				
+
 			?>
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->
 						<div class="box-body">
 							<?php if (!empty($posts)) { ?>
-							<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
-	<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
-	<?php
-	//echo '<pre>'; print_r($resultColumn); die;
-	$i=0;
-	foreach($resultColumn as $col)
-	{
-	?>
-	<option value="<?php echo $i; ?>"><?php echo $col['COLUMN_NAME']; ?></option>
-	<?php
-	$i++;
-	}
-	?>
-	</select>
-					
-							<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
-								<thead>
-									<tr>
-										<?php
-										
-										$colArr = array();
-										foreach ($resultColumn as $col) {
-											$colArr[] = $col['COLUMN_NAME'];
-										?>
-											<th>
-												<?php
-												echo $col['COLUMN_NAME'];
-												?>
-											</th>
-										<?php } ?>
-									</tr>
-								</thead>
-								<tbody>
+								<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+								<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 									<?php
-									
-										for ($i = 0; $i < count($posts); $i++) {
+									//echo '<pre>'; print_r($resultColumn); die;
+									$i = 0;
+									foreach ($resultColumn as $col) {
 									?>
+										<option value="<?php echo $i; ?>"><?php echo $col['COLUMN_NAME']; ?></option>
+									<?php
+										$i++;
+									}
+									?>
+								</select>
+
+								<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
+									<thead>
+										<tr>
+											<?php
+
+											$colArr = array();
+											foreach ($resultColumn as $col) {
+												$colArr[] = $col['COLUMN_NAME'];
+											?>
+												<th>
+													<?php
+													echo $col['COLUMN_NAME'];
+													?>
+												</th>
+											<?php } ?>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+
+										for ($i = 0; $i < count($posts); $i++) {
+										?>
 											<tr>
 												<?php
 												for ($j = 0; $j < count($colArr); $j++) {
@@ -164,35 +163,35 @@ $resultColumn = getColumns($db, $tableName);
 												<?php }
 												?>
 											</tr>
-								<?php } ?>
-
-								</tbody>
-
-							</table>
-							
-							<p>
-							<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
-							</p>
-							<table class="current table table-striped table-hover table-bordered" aria-hidden="true">
-								<thead>
-									<tr>
-										<?php
-										$resultColumn = getColumns($db, $tableName2);
-										$posts = getColumnValues($db, $tableName2, $sampleCode);
-										foreach ($resultColumn as $col) {
-										?>
-											<th>
-												<?php
-												echo $col['COLUMN_NAME'];
-												?>
-											</th>
 										<?php } ?>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
+
+									</tbody>
+
+								</table>
+
+								<p>
+								<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
+								</p>
+								<table class="current table table-striped table-hover table-bordered" aria-hidden="true">
+									<thead>
+										<tr>
+											<?php
+											$resultColumn = getColumns($db, $tableName2);
+											$posts = getColumnValues($db, $tableName2, $sampleCode);
+											foreach ($resultColumn as $col) {
+											?>
+												<th>
+													<?php
+													echo $col['COLUMN_NAME'];
+													?>
+												</th>
+											<?php } ?>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
 										for ($i = 0; $i < count($posts); $i++) {
-									?>
+										?>
 											<tr>
 												<?php
 												for ($j = 3; $j < count($colArr); $j++) {
@@ -205,27 +204,25 @@ $resultColumn = getColumns($db, $tableName);
 												<?php }
 												?>
 											</tr>
-									<?php
+										<?php
 										}
-									
-									?>
-								</tbody>
 
-							</table>
-									<?php } 
-									else
-									{
-										echo '<h3 align="center">Records are not available for this sample code. Please enter  valid sample code</h3>';
-									}
-									?>
+										?>
+									</tbody>
+
+								</table>
+							<?php } else {
+								echo '<h3 align="center">Records are not available for this sample code. Please enter  valid sample code</h3>';
+							}
+							?>
 						</div>
 					</div>
 					<!-- /.box -->
 				</div>
 				<!-- /.col -->
 			<?php
-		}
-?>
+			}
+			?>
 		</div>
 		<!-- /.row -->
 	</section>
@@ -235,94 +232,87 @@ $resultColumn = getColumns($db, $tableName);
 
 
 <script type="text/javascript">
+	function printString(columnNumber) {
+		// To store result (Excel column name)
+		let columnName = [];
 
-function printString(columnNumber)
-{
-    // To store result (Excel column name)
-        let columnName = [];
-  
-        while (columnNumber > 0) {
-            // Find remainder
-            let rem = columnNumber % 26;
-  
-            // If remainder is 0, then a
-            // 'Z' must be there in output
-            if (rem == 0) {
-                columnName.push("Z");
-                columnNumber = Math.floor(columnNumber / 26) - 1;
-            }
-            else // If remainder is non-zero
-            {
-                columnName.push(String.fromCharCode((rem - 1) + 'A'.charCodeAt(0)));
-                columnNumber = Math.floor(columnNumber / 26);
-            }
-        }
-  
-        // Reverse the string and print result
-        return columnName.reverse().join("");
-}
-$(document).ready(function() {
+		while (columnNumber > 0) {
+			// Find remainder
+			let rem = columnNumber % 26;
+
+			// If remainder is 0, then a
+			// 'Z' must be there in output
+			if (rem == 0) {
+				columnName.push("Z");
+				columnNumber = Math.floor(columnNumber / 26) - 1;
+			} else // If remainder is non-zero
+			{
+				columnName.push(String.fromCharCode((rem - 1) + 'A'.charCodeAt(0)));
+				columnNumber = Math.floor(columnNumber / 26);
+			}
+		}
+
+		// Reverse the string and print result
+		return columnName.reverse().join("");
+	}
+	$(document).ready(function() {
 
 		$("#auditColumn").select2({
 			placeholder: "<?php echo _("Select Columns"); ?>"
 		});
 		table = $("#auditTable").DataTable({
 			dom: 'Bfrtip',
-    buttons: [ 
-	   {
-	            extend: 'excelHtml5',
+			buttons: [{
+				extend: 'excelHtml5',
 				exportOptions: {
-                    columns: ':visible'
-                },
-	            text: 'Export To Excel',
-	            title:'AuditTrailSample-<?php echo $sampleCode; ?>',
-	            extension:'.xlsx',
-				customize: function ( xlsx ) {
-        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-        // Map used to map column index to Excel index
-		
-		var excelMap = [];
-	b=0;
-	for(a=1;a<=226;a++)
-		{
-				excelMap[b] = printString(a);
-				b++;
-		}
-        var count = 0;
-        var skippedHeader = 0;
-		
-        $('row', sheet).each( function () {
-          var row = this;
-          if (skippedHeader==2) {
-//             var colour = $('tbody tr:eq('+parseInt(count)+') td:eq(2)').css('background-color');
-            
-            // Output first row
-            if (count === 0) {
-              console.log(this);
-            }
-            
-            for (td=0; td<226; td++) {
-              
-              // Output cell contents for first row
-              if (count === 0) {
-                console.log($('c[r^="' + excelMap[td] + '"]', row).text());
-              }
-              var colour = $(table.cell(':eq('+count+')',td).node()).css('background-color');            
+					columns: ':visible'
+				},
+				text: 'Export To Excel',
+				title: 'AuditTrailSample-<?php echo $sampleCode; ?>',
+				extension: '.xlsx',
+				customize: function(xlsx) {
+					var sheet = xlsx.xl.worksheets['sheet1.xml'];
+					// Map used to map column index to Excel index
 
-              if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
-                $('c[r^="' + excelMap[td] + '"]', row).attr( 's', '35' );
-              }
-             
-            }
-            count++;
-          }
-          else {
-            skippedHeader++;
-          }
-        });
-      }
-	        }
-    ],
+					var excelMap = [];
+					b = 0;
+					for (a = 1; a <= 226; a++) {
+						excelMap[b] = printString(a);
+						b++;
+					}
+					var count = 0;
+					var skippedHeader = 0;
+
+					$('row', sheet).each(function() {
+						var row = this;
+						if (skippedHeader == 2) {
+							//             var colour = $('tbody tr:eq('+parseInt(count)+') td:eq(2)').css('background-color');
+
+							// Output first row
+							if (count === 0) {
+								console.log(this);
+							}
+
+							for (td = 0; td < 226; td++) {
+
+								// Output cell contents for first row
+								if (count === 0) {
+									console.log($('c[r^="' + excelMap[td] + '"]', row).text());
+								}
+								var colour = $(table.cell(':eq(' + count + ')', td).node()).css('background-color');
+
+								if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
+									$('c[r^="' + excelMap[td] + '"]', row).attr('s', '35');
+								}
+
+							}
+							count++;
+						} else {
+							skippedHeader++;
+						}
+					});
+				}
+			}],
 			scrollY: '250vh',
 			scrollX: true,
 			scrollCollapse: true,
@@ -331,21 +321,19 @@ $(document).ready(function() {
 		});
 
 
-  $('#auditColumn').on("select2:select select2:unselect", function(e) {
-		
-		var columns = $(this).val()
+		$('#auditColumn').on("select2:select select2:unselect", function(e) {
 
-		if(columns=="" || columns==null)
-		{
-			table.columns().visible(true);
-		}
-		else{
-			table.columns().visible(false);
-			table.columns(columns).visible(true);
-		}
-	
+			var columns = $(this).val()
+
+			if (columns == "" || columns == null) {
+				table.columns().visible(true);
+			} else {
+				table.columns().visible(false);
+				table.columns(columns).visible(true);
+			}
+
 		});
-});
+	});
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');

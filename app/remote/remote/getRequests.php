@@ -1,9 +1,9 @@
 <?php
-require_once(dirname(__FILE__) . "/../../../startup.php");
+require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -20,14 +20,14 @@ if (empty($labId)) {
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
-$app = new \Vlsm\Models\App();
+$app = new \App\Models\App();
 
 $transactionId = $general->generateUUID();
 
 $counter = 0;
 
 
-$facilityDb = new \Vlsm\Models\Facilities();
+$facilityDb = new \App\Models\Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -102,7 +102,7 @@ if ($db->count > 0) {
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = $general->getCurrentDateTime();
+$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 if (!empty($sampleIds)) {
   $sql = 'UPDATE form_vl SET data_sync = ?,
               form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

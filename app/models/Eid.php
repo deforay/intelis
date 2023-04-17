@@ -1,6 +1,6 @@
 <?php
 
-namespace Vlsm\Models;
+namespace App\Models;
 
 /**
  * General functions
@@ -23,12 +23,12 @@ class Eid
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \Vlsm\Models\General($this->db);
+        $general = new \App\Models\General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \Vlsm\Utilities\DateUtils();
-        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
+        $dateUtils = new \App\Utilities\DateUtils();
+        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -70,7 +70,7 @@ class Eid
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \Vlsm\Models\GeoLocations($this->db);
+                    $geoLocations = new \App\Models\GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -160,9 +160,9 @@ class Eid
 
     public function generateExcelExport($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
-        $eidModel = new \Vlsm\Models\Eid();
+        $eidModel = new \App\Models\Eid();
         $eidResults = $eidModel->getEidResults();
 
         //$sarr = $general->getSystemConfig();
@@ -288,17 +288,17 @@ class Eid
                 }
 
                 if ($aRow['patient_first_name'] != '') {
-                    $patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+                    $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
                 } else {
                     $patientFname = '';
                 }
                 if ($aRow['patient_middle_name'] != '') {
-                    $patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+                    $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
                 } else {
                     $patientMname = '';
                 }
                 if ($aRow['patient_last_name'] != '') {
-                    $patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+                    $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
                 } else {
                     $patientLname = '';
                 }
@@ -355,7 +355,7 @@ class Eid
 
     public function insertSampleCode($params)
     {
-        $general = new \Vlsm\Models\General();
+        $general = new \App\Models\General();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -381,7 +381,7 @@ class Eid
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;

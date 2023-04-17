@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
 
@@ -20,9 +20,9 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $tableName = "form_covid19";
@@ -37,8 +37,12 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code',
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.covid19_id");
@@ -145,10 +149,10 @@ $t_end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -270,7 +274,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
                $sWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
           }
      }
-    // $sWhere = $sWhere . " AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
+     // $sWhere = $sWhere . " AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
      $dWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      if (trim($sWhere) != '') {
@@ -346,7 +350,7 @@ foreach ($rResult as $aRow) {
 
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

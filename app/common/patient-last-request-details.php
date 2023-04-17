@@ -1,6 +1,6 @@
 <?php
 
-$app = new \Vlsm\Models\App();
+$app = new \App\Models\App();
 $test = "";
 if(isset($_POST['testType']) && $_POST['testType']!='')
 {

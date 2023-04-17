@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName = "r_implementation_partners";
 $primaryKey = "i_partner_id";
@@ -17,7 +17,7 @@ try {
 		$data = array(
 			'i_partner_name' 	=> $_POST['partnerName'],
 			'i_partner_status' 	=> $_POST['partnerStatus'],
-			'updated_datetime'	=> $general->getCurrentDateTime()
+			'updated_datetime'	=> \App\Utilities\DateUtils::getCurrentDateTime()
 		);
 		if(isset($_POST['partnerId']) && $_POST['partnerId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['partnerId']));

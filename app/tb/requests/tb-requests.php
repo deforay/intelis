@@ -19,10 +19,10 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 }
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
+$geoLocationDb = new \App\Models\GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 /* Global config data */
@@ -237,6 +237,15 @@ foreach ($srcResults as $list) {
 							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+							</td>
+                                    </tr>
+                                    <tr>
+                                    <td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no" selected="selected"><?php echo _("No"); ?></option>
+								</select>
 							</td>
                                     </tr>
                         <tr>
@@ -593,6 +602,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "name": "hidesrcofreq",
                     "value": '<?php echo $hidesrcofreq; ?>'
                 });
+                aoData.push({
+					"name": "rejectedSamples",
+					"value": $("#rejectedSamples").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

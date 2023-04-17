@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \Vlsm\Models\General();
-$geolocation = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$geolocation = new \App\Models\GeoLocations();
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "geographical_divisions";
@@ -35,7 +35,7 @@ try {
 			} else {
 				$data = array(
 					'geo_name' => $_POST['provinceNew'],
-					'updated_datetime' => $general->getCurrentDateTime(),
+					'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 				);
 				$db->insert($provinceTable, $data);
 				$_POST['state'] = $_POST['provinceNew'];
@@ -97,7 +97,7 @@ try {
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
 			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat']) : null,
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 			'status' => 'active'
 		);
 
@@ -155,14 +155,14 @@ try {
 					$db->insert($healthFacilityTable, array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
-						'updated_datetime' => $general->getCurrentDateTime()
+						'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
 					));
 					// Mapping facility as a Testing Lab
 				} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
 					$data = array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
-						'updated_datetime' => $general->getCurrentDateTime()
+						'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
 					);
 					if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
@@ -193,7 +193,7 @@ try {
 					'facility_id' => $lastId,
 					'monthly_target' => $_POST['monTar'][$tf],
 					'suppressed_monthly_target' => $_POST['supMonTar'][$tf],
-					"updated_datetime" => $general->getCurrentDateTime()
+					"updated_datetime" => \App\Utilities\DateUtils::getCurrentDateTime()
 				);
 				$db->insert($testingLabsTable, $dataTest);
 			}
@@ -210,7 +210,7 @@ try {
 			$imageName = "logo-" . $string . $extension;
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName)) {
 
-				$resizeObj = new \Vlsm\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
+				$resizeObj = new \App\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
 				$resizeObj->resizeToWidth(100);
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
@@ -231,7 +231,7 @@ try {
 						'display_order' 	=> $_POST['sortOrder'][$key],
 						'signatory_status' 	=> $_POST['signStatus'][$key],
 						"added_by" 			=> $_SESSION['userId'],
-						"added_on" 			=> $general->getCurrentDateTime()
+						"added_on" 			=> \App\Utilities\DateUtils::getCurrentDateTime()
 					);
 
 					$db->insert($labSignTable, $signData);
@@ -251,7 +251,7 @@ try {
 					$imageName = $string . $extension;
 
 					if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
-						$resizeObj = new \Vlsm\Utilities\ImageResize($pathname . $imageName);
+						$resizeObj = new \App\Utilities\ImageResize($pathname . $imageName);
 						$resizeObj->resizeToWidth(100);
 						$resizeObj->save($pathname . $imageName);
 						$image = array('signature' => $imageName);
@@ -270,7 +270,7 @@ try {
 	}
 
 	if (isset($_POST['reqForm']) && $_POST['reqForm'] != '') {
-		$currentDateTime = $general->getCurrentDateTime();
+		$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 		$data = array(
 			'test_type'     => "covid19",
 			'facility_id'   => $lastId,

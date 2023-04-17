@@ -3,7 +3,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "r_hepatitis_comorbidities";
 try {
     $id = explode(",", $_POST['id']);

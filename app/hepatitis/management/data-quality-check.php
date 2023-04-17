@@ -1,8 +1,8 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
-  
+
 
 
 $formConfigQuery = "SELECT * FROM global_config";
@@ -21,18 +21,22 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result' , 'vl.hbv_vl_result', 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result' , 'vl.hbv_vl_result', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name');
 if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result' , 'vl.hbv_vl_result', 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result' , 'vl.hbv_vl_result', 'ts.status_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -92,13 +96,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere[]= $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -113,42 +117,42 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-          if (trim($start_date) == trim($end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (trim($start_date) == trim($end_date)) {
+          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+     }
+}
+if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
+     $sWhereSub = '';
+     $sWhereSubC = " (";
+     $searchArray = explode(",", $_POST['formField']);
+     foreach ($searchArray as $search) {
+          if ($sWhereSub == "") {
+               $sWhereSub .= $sWhereSubC;
+               $sWhereSub .= "(";
           } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhereSub .= " AND (";
           }
-     }
-     if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
-          $sWhereSub = '';
-          $sWhereSubC = " (";
-          $searchArray = explode(",", $_POST['formField']);
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= $sWhereSubC;
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               if($search=='sample_collection_date')
-               $sWhereSub .=  'vl.'.$search . " IS NULL";
+          if ($search == 'sample_collection_date')
+               $sWhereSub .=  'vl.' . $search . " IS NULL";
           else
-               $sWhereSub .= 'vl.'.$search . " ='' OR " . 'vl.'.$search . " IS NULL";
-               $sWhereSub .= ")";
-          }
+               $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
           $sWhereSub .= ")";
-          $sWhere[] =  $sWhereSub;
      }
+     $sWhereSub .= ")";
+     $sWhere[] =  $sWhereSub;
+}
 
-    // $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
+// $sWhere[] = ' vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
 
 $dWhere = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -160,13 +164,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
 }
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' WHERE '.implode(' AND ',$sWhere);
-}
-else
-{
-    $sWhere = "";
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+} else {
+     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['vlIncompleteForm'] = $sQuery;
@@ -203,19 +204,18 @@ $output = array(
 foreach ($rResult as $aRow) {
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['sample_collection_date']);
-          $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+          $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
      } else {
           $aRow['sample_collection_date'] = '';
      }
 
-     if($aRow['remote_sample']=='yes'){
+     if ($aRow['remote_sample'] == 'yes') {
           $decrypt = 'remote_sample_code';
-          
-      }else{
+     } else {
           $decrypt = 'sample_code';
-      }
+     }
 
-     $patientFname = ($general->crypto('decrypt', $aRow['patient_name'], $aRow[$decrypt]));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
 
      $row = array();
      $row[] = $aRow['sample_code'];

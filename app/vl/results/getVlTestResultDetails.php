@@ -3,11 +3,11 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $sarr = $general->getSystemConfig();
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 
 
 $tableName = "form_vl";
@@ -17,9 +17,9 @@ $primaryKey = "vl_sample_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code','vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state', 'f.facility_district' ,'s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','f.facility_state','f.facility_district','s.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
-if($_POST['from'] == "enterresult"){
+$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+if (!empty($_POST['from']) && !empty($_POST['from']) && $_POST['from'] == "enterresult") {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
 }
@@ -27,9 +27,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'standalone') {
      if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-		unset($aColumns[$key]);
+          unset($aColumns[$key]);
           unset($orderColumns[$key]);
-	}
+     }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -50,15 +50,15 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 */
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
-	$sOrder = "";
-	for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-		if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-			if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
-               $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+     $sOrder = "";
+     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
+          if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
+               if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+                    $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-		}
-	}
-	$sOrder = substr_replace($sOrder, "", -2);
+          }
+     }
+     $sOrder = substr_replace($sOrder, "", -2);
 }
 //echo $sOrder;
 /*
@@ -165,10 +165,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -176,10 +176,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      //print_r($s_t_date);die;
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = $general->isoDateFormat(trim($s_t_date[0]));
+          $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
+          $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -188,14 +188,14 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+     $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
@@ -318,22 +318,22 @@ foreach ($rResult as $aRow) {
           }
      }
 
-     $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']);
-     $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']);
-     $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']);
+     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
+     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
+     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     if($_POST['from'] == "enterresult"){
+     if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
           $row[] = $aRow['batch_code'];
      }
      $row[] = $aRow['patient_art_no'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
-     if($_POST['from'] != "enterresult"){
+     if (empty($_POST['from']) || $_POST['from'] != "enterresult") {
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
      }
@@ -341,7 +341,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
      } else {
           $aRow['last_modified_datetime'] = '';
      }

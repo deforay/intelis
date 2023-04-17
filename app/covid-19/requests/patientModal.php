@@ -2,7 +2,7 @@
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%' OR patient_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -75,12 +75,12 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_name']) . strtolower($patient['patient_surname']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . $general->humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_age'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_phone_number'] .  "##" . $patient['patient_id'] .  "##" . $patient['patient_passport_number'] .  "##" . $patient['patient_address'] .  "##" . $patient['patient_nationality'] .  "##" . $patient['patient_city'] .  "##" . $patient['patient_province'] .  "##" . $patient['patient_district'] .  "##" . $patient['geo_code'] .  "##" . $patient['province_id'] . "##" . $patient['patient_zone'] . "##" . $patient['external_sample_code']; 
+										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtils::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_age'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_phone_number'] .  "##" . $patient['patient_id'] .  "##" . $patient['patient_passport_number'] .  "##" . $patient['patient_address'] .  "##" . $patient['patient_nationality'] .  "##" . $patient['patient_city'] .  "##" . $patient['patient_province'] .  "##" . $patient['patient_district'] .  "##" . $patient['geo_code'] .  "##" . $patient['province_id'] . "##" . $patient['patient_zone'] . "##" . $patient['external_sample_code']; 
 										$patientDetails = json_encode(array(
 											"firstname"=>($patient['patient_name']),
 											"lastname"=>($patient['patient_surname']),
 											"gender"=>$patient['patient_gender'],
-											"dob"=>$general->humanReadableDateFormat($patient['patient_dob']),
+											"dob"=>\App\Utilities\DateUtils::humanReadableDateFormat($patient['patient_dob']),
 											"age"=>$patient['patient_age'],
 											"is_patient_pregnant"=>$patient['is_patient_pregnant'],
 											"is_patient_breastfeeding"=>$patient['is_patient_breastfeeding'],

@@ -20,11 +20,11 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 }
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
 
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$geoLocationDb = new \App\Models\GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
@@ -243,7 +243,16 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="motherName" name="motherName" class="form-control" placeholder="<?php echo _('Enter Mother Name'); ?>" style="background:#fff;" />
 							</td>
-									</tr>
+							<td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
+							<td>
+								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
+									<option value="yes"><?php echo _("Yes"); ?></option>
+									<option value="no" selected="selected"><?php echo _("No"); ?></option>
+								</select>
+							</td>
+							</tr>
+
+							
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -619,6 +628,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				aoData.push({
 					"name": "motherName",
 					"value": $("#motherName").val()
+				});
+				aoData.push({
+					"name": "rejectedSamples",
+					"value": $("#rejectedSamples").val()
 				});
 				$.ajax({
 					"dataType": 'json',

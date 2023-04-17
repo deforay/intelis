@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $id = base64_decode($_POST['id']);
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
@@ -266,11 +266,11 @@ if (trim($id) != '') {
                 $collectionDate = '';
                 if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $cDate = explode(" ", $sample['sample_collection_date']);
-                    $collectionDate = $general->humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
+                    $collectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
                 }
                 $patientDOB = '';
                 if (isset($sample['child_dob']) && $sample['child_dob'] != '' && $sample['child_dob'] != null && $sample['child_dob'] != '0000-00-00') {
-                    $patientDOB = $general->humanReadableDateFormat($sample['child_dob']);
+                    $patientDOB = \App\Utilities\DateUtils::humanReadableDateFormat($sample['child_dob']);
                 }
                 $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', '', 9, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2), 'N'));
                 //$tbl.='<table cellspacing="0" cellpadding="3" style="width:100%">';

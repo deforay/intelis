@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
   
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
@@ -18,7 +18,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -131,10 +131,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
+		$start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
+		$end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 $sTestDate = '';
@@ -142,10 +142,10 @@ $eTestDate = '';
 // if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 //      $s_t_date = explode("to", $_POST['sampleTestDate']);
 //      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-//           $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+//           $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
 //      }
 //      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-//           $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+//           $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
 //      }
 // }
 
@@ -230,9 +230,9 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     $patientFname = $general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']);
-     $patientMname = $general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']);
-     $patientLname = $general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']);
+     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
+     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
+     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 
      $row = array();
      $row[] = $aRow['sample_code'];

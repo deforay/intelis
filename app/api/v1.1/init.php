@@ -15,11 +15,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 header('Content-Type: application/json');
 
-$general = new \Vlsm\Models\General();
-$app = new \Vlsm\Models\App();
-$userDb = new \Vlsm\Models\Users();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$app = new \App\Models\App();
+$userDb = new \App\Models\Users();
+$facilitiesDb = new \App\Models\Facilities();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
@@ -133,7 +133,7 @@ $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $covid19Obj = new \Vlsm\Models\Covid19();
+    $covid19Obj = new \App\Models\Covid19();
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
@@ -237,7 +237,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
 // Check if eid module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidObj = new \Vlsm\Models\Eid();
+    $eidObj = new \App\Models\Eid();
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
@@ -314,7 +314,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 
 // Check if vl module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlObj = new \Vlsm\Models\Vl();
+    $vlObj = new \App\Models\Vl();
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
@@ -379,7 +379,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
 
 // Check if tb module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-    $tbObj = new \Vlsm\Models\Tb();
+    $tbObj = new \App\Models\Tb();
     /* SITE INFORMATION SECTION */
 
     /* Infant and Mother's Health Information Section */

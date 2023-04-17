@@ -9,8 +9,8 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
 
 $arr = $general->getGlobalConfig();
 
@@ -62,7 +62,7 @@ if (empty($requestResult) || $requestResult == false) {
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = $general->humanReadableDateFormat($expStr[0]);
+$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 
 $_SESSION['nbPages'] = sizeof($requestResult);

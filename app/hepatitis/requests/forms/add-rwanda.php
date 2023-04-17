@@ -2,7 +2,7 @@
 // imported in hepatitis-add-request.php based on country in global config
 
 ob_start();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

@@ -3,10 +3,10 @@ ob_start();
   
 
 
-$general=new \Vlsm\Models\General();
+$general=new \App\Models\General();
 
 $module = 'C19';
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 
 $tableName1="covid19_positive_confirmation_manifest";
 $tableName2="form_covid19";
@@ -19,7 +19,7 @@ try {
             'manifest_status'           =>  'pending',
             'module'                    =>  $module,
             'added_by'                  =>  $_SESSION['userId'],
-            'request_created_datetime'  =>  $general->getCurrentDateTime()
+            'request_created_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime()
         );
                     
         $db->insert($tableName1,$data);

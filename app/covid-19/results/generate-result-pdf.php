@@ -11,9 +11,9 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
-$covid19Obj = new \Vlsm\Models\Covid19();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
+$covid19Obj = new \App\Models\Covid19();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -331,12 +331,12 @@ if (sizeof($requestResult) > 0) {
 		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
 			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
 		} else {
-			$printedTime = $general->getCurrentDateTime();
+			$printedTime = \App\Utilities\DateUtils::getCurrentDateTime();
 		}
 		$expStr = explode(" ", $printedTime);
-		$printDate = $general->humanReadableDateFormat($expStr[0]);
+		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Obj = new \Vlsm\Models\Covid19();
+		$covid19Obj = new \App\Models\Covid19();
 		$covid19Results = $covid19Obj->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
@@ -350,12 +350,12 @@ if (sizeof($requestResult) > 0) {
 		$facilityInfo = $db->rawQueryOne($facilityQuery);
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
-		$patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-		$patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
 		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-		$currentDateTime = $general->getCurrentDateTime();
+		$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';

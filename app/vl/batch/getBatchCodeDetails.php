@@ -1,12 +1,9 @@
 <?php
 
-
-
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-$general = new \Vlsm\Models\General();
-
+$general = new \App\Models\General();
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
@@ -183,9 +180,10 @@ foreach ($rResult as $aRow) {
     }
 
     $date = '';
+    $lastDate = null;
     if ($aRow['last_tested_date'] != '0000-00-00 00:00:00' && $aRow['last_tested_date'] != null) {
         $exp = explode(" ", $aRow['last_tested_date']);
-        $lastDate = $general->humanReadableDateFormat($exp[0]);
+        $lastDate = \App\Utilities\DateUtils::humanReadableDateFormat($exp[0]);
     }
     $row[] = ($aRow['batch_code']);
     $row[] = $aRow['total_samples'];

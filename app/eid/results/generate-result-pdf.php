@@ -14,8 +14,8 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
-$general = new \Vlsm\Models\General();
-$users = new \Vlsm\Models\Users();
+$general = new \App\Models\General();
+$users = new \App\Models\Users();
 
 $arr = $general->getGlobalConfig();
 
@@ -32,7 +32,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = $general->humanReadableDateFormat($expStr[0]);
+$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['eidPrintQuery'];

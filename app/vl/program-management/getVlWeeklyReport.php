@@ -5,12 +5,12 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$facilitiesDb = new \App\Models\Facilities();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $sarr = $general->getSystemConfig();
@@ -160,10 +160,10 @@ $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleTestDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = $general->isoDateFormat(trim($s_t_date[0]));
+    $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = $general->isoDateFormat(trim($s_t_date[1]));
+    $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
   }
 }
 

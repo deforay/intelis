@@ -2,10 +2,10 @@
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \Vlsm\Models\General();
-$geolocation = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$geolocation = new \App\Models\GeoLocations();
 
-$usersModel = new \Vlsm\Models\Users();
+$usersModel = new \App\Models\Users();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = array();

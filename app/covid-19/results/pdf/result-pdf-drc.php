@@ -1,6 +1,6 @@
 <?php
 // this file is included in covid-19/results/generate-result-pdf.php
-$covid19Obj = new \Vlsm\Models\Covid19();
+$covid19Obj = new \App\Models\Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $resultFilename = '';
@@ -21,7 +21,7 @@ if (sizeof($requestResult) > 0) {
 
         $signQuery = "SELECT * FROM lab_report_signatories WHERE lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-        $currentTime = $general->getCurrentDateTime();
+        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -111,7 +111,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]);
+            $result['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -121,24 +121,24 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-            $sampleReceivedDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $sampleDispatchDate = '';
         $sampleDispatchTime = '';
         if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_printed_datetime']);
-            $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $sampleDispatchDate = $general->humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }
@@ -194,8 +194,8 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Zone de santé</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $patientFname = ($general->crypto('decrypt', $result['patient_name'], $result['patient_id']));
-        $patientLname = ($general->crypto('decrypt', $result['patient_surname'], $result['patient_id']));
+        $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+        $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientLname . ' ' . $patientFname . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
@@ -217,7 +217,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_id'] . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $general->humanReadableDateFormat($result['patient_dob']) . '/' . $age . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . \App\Utilities\DateUtils::humanReadableDateFormat($result['patient_dob']) . '/' . $age . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_address'] . '</td>';
 
@@ -313,7 +313,7 @@ if (sizeof($requestResult) > 0) {
                 $html .= '<tr>
                                             <td align="center" width="15%">' . ($indexKey + 1) . '</td>
                                             <td align="center" width="45%">' . $rows['test_name'] . '</td>
-                                            <td align="center" width="25%">' . $general->humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
+                                            <td align="center" width="25%">' . \App\Utilities\DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
                                             <td align="center" width="15%">' . ($rows['result']) . '</td>
                                         </tr>';
             }
@@ -386,7 +386,7 @@ if (sizeof($requestResult) > 0) {
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $general->humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . \App\Utilities\DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
             $html .= '</tr>';
         }
 

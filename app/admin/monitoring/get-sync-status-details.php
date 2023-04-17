@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -74,7 +74,7 @@ foreach ($rResult as $key => $aRow) { ?>
         <td><?php echo ($_POST['testType']); ?></td>
         <td><?php echo ($aRow['province']); ?></td>
         <td><?php echo ($aRow['district']); ?></td>
-        <td><?php echo $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
-        <td><?php echo $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+        <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
+        <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
     </tr>
 <?php } ?>

@@ -3,7 +3,7 @@ ob_start();
 
 
 
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $tableName = "form_hepatitis";
 try {
     $id = explode(",", $_POST['id']);
@@ -11,8 +11,8 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'         => $_POST['status'],
-            'result_approved_datetime'  =>  $general->getCurrentDateTime(),
-            'last_modified_datetime'     =>  $general->getCurrentDateTime(),
+            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
             'data_sync'             => 0
         );
         /* Check if already have reviewed and approved by */

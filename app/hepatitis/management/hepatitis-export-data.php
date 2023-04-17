@@ -4,10 +4,10 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$hepatitisDb = new \Vlsm\Models\Hepatitis();
-$geoLocationDb = new \Vlsm\Models\GeoLocations();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$hepatitisDb = new \App\Models\Hepatitis();
+$geoLocationDb = new \App\Models\GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

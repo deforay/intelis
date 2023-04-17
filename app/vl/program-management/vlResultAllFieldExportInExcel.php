@@ -7,7 +7,7 @@ ob_start();
 
 
  
- $general=new \Vlsm\Models\General();
+ $general=new \App\Models\General();
  $configQuery="SELECT * from global_config";
  $configResult=$db->query($configQuery);
  $arr = array();

@@ -27,9 +27,9 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-// $general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
+// $general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
 

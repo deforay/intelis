@@ -3,8 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
   
-$general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
+$general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
 $results = array();
 if (isset($_POST['id']) && $_POST['id'] > 0) {
     $db->where("f.facility_id", $_POST['id']);

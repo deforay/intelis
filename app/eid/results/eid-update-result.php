@@ -7,8 +7,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
 
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$usersModel = new \Vlsm\Models\Users();
+$facilitiesDb = new \App\Models\Facilities();
+$usersModel = new \App\Models\Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
@@ -48,7 +48,7 @@ $id = base64_decode($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -63,7 +63,7 @@ foreach ($iResult as $val) {
 }
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-	$eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$eidInfo['result_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
 }

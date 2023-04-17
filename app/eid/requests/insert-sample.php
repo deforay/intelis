@@ -3,5 +3,5 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$eidModel = new \Vlsm\Models\Eid();
+$eidModel = new \App\Models\Eid();
 echo $eidModel->insertSampleCode($_POST);

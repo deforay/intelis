@@ -21,7 +21,7 @@ try {
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    // $ranNumber         = \Vlsm\Models\General::generateRandomString(12);
+    // $ranNumber         = \App\Models\General::generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
 
 
@@ -228,7 +228,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new \Vlsm\Models\Users();
+                $usersModel = new \App\Models\Users();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
@@ -253,7 +253,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue; 
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
-                $data['result_imported_datetime'] = $general->getCurrentDateTime();
+                $data['result_imported_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
 
@@ -279,7 +279,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $id,
             'test_type' => 'eid',
-            'updated_on' => $general->getCurrentDateTime()
+            'updated_on' => \App\Utilities\DateUtils::getCurrentDateTime()
         );
         $db->insert("log_result_updates", $data);
     }

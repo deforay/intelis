@@ -1,11 +1,11 @@
 <?php
 
-use Vlsm\Utilities\DateUtils;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
 ini_set('memory_limit', -1);
-$general = new \Vlsm\Models\General();
+$general = new \App\Models\General();
 $dateTimeUtil = new DateUtils();
 /*
 $sQuery = "SELECT  
@@ -151,7 +151,7 @@ foreach ($rResult as $aRow) {
 	//date of birth
 	$dob = '';
 	if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-		$dob =  $dateTimeUtil->humanReadableDateFormat($aRow['patient_dob']);
+		$dob =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
 	}
 
 	$age = null;
@@ -174,38 +174,38 @@ foreach ($rResult as $aRow) {
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if (!empty($aRow['sample_collection_date'])) {
-		$sampleCollectionDate =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_collection_date']);
+		$sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	//treatment initiation date
 	$treatmentInitiationDate = '';
 	if (!empty($aRow['treatment_initiated_date'])) {
-		$treatmentInitiationDate =  $dateTimeUtil->humanReadableDateFormat($aRow['treatment_initiated_date']);
+		$treatmentInitiationDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['treatment_initiated_date']);
 	}
 	//date of initiation of current regimen
 	$dateOfInitiationOfCurrentRegimen = '';
 	if (!empty($aRow['date_of_initiation_of_current_regimen'])) {
-		$dateOfInitiationOfCurrentRegimen =  $dateTimeUtil->humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
+		$dateOfInitiationOfCurrentRegimen =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
 	}
 	//requested date
 	$requestedDate = '';
 	if (!empty($aRow['test_requested_on'])) {
-		$requestedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['test_requested_on']);
+		$requestedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['test_requested_on']);
 	}
 
 	//request created date time
 	$requestCreatedDatetime = '';
 	if (!empty($aRow['request_created_datetime'])) {
-		$requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
+		$requestCreatedDatetime =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
 	}
 
 	$sampleTestedOn = '';
 	if (!empty($aRow['sample_tested_datetime'])) {
-		$sampleTestedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$sampleTestedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	}
 
 	$sampleReceivedOn = '';
 	if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-		$sampleReceivedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$sampleReceivedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	}
 
 	//set ARV adherecne
@@ -226,21 +226,21 @@ foreach ($rResult as $aRow) {
 	//result dispatched date
 	$resultDispatchedDate = '';
 	if (!empty($aRow['result_printed_datetime'])) {
-		$resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
+		$resultDispatchedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 	}
 
 	if ($aRow['patient_first_name'] != '') {
-		$patientFname = ($general->crypto('decrypt', $aRow['patient_first_name'], $aRow['patient_art_no']));
+		$patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
 	} else {
 		$patientFname = '';
 	}
 	if ($aRow['patient_middle_name'] != '') {
-		$patientMname = ($general->crypto('decrypt', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+		$patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
 	} else {
 		$patientMname = '';
 	}
 	if ($aRow['patient_last_name'] != '') {
-		$patientLname = ($general->crypto('decrypt', $aRow['patient_last_name'], $aRow['patient_art_no']));
+		$patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 	} else {
 		$patientLname = '';
 	}

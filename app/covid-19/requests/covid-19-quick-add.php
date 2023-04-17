@@ -32,9 +32,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-// $general = new \Vlsm\Models\General();
-$facilitiesDb = new \Vlsm\Models\Facilities();
-$userDb = new \Vlsm\Models\Users();
+// $general = new \App\Models\General();
+$facilitiesDb = new \App\Models\Facilities();
+$userDb = new \App\Models\Users();
 
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
