@@ -43,8 +43,8 @@ try {
                 "lab_id"                    => $_POST['labNameTo'],
                 "referring_lab_id"          => $_POST['labNameTo'],
                 "data_sync"                 => 0,
-                "samples_referred_datetime" => $general->getCurrentDateTime(),
-                "last_modified_datetime"    => $general->getCurrentDateTime()
+                "samples_referred_datetime" => \App\Utilities\DateUtils::getCurrentDateTime(),
+                "last_modified_datetime"    => \App\Utilities\DateUtils::getCurrentDateTime()
             );
             $db->where($primaryKey . " IN (" . implode(",", $_POST['sampleCode']) . ")");
             $db->where("lab_id", $_POST['labId']);

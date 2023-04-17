@@ -82,7 +82,7 @@ try {
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(
-            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : $general->getCurrentDateTime())
+            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : \App\Utilities\DateUtils::getCurrentDateTime())
         );
         
         $db->update('s_vlsm_instance', $data);

@@ -126,7 +126,7 @@ try {
                     'is_result_authorised'                  => strtolower($rowData['BL']),
                     'authorized_by'                         => ($rowData['BM']),
                     'authorized_on'                         => date('Y-m-d', strtotime($rowData['BN'])),
-                    'last_modified_datetime'                => $general->getCurrentDateTime(),
+                    'last_modified_datetime'                => \App\Utilities\DateUtils::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => isset($resultStatus['status_id']) ? $resultStatus['status_id'] : null,
                     'sample_condition'                      => strtolower($rowData['BP']),

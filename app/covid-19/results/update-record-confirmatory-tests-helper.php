@@ -16,14 +16,14 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = $general->isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = $general->isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
@@ -37,9 +37,9 @@ try {
 		'result'                              => isset($_POST['result']) ? $_POST['result'] : null,
 		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? $general->isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' 					  => isset($_POST['authorizedOn']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'reason_for_changing'				  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
-		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? $general->isoDateFormat($_POST['rejectionDate']) : null,
+		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => 6,
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -64,7 +64,7 @@ try {
 			foreach ($_POST['testName'] as $testKey => $testerName) {
 				if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
 					$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
-					$_POST['testDate'][$testKey] = $general->isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+					$_POST['testDate'][$testKey] = \App\Utilities\DateUtils::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
 				} else {
 					$_POST['testDate'][$testKey] = null;
 				}
@@ -108,7 +108,7 @@ try {
 		'user_id' => $_SESSION['userId'],
 		'vl_sample_id' => $_POST['covid19SampleId'],
 		'test_type' => 'covid19',
-		'updated_on' => $general->getCurrentDateTime()
+		'updated_on' => \App\Utilities\DateUtils::getCurrentDateTime()
 	);
 	$db->insert($tableName2, $data);
 

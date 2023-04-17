@@ -3,11 +3,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
-   
+
 
 
 
 $general = new \App\Models\General();
+
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
@@ -25,9 +26,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name","Sample Status");
+    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
-        $headings = array('Sample Code', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name","Sample Status");
+        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+            unset($headings[$key]);
+        }
     }
 
     $colNo = 1;
@@ -49,7 +52,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     );
 
 
-    $sheet->mergeCells('A1:AE1'); 
+    $sheet->mergeCells('A1:AE1');
     $nameValue = '';
     foreach ($_POST as $key => $value) {
         if (trim($value) != '' && trim($value) != '-- Select --') {
@@ -57,13 +60,13 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         }
     }
     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
-     foreach ($headings as $field => $value) {
-          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-                    ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-          $colNo++;
-     }
+    foreach ($headings as $field => $value) {
+        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+            ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $colNo++;
+    }
     $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
     $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
     $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
@@ -83,13 +86,12 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             $expStr = explode(" ", $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
-        if($aRow['remote_sample']=='yes'){
+        if ($aRow['remote_sample'] == 'yes') {
             $decrypt = 'remote_sample_code';
-            
-        }else{
+        } else {
             $decrypt = 'sample_code';
         }
-        $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow[$decrypt]));
+        $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if ($_SESSION['instanceType'] != 'standalone') {
             $row[] = $aRow['remote_sample_code'];
@@ -107,16 +109,16 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     foreach ($output as $rowNo => $rowData) {
         $colNo = 1;
         $rRowCount = $rowNo + 4;
-          foreach ($rowData as $field => $value) {
-               $sheet->setCellValue(
+        foreach ($rowData as $field => $value) {
+            $sheet->setCellValue(
                 Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode($value));
-               $colNo++;
-          }
+                html_entity_decode($value)
+            );
+            $colNo++;
+        }
     }
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'VLSM-Covid-19-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-
 }

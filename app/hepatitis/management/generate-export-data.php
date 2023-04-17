@@ -185,7 +185,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $sampleTestedOn;
 		$row[] = ($aRow['hcv_vl_result']);
 		$row[] = ($aRow['hbv_vl_result']);
-		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

@@ -22,12 +22,12 @@ $systemConfig['instanceName'] = '';
 
 
 // Database Settings
-$systemConfig['database']['host']     = '';
-$systemConfig['database']['username']     = 'root';
-$systemConfig['database']['password'] = 'zaq12345';
-$systemConfig['database']['db']     = 'vlsm';
-$systemConfig['database']['port']     = 3306;
-$systemConfig['database']['charset'] = 'utf8mb4';
+$systemConfig['database']['host']       = '';
+$systemConfig['database']['username']   = 'root';
+$systemConfig['database']['password']   = 'zaq12345';
+$systemConfig['database']['db']         = 'vlsm';
+$systemConfig['database']['port']       = 3306;
+$systemConfig['database']['charset']    = 'utf8mb4';
 
 
 $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
@@ -69,7 +69,7 @@ $systemConfig['recency']['url'] = '';
 
 
 
-// Enable/Disable Recency Viral Load tests sync 
+// Enable/Disable Recency Viral Load tests sync
 // true => Enabled
 // false => Disabled
 $systemConfig['recency']['vlsync'] = false;
@@ -80,7 +80,7 @@ $systemConfig['recency']['vlsync'] = false;
 // false => Disabled
 $systemConfig['recency']['crosslogin'] = false;
 
-// This Salt should match the Salt on Recency Web app 
+// This Salt should match the Salt on Recency Web app
 $systemConfig['recency']['crossloginSalt'] = "PUT-A-RANDOM-STRING-HERE";
 
 

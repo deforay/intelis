@@ -20,7 +20,7 @@ try {
 		$data = array(
 			'sample_name' => $_POST['sampleName'],
 			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

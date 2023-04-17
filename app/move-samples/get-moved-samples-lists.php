@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     $date = '';
     if ($aRow['moved_on'] != '0000-00-00' && $aRow['moved_on'] != null) {
-        $date = $general->humanReadableDateFormat($aRow['moved_on']);
+        $date = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['moved_on']);
     }
     $row[] = ($aRow['labNameFrom']);
     $row[] = ($aRow['labNameTo']);

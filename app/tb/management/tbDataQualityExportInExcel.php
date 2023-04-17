@@ -73,7 +73,7 @@ foreach ($headings as $field => $value) {
           $sampleCollectionDate = '';
           if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
                $expStr = explode(" ",$aRow['sample_collection_date']);
-               $sampleCollectionDate =  $general->humanReadableDateFormat($expStr[0]);
+               $sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
           }
 
           if($aRow['remote_sample']=='yes'){

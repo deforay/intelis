@@ -1,9 +1,12 @@
 <?php
+
+use App\Utilities\MiscUtils;
+
 ob_start();
 
 
 
-$general = new \App\Models\General(); 
+$general = new \App\Models\General();
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
@@ -48,10 +51,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -60,10 +63,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+        $labStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = $general->isoDateFormat(trim($s_c_date[1]));
+        $labEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -72,10 +75,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleTestedDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+        $testedStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
+        $testedEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name 
@@ -85,7 +88,7 @@ $tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = array();
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -129,7 +132,7 @@ $vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 $sWhere = array();
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -180,7 +183,7 @@ $tatSampleQuery = "SELECT
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
     AND DATE(vl.sample_tested_datetime) <= '$end_date'";
 $sWhere = array();
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -222,7 +225,7 @@ $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = ' vl.reason_for_tb_test IS NOT NULL ';
-if(!empty($whereCondition))
+if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -240,7 +243,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if (isset($sWhere) && !empty($sWhere)) {
-    $testReasonQuery .= ' where '.implode(" AND ", $sWhere);
+    $testReasonQuery .= ' where ' . implode(" AND ", $sWhere);
 }
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);
@@ -329,7 +332,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                             name: '<?php echo ($tRow['status_name']); ?>',
                             y: <?php echo ($tRow['total']); ?>,
                             color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']);?>'
+                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
                         },
                     <?php
                     }
@@ -583,9 +586,9 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     <?php
                     foreach ($testReasonResult as $tRow) {
                     ?> {
-                            name: '<?php echo ($tRow['test_reason_name']); ?>',
-                            y: <?php echo ($tRow['total']); ?>,
-                            color: '#<?php echo $general->random_color(); ?>',
+                            name: '<?= ($tRow['test_reason_name']); ?>',
+                            y: <?= ($tRow['total']); ?>,
+                            color: '#<?php echo MiscUtils::randomHexColor(); ?>',
                         },
                     <?php
                     }

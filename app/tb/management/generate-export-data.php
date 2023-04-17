@@ -183,22 +183,22 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			$row[] = $aRow['patient_id'];
 			$row[] = $patientFname . " " . $patientLname;
 		}
-		$row[] = $general->humanReadableDateFormat($aRow['patient_dob']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
 		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ($aRow['patient_gender']);
-		$row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 		$row[] = ($aRow['test_reason_name']);
-		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-		$row[] = $general->humanReadableDateFormat($aRow['request_created_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
 		$row[] = ($aRow['status_name']);
 		$row[] = ($aRow['sample_name']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
-		$row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
 		$row[] = $tbResults[$aRow['result']];
-		$row[] = $general->humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 
 		$output[] = $row;
 		$no++;

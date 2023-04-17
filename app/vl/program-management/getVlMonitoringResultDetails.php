@@ -131,10 +131,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = $general->isoDateFormat(trim($s_c_date[0]));
+		$start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = $general->isoDateFormat(trim($s_c_date[1]));
+		$end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 $sTestDate = '';
@@ -142,10 +142,10 @@ $eTestDate = '';
 // if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 //      $s_t_date = explode("to", $_POST['sampleTestDate']);
 //      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-//           $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+//           $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
 //      }
 //      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-//           $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+//           $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
 //      }
 // }
 

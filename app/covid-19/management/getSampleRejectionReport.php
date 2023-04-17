@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 
 $general = new \App\Models\General();
@@ -31,8 +31,12 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
 if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-    $orderColumns = array('vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+        unset($aColumns[$key]);
+    }
+    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+        unset($orderColumns[$key]);
+    }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -98,7 +102,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -117,10 +121,10 @@ if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '
     $s_c_date = explode("to", $_POST['rjtSampleTestDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
@@ -160,19 +164,16 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-       // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+        // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' AND '.implode(' AND ',$sWhere);
-}
-else
-{
+if (isset($sWhere) && count($sWhere) > 0) {
+    $sWhere = ' AND ' . implode(' AND ', $sWhere);
+} else {
     $sWhere = "";
 }
 //echo $sWhere;
-$sQuery = $sQuery .' ' . $sWhere;
+$sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery; die;
 $sQuery = $sQuery . ' group by vl.covid19_id';
 if (isset($sOrder) && $sOrder != "") {
@@ -211,7 +212,7 @@ $output = array(
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_collection_date'] = '';
     }

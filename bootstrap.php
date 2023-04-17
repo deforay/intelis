@@ -22,7 +22,7 @@ defined('SYSTEM_CONFIG') ||
 // Database Connection
 $db = new MysqliDb(SYSTEM_CONFIG['database']);
 
-$debugMode = SYSTEM_CONFIG['system']['debug_mode'] ?: false;
+$debugMode = SYSTEM_CONFIG['system']['debug_mode'] ?? false;
 
 (new System())
     ->bootstrap()

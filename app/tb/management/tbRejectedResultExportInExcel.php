@@ -3,11 +3,12 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 ob_start();
-  
+
 
 
 
 $general = new \App\Models\General();
+
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 //system config
@@ -28,7 +29,9 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
+          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+               unset($headings[$key]);
+          }
      }
 
      $colNo = 1;
@@ -57,12 +60,12 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-foreach ($headings as $field => $value) {
-	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-	$colNo++;
-}
+          ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+     foreach ($headings as $field => $value) {
+          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+               ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+          $colNo++;
+     }
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
@@ -99,12 +102,13 @@ foreach ($headings as $field => $value) {
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           $rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value));
-			$colNo++;
-		}
+          foreach ($rowData as $field => $value) {
+               $sheet->setCellValue(
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
+               $colNo++;
+          }
      }
      $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-TB-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';

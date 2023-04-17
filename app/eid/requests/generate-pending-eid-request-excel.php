@@ -140,7 +140,7 @@ foreach ($rResult as $aRow) {
     //date of birth
     $dob = '';
     if (!empty($aRow['child_dob'])) {
-        $dob =  $dateTimeUtil->humanReadableDateFormat($aRow['child_dob']);
+        $dob =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['child_dob']);
     }
     //set gender
     $gender = '';
@@ -154,16 +154,16 @@ foreach ($rResult as $aRow) {
     //sample collecion date
     $sampleCollectionDate = '';
     if (!empty($aRow['sample_collection_date'])) {
-        $sampleCollectionDate =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_collection_date']);
+        $sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     }
 
     $sampleTestedOn = '';
     if (!empty($aRow['sample_tested_datetime'])) {
-        $sampleTestedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $sampleTestedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     }
 
     if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-        $sampleReceivedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $sampleReceivedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     }
 
 
@@ -175,13 +175,13 @@ foreach ($rResult as $aRow) {
     //result dispatched date
     $resultDispatchedDate = '';
     if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
+        $resultDispatchedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
     }
 
     //requeste created date time
     $requestCreatedDatetime = '';
     if ($aRow['request_created_datetime'] != null && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
-        $requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
+        $requestCreatedDatetime =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
     }
     //set result log value
     $logVal = '0.0';

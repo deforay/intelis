@@ -84,9 +84,9 @@ foreach ($rResult as $aRow) {
 
     $row[] = ($aRow['facility_name']);
     //$row[] = ($aRow['test_type']);
-    $row[] = $general->humanReadableDateFormat($aRow['latest']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastResultsSync']);
-    $row[] = $general->humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['latest']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync']);
     $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - ";
     $output[] = $row;
 

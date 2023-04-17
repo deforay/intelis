@@ -146,7 +146,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $reasonData = array(
                     'test_reason_name' => $formData['reason_for_covid19_test'],
                     'test_reason_status' => 'active',
-                    'updated_datetime' => $general->getCurrentDateTime()
+                    'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
                 );
                 $formData['reason_for_covid19_test'] =   $db->insert("r_covid19_test_reasons", $reasonData);
             }
@@ -200,7 +200,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $sampleTypeData = array(
                     'sample_name' => $formData['specimen_type'],
                     'status' => 'active',
-                    'updated_datetime' => $general->getCurrentDateTime()
+                    'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
                 );
                 $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
             }
@@ -213,7 +213,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
         $formData['result_status'] = $status;
-        $formData['last_modified_datetime'] = $general->getCurrentDateTime();
+        $formData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
 
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower($formData['patient_gender']) : null);
@@ -229,7 +229,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
 
-        $sampleJson = $covid19Model->generateCovid19SampleCode(null, $general->humanReadableDateFormat($formData['sample_collection_date']), null, $formData['province_id']);
+        $sampleJson = $covid19Model->generateCovid19SampleCode(null, \App\Utilities\DateUtils::humanReadableDateFormat($formData['sample_collection_date']), null, $formData['province_id']);
 
         $sampleData = json_decode($sampleJson, true);
 
@@ -252,7 +252,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
 
         $formData['request_created_by'] = 1;
-        $formData['request_created_datetime'] = $general->getCurrentDateTime();
+        $formData['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
         $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

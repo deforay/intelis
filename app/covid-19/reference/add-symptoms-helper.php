@@ -20,7 +20,7 @@ try {
             'symptom_name' => $_POST['symptomsName'],
             'parent_symptom' => $_POST['parentSymptom'],
 			'symptom_status' => $_POST['symptomsStatus'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

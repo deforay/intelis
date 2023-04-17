@@ -30,10 +30,10 @@ $tResult = array();
         $s_c_date = explode("to", $_POST['sampleCollectionDate']);
         //print_r($s_c_date);die;
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+            $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+            $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
         }
         $sWhere[]= ' DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
     }

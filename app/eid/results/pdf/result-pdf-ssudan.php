@@ -17,7 +17,7 @@ if (sizeof($requestResult) > 0) {
     $pages = array();
     $page = 1;
     foreach ($requestResult as $result) {
-        $currentTime = $general->getCurrentDateTime();
+        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';

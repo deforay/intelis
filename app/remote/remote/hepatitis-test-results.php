@@ -62,13 +62,13 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  $general->getCurrentDateTime();
+            $lab['result_approved_datetime'] =  \App\Utilities\DateUtils::getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = $general->getCurrentDateTime();
+        $lab['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -114,7 +114,7 @@ $payload = json_encode($sampleCodes);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
-$currentDateTime = $general->getCurrentDateTime();
+$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 if (!empty($sampleCodes)) {
     $sql = 'UPDATE form_hepatitis SET data_sync = ?,
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)

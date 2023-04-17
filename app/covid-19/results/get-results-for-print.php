@@ -30,15 +30,17 @@ $primaryKey = "covid19_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district','s.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state','f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'standalone') {
-    if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-       unset($aColumns[$key]);
-         unset($orderColumns[$key]);
-   }
+    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+        unset($aColumns[$key]);
+    }
+    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+        unset($orderColumns[$key]);
+    }
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -144,10 +146,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -155,22 +157,22 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = $general->isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = $general->isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"' ;
+    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $sWhere[] = ' f.facility_state_id = "'. $_POST['state'].'"' ;
+    $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-    $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
+    $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
@@ -294,13 +296,13 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['labName']);
     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
+    $row[] = ($aRow['facility_district']);
     $row[] = ($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['last_modified_datetime'] = '';
     }

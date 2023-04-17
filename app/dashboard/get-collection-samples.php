@@ -4,10 +4,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $lastSevenDay = $general->isoDateFormat(trim($s_c_date[0]));
+        $lastSevenDay = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $cDate = $general->isoDateFormat(trim($s_c_date[1]));
+        $cDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 

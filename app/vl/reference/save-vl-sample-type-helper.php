@@ -17,7 +17,7 @@ try {
 		$data = array(
 			'sample_name' => $_POST['sampleName'],
 			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['sampleId']) && $_POST['sampleId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['sampleId']));

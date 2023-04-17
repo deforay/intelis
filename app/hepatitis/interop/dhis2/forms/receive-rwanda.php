@@ -273,12 +273,12 @@ foreach ($trackedEntityInstances as $tracker) {
         //var_dump($uniqueID . " -- " . $formData['hepatitis_test_type']);
         //continue;
 
-        $formData['request_created_datetime'] = $general->getCurrentDateTime();
+        $formData['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
         $updateColumns = array_keys($formData);
 
         $formData['unique_id'] = $uniqueID;
 
-        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, $general->humanReadableDateFormat($formData['sample_collection_date']));
+        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, \App\Utilities\DateUtils::humanReadableDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -302,7 +302,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
-        $formData['last_modified_datetime'] = $general->getCurrentDateTime();
+        $formData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
 
         $formAttributes = array();

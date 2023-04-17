@@ -72,7 +72,7 @@ try {
                 //$randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
 
                 // $userData['api_token'] = $randomString;
-                // $userData['api_token_generated_datetime'] = $general->getCurrentDateTime();
+                // $userData['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
                 // $db = $db->where('user_id', $userResult['user_id']);
                 // $upId = $db->update('user_details', $userData);
 

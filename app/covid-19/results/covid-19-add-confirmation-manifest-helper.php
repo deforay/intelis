@@ -19,7 +19,7 @@ try {
             'manifest_status'           =>  'pending',
             'module'                    =>  $module,
             'added_by'                  =>  $_SESSION['userId'],
-            'request_created_datetime'  =>  $general->getCurrentDateTime()
+            'request_created_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime()
         );
                     
         $db->insert($tableName1,$data);

@@ -13,7 +13,7 @@ try {
 		$data = array(
 			'riskfactor_name' 		=> $_POST['riskFactorName'],
 			'riskfactor_status' 	=> $_POST['riskFactorStatus'],
-			'updated_datetime' 	=> $general->getCurrentDateTime(),
+			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['riskFactorId']) && $_POST['riskFactorId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['riskFactorId']));

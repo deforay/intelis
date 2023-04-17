@@ -24,7 +24,7 @@
 
   if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
     $xplodDate = explode(" ", $vlResult[0]['sample_collection_date']);
-    $vlResult[0]['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+    $vlResult[0]['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
   } else {
     $vlResult[0]['sample_collection_date'] = '';
   }
@@ -106,8 +106,8 @@
                       if (count($contact) > 0) {
                         foreach ($contact as $notes) {
                           $date = explode(" ", $notes['added_on']);
-                          $collectDate = $general->humanReadableDateFormat($notes['collected_on']);
-                          $humanDate = $general->humanReadableDateFormat($date[0]);
+                          $collectDate = \App\Utilities\DateUtils::humanReadableDateFormat($notes['collected_on']);
+                          $humanDate = \App\Utilities\DateUtils::humanReadableDateFormat($date[0]);
                       ?>
                           <tr>
                             <td><?php echo $notes['contact_notes']; ?></td>

@@ -63,8 +63,8 @@ class Patients
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
         $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
         $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-        $data['updated_datetime'] = $general->getCurrentDateTime();
-        $data['patient_registered_on'] = $general->getCurrentDateTime();
+        $data['updated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $data['patient_registered_on'] = \App\Utilities\DateUtils::getCurrentDateTime();
         $data['patient_registered_by'] = $params['registeredBy'];
 
         // $updateColumns = $data;
@@ -96,8 +96,8 @@ class Patients
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
         $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
         $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-        $data['updated_datetime'] = $general->getCurrentDateTime();
-        $data['patient_registered_on'] = $general->getCurrentDateTime();
+        $data['updated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $data['patient_registered_on'] = \App\Utilities\DateUtils::getCurrentDateTime();
         $data['patient_registered_by'] = $params['registeredBy'];
 
         $this->db->where("patient_code", $params['patientId']);

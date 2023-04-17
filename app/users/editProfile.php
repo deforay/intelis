@@ -128,7 +128,7 @@ $data = $db->get("user_login_history", 25);
             ?>
                 <tr>
 
-                  <td><?php echo $general->humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
+                  <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
                   <td><?php echo $project['login_id']; ?></td>
                   <td><?php echo $project['ip_address']; ?></td>
                   <td><?php echo $project['browser']; ?></td>

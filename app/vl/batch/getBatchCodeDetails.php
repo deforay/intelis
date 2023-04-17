@@ -183,7 +183,7 @@ foreach ($rResult as $aRow) {
     $lastDate = null;
     if ($aRow['last_tested_date'] != '0000-00-00 00:00:00' && $aRow['last_tested_date'] != null) {
         $exp = explode(" ", $aRow['last_tested_date']);
-        $lastDate = $general->humanReadableDateFormat($exp[0]);
+        $lastDate = \App\Utilities\DateUtils::humanReadableDateFormat($exp[0]);
     }
     $row[] = ($aRow['batch_code']);
     $row[] = $aRow['total_samples'];

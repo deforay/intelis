@@ -319,7 +319,7 @@ class Users
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
                 $general = new \App\Models\General($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
-                $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
+                $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);
                 $id = $this->db->update($this->table, $data);
@@ -398,7 +398,7 @@ class Users
         $data = array(
             'login_id' => $loginId,
             'user_id' => $userId,
-            'login_attempted_datetime' => $general->getCurrentDateTime(),
+            'login_attempted_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,

@@ -20,7 +20,7 @@ try {
             'test_reason_name' => $_POST['testReasonName'],
             'parent_reason' => $_POST['parentReason'],
 			'test_reason_status' => $_POST['testReasonStatus'],
-			'updated_datetime' => $general->getCurrentDateTime(),
+			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

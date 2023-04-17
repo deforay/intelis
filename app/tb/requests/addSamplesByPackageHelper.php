@@ -22,7 +22,7 @@ foreach ($sampleResult as $sampleRow) {
 
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = $general->isoDateFormat($testDate[0]);
+        $_POST['testDate'] = \App\Utilities\DateUtils::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -30,7 +30,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $tbObj->generatetbSampleCode($provinceCode, $general->humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $tbObj->generatetbSampleCode($provinceCode, \App\Utilities\DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         $tbData = array();
         $tbData['sample_code'] = $sampleData['sampleCode'];
@@ -43,7 +43,7 @@ foreach ($sampleResult as $sampleRow) {
         $tbData['result_status'] = 6;
         $tbData['data_sync'] = 0;
         $tbData['last_modified_by'] = $_SESSION['userId'];
-        $tbData['last_modified_datetime'] = $general->getCurrentDateTime();
+        $tbData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
 
         $db = $db->where('tb_id', $sampleRow['tb_id']);
         $id = $db->update('form_tb', $tbData);

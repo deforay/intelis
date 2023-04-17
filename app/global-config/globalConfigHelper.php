@@ -32,7 +32,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => $general->getCurrentDateTime(),
+                "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -62,7 +62,7 @@ try {
         'instance_facility_name' => $_POST['fName'],
         'instance_facility_code' => $_POST['fCode'],
         'instance_facility_type' => $_POST['instance_type'],
-        'instance_update_on' => $general->getCurrentDateTime(),
+        'instance_update_on' => \App\Utilities\DateUtils::getCurrentDateTime(),
     );
     $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
     $updateInstance = $db->update($instanceTableName, $instanceData);
@@ -98,7 +98,7 @@ try {
             if ($id) {
                 $db = $db->where('name', 'logo');
                 $db->update($tableName, array(
-                    "updated_on" => $general->getCurrentDateTime(),
+                    "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                     "updated_by" => $_SESSION['userId']
                 ));
             }
@@ -111,7 +111,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => $general->getCurrentDateTime(),
+                "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -129,7 +129,7 @@ try {
             if ($id) {
                 $db = $db->where('name', $fieldName);
                 $db->update($tableName, array(
-                    "updated_on" => $general->getCurrentDateTime(),
+                    "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                     "updated_by" => $_SESSION['userId']
                 ));
             }
@@ -209,7 +209,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => $general->getCurrentDateTime(),
+                "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -221,7 +221,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => $general->getCurrentDateTime(),
+                "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -233,7 +233,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => $general->getCurrentDateTime(),
+                "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }

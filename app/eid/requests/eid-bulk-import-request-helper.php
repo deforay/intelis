@@ -141,10 +141,10 @@ try {
                     'specimen_type'                                     => isset($sampleType['sample_id']) ? $sampleType['sample_id'] : null,
                     'data_sync'                                         => 0,
                     'request_created_by'                                => $_SESSION['userId'],
-                    'request_created_datetime'                          => $general->getCurrentDateTime(),
-                    'sample_registered_at_lab'                          => $general->getCurrentDateTime(),
+                    'request_created_datetime'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'sample_registered_at_lab'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
                     'last_modified_by'                                  => $_SESSION['userId'],
-                    'last_modified_datetime'                            => $general->getCurrentDateTime()
+                    'last_modified_datetime'                            => \App\Utilities\DateUtils::getCurrentDateTime()
                 );
 
                 // echo "<pre>";print_r($sampleCode);die;

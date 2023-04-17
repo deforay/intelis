@@ -29,14 +29,18 @@ $primaryKey = "covid19_id";
 */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code','f.facility_name',  'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name',  'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-    $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code','f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+        unset($aColumns[$key]);
+    }
+    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+        unset($orderColumns[$key]);
+    }
 }
 
 
@@ -62,7 +66,7 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            if(!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+            if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
                 $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
@@ -105,8 +109,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         if (count($sWhere) == 0) {
             $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        }
     }
-}
 }
 
 /*
@@ -124,44 +128,44 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        if (trim($start_date) == trim($end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-        } else {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (trim($start_date) == trim($end_date)) {
+        $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+    } else {
+        $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     }
-    if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere[] =  ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
-    }
-    if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-    }
-    if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
-    }
-    if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
-    }
-    if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
-        $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
-   }
-    if (isset($_POST['status']) && $_POST['status'] != '') {
-        $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
-    }
-    if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_id like "%'.$_POST['patientId'].'%"';
-   }
-   if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
-   }
+}
+if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
+    $sWhere[] =  ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+}
+if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
+    $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+    $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+    $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+}
+if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+    $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+}
+if (isset($_POST['status']) && $_POST['status'] != '') {
+    $sWhere[] =  ' vl.result_status = "' . $_POST['status'] . '"';
+}
+if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
+    $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+}
+if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
+    $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+}
 
 //$sFilter = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -173,11 +177,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-   // $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-if(isset($sWhere) && count($sWhere) > 0)
-{
-     $sWhere = ' where '. implode(' AND ',$sWhere);
-     $sQuery = $sQuery . ' ' . $sWhere;
+// $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
+if (isset($sWhere) && count($sWhere) > 0) {
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
+    $sQuery = $sQuery . ' ' . $sWhere;
 }
 
 if (isset($sOrder) && !empty(trim($sOrder))) {
@@ -188,7 +191,7 @@ $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
- //echo $sQuery;die;
+//echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
@@ -214,13 +217,13 @@ foreach ($rResult as $aRow) {
 
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['sample_collection_date']);
-        $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
+        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-        $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
+        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
     } else {
         $aRow['last_modified_datetime'] = '';
     }
@@ -244,7 +247,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ($aRow['status_name']);
 
-    if ($editRequest==true) {
+    if ($editRequest == true) {
         $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Test Sample Again") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em> ' . _("Retest") . '</a>';
     }
     $output['aaData'][] = $row;

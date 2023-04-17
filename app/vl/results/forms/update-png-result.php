@@ -74,27 +74,27 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 
 if (isset($vlQueryInfo['failed_test_date']) && trim($vlQueryInfo['failed_test_date']) != '' && trim($vlQueryInfo['failed_test_date']) != '0000-00-00 00:00:00') {
 	$failedDate = explode(" ", $vlQueryInfo['failed_test_date']);
-	$vlQueryInfo['failed_test_date'] = $general->humanReadableDateFormat($failedDate[0]) . " " . $failedDate[1];
+	$vlQueryInfo['failed_test_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($failedDate[0]) . " " . $failedDate[1];
 } else {
 	$vlQueryInfo['failed_test_date'] = '';
 }
 if (isset($vlQueryInfo['art_cd_date']) && trim($vlQueryInfo['art_cd_date']) != '' && $vlQueryInfo['art_cd_date'] != '0000-00-00') {
-	$vlQueryInfo['art_cd_date'] = $general->humanReadableDateFormat($vlQueryInfo['art_cd_date']);
+	$vlQueryInfo['art_cd_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['art_cd_date']);
 } else {
 	$vlQueryInfo['art_cd_date'] = '';
 }
 if (isset($vlQueryInfo['qc_date']) && trim($vlQueryInfo['qc_date']) != '' && $vlQueryInfo['qc_date'] != '0000-00-00') {
-	$vlQueryInfo['qc_date'] = $general->humanReadableDateFormat($vlQueryInfo['qc_date']);
+	$vlQueryInfo['qc_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['qc_date']);
 } else {
 	$vlQueryInfo['qc_date'] = '';
 }
 if (isset($vlQueryInfo['report_date']) && trim($vlQueryInfo['report_date']) != '' && $vlQueryInfo['report_date'] != '0000-00-00') {
-	$vlQueryInfo['report_date'] = $general->humanReadableDateFormat($vlQueryInfo['report_date']);
+	$vlQueryInfo['report_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['report_date']);
 } else {
 	$vlQueryInfo['report_date'] = '';
 }
 if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '' && $vlQueryInfo['clinic_date'] != '0000-00-00') {
-	$vlQueryInfo['clinic_date'] = $general->humanReadableDateFormat($vlQueryInfo['clinic_date']);
+	$vlQueryInfo['clinic_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['clinic_date']);
 } else {
 	$vlQueryInfo['clinic_date'] = '';
 }
@@ -477,7 +477,7 @@ $disable = "disabled = 'disabled'";
 									</tr>
 									<tr class="show-rejection" style="display:none;">
 										<th scope="row" class="labels">Rejection Date<span class="mandatory">*</span></th>
-										<td><input value="<?php echo $general->humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+										<td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										<td></td>
 										<td></td>
 									</tr>

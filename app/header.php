@@ -23,6 +23,7 @@ $syncLatestTime = $general->getLastSyncDateTime();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
+
 $skin = "skin-blue";
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
@@ -154,7 +155,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
+<html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
 
 <head>
 	<meta charset="utf-8" />

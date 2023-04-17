@@ -12,10 +12,10 @@ $sarr = $general->getSystemConfig();
 if (isset($_POST['reportedDate']) && trim($_POST['reportedDate']) != '') {
     $s_t_date = explode("to", $_POST['reportedDate']);
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $start_date = $general->isoDateFormat(trim($s_t_date[0]));
+        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $end_date = $general->isoDateFormat(trim($s_t_date[1]));
+        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 

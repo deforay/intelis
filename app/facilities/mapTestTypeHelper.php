@@ -21,7 +21,7 @@ try {
         $db->where('test_type', $testType);
        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
-        $currentDateTime = $general->getCurrentDateTime();
+        $currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
         $data = array();
         foreach ($mappedFacility as $facility) {
             $data[] = array(

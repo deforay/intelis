@@ -104,9 +104,9 @@ foreach ($rResult as $key => $aRow) {
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>" data-facilityId="<?php echo base64_encode($aRow['facility_id']);?>">
         <td><?= ($aRow['facility_name']); ?></td>
-        <td><?= $general->humanReadableDateFormat($aRow['latest'], true); ?></td>
-        <td><?= $general->humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
-        <td><?= $general->humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
+        <td><?= \App\Utilities\DateUtils::humanReadableDateFormat($aRow['latest'], true); ?></td>
+        <td><?= \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+        <td><?= \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
         <td><?= (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - "; ?></td>
     </tr>
 <?php } ?>

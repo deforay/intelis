@@ -98,8 +98,8 @@ class GeoLocations
             'geo_name'         => $geoName,
             'geo_status'       => 'active',
             'created_by'       => $_SESSION['userId'],
-            'created_on'       => $general->getCurrentDateTime(),
-            'updated_datetime' => $general->getCurrentDateTime(),
+            'created_on'       => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'data_sync'       => 0
         );
         if ($parent > 0) {

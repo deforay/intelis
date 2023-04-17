@@ -97,7 +97,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//date of birth
 		$dob = '';
 		if (!empty($aRow['child_dob'])) {
-			$dob =  $dateTimeUtil->humanReadableDateFormat($aRow['child_dob']);
+			$dob =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['child_dob']);
 		}
 		//set gender
 		$gender = '';
@@ -111,17 +111,17 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if (!empty($aRow['sample_collection_date'])) {
-			$sampleCollectionDate =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_collection_date']);
+			$sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 		}
 
 		$sampleTestedOn = '';
 		if (!empty($aRow['sample_tested_datetime'])) {
-			$sampleTestedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_tested_datetime']);
+			$sampleTestedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 		}
 
 		$sampleReceivedOn = '';
 		if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-			$sampleReceivedOn =  $dateTimeUtil->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+			$sampleReceivedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		}
 
 
@@ -134,13 +134,13 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//result dispatched date
 		$resultDispatchedDate = '';
 		if (!empty($aRow['result_printed_datetime'])) {
-			$resultDispatchedDate =  $dateTimeUtil->humanReadableDateFormat($aRow['result_printed_datetime']);
+			$resultDispatchedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 		}
 
 		//requeste created date time
 		$requestCreatedDatetime = '';
 		if (!empty($aRow['request_created_datetime'])) {
-			$requestCreatedDatetime =  $dateTimeUtil->humanReadableDateFormat($aRow['request_created_datetime'], true);
+			$requestCreatedDatetime =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
 		}
 
 

@@ -22,7 +22,7 @@ try {
             'available_for_instruments' => $jsonInstruments,
             'interpretation' => $_POST['interpretation'],
 			'status' 	    => $_POST['resultStatus'],
-			'updated_datetime' 	=> $general->getCurrentDateTime(),
+			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));

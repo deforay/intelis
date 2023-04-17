@@ -13,8 +13,8 @@ try {
 
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  $general->getCurrentDateTime(),
-            'last_modified_datetime'     =>  $general->getCurrentDateTime(),
+            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
             'data_sync'                 => 0
         );
 

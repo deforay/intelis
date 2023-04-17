@@ -282,7 +282,7 @@ class App
         $general = new \App\Models\General($this->db);
         $data = array(
             'requested_by'          => $user ?: 'vlsm-system',
-            'requested_on'          => $general->getCurrentDateTime(),
+            'requested_on'          => \App\Utilities\DateUtils::getCurrentDateTime(),
             'number_of_records'     => $records ?: 0,
             'request_type'          => $type ?: null,
             'test_type'             => $testType ?: null,

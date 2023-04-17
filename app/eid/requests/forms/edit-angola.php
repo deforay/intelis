@@ -187,7 +187,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <th scope="row"><label for="childDob">Data de Nascimento <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row"><label for="childGender">Género <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -259,7 +259,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <th scope="row">Tratamento ARV da Mãe</th>
                                         <td><input type="text" class="form-control " id="motherTreatment" name="motherTreatment[]" placeholder="Tratamento ARV da Mãe" title="Tratamento ARV da Mãe" style="width:100%;" value="<?php echo $eidInfo['mother_treatment'] ?>" /></td>
                                         <th scope="row">Data de início</th>
-                                        <td><input type="text" class="form-control date" id="motherTreatmentInitiationDate" name="motherTreatmentInitiationDate" placeholder="Data de início" title="Data de início" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['mother_treatment_initiation_date']); ?>" /></td>
+                                        <td><input type="text" class="form-control date" id="motherTreatmentInitiationDate" name="motherTreatmentInitiationDate" placeholder="Data de início" title="Data de início" style="width:100%;" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['mother_treatment_initiation_date']); ?>" /></td>
                                     </tr>
 
 
@@ -324,7 +324,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <tr>
                                             <th scope="row"><label for="">Data e Hora da Recepção da Amostra </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Data e Hora da Recepção da Amostra" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Data e Hora da Recepção da Amostra" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" />
                                             </td>
                                             <th scope="row"><label for="">Responsável da recepção </label></th>
                                             <td>
@@ -361,7 +361,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <tr>
                                             <td style="width:25%;"><label for="">Data da Quantificação </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo $general->humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Data da Quantificação" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" />
                                             </td>
 
                                             <th scope="row">Resultado</th>

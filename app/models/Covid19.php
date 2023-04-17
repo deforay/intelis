@@ -28,8 +28,7 @@ class Covid19
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \App\Utilities\DateUtils();
-        if ($dateUtils->verifyIfDateValid($sampleCollectionDate) === false) {
+        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new \DateTimeImmutable($sampleCollectionDate);
@@ -434,7 +433,7 @@ class Covid19
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = $general->isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }

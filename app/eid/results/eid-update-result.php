@@ -63,7 +63,7 @@ foreach ($iResult as $val) {
 }
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-	$eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$eidInfo['result_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
 }

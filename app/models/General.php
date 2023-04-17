@@ -9,7 +9,6 @@
 namespace App\Models;
 
 use Ramsey\Uuid\Uuid;
-use App\Utilities\DateUtils;
 use ZipArchive;
 
 class General
@@ -20,11 +19,6 @@ class General
     public function __construct($db = null)
     {
         $this->db = $db ?? \MysqliDb::getInstance();
-    }
-
-    public function setDb($db)
-    {
-        $this->db = $db;
     }
 
     public static function generateRandomString($length = 32)
@@ -64,28 +58,6 @@ class General
     public function generateToken($length = 16)
     {
         return bin2hex(random_bytes($length));
-    }
-
-    /**
-     * Used to format date from dd-mmm-yyyy to yyyy-mm-dd for storing in database
-     *
-     */
-    public function isoDateFormat($date, $includeTime = false)
-    {
-        $utils = new DateUtils();
-        return $utils->isoDateFormat($date, $includeTime);
-    }
-
-    public function humanReadableDateFormat($date, $includeTime = false)
-    {
-        $utils = new DateUtils();
-        return $utils->humanReadableDateFormat($date, $includeTime);
-    }
-
-    public static function getCurrentDateTime($returnFormat = 'Y-m-d H:i:s')
-    {
-        $utils = new DateUtils();
-        return $utils->getCurrentDateTime($returnFormat);
     }
 
     public function removeDirectory($dirname)
@@ -271,7 +243,7 @@ class General
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => $this->getCurrentDateTime(),
+            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -283,7 +255,7 @@ class General
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => $this->getCurrentDateTime(),
+            'imported_on' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -385,16 +357,6 @@ class General
         }
         $query .= " LIMIT 1";
         return $this->db->rawQueryOne($query);
-    }
-
-    public function random_color_part()
-    {
-        return str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
-    }
-
-    public function random_color()
-    {
-        return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
     }
 
     public function getRejectionReasons($testType)
@@ -549,7 +511,7 @@ class General
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => $this->getCurrentDateTime(),
+            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -796,7 +758,7 @@ class General
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
-                'requested_on'      => $this->getCurrentDateTime(),
+                'requested_on'      => \App\Utilities\DateUtils::getCurrentDateTime(),
                 'number_of_records' => $numberOfRecords ?: 0,
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,

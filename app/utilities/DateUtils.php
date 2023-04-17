@@ -41,7 +41,7 @@ class DateUtils
     }
 
     // Function to get the verify if date is valid or not
-    public function verifyIfDateValid($date): bool
+    public static function verifyIfDateValid($date): bool
     {
         $date = trim($date);
         $response = false;
@@ -71,10 +71,10 @@ class DateUtils
 
     // Returns the given date in d-M-Y format
     // (with or without time depending on the $includeTime parameter)
-    public function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
+    public static function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
     {
         $date = trim($date);
-        if (false === $this->verifyIfDateValid($date)) {
+        if (false === self::verifyIfDateValid($date)) {
             return null;
         } else {
 
@@ -93,10 +93,10 @@ class DateUtils
     }
 
     // Returns the given date in Y-m-d format
-    public function isoDateFormat($date, $includeTime = false)
+    public static function isoDateFormat($date, $includeTime = false)
     {
         $date = trim($date);
-        if (false === $this->verifyIfDateValid($date)) {
+        if (false === self::verifyIfDateValid($date)) {
             return null;
         } else {
             $format = "Y-m-d";

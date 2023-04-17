@@ -17,8 +17,8 @@ foreach ($provinceResult as $p) {
         $db->update('geographical_divisions', array(
             "geo_name"          => $p['facility_state'],
             "geo_status"        => "active",
-            "created_on"        => $general->getCurrentDateTime(),
-            "updated_datetime"  => $general->getCurrentDateTime()
+            "created_on"        => \App\Utilities\DateUtils::getCurrentDateTime(),
+            "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
         ));
         $lastInsertId = $exist['geo_id'];
     } else {
@@ -26,8 +26,8 @@ foreach ($provinceResult as $p) {
             "geo_name"          => $p['facility_state'],
             "geo_parent"        => "0",
             "geo_status"        => "active",
-            "created_on"        => $general->getCurrentDateTime(),
-            "updated_datetime"  => $general->getCurrentDateTime()
+            "created_on"        => \App\Utilities\DateUtils::getCurrentDateTime(),
+            "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
         ));
     }
 
@@ -35,7 +35,7 @@ foreach ($provinceResult as $p) {
     $db->where("facility_state", $p['facility_state']);
     $db->update("facility_details", array(
         "facility_state_id" => $lastInsertId,
-        "updated_datetime"  => $general->getCurrentDateTime()
+        "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
     ));
 }
 
@@ -51,8 +51,8 @@ foreach ($districtResult as $d) {
             "geo_name"          => $d['facility_district'],
             "geo_parent"        => $d['facility_state_id'],
             "geo_status"        => "active",
-            "created_on"        => $general->getCurrentDateTime(),
-            "updated_datetime"  => $general->getCurrentDateTime()
+            "created_on"        => \App\Utilities\DateUtils::getCurrentDateTime(),
+            "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
         ));
         $lastInsertId = $exist['geo_id'];
     } else {
@@ -60,8 +60,8 @@ foreach ($districtResult as $d) {
             "geo_name"          => $d['facility_district'],
             "geo_parent"        => $d['facility_state_id'],
             "geo_status"        => "active",
-            "created_on"        => $general->getCurrentDateTime(),
-            "updated_datetime"  => $general->getCurrentDateTime()
+            "created_on"        => \App\Utilities\DateUtils::getCurrentDateTime(),
+            "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
         ));
     }
 
@@ -69,6 +69,6 @@ foreach ($districtResult as $d) {
     $db->where("facility_district", $d['facility_district']);
     $db->update("facility_details", array(
         "facility_district_id" => $lastInsertId,
-        "updated_datetime"  => $general->getCurrentDateTime()
+        "updated_datetime"  => \App\Utilities\DateUtils::getCurrentDateTime()
     ));
 }

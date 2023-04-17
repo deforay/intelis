@@ -1,12 +1,13 @@
 <?php
 
+use App\Utilities\DateUtils;
+
 $general = new \App\Models\General();
 $facilitiesDb = new \App\Models\Facilities();
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
-$gconfig = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
+$barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 
 $tableName = "form_vl";
@@ -21,9 +22,13 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sam
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($_SESSION['instanceType'] ==  'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+} elseif ($_SESSION['instanceType'] ==  'standalone') {
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -98,37 +103,37 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-                        vl.*,
-                        s.sample_name,
-                        b.batch_code,
-                        ts.status_name,
-                        f.facility_name,
-                        l.facility_name as lab_name,
-                        f.facility_code,
-                        f.facility_state,
-                        f.facility_district,
-                        fs.funding_source_name,
-                        i.i_partner_name 
-                        
-                        FROM form_vl as vl 
-                        
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
-                        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
-                        LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
+                    vl.*,
+                    s.sample_name,
+                    b.batch_code,
+                    ts.status_name,
+                    f.facility_name,
+                    l.facility_name as lab_name,
+                    f.facility_code,
+                    f.facility_state,
+                    f.facility_district,
+                    fs.funding_source_name,
+                    i.i_partner_name
+                    
+                    FROM form_vl as vl
+                    
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+                    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                    LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
+                    LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
 
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -137,10 +142,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+          $labStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = $general->isoDateFormat(trim($s_c_date[1]));
+          $labEnddate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -149,10 +154,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleTestedDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = $general->isoDateFormat(trim($s_c_date[0]));
+          $testedStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = $general->isoDateFormat(trim($s_c_date[1]));
+          $testedEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -195,10 +200,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -258,7 +263,7 @@ if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
 }
 /* Source of request show model conditions */
 if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
-     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $general->isoDateFormat($_POST['dateRangeModel']) . '"';
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . \App\Utilities\DateUtils::isoDateFormat($_POST['dateRangeModel']) . '"';
 }
 if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
@@ -296,10 +301,10 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 
      $date = explode("to", $_POST['requestCreatedDatetime']);
      if (isset($date[0]) && trim($date[0]) != "") {
-          $sRequestCreatedDatetime = $general->isoDateFormat(trim($date[0]));
+          $sRequestCreatedDatetime = \App\Utilities\DateUtils::isoDateFormat(trim($date[0]));
      }
      if (isset($date[1]) && trim($date[1]) != "") {
-          $eRequestCreatedDatetime = $general->isoDateFormat(trim($date[1]));
+          $eRequestCreatedDatetime = \App\Utilities\DateUtils::isoDateFormat(trim($date[1]));
      }
 
      if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
@@ -368,18 +373,9 @@ foreach ($rResult as $aRow) {
      $edit = '';
      $sync = '';
      $barcode = '';
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $xplodDate = explode(" ", $aRow['sample_collection_date']);
-          $aRow['sample_collection_date'] = $general->humanReadableDateFormat($xplodDate[0]);
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $xplodDate = explode(" ", $aRow['last_modified_datetime']);
-          $aRow['last_modified_datetime'] = $general->humanReadableDateFormat($xplodDate[0]) . " " . $xplodDate[1];
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+
+     $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+     $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
      $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
@@ -418,7 +414,7 @@ foreach ($rResult as $aRow) {
           }
      }
 
-     if (isset($gconfig['bar_code_printing']) && $gconfig['bar_code_printing'] != "off") {
+     if (isset($barCodePrinting) && $barCodePrinting != "off") {
           $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
           $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
      }

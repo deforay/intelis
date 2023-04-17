@@ -20,8 +20,12 @@ $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'l_f.facility_name', 'vl.mother_id', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -129,10 +133,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 $sReceivedDate = '';
@@ -140,10 +144,10 @@ $eReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sReceivedDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eReceivedDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 $sResultDispatchedDate = '';
@@ -151,10 +155,10 @@ $eResultDispatchedDate = '';
 if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
      $s_t_date = explode("to", $_POST['resultDispatchedOn']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sResultDispatchedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eResultDispatchedDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eResultDispatchedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample test date filter */
@@ -163,10 +167,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Print date filter */
@@ -175,10 +179,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */
@@ -187,10 +191,10 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
- }
- if (isset($_POST['district']) && trim($_POST['district']) != '') {
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
- }
+}
 /* Facility id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
@@ -221,16 +225,16 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 }
 
 if (isset($_POST['childId']) && $_POST['childId'] != "") {
-     $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+     $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
 }
 if (isset($_POST['childName']) && $_POST['childName'] != "") {
-     $sWhere[] = ' vl.child_name like "%'.$_POST['childName'].'%"';
+     $sWhere[] = ' vl.child_name like "%' . $_POST['childName'] . '%"';
 }
 if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
-     $sWhere[] = ' vl.mother_id like "%'.$_POST['motherId'].'%"';
+     $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
 }
 if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
-     $sWhere[] = ' vl.mother_name like "%'.$_POST['motherName'].'%"';
+     $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
 }
 
 /* Date time filters */

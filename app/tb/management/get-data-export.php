@@ -35,8 +35,12 @@ $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
-     $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code','vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
+          unset($aColumns[$key]);
+     }
+     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
+          unset($orderColumns[$key]);
+     }
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -163,10 +167,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -176,10 +180,10 @@ $eSampleReceivedDate = '';
 if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
      $s_p_date = explode("to", $_POST['sampleRecievedDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sSampleReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $eSampleReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample tested date filter */
@@ -188,10 +192,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -201,10 +205,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */
@@ -213,10 +217,10 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
- }
- if (isset($_POST['district']) && trim($_POST['district']) != '') {
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
- }
+}
 /* Facility ID filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';

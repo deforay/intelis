@@ -39,10 +39,10 @@ $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is no
 if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = $general->isoDateFormat(trim($dateRange[0]));
+		$startDate = \App\Utilities\DateUtils::isoDateFormat(trim($dateRange[0]));
 	}
 	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = $general->isoDateFormat(trim($dateRange[1]));
+		$endDate = \App\Utilities\DateUtils::isoDateFormat(trim($dateRange[1]));
 	}
 
 	$where[] = "DATE(p.request_created_datetime) BETWEEN '" . $startDate . "' AND '" . $endDate . "'";

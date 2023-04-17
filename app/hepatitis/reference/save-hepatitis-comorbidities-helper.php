@@ -13,7 +13,7 @@ try {
 		$data = array(
 			'comorbidity_name' 		=> $_POST['comorbidityName'],
 			'comorbidity_status' 	=> $_POST['comorbidityStatus'],
-			'updated_datetime' 	=> $general->getCurrentDateTime(),
+			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['comorbidityId']) && $_POST['comorbidityId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['comorbidityId']));

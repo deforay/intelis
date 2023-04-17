@@ -184,16 +184,16 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		/* To get Symptoms and Comorbidities details */
 		$row[] = implode(',', $sysmtomsArr);
 		$row[] = implode(',', $comorbiditiesArr);
-		/* $row[] = $general->humanReadableDateFormat($aRow['date_of_symptom_onset']);
+		/* $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
 		$row[] = ($aRow['contact_with_confirmed_case']);
 		$row[] = ($aRow['has_recent_travel_history']);
 		$row[] = ($aRow['travel_country_names']);
-		$row[] = $general->humanReadableDateFormat($aRow['travel_return_date']); */
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $covid19Results[$aRow['result']];
-		$row[] = $general->humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

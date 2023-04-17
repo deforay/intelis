@@ -29,7 +29,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = $general->getCurrentDateTime();
+            $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];

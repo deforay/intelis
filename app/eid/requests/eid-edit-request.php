@@ -102,7 +102,7 @@ foreach ($testPlatformResult as $row) {
 if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
     $expStr = explode(" ", $eidInfo['sample_collection_date']);
-    $eidInfo['sample_collection_date'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $eidInfo['sample_collection_date'] = '';
@@ -110,21 +110,21 @@ if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collectio
 
 if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_approved_datetime']);
-    $eidInfo['result_approved_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_approved_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_approved_datetime'] = '';
 }
 
 if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_reviewed_datetime']);
-    $eidInfo['result_reviewed_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_reviewed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_reviewed_datetime'] = '';
 }
 
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-    $eidInfo['result_dispatched_datetime'] = $general->humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_dispatched_datetime'] = '';
 }

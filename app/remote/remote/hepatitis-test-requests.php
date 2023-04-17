@@ -65,7 +65,7 @@ $payload = json_encode($data);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = $general->getCurrentDateTime();
+$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
 if (!empty($sampleIds)) {
     $sql = 'UPDATE form_hepatitis SET data_sync = ?, 
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

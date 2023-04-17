@@ -22,7 +22,7 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code',
 $sampleCode = 'sample_code';
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'standalone') {
+} elseif ($sarr['sc_user_type'] == 'standalone') {
      if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
           unset($aColumns[$key]);
      }
@@ -169,10 +169,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = $general->isoDateFormat(trim($s_c_date[0]));
+          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = $general->isoDateFormat(trim($s_c_date[1]));
+          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 /* Sample recevied date filter */
@@ -181,10 +181,10 @@ $eSampleReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_p_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sSampleReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $eSampleReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */
@@ -193,10 +193,10 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
- }
- if (isset($_POST['district']) && trim($_POST['district']) != '') {
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
- }
+}
 /* Facility id filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
@@ -211,10 +211,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = $general->isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = $general->isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Viral load filter */
@@ -230,10 +230,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = $general->isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = $general->isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Gender filter */
@@ -277,7 +277,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      $sWhere[] =  '  vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
 }
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $sWhere[] = ' vl.patient_art_no like "%'.$_POST['patientId'].'%"';
+     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
@@ -317,10 +317,10 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 
      $date = explode("to", $_POST['requestCreatedDatetime']);
      if (isset($date[0]) && trim($date[0]) != "") {
-          $sRequestCreatedDatetime = $general->isoDateFormat(trim($date[0]));
+          $sRequestCreatedDatetime = \App\Utilities\DateUtils::isoDateFormat(trim($date[0]));
      }
      if (isset($date[1]) && trim($date[1]) != "") {
-          $eRequestCreatedDatetime = $general->isoDateFormat(trim($date[1]));
+          $eRequestCreatedDatetime = \App\Utilities\DateUtils::isoDateFormat(trim($date[1]));
      }
 
      if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
@@ -379,15 +379,15 @@ foreach ($rResult as $aRow) {
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
-     $row[] = $general->humanReadableDateFormat($aRow['sample_collection_date']);
+     $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
      $row[] = ($aRow['sample_name']);
-     $row[] = $general->humanReadableDateFormat($aRow['sample_tested_datetime']);
+     $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];
      $row[] = ($aRow['status_name']);
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
-     $row[] = $general->humanReadableDateFormat($aRow['request_created_datetime'], true);
-     $row[] = $general->humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
+     $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
