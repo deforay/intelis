@@ -8,7 +8,7 @@ ob_start();
 $general = new General();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
-function getMacLinux(): false|string
+function getMacLinux()
 {
   try {
     $mac = exec('getmac');
@@ -19,7 +19,7 @@ function getMacLinux(): false|string
     return "not found";
   }
 }
-function getMacWindows(): false|string
+function getMacWindows()
 {
   // Turn on output buffering
   ob_start();
