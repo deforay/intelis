@@ -278,7 +278,7 @@ foreach ($rResult as $aRow) {
 	$row[] = ($aRow['is_patient_pregnant']);
 	$row[] = ($aRow['is_patient_breastfeeding']);
 	$row[] = $arvAdherence;
-	$row[] = (str_replace("_", " ", $aRow['test_reason_name']));
+	$row[] = isset($aRow['test_reason_name']) ? (str_replace("_", " ", $aRow['test_reason_name'])) : null;
 	$row[] = ($aRow['request_clinician_name']);
 	$row[] = $requestedDate;
 	$row[] = $sampleRejection;

@@ -2,7 +2,7 @@
 
 
 $db = \MysqliDb::getInstance();
-$general = new \Vlsm\Models\General($db);
+$general = new \App\Models\General($db);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 

@@ -36,6 +36,11 @@ $allowedMimeTypes = [
 
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
+if ($file === false) {
+    http_response_code(404);
+    exit(0);
+}
+
 $mime = mime_content_type($file);
 
 // Checking if the file path is inside the VLSM public folder (to avoid path injection)

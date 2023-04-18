@@ -47,7 +47,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
     $searchQueryWhere[] = " vl.vl_sample_id IN(" . $_POST['id'] . ") ";
   }
 
-  if (!empty(trim($_POST['sampleCodes']))) {
+  if (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes']))) {
     $searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
   }
   if (!empty($searchQueryWhere)) {

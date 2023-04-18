@@ -738,7 +738,7 @@ class General
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
                     $zip->addFromString(basename($path), $requestData);
-                    $zip->close();
+                    //$zip->close();
                     //unlink($path);
                 }
             }
@@ -754,7 +754,7 @@ class General
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
                     $zip->addFromString(basename($path), $responseData);
-                    $zip->close();
+                    //$zip->close();
                     //unlink($path);
                 }
             }
