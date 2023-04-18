@@ -252,7 +252,7 @@ try {
 	$patientsModel->updatePatient($patientData);
 
 
-	if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+	if (!empty($_POST['api']) && $_POST['api'] == "yes") {
 		$sampleQuery = "SELECT covid19_id FROM form_covid19 where covid19_id = " . $_POST['covid19SampleId'] . " limit 1";
 		$sampleExist = $db->rawQueryOne($sampleQuery);
 		$_POST['covid19SampleId'] = $sampleExist['covid19_id'];
@@ -370,7 +370,7 @@ try {
 		$id = $db->update($tableName, $covid19Data);
 		error_log($db->getLastError());
 	}
-	if (isset($_POST['api']) && $_POST['api'] = "yes") {
+	if (isset($_POST['api']) && $_POST['api'] == "yes") {
 		if ($id > 0) {
 
 			$payload = array(

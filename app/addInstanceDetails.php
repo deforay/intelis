@@ -29,7 +29,7 @@ ob_start();
 <div class="content-wrapper" style="padding: 20px;">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h3>Instance Setup</h3>
+    <h3>LIS Instance Setup</h3>
     <small>Please enter the information for this installation.</small>
   </section>
   <!-- Main content -->
@@ -48,24 +48,24 @@ ob_start();
               <div class="box">
                 <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
                   <tr>
-                    <td><strong>Instance/Facility Name&nbsp;<span class="mandatory">*</span></strong> <br>
+                    <td><strong>Lab Name&nbsp;<span class="mandatory">*</span></strong> <br>
                     </td>
                     <td>
                       <input type="text" class="form-control isRequired" name="fName" id="fName" title="Please enter instance name" placeholder="Instance/Facility Name" />
                     </td>
-                    <td>&nbsp;<strong>Instance/Facility ID&nbsp;</strong></td>
+                    <td>&nbsp;<strong>Lab ID&nbsp;</strong></td>
                     <td>
                       <input type="text" class="form-control " id="fCode" name="fCode" placeholder="Instance/Facility Code" title="Please enter facility code" />
                     </td>
                   </tr>
-                  <tr>
-                    <td><strong>Instance/Facility Type&nbsp;<span class="mandatory">*</span></strong></td>
+                  <tr style="display:none;">
+                    <td><strong>Lab Type&nbsp;<span class="mandatory">*</span></strong></td>
                     <td>
                       <select class="form-control isRequired" id="fType" name="fType" title="Please choose instance type">
                         <option value="">-- Select --</option>
                         <option value="Viral Load Lab">Viral Load Lab</option>
                         <option value="Clinic/Lab">Clinic/Lab</option>
-                        <option value="Both">Both</option>
+                        <option value="Both" selected="selected">Both</option>
                       </select>
                     </td>
                     <td style="display:none">&nbsp;<strong>Logo Image&nbsp;</strong></td>

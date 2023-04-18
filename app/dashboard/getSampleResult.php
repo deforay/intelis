@@ -70,9 +70,9 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesOverviewChart   = "tbSamplesOverviewChart";
 }
 
-$u = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 
-if ($u != 'remoteuser') {
+if ($systemType != 'remoteuser') {
     $whereCondition = " result_status!=9  AND ";
 } else {
     $whereCondition = "";

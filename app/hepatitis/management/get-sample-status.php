@@ -6,10 +6,10 @@ ob_start();
 
 $general = new \App\Models\General();
 
-$userType = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
-if ($userType == 'remoteuser' && (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap']))) {
+if ($systemType == 'remoteuser' && (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap']))) {
         $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 

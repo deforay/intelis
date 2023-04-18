@@ -225,7 +225,7 @@ try {
 		$covid19Data['source_of_request'] = 'vlsm';
 	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$covid19Data['source_of_request'] = 'vlsts';
-	} else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+	} else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
 		$covid19Data['source_of_request'] = 'api';
 	}
 

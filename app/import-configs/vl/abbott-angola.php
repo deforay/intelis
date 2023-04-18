@@ -165,7 +165,7 @@ try {
                             "lotExpirationDate" => $lotExpirationDateVal
                         );
                     } else {
-                        if (isset($logVal) && trim($logVal) != "") {
+                        if (trim($logVal) != "") {
                             $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
                         }
                     }

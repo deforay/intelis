@@ -287,7 +287,7 @@ class Covid19
             return null;
         }
         if ($api) {
-            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            if (is_array($c19Id) && count($c19Id) > 0) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = $c19Id");
@@ -325,7 +325,7 @@ class Covid19
             return null;
         }
         if ($api) {
-            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            if (is_array($c19Id) && count($c19Id) > 0) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` = $c19Id");
@@ -360,7 +360,7 @@ class Covid19
             return null;
         }
         if ($api) {
-            if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
+            if (is_array($c19Id) && count($c19Id) > 0) {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = $c19Id");
@@ -560,9 +560,9 @@ class Covid19
     public function generateCovid19QcCode()
     {
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
-        if (!isset($exist['qc_code_key']) && empty($exist['qc_code_key'])) {
+        if (!isset($exist['qc_code_key']) || empty($exist['qc_code_key'])) {
             $number = 001;
-        } else if (isset($exist['qc_code_key']) && !empty($exist['qc_code_key'])) {
+        } else if (!empty($exist['qc_code_key'])) {
             $number = ($exist['qc_code_key'] + 1);
         }
         $sCodeKey = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);

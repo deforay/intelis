@@ -8,13 +8,15 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 * PHP 7.4.x
 * [Composer](https://getcomposer.org/download/)
 
+### Ubuntu Setup
+If you are using Ubuntu 22.04 (recommended), then you can find setup instructions here : [Ubuntu Setup](docs/Ubuntu-Setup.md)
 
 #### How do I get started?
 * Download the Source Code and put it into your server's root folder (www or htdocs).
-* Run ```composer update``` inside the VLSM folder
-* Open phpMyAdmin or any MySQL client and create a blank database called ```vlsm```
-* Import the initial sql file from the releases page
-* Rename the file configs/config.production.dist.php to configs/config.production.php
+* Run `composer update`. For e.g. you might have placed the code in `/var/www/vlsm` path. Then you would run `composer update` inside `/var/www/vlsm` folder.
+* Open phpMyAdmin or any MySQL client and create a blank database called `vlsm`
+* Import the [init.sql file from sql folder](./sql/init.sql) into the blank database.
+* Copy the file configs/config.production.dist.php to configs/config.production.php
 * Enter Database User, Password, DB Name etc. 
 
 ```php
@@ -23,7 +25,7 @@ A simple, open source Sample Management System for Viral Load, EID, Covid-19 and
 $systemConfig['database']['host']     = 'localhost';
 $systemConfig['database']['username'] = 'dbuser';
 $systemConfig['database']['password'] = 'dbpassword';
-$systemConfig['database']['db']     = 'vlsm';
+$systemConfig['database']['db']       = 'vlsm';
 $systemConfig['database']['port']     = 3306;
 $systemConfig['database']['charset']  = 'utf8mb4';
 ```
@@ -44,7 +46,7 @@ $systemConfig['modules']['tb'] = false;
 * Next we will set up virtual host for this application. You can find many guides online on this topic. For example to set up on Ubuntu you can follow this guide : [https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04)
 * Before we set up the virtual host, ensure that the apache rewrite module is enabled in your Apache webserver settings.
 * Edit your computer's hosts file to make an entry for this virtual host name.
-* Next we create a virtual host pointing to the root folder of the source code. You can see an example below (assuming the full path to VLSM is "/var/www/vlsm") : 
+* Next we create a virtual host pointing to the root folder of the source code. You can see an example below (assuming the full path to VLSM is `/var/www/vlsm`) : 
 
 ```apache
 <VirtualHost *:80>
@@ -66,12 +68,12 @@ $systemConfig['modules']['tb'] = false;
 
 * Add the following in the crontab (or equivalent scheduler for your Operating System)
 
-    For e.g. if using Ubuntu, in the terminal type : ```sudo EDITOR=gedit crontab -e```
+    For e.g. if using Ubuntu, in the terminal type : `sudo EDITOR=gedit crontab -e`
 
     This opens the crontab file. At the end of the crontab file, type this line :
 
 
-```
+```bash
 * * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run
 ```
 

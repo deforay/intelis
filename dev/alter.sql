@@ -3499,14 +3499,14 @@ UPDATE `form_tb` SET locked = 'no' WHERE locked is null or locked not like 'yes'
 
 CREATE TABLE `r_test_types` (
   `test_type_id` int NOT NULL,
-  `test_standard_name` varchar(255) DEFAULT NULL,
-  `test_generic_name` varchar(255) DEFAULT NULL,
-  `test_short_code` varchar(255) DEFAULT NULL,
-  `test_loinc_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `test_form_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `test_results_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `test_status` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `test_standard_name` varchar(256) DEFAULT NULL,
+  `test_generic_name` varchar(256) DEFAULT NULL,
+  `test_short_code` varchar(256) DEFAULT NULL,
+  `test_loinc_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_form_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `test_results_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `test_status` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `r_test_types`
   ADD PRIMARY KEY (`test_type_id`);
@@ -3520,3 +3520,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'test-type', 'editTestType.php', 'Edit');
 
 
+
+-- Amit 18-Apr-2023 version 5.1.3
+UPDATE `system_config` SET `value` = '5.1.3' WHERE `system_config`.`name` = 'sc_version';

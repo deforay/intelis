@@ -2,6 +2,7 @@ syntax: regexp
 ^public/uploads/(?!.htaccess)
 ^public/temporary/(?!.htaccess)
 ^vendor/dcarbone/(?!.htaccess)
+^docker/mysql/data/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
 ^backups/(?!index.php)
 ^backup/(?!index.php)

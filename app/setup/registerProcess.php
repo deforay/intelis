@@ -13,6 +13,8 @@ $password = ($_POST['password']);
 
 $general = new \App\Models\General();
 
+$userType = $general->getSystemConfig('sc_user_type');
+
 $user = new \App\Models\Users();
 
 

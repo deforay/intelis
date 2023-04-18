@@ -233,7 +233,7 @@ try {
 		$eidData['source_of_request'] = 'vlsm';
 	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$eidData['source_of_request'] = 'vlsts';
-	} else if (!empty($_POST['api']) && $_POST['api'] = "yes") {
+	} else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
 		$eidData['source_of_request'] = 'api';
 	}
 
@@ -246,7 +246,7 @@ try {
 		$id = $db->update($tableName, $eidData);
 		error_log($db->getLastError());
 	}
-	if (isset($_POST['api']) && $_POST['api'] = "yes") {
+	if (isset($_POST['api']) && $_POST['api'] == "yes") {
 		$payload = array(
 			'status' => 'success',
 			'timestamp' => time(),

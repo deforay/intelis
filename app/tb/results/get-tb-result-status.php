@@ -23,7 +23,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 
 
 $general = new \App\Models\General();
-$tbResults = $general->getTbResults();
+$tbModel = new \App\Models\Tb();
+$tbResults = $tbModel->getTbResults();
 
 
 $tableName = "form_tb";

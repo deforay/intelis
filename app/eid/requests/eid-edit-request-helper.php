@@ -245,7 +245,7 @@ try {
 		'last_modified_datetime'							=> \App\Utilities\DateUtils::getCurrentDateTime()
 	);
 
-	if (isset($_POST['api']) && $_POST['api'] = "yes") {
+	if (isset($_POST['api']) && $_POST['api'] == "yes") {
 	} else {
 		$eidData['request_created_by'] =  $_SESSION['userId'];
 		$eidData['last_modified_by'] =  $_SESSION['userId'];
@@ -276,7 +276,7 @@ try {
 	}
 
 
-	if (isset($_POST['api']) && $_POST['api'] = "yes") {
+	if (isset($_POST['api']) && $_POST['api'] == "yes") {
 		$payload = array(
 			'status' => 'success',
 			'timestamp' => time(),

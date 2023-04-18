@@ -123,4 +123,3 @@ $rejInfo = $db->query($rejQuery);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

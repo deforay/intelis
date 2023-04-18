@@ -21,7 +21,7 @@ $finalResult = null;
 $resultStatus = null;
 
 try {
-     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+     if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else {
           $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
           $chkValidation = $general->checkMandatoryFields($validateField);
@@ -360,7 +360,7 @@ try {
 
 
 
-     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+     if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else
           $vldata['last_modified_by'] =  $_SESSION['userId'];
      if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -383,7 +383,7 @@ try {
      $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
-     if (isset($_POST['api']) && $_POST['api'] = "yes") {
+     if (isset($_POST['api']) && $_POST['api'] == "yes") {
           $payload = array(
                'status' => 'success',
                'timestamp' => time(),

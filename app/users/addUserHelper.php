@@ -71,8 +71,8 @@ try {
 
         $_SESSION['alertMsg'] = _("User saved successfully!");
     }
-    $userType = $general->getSystemConfig('sc_user_type');
-    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $userType == 'vluser') {
+    $systemType = $general->getSystemConfig('sc_user_type');
+    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {
         $_POST['userId'] = $userId;
         $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS

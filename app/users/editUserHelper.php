@@ -101,8 +101,8 @@ try {
         }
         $_SESSION['alertMsg'] = _("User updated successfully");
 
-        $userType = $general->getSystemConfig('sc_user_type');
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
+        $systemType = $general->getSystemConfig('sc_user_type');
+        if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
             // $nUser = array();
             // $_POST['userId'] = $userId;
             // $nUser['userName'] = $_POST['userName']; 

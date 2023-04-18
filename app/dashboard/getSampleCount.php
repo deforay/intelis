@@ -11,7 +11,7 @@ $cDate = date('Y-m-d');
 $end_date = date('Y-m-d');
 $start_date = date('Y-m-d', strtotime('-7 days'));
 
-$u = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
     $primaryKey = "eid_id";
@@ -58,7 +58,7 @@ else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
 
 
 
-if ($u != 'remoteuser') {
+if ($systemType != 'remoteuser') {
     if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
         $whereCondition = " AND eid.result_status != 9 ";
     } else {
