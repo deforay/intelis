@@ -547,4 +547,3 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -149,4 +149,3 @@ $rsnInfo = $db->query($rsnQuery);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

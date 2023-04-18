@@ -114,4 +114,3 @@ $partnerInfo = $db->rawQuery($query, array($id));
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 chdir(__DIR__);
 
-include(__DIR__ . DIRECTORY_SEPARATOR . 'constants.php');
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'constants.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
 
 

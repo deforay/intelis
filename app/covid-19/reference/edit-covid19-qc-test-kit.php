@@ -194,4 +194,3 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

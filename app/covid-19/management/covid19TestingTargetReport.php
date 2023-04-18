@@ -209,7 +209,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _("Facility Name"); ?></th>
@@ -258,8 +258,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           separator: ' to ',
         },
         showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+        alwaysShowCalendars: false,
+        startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {
@@ -277,9 +277,9 @@ startDate: moment().subtract(28, 'days'),
       });
     $('#sampleTestDate').val("");
     loadVlRequestData();
-    $("#filterDiv input, #filterDiv select").on("change", function(){
-			searchExecuted = false;
-		});
+    $("#filterDiv input, #filterDiv select").on("change", function() {
+      searchExecuted = false;
+    });
 
   });
 
@@ -354,8 +354,7 @@ startDate: moment().subtract(28, 'days'),
   }
 
   function exportInexcel() {
-    if(searchExecuted === false)
-    {
+    if (searchExecuted === false) {
       searchVlRequestData();
     }
     $.blockUI();
@@ -695,4 +694,3 @@ startDate: moment().subtract(28, 'days'),
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

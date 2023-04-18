@@ -245,4 +245,3 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -111,7 +111,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample ID"); ?></th>
@@ -180,7 +180,7 @@ $batResult = $db->rawQuery($batQuery);
 		searchResultData();
 		loadVlTATData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -292,8 +292,7 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchResultData();
 		}
 		$.blockUI();
@@ -320,4 +319,3 @@ $batResult = $db->rawQuery($batQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

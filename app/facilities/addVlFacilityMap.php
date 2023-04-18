@@ -150,4 +150,3 @@ $hcResult = $db->rawQuery($hcQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -471,4 +471,3 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -2401,10 +2401,6 @@ TRUNCATE TABLE `package_details`;
 --
 -- Dumping data for table `package_details`
 --
-
-INSERT INTO `package_details` (`package_id`, `package_code`, `added_by`, `package_status`, `module`, `lab_id`, `number_of_samples`, `request_created_datetime`, `last_modified_datetime`) VALUES
-(1, 'VL220802GH23GI', '456456amit2w343ersd3456t4yrgdfsew2', 'pending', 'vl', 1025, NULL, '2022-08-02 13:22:19', '2023-04-18 10:46:02');
-
 -- --------------------------------------------------------
 
 --
@@ -2435,10 +2431,6 @@ TRUNCATE TABLE `patients`;
 --
 -- Dumping data for table `patients`
 --
-
-INSERT INTO `patients` (`patient_id`, `patient_code_prefix`, `patient_code_key`, `patient_code`, `patient_first_name`, `patient_middle_name`, `patient_last_name`, `patient_gender`, `patient_province`, `patient_district`, `patient_registered_on`, `patient_registered_by`, `updated_datetime`) VALUES
-(1, '', 0, 'AGT: 041', 'Lou Alier', NULL, 'Ayom', 'female', NULL, NULL, '2022-03-17 12:41:48', '52d5d91e-f94b-4335-8b1e-0f5da13183e5', '2022-03-17 12:41:48');
-
 -- --------------------------------------------------------
 
 --
@@ -2654,20 +2646,6 @@ TRUNCATE TABLE `province_details`;
 --
 -- Dumping data for table `province_details`
 --
-
-INSERT INTO `province_details` (`province_id`, `province_name`, `province_code`, `updated_datetime`, `data_sync`) VALUES
-(1, 'Administrative Area', 'AA', '2022-03-25 20:31:53', 1),
-(2, 'Central Equatoria State', 'CES', '2022-03-25 20:31:53', 1),
-(3, 'Eastern Equatoria State ', 'EES', '2022-03-25 20:31:53', 1),
-(4, 'Jongle State', 'JS', '2022-03-25 20:31:53', 1),
-(5, 'Lakes States', 'WBG', '2022-03-25 20:31:53', 1),
-(6, 'Nothern Bahr El Gazal State ', 'LS', '2022-03-25 20:31:53', 1),
-(7, 'Upper Nile State', 'NBG', '2022-03-25 20:31:53', 1),
-(8, 'Western Bahr-el -Gazal', 'WBG', '2022-03-25 20:31:53', 0),
-(9, 'Western Equatoria State', 'WES', '2022-03-25 20:31:53', 1),
-(44, 'Unity State ', 'US', '2022-03-25 20:31:53', 1),
-(49, 'Warrap state', 'WS', '2022-03-25 20:31:53', 0),
-(50, 'QA State', '', NULL, 0);
 
 -- --------------------------------------------------------
 

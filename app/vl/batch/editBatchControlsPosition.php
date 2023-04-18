@@ -196,4 +196,3 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

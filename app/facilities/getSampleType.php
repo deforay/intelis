@@ -44,9 +44,9 @@ if (isset($sampleType) && count($sampleType) > 0) { ?>
         <tbody id="sampleTypeTable">
             <?php foreach ($_POST['testType'] as $test) { ?>
                 <tr>
-                    <td style="text-align:center;"><?php echo strtoupper($test); ?></td>
+                    <td style="text-align:center;"><?= strtoupper(htmlspecialchars($test)); ?></td>
                     <td>
-                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>" title="Please select the sample type for <?php echo $test; ?>" multiple>
+                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>" title="Please select the sample type for <?= htmlspecialchars($test); ?>" multiple>
                             <?php foreach ($sampleType[$test] as $id => $type) { ?>
                                 <option value="<?php echo $id; ?>" <?php echo (in_array($id, $selectedType[$test])) ? "selected='selected'" : ""; ?>><?php echo $type; ?></option>
                             <?php } ?>
@@ -60,8 +60,8 @@ if (isset($sampleType) && count($sampleType) > 0) { ?>
 <script type="text/javascript">
     $(document).ready(function() {
         <?php foreach ($_POST['testType'] as $test) { ?>
-            $("#sampleType<?php echo $test; ?>").multipleSelect({
-                placeholder: 'Select <?php echo strtoupper($test); ?> Sample Type',
+            $("#sampleType<?= htmlspecialchars($test); ?>").multipleSelect({
+                placeholder: 'Select <?= strtoupper(htmlspecialchars($test)); ?> Sample Type',
                 width: '100%'
             });
         <?php } ?>

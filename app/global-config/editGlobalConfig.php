@@ -1333,7 +1333,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$(".select2").select2();
 
 		var editSet = '<?php if (isset($_GET['e'])) {
-							echo $_GET['e'];
+							echo htmlspecialchars($_GET['e']);
 						} ?>'
 		// alert(editSet)
 		if (editSet == 1) {} else {

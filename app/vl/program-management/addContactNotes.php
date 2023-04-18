@@ -146,7 +146,7 @@
         changeYear: true,
         dateFormat: 'dd-M-yy',
         timeFormat: "HH:mm",
-        yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+        yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
       });
       <?php if (count($contact) > 0) { ?>
         oTable = $('#contactNotesDetails').dataTable({

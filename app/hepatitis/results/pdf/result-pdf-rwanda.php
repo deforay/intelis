@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\General;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
@@ -62,7 +63,7 @@ if (sizeof($requestResult) > 0) {
         $pdf->setFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->setAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -430,7 +431,7 @@ if (sizeof($requestResult) > 0) {
             $generatedAtTestingLab = "";
         }
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab .'</td>';
+        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
         $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -445,12 +446,12 @@ if (sizeof($requestResult) > 0) {
             $pdf->writeHTML($html);
             if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-                if(!empty($keyFromGlobalConfig)){
-                     $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
-                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
-                     $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, $style, 'N');
+                if (!empty($keyFromGlobalConfig)) {
+                    $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                    $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                    $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, $style, 'N');
                 }
-           }
+            }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");

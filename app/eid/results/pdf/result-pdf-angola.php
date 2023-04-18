@@ -23,13 +23,13 @@ class MYPDFANG extends TCPDF
     public function Header()
     {
         // Logo
-        //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+        //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         // Set font
         if (trim($this->logo) != '') {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($image_file, 95, 3, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                $this->Image($imageFilePath, 95, 3, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
             }
         }
         //$this->SetFont('helvetica', 'B', 7);
@@ -215,7 +215,7 @@ if (sizeof($requestResult) > 0) {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

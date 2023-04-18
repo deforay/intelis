@@ -342,4 +342,3 @@ startDate: moment().subtract(28, 'days'),
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

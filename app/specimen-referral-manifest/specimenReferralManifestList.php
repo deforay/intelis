@@ -121,7 +121,7 @@ require_once(APPLICATION_PATH . '/header.php');
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
-					"value": "<?php echo base64_decode($_GET['t']); ?>"
+					"value": "<?= htmlspecialchars(base64_decode($_GET['t'])); ?>"
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -137,7 +137,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 	function generateManifestPDF(pId, frmSrc) {
 		var ids = $("#checkedPackages").val();
-		var module = '<?php echo base64_decode($_GET['t']); ?>';
+		var module = '<?= htmlspecialchars(base64_decode($_GET['t'])); ?>';
 		if (module == 'vl') {
 			manifestFileName = "generateVLManifest.php";
 		} else if (module == 'eid') {

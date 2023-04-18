@@ -150,4 +150,3 @@ foreach ($categoryInfo as $category) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

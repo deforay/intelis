@@ -96,4 +96,3 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'co
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

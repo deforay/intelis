@@ -814,7 +814,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -832,7 +832,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -841,7 +841,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			changeMonth: true,
 			changeYear: true,
 			timeFormat: "HH:mm",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').hide();
 		});

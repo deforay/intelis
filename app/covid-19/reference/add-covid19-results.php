@@ -8,10 +8,10 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Add Covid-19 Results");?></h1>
+		<h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Add Covid-19 Results"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Covid-19 Results");?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Covid-19 Results"); ?></li>
 		</ol>
 	</section>
 
@@ -20,7 +20,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -30,19 +30,19 @@ require_once(APPLICATION_PATH . '/header.php');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultName" class="col-lg-4 control-label"><?php echo _("Result Name");?><span class="mandatory">*</span></label>
+									<label for="resultName" class="col-lg-4 control-label"><?php echo _("Result Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name');?>" title="<?php echo _('Please enter Result name');?>" onblur='checkNameValidation("r_covid19_results", "result" , this , null, "<?php echo _("The Result name that you entered already exists. Enter another name");?>", null)' />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" placeholder="<?php echo _('Result Name'); ?>" title="<?php echo _('Please enter Result name'); ?>" onblur='checkNameValidation("r_covid19_results", "result" , this , null, "<?php echo _("The Result name that you entered already exists. Enter another name"); ?>", null)' />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultStatus" class="col-lg-4 control-label"><?php echo _("Result Status");?></label>
+									<label for="resultStatus" class="col-lg-4 control-label"><?php echo _("Result Status"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="<?php echo _('Result Status');?>" title="<?php echo _('Please select Result Status');?>">
-											<option value="active"><?php echo _("Active");?></option>
-											<option value="inactive"><?php echo _("Inactive");?></option>
+										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="<?php echo _('Result Status'); ?>" title="<?php echo _('Please select Result Status'); ?>">
+											<option value="active"><?php echo _("Active"); ?></option>
+											<option value="inactive"><?php echo _("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
@@ -52,8 +52,8 @@ require_once(APPLICATION_PATH . '/header.php');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-						<a href="covid19-results.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+						<a href="covid19-results.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -110,4 +110,3 @@ require_once(APPLICATION_PATH . '/header.php');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

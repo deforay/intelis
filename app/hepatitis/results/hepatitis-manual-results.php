@@ -233,7 +233,7 @@ startDate: moment().subtract(28, 'days'),
 			$('#sampleCollectionDate').val("");
 		<?php
 		} else if (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-			$('#sampleCollectionDate').val("<?php echo $_COOKIE['collectionDate']; ?>");
+			$('#sampleCollectionDate').val("<?= htmlspecialchars($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 
 		loadVlRequestData();
@@ -387,4 +387,3 @@ startDate: moment().subtract(28, 'days'),
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

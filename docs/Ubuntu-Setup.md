@@ -8,12 +8,19 @@
 * Once installed and logged in, start the Software Updater and wait for the full software update process to complete.
 * Start Terminal (`ctrl + alt + t`) and run the following commands :
 
+
 ```bash
-sudo -s;
 sudo apt update && sudo apt upgrade -y;
 sudo apt autoremove -y;
-sudo apt install software-properties-common gnupg apt-transport-https ca-certificates \
-lsb-release wget vim zip unzip curl acl snapd rsync git gdebi wget gedit -y;
+sudo locale-gen en_US
+sudo locale-gen en_US.UTF-8
+export LANG=en_US.UTF-8;
+export LC_ALL=en_US.UTF-8;
+sudo update-locale ;
+sudo apt install software-properties-common  \
+gnupg apt-transport-https ca-certificates \
+lsb-release wget vim zip unzip curl  \
+acl snapd rsync git gdebi wget gedit -y;
 ```
 
 Optionally, install Visual Studio Code (useful for editing PHP and other config files)
@@ -82,12 +89,11 @@ Now let us install PHP 7.4:
 ```bash
 sudo add-apt-repository ppa:ondrej/php -y;
 sudo apt update;
-sudo apt purge php* -y && apt autoremove -y
+sudo apt purge php8* -y && apt autoremove -y;
 sudo apt -y install php7.4 openssl php7.4-common php7.4-cli \
 php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd \
 php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath \
-php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type phpmyadmin;
-sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-enabled/phpmyadmin.conf;
+php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type;
 sudo service apache2 restart;
 ```
 

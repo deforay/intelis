@@ -156,4 +156,3 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

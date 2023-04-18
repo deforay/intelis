@@ -244,4 +244,3 @@ $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

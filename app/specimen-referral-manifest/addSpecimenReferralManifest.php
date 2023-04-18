@@ -380,4 +380,3 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

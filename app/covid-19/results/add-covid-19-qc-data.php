@@ -224,7 +224,7 @@ foreach ($pdResult as $provinceName) {
             },
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -241,7 +241,7 @@ foreach ($pdResult as $provinceName) {
                 });
             },
             onSelect: function(e) {},
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -379,4 +379,3 @@ foreach ($pdResult as $provinceName) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

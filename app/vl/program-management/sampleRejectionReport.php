@@ -26,10 +26,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 	.select2-selection__choice {
 		color: black !important;
 	}
+
 	#vlRequestDataTable tr:hover {
-        cursor: pointer;
-        background: #eee !important;
-    }
+		cursor: pointer;
+		background: #eee !important;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -181,4 +182,3 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

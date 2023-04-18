@@ -165,7 +165,7 @@ try {
     );
 
     echo json_encode($payload);
-    error_log(print_r($data['post'], TRUE));
+    error_log(print_r($data['post'], true));
 
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());

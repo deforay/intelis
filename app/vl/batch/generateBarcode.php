@@ -84,7 +84,7 @@ if ($id > 0) {
         $reviewed = \App\Utilities\DateUtils::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
    
-    if (count($bResult) > 0) {
+    if (!empty($bResult)) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
@@ -106,13 +106,13 @@ if ($id > 0) {
             public function Header()
             {
                 // Logo
-                //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-                //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+                //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 // Set font
                 if (trim($this->logo) != "") {
                     if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($image_file, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                        $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
                 $this->SetFont('helvetica', '', 7);
@@ -172,7 +172,7 @@ if ($id > 0) {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

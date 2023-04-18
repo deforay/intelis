@@ -281,7 +281,7 @@ if ($arr['vl_form'] == 1) {
                dateFormat: 'dd-M-yy',
                timeFormat: "HH:mm",
                maxDate: "Today",
-               yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });
@@ -296,7 +296,7 @@ if ($arr['vl_form'] == 1) {
                          $('.ui-datepicker-calendar').show();
                     });
                },
-               yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });

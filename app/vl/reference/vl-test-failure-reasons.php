@@ -26,7 +26,7 @@ require_once(APPLICATION_PATH . '/header.php');
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="vlTestFailureReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table id="vlTestFailureReasonDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th scope="row"><?php echo _("Failure Reason"); ?></th>
@@ -120,4 +120,3 @@ require_once(APPLICATION_PATH . '/header.php');
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

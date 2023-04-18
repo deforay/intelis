@@ -41,13 +41,13 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
          public function Header()
          {
             // Logo
-            //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-            //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+            //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+            //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
             // Set font
             if (trim($this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                  $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                  $this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                  $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                  $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                }
             }
             $this->SetFont('helvetica', 'B', 7);
@@ -93,7 +93,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
       $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
       // set auto page breaks
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
       // set image scale factor
       $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -212,7 +212,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                }
                $fValueResult = $db->rawQuery($fValueQuery);
                $fieldValue = '';
-               if (count($fValueResult) > 0) {
+               if (!empty($fValueResult)) {
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $fieldValue = \App\Utilities\DateUtils::humanReadableDateFormat($fValueResult[0][$field], true);
@@ -265,7 +265,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
    <div class="box box-default">
       <div class="box-header with-border">
          <div style="text-align:center;">
-            <h4>Facility Name : <?php echo ($_POST['toName']); ?></h4>
+            <h4>Facility Name : <?= htmlspecialchars($_POST['toName']); ?></h4>
          </div>
       </div>
       <div class="box-body">
@@ -309,8 +309,8 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                   <a href="/covid-19/mail/mail-covid-19-results.php" class="btn btn-default"> Cancel</a>&nbsp;
                   <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
                   <div><code><?php echo ($global['sync_path'] == '') ? 'Please enter "Sync Path" in General Config to enable file sharing via shared folder' : '' ?></code></div>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile1; ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result only pdf</a></p>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo $downloadFile2; ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result pdf </a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile1); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result only pdf</a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile2); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result pdf </a></p>
                </div>
             </div>
          </form>

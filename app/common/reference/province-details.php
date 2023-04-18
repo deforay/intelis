@@ -1,6 +1,6 @@
 <?php
 $title = _("Province");
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 ?>
@@ -8,10 +8,10 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Province");?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Province"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Province");?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Province"); ?></li>
 		</ol>
 	</section>
 
@@ -22,18 +22,18 @@ require_once(APPLICATION_PATH . '/header.php');
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-province.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add New Province");?></a>
+							<a href="add-province.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add New Province"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Province Name");?></th>
-									<th scope="row"><?php echo _("Province Code");?></th>
+									<th scope="row"><?php echo _("Province Name"); ?></th>
+									<th scope="row"><?php echo _("Province Code"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th scope="row"><?php echo _("Action");?></th>
+										<th scope="row"><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -103,4 +103,3 @@ require_once(APPLICATION_PATH . '/header.php');
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

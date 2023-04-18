@@ -194,7 +194,7 @@ $state = $geoLocationDb->getProvinces("yes");
 
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
@@ -223,7 +223,7 @@ $state = $geoLocationDb->getProvinces("yes");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -301,20 +301,20 @@ $state = $geoLocationDb->getProvinces("yes");
 			provinceId = $(this).val();
 			$.blockUI();
 			$("#district").html('');
-    $.post("/common/get-by-province-id.php", {
-      provinceId : provinceId,
-	  districts : true,
-			},
-			function(data) {
-				Obj.parseJSON(data);
-        $("#district").html(Obj['districts']);
-			});
+			$.post("/common/get-by-province-id.php", {
+					provinceId: provinceId,
+					districts: true,
+				},
+				function(data) {
+					Obj.parseJSON(data);
+					$("#district").html(Obj['districts']);
+				});
 			$.unblockUI();
 		});
 		loadVlRequestData();
 		$('#sampleTestDate').val("");
 		$('#sampleCollectionDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 
@@ -415,8 +415,7 @@ $state = $geoLocationDb->getProvinces("yes");
 	}
 
 	function exportInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
@@ -756,34 +755,32 @@ $state = $geoLocationDb->getProvinces("yes");
 		return Math.round(((val) + 0.00001) * 100) / 100;
 	}
 
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facilityName").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facilityName").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['labs']);
-				});
+			});
 	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['labs']);
-				});
+
+	function getByDistrict(districtId) {
+		$("#facilityName").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['labs']);
+			});
 	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

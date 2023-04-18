@@ -584,7 +584,7 @@ $disable = "disabled = 'disabled'";
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -594,7 +594,7 @@ $disable = "disabled = 'disabled'";
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});

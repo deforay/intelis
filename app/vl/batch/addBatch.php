@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 ob_start();
 $title = _("VL | Add New Batch");
 
@@ -194,25 +196,25 @@ foreach ($testPlatformResult as $machine) {
 						</div>
 
 						<div class="row" id="sampleDetails" style="margin: 15px;<?php echo $display; ?>">
-                                   <h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-                                            
-                                        </select>
-                                   </div>
+							<h4> <?php echo _("Sample Code"); ?></h4>
+							<div class="col-md-5">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+								</select>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                                   </div>
-                              </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
+
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+							</div>
+						</div>
 
 
 
@@ -220,7 +222,7 @@ foreach ($testPlatformResult as $machine) {
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-					<input type="hidden" name="selectedSample" id="selectedSample" />
+						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
 						<a href="batchcode.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
@@ -246,15 +248,15 @@ foreach ($testPlatformResult as $machine) {
 	sortedTitle = [];
 	$(document).ready(function() {
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
-	
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
+
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -291,33 +293,31 @@ foreach ($testPlatformResult as $machine) {
 	});
 
 	function validateNow() {
-		
+
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-          $("#selectedSample").val(selVal);
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-			if(selVal=="")
-			{
-				alert("Please select sample code");
-				return false;
-			}
-		
-          flag = deforayValidator.init({
-               formId: 'addBatchForm'
-          });
-          if (flag) {
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+		if (selVal == "") {
+			alert("Please select sample code");
+			return false;
+		}
+
+		flag = deforayValidator.init({
+			formId: 'addBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('addBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('addBatchForm').submit();
+		}
 	}
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
@@ -417,4 +417,3 @@ foreach ($testPlatformResult as $machine) {
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
