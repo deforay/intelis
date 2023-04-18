@@ -1,17 +1,27 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\Eid;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Models\Tb;
+use App\Models\Users;
+use App\Models\Vl;
+
 ob_start();
 
 $title = "Move Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);
 
-$usersDb = new \App\Models\Users();
+$usersDb = new Users();
 $usersList = array();
 $users = $usersDb->getActiveUsers();
 foreach ($users as $u) {
@@ -20,21 +30,21 @@ foreach ($users as $u) {
 $facilities = $facilitiesDb->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
-	$vlDb = new \App\Models\Vl($db);
+	$vlDb = new Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$eidDb = new \App\Models\Eid($db);
+	$eidDb = new Eid($db);
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
-	$covid19Db = new \App\Models\Covid19($db);
+	$covid19Db = new Covid19($db);
 	$sampleTypes = $covid19Db->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
-	$hepDb = new \App\Models\Hepatitis($db);
+	$hepDb = new Hepatitis($db);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
-	$tbDb = new \App\Models\Tb($db);
+	$tbDb = new Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
 

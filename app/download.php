@@ -1,12 +1,14 @@
 <?php
 
+use App\Models\General;
+
 if (!isset($_SESSION['userId'])) {
     header("location:/login/login.php");
 }
 
 $webRootPath = realpath(WEB_ROOT);
 
-$general = new \App\Models\General();
+$general = new General();
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';

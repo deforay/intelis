@@ -1,5 +1,8 @@
 <?php
-$geoLocationDb = new \App\Models\GeoLocations();
+
+use App\Models\GeoLocations;
+
+$geoLocationDb = new GeoLocations();
 $list = array();
 
 if(isset($_POST['districtId']))

@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\General;
+use App\Models\Users;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,11 +14,11 @@ $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
-$general = new \App\Models\General();
+$general = new General();
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$user = new \App\Models\Users();
+$user = new Users();
 
 
 try {

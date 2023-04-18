@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\General;
+use App\Models\Users;
+use GuzzleHttp\Client;
 
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$userModel = new \App\Models\Users();
+$userModel = new Users();
 $tableName = "user_details";
 $upId = 0;
 
@@ -51,7 +53,7 @@ try {
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
                     $_SESSION['crossLoginPass']  = $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
-                    $client = new \GuzzleHttp\Client();
+                    $client = new Client();
                     $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [

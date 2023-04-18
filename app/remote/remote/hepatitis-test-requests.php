@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Facilities;
+use App\Models\Hepatitis;
+use App\Utilities\DateUtils;
+
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
 
@@ -19,7 +23,7 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
 
-$facilityDb = new \App\Models\Facilities();
+$facilityDb = new Facilities();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -50,7 +54,7 @@ if ($db->count > 0) {
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
     $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-    $hepatitisObj = new \App\Models\Hepatitis();
+    $hepatitisObj = new Hepatitis();
     $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($sampleIds);
     $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
 
@@ -65,7 +69,7 @@ $payload = json_encode($data);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtils::getCurrentDateTime();
 if (!empty($sampleIds)) {
     $sql = 'UPDATE form_hepatitis SET data_sync = ?, 
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

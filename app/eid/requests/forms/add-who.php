@@ -1,6 +1,9 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
+use App\Models\Eid;
+use App\Utilities\DateUtils;
+
 ob_start();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -18,7 +21,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidObj = new \App\Models\Eid();
+$eidObj = new Eid();
 $eidResults = $eidObj->getEidResults();
 
 $specimenTypeResult = $eidObj->getEidSampleTypes();
@@ -453,7 +456,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th scope="row" class="labels">Approved On </th>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php \App\Utilities\DateUtils::humanReadableDateFormat(\App\Utilities\DateUtils::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" title="Please select approved on" />
+                                                <input type="text" value="<?php DateUtils::humanReadableDateFormat(DateUtils::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>

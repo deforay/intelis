@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -13,7 +16,7 @@ if ($count == 0) {
 	header("location:/setup/index.php");
 }
 
-$general = new \App\Models\General();
+$general = new General();
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

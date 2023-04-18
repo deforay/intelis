@@ -1,11 +1,14 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 $db = MysqliDb::getInstance();
 $loginId = (trim($_POST['loginId']));
-$general = new \App\Models\General();
+$general = new General();
 $ipAddress = $general->getIpAddress();
 $data = 0;
 $ipdata = 0;

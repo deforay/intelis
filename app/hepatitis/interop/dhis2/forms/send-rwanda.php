@@ -2,9 +2,12 @@
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-send.php
 
-$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+use App\Interop\Dhis2;
+use App\Models\Hepatitis;
 
-$hepatitisModel = new \App\Models\Hepatitis();
+$dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+
+$hepatitisModel = new Hepatitis();
 
 $query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";

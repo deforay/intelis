@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Models\Instruments;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
-$instrumentsDb = new \App\Models\Instruments();
+$general = new General();
+$instrumentsDb = new Instruments();
 $activeInstruments = $instrumentsDb->getInstruments(null, true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null, "-- Select --");
 ?>

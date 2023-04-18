@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -6,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 $module = $_POST['module'];
 

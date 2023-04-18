@@ -7,14 +7,22 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
+
+use App\Models\General;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) != "") {
 
   $rResult = $db->rawQuery($_SESSION['covid19TATQuery']);
 
-  $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+  $excel = new Spreadsheet();
   $output = array();
   $sheet = $excel->getActiveSheet();
 
@@ -28,12 +36,12 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       'size' => '13',
     ),
     'alignment' => array(
-      'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      'horizontal' => Alignment::HORIZONTAL_CENTER,
+      'vertical' => Alignment::VERTICAL_CENTER,
     ),
     'borders' => array(
       'outline' => array(
-        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+        'style' => Border::BORDER_THICK,
       ),
     )
   );
@@ -46,11 +54,11 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     }
   }
   $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
           $colNo++;
      }
   $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
@@ -65,22 +73,22 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
     }
     if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-      $sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+      $sampleRecievedDate = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     } else {
       $sampleRecievedDate = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-      $testDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+      $testDate = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     } else {
       $testDate = '';
     }
     if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-      $printDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+      $printDate = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
     } else {
       $printDate = '';
     }
     if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-      $mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
+      $mailDate = DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
     } else {
       $mailDate = '';
     }
@@ -106,7 +114,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
                $colNo++;
           }
   }
-  $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+  $writer = IOFactory::createWriter($excel, 'Xlsx');
   $filename = 'COVID-19-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
   $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
   echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

@@ -2,6 +2,9 @@
 
 // imported in covid-19-update-result.php based on country in global config
 
+use App\Models\Covid19;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 //Funding source list
@@ -26,7 +29,7 @@ foreach ($testPlatformResult as $row) {
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
@@ -210,7 +213,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </td>
                                         <th scope="row"><label for="patientDob">Date of Birth </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
+                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -298,7 +301,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                     <tr>
                                         <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($covid19Info['sample_collection_date']); ?>" />
+                                            <input class="form-control" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['sample_collection_date']); ?>" />
                                         </td>
                                         <th scope="row">Specimen Type <span class="mandatory">*</span></th>
                                         <td>
@@ -335,7 +338,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td class="lab-show">
@@ -400,7 +403,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th scope="row">Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><input value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -444,7 +447,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Entrez le nom du test <?= ($indexKey + 1); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <td><input type="text" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input isRequired" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
@@ -467,7 +470,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                         <input type="text" value="<?php echo $rows['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?= ($indexKey + 1); ?>" class="form-control kit-fields<?= ($indexKey + 1); ?>" placeholder="Kit lot no" title="Please enter the kit lot no. for row 1" style="<?php echo $display; ?>" />
                                                                     </td>
                                                                     <td class="kitlabels" style="display: none;">
-                                                                        <input type="text" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($rows['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?= ($indexKey + 1); ?>" class="form-control expDate kit-fields<?= ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" />
+                                                                        <input type="text" value="<?php echo DateUtils::humanReadableDateFormat($rows['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?= ($indexKey + 1); ?>" class="form-control expDate kit-fields<?= ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" />
                                                                     </td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus isRequired" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
@@ -536,7 +539,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </tr>
                                         <tr>
                                             <th scope="row">Authorized on</td>
-                                            <td><input type="text" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Authorized on" title="Please enter the Authorized on" /></td>
+                                            <td><input type="text" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Authorized on" title="Please enter the Authorized on" /></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>

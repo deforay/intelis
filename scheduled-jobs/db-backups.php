@@ -5,6 +5,10 @@ require_once(__DIR__ . "/../bootstrap.php");
 
 use phpseclib3\Net\SFTP;
 use phpseclib3\Crypt\PublicKeyLoader;
+use Vlsm\Models\General;
+
+$db = \MysqliDb::getInstance();
+$general = new General($db);
 
 $sftp = null;
 if (!empty(SYSTEM_CONFIG['sftp']['host'])) {
@@ -43,12 +47,12 @@ try {
 
     exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
 
-    if (!empty($sftp) && $sftp !== false) {
+    if (!empty($sftp)) {
         $sftp->chdir(SYSTEM_CONFIG['sftp']['path']);
         $sftp->put("$baseFileName.zip", file_get_contents($backupFolder . "/" . "$baseFileName.zip"));
     }
 
-    if (isset(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] == true) {
+    if (isset(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled']) {
         $baseFileName = 'interfacing-' . date("dmYHis") . '-' . $randomString . '.sql';
         $password = hash('sha1', SYSTEM_CONFIG['interfacing']['database']['password'] . $randomString);
         exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['database']['username'] . ' --password="' . SYSTEM_CONFIG['interfacing']['database']['password'] . '" --host=' . SYSTEM_CONFIG['interfacing']['database']['host'] . ' --port=' . SYSTEM_CONFIG['interfacing']['database']['port'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['database']['db'] . '  > ' . $baseFileName);
@@ -58,7 +62,7 @@ try {
             $sftp->put("$baseFileName.zip", file_get_contents($backupFolder . "/" . "$baseFileName.zip"));
         }
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
     error_log('whoops! Something went wrong in scheduled-jobs/db-backups.php');

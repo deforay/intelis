@@ -5,12 +5,15 @@ ob_start();
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
+$general = new General();
+$users = new Users();
 
 $arr = $general->getGlobalConfig();
 
@@ -62,7 +65,7 @@ if (empty($requestResult) || $requestResult == false) {
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 
 $_SESSION['nbPages'] = sizeof($requestResult);

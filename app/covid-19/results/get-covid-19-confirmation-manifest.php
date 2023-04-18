@@ -1,8 +1,9 @@
 <?php
 
 
+use App\Models\General;
 
-$general = new \App\Models\General();
+$general = new General();
 $start_date = '';
 $end_date = '';
 //global config

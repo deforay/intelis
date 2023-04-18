@@ -1,9 +1,12 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "batch_details";
 try {
     $id = $_POST['id'];

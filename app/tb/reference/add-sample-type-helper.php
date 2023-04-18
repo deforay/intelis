@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -7,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 
@@ -20,7 +24,7 @@ try {
 		$data = array(
 			'sample_name' => $_POST['sampleName'],
 			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

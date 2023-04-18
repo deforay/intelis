@@ -12,14 +12,18 @@ function prettyJson($json)
     }
 }
 
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \App\Models\General();
-$vlModel = new \App\Models\Vl();
-$facilityDb = new \App\Models\Facilities();
+$general = new General();
+$vlModel = new Vl();
+$facilityDb = new Facilities();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -258,10 +262,10 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['form_attributes']['apiTransactionId'] = $transactionId;
             $formData[$basedOnServiceRequest]['form_attributes']['fhir'] = (array_merge($taskAttributes[$basedOnServiceRequest], $serviceAttributes[$basedOnServiceRequest]));
             $formData[$basedOnServiceRequest]['form_attributes'] = json_encode($formData[$basedOnServiceRequest]['form_attributes']);
-            $formData[$basedOnServiceRequest]['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $formData[$basedOnServiceRequest]['request_created_datetime'] = DateUtils::getCurrentDateTime();
             $formData[$basedOnServiceRequest]['vlsm_instance_id'] = $instanceId;
             $formData[$basedOnServiceRequest]['vlsm_country_id'] = 7; // RWANDA
-            $formData[$basedOnServiceRequest]['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $formData[$basedOnServiceRequest]['last_modified_datetime'] = DateUtils::getCurrentDateTime();
             $formData[$basedOnServiceRequest]['source_of_request'] = 'fhir';
             //$formData[$basedOnServiceRequest]['source_data_dump'] = $json;
             $formData[$basedOnServiceRequest]['result_status'] = 6;

@@ -3,13 +3,17 @@
 // this file is included in /import-result/procesImportedResults.php
 
 
+use App\Models\Covid19;
+use App\Models\Facilities;
+use App\Utilities\DateUtils;
+
 $tableName = "temp_sample_import";
 $tableName1 = "form_covid19";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
-$covid19Obj = new \App\Models\Covid19();
-$facilityDb = new \App\Models\Facilities();
+$covid19Obj = new Covid19();
+$facilityDb = new Facilities();
 
 
 try {
@@ -55,16 +59,16 @@ try {
                     'control_type' => $rResult[0]['sample_type'],
                     'lot_number' => $rResult[0]['lot_number'],
                     'lot_expiration_date' => $rResult[0]['lot_expiration_date'],
-                    'sample_tested_datetime'        => !empty($rResult[0]['sample_tested_datetime']) ? $rResult[0]['sample_tested_datetime'] : \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'sample_tested_datetime'        => !empty($rResult[0]['sample_tested_datetime']) ? $rResult[0]['sample_tested_datetime'] : DateUtils::getCurrentDateTime(),
                     //'is_sample_rejected'=>'yes',
                     //'reason_for_sample_rejection'=>$rResult[0]['reason_for_sample_rejection'],
                     'result' => $rResult[0]['result'],
                     'tested_by' => $_POST['testBy'],
                     'lab_tech_comments' => $comments,
                     'result_reviewed_by' => $rResult[0]['result_reviewed_by'],
-                    'result_reviewed_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'result_reviewed_datetime' => DateUtils::getCurrentDateTime(),
                     'result_approved_by' => $_POST['appBy'],
-                    'result_approved_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'result_approved_datetime' => DateUtils::getCurrentDateTime(),
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult[0]['import_machine_file_name'],
                     'imported_date_time' => $rResult[0]['result_imported_datetime']
@@ -134,9 +138,9 @@ try {
                     //$data['request_created_by'] = $rResult[0]['result_reviewed_by'];
                     //$data['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                    $data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
-                    $data['result_approved_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                    $data['result_approved_datetime'] = DateUtils::getCurrentDateTime();
                     $sampleVal = $rResult[0]['sample_code'];
 
                     if ($status[$i] == '4') {
@@ -202,7 +206,7 @@ try {
                     "test_type" => "vl",
                     "result_method" => "import",
                     "file_name" => $rResult[0]['import_machine_file_name'],
-                    "updated_on" => \App\Utilities\DateUtils::getCurrentDateTime()
+                    "updated_on" => DateUtils::getCurrentDateTime()
                 ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
@@ -236,7 +240,7 @@ try {
                 //'request_created_datetime' => $db->now(),
                 'last_modified_datetime' => $db->now(),
                 'result_approved_by' => $_POST['appBy'],
-                'result_approved_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+                'result_approved_datetime' => DateUtils::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
                 'manual_result_entry' => 'no',
                 //'result_status'=>'7',

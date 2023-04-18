@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\GeoLocations;
+
 $title = _("Covid-19 | Clinics Report");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -8,8 +12,8 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');

@@ -1,13 +1,19 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Users;
+
 $title = _("Covid19 | View All Requests");
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
-$geoLocationDb = new \App\Models\GeoLocations();
+$general = new General();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
+$geoLocationDb = new GeoLocations();
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 

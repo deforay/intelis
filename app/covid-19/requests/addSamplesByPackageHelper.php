@@ -1,6 +1,11 @@
 <?php
-$general = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
+
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
+$general = new General();
+$covid19Obj = new Covid19();
 
 
 $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_covid19 where covid19_id IN (" . $_POST['sampleId'] . ") ORDER BY covid19_id";
@@ -16,7 +21,7 @@ foreach ($sampleResult as $sampleRow) {
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = \App\Utilities\DateUtils::isoDateFormat($testDate[0]);
+        $_POST['testDate'] = DateUtils::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -24,7 +29,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $covid19Obj->generateCovid19SampleCode($provinceCode, \App\Utilities\DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $covid19Obj->generateCovid19SampleCode($provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         $covid19Data = array();
         $covid19Data['sample_code'] = $sampleData['sampleCode'];
@@ -37,7 +42,7 @@ foreach ($sampleResult as $sampleRow) {
             $covid19Data['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
         $covid19Data['last_modified_by'] = $_SESSION['userId'];
-        $covid19Data['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $covid19Data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
         $db = $db->where('covid19_id', $sampleRow['covid19_id']);
         $id = $db->update('form_covid19', $covid19Data);

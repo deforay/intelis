@@ -1,12 +1,15 @@
 <?php
 //get data from remote db send to lab db
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
 header('Content-Type: application/json');
 
-$general = new \App\Models\General();
+$general = new General();
 
 $payload = array();
 
@@ -259,7 +262,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
     
     $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?) WHERE facility_id = ?';
-    $db->rawQuery($sql, array(\App\Utilities\DateUtils::getCurrentDateTime(), $labId));
+    $db->rawQuery($sql, array(DateUtils::getCurrentDateTime(), $labId));
 
     echo $payload;
 } else {

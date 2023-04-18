@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
@@ -20,7 +24,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \App\Models\General();
+$general = new General();
 
 
 $tableName = "form_hepatitis";
@@ -149,10 +153,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 /* Sample recieved date filter */
@@ -162,10 +166,10 @@ if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) !=
      $s_r_date = explode("to", $_POST['sampleRecievedDate']);
      //print_r($s_r_date);die;
      if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[0]));
+          $rstart_date = DateUtils::isoDateFormat(trim($s_r_date[0]));
      }
      if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_r_date[1]));
+          $rend_date = DateUtils::isoDateFormat(trim($s_r_date[1]));
      }
 }
 $sTestDate = '';
@@ -173,10 +177,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 $sPrintDate = '';
@@ -184,10 +188,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 
@@ -354,7 +358,7 @@ foreach ($rResult as $aRow) {
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
      if ($aRow['is_result_authorised'] == 'yes') {
-          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
+          $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['hepatitis_id'] . ')"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
           $row[] = '';
      } else {
           $row[] = '<a href="javascript:void(0);" class="btn btn-default btn-xs disabled" style="margin-right: 2px;" title="' . _("View") . '"><em class="fa-solid fa-ban"></em> ' . _("Not Authorized") . '</a>';

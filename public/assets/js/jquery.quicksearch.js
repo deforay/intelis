@@ -10,10 +10,10 @@
 			matchedResultsCount: 0,
 			bind: 'keyup',
 			onBefore: function () { 
-				return;
+
 			},
 			onAfter: function () { 
-				return;
+
 			},
 			show: function () {
 				this.style.display = "";

@@ -1,12 +1,17 @@
 <?php
+
+use App\Models\General;
+use App\Models\System;
+use App\Models\Users;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$userDb = new \App\Models\Users();
-$general = new \App\Models\General();
+$userDb = new Users();
+$general = new General();
 
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>

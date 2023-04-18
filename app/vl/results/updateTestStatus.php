@@ -1,6 +1,10 @@
 <?php
 
-$general = new \App\Models\General();
+use App\Models\General;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
+$general = new General();
 $tableName = "form_vl";
 try {
 
@@ -8,8 +12,8 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'result_approved_datetime'  =>  DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  DateUtils::getCurrentDateTime(),
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */
@@ -36,7 +40,7 @@ try {
 
 
 
-        $vlDb = new \App\Models\Vl();
+        $vlDb = new Vl();
         $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
             $status['result_status'] = 5;

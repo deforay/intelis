@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Models\Users;
+
 ob_start();
 $title = "Enter Hepatitis Result";
 
@@ -6,10 +12,10 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$userDb = new \App\Models\Users();
-$hepatitisDb = new \App\Models\Hepatitis();
+$general = new General();
+$facilitiesDb = new Facilities();
+$userDb = new Users();
+$hepatitisDb = new Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

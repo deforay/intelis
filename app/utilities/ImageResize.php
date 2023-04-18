@@ -187,7 +187,7 @@ class ImageResize
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $exif = null;
         }
 

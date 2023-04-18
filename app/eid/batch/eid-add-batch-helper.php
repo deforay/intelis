@@ -1,7 +1,10 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
   
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName1 = "batch_details";
 $tableName2 = "form_eid";

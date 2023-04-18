@@ -1,7 +1,10 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_vl_test_failure_reasons";
 $result = 0;
 try {

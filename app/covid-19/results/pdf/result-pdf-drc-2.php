@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 class DRC_PDF extends MYPDF
 {
     //Page header
@@ -80,7 +84,7 @@ class DRC_PDF extends MYPDF
     }
 }
 
-$users = new \App\Models\Users();
+$users = new Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -153,7 +157,7 @@ if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $resu
 
 if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_collection_date']);
-    $result['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
     $sampleCollectionTime = $expStr[1];
 } else {
     $result['sample_collection_date'] = '';
@@ -163,24 +167,24 @@ $sampleReceivedDate = '';
 $sampleReceivedTime = '';
 if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-    $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
 $resultPrintedDate = '';
 $resultPrintedTime = '';
 if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['result_printed_datetime']);
-    $resultPrintedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $resultPrintedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 } else {
     $expStr = explode(" ", $currentDateTime);
-    $resultPrintedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $resultPrintedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 }
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_tested_datetime']);
-    $result['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $result['sample_tested_datetime'] = '';
 }
@@ -313,12 +317,12 @@ if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_test
     foreach ($covid19TestInfo as $indexKey => $rows) {
         $html .= '<tr>';
         $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;" colspan="2"><strong>Resultats ' . ($indexKey + 1) . 'éme Prélévement &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . ($rows['result']) . '</td>';
-        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . \App\Utilities\DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>';
+        $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;"><strong>Date de Sortie Résultats &nbsp;&nbsp;:</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>';
         $html .= '</tr>';
     }
 }
 $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><strong>Fait à Goma, le :</strong>' . \App\Utilities\DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
+$html .= '<td width="100%" style="line-height:14px;font-size:12px;text-align:center;" colspan="3"><strong>Fait à Goma, le :</strong>' . DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
 $html .= '</tr>';
 
 

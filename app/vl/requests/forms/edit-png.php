@@ -1,6 +1,9 @@
 <?php
 
 
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
 ob_start();
 //global config
 $cSampleQuery = "SELECT * FROM global_config";
@@ -95,27 +98,27 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 
 if (isset($vlQueryInfo['failed_test_date']) && trim($vlQueryInfo['failed_test_date']) != '' && trim($vlQueryInfo['failed_test_date']) != '0000-00-00 00:00:00') {
 	$failedDate = explode(" ", $vlQueryInfo['failed_test_date']);
-	$vlQueryInfo['failed_test_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($failedDate[0]) . " " . $failedDate[1];
+	$vlQueryInfo['failed_test_date'] = DateUtils::humanReadableDateFormat($failedDate[0]) . " " . $failedDate[1];
 } else {
 	$vlQueryInfo['failed_test_date'] = '';
 }
 if (isset($vlQueryInfo['art_cd_date']) && trim($vlQueryInfo['art_cd_date']) != '' && $vlQueryInfo['art_cd_date'] != '0000-00-00') {
-	$vlQueryInfo['art_cd_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['art_cd_date']);
+	$vlQueryInfo['art_cd_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['art_cd_date']);
 } else {
 	$vlQueryInfo['art_cd_date'] = '';
 }
 if (isset($vlQueryInfo['qc_date']) && trim($vlQueryInfo['qc_date']) != '' && $vlQueryInfo['qc_date'] != '0000-00-00') {
-	$vlQueryInfo['qc_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['qc_date']);
+	$vlQueryInfo['qc_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['qc_date']);
 } else {
 	$vlQueryInfo['qc_date'] = '';
 }
 if (isset($vlQueryInfo['report_date']) && trim($vlQueryInfo['report_date']) != '' && $vlQueryInfo['report_date'] != '0000-00-00') {
-	$vlQueryInfo['report_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['report_date']);
+	$vlQueryInfo['report_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['report_date']);
 } else {
 	$vlQueryInfo['report_date'] = '';
 }
 if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '' && $vlQueryInfo['clinic_date'] != '0000-00-00') {
-	$vlQueryInfo['clinic_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['clinic_date']);
+	$vlQueryInfo['clinic_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['clinic_date']);
 } else {
 	$vlQueryInfo['clinic_date'] = '';
 }
@@ -127,9 +130,9 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-	$vlObj = new \App\Models\Vl();
+	$vlObj = new Vl();
 	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
-	$sampleCollectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
+	$sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
 	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
 	$sampleCodeKeys = json_decode($sampleSuggestionJson, true);
 	$sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -561,7 +564,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											</select>
 										</td>
 										<td class="rejectionReason labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
-										<td class="rejectionReason" style="display: none;"><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+										<td class="rejectionReason" style="display: none;"><input value="<?php echo DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
 									<tr>
 										<td class="laboratoryId labels"><label for="laboratoryId">Laboratory Name</label></td>

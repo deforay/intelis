@@ -1,8 +1,10 @@
 <?php
 // imported in hepatitis-add-request.php based on country in global config
 
+use App\Models\Facilities;
+
 ob_start();
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

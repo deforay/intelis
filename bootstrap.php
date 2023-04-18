@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\System;
+use Laminas\Config\Factory;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -17,7 +18,7 @@ if (!file_exists($configFile)) {
     $configFile = ROOT_PATH . "/configs/config.production.php";
 }
 defined('SYSTEM_CONFIG') ||
-    define('SYSTEM_CONFIG', \Laminas\Config\Factory::fromFile($configFile));
+    define('SYSTEM_CONFIG', Factory::fromFile($configFile));
 
 // Database Connection
 $db = new MysqliDb(SYSTEM_CONFIG['database']);

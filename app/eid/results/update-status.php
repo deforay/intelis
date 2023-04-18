@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_eid";
 $result = "";
 try {
@@ -13,8 +17,8 @@ try {
 
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'result_approved_datetime'  =>  DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  DateUtils::getCurrentDateTime(),
             'data_sync'                 => 0
         );
 

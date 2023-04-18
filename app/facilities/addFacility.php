@@ -1,15 +1,20 @@
 <?php
+
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Users;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
-$geolocation = new \App\Models\GeoLocations();
+$general = new General();
+$geolocation = new GeoLocations();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
-$usersModel = new \App\Models\Users();
+$usersModel = new Users();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = array();
@@ -98,7 +103,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											foreach ($fResult as $type) {

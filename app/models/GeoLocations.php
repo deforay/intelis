@@ -8,6 +8,9 @@
 
 namespace App\Models;
 
+use App\Utilities\DateUtils;
+use MysqliDb;
+
 class GeoLocations
 {
 
@@ -15,7 +18,7 @@ class GeoLocations
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)
@@ -92,14 +95,14 @@ class GeoLocations
 
     function addGeoLocation($geoName, $parent = 0)
     {
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
 
         $data = array(
             'geo_name'         => $geoName,
             'geo_status'       => 'active',
             'created_by'       => $_SESSION['userId'],
-            'created_on'       => \App\Utilities\DateUtils::getCurrentDateTime(),
-            'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'created_on'       => DateUtils::getCurrentDateTime(),
+            'updated_datetime' => DateUtils::getCurrentDateTime(),
             'data_sync'       => 0
         );
         if ($parent > 0) {

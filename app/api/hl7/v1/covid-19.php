@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Covid19;
+use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
 use Aranyasen\HL7\Segments\PID;
@@ -7,7 +9,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$covid19Model = new \App\Models\Covid19();
+$covid19Model = new Covid19();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
@@ -495,8 +497,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'is_sample_post_mortem'               => !empty($_POST['isSamplePostMortem']) ? $_POST['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($_POST['priorityStatus']) ? $_POST['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($_POST['numberOfDaysSick']) ? $_POST['numberOfDaysSick'] : null,
-            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfInitialConsultation']) : null,
+            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? DateUtils::isoDateFormat($_POST['dateOfSymptomOnset']) : null,
+            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? DateUtils::isoDateFormat($_POST['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($_POST['feverTemp']) ? $_POST['feverTemp'] : null,
             'medical_history'                     => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
             'recent_hospitalization'              => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
@@ -509,7 +511,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'contact_with_confirmed_case'         => !empty($_POST['contactWithConfirmedCase']) ? $_POST['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
             'travel_country_names'                => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
-            'travel_return_date'                  => !empty($_POST['returnDate']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['returnDate']) : null,
+            'travel_return_date'                  => !empty($_POST['returnDate']) ? DateUtils::isoDateFormat($_POST['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
             'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
@@ -518,7 +520,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : \App\Utilities\DateUtils::getCurrentDateTime(),
+            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : DateUtils::getCurrentDateTime(),
             'sample_registered_at_lab'            => $db->now(),
             'last_modified_datetime'              => $db->now()
         );

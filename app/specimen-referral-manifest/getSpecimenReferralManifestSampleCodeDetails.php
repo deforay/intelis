@@ -1,12 +1,17 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 
 $sarr = $general->getSystemConfig();
 //global config
@@ -42,10 +47,10 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	//print_r($dateRange);die;
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = \App\Utilities\DateUtils::isoDateFormat(trim($dateRange[0]));
+		$startDate = DateUtils::isoDateFormat(trim($dateRange[0]));
 	}
 	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = \App\Utilities\DateUtils::isoDateFormat(trim($dateRange[1]));
+		$endDate = DateUtils::isoDateFormat(trim($dateRange[1]));
 	}
 
 	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";

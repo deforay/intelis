@@ -1,11 +1,14 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch Position";
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("location:eid-batches.php");
@@ -143,7 +146,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	sortedTitle = [];
 	$(document).ready(function() {
 		function cleanArray(actual) {
-			var newArray = new Array();
+			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
 				if (actual[i]) {
 					newArray.push(actual[i]);

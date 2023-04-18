@@ -1,11 +1,14 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 $tableName = "support";
 
-$general = new \App\Models\General();
+$general = new General();
 
 try {
 	// File upload folder 

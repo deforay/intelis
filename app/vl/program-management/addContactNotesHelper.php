@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "vl_contact_notes";
 
@@ -13,8 +17,8 @@ try {
         $data = array(
             'contact_notes' => $_POST['notes'],
             'treament_contact_id' => $_POST['treamentId'],
-            'collected_on' => \App\Utilities\DateUtils::isoDateFormat($_POST['dateVal']),
-            'added_on' => \App\Utilities\DateUtils::getCurrentDateTime()
+            'collected_on' => DateUtils::isoDateFormat($_POST['dateVal']),
+            'added_on' => DateUtils::getCurrentDateTime()
         );
         //print_r($data);die;
         $result = $db->insert($tableName, $data);

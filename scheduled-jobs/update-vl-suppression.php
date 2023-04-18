@@ -1,8 +1,12 @@
 <?php
 
+use App\Models\Vl;
+
 require_once(__DIR__ . "/../bootstrap.php");
 
-$vlDb = new \App\Models\Vl();
+$vlDb = new Vl();
+
+$db = \MysqliDb::getInstance();
 
 $sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, result, result_status
 				
@@ -19,7 +23,7 @@ foreach ($result as $aRow) {
 
     $vlResultCategory = $vlDb->getVLResultCategory($aRow['result_status'], $aRow['result']);
 
-    if (!empty($vlResultCategory) && $vlResultCategory !== false) {
+    if (!empty($vlResultCategory)) {
 
         $db->where('vl_sample_id', $aRow['vl_sample_id']);
         $dataToUpdate = array();

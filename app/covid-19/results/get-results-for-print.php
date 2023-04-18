@@ -1,11 +1,16 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $tableName = "form_covid19";
@@ -131,10 +136,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -142,10 +147,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 
@@ -266,7 +271,7 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="checkedPrintedRow(this);"  />';
     }
-    $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['covid19_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+    $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['covid19_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
 
     $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
     $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);
@@ -284,7 +289,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_district']);
     $row[] = ($aRow['sample_name']);
     $row[] = $covid19Results[$aRow['result']];
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     $row[] = ($aRow['status_name']);
     $row[] = $print;
     $output['aaData'][] = $row;

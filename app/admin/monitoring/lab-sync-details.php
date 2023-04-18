@@ -1,15 +1,20 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\GeoLocations;
+use App\Models\System;
+
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$facilityDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$facilityDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 $facilityDetails = $facilityDb->getAllFacilities();
 foreach ($facilityDetails as $row) {
     $facilityNameList[$row['facility_id']] = $row['facility_name'];
 }
 $stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 
 $sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id WHERE f.facility_id = " . base64_decode($_GET['labId']) . " GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
 $labInfo = $db->rawQueryOne($sQuery);

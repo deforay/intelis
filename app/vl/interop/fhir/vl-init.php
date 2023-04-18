@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\General;
+
 require_once(__DIR__ . "/../../../../bootstrap.php");
 
 if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
@@ -8,7 +10,7 @@ if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
 }
 
 
-$general = new \App\Models\General();
+$general = new General();
 $arr = $general->getGlobalConfig();
 
 // $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

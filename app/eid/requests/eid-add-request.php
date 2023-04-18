@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+
 ob_start();
 $title = "EID | Add New Request";
 
@@ -22,8 +26,8 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);

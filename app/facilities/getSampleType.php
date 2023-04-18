@@ -1,9 +1,16 @@
 <?php
-$vlDb = new \App\Models\Vl($db);
-$eidDb = new \App\Models\Eid($db);
-$covid19Db = new \App\Models\Covid19($db);
-$hepatitisDb = new \App\Models\Hepatitis($db);
-$tbDb = new \App\Models\Tb($db);
+
+use App\Models\Covid19;
+use App\Models\Eid;
+use App\Models\Hepatitis;
+use App\Models\Tb;
+use App\Models\Vl;
+
+$vlDb = new Vl($db);
+$eidDb = new Eid($db);
+$covid19Db = new Covid19($db);
+$hepatitisDb = new Hepatitis($db);
+$tbDb = new Tb($db);
 /* Selected Sample Types from Facility Edit */
 $selectedSamplesTypes = array();
 if (!empty($_POST['facilityId'])) {

@@ -1,11 +1,16 @@
 <?php
+
+use App\Models\General;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -15,41 +20,41 @@ try {
 
     if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
         $failedtestDate = explode(" ", $_POST['failedTestDate']);
-        $_POST['failedTestDate'] = \App\Utilities\DateUtils::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+        $_POST['failedTestDate'] = DateUtils::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
     } else {
         $_POST['failedTestDate'] = null;
     }
 
     if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
-        $_POST['regStartDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['regStartDate']);
+        $_POST['regStartDate'] = DateUtils::isoDateFormat($_POST['regStartDate']);
     } else {
         $_POST['regStartDate'] = null;
     }
 
     if (isset($_POST['receivedDate']) && trim($_POST['receivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['receivedDate']);
-        $_POST['receivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['receivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['receivedDate'] = null;
     }
     if (isset($_POST['testDate']) && trim($_POST['testDate']) != "") {
         $sampletestDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = \App\Utilities\DateUtils::isoDateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
+        $_POST['testDate'] = DateUtils::isoDateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
     } else {
         $_POST['testDate'] = null;
     }
     if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-        $_POST['qcDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['qcDate']);
+        $_POST['qcDate'] = DateUtils::isoDateFormat($_POST['qcDate']);
     } else {
         $_POST['qcDate'] = null;
     }
     if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-        $_POST['reportDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['reportDate']);
+        $_POST['reportDate'] = DateUtils::isoDateFormat($_POST['reportDate']);
     } else {
         $_POST['reportDate'] = null;
     }
     if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
-        $_POST['clinicDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['clinicDate']);
+        $_POST['clinicDate'] = DateUtils::isoDateFormat($_POST['clinicDate']);
     } else {
         $_POST['clinicDate'] = null;
     }
@@ -72,7 +77,7 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
@@ -80,7 +85,7 @@ try {
     $vldata = array(
         'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
-        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
         'batch_quality' => (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null),
         'sample_test_quality' => (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null),
         'sample_batch_id' => (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null),
@@ -106,7 +111,7 @@ try {
         'clinic_date' => $_POST['clinicDate'],
         'report_date' => $_POST['reportDate'],
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? \App\Utilities\DateUtils::getCurrentDateTime() : "",
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : "",
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => $db->now(),
         'data_sync' => 0,
@@ -119,7 +124,7 @@ try {
         $vldata['result_status'] = $_POST['status'];
     }
 
-    $vlDb = new \App\Models\Vl();
+    $vlDb = new Vl();
     $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
         $vldata['result_status'] = 5;
@@ -136,7 +141,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['vlSampleId'],
             'test_type' => 'vl',
-            'updated_on' => \App\Utilities\DateUtils::getCurrentDateTime()
+            'updated_on' => DateUtils::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
     } else {

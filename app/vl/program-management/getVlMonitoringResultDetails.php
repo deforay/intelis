@@ -1,11 +1,16 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
   
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
@@ -18,7 +23,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -131,10 +136,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+		$start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+		$end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 $sTestDate = '';

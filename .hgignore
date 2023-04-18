@@ -1,6 +1,7 @@
 syntax: regexp
 ^public/uploads/(?!.htaccess)
 ^public/temporary/(?!.htaccess)
+^vendor/*
 ^vendor/dcarbone/(?!.htaccess)
 ^docker/mysql/data/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
@@ -9,6 +10,12 @@ syntax: regexp
 ^.*\.idea$
 ^.*\.pid$
 ^.*\.log$
+^.*\.vendor$
+^vendor
+error_log
+\.DS_Store$
+[Tt]humbs\.db$
+
 
 syntax: glob
 error_log
@@ -34,3 +41,4 @@ configs/config.development.php.dist
 configs/bg.png
 configs/bg.jpg
 secretKey.txt
+vendor

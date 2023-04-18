@@ -1,11 +1,17 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\Eid;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -19,12 +25,12 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = new \App\Models\Eid();
+    $eidObj = new Eid();
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    $covid19Obj = new \App\Models\Covid19();
+    $covid19Obj = new Covid19();
     $covid19Results = $covid19Obj->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";
@@ -250,12 +256,12 @@ foreach ($rResult as $aRow) {
         }
     }
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $aRow['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
     } else {
         $aRow['sample_tested_datetime'] = '';
     }
@@ -287,7 +293,7 @@ foreach ($rResult as $aRow) {
         $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
     } else {
         if ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {
-            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ');"><option value="">-- Select --</option>';
+            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ')"><option value="">-- Select --</option>';
         } else {
             $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
         }
@@ -305,7 +311,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['facility_name'];
     $row[] = '<input style="width:90%;" type="text" name="batchCode" id="batchCode' . $aRow['temp_sample_id'] . '" value="' . $aRow['batch_code'] . '" onchange="updateBatchCode(this,' . $batchCode . ',' . $aRow['temp_sample_id'] . ');"/>';
     $row[] = $aRow['lot_number'];
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lot_expiration_date']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['lot_expiration_date']);
     $row[] = '<span id="rejectReasonName' . $aRow['temp_sample_id'] . '"><input type="hidden" id="rejectedReasonId' . $aRow['temp_sample_id'] . '" name="rejectedReasonId[]"/>'
         . $aRow['rejection_reason_name'] .
         '</span>';

@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\Users;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,7 +10,7 @@ ob_start();
 $tableName = "system_admin";
 $adminUsername = trim($_POST['username']);
 $adminPassword = trim($_POST['password']);
-$user = new \App\Models\Users();
+$user = new Users();
 
 
 try {
@@ -22,10 +25,10 @@ try {
                 $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
                 header("location:/system-admin/edit-config/index.php");
             } else {
-                throw new \Exception("Invalid username or password");
+                throw new Exception("Invalid username or password");
             }
         } else {
-            throw new \Exception("Invalid username or password");
+            throw new Exception("Invalid username or password");
         }
     }
 } catch (Exception $exc) {

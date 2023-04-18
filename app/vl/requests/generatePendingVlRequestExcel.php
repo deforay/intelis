@@ -1,11 +1,17 @@
 <?php
 
+use App\Models\General;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 ini_set('memory_limit', -1);
-$general = new \App\Models\General();
+$general = new General();
 $dateTimeUtil = new DateUtils();
 /*
 $sQuery = "SELECT  
@@ -76,7 +82,7 @@ if (isset($_SESSION['vlRequestData']['sOrder']) && !empty($_SESSION['vlRequestDa
 $sQuery = $_SESSION['vlRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
-$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+$excel = new Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -98,23 +104,23 @@ $styleArray = array(
 		'size' => 12,
 	),
 	'alignment' => array(
-		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-		'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+		'horizontal' => Alignment::HORIZONTAL_CENTER,
+		'vertical' => Alignment::VERTICAL_CENTER,
 	),
 	'borders' => array(
 		'outline' => array(
-			'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+			'style' => Border::BORDER_THIN,
 		),
 	)
 );
 
 $borderStyle = array(
 	'alignment' => array(
-		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+		'horizontal' => Alignment::HORIZONTAL_CENTER,
 	),
 	'borders' => array(
 		'outline' => array(
-			'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+			'style' => Border::BORDER_THIN,
 		),
 	)
 );
@@ -127,19 +133,19 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 	foreach ($headings as $field => $value) {
 		$string = str_replace(' ', '', $value);
 		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 		$colNo++;
 	}
 } else {
 	foreach ($headings as $field => $value) {
 		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 		$colNo++;
 	}
 }
@@ -151,7 +157,7 @@ foreach ($rResult as $aRow) {
 	//date of birth
 	$dob = '';
 	if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-		$dob =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+		$dob =  DateUtils::humanReadableDateFormat($aRow['patient_dob']);
 	}
 
 	$age = null;
@@ -174,38 +180,38 @@ foreach ($rResult as $aRow) {
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if (!empty($aRow['sample_collection_date'])) {
-		$sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+		$sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	//treatment initiation date
 	$treatmentInitiationDate = '';
 	if (!empty($aRow['treatment_initiated_date'])) {
-		$treatmentInitiationDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['treatment_initiated_date']);
+		$treatmentInitiationDate =  DateUtils::humanReadableDateFormat($aRow['treatment_initiated_date']);
 	}
 	//date of initiation of current regimen
 	$dateOfInitiationOfCurrentRegimen = '';
 	if (!empty($aRow['date_of_initiation_of_current_regimen'])) {
-		$dateOfInitiationOfCurrentRegimen =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
+		$dateOfInitiationOfCurrentRegimen =  DateUtils::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
 	}
 	//requested date
 	$requestedDate = '';
 	if (!empty($aRow['test_requested_on'])) {
-		$requestedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['test_requested_on']);
+		$requestedDate =  DateUtils::humanReadableDateFormat($aRow['test_requested_on']);
 	}
 
 	//request created date time
 	$requestCreatedDatetime = '';
 	if (!empty($aRow['request_created_datetime'])) {
-		$requestCreatedDatetime =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
+		$requestCreatedDatetime =  DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
 	}
 
 	$sampleTestedOn = '';
 	if (!empty($aRow['sample_tested_datetime'])) {
-		$sampleTestedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$sampleTestedOn =  DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	}
 
 	$sampleReceivedOn = '';
 	if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-		$sampleReceivedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$sampleReceivedOn =  DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	}
 
 	//set ARV adherecne
@@ -226,7 +232,7 @@ foreach ($rResult as $aRow) {
 	//result dispatched date
 	$resultDispatchedDate = '';
 	if (!empty($aRow['result_printed_datetime'])) {
-		$resultDispatchedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$resultDispatchedDate =  DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 	}
 
 	if ($aRow['patient_first_name'] != '') {
@@ -302,7 +308,7 @@ foreach ($output as $rowNo => $rowData) {
 		$colNo++;
 	}
 }
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+$writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use App\Utilities\DateUtils;
+use DateTimeImmutable;
+use Exception;
+use MysqliDb;
+
 /**
  * General functions
  *
@@ -17,21 +22,21 @@ class Covid19
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
-        $dateObj = new \DateTimeImmutable($sampleCollectionDate);
+        $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
         $month = $dateObj->format('m');
@@ -70,7 +75,7 @@ class Covid19
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \App\Models\GeoLocations($this->db);
+                    $geoLocations = new GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -405,8 +410,8 @@ class Covid19
 
     public function insertSampleCode($params)
     {
-        $general = new \App\Models\General();
-        $patientsModel = new \App\Models\Patients();
+        $general = new General();
+        $patientsModel = new Patients();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -433,7 +438,7 @@ class Covid19
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
@@ -548,7 +553,7 @@ class Covid19
             } else {
                 return 0;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());

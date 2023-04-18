@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 require_once(APPLICATION_PATH . '/header.php');
 
 $db = MysqliDb::getInstance();
-$general = new \App\Models\General();
+$general = new General();
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
@@ -128,7 +132,7 @@ $data = $db->get("user_login_history", 25);
             ?>
                 <tr>
 
-                  <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
+                  <td><?php echo DateUtils::humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
                   <td><?php echo $project['login_id']; ?></td>
                   <td><?php echo $project['ip_address']; ?></td>
                   <td><?php echo $project['browser']; ?></td>

@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -7,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 
@@ -22,7 +26,7 @@ try {
             'test_reason_name' => $_POST['testReasonName'],
             'parent_reason' => $_POST['parentReason'],
 			'test_reason_status' => $_POST['testReasonStatus'],
-			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtils::getCurrentDateTime(),
 		);
 
         $db = $db->where('test_reason_id', $testReasonId);

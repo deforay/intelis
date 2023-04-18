@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "r_vl_test_failure_reasons";
 $primaryKey = "failure_id";
@@ -13,7 +17,7 @@ try {
 		$data = array(
 			'failure_reason'    => $_POST['failureReason'],
 			'status'        	=> $_POST['status'],
-			'updated_datetime'  => \App\Utilities\DateUtils::getCurrentDateTime()
+			'updated_datetime'  => DateUtils::getCurrentDateTime()
 		);
 		if (isset($_POST['failureId']) && $_POST['failureId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['failureId']));

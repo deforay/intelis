@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Models\Instruments;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
-$general = new \App\Models\General();
-$instrumentsDb = new \App\Models\Instruments();
+$general = new General();
+$instrumentsDb = new Instruments();
 $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 

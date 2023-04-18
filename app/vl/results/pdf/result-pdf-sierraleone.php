@@ -3,6 +3,8 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 
+use App\Utilities\DateUtils;
+
 $resultFilename = '';
 
 if (sizeof($requestResult) > 0) {
@@ -15,7 +17,7 @@ if (sizeof($requestResult) > 0) {
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
+          $currentTime = DateUtils::getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {

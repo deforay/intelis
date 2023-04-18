@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -6,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";
@@ -20,7 +24,7 @@ try {
 			'parent_art'        => (isset($_POST['parentArtCode']) && $_POST['parentArtCode'] != "")?$_POST['parentArtCode']:0,
 			'headings'          => $_POST['category'],
 			'art_status'        => $_POST['artStatus'],
-			'updated_datetime'  => \App\Utilities\DateUtils::getCurrentDateTime()
+			'updated_datetime'  => DateUtils::getCurrentDateTime()
 		);
 		if(isset($_POST['artCodeId']) && $_POST['artCodeId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['artCodeId']));

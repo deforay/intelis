@@ -4,11 +4,19 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new \App\Models\General();
+$general = new General();
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 /* Global config data */
@@ -57,7 +65,7 @@ $sQuery = $_SESSION['covid19RequestSearchResultQuery'];
 
 $rResult = $db->rawQuery($sQuery);
 
-$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+$excel = new Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -81,23 +89,23 @@ $styleArray = array(
         'size' => 12,
     ),
     'alignment' => array(
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical' => Alignment::VERTICAL_CENTER,
     ),
     'borders' => array(
         'outline' => array(
-            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'style' => Border::BORDER_THIN,
         ),
     )
 );
 
 $borderStyle = array(
     'alignment' => array(
-        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        'vertical' => Alignment::VERTICAL_CENTER,
     ),
     'borders' => array(
         'outline' => array(
-            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'style' => Border::BORDER_THIN,
         ),
     )
 );
@@ -110,19 +118,19 @@ foreach ($_POST as $key => $value) {
     }
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
         $colNo++;
     }
 }
@@ -234,7 +242,7 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
     }
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['patient_dob']);
     $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ($aRow['patient_gender']);
     $row[] = ($aRow['is_patient_pregnant']);
@@ -264,20 +272,20 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['flight_transit'];
     $row[] = $aRow['reason_of_visit'];
     $row[] = $aRow['number_of_days_sick'];
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_initial_consultation']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['date_of_initial_consultation']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     $row[] = ($aRow['test_reason_name']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = ($aRow['sample_condition']);
     $row[] = ($aRow['status_name']);
     $row[] = ($aRow['sample_name']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     $row[] = ($aRow['covid19_test_platform']);
     $row[] = ($aRow['covid19_test_name']);
     $row[] = $covid19Results[$aRow['result']];
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 
     $output[] = $row;
     $no++;
@@ -295,7 +303,7 @@ foreach ($output as $rowNo => $rowData) {
         $colNo++;
     }
 }
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+$writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\Facilities;
+
 ob_start();
 $title = _("Edit User");
 
@@ -16,7 +19,7 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-$facilityDb = new \App\Models\Facilities();
+$facilityDb = new Facilities();
 $activeFacilities = array();
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {

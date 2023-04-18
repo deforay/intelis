@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;
@@ -16,7 +20,7 @@ if ($value != '') {
     if(count($rejInfo)==0){
         $data = array(
 			'rejection_type' => $value,
-			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

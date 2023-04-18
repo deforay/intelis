@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Users;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,7 +14,7 @@ $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
 $secretKey = trim($_POST['secretKey']);
 
-$user = new \App\Models\Users();
+$user = new Users();
 
 $userPassword = $user->passwordHash($password);
 

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,7 +9,7 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 //Add event log
 $eventType = 'log-out';

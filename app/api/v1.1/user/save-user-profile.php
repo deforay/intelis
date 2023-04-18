@@ -1,11 +1,16 @@
 <?php
 
+use App\Models\App;
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\ImageResize;
+
 header('Content-Type: application/json');
 
 session_unset(); // no need of session in json response
-$general = new \App\Models\General();
-$userDb = new \App\Models\Users();
-$app = new \App\Models\App();
+$general = new General();
+$userDb = new Users();
+$app = new App();
 $jsonResponse = file_get_contents('php://input');
 
 // error_log("------ USER API START-----");
@@ -110,7 +115,7 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new \App\Utilities\ImageResize($signatureImagePath);
+            $resizeObj = new ImageResize($signatureImagePath);
             $resizeObj->resizeToWidth(100);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;

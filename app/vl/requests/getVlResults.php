@@ -1,8 +1,11 @@
 <?php
+
+use App\Models\Vl;
+
 ob_start();
 
 
-$vLModel = new \App\Models\Vl();
+$vLModel = new Vl();
 
 
 if (isset($_POST['instrumentId'])) {

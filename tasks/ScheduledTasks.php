@@ -1,13 +1,16 @@
 <?php
 
+use App\Models\General;
+use Crunz\Schedule;
+
 require_once(__DIR__ . '/../bootstrap.php');
 
-$general = new \App\Models\General();
+$general = new General();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
 $timeZone = $_SESSION['APP_TIMEZONE'];
 
-$schedule = new \Crunz\Schedule();
+$schedule = new Schedule();
 
 // DB Backup
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/db-backups.php")

@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Hepatitis;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 ob_start();
 $title = "Hepatitis | Edit Request";
 
@@ -29,9 +35,9 @@ $id = base64_decode($_GET['id']);
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$userDb = new \App\Models\Users();
-$hepatitisDb = new \App\Models\Hepatitis();
+$facilitiesDb = new Facilities();
+$userDb = new Users();
+$hepatitisDb = new Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
@@ -77,7 +83,7 @@ if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 
 if (isset($hepatitisInfo['sample_collection_date']) && trim($hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
     $expStr = explode(" ", $hepatitisInfo['sample_collection_date']);
-    $hepatitisInfo['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $hepatitisInfo['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $hepatitisInfo['sample_collection_date'] = '';

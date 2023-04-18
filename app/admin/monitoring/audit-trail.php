@@ -9,11 +9,15 @@
 <link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 <?php
+
+use App\Models\General;
+use App\Models\System;
+
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];

@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Users;
+
 ob_start();
 $title = "TB | Add New Request";
 
@@ -27,9 +32,9 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$general = new General();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 
 /* Get Active users for approved / reviewed / examined by */
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);

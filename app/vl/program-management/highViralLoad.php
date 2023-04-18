@@ -1,8 +1,11 @@
 <?php
+
+use App\Models\GeoLocations;
+
 $title = _("VL | Clinics Report");
 
 require_once(APPLICATION_PATH . '/header.php');
-$geoLocationDb = new \App\Models\GeoLocations();
+$geoLocationDb = new GeoLocations();
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query

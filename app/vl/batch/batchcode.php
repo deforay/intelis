@@ -24,16 +24,16 @@ require_once(APPLICATION_PATH . '/header.php');
 						<div class="row" style="background:#e0e0e0;padding: 15px;">
 							<div class="col-md-12">
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status"); ?></label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status"); ?></label> <br>
 								</div>
 							</div>
 						</div>

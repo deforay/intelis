@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -6,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
   
 
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "province_details";
 $facilityTable = "facility_details";
@@ -18,7 +22,7 @@ try {
 		$data = array(
 			'province_name' 	=> $_POST['provinceName'],
 			'province_code' 	=> $_POST['provinceCode'],
-			'updated_datetime'	=> \App\Utilities\DateUtils::getCurrentDateTime()
+			'updated_datetime'	=> DateUtils::getCurrentDateTime()
 		);
 		if(isset($_POST['provinceId']) && $_POST['provinceId'] != ""){
 			/* Update facility state */
@@ -28,7 +32,7 @@ try {
 				$db = $db->where('facility_id', $facilityInfo[0]['facility_id']);
 				$lastId = $db->update($facilityTable, array(
 					'facility_state'	=> $_POST['provinceName'],
-					'updated_datetime'	=> \App\Utilities\DateUtils::getCurrentDateTime()
+					'updated_datetime'	=> DateUtils::getCurrentDateTime()
 				));
 			}
 			/* Update province details */

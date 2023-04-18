@@ -1,9 +1,12 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "temp_sample_import";
 try {
     $result = 0;

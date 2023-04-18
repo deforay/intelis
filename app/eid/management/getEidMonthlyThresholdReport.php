@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
   
 // print_r("Prasath");die;
-$general = new \App\Models\General();
+$general = new General();
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -16,7 +20,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -122,10 +126,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 

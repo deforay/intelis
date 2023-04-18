@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ini_set('memory_limit', -1);
 
 require_once(__DIR__ . "/../../bootstrap.php");
@@ -7,7 +10,7 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 $data = array();
 
@@ -93,7 +96,7 @@ try {
 
 
 
-    $currentDate = \App\Utilities\DateUtils::getCurrentDateTime();
+    $currentDate = DateUtils::getCurrentDateTime();
 
 
     $filename = 'reference-data-' . $currentDate . '.json';

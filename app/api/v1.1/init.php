@@ -1,5 +1,15 @@
 <?php
 // Allow from any origin
+use App\Models\App;
+use App\Models\Covid19;
+use App\Models\Eid;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Tb;
+use App\Models\Users;
+use App\Models\Vl;
+
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
@@ -15,11 +25,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 header('Content-Type: application/json');
 
-$general = new \App\Models\General();
-$app = new \App\Models\App();
-$userDb = new \App\Models\Users();
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$general = new General();
+$app = new App();
+$userDb = new Users();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
@@ -133,7 +143,7 @@ $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $covid19Obj = new \App\Models\Covid19();
+    $covid19Obj = new Covid19();
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
@@ -237,7 +247,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
 // Check if eid module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidObj = new \App\Models\Eid();
+    $eidObj = new Eid();
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
@@ -314,7 +324,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 
 // Check if vl module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlObj = new \App\Models\Vl();
+    $vlObj = new Vl();
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
@@ -379,7 +389,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
 
 // Check if tb module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-    $tbObj = new \App\Models\Tb();
+    $tbObj = new Tb();
     /* SITE INFORMATION SECTION */
 
     /* Infant and Mother's Health Information Section */

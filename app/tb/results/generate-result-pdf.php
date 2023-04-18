@@ -4,6 +4,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Tb;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 ini_set('memory_limit', -1);
@@ -11,11 +16,11 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
-$tbObj = new \App\Models\Tb();
-$geoObj = new \App\Models\GeoLocations();
-$tbModel = new \App\Models\Tb();
+$general = new General();
+$users = new Users();
+$tbObj = new Tb();
+$geoObj = new GeoLocations();
+$tbModel = new Tb();
 //$tbResults = $tbModel->getTbResults();
 
 $arr = $general->getGlobalConfig();
@@ -33,7 +38,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['tbPrintQuery'];
@@ -313,7 +318,7 @@ if (!empty($requestResult)) {
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
+        $currentTime = DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';

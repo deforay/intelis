@@ -1,8 +1,10 @@
 <?php
 
 
+use App\Models\General;
+use App\Utilities\DateUtils;
 
-$general = new \App\Models\General();
+$general = new General();
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%' OR patient_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -80,7 +82,7 @@ $pResult = $db->rawQuery($pQuery);
 											"firstname"=>($patient['patient_name']),
 											"lastname"=>($patient['patient_surname']),
 											"gender"=>$patient['patient_gender'],
-											"dob"=>\App\Utilities\DateUtils::humanReadableDateFormat($patient['patient_dob']),
+											"dob"=> DateUtils::humanReadableDateFormat($patient['patient_dob']),
 											"age"=>$patient['patient_age'],
 											"is_patient_pregnant"=>$patient['is_patient_pregnant'],
 											"is_patient_breastfeeding"=>$patient['is_patient_breastfeeding'],

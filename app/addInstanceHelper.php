@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\ImageResize;
+
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
-function getMacLinux()
+function getMacLinux(): false|string
 {
   try {
     $mac = exec('getmac');
@@ -15,7 +19,7 @@ function getMacLinux()
     return "not found";
   }
 }
-function getMacWindows()
+function getMacWindows(): false|string
 {
   // Turn on output buffering
   ob_start();
@@ -74,7 +78,7 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
-          $resizeObj = new \App\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+          $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
           $resizeObj->resizeToWidth(100);
           $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 

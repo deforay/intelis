@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -7,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 
@@ -21,7 +25,7 @@ try {
             'rejection_type' => $_POST['rejectionType'],
             'rejection_reason_status' => $_POST['rejectionReasonStatus'],
             'rejection_reason_code' => $_POST['rejectionReasonCode'],
-			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtils::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

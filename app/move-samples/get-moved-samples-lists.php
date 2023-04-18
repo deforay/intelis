@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName = "move_samples";
 $primaryKey = "move_sample_id";
 
-$general = new \App\Models\General();
+$general = new General();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
@@ -136,7 +140,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     $date = '';
     if ($aRow['moved_on'] != '0000-00-00' && $aRow['moved_on'] != null) {
-        $date = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['moved_on']);
+        $date = DateUtils::humanReadableDateFormat($aRow['moved_on']);
     }
     $row[] = ($aRow['labNameFrom']);
     $row[] = ($aRow['labNameTo']);

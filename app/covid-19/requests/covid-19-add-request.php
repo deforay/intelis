@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+
 ob_start();
 $title = _("COVID-19 | Add New Request");
 require_once(APPLICATION_PATH . '/header.php');
@@ -28,8 +32,8 @@ require_once(APPLICATION_PATH . '/header.php');
 
 <?php
 // $general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
 

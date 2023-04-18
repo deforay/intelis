@@ -1,17 +1,21 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_tb";
 try {
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'     =>  \App\Utilities\DateUtils::getCurrentDateTime(),
+            'result_approved_datetime'  =>  DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'     =>  DateUtils::getCurrentDateTime(),
             'data_sync'                 => 0
         );
         /* Check if already have reviewed and approved by */

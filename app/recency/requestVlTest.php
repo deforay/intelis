@@ -1,5 +1,8 @@
 <?php
 // Allow from any origin
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
@@ -22,7 +25,7 @@ try {
     
     
 
-    $general = new \App\Models\General();
+    $general = new General();
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');
@@ -75,8 +78,8 @@ try {
         $data['sample_type'] = 2;
         $data['request_created_by'] = $result[8];
         $data['lab_id'] = $result[7];
-        $data['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
-        $data['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $data['request_created_datetime'] = DateUtils::getCurrentDateTime();
+        $data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
         $data['result_status'] = 6;
         $data['data_sync'] = 0;
         $data['recency_vl'] = 'yes';
@@ -107,6 +110,6 @@ try {
     } else {
         // echo 'Something went wrong try after some time..!';
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     echo 'Error: ' . $e->getMessage();
 }

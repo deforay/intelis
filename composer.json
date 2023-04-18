@@ -50,5 +50,7 @@
             "App\\Utilities\\": "app/utilities/",
             "App\\Exceptions\\": "app/exceptions/"
         }
+    },
+    "config": {
     }
 }

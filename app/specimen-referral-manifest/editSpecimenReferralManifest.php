@@ -1,11 +1,19 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\Eid;
+use App\Models\Facilities;
+use App\Models\Tb;
+use App\Models\Users;
+use App\Models\Vl;
+
 ob_start();
 $title = "Edit Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$facilitiesDb = new \App\Models\Facilities();
-$usersDb = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$usersDb = new Users();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $usersList = array();
@@ -35,12 +43,12 @@ $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'vl') ? 'vl' : $module;
-	$vlDb = new \App\Models\Vl($db);
+	$vlDb = new Vl($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
 } else if ($module == 'eid') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'eid') ? 'eid' : $module;
-	$eidDb = new \App\Models\Eid($db);
+	$eidDb = new Eid($db);
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'hepatitis') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
@@ -48,12 +56,12 @@ if ($module == 'vl') {
 } else if ($module == 'covid19') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'C19') ? 'covid19' : $module;
-	$covid19Db = new \App\Models\Covid19($db);
+	$covid19Db = new Covid19($db);
 	$sampleTypes = $covid19Db->getCovid19SampleTypes();
 } else if ($module == 'tb') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'TB') ? 'tb' : $module;
-	$tbDb = new \App\Models\Tb($db);
+	$tbDb = new Tb($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
 $testingLabs = $facilitiesDb->getTestingLabs($m);

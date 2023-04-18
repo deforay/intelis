@@ -1,4 +1,12 @@
 <?php
+
+use App\Models\General;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,7 +15,7 @@ ob_start();
 
 
  
- $general=new \App\Models\General();
+ $general=new General();
  $configQuery="SELECT * from global_config";
  $configResult=$db->query($configQuery);
  $arr = array();
@@ -20,7 +28,7 @@ ob_start();
  $sQuery="SELECT vl.*,s.sample_name,s.status as sample_type_status,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,f.facility_mobile_numbers,f.address,f.facility_hub_name,f.contact_person,f.report_email,f.country,f.longitude,f.latitude,f.facility_type,f.status as facility_status,ft.facility_type_name,lft.facility_type_name as labFacilityTypeName,l_f.facility_name as labName,l_f.facility_code as labCode,l_f.facility_state as labState,l_f.facility_district as labDistrict,l_f.facility_mobile_numbers as labPhone,l_f.address as labAddress,l_f.facility_hub_name as labHub,l_f.contact_person as labContactPerson,l_f.report_email as labReportMail,l_f.country as labCountry,l_f.longitude as labLongitude,l_f.latitude as labLatitude,l_f.facility_type as labFacilityType,l_f.status as labFacilityStatus,tr.test_reason_name,tr.test_reason_status,rsrr.rejection_reason_name,rsrr.rejection_reason_status FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing LEFT JOIN facility_type as ft ON ft.facility_type_id=f.facility_type LEFT JOIN facility_type as lft ON lft.facility_type_id=l_f.facility_type LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection WHERE vl.vlsm_country_id = $country";
  $rResult = $db->rawQuery($sQuery);
  
- $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+ $excel = new Spreadsheet();
  $output = array();
  $sheet = $excel->getActiveSheet();
  
@@ -34,30 +42,30 @@ ob_start();
          'size' => '13',
      ),
      'alignment' => array(
-         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+         'horizontal' => Alignment::HORIZONTAL_CENTER,
+         'vertical' => Alignment::VERTICAL_CENTER,
      ),
      'borders' => array(
          'outline' => array(
-             'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+             'style' => Border::BORDER_THIN,
          ),
      )
  );
  
  $borderStyle = array(
      'alignment' => array(
-         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+         'horizontal' => Alignment::HORIZONTAL_CENTER,
      ),
      'borders' => array(
          'outline' => array(
-             'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+             'style' => Border::BORDER_THIN,
          ),
      )
  );
  
  foreach ($headings as $field => $value) {
   
-  $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+  $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
   $colNo++;
   
  }
@@ -143,12 +151,12 @@ ob_start();
     $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
     // $sheet->getDefaultRowDimension()->setRowHeight(18);
     // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-    $sheet->getCellByColumnAndRow($colNo, $rowNo + 2)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, $rowNo + 2)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
     $sheet->getStyleByColumnAndRow($colNo, $rowNo + 2)->getAlignment()->setWrapText(true);
     $colNo++;
   }
  }
- $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+ $writer = IOFactory::createWriter($excel, 'Xlsx');
  $filename = 'VLSM-results-' . date('d-M-Y-H-i-s') . '.xlsx';
  $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
  echo $filename;

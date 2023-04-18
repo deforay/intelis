@@ -1,12 +1,16 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 //system config
 $sarr = $general->getSystemConfig();
 $facilityMap = null;

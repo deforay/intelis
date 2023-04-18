@@ -2,9 +2,12 @@
 
 // File included in addImportResultHelper.php
 
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use League\Csv\Reader;
 
-$general = new \App\Models\General();
+$general = new General();
 
 try {
 
@@ -137,7 +140,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new \App\Models\Users();
+                $usersModel = new Users();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 
@@ -158,7 +161,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if (!empty($sampleCode)) {
-                $data['result_imported_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                $data['result_imported_datetime'] = DateUtils::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
@@ -179,7 +182,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $id,
             'test_type' => 'covid19',
-            'updated_on' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'updated_on' => DateUtils::getCurrentDateTime(),
         );
         $db->insert("log_result_updates", $data);
     }

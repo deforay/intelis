@@ -3,8 +3,16 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
-$general = new \App\Models\General();
+$general = new General();
+
+use App\Models\General;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.remote_sample_code, vl.sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
@@ -19,7 +27,7 @@ if (isset($_SESSION['hepatitisTatData']['sOrder']) && !empty($_SESSION['hepatiti
 }
 $rResult = $db->rawQuery($sQuery);
 
-$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+$excel = new Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 
@@ -33,12 +41,12 @@ $styleArray = array(
 		'size' => '13',
 	),
 	'alignment' => array(
-		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-		'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+		'horizontal' => Alignment::HORIZONTAL_CENTER,
+		'vertical' => Alignment::VERTICAL_CENTER,
 	),
 	'borders' => array(
 		'outline' => array(
-			'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+			'style' => Border::BORDER_THICK,
 		),
 	)
 );
@@ -52,10 +60,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 foreach ($headings as $field => $value) {
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 	$colNo++;
 }
 $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
@@ -66,25 +74,25 @@ foreach ($rResult as $aRow) {
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+		$sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-		$sampleRecievedDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$sampleRecievedDate = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$testDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$testDate = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$printDate = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$printDate = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$mailDate = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
+		$mailDate = DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$mailDate = '';
 	}
@@ -111,7 +119,7 @@ foreach ($output as $rowNo => $rowData) {
 			$colNo++;
 		}
 }
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+$writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'Hepatitis-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

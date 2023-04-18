@@ -1,14 +1,20 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\System;
+
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilityDb = new \App\Models\Facilities();
+$general = new General();
+$facilityDb = new Facilities();
 $labNameList = $facilityDb->getTestingLabs();
 
-$geoLocationDb = new \App\Models\GeoLocations();
+$geoLocationDb = new GeoLocations();
 $stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 
 ?>
 <style>

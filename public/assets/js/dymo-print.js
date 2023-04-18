@@ -52,4 +52,4 @@ function printBarcodeLabel(barcode,facility){
             }
             $.unblockUI();
         
-    };
+    }

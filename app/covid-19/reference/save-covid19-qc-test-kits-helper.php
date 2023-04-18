@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
   
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_covid19_qc_testkits";
 $primaryKey = "testkit_id";
 try {
@@ -13,7 +17,7 @@ try {
             'testkit_name'                  => $_POST['testKitName'],
             'status'                        => $_POST['testKitStatus'],
             'labels_and_expected_results'   => json_encode(array("label" => $_POST['qcTestLable'], 'expected' => $_POST['expectedResult'])),
-            'updated_datetime'              => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'updated_datetime'              => DateUtils::getCurrentDateTime(),
         );
 
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {

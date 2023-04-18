@@ -1,4 +1,13 @@
 <?php
+
+use App\Models\General;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,7 +16,7 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($formConfigQuery);
 $arr = array();
@@ -76,7 +85,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
     // print_r($res);die;
     //get current quarter total samples tested
    
-    $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $excel = new Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
 
@@ -88,7 +97,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
             'size' => '11',
         ),
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
         ),
     );
     $backgroundStyle = array(
@@ -98,10 +107,10 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
             'color' => array('rgb' => 'FFFFFF'),
         ),
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
         ),
         'fill' => array(
-            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'fillType' => Fill::FILL_SOLID,
             'color' => array('rgb' => '5c5c5c'),
         ),
     );
@@ -115,7 +124,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
             //'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         ),
         'fill' => array(
-            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'fillType' => Fill::FILL_SOLID,
             'color' => array('rgb' => 'A9A9A9'),
         ),
     );
@@ -125,10 +134,10 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
             'size' => '11',
         ),
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
         ),
         'fill' => array(
-            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'fillType' => Fill::FILL_SOLID,
             'color' => array('rgb' => 'A9A9A9'),
         ),
     );
@@ -138,12 +147,12 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
             'size' => '11',
         ),
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
-            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
+            'vertical' => Alignment::VERTICAL_CENTER,
         ),
         'borders' => array(
             'outline' => array(
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'borderStyle' => Border::BORDER_THIN,
             ),
         ),
     );
@@ -154,7 +163,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
         //),
         'borders' => array(
             'outline' => array(
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                'borderStyle' => Border::BORDER_THICK,
             ),
         ),
     );
@@ -162,18 +171,18 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
     $sheet->getStyle('A1')->applyFromArray($backgroundStyle);
     $sheet->getStyle('A3')->applyFromArray($styleArray);
     $sheet->mergeCells('A1:F2');
-    $sheet->setCellValue('A1', html_entity_decode('Viral Load Testing Target ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('A1', html_entity_decode('Viral Load Testing Target ', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
     // $sheet->mergeCells('A3:M10');
-    $sheet->setCellValue('A4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('A4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
     // $sheet->mergeCells('A11:A12');
     // $sheet->mergeCells('B11:F12');
-    $sheet->setCellValue('B4', html_entity_decode('Month', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('B4', html_entity_decode('Month', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
     // $sheet->mergeCells('G11:I12');
-    $sheet->setCellValue('C4', html_entity_decode('Number of Samples Received', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-    $sheet->setCellValue('D4', html_entity_decode('Number of Samples Rejected', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('C4', html_entity_decode('Number of Samples Received', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
+    $sheet->setCellValue('D4', html_entity_decode('Number of Samples Rejected', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
     // $sheet->mergeCells('J11:M12');
-    $sheet->setCellValue('E4', html_entity_decode('Number of Samples Tested', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-    $sheet->setCellValue('F4', html_entity_decode('Monthly Test Target', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->setCellValue('E4', html_entity_decode('Number of Samples Tested', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
+    $sheet->setCellValue('F4', html_entity_decode('Monthly Test Target', ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
     $cnt = 4;
     foreach($res as $resultData)
     {
@@ -195,16 +204,16 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
                     //    // print_r($data);die;
                     //    $output['aaData'][] = $data;
                     // $sheet->mergeCells('A3:M10');
-                    $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                     // $sheet->mergeCells('A11:A12');
                     // $sheet->mergeCells('B11:F12');
-                    $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                     // $sheet->mergeCells('G11:I12');
-                    $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
                     // $sheet->mergeCells('J11:M12');
-                    $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
                 }
             }
             else if($_POST['targetType'] == 2)
@@ -223,16 +232,16 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
                     //    // print_r($data);die;
                     //    $output['aaData'][] = $data;
                     // $sheet->mergeCells('A3:M10');
-                    $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                     // $sheet->mergeCells('A11:A12');
                     // $sheet->mergeCells('B11:F12');
-                    $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                     // $sheet->mergeCells('G11:I12');
-                    $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
                     // $sheet->mergeCells('J11:M12');
-                    $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                    $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
                 }
             }
             else 
@@ -248,16 +257,16 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
                 //    // print_r($data);die;
                 //    $output['aaData'][] = $data;
                 // $sheet->mergeCells('A3:M10');
-                $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('A'.$cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                 // $sheet->mergeCells('A11:A12');
                 // $sheet->mergeCells('B11:F12');
-                $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('B'.$cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_STRING);
                 // $sheet->mergeCells('G11:I12');
-                $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->setCellValue('C'.$cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                $sheet->setCellValue('D'.$cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
                 // $sheet->mergeCells('J11:M12');
-                $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->setCellValue('E'.$cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
+                $sheet->setCellValue('F'.$cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'), DataType::TYPE_NUMERIC);
             }
         }
 
@@ -268,7 +277,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
     // $sheet->getStyle('A11:M12')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
     //question one start
     
-    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xls');
+    $writer = IOFactory::createWriter($excel, 'Xls');
     $filename = 'VLSM-Vl-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xls';
     ob_end_clean();
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

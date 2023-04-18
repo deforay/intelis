@@ -1,16 +1,19 @@
 <?php
 
 
+use App\Interop\Dhis2;
+use App\Models\General;
+
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$dhis2 = new \App\Interop\Dhis2(
+$dhis2 = new Dhis2(
     $interopConfig['DHIS2']['url'],
     $interopConfig['DHIS2']['user'],
     $interopConfig['DHIS2']['password']
 );
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

@@ -7,8 +7,15 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
+
+use App\Models\General;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -23,7 +30,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralLoadResult']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
 
-     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+     $excel = new Spreadsheet();
      $output = array();
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
@@ -41,12 +48,12 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                'size' => '13',
           ),
           'alignment' => array(
-               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+               'horizontal' => Alignment::HORIZONTAL_CENTER,
+               'vertical' => Alignment::VERTICAL_CENTER,
           ),
           'borders' => array(
                'outline' => array(
-                    'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'style' => Border::BORDER_THIN,
                ),
           )
      );
@@ -60,11 +67,11 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+     ->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-                    ->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    ->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
           $colNo++;
      }
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
@@ -110,7 +117,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                $colNo++;
           }
      }
-     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+     $writer = IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

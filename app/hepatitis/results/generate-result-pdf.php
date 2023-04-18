@@ -4,6 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 ini_set('memory_limit', -1);
@@ -12,8 +15,8 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_hepatitis";
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
+$general = new General();
+$users = new Users();
 
 $arr = $general->getGlobalConfig();
 
@@ -30,7 +33,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['hepatitisPrintQuery'];

@@ -1,7 +1,9 @@
 <?php
 
 
-$general = new \App\Models\General();
+use App\Models\General;
+
+$general = new General();
 
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);

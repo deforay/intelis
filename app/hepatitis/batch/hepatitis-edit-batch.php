@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch";
@@ -7,8 +11,8 @@ $title = "Edit Batch";
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 //$formId = $general->getGlobalConfig('vl_form');
 

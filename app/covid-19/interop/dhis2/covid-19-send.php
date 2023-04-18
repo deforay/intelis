@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\General;
+
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 

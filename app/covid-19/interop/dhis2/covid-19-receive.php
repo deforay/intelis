@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\General;
+
 require_once(__DIR__ . "/../../../../../bootstrap.php");
 
-$general = new \App\Models\General();
+$general = new General();
 $arr = $general->getGlobalConfig();
 
 

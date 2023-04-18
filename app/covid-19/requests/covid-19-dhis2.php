@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 $title = "Covid-19 | DHIS2 Requests";
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 /* Global config data */
 $arr = $general->getGlobalConfig();

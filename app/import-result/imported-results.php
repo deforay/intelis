@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\General;
+
 require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -17,7 +19,7 @@ if (!empty($tResult['sample_review_by'])) {
 $module = $tResult['module'];
 // echo "<pre>";print_r($module);die;
 
-$general = new \App\Models\General();
+$general = new General();
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {

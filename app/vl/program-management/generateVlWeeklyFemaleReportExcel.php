@@ -1,16 +1,24 @@
 <?php
+
+use App\Models\General;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 
 if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsFemaleQuery']) != "") {
     $filename = '';
     $rResult = $db->rawQuery($_SESSION['vlStatisticsFemaleQuery']);
 
-    $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $excel = new Spreadsheet();
     $output = array();
     $sheet = $excel->getActiveSheet();
 
@@ -24,12 +32,12 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             'size' => '13',
         ),
         'alignment' => array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+            'vertical' => Alignment::VERTICAL_CENTER,
         ),
         'borders' => array(
             'outline' => array(
-                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'style' => Border::BORDER_THIN,
             ),
         )
     );
@@ -40,7 +48,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
         ),
         'borders' => array(
             'outline' => array(
-                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'style' => Border::BORDER_THIN,
             ),
         )
     );
@@ -52,10 +60,10 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . ",&nbsp;&nbsp;";
         }
     }
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode(($nameValue)), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode(($nameValue)), DataType::TYPE_STRING);
 
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
         $colNo++;
     }
     $sheet->getStyle('A3:N3')->applyFromArray($styleArray);
@@ -91,16 +99,16 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
             $value = html_entity_decode($value);
             if (is_numeric($value)) {
-                $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC;
+                $cellDataType = DataType::TYPE_NUMERIC;
             } else {
-                $cellDataType = \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING;
+                $cellDataType = DataType::TYPE_STRING;
             }
             $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit($value, $cellDataType);
             $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
             $colNo++;
         }
     }
-    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+    $writer = IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'VLSM-VL-Lab-Female-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo $filename;

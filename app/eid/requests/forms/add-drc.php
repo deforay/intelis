@@ -1,6 +1,9 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
+use App\Models\Eid;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 //Funding source list
@@ -19,7 +22,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new \App\Models\Eid();
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -496,7 +499,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</tr>
 										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
-											<td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td><input value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<td></td>
 											<td></td>
 										</tr>

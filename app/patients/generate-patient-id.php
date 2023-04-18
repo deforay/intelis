@@ -1,12 +1,16 @@
 <?php
+
+use App\Models\General;
+use App\Models\Patients;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 
-$general = new \App\Models\General();
-$patientsModel = new \App\Models\Patients();
+$general = new General();
+$patientsModel = new Patients();
 
 $prefix  = $_POST['patientCodePrefix'];
 

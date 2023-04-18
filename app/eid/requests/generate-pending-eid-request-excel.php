@@ -1,7 +1,14 @@
 <?php
 
+use App\Models\Eid;
+use App\Models\General;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,10 +17,10 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 
-$general = new \App\Models\General();
+$general = new General();
 $dateTimeUtil = new DateUtils();
 
-$eidModel = new \App\Models\Eid();
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 //system config
@@ -62,7 +69,7 @@ if (isset($_SESSION['eidRequestData']['sOrder']) && !empty($_SESSION['eidRequest
 // die($sQuery);
 $rResult = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
 
-$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+$excel = new Spreadsheet();
 $output = array();
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -87,23 +94,23 @@ $styleArray = array(
         'size' => 12,
     ),
     'alignment' => array(
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical' => Alignment::VERTICAL_CENTER,
     ),
     'borders' => array(
         'outline' => array(
-            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'style' => Border::BORDER_THIN,
         ),
     )
 );
 
 $borderStyle = array(
     'alignment' => array(
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
     ),
     'borders' => array(
         'outline' => array(
-            'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'style' => Border::BORDER_THIN,
         ),
     )
 );
@@ -116,19 +123,19 @@ foreach ($_POST as $key => $value) {
     }
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
         $colNo++;
     }
 }
@@ -140,7 +147,7 @@ foreach ($rResult as $aRow) {
     //date of birth
     $dob = '';
     if (!empty($aRow['child_dob'])) {
-        $dob =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['child_dob']);
+        $dob =  DateUtils::humanReadableDateFormat($aRow['child_dob']);
     }
     //set gender
     $gender = '';
@@ -154,16 +161,16 @@ foreach ($rResult as $aRow) {
     //sample collecion date
     $sampleCollectionDate = '';
     if (!empty($aRow['sample_collection_date'])) {
-        $sampleCollectionDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
     }
 
     $sampleTestedOn = '';
     if (!empty($aRow['sample_tested_datetime'])) {
-        $sampleTestedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $sampleTestedOn =  DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
     }
 
     if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-        $sampleReceivedOn =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $sampleReceivedOn =  DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     }
 
 
@@ -175,13 +182,13 @@ foreach ($rResult as $aRow) {
     //result dispatched date
     $resultDispatchedDate = '';
     if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $resultDispatchedDate =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+        $resultDispatchedDate =  DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
     }
 
     //requeste created date time
     $requestCreatedDatetime = '';
     if ($aRow['request_created_datetime'] != null && trim($aRow['request_created_datetime']) != '' && $aRow['request_created_datetime'] != '0000-00-00') {
-        $requestCreatedDatetime =  \App\Utilities\DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
+        $requestCreatedDatetime =  DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
     }
     //set result log value
     $logVal = '0.0';
@@ -256,7 +263,7 @@ foreach ($output as $rowNo => $rowData) {
         $colNo++;
     }
 }
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+$writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'VLSM-EID-Requested-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

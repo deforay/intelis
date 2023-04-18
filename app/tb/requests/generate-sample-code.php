@@ -1,10 +1,13 @@
 <?php
+
+use App\Models\Tb;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$tbModel = new \App\Models\Tb();
+$tbModel = new Tb();
 
 $sampleCollectionDate = $province = '';
 

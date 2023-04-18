@@ -1,6 +1,8 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Models\Covid19;
+
 ob_start();
 
 //Funding source list
@@ -33,7 +35,7 @@ $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();

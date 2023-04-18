@@ -2,9 +2,13 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
 
-$users = new \App\Models\Users();
-$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-$general = new \App\Models\General();
+use App\Interop\Dhis2;
+use App\Models\General;
+use App\Models\Users;
+
+$users = new Users();
+$dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$general = new General();
 
 $programStages = [
   'clinicalExaminationAndDiagnosis' => 'LpWNjNGvCO5',

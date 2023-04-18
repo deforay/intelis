@@ -10,12 +10,16 @@
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
   <script src="/assets/js/deforayModal.js"></script>
   <?php
+
+  use App\Models\General;
+  use App\Utilities\DateUtils;
+
   ob_start();
 
 
 
   $id = base64_decode($_GET['id']);
-  $general = new \App\Models\General();
+  $general = new General();
   $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
   $contact = $db->query($contactInfo);
   //get patient info
@@ -23,11 +27,11 @@
   $vlResult = $db->query($vlInfo);
 
   if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
-    $vlResult[0]['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlResult[0]['sample_collection_date']);
+    $vlResult[0]['sample_collection_date'] = DateUtils::humanReadableDateFormat($vlResult[0]['sample_collection_date']);
   } else {
     $vlResult[0]['sample_collection_date'] = '';
   }
-  $general = new \App\Models\General();
+  $general = new General();
   ?>
   <div class="content-wrapper" style="padding: 20px;">
     <!-- Content Header (Page header) -->
@@ -105,8 +109,8 @@
                       if (count($contact) > 0) {
                         foreach ($contact as $notes) {
                           $date = explode(" ", $notes['added_on']);
-                          $collectDate = \App\Utilities\DateUtils::humanReadableDateFormat($notes['collected_on']);
-                          $humanDate = \App\Utilities\DateUtils::humanReadableDateFormat($date[0]);
+                          $collectDate = DateUtils::humanReadableDateFormat($notes['collected_on']);
+                          $humanDate = DateUtils::humanReadableDateFormat($date[0]);
                       ?>
                           <tr>
                             <td><?php echo $notes['contact_notes']; ?></td>
