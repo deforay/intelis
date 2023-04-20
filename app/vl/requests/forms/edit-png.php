@@ -20,7 +20,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$maxLength = '';
 	if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength;
+		$maxLength = "maxlength=" . $maxLength; 
 	}
 } else {
 	$sampleClass = '';
@@ -199,7 +199,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="editVlRequestHelperPng.php">
+				<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="editVlRequestHelper.php">
 					<div class="box-body">
 						<div class="box box-default">
 							<div class="box-body">
@@ -300,22 +300,22 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                       </select>
                         </td>-->
 										<td class="labels">
-											<label for="officerName">Requesting Medical Officer <span class="mandatory">*</span></label>
+											<label for="reqClinician">Requesting Medical Officer <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" name="officerName" id="officerName" placeholder="Officer Name" title="Enter Medical Officer Name" style="width:100%;" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>">
+											<input type="text" class="form-control isRequired" name="reqClinician" id="reqClinician" placeholder="Officer Name" title="Enter Medical Officer Name" style="width:100%;" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>">
 										</td>
 										<td class="labels">
-											<label for="telephone">Clinic/Ward Telephone </label>
+											<label for="reqClinicianPhoneNumber">Clinic/Ward Telephone </label>
 										</td>
 										<td>
-											<input type="text" class="form-control forceNumeric" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['lab_phone_number']; ?>">
+											<input type="text" class="form-control forceNumeric" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>">
 										</td>
 										<td class="labels">
-											<label for="clinicDate">Date Requested </label>
+											<label for="requestDate">Date Requested </label>
 										</td>
 										<td>
-											<input type="text" class="form-control date" name="clinicDate" id="clinicDate" placeholder="Date" title="Enter Date" style="width:100%;" value="<?php echo $vlQueryInfo['clinic_date']; ?>">
+											<input type="text" class="form-control date" name="requestDate" id="requestDate" placeholder="Date" title="Enter Date" style="width:100%;" value="<?php echo $vlQueryInfo['test_requested_on']; ?>">
 										</td>
 									</tr>
 									<tr>
@@ -323,10 +323,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									</tr>
 									<tr>
 										<td class="labels">
-											<label for="patientARTNo">Patient ID <span class="mandatory">*</span></label>
+											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="patientARTNo" id="patientARTNo" title="Please enter Clinic ID" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
 										</td>
 										<td class="labels">
 											<label for="gender">Gender &nbsp;&nbsp;</label>
@@ -342,7 +342,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 
-									<tr class="femaleFactor">
+									<tr class="femaleFactor" <?php if($vlQueryInfo['patient_gender'] == 'female') echo "style='display:block;'"; else echo "style='display:none;'" ?> >
 										<td class="labels">
 											<label for="patientPregnant">Patient Pregnant ?</label>
 										</td>
@@ -392,14 +392,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									</tr>
 									<tr>
 										<td class="labels">
-											<label for="artLine">Line of Treatment </label>
+											<label for="lineOfTreatment">Line of Treatment </label>
 										</td>
 										<td>
 											<label class="radio-inline">
-												<input type="radio" class="" id="firstLine" name="artLine" value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == 1) ? 'checked="checked"' : ''; ?> title="Please check ART Line"> First Line
+												<input type="radio" class="" id="firstLine" name="lineOfTreatment" value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == 1) ? 'checked="checked"' : ''; ?> title="Please check ART Line"> First Line
 											</label><br>
 											<label class="radio-inline">
-												<input type="radio" class="" id="secondLine" name="artLine" value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == 2) ? 'checked="checked"' : ''; ?> title="Please check ART Line"> Second Line
+												<input type="radio" class="" id="secondLine" name="lineOfTreatment" value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == 2) ? 'checked="checked"' : ''; ?> title="Please check ART Line"> Second Line
 											</label>
 										</td>
 										<td class="labels">
@@ -417,10 +417,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									</tr>
 									<tr>
 										<td class="labels">
-											<label for="currentRegimen">Current Regimen </label>
+											<label for="artRegimen">Current Regimen </label>
 										</td>
 										<td>
-											<select class="form-control" id="currentRegimen" name="currentRegimen" title="Please choose ART Regimen" onchange="checkValue();" style="width:100%;">
+											<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" onchange="checkValue();" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php
 												foreach ($aResult as $parentRow) {
@@ -434,10 +434,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="New Art Regimen" title="Please enter new ART regimen" style="display:none;width:100%;margin-top:1vh;">
 										</td>
 										<td class="labels">
-											<label for="regStartDate">Current Regimen Start Date</label>
+											<label for="regimenInitiatedOn">Current Regimen Start Date</label>
 										</td>
 										<td>
-											<input type="text" class="form-control date" name="regStartDate" id="regStartDate" placeholder="Start Date" title="Enter Start Date" style="width:100%;" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
+											<input type="text" class="form-control date" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Start Date" title="Enter Start Date" style="width:100%;" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
 										</td>
 										<td colspan="2" class="clinicalStage labels"><label for="breastfeeding">WHO Clinical Stage</label>&nbsp;&nbsp;
 											<label class="radio-inline">
@@ -465,18 +465,18 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td colspan="3" class="routine">
 											<label class="labels" for="routine">Routine</label><br />
 											<label class="radio-inline">
-												&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="routineOne" name="reasonForTest" value="First VL, routine monitoring (On ART for at least 6 months)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'First VL, routine monitoring (On ART for at least 6 months)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'First VL, routine monitoring (On ART for at least 6 months)') ? "checked='checked'" : "" ?>>First VL, routine monitoring (On ART for at least 6 months)
+												&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="routineOne" name="reasonForVLTesting" value="First VL, routine monitoring (On ART for at least 6 months)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'First VL, routine monitoring (On ART for at least 6 months)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'First VL, routine monitoring (On ART for at least 6 months)') ? "checked='checked'" : "" ?>>First VL, routine monitoring (On ART for at least 6 months)
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="routineTwo" name="reasonForTest" value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)') ? "checked='checked'" : "" ?>>Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label>
+												<input type="radio" id="routineTwo" name="reasonForVLTesting" value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Annual routine follow-up VL (Previous VL < 1000 cp/mL)') ? "checked='checked'" : "" ?>>Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label>
 										</td>
 										<td colspan="3" class="suspect">
 											<label class="labels" for="suspect">Suspected Treatment Failure</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="suspectOne" name="reasonForTest" value="Suspected TF" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Suspected TF' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Suspected TF') ? "checked='checked'" : "" ?>>Suspected TF
+												<input type="radio" id="suspectOne" name="reasonForVLTesting" value="Suspected TF" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Suspected TF' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Suspected TF') ? "checked='checked'" : "" ?>>Suspected TF
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="suspectTwo" name="reasonForTest" value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)') ? "checked='checked'" : "" ?>>Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
+												<input type="radio" id="suspectTwo" name="reasonForVLTesting" value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Follow-up VL after EAC (Previous VL >= 1000 cp/mL)') ? "checked='checked'" : "" ?>>Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
 											</label>
 										</td>
 									</tr>
@@ -484,13 +484,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td colspan="3">
 											<label class="labels" for="defaulter">Defaulter/ LTFU/ Poor Adherer</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="defaulter" name="reasonForTest" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer" <?php echo ($vlQueryInfo['reason_testing_png'] == 'VL (after 3 months EAC)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'VL (after 3 months EAC)') ? "checked='checked'" : "" ?>>VL (after 3 months EAC)
+												<input type="radio" id="defaulter" name="reasonForVLTesting" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer" <?php echo ($vlQueryInfo['reason_testing_png'] == 'VL (after 3 months EAC)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'VL (after 3 months EAC)') ? "checked='checked'" : "" ?>>VL (after 3 months EAC)
 											</label>&nbsp;&nbsp;
 										</td>
 										<td colspan="3">
 											<label for="other">Other</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="other" name="reasonForTest" value="Re-collection requested by lab" title="Please check Other" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "checked='checked'" : "" ?>>Re-collection requested by lab
+												<input type="radio" id="other" name="reasonForVLTesting" value="Re-collection requested by lab" title="Please check Other" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "checked='checked'" : "" ?>>Re-collection requested by lab
 											</label>
 											<label class="labels" for="reason">&nbsp;&nbsp;&nbsp;&nbsp;Reason</label>
 											<label class="radio-inline">
@@ -504,10 +504,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									</tr>
 									<tr>
 										<td class="labels">
-											<label for="collectionDate">Collection date <span class="mandatory">*</span></label>
+											<label for="sampleCollectionDate">Collection date <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" name="collectionDate" id="collectionDate" placeholder="Sample Collection Date" title="Please enter sample collection date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>">
+											<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter sample collection date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>">
 										</td>
 										<td colspan="4" class="typeOfSample">
 											<label class="radio-inline">
@@ -545,13 +545,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="sampleQuality">Sample Quality</label></td>
+										<td class="labels"><label for="noResult">Sample Quality</label></td>
 										<td>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyAccept" name="sampleQuality" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
+												<input type="radio" id="sampleQtyAccept" name="noResult" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyReject" name="sampleQuality" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
+												<input type="radio" id="sampleQtyReject" name="noResult" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
 											</label>
 										</td>
 										<td class="rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"><label for="rejectionReason">Reason <span class="mandatory">*</span></label></td>
@@ -567,15 +567,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td class="rejectionReason" style="display: none;"><input value="<?php echo DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
 									<tr>
-										<td class="laboratoryId labels"><label for="laboratoryId">Laboratory Name</label></td>
+										<td class="labId labels"><label for="labId">Laboratory Name</label></td>
 										<td>
-											<select name="laboratoryId" id="laboratoryId" class="form-control" title="Please choose lab name" style="width:100%;">
+											<select name="labId" id="labId" class="form-control" title="Please choose lab name" style="width:100%;">
 												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Select --'); ?>
 											</select>
 										</td>
-										<td class="sampleType labels"><label for="sampleType">Sample Type Received</label></td>
+										<td class="specimenType labels"><label for="specimenType">Sample Type Received</label></td>
 										<td>
-											<select name="sampleType" id="sampleType" class="form-control" title="Please choose Specimen type" style="width:100%;">
+											<select name="specimenType" id="specimenType" class="form-control" title="Please choose Specimen type" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($sResult as $name) { ?>
 													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
@@ -596,9 +596,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td>
 											<input type="text" class="form-control" name="testDate" id="testDate" placeholder="Test Date" title="Enter Testing Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>">
 										</td>
-										<td class="labels"><label for="testingTech">Testing Platform</label></td>
+										<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 										<td>
-											<select name="testingTech" id="testingTech" onchange="getVlResults('testingTech','possibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -656,7 +656,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td>
 											<input type="text" class="form-control" name="failedTestDate" id="failedTestDate" placeholder="Test Date" title="Enter Testing Date" style="width:100%;" value="<?php echo $vlQueryInfo['failed_test_date']; ?>">
 										</td>
-										<td class="labels"><label for="testingTech">Testing Platform</label></td>
+										<td class="labels"><label for="failedTestingTech">Testing Platform</label></td>
 										<td>
 											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
@@ -717,7 +717,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="finalViralResult">Report Date</label></td>
 										<td>
-											<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;" value="<?php echo $vlQueryInfo['clinic_date']; ?>">
+											<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;" value="<?php echo $vlQueryInfo['report_date']; ?>">
 										</td>
 									</tr>
 									<tr>
@@ -803,7 +803,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 	}
 	
 	$(document).ready(function() {
-		getVlResults('testingTech','possibleVlResults');
+		getVlResults('testingPlatform','possibleVlResults');
 		getVlResults('failedTestingTech','failedPossibleVlResults');
 		$("#gender").change(function(){
 			if($(this).val()=="female")
@@ -823,9 +823,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		});
 		$('.date').mask('99-aaa-9999');
 
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
+		$('#sampleCollectionDate,#receivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
 
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').datetimepicker({
+		$('#sampleCollectionDate,#receivedDate,#testDate,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
@@ -850,7 +850,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		});
 		getAge();
 
-		$('#laboratoryId').select2({
+		$('#labId').select2({
 			placeholder: "Select Laboratory Name"
 		});
 		$('#reviewedBy').select2({
@@ -893,7 +893,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		$.blockUI();
 		var cName = $("#fName").val();
 		var pName = $("#province").val();
-		$('#telephone').val('');
+		$('#reqClinicianPhoneNumber').val('');
 		if (pName != '' && provinceName && facilityName) {
 			facilityName = false;
 		}
@@ -925,7 +925,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		$.blockUI();
 		var dName = $("#district").val();
 		var cName = $("#fName").val();
-		$('#telephone').val('');
+		$('#reqClinicianPhoneNumber').val('');
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -944,7 +944,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
-		//$('#telephone').val($("#fName").find(":selected").attr("data-mobile-nos"));
+		//$('#reqClinicianPhoneNumber').val($("#fName").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
 		//   check facility name
 		//    var cName = $("#fName").val();
@@ -971,7 +971,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 	}
 
 	function checkValue() {
-		var artRegimen = $("#currentRegimen").val();
+		var artRegimen = $("#artRegimen").val();
 		if (artRegimen == 'other') {
 			$(".newArtRegimen").show();
 			$("#newArtRegimen").addClass("isRequired");
@@ -1002,7 +1002,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			});
 	}
 
-	$("input:radio[name=sampleQuality]").on("change", function() {
+	$("input:radio[name=noResult]").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$(".rejectionReason,.vlresultequ").show();
 			$(".reasonequ,.vlResult").hide();
@@ -1013,7 +1013,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			$('#rejectionReason').removeClass("isRequired");
 		}
 	})
-	$("input:radio[name=reasonForTest]").on("change", function() {
+	$("input:radio[name=reasonForVLTesting]").on("change", function() {
 		if ($(this).val() == 'Re-collection requested by lab') {
 			$('#reason').addClass("isRequired").attr('readonly', false);
 		} else {
