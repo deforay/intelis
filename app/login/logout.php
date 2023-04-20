@@ -5,7 +5,7 @@ use App\Models\General;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 
@@ -18,7 +18,7 @@ $resource = 'user';
 $general->activityLog($eventType, $action, $resource);
 
 // Unset all the session variables.
-$_SESSION = array();
+$_SESSION = [];
 
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
@@ -35,4 +35,4 @@ if (ini_get("session.use_cookies")) {
 
 // Finally, destroy the session.
 session_destroy();
-header("location:/login/login.php");
+header("Location:/login/login.php");

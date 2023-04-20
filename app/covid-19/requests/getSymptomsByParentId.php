@@ -3,12 +3,12 @@
 use App\Models\General;
 
 $general = new General();
-$sampleData = array();
+$sampleData = [];
 $symptomsQuery = 'SELECT * FROM r_covid19_symptoms where parent_symptom = "' . $_POST['symptomParent'] . '"';
 $covid19Symptoms = $db->query($symptomsQuery);
 
 $disabled = (isset($_POST['from']) && $_POST['from'] == "update-result") ? "disabled" : "";
-$symptomsArray = array();
+$symptomsArray = [];
 if (isset($_POST['covid19Id']) && $_POST['covid19Id'] != '') {
     $results = $db->query("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = " . $_POST['covid19Id'] . " ORDER BY symptom_id ASC");
     foreach ($results as $key => $val) {

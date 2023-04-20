@@ -2,7 +2,7 @@
 
 use App\Models\Vl;
 
-ob_start();
+
 
 
 $vLModel = new Vl();

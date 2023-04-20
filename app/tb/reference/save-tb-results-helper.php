@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -32,7 +32,7 @@ try {
             $general->activityLog('TB Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'tb-reference');
         }
 	}
-	header("location:tb-results.php");
+	header("Location:tb-results.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

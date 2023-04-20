@@ -12,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($formConfigQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
      $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -20,7 +20,7 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -332,7 +332,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-     $row = array();
+     $row = [];
      $print = '';
      if ($aRow['result'] == '') {
 

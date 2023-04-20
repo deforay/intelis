@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -32,7 +32,7 @@ try {
 			$general->activityLog('VL Test Failure Reason', $_SESSION['userName'] . ' added new vl test failure reason for ' . $_POST['failureReason'], 'vl-reference');
 		}
 	}
-	header("location:vl-test-failure-reasons.php");
+	header("Location:vl-test-failure-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

@@ -3,7 +3,7 @@
 use App\Models\GeoLocations;
 
 $geoLocationDb = new GeoLocations();
-$list = array();
+$list = [];
 
 if(isset($_POST['districtId']))
 {

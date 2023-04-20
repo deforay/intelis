@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 

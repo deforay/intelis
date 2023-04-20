@@ -11,7 +11,7 @@ class SouthSudan_PDF extends MYPDF
     public $logo = '';
     public $text = '';
     public $lab = '';
-    public $facilityInfo = array();
+    public $facilityInfo = [];
     public $formId = 1;
     public $htitle = '';
     //Page header
@@ -95,7 +95,7 @@ if (sizeof($requestResult) > 0) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     }
-    $pages = array();
+    $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
 
@@ -245,7 +245,7 @@ if (sizeof($requestResult) > 0) {
             $result['patient_gender'] = 'not reported';
         }
 
-        $userRes = array();
+        $userRes = [];
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
             $resultApprovedBy = ($result['authorized_by']);
             $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

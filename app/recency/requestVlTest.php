@@ -42,7 +42,7 @@ try {
         $dob    = explode('=', $result[6]);
         $age    = explode('=', $result[7]);
         $gender = explode('=', $result[8]);
-        $result = array();
+        $result = [];
         $result[0] = $sam[1];
         $result[1] = $pat[1];
         $result[2] = $fac[1];
@@ -56,7 +56,7 @@ try {
         $result[11] = $gender[1];
     }
 
-    $data = array();
+    $data = [];
     $vlReqFromTable = "form_vl";
     
     if (isset($result) && count($result) > 0 && $result[0] != "") {

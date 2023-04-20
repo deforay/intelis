@@ -182,7 +182,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
     $result['patient_gender'] = 'not reported';
 }
 
-$userRes = array();
+$userRes = [];
 if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
     $resultApprovedBy = ($result['authorized_by']);
     $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

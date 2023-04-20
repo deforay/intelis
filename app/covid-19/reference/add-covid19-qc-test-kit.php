@@ -3,7 +3,7 @@
 use App\Models\Covid19;
 use App\Models\General;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $general = new General();

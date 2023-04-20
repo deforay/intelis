@@ -14,7 +14,7 @@ $jsonResponse = file_get_contents('php://input');
 
 $cQuery = "SELECT * FROM global_config";
 $cResult = $db->query($cQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($cResult); $i++) {
     $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
@@ -23,7 +23,7 @@ for ($i = 0; $i < sizeof($cResult); $i++) {
 $general = new General();
 $usersModel = new Users();
 $app = new App();
-$sampleCodes = $facilityIds = array();
+$sampleCodes = $facilityIds = [];
 $labId = null;
 
 $transactionId = $general->generateUUID();
@@ -35,7 +35,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $allColResult = $db->rawQuery($allColumns);
     $oneDimensionalArray = array_map('current', $allColResult);
 
-    $resultData = array();
+    $resultData = [];
     $options = [
         'decoder' => new ExtJsonDecoder(true)
     ];

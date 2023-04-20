@@ -55,7 +55,7 @@ if ($mysqlConnected) {
 $numberOfResults = 0;
 if (count($interfaceInfo) > 0) {
 
-    $availableModules = array();
+    $availableModules = [];
 
     if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
         $availableModules['vl_sample_id'] = 'form_vl';
@@ -81,7 +81,7 @@ if (count($interfaceInfo) > 0) {
         $platform["tb_id"] = "tb_test_platform";
     }
 
-    $processedResults = array();
+    $processedResults = [];
     $allowRepeatedTests = false;
 
     foreach ($interfaceInfo as $key => $result) {
@@ -94,7 +94,7 @@ if (count($interfaceInfo) > 0) {
             continue;
         }
 
-        $tableInfo = array();
+        $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
             $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
             $tableInfo = $db->rawQueryOne($tableQuery);
@@ -339,7 +339,7 @@ if (count($interfaceInfo) > 0) {
 
 
     if ($numberOfResults > 0) {
-        $importedBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 'AUTO';
+        $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $general->resultImportStats($numberOfResults, 'interface', $importedBy);
     }
 }

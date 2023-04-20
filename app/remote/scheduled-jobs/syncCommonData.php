@@ -37,12 +37,12 @@ if (strpos($headers[0], '200') === false) {
 
 
 
-$dataToSync = array();
-$commonDataToSync = array();
-$vlDataToSync = array();
-$eidDataToSync = array();
-$covid19DataToSync = array();
-$hepatitisDataToSync = array();
+$dataToSync = [];
+$commonDataToSync = [];
+$vlDataToSync = [];
+$eidDataToSync = [];
+$covid19DataToSync = [];
+$hepatitisDataToSync = [];
 
 
 $payload = array(
@@ -286,8 +286,8 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
             $columnList = array_map('current', $db->rawQuery($tableColumns));
             
             foreach ($dataValues as $tableDataValues) {
-                $tableData = array();
-                $updateColumns = array();
+                $tableData = [];
+                $updateColumns = [];
                 foreach ($columnList as $colName) {
                     if (isset($tableDataValues[$colName])) {
                         $tableData[$colName] = $tableDataValues[$colName];

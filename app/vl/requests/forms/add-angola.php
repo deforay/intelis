@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $rKey = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';

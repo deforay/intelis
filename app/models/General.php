@@ -39,7 +39,7 @@ class General
     public function escape($inputArray, $db = null)
     {
         $db = !empty($db) ? $db : $this->db;
-        $escapedArray = array();
+        $escapedArray = [];
         foreach ($inputArray as $key => $value) {
             $escapedArray[$key] = $db->escape($value);
         }
@@ -106,7 +106,7 @@ class General
 
         $systemConfigResult = $this->db->get('system_config');
 
-        $sarr = array();
+        $sarr = [];
         // now we create an associative array so that we can easily create view variables
         for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
             $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -115,11 +115,7 @@ class General
         if (empty($name)) {
             return $sarr;
         } else {
-            if (isset($sarr[$name])) {
-                return $sarr[$name];
-            } else {
-                return null;
-            }
+            return $sarr[$name] ?? null;
         }
     }
 
@@ -135,7 +131,7 @@ class General
             $this->db->where('name', $name);
             return $this->db->getValue("global_config", "value");
         } else {
-            $garr = array();
+            $garr = [];
             $globalConfigResult = $this->db->get('global_config');
             // now we create an associative array so that we can easily create view variables
             for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
@@ -419,7 +415,7 @@ class General
 
     public function activeReportFormats($module = "vl", $countryCode = "southsudan", $format = "", $list = true)
     {
-        $list = array();
+        $list = [];
         if ($module == 'vl') {
 
             if (isset($format) && $format != null) {
@@ -468,7 +464,7 @@ class General
     public function reportPdfNames($module = null)
     {
         $arr = $this->getGlobalConfig();
-        $cntId = array();
+        $cntId = [];
         if ($arr['vl_form'] == 1) {
             $cntId['covid19'] = 'ssudan';
             $cntId['eid'] = 'ssudan';
@@ -674,7 +670,7 @@ class General
     //dump the contents of a variable to the error log in a readable format
     public function var_error_log($object = null): void
     {
-        ob_start();
+        
         var_dump($object);
         error_log(ob_get_clean());
     }

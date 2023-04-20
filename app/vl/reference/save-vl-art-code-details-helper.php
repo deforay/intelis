@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -39,7 +39,7 @@ try {
             $general->activityLog('Add art code details', $_SESSION['userName'] . ' added new art code for ' . $_POST['artCode'], 'vl-reference');
         }
 	}
-	header("location:vl-art-code-details.php");
+	header("Location:vl-art-code-details.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

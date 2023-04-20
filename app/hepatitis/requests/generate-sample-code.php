@@ -2,7 +2,7 @@
 
 use App\Models\Hepatitis;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
@@ -23,17 +23,9 @@ if (isset($_POST['sampleCollectionDate'])) {
   $sampleCollectionDate = $_POST['sDate'];
 }
 
-if (isset($_POST['sampleFrom'])) {
-  $sampleFrom = $_POST['sampleFrom'];
-} else {
-  $sampleFrom = '';
-}
+$sampleFrom = $_POST['sampleFrom'] ?? '';
 
-if (isset($_POST['prefix'])) {
-  $prefix = $_POST['prefix'];
-} else {
-  $prefix = '';
-}
+$prefix = $_POST['prefix'] ?? '';
 
 
 echo $hepatitisModel->generateHepatitisSampleCode($prefix, $province, $sampleCollectionDate, $sampleFrom);

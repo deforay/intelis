@@ -76,7 +76,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -235,7 +235,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-     $row = array();
+     $row = [];
      $print = '<a href="eid-update-result.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
      if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
           if (isset($_SESSION['privileges']) && !in_array("edit-locked-eid-samples", $_SESSION['privileges'])) {

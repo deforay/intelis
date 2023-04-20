@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -21,11 +21,11 @@ try {
 			$value = array('sample_batch_id' => null);
 			$db = $db->where('sample_batch_id', $id);
 			$db->update($tableName2, $value);
-			$xplodResultSample = array();
+			$xplodResultSample = [];
 			if (isset($_POST['selectedSample']) && trim($_POST['selectedSample']) != "") {
 				$xplodResultSample = explode(",", $_POST['selectedSample']);
 			}
-			$sample = array();
+			$sample = [];
 			//Mergeing disabled samples into existing samples
 			if (isset($_POST['sampleCode']) && count($_POST['sampleCode']) > 0) {
 				if (count($xplodResultSample) > 0) {
@@ -43,7 +43,7 @@ try {
 				$db->update($tableName2, $value);
 			}
 			//Update batch controls position, If samples has changed
-			$displaySampleOrderArray = array();
+			$displaySampleOrderArray = [];
 			$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 			$batchInfo = $db->query($batchQuery);
 			if (isset($batchInfo) && count($batchInfo) > 0) {
@@ -56,7 +56,7 @@ try {
 					}
 					//Set label order
 					$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
-					$displaySampleArray = array();
+					$displaySampleArray = [];
 					for ($j = 0; $j < count($jsonToArray); $j++) {
 						$xplodJsonToArray = explode("_", $jsonToArray[$j]);
 						if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -73,7 +73,7 @@ try {
 					for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 						$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
 					}
-					$orderArray = array();
+					$orderArray = [];
 					for ($o = 0; $o < count($displayOrder); $o++) {
 						$orderArray[$o] = $displayOrder[$o];
 					}
@@ -87,7 +87,7 @@ try {
 			$_SESSION['alertMsg'] = "Batch updated successfully";
 		}
 	}
-	header("location:/tb/batch/tb-batches.php");
+	header("Location:/tb/batch/tb-batches.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

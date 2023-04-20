@@ -44,7 +44,7 @@ if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATO
                 <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                     <?php if (!empty($result['api_params'])) {
                         $result['request_data'] = $result['api_params'];
-                        $result['response_data'] = array();
+                        $result['response_data'] = [];
                     ?>
                         <li class="active request" data-name="vl" data-toggle="tab" onclick="openTab('request', 'response')"><a href="javascript:void(0);"><?php echo _("API PARAMS"); ?></a></li>
                     <?php } else { ?>

@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 
 
 
@@ -15,7 +15,7 @@ try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
         $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
-        header("location:/vl/batch/batchcode.php");
+        header("Location:/vl/batch/batchcode.php");
     } else {
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
             $data = array(
@@ -44,10 +44,10 @@ try {
                     }
 
                 }
-                header("location:/vl/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
+                header("Location:/vl/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
         } else {
-            header("location:/vl/batch/batchcode.php");
+            header("Location:/vl/batch/batchcode.php");
         }
     }
 } catch (Exception $exc) {

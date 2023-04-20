@@ -1,6 +1,6 @@
 <?php
 
-ob_start();
+
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
@@ -42,7 +42,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
                   LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
 
-  $searchQueryWhere = array();
+  $searchQueryWhere = [];
   if (!empty(trim($_POST['id']))) {
     $searchQueryWhere[] = " vl.vl_sample_id IN(" . $_POST['id'] . ") ";
   }
@@ -240,7 +240,7 @@ class Watermark extends PDF_Rotate
 }
 class Pdf_concat extends FPDI
 {
-  var $files = array();
+  var $files = [];
   function setFiles($files)
   {
     $this->files = $files;

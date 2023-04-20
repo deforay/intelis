@@ -19,7 +19,7 @@ $app = new App();
 
 $transactionId = $general->generateUUID();
 
-$sampleCodes = $facilityIds = array();
+$sampleCodes = $facilityIds = [];
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
@@ -29,12 +29,12 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 
 
-    $lab = array();
-    $resultData = array();
-    $testResultsData = array();
-    $testResultsData = array();
-    $symptomsData = array();
-    $comorbiditiesData = array();
+    $lab = [];
+    $resultData = [];
+    $testResultsData = [];
+    $testResultsData = [];
+    $symptomsData = [];
+    $comorbiditiesData = [];
     $options = [
         'decoder' => new ExtJsonDecoder(true)
     ];

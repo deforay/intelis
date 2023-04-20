@@ -11,7 +11,7 @@ if (!class_exists('DRC_PDF')) {
         public $logo = '';
         public $text = '';
         public $lab = '';
-        public $facilityInfo = array();
+        public $facilityInfo = [];
         public $htitle = '';
 
         //Page header
@@ -229,7 +229,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
     $result['patient_gender'] = 'not reported';
 }
 
-$userRes = array();
+$userRes = [];
 if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

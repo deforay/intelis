@@ -54,7 +54,7 @@ $systemConfig['sftp']['password'] = ''; // Optional Password for SFTP, if privat
 
 
 
-$systemConfig['interfacing'] = array();
+$systemConfig['interfacing'] = [];
 
 
 // Enable/Disable Interfacing
@@ -72,7 +72,7 @@ $systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 
 $systemConfig['interfacing']['sqlite3Path'] = '';
 
-$systemConfig['recency'] = array();
+$systemConfig['recency'] = [];
 
 // Enable/Disable Cross Login with Recency
 // true => Enabled

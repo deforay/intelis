@@ -27,7 +27,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field is not null";
     }
     $cResult = $db->rawQuery($cQuery);
-    $echoResult = array();
+    $echoResult = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
             $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
@@ -41,7 +41,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
 } else if (isset($_POST['pName']) && $_POST['pName'] != "") {
     $cQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_province like '%" . $_POST['pName'] . "%' AND patient_zone is not null";
     $cResult = $db->rawQuery($cQuery);
-    $option = array();
+    $option = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
             $option[$row['patient_zone']] = $row['patient_zone'];
@@ -53,7 +53,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
 } else if (isset($_POST['zName']) && $_POST['zName'] != "") {
     $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $_POST['zName'] . "%' AND patient_district is not null";
     $cResult = $db->rawQuery($cQuery);
-    $option = array();
+    $option = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
             $option[$row['patient_district']] = $row['patient_district'];

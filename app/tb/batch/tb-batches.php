@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("TB | Batches");
 
 require_once(APPLICATION_PATH . '/header.php');

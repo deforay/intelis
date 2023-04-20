@@ -154,7 +154,7 @@ $primaryKey="facility_id";
         
         foreach ($rResult as $aRow) {
 	    $facilityDetails = $aRow['facility_id']."##".$aRow['facility_name']."##".$aRow['facility_state']."##".$aRow['facility_hub_name']."##".$aRow['contact_person']."##".$aRow['facility_mobile_numbers']."##".$aRow['facility_district']."##".$aRow['facility_emails'];
-            $row = array();
+            $row = [];
 	    if($_POST['type']=='all'){
 	       $row[] = '<input type="radio" id="facility'.$aRow['facility_id'].'" name="facility" value="'.$facilityDetails.'" onclick="getFacility(this.value);">';
 	    }else{
@@ -166,4 +166,4 @@ $primaryKey="facility_id";
             $output['aaData'][] = $row;
         }
         echo json_encode($output);
-?>
+

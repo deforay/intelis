@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $rKey = '';
 $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';

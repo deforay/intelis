@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\Users;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $title = _("Enter Covid-19 Result");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -19,7 +19,7 @@ $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$labTechniciansResults = array();
+$labTechniciansResults = [];
 foreach ($userResult as $user) {
 	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }

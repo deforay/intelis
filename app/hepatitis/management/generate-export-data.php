@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 use App\Models\General;
@@ -29,7 +29,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$rResult = $db->rawQuery($sessionQuery);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason","Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
@@ -101,7 +101,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		/*if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method 
 			$hepatitisTestQuery = "SELECT * from hepatitis_tests where hepatitis_id= " . $aRow['hepatitis_id'] . " ORDER BY test_id ASC";
@@ -167,7 +167,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		} else {
 			$sourceOfArtPOE = $aRow['source_of_alert_other'];
 		}
-		$row = array();
+		$row = [];
 		$row[] = $no;
 		if ($sarr['sc_user_type'] == 'standalone') {
 			$row[] = $aRow["sample_code"];

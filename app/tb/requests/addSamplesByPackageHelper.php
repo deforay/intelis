@@ -33,7 +33,7 @@ foreach ($sampleResult as $sampleRow) {
 
         $sampleJson = $tbObj->generatetbSampleCode($provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
-        $tbData = array();
+        $tbData = [];
         $tbData['sample_code'] = $sampleData['sampleCode'];
         $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];

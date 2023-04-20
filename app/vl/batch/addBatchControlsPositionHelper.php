@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 
 $general = new General();
 $tableName = "batch_details";
@@ -10,7 +10,7 @@ try {
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim($_POST['sortOrders']) != '') {
         $xplodSortOrders = explode(",", $_POST['sortOrders']);
-        $orderArray = array();
+        $orderArray = [];
         if (isset($_POST['positions']) && $_POST['positions'] == 'alpha-numeric') {
             foreach ($general->excelColumnRange('A', 'H') as $value) {
                 foreach (range(1, 12) as $no) {
@@ -33,9 +33,9 @@ try {
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch Position saved successfully";
-        header("location:batchcode.php");
+        header("Location:batchcode.php");
     } else {
-        header("location:batchcode.php");
+        header("Location:batchcode.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

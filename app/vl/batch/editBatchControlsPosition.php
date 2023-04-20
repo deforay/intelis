@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 
 $title = "Edit Batch Position";
 
@@ -7,16 +7,16 @@ $title = "Edit Batch Position";
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
-	header("location:batchcode.php");
+	header("Location:batchcode.php");
 }
 $content = '';
-$displayOrder = array();
+$displayOrder = [];
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
 $configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
-$configControl = array();
+$configControl = [];
 foreach ($configControlInfo as $info) {
 	if ($info['test_type'] == 'vl') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
@@ -25,7 +25,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 if (!isset($batchInfo) || count($batchInfo) == 0) {
-	header("location:batchcode.php");
+	header("Location:batchcode.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode($batchInfo[0]['label_order'], true);

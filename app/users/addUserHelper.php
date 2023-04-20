@@ -5,7 +5,7 @@ use App\Models\Users;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -108,7 +108,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("location:users.php");
+    header("Location:users.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

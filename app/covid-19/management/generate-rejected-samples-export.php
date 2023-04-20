@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-ob_start();
+
 
 
 
@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -31,7 +31,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
-     $output = array();
+     $output = [];
      $sheet = $excel->getActiveSheet();
      $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "No. of Samples");
 
@@ -73,7 +73,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
-          $row = array();
+          $row = [];
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['rejection_reason_name']);

@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $type = $_GET['type'];
 if ($type == 'health-facilities') {
 	$title = "Manage Health Facilities";

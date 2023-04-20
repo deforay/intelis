@@ -126,7 +126,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = ($aRow['role_name']);
     $row[] = ($aRow['role_code']);
     $row[] = ($aRow['status']);

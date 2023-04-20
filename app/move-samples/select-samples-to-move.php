@@ -2,7 +2,6 @@
 
 use App\Models\General;
 
-ob_start();
 $title = "Add Sample List";
 
 require_once(APPLICATION_PATH . '/header.php');

@@ -14,7 +14,7 @@ $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 
-$payload = array();
+$payload = [];
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
 
@@ -80,7 +80,7 @@ $removeKeys = array(
   'result_printed_datetime',
   'last_modified_datetime'
 );
-$sampleIds = $facilityIds = array();
+$sampleIds = $facilityIds = [];
 $counter = 0;
 if ($db->count > 0) {
   $payload = $eidRemoteResult;

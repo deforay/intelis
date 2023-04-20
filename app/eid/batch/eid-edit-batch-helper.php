@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -25,11 +25,11 @@ try {
 			$value = array('sample_batch_id' => null);
 			$db = $db->where('sample_batch_id', $id);
 			$db->update($tableName2, $value);
-			$xplodResultSample = array();
+			$xplodResultSample = [];
 			if (isset($_POST['selectedSample']) && trim($_POST['selectedSample']) != "") {
 				$xplodResultSample = explode(",", $_POST['selectedSample']);
 			}
-			$sample = array();
+			$sample = [];
 			//Mergeing disabled samples into existing samples
 			if (isset($_POST['sampleCode']) && count($_POST['sampleCode']) > 0) {
 				if (count($xplodResultSample) > 0) {
@@ -47,7 +47,7 @@ try {
 				$db->update($tableName2, $value);
 			}
 			//Update batch controls position, If samples has changed
-			$displaySampleOrderArray = array();
+			$displaySampleOrderArray = [];
 			$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 			$batchInfo = $db->query($batchQuery);
 			if (isset($batchInfo) && count($batchInfo) > 0) {
@@ -68,8 +68,8 @@ try {
 					}
 					//Set label order
 					$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
-					$displaySampleArray = array();
-					$displayOrder = array();
+					$displaySampleArray = [];
+					$displayOrder = [];
 					if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 						for ($j = 0; $j < count($jsonToArray); $j++) {
 							$xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
@@ -100,7 +100,7 @@ try {
 					for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
 						$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
 					}
-					$orderArray = array();
+					$orderArray = [];
 					if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 						for ($o = 0; $o < count($displayOrder); $o++) {
 							$orderArray[$alphaNumeric[$o]] = $displayOrder[$o];
@@ -120,7 +120,7 @@ try {
 			$_SESSION['alertMsg'] = "Batch updated successfully";
 		}
 	}
-	header("location:/eid/batch/eid-batches.php");
+	header("Location:/eid/batch/eid-batches.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

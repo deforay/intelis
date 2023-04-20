@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
-$gconfig = array();
+$gconfig = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
 	$gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -19,7 +19,7 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -76,7 +76,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 	$searchArray = explode(" ", $_POST['sSearch']);
 	$sWhereSub = "";
@@ -267,7 +267,7 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}
-	$row = array();
+	$row = [];
 	$row[] = $aRow[$sampleCode];
 	$row[] = $aRow['sample_collection_date'];
 	$row[] = $aRow['sample_received_at_vl_lab_datetime'];

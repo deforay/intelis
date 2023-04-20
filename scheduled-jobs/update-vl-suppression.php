@@ -26,7 +26,7 @@ foreach ($result as $aRow) {
     if (!empty($vlResultCategory)) {
 
         $db->where('vl_sample_id', $aRow['vl_sample_id']);
-        $dataToUpdate = array();
+        $dataToUpdate = [];
         $dataToUpdate['vl_result_category'] = $vlResultCategory;
         if ($vlResultCategory == 'failed' || $vlResultCategory == 'invalid') {
             $dataToUpdate['result_status'] = 5;

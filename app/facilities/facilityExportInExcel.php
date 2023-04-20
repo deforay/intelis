@@ -10,11 +10,11 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 $general = new General();
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 $facilityType = $_POST['facilityType'];
 if (isset($facilityType) && trim($facilityType) != '') {
@@ -111,7 +111,7 @@ foreach ($headings as $field => $value) {
 $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
 foreach ($rResult as $aRow) {
-	$row = array();
+	$row = [];
 
 	$row[] = $aRow['facility_code'];
 	$row[] = $aRow['facility_name'];

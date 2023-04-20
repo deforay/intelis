@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Utilities\DateUtils;
 use App\Utilities\MiscUtils;
 
-ob_start();
+
 
 
 $general = new General();
@@ -27,12 +27,12 @@ if ($systemType == 'remoteuser') {
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = array();
+// $sampleStatusArray = [];
 // foreach($tsResult as $tsRow){
 //     $sampleStatusArray = $tsRow['status_name'];
 // }
 
-$sampleStatusColors = array();
+$sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
@@ -89,7 +89,7 @@ $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
-$sWhere = array();
+$sWhere = [];
 if (!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -115,7 +115,7 @@ $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
-$sWhere = array();
+$sWhere = [];
 if (!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
@@ -188,7 +188,7 @@ $tatSampleQuery = "SELECT
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
     AND DATE(vl.sample_tested_datetime) <= '$end_date'";
-$sWhere = array();
+$sWhere = [];
 if (!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -221,7 +221,7 @@ foreach ($tatResult as $sRow) {
     $j++;
 }
 
-$sWhere = array();
+$sWhere = [];
 if (!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
 $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name 

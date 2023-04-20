@@ -1,15 +1,15 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $query = "SELECT * FROM roles where status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
 
 
-$activeFacilities = array();
+$activeFacilities = [];
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $fResult = array();
+     $fResult = [];
      $fQuery = "SELECT facility_name,facility_id
                     FROM facility_details
                     WHERE status='active'
@@ -37,7 +37,7 @@ foreach ($pdResult as $provinceName) {
 // $facility = '';
 // $facility.="<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>";
 //province end
-$ftResult = array();
+$ftResult = [];
 
 $fQuery = "SELECT * FROM facility_type where facility_type_id IN(1,2)";
 $ftResult = $db->rawQuery($fQuery);

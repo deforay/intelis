@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "Covid-19 | Add Batch";
 
 require_once(APPLICATION_PATH . '/header.php');

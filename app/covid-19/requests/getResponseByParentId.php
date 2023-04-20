@@ -3,7 +3,7 @@
 use App\Models\General;
 
 $general = new General();
-$sampleData = array();
+$sampleData = [];
 $sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = "'. $_POST['responseParent'].'"';
 $sampleResult = $db->query($sampleQuery);
 

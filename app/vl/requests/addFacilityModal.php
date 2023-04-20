@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 $type=$_GET['type'];

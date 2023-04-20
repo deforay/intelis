@@ -15,7 +15,7 @@ $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 
-$payload = array();
+$payload = [];
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
 
@@ -51,7 +51,7 @@ if (!empty($data['manifestCode'])) {
 
 $covid19RemoteResult = $db->rawQuery($covid19Query);
 
-$data  = $sampleIds = $facilityIds = array();
+$data  = $sampleIds = $facilityIds = [];
 $counter = 0;
 if ($db->count > 0) {
   $counter = $db->count;
@@ -63,7 +63,7 @@ if ($db->count > 0) {
   $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($sampleIds);
   $testResults = $covid19Obj->getCovid19TestsByFormId($sampleIds);
 
-  $data = array();
+  $data = [];
   $data['result'] = $covid19RemoteResult;
   $data['symptoms'] = $symptoms;
   $data['comorbidities'] = $comorbidities;

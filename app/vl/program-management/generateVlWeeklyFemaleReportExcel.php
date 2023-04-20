@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -19,7 +19,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
     $rResult = $db->rawQuery($_SESSION['vlStatisticsFemaleQuery']);
 
     $excel = new Spreadsheet();
-    $output = array();
+    $output = [];
     $sheet = $excel->getActiveSheet();
 
     $headings = array("Province/State", "District/County", "Site Name", "Total Female", "Pregnant <=1000 cp/ml", "Pregnant >1000 cp/ml", "Breastfeeding <=1000 cp/ml", "Breastfeeding >1000 cp/ml", "Age > 15 <=1000 cp/ml", "Age > 15 >1000 cp/ml", "Age Unknown <=1000 cp/ml", "Age Unknown >1000 cp/ml", "Age <=15 <=1000 cp/ml", "Age <=15 >1000 cp/ml");
@@ -70,7 +70,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
 
     foreach ($rResult as $aRow) {
 
-        $row = array();
+        $row = [];
         $row[] = ($aRow['facility_state']);
         $row[] = ($aRow['facility_district']);
         $row[] = ($aRow['facility_name']);

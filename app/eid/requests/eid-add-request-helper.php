@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -22,7 +22,7 @@ try {
 	//system config
 	$systemConfigQuery = "SELECT * from system_config";
 	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = array();
+	$sarr = [];
 	// now we create an associative array so that we can easily create view variables
 	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -161,60 +161,60 @@ try {
 	$eidData = array(
 		'vlsm_instance_id' 									=> $instanceId,
 		'vlsm_country_id' 									=> $_POST['formId'],
-		'facility_id' 										=> isset($_POST['facilityId']) ? $_POST['facilityId'] : null,
-		'province_id' 										=> isset($_POST['provinceId']) ? $_POST['provinceId'] : null,
-		'lab_id' 											=> isset($_POST['labId']) ? $_POST['labId'] : null,
-		'lab_testing_point' 								=> isset($_POST['labTestingPoint']) ? $_POST['labTestingPoint'] : null,
+		'facility_id' 										=> $_POST['facilityId'] ?? null,
+		'province_id' 										=> $_POST['provinceId'] ?? null,
+		'lab_id' 											=> $_POST['labId'] ?? null,
+		'lab_testing_point' 								=> $_POST['labTestingPoint'] ?? null,
 		//'implementing_partner' 								=> !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
 		//'funding_source' 									=> !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
-		'mother_id' 										=> isset($_POST['mothersId']) ? $_POST['mothersId'] : null,
-		'caretaker_contact_consent' 						=> isset($_POST['caretakerConsentForContact']) ? $_POST['caretakerConsentForContact'] : null,
-		'caretaker_phone_number' 							=> isset($_POST['caretakerPhoneNumber']) ? $_POST['caretakerPhoneNumber'] : null,
-		'caretaker_address' 								=> isset($_POST['caretakerAddress']) ? $_POST['caretakerAddress'] : null,
-		'mother_name'	 									=> isset($_POST['mothersName']) ? $_POST['mothersName'] : null,
-		'mother_dob' 										=> isset($_POST['mothersDob']) ? $_POST['mothersDob'] : null,
-		'mother_marital_status' 							=> isset($_POST['mothersMaritalStatus']) ? $_POST['mothersMaritalStatus'] : null,
+		'mother_id' 										=> $_POST['mothersId'] ?? null,
+		'caretaker_contact_consent' 						=> $_POST['caretakerConsentForContact'] ?? null,
+		'caretaker_phone_number' 							=> $_POST['caretakerPhoneNumber'] ?? null,
+		'caretaker_address' 								=> $_POST['caretakerAddress'] ?? null,
+		'mother_name'	 									=> $_POST['mothersName'] ?? null,
+		'mother_dob' 										=> $_POST['mothersDob'] ?? null,
+		'mother_marital_status' 							=> $_POST['mothersMaritalStatus'] ?? null,
 		'mother_treatment' 									=> isset($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : null,
 		'mother_regimen' 									=> (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] :  null,
-		'mother_treatment_other' 							=> isset($_POST['motherTreatmentOther']) ? $_POST['motherTreatmentOther'] : null,
-		'mother_treatment_initiation_date' 					=> isset($_POST['motherTreatmentInitiationDate']) ? $_POST['motherTreatmentInitiationDate'] : null,
-		'child_id' 											=> isset($_POST['childId']) ? $_POST['childId'] : null,
-		'child_name' 										=> isset($_POST['childName']) ? $_POST['childName'] : null,
-		'child_dob' 										=> isset($_POST['childDob']) ? $_POST['childDob'] : null,
-		'child_gender' 										=> isset($_POST['childGender']) ? $_POST['childGender'] : null,
-		'child_age' 										=> isset($_POST['childAge']) ? $_POST['childAge'] : null,
+		'mother_treatment_other' 							=> $_POST['motherTreatmentOther'] ?? null,
+		'mother_treatment_initiation_date' 					=> $_POST['motherTreatmentInitiationDate'] ?? null,
+		'child_id' 											=> $_POST['childId'] ?? null,
+		'child_name' 										=> $_POST['childName'] ?? null,
+		'child_dob' 										=> $_POST['childDob'] ?? null,
+		'child_gender' 										=> $_POST['childGender'] ?? null,
+		'child_age' 										=> $_POST['childAge'] ?? null,
 		'child_treatment' 									=> isset($_POST['childTreatment']) ? implode(",", $_POST['childTreatment']) : null,
-		'child_treatment_other' 							=> isset($_POST['childTreatmentOther']) ? $_POST['childTreatmentOther'] : null,
-		'mother_cd4' 										=> isset($_POST['mothercd4']) ? $_POST['mothercd4'] : null,
+		'child_treatment_other' 							=> $_POST['childTreatmentOther'] ?? null,
+		'mother_cd4' 										=> $_POST['mothercd4'] ?? null,
 		'mother_vl_result' 									=> $motherVlResult,
-		'mother_hiv_status' 								=> isset($_POST['mothersHIVStatus']) ? $_POST['mothersHIVStatus'] : null,
+		'mother_hiv_status' 								=> $_POST['mothersHIVStatus'] ?? null,
 		//'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
-		'pcr_test_number' 									=> isset($_POST['pcrTestNumber']) ? $_POST['pcrTestNumber'] : null,
-		'previous_pcr_result' 								=> isset($_POST['prePcrTestResult']) ? $_POST['prePcrTestResult'] : null,
-		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? $_POST['previousPCRTestDate'] : null,
-		'reason_for_pcr' 									=> isset($_POST['pcrTestReason']) ? $_POST['pcrTestReason'] : null,
-		'reason_for_repeat_pcr_other' 						=> isset($_POST['reasonForRepeatPcrOther']) ? $_POST['reasonForRepeatPcrOther'] : null,
-		'has_infant_stopped_breastfeeding' 					=> isset($_POST['hasInfantStoppedBreastfeeding']) ? $_POST['hasInfantStoppedBreastfeeding'] : null,
-		'infant_on_pmtct_prophylaxis' 						=> isset($_POST['infantOnPMTCTProphylaxis']) ? $_POST['infantOnPMTCTProphylaxis'] : null,
-		'infant_on_ctx_prophylaxis'							=> isset($_POST['infantOnCTXProphylaxis']) ? $_POST['infantOnCTXProphylaxis'] : null,
-		'age_breastfeeding_stopped_in_months' 				=> isset($_POST['ageBreastfeedingStopped']) ? $_POST['ageBreastfeedingStopped'] : null,
-		'choice_of_feeding' 								=> isset($_POST['choiceOfFeeding']) ? $_POST['choiceOfFeeding'] : null,
-		'is_cotrimoxazole_being_administered_to_the_infant'	=> isset($_POST['isCotrimoxazoleBeingAdministered']) ? $_POST['isCotrimoxazoleBeingAdministered'] : null,
-		'specimen_type' 									=> isset($_POST['specimenType']) ? $_POST['specimenType'] : null,
-		'sample_collection_date' 							=> isset($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-		'sample_dispatched_datetime' 						=> isset($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
-		'sample_requestor_phone' 							=> isset($_POST['sampleRequestorPhone']) ? $_POST['sampleRequestorPhone'] : null,
-		'sample_requestor_name' 							=> isset($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
-		'rapid_test_performed' 								=> isset($_POST['rapidTestPerformed']) ? $_POST['rapidTestPerformed'] : null,
-		'rapid_test_date' 									=> isset($_POST['rapidtestDate']) ? $_POST['rapidtestDate'] : null,
-		'rapid_test_result' 								=> isset($_POST['rapidTestResult']) ? $_POST['rapidTestResult'] : null,
-		'lab_reception_person' 								=> isset($_POST['labReceptionPerson']) ? $_POST['labReceptionPerson'] : null,
-		'sample_received_at_vl_lab_datetime' 				=> isset($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-		'eid_test_platform'                 				=> isset($_POST['eidPlatform']) ? $_POST['eidPlatform'] : null,
-		'import_machine_name'               				=> isset($_POST['machineName']) ? $_POST['machineName'] : null,
-		'sample_tested_datetime' 							=> isset($_POST['sampleTestedDateTime']) ? $_POST['sampleTestedDateTime'] : null,
-		'is_sample_rejected' 								=> isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-		'result' 											=> isset($_POST['result']) ? $_POST['result'] : null,
+		'pcr_test_number' 									=> $_POST['pcrTestNumber'] ?? null,
+		'previous_pcr_result' 								=> $_POST['prePcrTestResult'] ?? null,
+		'last_pcr_date' 									=> $_POST['previousPCRTestDate'] ?? null,
+		'reason_for_pcr' 									=> $_POST['pcrTestReason'] ?? null,
+		'reason_for_repeat_pcr_other' 						=> $_POST['reasonForRepeatPcrOther'] ?? null,
+		'has_infant_stopped_breastfeeding' 					=> $_POST['hasInfantStoppedBreastfeeding'] ?? null,
+		'infant_on_pmtct_prophylaxis' 						=> $_POST['infantOnPMTCTProphylaxis'] ?? null,
+		'infant_on_ctx_prophylaxis'							=> $_POST['infantOnCTXProphylaxis'] ?? null,
+		'age_breastfeeding_stopped_in_months' 				=> $_POST['ageBreastfeedingStopped'] ?? null,
+		'choice_of_feeding' 								=> $_POST['choiceOfFeeding'] ?? null,
+		'is_cotrimoxazole_being_administered_to_the_infant'	=> $_POST['isCotrimoxazoleBeingAdministered'] ?? null,
+		'specimen_type' 									=> $_POST['specimenType'] ?? null,
+		'sample_collection_date' 							=> $_POST['sampleCollectionDate'] ?? null,
+		'sample_dispatched_datetime' 						=> $_POST['sampleDispatchedDate'] ?? null,
+		'sample_requestor_phone' 							=> $_POST['sampleRequestorPhone'] ?? null,
+		'sample_requestor_name' 							=> $_POST['sampleRequestorName'] ?? null,
+		'rapid_test_performed' 								=> $_POST['rapidTestPerformed'] ?? null,
+		'rapid_test_date' 									=> $_POST['rapidtestDate'] ?? null,
+		'rapid_test_result' 								=> $_POST['rapidTestResult'] ?? null,
+		'lab_reception_person' 								=> $_POST['labReceptionPerson'] ?? null,
+		'sample_received_at_vl_lab_datetime' 				=> $_POST['sampleReceivedDate'] ?? null,
+		'eid_test_platform'                 				=> $_POST['eidPlatform'] ?? null,
+		'import_machine_name'               				=> $_POST['machineName'] ?? null,
+		'sample_tested_datetime' 							=> $_POST['sampleTestedDateTime'] ?? null,
+		'is_sample_rejected' 								=> $_POST['isSampleRejected'] ?? null,
+		'result' 											=> $_POST['result'] ?? null,
 		'result_reviewed_by'                				=> (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime'          				=> (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'result_dispatched_datetime'          				=> (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
@@ -224,7 +224,7 @@ try {
 		'result_approved_datetime' 							=> (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  null,
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
-		'reason_for_sample_rejection' 						=> isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
+		'reason_for_sample_rejection' 						=> $_POST['sampleRejectionReason'] ?? null,
 		'rejection_on' 						                => isset($_POST['rejectionDate']) ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
 		// 'request_created_by' 								=> $_SESSION['userId'],
 		'request_created_datetime' 							=> DateUtils::getCurrentDateTime(),
@@ -283,9 +283,9 @@ try {
 			$_SESSION['alertMsg'] = _("Please try again later");
 		}
 		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-			header("location:/eid/requests/eid-add-request.php");
+			header("Location:/eid/requests/eid-add-request.php");
 		} else {
-			header("location:/eid/requests/eid-requests.php");
+			header("Location:/eid/requests/eid-requests.php");
 		}
 	}
 } catch (Exception $exc) {

@@ -62,8 +62,8 @@ class Eid
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
-        $sampleCodeFormat = isset($globalConfig['eid_sample_code']) ? $globalConfig['eid_sample_code'] : 'MMYY';
-        $prefixFromConfig = isset($globalConfig['eid_sample_code_prefix']) ? $globalConfig['eid_sample_code_prefix'] : '';
+        $sampleCodeFormat = $globalConfig['eid_sample_code'] ?? 'MMYY';
+        $prefixFromConfig = $globalConfig['eid_sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
@@ -146,7 +146,7 @@ class Eid
         }
         $query .= " ORDER BY result_id";
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
         }
@@ -160,7 +160,7 @@ class Eid
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
         }
@@ -181,7 +181,7 @@ class Eid
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
 
             $excel = new Spreadsheet();
-            $output = array();
+            $output = [];
             $sheet = $excel->getActiveSheet();
 
             $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
@@ -239,7 +239,7 @@ class Eid
 
             $no = 1;
             foreach ($rResult as $aRow) {
-                $row = array();
+                $row = [];
                 //date of birth
                 $dob = '';
                 if ($aRow['child_dob'] != null && trim($aRow['child_dob']) != '' && $aRow['child_dob'] != '0000-00-00') {
@@ -395,7 +395,7 @@ class Eid
             }
 
 
-            $eidData = array();
+            $eidData = [];
             if (isset($params['api']) && $params['api'] = "yes") {
                 $eidData = array(
                     'vlsm_country_id' => $params['formId'],
@@ -462,11 +462,7 @@ class Eid
                     $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
                 } else if (isset($_SERVER['HTTP_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else if (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
+                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
                 $formAttributes = array(
                     'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress

@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
   
 
 // 
@@ -9,7 +9,7 @@ try {
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim($_POST['sortOrders']) != '') {
         $xplodSortOrders = explode(",", $_POST['sortOrders']);
-        $orderArray = array();
+        $orderArray = [];
         if (isset($_POST['positions']) && $_POST['positions'] == 'alpha-numeric') {
             foreach ($general->excelColumnRange('A', 'H') as $value) {
                 foreach (range(1, 12) as $no) {
@@ -29,9 +29,9 @@ try {
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
-        header("location:covid-19-batches.php");
+        header("Location:covid-19-batches.php");
     } else {
-        header("location:covid-19-batches.php");
+        header("Location:covid-19-batches.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

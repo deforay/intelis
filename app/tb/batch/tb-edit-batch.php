@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 
 $title = "Edit Batch";
 
@@ -32,7 +32,7 @@ $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.tb_id,vl.facility_id,vl.re
 $result = $db->rawQuery($query);
 $result = array_merge($batchResultresult, $result);
 
-$machinesLabelOrder = array();
+$machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
 	$lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
 	$lastOrderInfo = $db->query($lastOrderQuery);

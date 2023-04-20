@@ -68,7 +68,7 @@ try {
         $dateFormat = 'd/m/Y';
 
         if (strpos($mime_type, 'text/plain') !== false) {
-            $infoFromFile = array();
+            $infoFromFile = [];
             $testDateRow = "";
             $skip = 23;
 
@@ -246,7 +246,7 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    header("location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

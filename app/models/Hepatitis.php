@@ -77,8 +77,8 @@ class Hepatitis
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
-        $sampleCodeFormat = isset($globalConfig['hepatitis_sample_code']) ? $globalConfig['hepatitis_sample_code'] : 'MMYY';
-        $prefixFromConfig = isset($globalConfig['hepatitis_sample_code_prefix']) ? $globalConfig['hepatitis_sample_code_prefix'] : '';
+        $sampleCodeFormat = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
+        $prefixFromConfig = $globalConfig['hepatitis_sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
@@ -162,7 +162,7 @@ class Hepatitis
             return null;
         }
 
-        $response = array();
+        $response = [];
         // Using this in sync requests/results
         if (is_array($formId)) {
 
@@ -189,7 +189,7 @@ class Hepatitis
             return null;
         }
 
-        $response = array();
+        $response = [];
         // Using this in sync requests/results
         if (is_array($formId)) {
 
@@ -212,7 +212,7 @@ class Hepatitis
     public function getHepatitisResults()
     {
         $results = $this->db->rawQuery("SELECT result_id,result FROM r_hepatitis_results where status='active' ORDER BY result_id DESC");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
         }
@@ -222,7 +222,7 @@ class Hepatitis
     public function getHepatitisSampleTypes()
     {
         $results = $this->db->rawQuery("SELECT * FROM r_hepatitis_sample_type where status='active'");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
         }
@@ -232,7 +232,7 @@ class Hepatitis
     public function getHepatitisReasonsForTesting()
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_hepatitis_test_reasons WHERE `test_reason_status` LIKE 'active'");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
         }
@@ -241,7 +241,7 @@ class Hepatitis
 
     public function getHepatitisComorbidities()
     {
-        $comorbidityData = array();
+        $comorbidityData = [];
         $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
         $comorbidityResult = $this->db->rawQuery($comorbidityQuery);
         foreach ($comorbidityResult as $comorbidity) {
@@ -253,7 +253,7 @@ class Hepatitis
 
     public function getHepatitisRiskFactors()
     {
-        $riskFactorsData = array();
+        $riskFactorsData = [];
         $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
         $riskFactorsResult = $this->db->rawQuery($riskFactorsQuery);
         foreach ($riskFactorsResult as $riskFactors) {
@@ -298,7 +298,7 @@ class Hepatitis
                 $params['countryId'] = null;
             }
 
-            $hepatitisData = array();
+            $hepatitisData = [];
 
             $hepatitisData = array(
                 'vlsm_country_id' => $params['countryId'],
@@ -350,11 +350,7 @@ class Hepatitis
                     $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
                 } else if (isset($_SERVER['HTTP_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else if (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
+                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
                 $formAttributes = array(
                     'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress

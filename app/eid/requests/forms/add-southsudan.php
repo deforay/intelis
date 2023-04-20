@@ -4,7 +4,6 @@
 use App\Models\Eid;
 use App\Utilities\DateUtils;
 
-ob_start();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -16,13 +15,14 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // $configQuery = "SELECT * from global_config";
 // $configResult = $db->query($configQuery);
-// $arr = array();
+// $arr = [];
 // $prefix = $arr['sample_code_prefix'];
 
 // Getting the list of Provinces, Districts and Facilities
 
 $eidObj = new Eid();
 $eidResults = $eidObj->getEidResults();
+$labFieldDisabled = '';
 
 $specimenTypeResult = $eidObj->getEidSampleTypes();
 
@@ -434,7 +434,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th scope="row" class="labels">Tested By</th>
                                             <td>
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by">
-                                                    <?= $general->generateSelectOptions($userInfo, $eidInfo['tested_by'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
@@ -452,7 +452,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th scope="row" class="labels">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
-                                                    <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
+                                                    <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <th scope="row" class="labels">Approved On </th>

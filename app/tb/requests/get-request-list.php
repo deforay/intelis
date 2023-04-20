@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -310,7 +310,7 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     $row = array();
+     $row = [];
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {

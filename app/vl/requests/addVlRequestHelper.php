@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 $vlModel = new Vl();
@@ -26,7 +26,7 @@ try {
         $chkValidation = $general->checkMandatoryFields($validateField);
         if ($chkValidation) {
             $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
-            header("location:addVlRequest.php");
+            header("Location:addVlRequest.php");
             die;
         }
     }
@@ -376,7 +376,7 @@ try {
                 $_POST['sampleCodeKey'] = $maxId;
             } else {
                 $_SESSION['alertMsg'] = _("Please check your sample ID");
-                header("location:addVlRequest.php");
+                header("Location:addVlRequest.php");
             }
         }
         // print_r($_POST['sampleCode']);die;
@@ -423,13 +423,13 @@ try {
             }
 
             if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-                header("location:addVlRequest.php");
+                header("Location:addVlRequest.php");
             } else {
-                header("location:vlRequest.php");
+                header("Location:vlRequest.php");
             }
         } else {
             $_SESSION['alertMsg'] = _("Please try again later");
-            header("location:vlRequest.php");
+            header("Location:vlRequest.php");
         }
     }
 } catch (Exception $exc) {

@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -29,7 +29,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
     $rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
     $excel = new Spreadsheet();
-    $output = array();
+    $output = [];
     $sheet = $excel->getActiveSheet();
 
     $headings = array(
@@ -154,7 +154,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
     $no = 1;
     foreach ($rResult as $aRow) {
-        $symptomList = array();
+        $symptomList = [];
         $squery = "SELECT s.*, ps.* FROM form_covid19 as c19 
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id 
         INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id 
@@ -165,7 +165,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $symptomList[] = $symp['symptom_name'];
         }
 
-        $comorbiditiesList = array();
+        $comorbiditiesList = [];
         $squery = "SELECT s.*, como.* FROM form_covid19 as c19 
         INNER JOIN covid19_patient_comorbidities AS como ON c19.covid19_id = como.covid19_id 
         INNER JOIN r_covid19_comorbidities AS s ON como.comorbidity_id = s.comorbidity_id 
@@ -185,7 +185,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $subReasonsList = implode(", ", $subReasonsList);
 
 
-        $row = array();
+        $row = [];
         if ($arr['vl_form'] == 1) {
             // Get testing platform and test method 
             $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id DESC LIMIT 1";

@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 $general = new General();
 
 $tbModel = new Tb();
@@ -27,7 +27,7 @@ $sQuery = $_SESSION['tbRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
@@ -97,7 +97,7 @@ $sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     if ($arr['vl_form'] == 1) {
         // Get testing platform and test method 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $aRow['tb_id'] . " ORDER BY tb_test_id ASC";

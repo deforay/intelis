@@ -7,7 +7,6 @@ use App\Models\Users;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
 
 
 $tableName = "user_details";
@@ -71,11 +70,7 @@ try {
                 $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
             } else if (isset($_SERVER['HTTP_FORWARDED'])) {
                 $ipaddress = $_SERVER['HTTP_FORWARDED'];
-            } else if (isset($_SERVER['REMOTE_ADDR'])) {
-                $ipaddress = $_SERVER['REMOTE_ADDR'];
-            } else {
-                $ipaddress = 'UNKNOWN';
-            }
+            } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
             $queryParams = array($userName, 'active');
             $userRow = $db->rawQueryOne(
                 "SELECT * FROM user_details as ud 
@@ -84,11 +79,11 @@ try {
                 $queryParams
             );
             $loginAttemptCount = $db->rawQueryOne(
-                "SELECT 
-                                                SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
-                                                SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
-                                                FROM user_login_history
-                                                WHERE login_status='failed' AND login_attempted_datetime >= DATE_SUB(NOW(), INTERVAL 15 minute)",
+                "SELECT SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
+                    SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
+                    FROM user_login_history
+                    WHERE login_status='failed' 
+                    AND login_attempted_datetime >= DATE_SUB(NOW(), INTERVAL 15 minute)",
                 array($userName, $ipaddress)
             );
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
@@ -173,7 +168,7 @@ try {
                 //set role and privileges
                 $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $userRow['role_id'] . "'";
                 $priInfo = $db->query($priQuery);
-                $module = $priId = array();
+                $module = $priId = [];
                 if ($priInfo) {
                     foreach ($priInfo as $id) {
                         $priId[] = $id['privilege_name'];

@@ -17,7 +17,7 @@ if (sizeof($requestResult) > 0) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     }
-    $pages = array();
+    $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
         $_SESSION['aliasPage'] = $page;
@@ -139,7 +139,7 @@ if (sizeof($requestResult) > 0) {
         if (!isset($result['child_gender']) || trim($result['child_gender']) == '') {
             $result['child_gender'] = 'not reported';
         }
-        $userRes = array();
+        $userRes = [];
         if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
             $resultApprovedBy = ($result['approvedBy']);
             $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

@@ -218,7 +218,7 @@ foreach ($rResult as $aRow) {
      $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
      $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
-     $row = array();
+     $row = [];
      $row[] = $aRow['sample_code'];
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];

@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 $general = new General();
 $tableName = "form_hepatitis";
@@ -53,22 +53,22 @@ try {
 
 	$hepatitisData = array(
 		'sample_received_at_vl_lab_datetime'  => $_POST['sampleReceivedDate'],
-		'lab_id'                              => isset($_POST['labId']) ? $_POST['labId'] : null,
-		'sample_condition'  				  => isset($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
-		'sample_tested_datetime'  			  => isset($_POST['sampleTestedDateTime']) ? $_POST['sampleTestedDateTime'] : null,
-		'vl_testing_site'  			  		  => isset($_POST['vlTestingSite']) ? $_POST['vlTestingSite'] : null,
-		'is_sample_rejected'                  => isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-		'result'                              => isset($_POST['result']) ? $_POST['result'] : null,
-		'hcv_vl_result'                       => isset($_POST['hcv']) ? $_POST['hcv'] : null,
-		'hbv_vl_result'                       => isset($_POST['hbv']) ? $_POST['hbv'] : null,
-		'hcv_vl_count'                        => isset($_POST['hcvCount']) ? $_POST['hcvCount'] : null,
-		'hbv_vl_count'                        => isset($_POST['hbvCount']) ? $_POST['hbvCount'] : null,
-		'hepatitis_test_platform'             => isset($_POST['hepatitisPlatform']) ? $_POST['hepatitisPlatform'] : null,
-		'import_machine_name'                 => isset($_POST['machineName']) ? $_POST['machineName'] : null,
-		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
+		'lab_id'                              => $_POST['labId'] ?? null,
+		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
+		'sample_tested_datetime'  			  => $_POST['sampleTestedDateTime'] ?? null,
+		'vl_testing_site'  			  		  => $_POST['vlTestingSite'] ?? null,
+		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
+		'result'                              => $_POST['result'] ?? null,
+		'hcv_vl_result'                       => $_POST['hcv'] ?? null,
+		'hbv_vl_result'                       => $_POST['hbv'] ?? null,
+		'hcv_vl_count'                        => $_POST['hcvCount'] ?? null,
+		'hbv_vl_count'                        => $_POST['hbvCount'] ?? null,
+		'hepatitis_test_platform'             => $_POST['hepatitisPlatform'] ?? null,
+		'import_machine_name'                 => $_POST['machineName'] ?? null,
+		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
+		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : null,
@@ -79,7 +79,7 @@ try {
 		'last_modified_datetime'               => DateUtils::getCurrentDateTime(),
 		'result_printed_datetime' 			  => null,
 		'result_dispatched_datetime' 		  => null,
-		'reason_for_vl_test'				  => isset($_POST['reasonVlTest']) ? $_POST['reasonVlTest'] : null,
+		'reason_for_vl_test'				  => $_POST['reasonVlTest'] ?? null,
 	);
 
 	$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
@@ -106,7 +106,7 @@ try {
 	// $db->insert($tableName2, $data);
 	error_log ($db->getLastError() . PHP_EOL);
 
-	header("location:hepatitis-manual-results.php");
+	header("Location:hepatitis-manual-results.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

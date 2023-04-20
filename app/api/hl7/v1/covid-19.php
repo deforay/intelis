@@ -50,7 +50,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
             LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
             LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-    $where = array();
+    $where = [];
     if (!empty($dateRange[1])) {
         $date = $dateRange[1];
         $where[] = "(DATE(sample_collection_date) between '$date[0]' AND '$date[1]')";
@@ -352,7 +352,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $provinceCode = (isset($_POST['provinceCode']) && !empty($_POST['provinceCode'])) ? $_POST['provinceCode'] : null;
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
-    $where = array();
+    $where = [];
     $c19DuplicateData = false;
     $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
 
@@ -456,7 +456,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $status = 4;
         }
         $covid19Data = array(
-            'unique_id'                           => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
+            'unique_id'                           => $_POST['uniqueId'] ?? $general->generateUUID(),
             'vlsm_instance_id'                    => $instanceId,
             'vlsm_country_id'                     => $_POST['formId'],
             'external_sample_code'                => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -513,7 +513,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'travel_country_names'                => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
             'travel_return_date'                  => !empty($_POST['returnDate']) ? DateUtils::isoDateFormat($_POST['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-            'sample_condition'                    => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
+            'sample_condition'                    => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : ($_POST['specimenQuality'] ?? null),
             'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
             'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
             'other_diseases'                      => (!empty($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,

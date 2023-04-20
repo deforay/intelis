@@ -5,7 +5,7 @@ use App\Models\Users;
 use App\Models\Vl;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 
@@ -32,7 +32,7 @@ $importResult = $db->query($importQuery);
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
      $userInfo[$user['user_id']] = ($user['user_name']);
 }

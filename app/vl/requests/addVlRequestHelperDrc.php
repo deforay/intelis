@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 
@@ -30,7 +30,7 @@ try {
     //system config
     $systemConfigQuery = "SELECT * from system_config";
     $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = array();
+    $sarr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -397,7 +397,7 @@ try {
     //             $_POST['sampleCodeKey'] = $maxId;
     //         } else {
     //             $_SESSION['alertMsg'] = "Please check your sample ID";
-    //             header("location:addVlRequest.php");
+    //             header("Location:addVlRequest.php");
     //         }
     //     }
 
@@ -433,7 +433,7 @@ try {
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }
-    header("location:vlRequest.php");
+    header("Location:vlRequest.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

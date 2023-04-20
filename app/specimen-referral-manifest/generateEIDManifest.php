@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -86,14 +86,14 @@ if (trim($id) != '') {
     $result = $db->query($sQuery);
 
 
-    $labname = isset($result[0]['lab_name']) ? $result[0]['lab_name'] : "";
+    $labname = $result[0]['lab_name'] ?? "";
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
     }
     $configQuery = "SELECT * from global_config";
     $configResult = $db->query($configQuery);
-    $arr = array();
+    $arr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];

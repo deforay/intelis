@@ -1,17 +1,17 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0";
 $artInfo = $db->query($artQuery);
-$artParent = array();
+$artParent = [];
 foreach ($artInfo as $art) {
 	$artParent[$art['art_id']] = $art['art_code'];
 }
 
 $categoryQuery = "SELECT DISTINCT headings FROM `r_vl_art_regimen` GROUP BY headings";
 $categoryInfo = $db->query($categoryQuery);
-$categoryData = array();
+$categoryData = [];
 foreach ($categoryInfo as $category) {
 	$categoryData[$category['headings']] = ($category['headings']);
 }

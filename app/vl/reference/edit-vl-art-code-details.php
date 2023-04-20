@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $artId = base64_decode($_GET['id']);
@@ -7,7 +7,7 @@ $artId = base64_decode($_GET['id']);
 $artQ = "SELECT * FROM `r_vl_art_regimen` WHERE art_id = $artId";
 $result = $db->query($artQ);
 $artResult = $result[0];
-$artParent = array();
+$artParent = [];
 $artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0 AND art_id != $artId";
 $artInfo = $db->query($artQuery);
 foreach ($artInfo as $art) {
@@ -16,7 +16,7 @@ foreach ($artInfo as $art) {
 
 $categoryQuery = "SELECT DISTINCT headings FROM `r_vl_art_regimen` GROUP BY headings";
 $categoryInfo = $db->query($categoryQuery);
-$categoryData = array();
+$categoryData = [];
 foreach ($categoryInfo as $category) {
 	$categoryData[$category['headings']] = ($category['headings']);
 }

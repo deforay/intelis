@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $testQuery = "SELECT * from r_eid_test_reasons WHERE parent_reason ='0'";

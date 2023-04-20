@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -32,7 +32,7 @@ try {
             $general->activityLog('Hepatitis Comorbidity details', $_SESSION['userName'] . ' added new comorbidity for ' . $_POST['comorbidityName'], 'hepatitis-reference');
         }
 	}
-	header("location:hepatitis-comorbidities.php");
+	header("Location:hepatitis-comorbidities.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

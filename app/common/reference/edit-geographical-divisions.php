@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("Geographical Divisions");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -7,12 +7,12 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = _("Something went wrong in Geographical Divisions edit page");
-    header("location:geographical-divisions-details.php");
+    header("Location:geographical-divisions-details.php");
 }
 
 $geoQuery = "SELECT * from geographical_divisions WHERE geo_status ='active'";
 $geoParentInfo = $db->query($geoQuery);
-$geoArray = array();
+$geoArray = [];
 foreach ($geoParentInfo as $type) {
     $geoArray[$type['geo_id']] = ($type['geo_name']);
 }

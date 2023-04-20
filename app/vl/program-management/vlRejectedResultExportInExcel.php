@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 
@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 //system config
 $systemConfigQuery ="SELECT * from system_config";
 $systemConfigResult=$db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -31,7 +31,7 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
      $rResult = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
 
      $excel = new Spreadsheet();
-     $output = array();
+     $output = [];
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code','Remote Sample Code',"Facility Name","Patient ART no.","Patient Name","Sample Collection Date","Lab Name","Rejection Reason");
      if($sarr['sc_user_type']=='standalone') {
@@ -77,7 +77,7 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
-          $row = array();
+          $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
           if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
@@ -131,4 +131,4 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
      echo $filename;
 
 }
-?>
+

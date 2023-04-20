@@ -45,7 +45,7 @@ try {
         exit(0);
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
-    $responseData = array();
+    $responseData = [];
 
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
     $rowData = $db->rawQuery($sQuery);
@@ -90,7 +90,7 @@ try {
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
             $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
-            $sQueryWhere = array();
+            $sQueryWhere = [];
 
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
@@ -311,7 +311,7 @@ try {
             'sample_collection_date'              => $data['sampleCollectionDate'],
             'sample_dispatched_datetime'          => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'          => $data['resultDispatchedOn'],
-            'sample_tested_datetime'              => isset($data['sampleTestedDateTime']) ? $data['sampleTestedDateTime'] : null,
+            'sample_tested_datetime'              => $data['sampleTestedDateTime'] ?? null,
             'sample_received_at_hub_datetime'     => !empty($data['sampleReceivedHubDate']) ? $data['sampleReceivedHubDate'] : null,
             'sample_received_at_lab_datetime'     => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'lab_technician'                      => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] :  $user['user_id'],
@@ -355,7 +355,7 @@ try {
                     if (isset($testResult) && !empty($testResult) && trim($testResult) != "") {
                         $db->insert($testTableName, array(
                             'tb_id'             => $data['tbSampleId'],
-                            'actual_no'         => isset($data['actualNo'][$testKey]) ? $data['actualNo'][$testKey] : null,
+                            'actual_no'         => $data['actualNo'][$testKey] ?? null,
                             'test_result'       => $testResult,
                             'updated_datetime'  => DateUtils::getCurrentDateTime()
                         ));

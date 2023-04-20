@@ -13,7 +13,7 @@ $general = new General();
 $dateTimeUtil = new DateUtils();
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 
 $headings = array("Facility Name", "Test Type", "Province", "District", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS");
@@ -60,7 +60,7 @@ $rResult = $db->rawQuery($_SESSION['labSyncStatusDetails']);
 $no = 1;
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['testType'];
     $row[] = ($aRow['province']);
@@ -88,6 +88,6 @@ foreach ($output as $rowNo => $rowData) {
 }
 // $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-LAB-SYNC-STATUS-DETAILS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-LAB-SYNC-STATUS-DETAILS-' . date('d-M-Y-H-i-s') . '-' . General::generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

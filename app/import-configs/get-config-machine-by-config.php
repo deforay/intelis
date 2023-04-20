@@ -5,7 +5,7 @@ use App\Models\General;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 $general = new General();

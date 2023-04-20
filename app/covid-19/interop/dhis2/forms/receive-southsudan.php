@@ -64,7 +64,7 @@ $processedCounter = 0;
 // https://southsudanhis.org/covid19southsudan/api/trackedEntityInstances.json?programStartDate=2020-04-01&programEndDate=2021-04-02&ou=OV9zi20DDXP&ouMode=DESCENDANTS&program=uYjxkTbwRNf&fields=attributes[attribute,code,value],enrollments[*],orgUnit,trackedEntityInstance&paging=false
 
 $counter = 0;
-$data = array();
+$data = [];
 $data[] = "lastUpdatedDuration=1d";
 $data[] = "ou=OV9zi20DDXP"; // South Sudan
 $data[] = "ouMode=DESCENDANTS";
@@ -89,8 +89,8 @@ foreach ($trackedEntityInstances as $tracker) {
 
     $receivedCounter++;
 
-    $formData = array();
-    $screeningEventIds = array();
+    $formData = [];
+    $screeningEventIds = [];
     $enrollmentDate = null;
 
 
@@ -105,7 +105,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $enrollmentDate = explode("T", $enrollments['enrollmentDate']);
         $enrollmentDate = $enrollmentDate[0];
 
-        $eventsData = array();
+        $eventsData = [];
         foreach ($enrollments['events'] as $event) {
 
             if ($event['programStage'] != $programStages['labRequest']) continue;
@@ -117,7 +117,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
     }
 
-    $attributesData = array();
+    $attributesData = [];
     foreach ($tracker['attributes'] as $trackerAttr) {
         if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) continue;
         $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];

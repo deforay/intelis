@@ -5,7 +5,7 @@
 use App\Models\Covid19;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -24,7 +24,7 @@ $specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
 
 $covid19Symptoms = $covid19Obj->getCovid19SymptomsDRC();
 $covid19SelectedSymptomsData = $covid19Obj->getCovid19SymptomsByFormId($covid19Info['covid19_id'], true);
-$covid19SelectedSymptoms = array();
+$covid19SelectedSymptoms = [];
 foreach ($covid19SelectedSymptomsData as $row) {
     $covid19SelectedSymptoms[$row['symptom_id']]['value'] = $row['symptom_detected'];
     $covid19SelectedSymptoms[$row['symptom_id']]['sDetails'] = json_decode($row['symptom_details'], true);
@@ -77,7 +77,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
 $pResult = $db->rawQuery($pQuery);
-$patienProvince = array();
+$patienProvince = [];
 foreach ($pResult as $row) {
     $patienProvince[$row['patient_province']] = $row['patient_province'];
 }
@@ -85,7 +85,7 @@ $patienProvince["other"] = "Other";
 // District
 $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 where patient_district is not null";
 $cResult = $db->rawQuery($cQuery);
-$pateitnDistrict = array();
+$pateitnDistrict = [];
 foreach ($cResult as $row) {
     $pateitnDistrict[$row['patient_district']] = $row['patient_district'];
 }
@@ -94,7 +94,7 @@ $pateitnDistrict["other"] = "Other";
 // Zones
 $zQuery = "SELECT DISTINCT patient_zone FROM form_covid19 where patient_zone is not null";
 $zResult = $db->rawQuery($zQuery);
-$patienZones = array();
+$patienZones = [];
 foreach ($zResult as $row) {
     $patienZones[$row['patient_zone']] = $row['patient_zone'];
 }

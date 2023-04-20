@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 $general = new General();
@@ -28,7 +28,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	$rResult = $db->rawQuery($_SESSION['eidExportResultQuery']);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Sample Type","Is Sample Rejected?","Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
@@ -100,7 +100,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		//date of birth
 		$dob = '';
 		if (!empty($aRow['child_dob'])) {

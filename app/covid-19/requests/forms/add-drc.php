@@ -5,7 +5,7 @@ use App\Models\Covid19;
 use App\Models\General;
 use App\Models\GeoLocations;
 
-ob_start();
+
 
 
 
@@ -20,7 +20,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // $configQuery = "SELECT * from global_config";
 // $configResult = $db->query($configQuery);
-// $arr = array();
+// $arr = [];
 // $prefix = $arr['sample_code_prefix'];
 
 // Getting the list of Provinces, Districts and Facilities
@@ -67,7 +67,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
 $pResult = $db->rawQuery($pQuery);
-$patienProvince = array();
+$patienProvince = [];
 foreach ($pResult as $row) {
     $patienProvince[$row['patient_province']] = $row['patient_province'];
 }
@@ -75,7 +75,7 @@ $patienProvince["other"] = "Other";
 // District
 $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 where patient_district is not null";
 $cResult = $db->rawQuery($cQuery);
-$patienDistrict = array();
+$patienDistrict = [];
 foreach ($cResult as $row) {
     $patienDistrict[$row['patient_district']] = $row['patient_district'];
 }
@@ -84,7 +84,7 @@ $patienDistrict["other"] = "Other";
 // Zones
 $zQuery = "SELECT DISTINCT patient_zone FROM form_covid19 where patient_zone is not null";
 $zResult = $db->rawQuery($zQuery);
-$patienZones = array();
+$patienZones = [];
 foreach ($zResult as $row) {
     $patienZones[$row['patient_zone']] = $row['patient_zone'];
 }

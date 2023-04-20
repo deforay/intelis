@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
         session_start();
 }
@@ -31,7 +31,7 @@ try {
                         $_SESSION['alertMsg'] = _("Roles Added successfully");
                 }
         }
-        header("location:roles.php");
+        header("Location:roles.php");
 } catch (Exception $exc) {
         error_log($exc->getMessage());
         error_log($exc->getTraceAsString());

@@ -1,7 +1,7 @@
 <?php
 
 /** @noinspection ALL */
-ob_start();
+
 $title = _("VL | Add New Batch");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -31,7 +31,7 @@ $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode();
 //Set last machine label order
-$machinesLabelOrder = array();
+$machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
 	$lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
 	$lastOrderInfo = $db->query($lastOrderQuery);
@@ -195,7 +195,7 @@ foreach ($testPlatformResult as $machine) {
 							</div>
 						</div>
 
-						<div class="row" id="sampleDetails" style="margin: 15px;<?php echo $display; ?>">
+						<div class="row" id="sampleDetails" style="margin: 15px;">
 							<h4> <?php echo _("Sample Code"); ?></h4>
 							<div class="col-md-5">
 								<!-- <div class="col-lg-5"> -->

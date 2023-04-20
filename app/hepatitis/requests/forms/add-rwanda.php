@@ -3,7 +3,7 @@
 
 use App\Models\Facilities;
 
-ob_start();
+
 $facilitiesDb = new Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');

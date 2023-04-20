@@ -108,9 +108,9 @@ foreach ($formResults as $row) {
 
   // LAB RECEPTION
   $eventId = null;
-  $eventPayload = array();
+  $eventPayload = [];
   $eventDate = date("Y-m-d");
-  $payload = array();
+  $payload = [];
 
 
   $dataValues = array(
@@ -154,13 +154,13 @@ foreach ($formResults as $row) {
 
   //Updating Test Results
   $eventId = null;
-  $eventPayload = array();
+  $eventPayload = [];
   $eventDate = date("Y-m-d");
 
   foreach ($testResults as $testResult) {
 
-    $testName = isset($testTypes[$testResult['test_name']]) ? $testTypes[$testResult['test_name']] : 'Others';
-    $testPlatform = isset($testPlatforms[$testResult['testing_platform']]) ? $testPlatforms[$testResult['testing_platform']] : 'Others';
+    $testName = $testTypes[$testResult['test_name']] ?? 'Others';
+    $testPlatform = $testPlatforms[$testResult['testing_platform']] ?? 'Others';
 
     $dataValues = array(
       //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
@@ -198,7 +198,7 @@ foreach ($formResults as $row) {
 
   // Final Result
   $eventId = null;
-  $eventPayload = array();
+  $eventPayload = [];
   $eventDate = date("Y-m-d");
 
 

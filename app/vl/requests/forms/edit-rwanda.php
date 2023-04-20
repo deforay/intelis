@@ -2,7 +2,7 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
@@ -80,7 +80,7 @@ if (!isset($stateResult[0]['geo_code'])) {
      $stateResult[0]['geo_code'] = '';
 }
 //district details
-$districtResult = array();
+$districtResult = [];
 if (trim($facilityResult[0]['facility_state']) != '') {
      $districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $facilityResult[0]['facility_state'] . "' AND status='active'";
      $districtResult = $db->query($districtQuery);

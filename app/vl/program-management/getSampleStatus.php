@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 $whereCondition = '';
@@ -46,12 +46,12 @@ $suppression                    = "VL Suppression";
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = array();
+// $sampleStatusArray = [];
 // foreach($tsResult as $tsRow){
 //     $sampleStatusArray = $tsRow['status_name'];
 // }
 
-$sampleStatusColors = array();
+$sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
@@ -105,7 +105,7 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     JOIN facility_details as f ON vl.lab_id=f.facility_id 
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $recencyWhere;
@@ -135,7 +135,7 @@ $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 //echo $tQuery; die;
 $tResult = $db->rawQuery($tQuery);
 
-$sWhere = array();
+$sWhere = [];
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
                 WHEN (LOWER(vl.vl_result_category) like 'not suppressed') THEN 1
@@ -203,7 +203,7 @@ $tatSampleQuery = "SELECT
         AND DATE(vl.sample_tested_datetime) >= '$start_date'
         AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
 
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }

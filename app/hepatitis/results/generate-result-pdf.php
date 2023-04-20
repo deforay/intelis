@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 use App\Models\General;
 use App\Models\Users;
@@ -26,7 +26,7 @@ if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
 	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
 }
 //set mField Array
-$mFieldArray = array();
+$mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
 }
@@ -237,7 +237,7 @@ class Watermark extends PDF_Rotate
 }
 class Pdf_concat extends FPDI
 {
-	var $files = array();
+	var $files = [];
 	function setFiles($files)
 	{
 		$this->files = $files;

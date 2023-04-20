@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Models\Users;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 //  
@@ -31,7 +31,7 @@ $configMachineQuery = "SELECT * from instrument_machines where config_id=$id";
 $configMachineInfo = $db->query($configMachineQuery);
 $configControlQuery = "SELECT * from instrument_controls where config_id=$id";
 $configControlInfo = $db->query($configControlQuery);
-$configControl = array();
+$configControl = [];
 foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 	$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];

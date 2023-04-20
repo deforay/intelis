@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Models\System;
 use App\Models\Users;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 

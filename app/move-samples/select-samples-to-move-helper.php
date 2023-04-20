@@ -6,8 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
-  
+
 $general = new General();
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";
@@ -70,7 +69,7 @@ try {
     } else {
         $_SESSION['alertMsg'] = "Something went wrong!";
     }
-    header("location:move-samples.php");
+    header("Location:move-samples.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

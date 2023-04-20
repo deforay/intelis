@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 $general = new General();
 $facilityDb = new Facilities();
@@ -52,19 +52,19 @@ try {
 
 	$covid19Data = array(
 		'sample_received_at_vl_lab_datetime'  => $_POST['sampleReceivedDate'],
-		'lab_id'                              => isset($_POST['labId']) ? $_POST['labId'] : null,
-		'sample_condition'  				  => isset($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
+		'lab_id'                              => $_POST['labId'] ?? null,
+		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
 		'lab_technician' 					  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  null,
-		'testing_point'                       => isset($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
-		'is_sample_rejected'                  => isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-		'result'                              => isset($_POST['result']) ? $_POST['result'] : null,
+		'testing_point'                       => $_POST['testingPoint'] ?? null,
+		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
+		'result'                              => $_POST['result'] ?? null,
 		'result_sent_to_source'               => $resultSentToSource,
 		'other_diseases'        			  => (isset($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,
-		'tested_by'                       	  => isset($_POST['testedBy']) ? $_POST['testedBy'] : null,
+		'tested_by'                       	  => $_POST['testedBy'] ?? null,
 		'result_approved_by' 				  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
 		'result_approved_datetime' 			  => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
-		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
-		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
+		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
+		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : null,
@@ -112,9 +112,9 @@ try {
 					$covid19TestData = array(
 						'covid19_id'			=> $_POST['covid19SampleId'],
 						'test_name'				=> ($_POST['testName'][$testKey] == 'other') ? $_POST['testNameOther'][$testKey] : $_POST['testName'][$testKey],
-						'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
+						'facility_id'           => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => $_POST['testDate'][$testKey],
-						'testing_platform'      => isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
+						'testing_platform'      => $_POST['testingPlatform'][$testKey] ?? null,
 						'kit_lot_no'      		=> (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
 						'kit_expiry_date'      	=> (strpos($testName, 'RDT') !== false) ? DateUtils::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result'				=> $_POST['testResult'][$testKey],
@@ -160,7 +160,7 @@ try {
 	);
 	$db->insert($tableName2, $data);
 
-	header("location:covid-19-manual-results.php");
+	header("Location:covid-19-manual-results.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

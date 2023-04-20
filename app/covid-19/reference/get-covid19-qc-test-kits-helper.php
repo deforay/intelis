@@ -9,7 +9,7 @@ $primaryKey = "testkit_id";
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -142,7 +142,7 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-    $row = array();
+    $row = [];
     $row[] = ($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {

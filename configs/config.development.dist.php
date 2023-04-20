@@ -1,6 +1,6 @@
 <?php
 
-$systemConfig = array();
+$systemConfig = [];
 
 
 // System Locale
@@ -46,7 +46,7 @@ $systemConfig['mysqlDump'] = '/usr/bin/mysqldump';
 
 
 
-$systemConfig['interfacing'] = array();
+$systemConfig['interfacing'] = [];
 
 
 // Enable/Disable Interfacing
@@ -62,7 +62,7 @@ $systemConfig['interfacing']['database']['db'] = 'interfacing';
 $systemConfig['interfacing']['database']['port'] = 3306;
 $systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 
-$systemConfig['recency'] = array();
+$systemConfig['recency'] = [];
 
 // Domain URL of the Recency Web Application
 $systemConfig['recency']['url'] = '';

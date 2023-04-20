@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -36,7 +36,7 @@ try {
             $general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
         }
 	}
-	header("location:vl-sample-type.php");
+	header("Location:vl-sample-type.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

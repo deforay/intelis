@@ -39,7 +39,7 @@ if ($module == 'vl') {
 } elseif ($module == 'tb') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM package_details as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
 }
-$where = array();
+$where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is not null OR vl.sample_package_id !='') AND (remote_sample = 'yes') ";
 if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);

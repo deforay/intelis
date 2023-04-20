@@ -12,7 +12,7 @@ if (sizeof($requestResult) > 0) {
           mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
           $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
      }
-     $pages = array();
+     $pages = [];
      $page = 1;
      foreach ($requestResult as $result) {
           $_SESSION['aliasPage'] = $page;

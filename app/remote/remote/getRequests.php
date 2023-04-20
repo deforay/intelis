@@ -15,7 +15,7 @@ $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 
-$payload = array();
+$payload = [];
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
 
@@ -86,7 +86,7 @@ if (!empty($data['manifestCode'])) {
 
 $vlRemoteResult = $db->rawQuery($vlQuery);
 
-$sampleIds = $facilityIds = array();
+$sampleIds = $facilityIds = [];
 if ($db->count > 0) {
 
   $payload = $vlRemoteResult;

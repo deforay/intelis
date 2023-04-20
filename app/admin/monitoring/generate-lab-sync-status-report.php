@@ -14,7 +14,7 @@ $general = new General();
 $dateTimeUtil = new DateUtils();
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 
 $headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS", "Version");
@@ -68,7 +68,7 @@ $twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
 $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $_color = "f08080";
 
     $aRow['latest'] = $aRow['latest'] ?? $aRow['requested_on'];
@@ -121,6 +121,6 @@ foreach ($output as $rowNo => $rowData) {
 }
 // $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . General::generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

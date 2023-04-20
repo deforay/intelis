@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 
 
@@ -36,7 +36,7 @@ $tsQuery = "SELECT DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y') AS sample_test
 		           END) AS countTotal
         FROM vl_imported_controls as vl";
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['cType']) && trim($_POST['cType']) != '') {
     $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '"';
 }

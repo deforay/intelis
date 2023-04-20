@@ -56,7 +56,7 @@ try {
         $stmt = new Statement();
         $topRecords = $stmt->limit(18)->process($csv);
 
-        $metaRecords = array();
+        $metaRecords = [];
         foreach ($topRecords as $topRecord) {
             if (empty($topRecord[0])) continue;
             $metaRecords[$topRecord[0]] = $topRecord[1];
@@ -78,7 +78,7 @@ try {
         // but there are 2 empty lines, so we instruct to offset 18
         $records = $stmt->offset(18)->process($csv);
         $m = 0;
-        $infoFromFile = array();
+        $infoFromFile = [];
         foreach ($records as $record) {
             $m++;
 
@@ -231,7 +231,7 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    header("location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

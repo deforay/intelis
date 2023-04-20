@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 $general = new General();
 $id = base64_decode($_GET['id']);

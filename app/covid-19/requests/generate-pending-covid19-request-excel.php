@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 use App\Models\Covid19;
 use App\Models\General;
@@ -66,7 +66,7 @@ $sQuery = $_SESSION['covid19RequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array(_("S. No."), _("Sample Code"), _("Remote Sample Code"), _("Testing Lab Name"), _("Testing Point"), _("Lab staff Assigned"), _("Source Of Alert / POE"), _("Health Facility/POE County"), _("Health Facility/POE State"), _("Health Facility/POE"), _("Case ID"), _("Patient Name"), _("Patient DoB"), _("Patient Age"), _("Patient Gender"), _("Is Patient Pregnant"), _("Patient Phone No."), _("Patient Email"), _("Patient Address"), _("Patient State"), _("Patient County"), _("Patient City/Village"), _("Nationality"), _("Fever/Temperature"), _("Temprature Measurement"), _("Symptoms Detected"), _("Medical History"), _("Comorbidities"), _("Recenty Hospitalized?"), _("Patient Lives With Children"), _("Patient Cares for Children"), _("Close Contacts"), _("Has Recent Travel History"), _("Country Names"), _("Travel Return Date"), _("Airline"), _("Seat No."), _("Arrival Date/Time"), _("Departure Airport"), _("Transit"), _("Reason of Visit"), _("Number of Days Sick"), _("Date of Symptoms Onset"), _("Date of Initial Consultation"), _("Sample Collection Date"), _("Reason for Test Request"), _("Date specimen received"), _("Date specimen registered"), _("Specimen Condition"), _("Specimen Status"), _("Specimen Type"), _("Sample Tested Date"), _("Testing Platform"), _("Test Method"), _("Result"), _("Date result released"));
@@ -138,7 +138,7 @@ $sheet->getStyle('A3:CG3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-    $symptomList = array();
+    $symptomList = [];
     $squery = "SELECT s.*, ps.* FROM form_covid19 as c19 
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id 
         INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id 
@@ -149,7 +149,7 @@ foreach ($rResult as $aRow) {
         $symptomList[] = $symp['symptom_name'];
     }
 
-    $comorbiditiesList = array();
+    $comorbiditiesList = [];
     $squery = "SELECT s.*, como.* FROM form_covid19 as c19 
         INNER JOIN covid19_patient_comorbidities AS como ON c19.covid19_id = como.covid19_id 
         INNER JOIN r_covid19_comorbidities AS s ON como.comorbidity_id = s.comorbidity_id 
@@ -159,7 +159,7 @@ foreach ($rResult as $aRow) {
         $comorbiditiesList[] = $como['comorbidity_name'];
     }
 
-    $row = array();
+    $row = [];
     $testPlatform = null;
     $testMethod = null;
     // Get testing platform and test method 

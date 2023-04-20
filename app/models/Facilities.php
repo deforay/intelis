@@ -182,7 +182,7 @@ class Facilities
             return $this->db->get("facility_details");
         } else {
 
-            $response = array();
+            $response = [];
             $cols = array("facility_id", "facility_name");
 
             $results = $this->db->get("facility_details", null, $cols);
@@ -237,7 +237,7 @@ class Facilities
         if ($allColumns) {
             return $this->db->get("facility_details");
         } else {
-            $response = array();
+            $response = [];
             $cols = array("facility_id", "facility_name");
             $results = $this->db->get("facility_details", null, $cols);
             foreach ($results as $row) {

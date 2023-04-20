@@ -72,7 +72,7 @@ $pResult = $db->rawQuery($pQuery);
 							</thead>
 							<tbody>
 								<?php
-								$artNoList = array();
+								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['child_id'] . strtolower($patient['child_name']) . strtolower($patient['child_surname']) . $patient['mother_age_in_years'] . strtolower($patient['child_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {

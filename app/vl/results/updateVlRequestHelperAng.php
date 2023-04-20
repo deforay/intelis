@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 
@@ -156,7 +156,7 @@ try {
             'updated_on' => DateUtils::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
-        header("location:vlTestResult.php");
+        header("Location:vlTestResult.php");
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }

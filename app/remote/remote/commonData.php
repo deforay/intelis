@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 
 $general = new General();
 
-$payload = array();
+$payload = [];
 
 
 
@@ -27,7 +27,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $labId = $data['labId'] ?: null;
 
-    $response = array();
+    $response = [];
 
     if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 
@@ -58,7 +58,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
         
         // $condition = null;
-        $response['vlResults'] = array();
+        $response['vlResults'] = [];
         if (isset($data['vlResultsLastModified']) && !empty($data['vlResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
         }
@@ -205,7 +205,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     }
     $response['facilities'] = $general->fetchDataFromTable('facility_details', $condition);
 
-    $response['users'] = array();
+    $response['users'] = [];
     $userIds = array_column($response['facilities'], 'contact_person');
     
     foreach($userIds as $userId){

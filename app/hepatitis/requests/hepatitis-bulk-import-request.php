@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 $title = "Bulk Import Test Requests";
 
 require_once(APPLICATION_PATH . '/header.php');

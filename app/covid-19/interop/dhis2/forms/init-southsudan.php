@@ -17,7 +17,7 @@ $initOptionSets = array(
 );
 
 foreach ($initOptionSets as $t => $id) {
-    $data = array();
+    $data = [];
     $data[] = "fields=options[:all]";
     $data[] = "paging=false";
 
@@ -53,12 +53,12 @@ foreach ($initOptionSets as $t => $id) {
             $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
         }
     } else if (!empty($response) && $t == 'testTypes') {
-        $_SESSION['DHIS2_TEST_TYPES'] = array();
+        $_SESSION['DHIS2_TEST_TYPES'] = [];
         foreach ($response['options'] as $opts) {
             $_SESSION['DHIS2_TEST_TYPES'][$opts['code']] = $opts['name'];
         }
     } else if (!empty($response) && $t == 'testingPlatform') {
-        $_SESSION['DHIS2_TESTING_PLATFORMS'] = array();
+        $_SESSION['DHIS2_TESTING_PLATFORMS'] = [];
         foreach ($response['options'] as $opts) {
             $_SESSION['DHIS2_TESTING_PLATFORMS'][$opts['code']] = $opts['name'];
         }
@@ -69,7 +69,7 @@ foreach ($initOptionSets as $t => $id) {
 
 
 // // Adding Facilities - We will only run this once
-// $data = array();
+// $data = [];
 // $data[] = "filter=level:eq:5";
 // $data[] = "paging=false";
 // $data[] = "fields=id,level,name,path,coordinates[id,name,parent]";

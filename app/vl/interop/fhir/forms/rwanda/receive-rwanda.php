@@ -69,14 +69,14 @@ $parser = new PHPFHIRResponseParser();
 $metaResource = $parser->parse($json);
 $entries = $metaResource->getEntry();
 
-$formData = array();
+$formData = [];
 
 $bundleId = (string) $metaResource->getId()->getValue();
 $db = MysqliDb::getInstance();
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 $instanceId = $instanceResult['vlsm_instance_id'];
-$taskAttributes = $serviceAttributes = array();
+$taskAttributes = $serviceAttributes = [];
 
 // echo ("No. of entries in this bundle: " . count($entries) . "\n\n\n");
 // echo prettyJson($json);
@@ -223,7 +223,7 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['patient_art_no'] = (string) $patientParsed->getIdentifier()[0]->getValue();
             $formData[$basedOnServiceRequest]['patient_gender'] = (string) $patientParsed->getGender()->getValue();
             $formData[$basedOnServiceRequest]['patient_dob'] = (string) $patientParsed->getBirthDate()->getValue();
-            $formData[$basedOnServiceRequest]['patient_first_name'] = (string) ($patientParsed->getName()[0]->getGiven()[0] . " " . $patientParsed->getName()[0]->getFamily());
+            $formData[$basedOnServiceRequest]['patient_first_name'] = $patientParsed->getName()[0]->getGiven()[0] . " " . $patientParsed->getName()[0]->getFamily();
             if (!empty($patientParsed->getAddress())) {
                 $formData[$basedOnServiceRequest]['patient_province'] = (string) $patientParsed->getAddress()[0]->getState();
                 $formData[$basedOnServiceRequest]['patient_district'] = (string) $patientParsed->getAddress()[0]->getDistrict();
@@ -238,7 +238,7 @@ foreach ($entries as $entry) {
                 }
             }
 
-            $formData[$basedOnServiceRequest]['request_clinician_name'] = (string) ($requestorParsed->getName()[0]->getGiven()[0] . " " . $requestorParsed->getName()[0]->getFamily());
+            $formData[$basedOnServiceRequest]['request_clinician_name'] = $requestorParsed->getName()[0]->getGiven()[0] . " " . $requestorParsed->getName()[0]->getFamily();
             if (!empty($requestorParsed->getTelecom())) {
                 $formData[$basedOnServiceRequest]['request_clinician_phone_number'] = (string) $requestorParsed->getTelecom()[0]->getValue();
             }

@@ -2,7 +2,7 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $province = "<option value=''> -- Selecione -- </option>";

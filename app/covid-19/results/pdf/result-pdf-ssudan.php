@@ -4,6 +4,7 @@
 
 
 use App\Models\Covid19;
+use App\Models\General;
 use App\Utilities\DateUtils;
 
 class SouthSudan_PDF extends MYPDF
@@ -11,7 +12,7 @@ class SouthSudan_PDF extends MYPDF
     public $logo = '';
     public $text = '';
     public $lab = '';
-    public $facilityInfo = array();
+    public $facilityInfo = [];
     public $formId = 1;
     public $htitle = '';
     //Page header
@@ -89,13 +90,13 @@ $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (sizeof($requestResult) > 0) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
+    $_SESSION['rVal'] = General::generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     }
-    $pages = array();
+    $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
 
@@ -245,7 +246,7 @@ if (sizeof($requestResult) > 0) {
             $result['patient_gender'] = 'not reported';
         }
 
-        $userRes = array();
+        $userRes = [];
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
             $resultApprovedBy = ($result['authorized_by']);
             $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

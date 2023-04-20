@@ -129,10 +129,10 @@ $tableName="other_config";
         );
 	
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 	    $row[] = ($aRow['display_name']);
 	    $row[] = $aRow['value'];
             $output['aaData'][] = $row;
         }
         echo json_encode($output);
-?>
+

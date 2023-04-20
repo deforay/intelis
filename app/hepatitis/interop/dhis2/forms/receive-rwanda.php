@@ -25,7 +25,7 @@ $vlsmSystemConfig = $general->getSystemConfig();
 $receivedCounter = 0;
 $processedCounter = 0;
 
-$data = array();
+$data = [];
 $data[] = "lastUpdatedDuration=180m";
 //$data[] = "lastUpdatedDuration=15d";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
@@ -100,8 +100,8 @@ foreach ($trackedEntityInstances as $tracker) {
     $receivedCounter++;
 
 
-    $formData = array();
-    $labTestEventIds = array();
+    $formData = [];
+    $labTestEventIds = [];
     $enrollmentDate = null;
     //echo "<pre>";var_dump(array_keys($tracker['enrollments']));echo "</pre>";;
     //echo "<pre>";var_dump(($tracker['enrollments']));echo "</pre>";
@@ -121,10 +121,10 @@ foreach ($trackedEntityInstances as $tracker) {
         $enrollmentDate = explode("T", $enrollments['enrollmentDate']);
         $enrollmentDate = $enrollmentDate[0];
 
-        $eventsData = array();
-        $screeningData = array();
-        //$labTestRequestData = array();
-        $event = array();
+        $eventsData = [];
+        $screeningData = [];
+        //$labTestRequestData = [];
+        $event = [];
         foreach ($enrollments['events'] as $event) {
 
             $requestProgramStages = array('ODgOyrbLkvv', 'ZBWBirHgmE6');
@@ -142,7 +142,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
     }
 
-    $screeningStageData = array();
+    $screeningStageData = [];
     foreach ($screeningEventData as $sID => $sData) {
 
         if (!empty($sData['anti_hcv_result'])) {
@@ -171,7 +171,7 @@ foreach ($trackedEntityInstances as $tracker) {
     }
 
 
-    $attributesData = array();
+    $attributesData = [];
     foreach ($tracker['attributes'] as $trackerAttr) {
         if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) continue;
         //echo $attributesDataElementMapping[$trackerAttr['attribute']] . "%%%%%%%" . $trackerAttr['value'] . PHP_EOL . PHP_EOL;
@@ -312,7 +312,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
 
-        $formAttributes = array();
+        $formAttributes = [];
         $formAttributes['apiTransactionId'] = $transactionId;
         $formAttributes['applicationVersion'] = $version;
         $formAttributes['trackedEntityInstance'] = $tracker['trackedEntityInstance'];

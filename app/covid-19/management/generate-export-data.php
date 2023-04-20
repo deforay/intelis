@@ -4,7 +4,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -30,7 +30,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
@@ -91,7 +91,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method
 			$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";

@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
 if (count($adminCount) != 0) {
-  header("location:/system-admin/login/login.php");
+  header("Location:/system-admin/login/login.php");
 }
 
 $path = '/assets/img/remote-bg.jpg';

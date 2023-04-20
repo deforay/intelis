@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 $title = "Enter Covid-19 Result";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -11,7 +11,7 @@ $id = base64_decode($_GET['id']);
 
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];

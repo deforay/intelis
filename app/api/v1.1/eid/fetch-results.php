@@ -140,7 +140,7 @@ try {
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-    $where = array();
+    $where = [];
     if (!empty($user)) {
         $facilityMap = $facilityDb->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {

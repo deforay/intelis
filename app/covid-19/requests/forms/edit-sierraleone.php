@@ -5,7 +5,7 @@
 use App\Models\Covid19;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 
 //Funding source list
@@ -72,7 +72,7 @@ if ($chkUserFcMapResult) {
     $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
-$provinceInfo = array();
+$provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }

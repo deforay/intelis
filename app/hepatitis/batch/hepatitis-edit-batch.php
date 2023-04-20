@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 
 $title = "Edit Batch";
 
@@ -34,7 +34,7 @@ $result = array_merge($batchResultresult, $result);
 //Get active machines
 
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
-// $machinesLabelOrder = array();
+// $machinesLabelOrder = [];
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>

@@ -3,7 +3,6 @@
 use App\Models\General;
 use App\Models\Patients;
 
-ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

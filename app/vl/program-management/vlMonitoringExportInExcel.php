@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -191,7 +191,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $end = strtotime($endMonth);
     $i = 0;
     $j = 0;
-    $avgResult = array();
+    $avgResult = [];
     while ($month <= $end) {
         $sWhere = '';
         $mnth = date('m', $month);
@@ -258,7 +258,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $endMonth = date("M-Y", strtotime($end_date));
 
     $excel = new Spreadsheet();
-    $output = array();
+    $output = [];
     $sheet = $excel->getActiveSheet();
 
     $colNo = 1;

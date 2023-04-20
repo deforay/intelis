@@ -2,41 +2,44 @@
 
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
-// CORS
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
-// Access-Control headers are received during OPTIONS requests
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    }
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    }
-    exit(0);
-}
+use App\Middleware\ApiMiddleware;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Stratigility\MiddlewarePipe;
+use App\RequestHandler as LegacyRequestHandler;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\SystemAdminMiddleware;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
 
-// ROUTING
-$_SERVER['REQUEST_URI'] = preg_replace('/([\/.])\1+/', '$1', $_SERVER['REQUEST_URI']);
-$requestedPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), "/");
 
-switch ($requestedPath) {
-    case null:
-    case '':
-        require APPLICATION_PATH . '/index.php';
-        break;
-    default:
-        if (is_dir(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
-            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath . '/index.php');
-        } elseif (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath)) {
-            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $requestedPath);
-        } else {
-            http_response_code(404);
-            require APPLICATION_PATH . '/error/404.php';
-        }
-        break;
+// Create a server request object from the globals
+$request = ServerRequestFactory::fromGlobals();
+
+
+// Instantiate the middleware pipeline
+$middlewarePipe = new MiddlewarePipe();
+
+// Add middleware
+
+$uri = $request->getUri()->getPath();
+
+// Only apply AuthMiddleware if the request is not for /api or /system-admin
+if (strpos($uri, '/api') !== 0 && strpos($uri, '/system-admin') !== 0) {
+    $middlewarePipe->pipe(new AuthMiddleware());
 }
+
+// API and System Admin middleware
+if (strpos($uri, '/api') === 0) {
+    $middlewarePipe->pipe(new ApiMiddleware());
+} elseif (strpos($uri, '/system-admin') === 0) {
+    $middlewarePipe->pipe(new SystemAdminMiddleware());
+}
+
+$middlewarePipe->pipe(new RequestHandlerMiddleware(new LegacyRequestHandler()));
+
+
+// Handle the request and emit the response
+$response = $middlewarePipe->handle($request);
+$emitter = new SapiEmitter();
+$emitter->emit($response);

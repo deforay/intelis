@@ -15,7 +15,6 @@ class Captcha
 
     public function getCaptcha($config = array())
     {
-        ob_start();
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -105,7 +104,7 @@ class Captcha
             function hex2rgb($hexStr, $returnString = false, $separator = ',')
             {
                 $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', $hexStr); // Gets a proper hex string
-                $rgbArray = array();
+                $rgbArray = [];
                 if (strlen($hexStr) == 6) {
                     $colorVal = hexdec($hexStr);
                     $rgbArray['r'] = 0xFF & ($colorVal >> 0x10);

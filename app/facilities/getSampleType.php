@@ -12,13 +12,13 @@ $covid19Db = new Covid19($db);
 $hepatitisDb = new Hepatitis($db);
 $tbDb = new Tb($db);
 /* Selected Sample Types from Facility Edit */
-$selectedSamplesTypes = array();
+$selectedSamplesTypes = [];
 if (!empty($_POST['facilityId'])) {
     $db = $db->where('facility_id', base64_decode($_POST['facilityId']));
     $facility = $db->getOne('facility_details', array('facility_attributes'));
     $selectedSamplesTypes = json_decode($facility['facility_attributes'], true);
 }
-$sampleType = array();
+$sampleType = [];
 if ($_POST['testType'] != "") {
     foreach ($_POST['testType'] as $test) {
         if ($test == 'vl') {

@@ -88,8 +88,8 @@ class Vl
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
-        $sampleCodeFormat = isset($globalConfig['sample_code']) ? $globalConfig['sample_code'] : 'MMYY';
-        $prefixFromConfig = isset($globalConfig['sample_code_prefix']) ? $globalConfig['sample_code_prefix'] : '';
+        $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
+        $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
@@ -184,7 +184,7 @@ class Vl
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
         }
@@ -310,7 +310,7 @@ class Vl
             $result = (float) trim(str_replace("<", "", $result));
             if (!empty($unit) && strpos($unit, 'Log') !== false) {
                 $logVal = $result;
-                $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
                 $vlResult = $originalResultValue = "< " . $absDecimalVal;
             } else {
                 $vlResult = $absVal = $absDecimalVal = $result;
@@ -321,7 +321,7 @@ class Vl
             $result = (float) trim(str_replace(">", "", $result));
             if (!empty($unit) && strpos($unit, 'Log') !== false) {
                 $logVal = $result;
-                $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
                 $vlResult = $originalResultValue = ">" . $absDecimalVal;
             } else {
                 $vlResult = $absVal = $absDecimalVal = $result;
@@ -374,7 +374,7 @@ class Vl
         $originalResultValue = $result;
         if (strpos($unit, 'Log') !== false && is_numeric($result)) {
             $logVal = $result;
-            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
         } elseif (strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
@@ -464,7 +464,7 @@ class Vl
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
-            $vlData = array();
+            $vlData = [];
 
             $vlData = array(
                 'vlsm_country_id' => $params['countryId'],
@@ -569,7 +569,7 @@ class Vl
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)
     {
-        $result = array();
+        $result = [];
         $this->db->where('status', 'active');
         if ($updatedDateTime) {
             $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');

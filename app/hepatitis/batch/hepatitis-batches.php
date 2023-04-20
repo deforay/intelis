@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("Hepatitis | Batches");
 
 require_once(APPLICATION_PATH . '/header.php');

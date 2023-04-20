@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -42,7 +42,7 @@ $sQuery = $_SESSION['hepatitisRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
     if ($arr['vl_form'] == 1) {
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -121,7 +121,7 @@ $sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     // if($arr['vl_form'] == 1){
     // 	// Get testing platform and test method 
     // 	$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id ASC";

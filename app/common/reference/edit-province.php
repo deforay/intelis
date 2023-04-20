@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "Province";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -7,7 +7,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in province edit page";
-    header("location:province-details.php");
+    header("Location:province-details.php");
 }
 $query = "SELECT * from province_details where province_id = $id";
 $provinceInfo = $db->query($query);

@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
   
 
 
@@ -28,14 +28,14 @@ try {
                 $db->update('form_covid19', $value);
             }
             $_SESSION['alertMsg'] = "Manifest details updated successfully";
-            header("location:/covid-19/results/covid-19-confirmation-manifest.php");
+            header("Location:/covid-19/results/covid-19-confirmation-manifest.php");
         }else{
             $_SESSION['alertMsg'] = "Something went wrong please try again later";
-            header("location:/covid-19/results/covid-19-add-confirmation-manifest.php");
+            header("Location:/covid-19/results/covid-19-add-confirmation-manifest.php");
         }
     }else{
         $_SESSION['alertMsg'] = "Please select the sample code to processed";
-        header("location:/covid-19/results/covid-19-edit-confirmation-manifest.php?id='".base64_encode($_POST['manifestId'])."'");
+        header("Location:/covid-19/results/covid-19-edit-confirmation-manifest.php?id='".base64_encode($_POST['manifestId'])."'");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
   
 
 
@@ -35,7 +35,7 @@ try {
             if(isset($sampleResult['covid19_id']) && $sampleResult['covid19_id'] != ''){
 
                 if ($sampleResult['positive_test_manifest_code'] == null || $sampleResult['positive_test_manifest_code'] == '' || $sampleResult['positive_test_manifest_code'] == 'null') {
-                    $covid19Data = array();
+                    $covid19Data = [];
                     $covid19Data['positive_test_manifest_id']   = $lastConfirmationManifestId;
                     $covid19Data['positive_test_manifest_code'] = $packageNo;
                     
@@ -45,10 +45,10 @@ try {
             }
         }
         $_SESSION['alertMsg'] = "Manifest details added successfully";
-        header("location:/covid-19/results/covid-19-confirmation-manifest.php");
+        header("Location:/covid-19/results/covid-19-confirmation-manifest.php");
     }else{
         $_SESSION['alertMsg'] = "Please select the sample code to processed";
-        header("location:/covid-19/results/covid-19-add-confirmation-manifest.php");
+        header("Location:/covid-19/results/covid-19-add-confirmation-manifest.php");
     }
 } catch (Exception $exc) {
     echo ($exc->getMessage());

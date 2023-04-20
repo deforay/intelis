@@ -240,7 +240,7 @@ $output = array(
 );
 $refno = abs($sampleTypeTotal - $totalControls);
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $rsDetails = '';
     $sampleCode = "'" . $aRow['sample_code'] . "'";
     $batchCode = "'" . $aRow['batch_code'] . "'";

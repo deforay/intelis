@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 
 $title = "Edit Batch";
 

@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "Email Hepatitis Test Results";
 
 require_once(APPLICATION_PATH . '/header.php');

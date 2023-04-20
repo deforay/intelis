@@ -12,7 +12,7 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 $general = new General();
 
-$data = array();
+$data = [];
 
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
 $data['forceSync'] = false;

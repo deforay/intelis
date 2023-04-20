@@ -12,7 +12,7 @@ $userNameList = $userDb->getAllUsers(null, null, 'drop-down');
 
 $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
 
-$actionList = array();
+$actionList = [];
 foreach ($actions as $list) {
 	$actionList[$list['event_type']] = (str_replace("-", " ", $list['event_type']));
 }

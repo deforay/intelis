@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,7 +17,7 @@ $fnct = $_POST['fnct'];
 $data = 0;
 if ($value != '') {
 
-    $tableInfo = array();
+    $tableInfo = [];
     if (!empty($fnct)) {
         $tableInfo = explode("##", $fnct);
     }

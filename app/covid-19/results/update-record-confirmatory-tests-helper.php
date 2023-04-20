@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 
@@ -36,11 +36,11 @@ try {
 
 	$covid19Data = array(
 		'sample_received_at_vl_lab_datetime'  => $_POST['sampleReceivedDate'],
-		'lab_id'                              => isset($_POST['labId']) ? $_POST['labId'] : null,
-		'is_sample_rejected'                  => isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-		'result'                              => isset($_POST['result']) ? $_POST['result'] : null,
-		'is_result_authorised'                => isset($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
-		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
+		'lab_id'                              => $_POST['labId'] ?? null,
+		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
+		'result'                              => $_POST['result'] ?? null,
+		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
+		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
 		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'reason_for_changing'				  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
@@ -75,7 +75,7 @@ try {
 				$covid19TestData = array(
 					'covid19_id'			=> $_POST['covid19SampleId'],
 					'test_name'				=> $_POST['testName'][$testKey],
-					'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
+					'facility_id'           => $_POST['labId'] ?? null,
 					'sample_tested_datetime' => $_POST['testDate'][$testKey],
 					'result'				=> $_POST['testResult'][$testKey],
 				);
@@ -116,7 +116,7 @@ try {
 	);
 	$db->insert($tableName2, $data);
 
-	header("location:update-record-confirmatory-tests.php");
+	header("Location:update-record-confirmatory-tests.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

@@ -53,7 +53,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 $sWhere[] = ' number_of_records > 0 ';
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
@@ -143,7 +143,7 @@ $output = array(
      "aaData" => array()
 );
 foreach ($rResult as $key => $aRow) {
-     $row = array();
+     $row = [];
      $row[] = $aRow['transaction_id'];
      $row[] = $aRow['number_of_records'];
      $row[] = str_replace("-", " ", ($aRow['request_type']));

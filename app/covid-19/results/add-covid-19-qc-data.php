@@ -5,7 +5,7 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Models\Users;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $generalDb = new General();
@@ -17,7 +17,7 @@ $testingLabs = $facilityDb->getTestingLabs("covid19");
 $users = $userDb->getAllUsers(null, null, "drop-down");
 
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");
-$testKitsList = array();
+$testKitsList = [];
 foreach ($testKitInfo as $kits) {
     $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
 }

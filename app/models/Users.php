@@ -33,7 +33,7 @@ class Users
         $sharedPrivileges = $this->getSharedPrivileges($systemConfig);
 
         // Does the current file share privileges with another privilege ?
-        $currentFileName = isset($sharedPrivileges[$currentFileName]) ? $sharedPrivileges[$currentFileName] : $currentFileName;
+        $currentFileName = $sharedPrivileges[$currentFileName] ?? $currentFileName;
 
 
         if (!in_array($currentFileName, $skippedPrivileges)) {
@@ -245,7 +245,7 @@ class Users
 
         if (isset($type) && $type == 'drop-down') {
             $result =  $this->db->get('user_details u');
-            $userDetails = array();
+            $userDetails = [];
             foreach ($result as $user) {
                 $userDetails[$user['user_id']] = ($user['user_name']);
             }
@@ -292,7 +292,7 @@ class Users
             return null;
         }
 
-        $result = array();
+        $result = [];
 
         if (!empty($userId)) {
             $this->db->where('user_id', $userId);
@@ -312,7 +312,7 @@ class Users
 
 
         $id = false;
-        $data = array();
+        $data = [];
         // Tokens with expiration = 0 are tokens that never expire
         if ($tokenExpiration != 0 || empty($result['api_token'])) {
             $today = new DateTime();
@@ -354,7 +354,7 @@ class Users
 
     public function getUserRolePrivileges($userId)
     {
-        $response = array();
+        $response = [];
         $query = "SELECT r.role_id, r.role_code,r.role_name, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
                     FROM roles as r
                     INNER JOIN roles_privileges_map as rpm ON rpm.role_id=r.role_id 
@@ -393,11 +393,7 @@ class Users
             $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
         } else if (isset($_SERVER['HTTP_FORWARDED'])) {
             $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        } else if (isset($_SERVER['REMOTE_ADDR'])) {
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $ipaddress = 'UNKNOWN';
-        }
+        } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
 
         $data = array(
             'login_id' => $loginId,

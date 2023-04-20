@@ -51,7 +51,7 @@ class App
                     FROM health_facilities AS hf 
                     INNER JOIN facility_details as f ON hf.facility_id=f.facility_id
                     INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
-        $where = array();
+        $where = [];
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
@@ -120,7 +120,7 @@ class App
                     from testing_labs AS tl 
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
-        $where = array();
+        $where = [];
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
@@ -177,7 +177,7 @@ class App
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = array();
+        $where = [];
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
@@ -215,7 +215,7 @@ class App
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = array();
+        $where = [];
         if (!empty($user)) {
             $facilityMap = $facilityDb->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
@@ -257,7 +257,7 @@ class App
     {
         $query = "SELECT $primary, $name from $tableName where $condition group by $name";
         $result = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($result as $key => $row) {
             $response[$key]['value'] = $row[$primary];
             $response[$key]['show'] = $row[$name];

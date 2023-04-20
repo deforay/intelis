@@ -129,7 +129,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = $aRow['labName'];
     $row[] = date('d-M-Y h:i:s a', strtotime($aRow['requested_on']));
     $row[] = $aRow['number_of_records'];

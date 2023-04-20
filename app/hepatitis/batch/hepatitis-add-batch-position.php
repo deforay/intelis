@@ -1,21 +1,21 @@
 <?php
-ob_start();
+
  
 require_once(APPLICATION_PATH . '/header.php');
 
 $id=base64_decode($_GET['id']);
 if(!isset($id) || trim($id)== ''){
-	header("location:hepatitis-batches.php");
+	header("Location:hepatitis-batches.php");
 }
 $content = '';
 $newContent = '';
-$displayOrder = array();
+$displayOrder = [];
 $batchQuery="SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo=$db->query($batchQuery);
 // Config control
 $configControlQuery = "SELECT * from instrument_controls where config_id=".$batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
-$configControl = array();
+$configControl = [];
 foreach($configControlInfo as $info){
 	if($info['test_type'] == 'hepatitis'){
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
@@ -25,10 +25,10 @@ foreach($configControlInfo as $info){
 }
 
 if(!isset($batchInfo) || count($batchInfo) == 0){
-	header("location:hepatitis-batches.php");
+	header("Location:hepatitis-batches.php");
 }
 //Get batch controls order
-$newJsonToArray = array();
+$newJsonToArray = [];
 if(isset($configControl['hepatitis']['noHouseCtrl']) && trim($configControl['hepatitis']['noHouseCtrl'])!='' && $configControl['hepatitis']['noHouseCtrl']>0){
 	foreach(range(1,$configControl['hepatitis']['noHouseCtrl']) as $h){
 		$newJsonToArray[] = "no_of_in_house_controls_".$h;	
@@ -48,7 +48,7 @@ $prevLabelQuery="SELECT label_order from batch_details as b_d WHERE b_d.machine 
 $prevlabelInfo=$db->query($prevLabelQuery);
 if(isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_order'])!= ''){
 	$jsonToArray = json_decode($prevlabelInfo[0]['label_order'],true);
-	$prevDisplaySampleArray = array();
+	$prevDisplaySampleArray = [];
 	for($j=0;$j<count($jsonToArray);$j++){
 		$xplodJsonToArray = explode("_",$jsonToArray[$j]);
 		if(count($xplodJsonToArray)>1 && $xplodJsonToArray[0] == "s"){
@@ -56,7 +56,7 @@ if(isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_orde
 		}
 	}
 	//Get display sample only
-	$displaySampleOrderArray = array();
+	$displaySampleOrderArray = [];
 	$samplesQuery="SELECT hepatitis_id,sample_code from form_hepatitis where sample_batch_id=$id ORDER BY sample_code ASC";
     $samplesInfo=$db->query($samplesQuery);
 	foreach($samplesInfo as $sample){
@@ -64,8 +64,8 @@ if(isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_orde
 	}
 	//Set content
 	$sCount = 0;
-	$displayNonSampleArray = array();
-	$displaySampleArray = array();
+	$displayNonSampleArray = [];
+	$displaySampleArray = [];
 	for($j=0;$j<count($jsonToArray);$j++){
 		$xplodJsonToArray = explode("_",$jsonToArray[$j]);
 		if(count($xplodJsonToArray)>1 && $xplodJsonToArray[0] == "s"){

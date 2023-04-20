@@ -84,7 +84,7 @@ try {
                 $tokenData = $users->getAuthToken(null, $userResult['user_id']);
 
                 if (!empty($tokenData)) {
-                    $data = array();
+                    $data = [];
 
                     unset($userResult['password']);
                     unset($userResult['hash_algorithm']);

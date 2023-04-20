@@ -12,7 +12,7 @@ $response = "";
 
 $testingPoints = $facilitiesDb->getTestingPoints($labId);
 /* Set index as value for testing point JSON */
-$testingPointsList = array();
+$testingPointsList = [];
 if(isset($testingPoints) && count($testingPoints) > 0){
   foreach($testingPoints as $val){
     $testingPointsList[$val] = $val;

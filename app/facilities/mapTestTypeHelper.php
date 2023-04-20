@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -26,7 +26,7 @@ try {
        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
         $currentDateTime = DateUtils::getCurrentDateTime();
-        $data = array();
+        $data = [];
         foreach ($mappedFacility as $facility) {
             $data[] = array(
                 'test_type'     => $testType,
@@ -48,7 +48,7 @@ try {
 
         $_SESSION['alertMsg'] = _("Facility Mapped to Selected Test Type successfully");
     }
-    header("location:facilities.php");
+    header("Location:facilities.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

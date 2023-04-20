@@ -18,7 +18,7 @@ $tsResult = $db->rawQuery($tsQuery);
 //set print query
 $hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided form_eid as vl ON vl.sample_code=hsr.sample_code";
 $hResult = $db->rawQuery($hQuery);
-$holdSample = array();
+$holdSample = [];
 if ($hResult) {
     foreach ($hResult as $sample) {
         $holdSample[] = $sample['sample_code'];
@@ -28,7 +28,7 @@ $saQuery = "SELECT tsr.sample_code
             FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code 
                 WHERE  imported_by ='$importedBy' ";
 $saResult = $db->rawQuery($saQuery);
-$sampleCode = array();
+$sampleCode = [];
 foreach ($saResult as $sample) {
     if (!in_array($sample['sample_code'], $holdSample)) {
         $sampleCode[] = "'" . $sample['sample_code'] . "'";

@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
   
 
 
@@ -15,7 +15,7 @@ try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
         $_SESSION['alertMsg'] = _("Something went wrong. Please try again later.");
-        header("location:tb-batches.php");
+        header("Location:tb-batches.php");
     } else {
 
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
@@ -43,10 +43,10 @@ try {
                         $db->update($tableName2, $value);
                     }
                 }
-                header("location:tb-add-batch-position.php?id=" . base64_encode($lastId));
+                header("Location:tb-add-batch-position.php?id=" . base64_encode($lastId));
             }
         } else {
-            header("location:tb-batches.php");
+            header("Location:tb-batches.php");
         }
     }
 } catch (Exception $exc) {

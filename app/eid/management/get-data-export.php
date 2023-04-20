@@ -67,7 +67,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -334,7 +334,7 @@ foreach ($rResult as $aRow) {
      $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['child_id']));
      $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['child_id']));
 
-     $row = array();
+     $row = [];
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];

@@ -5,7 +5,7 @@ use App\Models\GeoLocations;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -102,7 +102,7 @@ try {
 			'status' => $_POST['status']
 		);
 
-		//$facilityAttributes = array();
+		//$facilityAttributes = [];
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
@@ -284,7 +284,7 @@ try {
 		$_SESSION['alertMsg'] = _("Facility details updated successfully");
 		$general->activityLog('update-facility', $_SESSION['userName'] . ' updated facility ' . $_POST['facilityName'], 'facility');
 	}
-	header("location:facilities.php");
+	header("Location:facilities.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

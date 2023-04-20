@@ -74,7 +74,7 @@ try {
         // var_dump($sheetData);
         // die;
 
-        $infoFromFile = array();
+        $infoFromFile = [];
         $testDateRow = "";
         
 
@@ -269,7 +269,7 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    header("location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

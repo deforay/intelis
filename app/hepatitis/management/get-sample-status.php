@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Utilities\DateUtils;
 use App\Utilities\MiscUtils;
 
-ob_start();
+
 
 $general = new General();
 
@@ -17,12 +17,12 @@ if ($systemType == 'remoteuser' && (isset($_SESSION['facilityMap']) && !empty($_
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = array();
+// $sampleStatusArray = [];
 // foreach($tsResult as $tsRow){
 //     $sampleStatusArray = $tsRow['status_name'];
 // }
 
-$sampleStatusColors = array();
+$sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
@@ -79,7 +79,7 @@ $tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }
@@ -108,7 +108,7 @@ $tResult = $db->rawQuery($tQuery);
 
 
 //HVL and LVL Samples
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }
@@ -183,7 +183,7 @@ $tatSampleQuery = "SELECT
                         WHERE 
                         vl.result is not null
                         AND vl.result != ''"; // No where condition
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -216,7 +216,7 @@ foreach ($tatResult as $sRow) {
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
-$sWhere = array();
+$sWhere = [];
 $testReasonQuery = "SELECT count(c.sample_code) AS total, tr.test_reason_name 
                     from form_hepatitis as c 
                     INNER JOIN r_hepatitis_test_reasons as tr ON c.reason_for_hepatitis_test = tr.test_reason_id 

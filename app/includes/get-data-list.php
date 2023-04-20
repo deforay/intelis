@@ -32,7 +32,7 @@ $cResult = $db->rawQuery($cQuery);
 if (isset($returnField) && $returnField != "") {
     echo $cResult[0][$returnField];
 } else {
-    $echoResult = array();
+    $echoResult = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
             $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));

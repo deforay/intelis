@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-ob_start();
+
   
 
 $general = new General();
@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 //system config
 $systemConfigQuery = "SELECT * FROM system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -29,7 +29,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
      $excel = new Spreadsheet();
-     $output = array();
+     $output = [];
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
@@ -92,9 +92,9 @@ $colNo++;
           $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
      }
 
-     $vlSampleId = array();
+     $vlSampleId = [];
      foreach ($rResult as $aRow) {
-          $row = array();
+          $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';

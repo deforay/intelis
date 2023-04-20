@@ -1,15 +1,19 @@
 <?php
 
+use App\Models\General;
 use App\Utilities\DateUtils;
 
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
-     $_SESSION['rVal'] = $general->generateRandomString(6);
-     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])) {
+     $_SESSION['rVal'] = General::generateRandomString(6);
+     if (
+          !file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) &&
+          !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])
+     ) {
           mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
      }
      $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'] . '/');
-     $pages = array();
+     $pages = [];
      $page = 1;
      foreach ($requestResult as $result) {
           $_SESSION['aliasPage'] = $page;
@@ -19,7 +23,12 @@ if (sizeof($requestResult) > 0) {
           $draftTextShow = false;
           //Set watermark text
           for ($m = 0; $m < count($mFieldArray); $m++) {
-               if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+               if (
+                    !isset($result[$mFieldArray[$m]]) ||
+                    trim($result[$mFieldArray[$m]]) == '' ||
+                    $result[$mFieldArray[$m]] == null ||
+                    $result[$mFieldArray[$m]] == '0000-00-00 00:00:00'
+               ) {
                     $draftTextShow = true;
                     break;
                }
@@ -211,7 +220,7 @@ if (sizeof($requestResult) > 0) {
           if ($result['result_status'] == '4') {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
           }
-         $html = '<table style="padding:0px 2px 2px 2px;">';
+          $html = '<table style="padding:0px 2px 2px 2px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';

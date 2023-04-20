@@ -20,12 +20,12 @@ $initOptionSets = array(
     'testingLabs' => 'qrroYEzTQd3',
 );
 
-$_SESSION['DHIS2_HEP_PROVINCES'] = array();
-$_SESSION['DHIS2_HEP_DISTRICTS'] = array();
-$_SESSION['DHIS2_VL_TEST_REASONS'] = array();
+$_SESSION['DHIS2_HEP_PROVINCES'] = [];
+$_SESSION['DHIS2_HEP_DISTRICTS'] = [];
+$_SESSION['DHIS2_VL_TEST_REASONS'] = [];
 
 foreach ($initOptionSets as $t => $id) {
-    $data = array();
+    $data = [];
     $data[] = "fields=options[:all]";
     $data[] = "paging=false";
 

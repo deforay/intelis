@@ -6,14 +6,14 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 if (isset($_SESSION['userId'])) {
-	header("location:/dashboard/index.php");
+	header("Location:/dashboard/index.php");
 }
-
+$db = \MysqliDb::getInstance();
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
 $count = $db->getValue("user_details", "count(*)");
 if ($count == 0) {
-	header("location:/setup/index.php");
+	header("Location:/setup/index.php");
 }
 
 $general = new General();
@@ -117,7 +117,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 		if (is_dir($filePath) && count(scandir($filePath)) > 2) {
 			$dir = scandir($filePath);
-			$loginLogoFiles = array();
+			$loginLogoFiles = [];
 			foreach ($dir as $fileName) {
 				if ($fileName != '.' && $fileName != '..') {
 					$loginLogoFiles[] = $fileName;

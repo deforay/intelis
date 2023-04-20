@@ -10,4 +10,3 @@ if(count($fMapResult)>0){
     $fMapResult = "";
 }
 echo json_encode($fMapResult);
-?>

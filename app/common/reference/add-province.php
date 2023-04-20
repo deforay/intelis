@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "Province";
 
 require_once(APPLICATION_PATH . '/header.php');

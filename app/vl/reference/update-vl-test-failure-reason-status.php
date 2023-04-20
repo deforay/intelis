@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 
 $general = new General();
 $tableName = "r_vl_test_failure_reasons";

@@ -8,7 +8,7 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -29,7 +29,7 @@ try {
 	//system config
 	$systemConfigQuery = "SELECT * FROM system_config";
 	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = array();
+	$sarr = [];
 	// now we create an associative array so that we can easily create view variables
 	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -201,7 +201,7 @@ try {
 		'travel_country_names'                => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
 		'travel_return_date'                  => !empty($_POST['returnDate']) ? DateUtils::isoDateFormat($_POST['returnDate']) : null,
 		'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-		'sample_condition'  				  => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (isset($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
+		'sample_condition'  				  => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : ($_POST['specimenQuality'] ?? null),
 		'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
 		'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
 		'result_sent_to_source'               => $resultSentToSource,
@@ -246,7 +246,7 @@ try {
 		$db->delete("covid19_patient_symptoms");
 		if (isset($_POST['symptomDetected']) && !empty($_POST['symptomDetected']) || (isset($_POST['symptom']) && !empty($_POST['symptom']))) {
 			for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
-				$symptomData = array();
+				$symptomData = [];
 				$symptomData["covid19_id"] = $_POST['covid19SampleId'];
 				$symptomData["symptom_id"] = $_POST['symptomId'][$i];
 				$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
@@ -260,7 +260,7 @@ try {
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_reasons_for_testing");
 	if (!empty($_POST['reasonDetails'])) {
-		$reasonData = array();
+		$reasonData = [];
 		$reasonData["covid19_id"] 		= $_POST['covid19SampleId'];
 		$reasonData["reasons_id"] 		= $_POST['reasonForCovid19Test'];
 		$reasonData["reasons_detected"]	= "yes";
@@ -275,7 +275,7 @@ try {
 	if (isset($_POST['comorbidityDetected']) && !empty($_POST['comorbidityDetected'])) {
 
 		for ($i = 0; $i < count($_POST['comorbidityDetected']); $i++) {
-			$comorbidityData = array();
+			$comorbidityData = [];
 			$comorbidityData["covid19_id"] = $_POST['covid19SampleId'];
 			$comorbidityData["comorbidity_id"] = $_POST['comorbidityId'][$i];
 			$comorbidityData["comorbidity_detected"] = $_POST['comorbidityDetected'][$i];
@@ -297,9 +297,9 @@ try {
 					$covid19TestData = array(
 						'covid19_id'				=> $_POST['covid19SampleId'],
 						'test_name'					=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-						'facility_id'           	=> isset($_POST['labId']) ? $_POST['labId'] : null,
+						'facility_id'           	=> $_POST['labId'] ?? null,
 						'sample_tested_datetime' 	=> date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
-						'testing_platform'      	=> isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
+						'testing_platform'      	=> $_POST['testingPlatform'][$testKey] ?? null,
 						'kit_lot_no'      			=> (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
 						'kit_expiry_date'      		=> (strpos($testKitName, 'RDT') !== false) ? DateUtils::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result'					=> $_POST['testResult'][$testKey]
@@ -357,12 +357,12 @@ try {
 			$_SESSION['alertMsg'] = _("Unable to add this Covid-19 sample. Please try again later");
 		}
 		if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next' && (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick")) {
-			header("location:/covid-19/requests/covid-19-quick-add.php");
+			header("Location:/covid-19/requests/covid-19-quick-add.php");
 		} else {
 			if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-				header("location:/covid-19/requests/covid-19-add-request.php");
+				header("Location:/covid-19/requests/covid-19-add-request.php");
 			} else {
-				header("location:/covid-19/requests/covid-19-requests.php");
+				header("Location:/covid-19/requests/covid-19-requests.php");
 			}
 		}
 	}

@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 $general = new General();
@@ -82,7 +82,7 @@ try {
         $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _(". Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in import-configs folder");
     }
     error_log($db->getLastError());
-    header("location:importConfig.php");
+    header("Location:importConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -126,7 +126,7 @@ $primaryKey="test_type_id";
         );
 	
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 	        $row[] = ($aRow['test_standard_name']);
             $row[] = ($aRow['test_generic_name']);
             $row[] = ($aRow['test_short_code']);
@@ -138,4 +138,4 @@ $primaryKey="test_type_id";
             $output['aaData'][] = $row;
         }
         echo json_encode($output);
-?>
+

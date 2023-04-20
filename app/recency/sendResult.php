@@ -4,7 +4,7 @@ use App\Models\General;
 use GuzzleHttp\Client;
 
 try {
-    ob_start();
+    
       
 
 

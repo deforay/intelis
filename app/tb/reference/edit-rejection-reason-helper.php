@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -36,7 +36,7 @@ try {
 		$_SESSION['alertMsg'] = "TB Sample Rejection Reasons details updated successfully";
 		$general->activityLog('update-sample-rejection-reasons', $_SESSION['userName'] . ' updated new reference sample rejection reasons ' . $_POST['rejectionReasonName'], 'reference-tb-sample-rejection-reasons');
 	}
-	header("location:tb-sample-rejection-reasons.php");
+	header("Location:tb-sample-rejection-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

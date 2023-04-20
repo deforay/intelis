@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 
@@ -18,7 +18,7 @@ ob_start();
  $general=new General();
  $configQuery="SELECT * from global_config";
  $configResult=$db->query($configQuery);
- $arr = array();
+ $arr = [];
  // now we create an associative array so that we can easily create view variables
  for ($i = 0; $i < sizeof($configResult); $i++) {
   $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -29,7 +29,7 @@ ob_start();
  $rResult = $db->rawQuery($sQuery);
  
  $excel = new Spreadsheet();
- $output = array();
+ $output = [];
  $sheet = $excel->getActiveSheet();
  
  $headings = array("Serial No.","Instance Id","Gender","Age In Years","Clinic Name","Clinic Code","Clinic State","Clinic District","Clinic Phone Number","Clinic Address","Clinic HUB Name","Clinic Contact Person","Clinic Report Mail","Clinic Country","Clinic Longitude","Clinic Latitude","Clinic Status","Clinic Type","Sample Type","Sample Type Status","Sample Collection Date","LAB Name","Lab Code","Lab State","Lab District","Lab Phone Number","Lab Address","Lab HUB Name","Lab Contact Person","Lab Report Mail","Lab Country","Lab Longitude","Lab Latitude","Lab Status","Lab Type","Lab Tested Date","Log Value","Absolute Value","Text Value","Absolute Decimal Value","Result","Testing Reason","Test Reason Status","Testing Status","Sample Received Datetime","Line Of Treatment","Sample Rejected","Rejection Reason Name","Rejection Reason Status","Pregnant","Breast Feeding","Art Code","Regimen Initiated Date","ARV Adherance Percentage","Is Adherance poor","Approved Datetime");
@@ -72,7 +72,7 @@ ob_start();
  $sheet->getStyle('A1:AN1')->applyFromArray($styleArray);
  
  foreach ($rResult as $aRow) {
-  $row = array();
+  $row = [];
   if($aRow['sample_tested_datetime']=='0000-00-00 00:00:00'){
    $aRow['sample_tested_datetime'] = '';
   }
@@ -160,4 +160,3 @@ ob_start();
  $filename = 'VLSM-results-' . date('d-M-Y-H-i-s') . '.xlsx';
  $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
  echo $filename;
-?>

@@ -217,7 +217,7 @@ foreach ($rResult as $aRow) {
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    $row = array();
+    $row = [];
     $row[] = '<input type="radio" id="vlTestRequest' . $aRow['vl_sample_id'] . '" name="vlTestRequest"  value="' . $patientDetails . '" onclick="getPatient(this.value);"  />';
     $row[] = $aRow['sample_code'];
     $row[] = $aRow['sample_collection_date'];
