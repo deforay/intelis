@@ -4,6 +4,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use App\Models\Covid19;
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 ini_set('memory_limit', -1);
@@ -11,9 +15,9 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
-$covid19Obj = new \App\Models\Covid19();
+$general = new General();
+$users = new Users();
+$covid19Obj = new Covid19();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -124,11 +128,11 @@ class MYPDF extends TCPDF
 		if ($this->htitle != '') {
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 					if ($this->formId == 3) {
-						$this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+						$this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 					} else {
-						$this->Image($image_file, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+						$this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 					}
 				}
 			}
@@ -162,16 +166,16 @@ class MYPDF extends TCPDF
 		} else {
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($image_file, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
+					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 				} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 				}
 			}
 			if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-				$this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
+				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 			}
 
 			// $this->SetFont('helvetica', 'B', 7);
@@ -331,12 +335,12 @@ if (sizeof($requestResult) > 0) {
 		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
 			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
 		} else {
-			$printedTime = \App\Utilities\DateUtils::getCurrentDateTime();
+			$printedTime = DateUtils::getCurrentDateTime();
 		}
 		$expStr = explode(" ", $printedTime);
-		$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+		$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Obj = new \App\Models\Covid19();
+		$covid19Obj = new Covid19();
 		$covid19Results = $covid19Obj->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
@@ -355,7 +359,7 @@ if (sizeof($requestResult) > 0) {
 
 		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-		$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
+		$currentDateTime = DateUtils::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';

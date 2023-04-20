@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\App;
+use App\Models\General;
+use App\Utilities\DateUtils;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 ini_set('memory_limit', -1);
@@ -12,8 +18,8 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-$general = new \App\Models\General();
-$app = new \App\Models\App();
+$general = new General();
+$app = new App();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -260,9 +266,9 @@ $jsonResponse = $response->getBody()->getContents();
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
-        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        'decoder' => new ExtJsonDecoder(true)
     ];
-    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+    $parsedData = Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $dataType => $dataValues) {
 
         if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
@@ -369,4 +375,4 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => \App\Utilities\DateUtils::getCurrentDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => DateUtils::getCurrentDateTime()));

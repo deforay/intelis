@@ -1,5 +1,8 @@
 <?php
 
+use App\Utilities\DateUtils;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 try {
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
@@ -34,7 +37,7 @@ try {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
-        $objPHPExcel = \PhpOffice\PhpSpreadsheet\IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
+        $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $objPHPExcel->getActiveSheet();
 
         $bquery    = "select MAX(batch_code_key) from batch_details";
@@ -185,7 +188,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
-                $data['result_imported_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                $data['result_imported_datetime'] = DateUtils::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
@@ -204,7 +207,7 @@ try {
         'user_id' => $_SESSION['userId'],
         'vl_sample_id' => $id,
         'test_type' => 'vl',
-        'updated_on' => \App\Utilities\DateUtils::getCurrentDateTime()
+        'updated_on' => DateUtils::getCurrentDateTime()
     );
     $db->insert("log_result_updates", $data);
 

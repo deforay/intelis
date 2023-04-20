@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -17,7 +20,7 @@ if ($_POST['testType'] == 'vl') {
     $table = 'form_tb';
 }
 
-$general = new \App\Models\General();
+$general = new General();
 try {
     if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && count($_POST['packageCode']) > 0) {
         $value = array(

@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Users;
+
 $title = _("EID | View All Requests");
 
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
@@ -20,11 +26,11 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 }
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$general = new General();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 
-$geoLocationDb = new \App\Models\GeoLocations();
+$geoLocationDb = new GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
@@ -769,4 +775,3 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

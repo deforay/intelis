@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -7,8 +12,8 @@ if (session_status() == PHP_SESSION_NONE) {
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 $arr = array();
-$general = new \App\Models\General();
-$usersModel = new \App\Models\Users();
+$general = new General();
+$usersModel = new Users();
 
 $tableName = "form_eid";
 // echo "<pre>";print_r($_FILES);die;
@@ -26,7 +31,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = \App\Models\General::generateRandomString(12);
+    $ranNumber = General::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
@@ -38,7 +43,7 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
+        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
 
@@ -141,10 +146,10 @@ try {
                     'specimen_type'                                     => isset($sampleType['sample_id']) ? $sampleType['sample_id'] : null,
                     'data_sync'                                         => 0,
                     'request_created_by'                                => $_SESSION['userId'],
-                    'request_created_datetime'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
-                    'sample_registered_at_lab'                          => \App\Utilities\DateUtils::getCurrentDateTime(),
+                    'request_created_datetime'                          => DateUtils::getCurrentDateTime(),
+                    'sample_registered_at_lab'                          => DateUtils::getCurrentDateTime(),
                     'last_modified_by'                                  => $_SESSION['userId'],
-                    'last_modified_datetime'                            => \App\Utilities\DateUtils::getCurrentDateTime()
+                    'last_modified_datetime'                            => DateUtils::getCurrentDateTime()
                 );
 
                 // echo "<pre>";print_r($sampleCode);die;

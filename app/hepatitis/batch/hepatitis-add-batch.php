@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 $title = _("Hepatitis | Add Batch");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

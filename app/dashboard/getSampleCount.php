@@ -1,7 +1,11 @@
 <?php
 
-$general = new \App\Models\General();
-$facilityDb = new \App\Models\Facilities();
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
+$general = new General();
+$facilityDb = new Facilities();
 
 $facilityInfo = $facilityDb->getAllFacilities();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -11,7 +15,7 @@ $cDate = date('Y-m-d');
 $end_date = date('Y-m-d');
 $start_date = date('Y-m-d', strtotime('-7 days'));
 
-$u = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
     $primaryKey = "eid_id";
@@ -58,7 +62,7 @@ else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
 
 
 
-if ($u != 'remoteuser') {
+if ($systemType != 'remoteuser') {
     if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
         $whereCondition = " AND eid.result_status != 9 ";
     } else {
@@ -83,10 +87,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 if ($table == "form_eid") {
@@ -297,7 +301,7 @@ $tableResult = $db->rawQuery($sQuery);
                 var api = this.api(),
                     data;
                 CalculateTableSummary(this, page);
-                return;
+
             }
         });
 

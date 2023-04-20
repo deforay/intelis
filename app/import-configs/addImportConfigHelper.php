@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
   
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
@@ -60,7 +64,7 @@ try {
                     $pocDev = 'yes';
                 }
                 if (trim($_POST['configMachineName'][$c]) != '') {
-                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime());
+                    $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtils::getCurrentDateTime());
                     $db->insert($importMachineTable, $configMachineData);
                 }
             }

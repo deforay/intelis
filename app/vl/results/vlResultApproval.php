@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 $title = _("Manage Result Status");
 
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -530,4 +534,3 @@ foreach ($rejectionTypeResult as $type) {
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

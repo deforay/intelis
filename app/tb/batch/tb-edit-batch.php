@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch";
@@ -7,8 +11,8 @@ $title = "Edit Batch";
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -30,13 +34,13 @@ $result = array_merge($batchResultresult, $result);
 
 $machinesLabelOrder = array();
 foreach ($testPlatformResult as $machine) {
-    $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
-    $lastOrderInfo = $db->query($lastOrderQuery);
-    if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
-        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
-    } else {
-        $machinesLabelOrder[$machine['config_id']] = '';
-    }
+	$lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
+	$lastOrderInfo = $db->query($lastOrderQuery);
+	if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
+		$machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
+	} else {
+		$machinesLabelOrder[$machine['config_id']] = '';
+	}
 }
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -89,7 +93,7 @@ foreach ($testPlatformResult as $machine) {
 			</div>
 			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
-				
+
 					<th scope="col">Facility</th>
 					<td>
 						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
@@ -102,7 +106,7 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-				
+
 					<th scope="col">Date Sample Receieved at Lab</th>
 					<td>
 						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
@@ -147,35 +151,35 @@ foreach ($testPlatformResult as $machine) {
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
+							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-						<h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php
-												foreach ($result as $key => $sample) {
-												?>
-													<option value="<?php echo $sample['tb_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-												<?php
-												}
-												?>
-                                        </select>
-                                   </div>
+							<h4> <?php echo _("Sample Code"); ?></h4>
+							<div class="col-md-5">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+									<?php
+									foreach ($result as $key => $sample) {
+									?>
+										<option value="<?php echo $sample['tb_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 
-										</select>
-                                   </div>
+								</select>
+							</div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -208,47 +212,45 @@ foreach ($testPlatformResult as $machine) {
 
 	function validateNow() {
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-          $("#selectedSample").val(selVal);
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-		
-		if(selVal=="")
-		{
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+
+		if (selVal == "") {
 			alert("Please select sample code");
 			return false;
 		}
-		
-          flag = deforayValidator.init({
-               formId: 'editBatchForm'
-          });
-          if (flag) {
+
+		flag = deforayValidator.init({
+			formId: 'editBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('editBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('editBatchForm').submit();
+		}
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
-		  setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
+		setTimeout(function() {
+			$("#search_rightSelected").trigger('click');
+		}, 10);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
@@ -277,7 +279,7 @@ foreach ($testPlatformResult as $machine) {
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
-	
+
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -334,4 +336,3 @@ foreach ($testPlatformResult as $machine) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

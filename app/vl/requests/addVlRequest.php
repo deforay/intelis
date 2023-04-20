@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+use App\Models\Vl;
+
 ob_start();
 $title = "VL | Add New Request";
 
@@ -7,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$vlDb = new \App\Models\Vl();
-$usersModel = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$vlDb = new Vl();
+$usersModel = new Users();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
@@ -125,7 +130,7 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "hh:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

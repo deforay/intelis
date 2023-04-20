@@ -1,6 +1,10 @@
 <?php
-$geoDb = new \App\Models\GeoLocations($db);
-$generalDb = new \App\Models\General($db);
+
+use App\Models\General;
+use App\Models\GeoLocations;
+
+$geoDb = new GeoLocations($db);
+$generalDb = new General($db);
 $text = '';
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];

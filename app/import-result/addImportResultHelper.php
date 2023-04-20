@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $machineImportScript = ($_POST['fileName']);
 
-$general = new \App\Models\General();
+$general = new General();
 $arr = $general->getGlobalConfig();
 /* echo "<pre>";
 print_r($machineImportScript);

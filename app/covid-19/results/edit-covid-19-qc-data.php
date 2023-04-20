@@ -1,11 +1,17 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Users;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalDb = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
-$facilityDb = new \App\Models\Facilities();
-$userDb = new \App\Models\Users();
+$generalDb = new General();
+$covid19Obj = new Covid19();
+$facilityDb = new Facilities();
+$userDb = new Users();
 
 $covid19Results = $covid19Obj->getCovid19Results();
 $code = $covid19Obj->generateCovid19QcCode();
@@ -251,7 +257,7 @@ foreach ($pdResult as $provinceName) {
             },
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -268,7 +274,7 @@ foreach ($pdResult as $provinceName) {
                 });
             },
             onSelect: function(e) {},
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -406,4 +412,3 @@ foreach ($pdResult as $provinceName) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

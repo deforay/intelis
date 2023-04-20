@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Facilities;
 use App\Models\General;
+use App\Models\Users;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,9 +15,9 @@ $userName = ($_POST['username']);
 $password = ($_POST['password']);
 
 
-$general = new \App\Models\General();
-$facilityDb = new \App\Models\Facilities();
-$user = new \App\Models\Users();
+$general = new General();
+$facilityDb = new Facilities();
+$user = new Users();
 
 
 

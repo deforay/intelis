@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\System;
+use Laminas\Config\Factory;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 chdir(__DIR__);
 
-include(__DIR__ . DIRECTORY_SEPARATOR . 'constants.php');
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'constants.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
 
 
@@ -17,7 +18,7 @@ if (!file_exists($configFile)) {
     $configFile = ROOT_PATH . "/configs/config.production.php";
 }
 defined('SYSTEM_CONFIG') ||
-    define('SYSTEM_CONFIG', \Laminas\Config\Factory::fromFile($configFile));
+    define('SYSTEM_CONFIG', Factory::fromFile($configFile));
 
 // Database Connection
 $db = new MysqliDb(SYSTEM_CONFIG['database']);

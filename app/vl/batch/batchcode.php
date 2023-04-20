@@ -9,10 +9,10 @@ require_once(APPLICATION_PATH . '/header.php');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Manage Batches");?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Manage Batches"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-			<li class="active"><?php echo _("Manage Batches");?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li class="active"><?php echo _("Manage Batches"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -24,16 +24,16 @@ require_once(APPLICATION_PATH . '/header.php');
 						<div class="row" style="background:#e0e0e0;padding: 15px;">
 							<div class="col-md-12">
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code");?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples");?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="''" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("No. Of Samples"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On");?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="request_created_datetime" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Created On"); ?></label>
 								</div>
 								<div class="col-md-4">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="batch_status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status"); ?></label> <br>
 								</div>
 							</div>
 						</div>
@@ -41,28 +41,28 @@ require_once(APPLICATION_PATH . '/header.php');
 
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("addBatch.php", $_SESSION['privileges'])) { ?>
-							<a href="addBatch.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch");?></a>
+							<a href="addBatch.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="col"><?php echo _("Batch Code");?></th>
-									<th scope="col"><?php echo _("No. of Samples");?></th>
-									<th scope="col"><?php echo _("No. of Samples Tested");?></th>
-									<th scope="col"><?php echo _("Last Tested Date");?></th>
-									<th scope="col"><?php echo _("Created On");?></th>
+									<th scope="col"><?php echo _("Batch Code"); ?></th>
+									<th scope="col"><?php echo _("No. of Samples"); ?></th>
+									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
+									<th scope="col"><?php echo _("Last Tested Date"); ?></th>
+									<th scope="col"><?php echo _("Created On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("editBatch.php", $_SESSION['privileges'])) { ?>
-										<th scope="col"><?php echo _("Action");?></th>
+										<th scope="col"><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -145,7 +145,7 @@ require_once(APPLICATION_PATH . '/header.php');
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate barcode");?>");
+					alert("<?php echo _("Unable to generate barcode"); ?>");
 				} else {
 					window.open('/uploads/barcode/' + data, '_blank');
 				}
@@ -155,7 +155,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 	function deleteBatchCode(bId, batchCode) {
-		var conf = confirm("<?php echo _("Are you sure you want to delete Batch");?> : " + batchCode + "?\n<?php echo _("This action cannot be undone");?>.");
+		var conf = confirm("<?php echo _("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _("This action cannot be undone"); ?>.");
 		if (conf) {
 			$.post("/vl/batch/deleteBatchCode.php", {
 					id: bId,
@@ -163,9 +163,9 @@ require_once(APPLICATION_PATH . '/header.php');
 				},
 				function(data) {
 					if (data == 1) {
-						alert("<?php echo _("Batch deleted");?>");
+						alert("<?php echo _("Batch deleted"); ?>");
 					} else {
-						alert("<?php echo _("Something went wrong. Please try again!");?>");
+						alert("<?php echo _("Something went wrong. Please try again!"); ?>");
 					}
 					oTable.fnDraw();
 				});
@@ -174,4 +174,3 @@ require_once(APPLICATION_PATH . '/header.php');
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

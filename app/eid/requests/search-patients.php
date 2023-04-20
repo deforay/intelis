@@ -1,7 +1,9 @@
 <?php
-  
 
-$general=new \App\Models\General();
+
+use App\Models\General;
+
+$general=new General();
 $artNo=$_POST['artPatientNo'];
 
 $count = 0;

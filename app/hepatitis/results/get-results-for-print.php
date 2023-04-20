@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -19,8 +24,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \App\Models\General();
-$hepatitisDb = new \App\Models\Hepatitis();
+$general = new General();
+$hepatitisDb = new Hepatitis();
 
 //$hepatitisResults = $hepatitisDb->getHepatitisResults();
 
@@ -143,10 +148,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -154,10 +159,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
     }
 }
 
@@ -280,7 +285,7 @@ foreach ($rResult as $aRow) {
         } else {
             $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="checkedPrintedRow(this);"  />';
         }
-        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['hepatitis_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+        $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['hepatitis_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
     }
 
     $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
@@ -301,7 +306,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['hbv_vl_count'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+        $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';
     }

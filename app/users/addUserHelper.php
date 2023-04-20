@@ -1,11 +1,17 @@
 <?php
+
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+use App\Utilities\ImageResize;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new \App\Models\Users();
-$general = new \App\Models\General();
+$userDb = new Users();
+$general = new General();
 
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
@@ -38,7 +44,7 @@ try {
             $imageName = "usign-" . $data['user_id'] . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new \App\Utilities\ImageResize($signatureImagePath);
+                $resizeObj = new ImageResize($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;
@@ -47,7 +53,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
         }
 
         $id = $db->insert($tableName, $data);
@@ -71,8 +77,8 @@ try {
 
         $_SESSION['alertMsg'] = _("User saved successfully!");
     }
-    $userType = $general->getSystemConfig('sc_user_type');
-    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $userType == 'vluser') {
+    $systemType = $general->getSystemConfig('sc_user_type');
+    if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {
         $_POST['userId'] = $userId;
         $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
         $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS

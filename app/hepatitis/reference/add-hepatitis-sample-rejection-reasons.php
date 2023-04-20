@@ -144,4 +144,3 @@ $rejReaons = $general->getRejectionReasons('hepatitis');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

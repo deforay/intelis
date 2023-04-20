@@ -1,9 +1,14 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+
 $title = _("VL Quarterly Monitoring Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -22,8 +27,8 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
@@ -194,7 +199,7 @@ $state = $geoLocationDb->getProvinces("yes");
 
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
 								<select name="district" id="district" class="form-control" title="<?php echo _('Please choose District/County'); ?>" onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
@@ -223,7 +228,7 @@ $state = $geoLocationDb->getProvinces("yes");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -301,20 +306,20 @@ $state = $geoLocationDb->getProvinces("yes");
 			provinceId = $(this).val();
 			$.blockUI();
 			$("#district").html('');
-    $.post("/common/get-by-province-id.php", {
-      provinceId : provinceId,
-	  districts : true,
-			},
-			function(data) {
-				Obj.parseJSON(data);
-        $("#district").html(Obj['districts']);
-			});
+			$.post("/common/get-by-province-id.php", {
+					provinceId: provinceId,
+					districts: true,
+				},
+				function(data) {
+					Obj.parseJSON(data);
+					$("#district").html(Obj['districts']);
+				});
 			$.unblockUI();
 		});
 		loadVlRequestData();
 		$('#sampleTestDate').val("");
 		$('#sampleCollectionDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 
@@ -415,8 +420,7 @@ $state = $geoLocationDb->getProvinces("yes");
 	}
 
 	function exportInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
@@ -756,34 +760,32 @@ $state = $geoLocationDb->getProvinces("yes");
 		return Math.round(((val) + 0.00001) * 100) / 100;
 	}
 
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facilityName").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facilityName").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['labs']);
-				});
+			});
 	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['labs']);
-				});
+
+	function getByDistrict(districtId) {
+		$("#facilityName").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['labs']);
+			});
 	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

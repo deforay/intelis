@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\General;
+
 require_once(__DIR__ . "/../../../../bootstrap.php");
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \App\Models\General();
+$general = new General();
 $arr = $general->getGlobalConfig();
 
 // let us do init first

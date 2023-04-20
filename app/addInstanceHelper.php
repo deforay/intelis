@@ -1,28 +1,22 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\ImageResize;
+
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
 function getMacLinux()
 {
-  exec('netstat -ie', $result);
-  if (is_array($result)) {
-    $iface = array();
-    foreach ($result as $key => $line) {
-      if ($key > 0) {
-        $tmp = str_replace(" ", "", substr($line, 0, 10));
-        if ($tmp <> "") {
-          $macpos = strpos($line, "HWaddr");
-          if ($macpos !== false) {
-            $iface[] = array('iface' => $tmp, 'mac' => strtolower(substr($line, $macpos + 7, 17)));
-          }
-        }
-      }
-    }
-    return $iface[0]['mac'];
-  } else {
-    return "notfound";
+  try {
+    $mac = exec('getmac');
+    return strtok($mac, ' ') ?? "notfound";
+  } catch (Exception $exc) {
+    error_log($exc->getMessage());
+    error_log($exc->getTraceAsString());
+    return "not found";
   }
 }
 function getMacWindows()
@@ -42,7 +36,7 @@ function getMacWindows()
   $pmac = strpos($mycom, $findme);
 
   // Get Physical Address
-    return substr($mycom, ($pmac + 36), 17);
+  return substr($mycom, ($pmac + 36), 17);
 }
 try {
   if (isset($_POST['fName']) && trim($_POST['fName']) != "") {
@@ -65,11 +59,13 @@ try {
       'instance_added_on' => $db->now(),
       'instance_update_on' => $db->now()
     );
+    $data['instance_mac_address'] = "not found";
     if (PHP_OS == 'Linux') {
       $data['instance_mac_address'] = getMacLinux();
     } else if (PHP_OS == 'WINNT') {
       $data['instance_mac_address'] = getMacWindows();
     }
+
     $db = $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update($tableName, $data);
     if ($id > 0) {
@@ -82,7 +78,7 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
-          $resizeObj = new \App\Utilities\ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+          $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
           $resizeObj->resizeToWidth(100);
           $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 

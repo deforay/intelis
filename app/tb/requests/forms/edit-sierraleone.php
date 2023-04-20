@@ -5,6 +5,9 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
+use App\Models\Tb;
+use App\Utilities\DateUtils;
+
 ob_start();
 
 //Funding source list
@@ -27,7 +30,7 @@ foreach ($testPlatformResult as $row) {
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$tbObj = new \App\Models\Tb();
+$tbObj = new Tb();
 $tbXPertResults = $tbObj->getTbResults('x-pert');
 $tbLamResults = $tbObj->getTbResults('lam');
 $specimenTypeResult = $tbObj->getTbSampleTypes();
@@ -222,7 +225,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<th scope="row"><label for="patientDob">Date of Birth </label></th>
 										<td>
-											<input type="text" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" value="<?php echo DateUtils::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
@@ -495,7 +498,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</select>
 											</td>
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
-											<td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+											<td><input value="<?php echo DateUtils::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 										</tr>
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
@@ -805,7 +808,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -842,7 +845,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
             changeYear: true,
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
                 //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();

@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
@@ -7,7 +10,7 @@ $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 

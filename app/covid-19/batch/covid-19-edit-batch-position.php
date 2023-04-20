@@ -14,11 +14,11 @@ $displayOrder = array();
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id=".$batchInfo[0]['config_id'];
+$configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
 $configControl = array();
-foreach($configControlInfo as $info){
-	if($info['test_type'] == 'covid-19'){
+foreach ($configControlInfo as $info) {
+	if ($info['test_type'] == 'covid-19') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 		$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
@@ -45,20 +45,22 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
 	}
 } else {
-	if(isset($configControl['covid-19']['noHouseCtrl']) && trim($configControl['covid-19']['noHouseCtrl'])!='' && $configControl['covid-19']['noHouseCtrl']>0){
-		foreach(range(1,$configControl['covid-19']['noHouseCtrl']) as $h){
-			$displayOrder[] = "no_of_in_house_controls_".$h;
-			$content.='<li class="ui-state-default" id="no_of_in_house_controls_'.$h.'">In-House Controls '.$h.'</li>';
+	if (isset($configControl['covid-19']['noHouseCtrl']) && trim($configControl['covid-19']['noHouseCtrl']) != '' && $configControl['covid-19']['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl['covid-19']['noHouseCtrl']) as $h) {
+			$displayOrder[] = "no_of_in_house_controls_" . $h;
+			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
-	}if(isset($configControl['covid-19']['noManufacturerCtrl']) && trim($configControl['covid-19']['noManufacturerCtrl'])!='' && $configControl['covid-19']['noManufacturerCtrl']>0){
-		foreach(range(1,$configControl['covid-19']['noManufacturerCtrl']) as $m){
-			$displayOrder[] = "no_of_manufacturer_controls_".$m;
-		   	$content.='<li class="ui-state-default" id="no_of_manufacturer_controls_'.$m.'">Manufacturer Controls '.$m.'</li>';	
+	}
+	if (isset($configControl['covid-19']['noManufacturerCtrl']) && trim($configControl['covid-19']['noManufacturerCtrl']) != '' && $configControl['covid-19']['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl['covid-19']['noManufacturerCtrl']) as $m) {
+			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
+			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
-	}if(isset($configControl['covid-19']['noCalibrators']) && trim($configControl['covid-19']['noCalibrators'])!='' && $configControl['covid-19']['noCalibrators']>0){
-		foreach(range(1,$configControl['covid-19']['noCalibrators']) as $c){
-			$displayOrder[] = "no_of_calibrators_".$c;	 	
-		   	$content.='<li class="ui-state-default" id="no_of_calibrators_'.$c.'">Calibrators '.$c.'</li>';
+	}
+	if (isset($configControl['covid-19']['noCalibrators']) && trim($configControl['covid-19']['noCalibrators']) != '' && $configControl['covid-19']['noCalibrators'] > 0) {
+		foreach (range(1, $configControl['covid-19']['noCalibrators']) as $c) {
+			$displayOrder[] = "no_of_calibrators_" . $c;
+			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
 	$samplesQuery = "SELECT covid19_id,sample_code from form_covid19 where sample_batch_id=$id ORDER BY sample_code ASC";
@@ -98,7 +100,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 
 	<!-- Main content -->
 	<section class="content">
-		
+
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>
@@ -141,7 +143,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	sortedTitle = [];
 	$(document).ready(function() {
 		function cleanArray(actual) {
-			var newArray = new Array();
+			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
 				if (actual[i]) {
 					newArray.push(actual[i]);
@@ -174,4 +176,3 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

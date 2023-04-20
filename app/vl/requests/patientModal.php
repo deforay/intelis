@@ -1,8 +1,10 @@
 <?php
 
 
+use App\Models\General;
+use App\Utilities\DateUtils;
 
-$general = new \App\Models\General();
+$general = new General();
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_vl as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -80,21 +82,21 @@ $pResult = $db->rawQuery($pQuery);
 										$patientDetails = json_encode(array(
 											"name"=>$patient['patient_first_name'] . " " . $patient['patient_last_name'],
 											"gender" => $patient['patient_gender'],
-											"dob" => \App\Utilities\DateUtils::humanReadableDateFormat($patient['patient_dob']),
+											"dob" => DateUtils::humanReadableDateFormat($patient['patient_dob']),
 											"age_in_years" => $patient['patient_age_in_years'],
 											"age_in_months" => $patient['patient_age_in_months'],
 											"is_pregnant" => $patient['is_patient_pregnant'],
 											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
 											"mobile" => $patient['patient_mobile_number'],
 											"consent_to_receive_sms" =>$patient['consent_to_receive_sms'],
-											"treatment_initiated_date" => \App\Utilities\DateUtils::humanReadableDateFormat($patient['treatment_initiated_date']),
+											"treatment_initiated_date" => DateUtils::humanReadableDateFormat($patient['treatment_initiated_date']),
 											"current_regimen" => $patient['current_regimen'],
-											"last_viral_load_date" => \App\Utilities\DateUtils::humanReadableDateFormat($patient['last_viral_load_date']),
+											"last_viral_load_date" => DateUtils::humanReadableDateFormat($patient['last_viral_load_date']),
 											"last_viral_load_result" => $patient['last_viral_load_result'],
 											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
 											"patient_art_no" => $patient['patient_art_no'],
 											"is_patient_new" => $patient['is_patient_new'],
-											"sample_tested_datetime" => \App\Utilities\DateUtils::humanReadableDateFormat($patient['sample_tested_datetime']),
+											"sample_tested_datetime" => DateUtils::humanReadableDateFormat($patient['sample_tested_datetime']),
 											"result" => $patient['result'],
 										));
 										

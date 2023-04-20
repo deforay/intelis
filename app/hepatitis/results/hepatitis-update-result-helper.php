@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
@@ -16,14 +20,14 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
@@ -42,7 +46,7 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
 	}
@@ -65,14 +69,14 @@ try {
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? \App\Utilities\DateUtils::getCurrentDateTime() : null,
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : null,
 		'result_status'                       => 8,
 		'result_sent_to_source'               => $resultSentToSource,
 		'data_sync'                           => 0,
 		'last_modified_by'                     => $_SESSION['userId'],
-		'last_modified_datetime'               => \App\Utilities\DateUtils::getCurrentDateTime(),
+		'last_modified_datetime'               => DateUtils::getCurrentDateTime(),
 		'result_printed_datetime' 			  => null,
 		'result_dispatched_datetime' 		  => null,
 		'reason_for_vl_test'				  => isset($_POST['reasonVlTest']) ? $_POST['reasonVlTest'] : null,

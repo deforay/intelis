@@ -5,7 +5,7 @@ $title = "Province";
 require_once(APPLICATION_PATH . '/header.php');
 
 $id = base64_decode($_GET['id']);
-if(!isset($id) || $id == ""){
+if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in province edit page";
     header("location:province-details.php");
 }
@@ -40,8 +40,8 @@ $provinceInfo = $db->query($query);
                                 <div class="form-group">
                                     <label for="provinceName" class="col-lg-4 control-label">Province Name <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $provinceInfo[0]['province_name'];?>" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="Province Name" title="Please enter Province name" onblur="checkNameValidation('province_details','province_name',this,'<?php echo "province_id##" . $id; ?>','The province name that you entered already exists.Enter another name',null)" />
-                                        <input type="hidden" value="<?php echo $provinceInfo[0]['province_name'];?>" class="form-control" id="provinceNameOld" name="provinceNameOld">
+                                        <input type="text" value="<?php echo $provinceInfo[0]['province_name']; ?>" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="Province Name" title="Please enter Province name" onblur="checkNameValidation('province_details','province_name',this,'<?php echo "province_id##" . $id; ?>','The province name that you entered already exists.Enter another name',null)" />
+                                        <input type="hidden" value="<?php echo $provinceInfo[0]['province_name']; ?>" class="form-control" id="provinceNameOld" name="provinceNameOld">
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@ $provinceInfo = $db->query($query);
                                 <div class="form-group">
                                     <label for="provinceCode" class="col-lg-4 control-label">Province Code <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $provinceInfo[0]['province_code'];?>" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="Province code" title="Please enter Province code" onblur="checkNameValidation('province_details','province_code',this,'<?php echo "province_id##" . $id; ?>','The province code that you entered already exists.Enter another code',null)" />
+                                        <input type="text" value="<?php echo $provinceInfo[0]['province_code']; ?>" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="Province code" title="Please enter Province code" onblur="checkNameValidation('province_details','province_code',this,'<?php echo "province_id##" . $id; ?>','The province code that you entered already exists.Enter another code',null)" />
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@ $provinceInfo = $db->query($query);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="provinceId" name="provinceId" value="<?php echo htmlspecialchars($_GET['id']);?>">
+                        <input type="hidden" name="provinceId" name="provinceId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
                         <a href="province-details.php" class="btn btn-default"> Cancel</a>
                     </div>
@@ -110,4 +110,3 @@ $provinceInfo = $db->query($query);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

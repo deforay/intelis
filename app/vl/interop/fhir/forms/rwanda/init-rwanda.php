@@ -2,13 +2,17 @@
 
 // this file is included in /vl/interop/fhir/vl-receive.php
 
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new \App\Models\General();
-$vlModel = new \App\Models\Vl();
+$general = new General();
+$vlModel = new Vl();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -29,7 +33,7 @@ $metaResource = $parser->parse($json);
 $db = MysqliDb::getInstance();
 
 $entries = $metaResource->getEntry();
-$facilityDb = new \App\Models\Facilities();
+$facilityDb = new Facilities();
 
 foreach ($entries as $entry) {
     $resource = $entry->getResource();
@@ -85,7 +89,7 @@ foreach ($entries as $entry) {
     $data['facility_district_id'] = $facilityDistrictId;
     $data['facility_district'] = $facilityDistrict;
     $data['vlsm_instance_id'] = $instanceId;
-    $data['updated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+    $data['updated_datetime'] = DateUtils::getCurrentDateTime();
     $data['facility_type'] = 1;
     $data['status'] = 'active';
 
@@ -100,7 +104,7 @@ foreach ($entries as $entry) {
     $dataTest = array(
         'test_type' => 'vl',
         'facility_id' => $id,
-        "updated_datetime" => \App\Utilities\DateUtils::getCurrentDateTime()
+        "updated_datetime" => DateUtils::getCurrentDateTime()
     );
     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);    
 }

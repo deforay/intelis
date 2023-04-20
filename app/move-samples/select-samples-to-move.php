@@ -1,10 +1,13 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $title = "Add Sample List";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 //get lab facility details
@@ -422,4 +425,3 @@ foreach ($fResult as $fDetails) {
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

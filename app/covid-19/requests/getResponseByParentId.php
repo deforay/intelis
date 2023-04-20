@@ -1,6 +1,8 @@
 <?php
 
-$general = new \App\Models\General();
+use App\Models\General;
+
+$general = new General();
 $sampleData = array();
 $sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = "'. $_POST['responseParent'].'"';
 $sampleResult = $db->query($sampleQuery);
@@ -22,9 +24,9 @@ if(count($sampleResult) > 0){
                 <th style="width:50%;padding-left:25px;">'.($sampleRow['test_reason_name']).'</th>
                 <td style="width:50%;">
                     <input name="responseId[]" type="hidden" value="'.$sampleRow['test_reason_id'].'">
-                    <select name="responseDetected[]" class="reason-input form-control" title="Veuillez choisir la valeur pour '. $sampleRow['test_reason_name'].'" style="width:80%" onchange="checkSubResponse(this,'.$sampleRow['test_reason_id'].','.$index.');">
+                    <select name="responseDetected[]" class="reason-input form-control" title="Veuillez choisir la valeur pour '. $sampleRow['test_reason_name'].'" style="width:80%" onchange="checkSubResponse(this,'.$sampleRow['test_reason_id'].','.$index. ')">
                         <option value="">-- Select --</option>
-                        <option value="yes" '.$yes.'> Oui </option>
+                        <option value="yes" ' .$yes.'> Oui </option>
                         <option value="no" '.$no.'> Non </option>
                         <option value="unknown" '.$unknown.'> Inconnu </option>
                     </select>

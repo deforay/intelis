@@ -2,8 +2,11 @@
 
 // imported in /hepatitis/results/hepatitis-update-result.php based on country in global config
 
+use App\Models\Facilities;
+use App\Utilities\DateUtils;
+
 ob_start();
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
@@ -173,7 +176,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
 
                                 <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                 <td>
-                                    <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
+                                    <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
                                 </td>
                             </tr>
                             <tr>
@@ -274,7 +277,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                     <tr>
                                         <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                            <input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                         </td>
                                         <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                         <td>
@@ -286,7 +289,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                     <tr>
                                         <th scope="row"><label for="sampleTestedDateTime">VL Testing Date <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($hepatitisInfo['sample_tested_datetime']) ?>" type="text" class="form-control isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter testing date" style="width:100%;" />
+                                            <input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['sample_tested_datetime']) ?>" type="text" class="form-control isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter testing date" style="width:100%;" />
                                         </td>
                                         <th scope="row"><label for="vlTestingSite">VL Testing Site</label></th>
                                         <td>
@@ -324,7 +327,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                             </select>
                                         </td>
                                         <th scope="row">Rejection Date<span class="mandatory">*</span></th>
-                                        <td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                        <td><input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                     </tr>
                                     <!-- <tr>
                                         <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
@@ -376,7 +379,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                     </tr>
                                     <tr>
                                         <td>Authorized on <span class="mandatory">*</span></td>
-                                        <td><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date rejected-input" placeholder="Authorized on" /></td>
+                                        <td><input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date rejected-input" placeholder="Authorized on" /></td>
                                         <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                         <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                     </tr>

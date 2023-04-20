@@ -1,8 +1,11 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
   
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "batch_details";
 try {
     $labelOrder = '';

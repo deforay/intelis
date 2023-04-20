@@ -9,11 +9,15 @@
 <link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 <?php
+
+use App\Models\General;
+use App\Models\System;
+
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
@@ -33,13 +37,18 @@ function getColumns($db, $tableName)
 
 function getColumnValues($db, $tableName, $sampleCode)
 {
-	$sql = "SELECT a.*, modifier.user_name as last_modified_by, creator.user_name as req_created_by,tester.user_name as tested_by,approver.user_name as result_approved_by,riewer.user_name as result_reviewed_by
-				from $tableName as a 
-				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id 
+	$sql = "SELECT a.*,
+				modifier.user_name as last_modified_by,
+				creator.user_name as req_created_by,
+				tester.user_name as tested_by,
+				approver.user_name as result_approved_by,
+				riewer.user_name as result_reviewed_by
+				from $tableName as a
+				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id
 				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
-				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id 
+				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id
 				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
-				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id 
+				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id
 				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
 	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
 }
@@ -170,7 +179,7 @@ $resultColumn = getColumns($db, $tableName);
 								</table>
 
 								<p>
-								<h3> Current Record for Sample <?php echo $sampleCode; ?></h3>
+								<h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 								</p>
 								<table class="current table table-striped table-hover table-bordered" aria-hidden="true">
 									<thead>
@@ -231,6 +240,10 @@ $resultColumn = getColumns($db, $tableName);
 
 
 
+
+<script src="/assets/js/dataTables.buttons.min.js"></script>
+<script src="/assets/js/jszip.min.js"></script>
+<script src="/assets/js/buttons.html5.min.js"></script>
 <script type="text/javascript">
 	function printString(columnNumber) {
 		// To store result (Excel column name)
@@ -337,7 +350,3 @@ $resultColumn = getColumns($db, $tableName);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>
-<script src="/assets/js/dataTables.buttons.min.js"></script>
-<script src="/assets/js/jszip.min.js"></script>
-<script src="/assets/js/buttons.html5.min.js"></script>

@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_tb_results";
 $primaryKey = "result_id";
 try {
@@ -13,7 +17,7 @@ try {
 			'result_type' 		=> ($_POST['resultType']),
 			'result' 		=> ($_POST['resultName']),
 			'status' 	    => $_POST['resultStatus'],
-			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' 	=> DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));

@@ -15,7 +15,6 @@ class DateUtils
     public function verifyDateFormat($date, $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim($date);
-        $response = false;
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
             $response = false;
@@ -25,7 +24,7 @@ class DateUtils
                 if ($strict) {
                     $errors = DateTimeImmutable::getLastErrors();
                     if (
-                        empty($dateTime) || $dateTime === false
+                        empty($dateTime)
                         || !empty($errors['warning_count'])
                         || !empty($errors['error_count'])
                     ) {
@@ -40,11 +39,10 @@ class DateUtils
         return $response;
     }
 
-    // Function to get the verify if date is valid or not
+    // Function to verify if date is valid or not
     public static function verifyIfDateValid($date): bool
     {
         $date = trim($date);
-        $response = false;
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
             $response = false;
@@ -53,7 +51,7 @@ class DateUtils
                 $dateTime = new DateTimeImmutable($date);
                 $errors = DateTimeImmutable::getLastErrors();
                 if (
-                    empty($dateTime) || $dateTime === false
+                    empty($dateTime)
                     || !empty($errors['warning_count'])
                     || !empty($errors['error_count'])
                 ) {

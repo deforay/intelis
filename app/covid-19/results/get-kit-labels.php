@@ -1,8 +1,12 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\General;
+
 ob_start();
 
-$generalObj = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
+$generalObj = new General();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = " . base64_decode($_POST['kitId']));

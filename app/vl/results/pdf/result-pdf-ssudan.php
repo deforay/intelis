@@ -3,6 +3,8 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 
+use App\Utilities\DateUtils;
+
 $resultFilename = '';
 
 if (sizeof($requestResult) > 0) {
@@ -15,7 +17,7 @@ if (sizeof($requestResult) > 0) {
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
+          $currentTime = DateUtils::getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
@@ -117,7 +119,7 @@ if (sizeof($requestResult) > 0) {
           $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
           // set auto page breaks
-          $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+          $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
           // set image scale factor
           $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

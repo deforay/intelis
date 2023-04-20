@@ -1,12 +1,16 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
   
 
 
-$general=new \App\Models\General();
+$general=new General();
 
 $module = 'C19';
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName1="covid19_positive_confirmation_manifest";
 $tableName2="form_covid19";
@@ -19,7 +23,7 @@ try {
             'manifest_status'           =>  'pending',
             'module'                    =>  $module,
             'added_by'                  =>  $_SESSION['userId'],
-            'request_created_datetime'  =>  \App\Utilities\DateUtils::getCurrentDateTime()
+            'request_created_datetime'  =>  DateUtils::getCurrentDateTime()
         );
                     
         $db->insert($tableName1,$data);

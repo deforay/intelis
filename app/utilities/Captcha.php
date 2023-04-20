@@ -143,7 +143,7 @@ class Captcha
 
         // Verify font file exists
         if (!file_exists($font)) {
-            throw new \Exception('Font file not found: ' . $font);
+            throw new Exception('Font file not found: ' . $font);
         }
 
 

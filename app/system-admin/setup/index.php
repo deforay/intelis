@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
@@ -8,7 +11,7 @@ if (count($adminCount) != 0) {
 }
 
 $path = '/assets/img/remote-bg.jpg';
-$general = new \App\Models\General();
+$general = new General();
 
 $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
 

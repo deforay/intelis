@@ -124,4 +124,3 @@ foreach ($testInfo as $test) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

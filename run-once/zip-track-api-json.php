@@ -24,7 +24,7 @@ foreach ($files as $path) {
     $zip = new ZipArchive();
     if ($zip->open($path . '.zip', (ZipArchive::CREATE | ZipArchive::OVERWRITE)) === true) {
         $zip->addFromString(basename($path), file_get_contents($path));
-        $zip->close();
+        //$zip->close();
         //unlink($path);
     }
 }
@@ -40,7 +40,7 @@ foreach ($files as $path) {
     $zip = new ZipArchive();
     if ($zip->open($path . '.zip', (ZipArchive::CREATE | ZipArchive::OVERWRITE)) === true) {
         $zip->addFromString(basename($path), file_get_contents($path));
-        $zip->close();
+        //$zip->close();
         //unlink($path);
     }
 }

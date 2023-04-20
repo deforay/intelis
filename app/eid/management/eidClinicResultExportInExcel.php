@@ -7,8 +7,15 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
+
+use App\Models\General;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 //system config
@@ -25,7 +32,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      error_log($_SESSION['highViralResult']);
      $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
-     $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+     $excel = new Spreadsheet();
      $output = array();
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child's ID","Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
@@ -43,12 +50,12 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                'size' => '13',
           ),
           'alignment' => array(
-               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+               'horizontal' => Alignment::HORIZONTAL_CENTER,
+               'vertical' => Alignment::VERTICAL_CENTER,
           ),
           'borders' => array(
                'outline' => array(
-                    'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'style' => Border::BORDER_THIN,
                ),
           )
      );
@@ -72,11 +79,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+     ->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -144,7 +151,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $colNo++;
           }
      }
-     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+     $writer = IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;

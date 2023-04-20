@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use MysqliDb;
+
 /**
  * General functions
  *
@@ -16,7 +18,7 @@ class Instruments
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
 

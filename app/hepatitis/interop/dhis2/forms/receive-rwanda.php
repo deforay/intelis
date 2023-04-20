@@ -3,15 +3,22 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 
-$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+use App\Interop\Dhis2;
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Utilities\DateUtils;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
+$dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 $transactionId = $general->generateUUID();
 
-$hepatitisModel = new \App\Models\Hepatitis();
+$hepatitisModel = new Hepatitis();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -36,9 +43,9 @@ if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('N
 
 $options = [
     'pointer' => '/trackedEntityInstances',
-    'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    'decoder' => new ExtJsonDecoder(true)
 ];
-$trackedEntityInstances = \JsonMachine\Items::fromString($jsonResponse, $options);
+$trackedEntityInstances = Items::fromString($jsonResponse, $options);
 
 $dhis2GenderOptions = array('Male' => 'male', '1' => 'male', 'Female' => 'female', '2' => 'female');
 $dhis2SocialCategoryOptions = array('1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D');
@@ -273,12 +280,12 @@ foreach ($trackedEntityInstances as $tracker) {
         //var_dump($uniqueID . " -- " . $formData['hepatitis_test_type']);
         //continue;
 
-        $formData['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $formData['request_created_datetime'] = DateUtils::getCurrentDateTime();
         $updateColumns = array_keys($formData);
 
         $formData['unique_id'] = $uniqueID;
 
-        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, \App\Utilities\DateUtils::humanReadableDateFormat($formData['sample_collection_date']));
+        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, DateUtils::humanReadableDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -302,7 +309,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
-        $formData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $formData['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
 
         $formAttributes = array();

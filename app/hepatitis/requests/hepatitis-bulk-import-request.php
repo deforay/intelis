@@ -1,9 +1,12 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $title = "Bulk Import Test Requests";
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 $countryFormId = $general->getGlobalConfig('vl_form');
 $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
 ?>
@@ -96,4 +99,3 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'co
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

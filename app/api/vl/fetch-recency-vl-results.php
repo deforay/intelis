@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\General;
+use App\Models\Users;
+
 session_unset(); // no need of session in json response
 
 // PURPOSE : Fetch Results using external_sample_code field which is used to
@@ -10,8 +13,8 @@ session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \App\Models\General();
-$userDb = new \App\Models\Users();
+$general = new General();
+$userDb = new Users();
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -30,7 +33,7 @@ if (!empty($auth)) {
 // If authentication fails then do not proceed
 if (empty($user) || empty($user['user_id'])) {
     http_response_code(401);
-    throw new \Exception("Bearer token is invalid");
+    throw new Exception("Bearer token is invalid");
 }
 
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
@@ -41,7 +44,7 @@ $orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['ord
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     http_response_code(400);
-    throw new \Exception("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
+    throw new Exception("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
 }
 
 try {
@@ -99,7 +102,7 @@ try {
     // No data found
     if (!$rowData) {
         http_response_code(200);
-        throw new \Exception("No Matching Data");
+        throw new Exception("No Matching Data");
     }
 
     $payload = array(

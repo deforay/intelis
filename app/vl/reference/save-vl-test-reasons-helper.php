@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_vl_test_reasons";
 $primaryKey = "test_reason_id";
 try {
@@ -13,7 +17,7 @@ try {
 			'test_reason_name' 		=> $_POST['testReasonName'],
 			'parent_reason' 		=> (isset($_POST['parentReason']) && $_POST['parentReason'] != "")?$_POST['parentReason']:0,
 			'test_reason_status'    => $_POST['testReasonStatus'],
-			'updated_datetime'  	=> \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime'  	=> DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['testReasonId']) && $_POST['testReasonId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['testReasonId']));

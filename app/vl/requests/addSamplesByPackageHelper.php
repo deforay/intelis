@@ -1,7 +1,11 @@
 <?php
 
-$general = new \App\Models\General();
-$vlObj = new \App\Models\Vl();
+use App\Models\General;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
+$general = new General();
+$vlObj = new Vl();
 
 
 $sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'] . ")";
@@ -18,7 +22,7 @@ foreach ($sampleResult as $sampleRow) {
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = \App\Utilities\DateUtils::isoDateFormat($testDate[0]);
+        $_POST['testDate'] = DateUtils::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -26,7 +30,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $vlObj->generateVLSampleID($provinceCode, \App\Utilities\DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $vlObj->generateVLSampleID($provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];
@@ -36,7 +40,7 @@ foreach ($sampleResult as $sampleRow) {
         $vldata['data_sync'] = 0;
 
         $vldata['last_modified_by'] = $_SESSION['userId'];
-        $vldata['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $vldata['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
         if (!empty($_POST['testDate'])) {
             $vldata['sample_tested_datetime'] = null;

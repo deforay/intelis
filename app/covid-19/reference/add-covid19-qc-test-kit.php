@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\General;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
+$general = new General();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 ?>
@@ -169,4 +173,3 @@ $covid19Results = $covid19Obj->getCovid19Results();
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

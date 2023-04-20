@@ -6,12 +6,20 @@ ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
+
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
-
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();
 $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
 
@@ -31,7 +39,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
-	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+	$excel = new Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 
@@ -49,23 +57,23 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			'size' => 12,
 		),
 		'alignment' => array(
-			'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-			'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
+			'vertical' => Alignment::VERTICAL_CENTER,
 		),
 		'borders' => array(
 			'outline' => array(
-				'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				'style' => Border::BORDER_THIN,
 			),
 		)
 	);
 
 	$borderStyle = array(
 		'alignment' => array(
-			'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
 		),
 		'borders' => array(
 			'outline' => array(
-				'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				'style' => Border::BORDER_THIN,
 			),
 		)
 	);
@@ -78,19 +86,19 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 	}
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);	
+	->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);			
+			->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 			$colNo++;
 		}
 	}
@@ -193,7 +201,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $covid19Results[$aRow['result']];
-		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
@@ -214,7 +222,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$colNo++;
 		}
 	}
-	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+	$writer = IOFactory::createWriter($excel, 'Xlsx');
 	$filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

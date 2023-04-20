@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\GeoLocations;
+
 $title = _("EID | Clinics Report");
  
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
@@ -1043,4 +1047,3 @@ startDate: moment().subtract(28, 'days'),
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

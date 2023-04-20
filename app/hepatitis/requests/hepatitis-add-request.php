@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Hepatitis;
+use App\Models\Users;
+
 ob_start();
 $title = "Hepatitis | Add New Request";
 
@@ -33,9 +38,9 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 // $general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$hepatitisDb = new \App\Models\Hepatitis();
-$userDb = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$hepatitisDb = new Hepatitis();
+$userDb = new Users();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
@@ -106,7 +111,7 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -116,7 +121,7 @@ require($fileArray[$arr['vl_form']]);
             changeYear: true,
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
@@ -160,7 +165,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -180,7 +185,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -199,7 +204,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function(e) {
 
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

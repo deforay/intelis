@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\General;
+use App\Models\Users;
+
 ob_start();
 
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
-$userDb = new \App\Models\Users();
-$general = new \App\Models\General();
+$userDb = new Users();
+$general = new General();
 
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from instruments where config_id=?";
@@ -547,4 +551,3 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

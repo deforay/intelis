@@ -1,13 +1,19 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
+use App\Models\App;
+use App\Models\General;
+use App\Utilities\DateUtils;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 if (php_sapi_name() == 'cli') {
     require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 }
 
 
-$general = new \App\Models\General();
-$app = new \App\Models\App();
+$general = new General();
+$app = new App();
 
 
 
@@ -84,9 +90,9 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         $options = [
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_vl'";
         $allColResult = $db->rawQuery($allColumns);
@@ -127,7 +133,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $request['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
             //check wheather sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -255,9 +261,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         $options = [
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
 
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='form_eid'";
@@ -296,7 +302,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $request['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -435,9 +441,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $options = [
             'pointer' => '/result',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
@@ -453,7 +459,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $request['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
             //check whether sample code empty or not
             // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
@@ -532,9 +538,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $options = [
             'pointer' => '/symptoms',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $symptoms) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_symptoms");
@@ -549,9 +555,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $options = [
             'pointer' => '/comorbidities',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $covid19Id => $comorbidities) {
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_comorbidities");
@@ -567,9 +573,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $options = [
             'pointer' => '/testResults',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
 
         foreach ($parsedData as $covid19Id => $testResults) {
             $db = $db->where('covid19_id', $covid19Id);
@@ -654,9 +660,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
         $options = [
             'pointer' => '/result',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();
@@ -671,7 +677,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $request['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -745,9 +751,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
         $options = [
             'pointer' => '/risks',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $risks) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_risk_factors");
@@ -769,9 +775,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
         $options = [
             'pointer' => '/comorbidities',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $hepatitisId => $comorbidities) {
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_patient_comorbidities");
@@ -856,9 +862,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
         $options = [
             'pointer' => '/result',
-            'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $request = array();
@@ -872,7 +878,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             }
 
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $request['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
             //check exist remote
             $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
@@ -954,7 +960,7 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => \App\Utilities\DateUtils::getCurrentDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => DateUtils::getCurrentDateTime()));
 
 if (isset($forceSyncModule) && trim($forceSyncModule) != "" && isset($manifestCode) && trim($manifestCode) != "") {
     return 1;

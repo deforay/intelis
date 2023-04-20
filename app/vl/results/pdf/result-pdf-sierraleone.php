@@ -3,6 +3,8 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 
+use App\Utilities\DateUtils;
+
 $resultFilename = '';
 
 if (sizeof($requestResult) > 0) {
@@ -15,7 +17,7 @@ if (sizeof($requestResult) > 0) {
      $pages = array();
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
+          $currentTime = DateUtils::getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
@@ -57,7 +59,7 @@ if (sizeof($requestResult) > 0) {
           if (isset($result['result_approved_by']) && !empty($result['result_approved_by'])) {
                $resultApprovedByRes = $users->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
                if ($resultApprovedByRes) {
-                    $resultApprovedBy = $resultApprovedByRes['result_approved_by'];
+                    $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
                }
                if (!empty($resultApprovedByRes['user_signature'])) {
                     $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
@@ -81,10 +83,12 @@ if (sizeof($requestResult) > 0) {
           }
           $draftTextShow = false;
           //Set watermark text
-          for ($m = 0; $m < count($mFieldArray); $m++) {
-               if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                    $draftTextShow = true;
-                    break;
+          if (!empty($mFieldArray)) {
+               for ($m = 0; $m < count($mFieldArray); $m++) {
+                    if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                         $draftTextShow = true;
+                         break;
+                    }
                }
           }
           // create new PDF document
@@ -117,7 +121,7 @@ if (sizeof($requestResult) > 0) {
           $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
           // set auto page breaks
-          $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+          $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
           // set image scale factor
           $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -277,7 +281,7 @@ if (sizeof($requestResult) > 0) {
           if ($result['result_status'] == '4') {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
-         $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
+          $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
 
           $html .= '<td colspan="3">';

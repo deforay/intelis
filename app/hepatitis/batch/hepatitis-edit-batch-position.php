@@ -141,7 +141,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	sortedTitle = [];
 	$(document).ready(function() {
 		function cleanArray(actual) {
-			var newArray = new Array();
+			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
 				if (actual[i]) {
 					newArray.push(actual[i]);
@@ -174,4 +174,3 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

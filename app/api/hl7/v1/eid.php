@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Eid;
+use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
 use Aranyasen\HL7\Segments\PID;
@@ -8,7 +10,7 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new \App\Models\Eid();
+$eidModel = new Eid();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -440,9 +442,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'                             => \App\Utilities\DateUtils::getCurrentDateTime(),
-            'sample_registered_at_lab'                             => \App\Utilities\DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'                             => \App\Utilities\DateUtils::getCurrentDateTime()
+            'request_created_datetime'                             => DateUtils::getCurrentDateTime(),
+            'sample_registered_at_lab'                             => DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'                             => DateUtils::getCurrentDateTime()
         );
 
         $eidData['source_of_request'] = 'hl7';

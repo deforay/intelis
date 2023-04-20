@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\Facilities;
+
 $title = _("Hepatitis | Sample Rejection Report");
  
 require_once(APPLICATION_PATH . '/header.php');
@@ -6,7 +9,7 @@ require_once(APPLICATION_PATH . '/header.php');
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
@@ -156,4 +159,3 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

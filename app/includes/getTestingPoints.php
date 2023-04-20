@@ -1,7 +1,10 @@
 <?php
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+use App\Models\Facilities;
+use App\Models\General;
+
+$general = new General();
+$facilitiesDb = new Facilities();
 
 $labId = !empty($_POST['labId']) ? $_POST['labId'] : null;
 $selectedTestingPoint = !empty($_POST['selectedTestingPoint']) ? $_POST['selectedTestingPoint'] : null;

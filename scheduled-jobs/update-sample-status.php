@@ -1,8 +1,12 @@
 <?php
 
+use App\Models\General;
+
 require_once(__DIR__ . "/../bootstrap.php");
 
-$general = new \App\Models\General();
+$db = \MysqliDb::getInstance();
+
+$general = new General();
 
 $primaryKey = array(
     "vl" => "vl_sample_id",
@@ -24,7 +28,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         //EXPIRING SAMPLES
         $expiryDays = $general->getGlobalConfig($module . '_sample_expiry_after_days');
         if (empty($expiryDays)) {
-            $expiryDays = 365 * 2; // by default we consider samples more than 2 years as expired
+            $expiryDays = 365 * 2; // by default, we consider samples more than 2 years as expired
         }
         $db->where("result_status != 4"); // not rejected 
         $db->where("result_status != 7"); // not approved

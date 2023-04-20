@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -6,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $packageTable = "package_details";
 try {
     if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && count($_POST['sampleCode']) > 0) {

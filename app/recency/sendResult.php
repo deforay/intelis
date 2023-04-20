@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use GuzzleHttp\Client;
+
 try {
     ob_start();
       
 
 
-    $general = new \App\Models\General();
+    $general = new General();
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';
@@ -12,7 +16,7 @@ try {
 
     $vlTestResultQuery = "SELECT remote_sample_code,result,sample_tested_datetime,recency_vl,recency_sync from form_vl WHERE recency_vl ='yes' AND recency_sync = '0' AND result != '' and result is NOT NULL";
     $vlTestResult = $db->query($vlTestResultQuery);
-    $client = new \GuzzleHttp\Client();
+    $client = new Client();
 
     $domain = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
     $urlCart = $domain . '/api/vl-test-result';

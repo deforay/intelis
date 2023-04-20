@@ -415,4 +415,3 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

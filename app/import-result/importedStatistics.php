@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
  
 require_once(APPLICATION_PATH . '/header.php');
@@ -23,7 +26,7 @@ $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
 
 $module = $tResult['module'];
 
-$general = new \App\Models\General();
+$general = new General();
 
 if ($module == 'vl') {
   require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');

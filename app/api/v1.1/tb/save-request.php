@@ -1,13 +1,19 @@
 <?php
 
+use App\Models\App;
+use App\Models\General;
+use App\Models\Tb;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 session_unset(); // no need of session in json response
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    $general = new \App\Models\General();
-    $userDb = new \App\Models\Users();
-    $app = new \App\Models\App();
-    $tbModel = new \App\Models\Tb();
+    $general = new General();
+    $userDb = new Users();
+    $app = new App();
+    $tbModel = new Tb();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -119,7 +125,7 @@ try {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleCollectionDate'], true);
+            $data['sampleCollectionDate'] = DateUtils::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
@@ -132,9 +138,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['createdOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['updatedOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -179,7 +185,7 @@ try {
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = \App\Utilities\DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = null;
         }
@@ -210,7 +216,7 @@ try {
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $data['sampleCollectionDate'] = DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
         } else {
             $data['sampleCollectionDate'] = null;
         }
@@ -219,55 +225,55 @@ try {
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
             $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+            $data['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = null;
         }
 
         if (!empty($data['sampleReceivedHubDate']) && trim($data['sampleReceivedHubDate']) != "") {
             $sampleReceivedHubDate = explode(" ", $data['sampleReceivedHubDate']);
-            $data['sampleReceivedHubDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
+            $data['sampleReceivedHubDate'] = DateUtils::isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
         } else {
             $data['sampleReceivedHubDate'] = null;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
             $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+            $data['sampleTestedDateTime'] = DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = \App\Utilities\DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+            $data['arrivalDateTime'] = DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = null;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
             $revisedOn = explode(" ", $data['revisedOn']);
-            $data['revisedOn'] = \App\Utilities\DateUtils::isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
+            $data['revisedOn'] = DateUtils::isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
         } else {
             $data['revisedOn'] = null;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
             $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = \App\Utilities\DateUtils::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+            $data['resultDispatchedOn'] = DateUtils::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
             $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = \App\Utilities\DateUtils::isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
+            $data['sampleDispatchedOn'] = DateUtils::isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedDate']) && trim($data['sampleDispatchedDate']) != "") {
             $sampleDispatchedDate = explode(" ", $data['sampleDispatchedDate']);
-            $data['sampleDispatchedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+            $data['sampleDispatchedDate'] = DateUtils::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
         } else {
             $data['sampleDispatchedDate'] = null;
         }
@@ -291,7 +297,7 @@ try {
             'patient_id'                          => !empty($data['patientId']) ? $data['patientId'] : null,
             'patient_name'                        => !empty($data['firstName']) ? $data['firstName'] : null,
             'patient_surname'                     => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob'                         => !empty($data['patientDob']) ? \App\Utilities\DateUtils::isoDateFormat($data['patientDob']) : null,
+            'patient_dob'                         => !empty($data['patientDob']) ? DateUtils::isoDateFormat($data['patientDob']) : null,
             'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,
             'patient_age'                         => !empty($data['patientAge']) ? $data['patientAge'] : null,
             'patient_address'                     => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
@@ -315,25 +321,25 @@ try {
             'xpert_mtb_result'                    => !empty($data['xpertMtbResult']) ? $data['xpertMtbResult'] : null,
             'tested_by'                           => !empty($data['testedBy']) ? $data['testedBy'] : null,
             'result_reviewed_by'                  => !empty($data['reviewedBy']) ? $data['reviewedBy'] : null,
-            'result_reviewed_datetime'            => !empty($data['reviewedOn']) ? \App\Utilities\DateUtils::isoDateFormat($data['reviewedOn']) : null,
+            'result_reviewed_datetime'            => !empty($data['reviewedOn']) ? DateUtils::isoDateFormat($data['reviewedOn']) : null,
             'result_approved_by'                  => !empty($data['approvedBy']) ? $data['approvedBy'] : null,
-            'result_approved_datetime'            => !empty($data['approvedOn']) ? \App\Utilities\DateUtils::isoDateFormat($data['approvedOn']) : null,
+            'result_approved_datetime'            => !empty($data['approvedOn']) ? DateUtils::isoDateFormat($data['approvedOn']) : null,
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
             'reason_for_changing'                 => (isset($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
-            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($data['rejectionDate']) : null,
+            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
         if ($rowData) {
-            $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['updatedOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime();
+            $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['createdOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime();
-            $tbData['sample_registered_at_lab']  = \App\Utilities\DateUtils::getCurrentDateTime();
+            $tbData['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime();
+            $tbData['sample_registered_at_lab']  = DateUtils::getCurrentDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }
 
@@ -351,7 +357,7 @@ try {
                             'tb_id'             => $data['tbSampleId'],
                             'actual_no'         => isset($data['actualNo'][$testKey]) ? $data['actualNo'][$testKey] : null,
                             'test_result'       => $testResult,
-                            'updated_datetime'  => \App\Utilities\DateUtils::getCurrentDateTime()
+                            'updated_datetime'  => DateUtils::getCurrentDateTime()
                         ));
                     }
                 }

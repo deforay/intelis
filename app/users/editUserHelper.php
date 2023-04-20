@@ -1,14 +1,18 @@
 <?php
 
 use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+use App\Utilities\ImageResize;
+use GuzzleHttp\Client;
 
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new \App\Models\Users();
-$general = new \App\Models\General();
+$userDb = new Users();
+$general = new General();
 
 
 $userId = base64_decode($_POST['userId']);
@@ -29,7 +33,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+            $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
@@ -47,7 +51,7 @@ try {
             $imageName = "usign-" . $userId . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new \App\Utilities\ImageResize($signatureImagePath);
+                $resizeObj = new ImageResize($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;
@@ -58,7 +62,7 @@ try {
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
-                $client = new \GuzzleHttp\Client();
+                $client = new Client();
                 $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                 $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 $result = $client->post($url . '/api/update-password', [
@@ -101,8 +105,8 @@ try {
         }
         $_SESSION['alertMsg'] = _("User updated successfully");
 
-        $userType = $general->getSystemConfig('sc_user_type');
-        if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
+        $systemType = $general->getSystemConfig('sc_user_type');
+        if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
             // $nUser = array();
             // $_POST['userId'] = $userId;
             // $nUser['userName'] = $_POST['userName']; 

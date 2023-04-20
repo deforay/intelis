@@ -1,8 +1,10 @@
 <?php
 
 
+use App\Models\General;
+use App\Utilities\DateUtils;
 
-$general = new \App\Models\General();
+$general = new General();
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -80,14 +82,14 @@ $pResult = $db->rawQuery($pQuery);
 								$patientDetails = json_encode(array(
 									"name"=>$patient['child_name']." ".$patient['child_surname'],
 									"gender"=>$patient['child_gender'],
-									"dob"=>\App\Utilities\DateUtils::humanReadableDateFormat($patient['child_dob']),
+									"dob"=> DateUtils::humanReadableDateFormat($patient['child_dob']),
 									"age"=>$patient['child_age'],
 									"caretaker_no"=>$patient['caretaker_phone_number'],
 									"child_id"=>$patient['child_id'],
 									"mother_id"=>$patient['mother_id'],
 									"caretaker_address"=>$patient['caretaker_address'],
 									"mother_name"=>$patient['mother_name'],
-									"mother_dob"=>\App\Utilities\DateUtils::humanReadableDateFormat($patient['mother_dob']),
+									"mother_dob"=> DateUtils::humanReadableDateFormat($patient['mother_dob']),
 									"mother_marital_status"=>$patient['mother_marital_status'],
 								));
 								?>

@@ -1,17 +1,21 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $whereCondition = '';
 // $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 // $configFormResult = $db->rawQuery($configFormQuery);
 
-//$userType = $general->getSystemConfig('sc_user_type');
+//$systemType = $general->getSystemConfig('sc_user_type');
 
-// if ($userType == 'remoteuser') {
+// if ($systemType == 'remoteuser') {
 //     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 //     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
 //     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
@@ -66,10 +70,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $labStartDate = '';
@@ -77,10 +81,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $labStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $labEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -89,10 +93,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleTestedDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $testedStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $testedEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name 

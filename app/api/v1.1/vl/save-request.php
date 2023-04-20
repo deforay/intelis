@@ -1,15 +1,21 @@
 <?php
 
+use App\Models\App;
+use App\Models\General;
+use App\Models\Users;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
 ini_set('memory_limit', -1);
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
 try {
 
-    $general = new \App\Models\General();
-    $userDb = new \App\Models\Users();
-    $app = new \App\Models\App();
-    $vlModel = new \App\Models\Vl();
+    $general = new General();
+    $userDb = new Users();
+    $app = new App();
+    $vlModel = new Vl();
 
     $transactionId = $general->generateUUID();
 
@@ -26,7 +32,7 @@ try {
     $input = json_decode($origJson, true);
     
     if (empty($input) || empty($input['data'])) {
-        throw new \Exception("Invalid request");
+        throw new Exception("Invalid request");
     }
 
     /* For API Tracking params */
@@ -49,7 +55,7 @@ try {
         //     'data' => array()
         // );
         http_response_code(401);
-        throw new \Exception(_("Bearer Token Invalid"));
+        throw new Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = array();
@@ -136,7 +142,7 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleCollectionDate'], true);
+            $data['sampleCollectionDate'] = DateUtils::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
@@ -150,9 +156,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['createdOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['updatedOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -206,74 +212,74 @@ try {
         }
 
         if (isset($data['approvedOnDateTime']) && trim($data['approvedOnDateTime']) != "") {
-            $data['approvedOnDateTime'] = \App\Utilities\DateUtils::isoDateFormat($data['approvedOnDateTime'], true);
+            $data['approvedOnDateTime'] = DateUtils::isoDateFormat($data['approvedOnDateTime'], true);
         } else {
             $data['approvedOnDateTime'] = null;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $data['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($data['reviewedOn'], true);
+            $data['reviewedOn'] = DateUtils::isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = null;
         }
 
         if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $data['resultDispatchedOn'] = \App\Utilities\DateUtils::isoDateFormat($data['resultDispatchedOn'], true);
+            $data['resultDispatchedOn'] = DateUtils::isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
         if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $data['sampleDispatchedOn'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleDispatchedOn'], true);
+            $data['sampleDispatchedOn'] = DateUtils::isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = null;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $data['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleReceivedDate'], true);
+            $data['sampleReceivedDate'] = DateUtils::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $data['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleTestedDateTime'], true);
+            $data['sampleTestedDateTime'] = DateUtils::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
         if (!empty($data['sampleTestingDateAtLab']) && trim($data['sampleTestingDateAtLab']) != "") {
-            $data['sampleTestingDateAtLab'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleTestingDateAtLab'], true);
+            $data['sampleTestingDateAtLab'] = DateUtils::isoDateFormat($data['sampleTestingDateAtLab'], true);
         } else {
             $data['sampleTestingDateAtLab'] = null;
         }
 
         if (!empty($data['sampleReceivedAtHubOn']) && trim($data['sampleReceivedAtHubOn']) != "") {
-            $data['sampleReceivedAtHubOn'] = \App\Utilities\DateUtils::isoDateFormat($data['sampleReceivedAtHubOn'], true);
+            $data['sampleReceivedAtHubOn'] = DateUtils::isoDateFormat($data['sampleReceivedAtHubOn'], true);
         } else {
             $data['sampleReceivedAtHubOn'] = null;
         }
 
         if (isset($data['dateOfArtInitiation']) && trim($data['dateOfArtInitiation']) != "") {
-            $data['dateOfArtInitiation'] = \App\Utilities\DateUtils::isoDateFormat($data['dateOfArtInitiation'], true);
+            $data['dateOfArtInitiation'] = DateUtils::isoDateFormat($data['dateOfArtInitiation'], true);
         } else {
             $data['dateOfArtInitiation'] = null;
         }
 
         if (isset($data['patientDob']) && trim($data['patientDob']) != "") {
-            $data['patientDob'] = \App\Utilities\DateUtils::isoDateFormat($data['patientDob'], false);
+            $data['patientDob'] = DateUtils::isoDateFormat($data['patientDob'], false);
         } else {
             $data['patientDob'] = null;
         }
 
         if (isset($data['regimenInitiatedOn']) && trim($data['regimenInitiatedOn']) != "") {
-            $data['regimenInitiatedOn'] = \App\Utilities\DateUtils::isoDateFormat($data['regimenInitiatedOn'], true);
+            $data['regimenInitiatedOn'] = DateUtils::isoDateFormat($data['regimenInitiatedOn'], true);
         } else {
             $data['regimenInitiatedOn'] = null;
         }
 
         //Set Dispatched From Clinic To Lab Date
         if (isset($data['dateDispatchedFromClinicToLab']) && trim($data['dateDispatchedFromClinicToLab']) != "") {
-            $data['dateDispatchedFromClinicToLab'] = \App\Utilities\DateUtils::isoDateFormat($data['dateDispatchedFromClinicToLab'], true);
+            $data['dateDispatchedFromClinicToLab'] = DateUtils::isoDateFormat($data['dateDispatchedFromClinicToLab'], true);
         } else {
             $data['dateDispatchedFromClinicToLab'] = null;
         }
@@ -321,7 +327,7 @@ try {
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = \App\Utilities\DateUtils::isoDateFormat($data['revisedOn'], true);
+            $data['revisedOn'] = DateUtils::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;
         }
@@ -341,9 +347,9 @@ try {
             'is_patient_pregnant'                   => (isset($data['patientPregnant']) && $data['patientPregnant'] != '') ? $data['patientPregnant'] :  null,
             'is_patient_breastfeeding'              => (isset($data['breastfeeding']) && $data['breastfeeding'] != '') ? $data['breastfeeding'] :  null,
             'patient_art_no'                        => (isset($data['patientArtNo']) && $data['patientArtNo'] != '') ? $data['patientArtNo'] :  null,
-            'treatment_initiated_date'              => \App\Utilities\DateUtils::isoDateFormat($data['dateOfArtInitiation']),
+            'treatment_initiated_date'              => DateUtils::isoDateFormat($data['dateOfArtInitiation']),
             'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'],
-            'regimen_change_date'                   => \App\Utilities\DateUtils::isoDateFormat($data['dateOfArvRegimenChange']),
+            'regimen_change_date'                   => DateUtils::isoDateFormat($data['dateOfArvRegimenChange']),
             'current_regimen'                       => (isset($data['artRegimen']) && $data['artRegimen'] != '') ? $data['artRegimen'] :  null,
             'date_of_initiation_of_current_regimen' => $data['regimenInitiatedOn'],
             'patient_mobile_number'                 => (isset($data['patientPhoneNumber']) && $data['patientPhoneNumber'] != '') ? $data['patientPhoneNumber'] :  null,
@@ -352,15 +358,15 @@ try {
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  null,
             'reason_for_vl_testing'                 => $data['reasonForVLTesting'] ?: $data['vlTestReason'] ?: null,
             'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : null,
-            'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($data['rmTestingLastVLDate']) :  null,
+            'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? DateUtils::isoDateFormat($data['rmTestingLastVLDate']) :  null,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  null,
-            'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($data['repeatTestingLastVLDate']) :  null,
+            'last_vl_date_failure_ac'               => (isset($data['repeatTestingLastVLDate']) && $data['repeatTestingLastVLDate'] != '') ? DateUtils::isoDateFormat($data['repeatTestingLastVLDate']) :  null,
             'last_vl_result_failure_ac'             => (isset($data['repeatTestingVlValue']) && $data['repeatTestingVlValue'] != '') ? $data['repeatTestingVlValue'] :  null,
-            'last_vl_date_failure'                  => (isset($data['suspendTreatmentLastVLDate']) && $data['suspendTreatmentLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($data['suspendTreatmentLastVLDate']) :  null,
+            'last_vl_date_failure'                  => (isset($data['suspendTreatmentLastVLDate']) && $data['suspendTreatmentLastVLDate'] != '') ? DateUtils::isoDateFormat($data['suspendTreatmentLastVLDate']) :  null,
             'last_vl_result_failure'                => (isset($data['suspendTreatmentVlValue']) && $data['suspendTreatmentVlValue'] != '') ? $data['suspendTreatmentVlValue'] :  null,
             'request_clinician_name'                => (isset($data['reqClinician']) && $data['reqClinician'] != '') ? $data['reqClinician'] :  null,
             'request_clinician_phone_number'        => (isset($data['reqClinicianPhoneNumber']) && $data['reqClinicianPhoneNumber'] != '') ? $data['reqClinicianPhoneNumber'] :  null,
-            'test_requested_on'                     => (isset($data['requestDate']) && $data['requestDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($data['requestDate']) :  null,
+            'test_requested_on'                     => (isset($data['requestDate']) && $data['requestDate'] != '') ? DateUtils::isoDateFormat($data['requestDate']) :  null,
             'vl_focal_person'                       => (isset($data['vlFocalPerson']) && $data['vlFocalPerson'] != '') ? $data['vlFocalPerson'] :  null,
             'vl_focal_person_phone_number'          => (isset($data['vlFocalPersonPhoneNumber']) && $data['vlFocalPersonPhoneNumber'] != '') ? $data['vlFocalPersonPhoneNumber'] :  null,
             'lab_id'                                => (isset($data['labId']) && $data['labId'] != '') ? $data['labId'] :  null,
@@ -374,7 +380,7 @@ try {
             'reason_for_failure'                    => (isset($data['reasonForFailure']) && $data['reasonForFailure'] != '') ? $data['reasonForFailure'] :  null,
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : null,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  null,
-            'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($data['rejectionDate']) : null,
+            'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($data['rejectionDate']) : null,
             'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  null,
             'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  null,
             'result'                                => $finalResult,
@@ -389,8 +395,8 @@ try {
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : null,
             'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : null,
-            'request_created_datetime'              => (isset($data['createdOn']) && !empty($data['createdOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['createdOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'                => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['updatedOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime(),
+            'request_created_datetime'              => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime(),
+            'last_modified_datetime'                => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
@@ -399,7 +405,7 @@ try {
             'sample_dispatched_datetime'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,
             'vl_test_number'                        => (isset($data['viralLoadNo'])) ? $data['viralLoadNo'] : null,
             'last_viral_load_result'                => (isset($data['lastViralLoadResult'])) ? $data['lastViralLoadResult'] : null,
-            'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? \App\Utilities\DateUtils::isoDateFormat($data['lastViralLoadTestDate']) : null,
+            'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? DateUtils::isoDateFormat($data['lastViralLoadTestDate']) : null,
             'facility_support_partner'              => (isset($data['implementingPartner']) && $data['implementingPartner'] != '') ? $data['implementingPartner'] :  null,
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  null,
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
@@ -444,10 +450,10 @@ try {
         }
 
         if ($rowData) {
-            $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? \App\Utilities\DateUtils::isoDateFormat($data['updatedOn'], true) : \App\Utilities\DateUtils::getCurrentDateTime();
+            $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];
         } else {
-            $vlFulldata['sample_registered_at_lab']  = \App\Utilities\DateUtils::getCurrentDateTime();
+            $vlFulldata['sample_registered_at_lab']  = DateUtils::getCurrentDateTime();
             $vlFulldata['request_created_by']  = $user['user_id'];
         }
 

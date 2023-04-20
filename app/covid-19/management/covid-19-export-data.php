@@ -1,12 +1,18 @@
 <?php
+
+use App\Models\Covid19;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$general = new General();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -32,7 +38,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';
@@ -79,18 +85,18 @@ $state = $geoLocationDb->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
-							
+
 						</tr>
 						<tr>
-						<td><strong><?php echo _("District/County"); ?> :</strong></td>
+							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
-                </select>
+								<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+								</select>
 							</td>
 							<th><?php echo _("Facility Name"); ?></th>
 							<td>
@@ -104,10 +110,10 @@ $state = $geoLocationDb->getProvinces("yes");
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Sample Test Date"); ?></th>
+							<th><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="filter-input form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -125,10 +131,10 @@ $state = $geoLocationDb->getProvinces("yes");
 							<td>
 								<input type="text" id="printDate" name="printDate" class="filter-input form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Status"); ?></th>
+							<th><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _("All Status"); ?></option>
@@ -163,10 +169,10 @@ $state = $geoLocationDb->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							
+
 						</tr>
 						<tr>
-						<th><?php echo _("Implementing Partners"); ?></th>
+							<th><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="filter-input form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -185,18 +191,18 @@ $state = $geoLocationDb->getProvinces("yes");
 								</select>
 
 							</td>
-						<td><strong><?php echo _("Patient ID"); ?></strong></td>
+							<td><strong><?php echo _("Patient ID"); ?></strong></td>
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
 							</td>
-							
-									</tr>
-									<tr>
-									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+
+						</tr>
+						<tr>
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-									</tr>
+						</tr>
 						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
@@ -214,41 +220,41 @@ $state = $geoLocationDb->getProvinces("yes");
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -25px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code"); ?></label>
 								</div>
 								<?php $i = 0;
 								if ($_SESSION['instanceType'] != 'standalone') {
 									$i = 1; ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient Name"); ?></label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient Name"); ?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Lab Name"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Lab Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Funding Source"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Funding Source"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Implementing Partner"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Implementing Partner"); ?></label>
 								</div>
 							</div>
 						</div>
@@ -256,7 +262,7 @@ $state = $geoLocationDb->getProvinces("yes");
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -314,7 +320,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		$("#testingLab").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
-		
+
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').on('cancel.daterangepicker', function(ev, picker) {
 			//do something, like clearing an input
 			$(this).val('');
@@ -378,7 +384,7 @@ $state = $geoLocationDb->getProvinces("yes");
 			}
 		}
 
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -555,9 +561,9 @@ $state = $geoLocationDb->getProvinces("yes");
 	}
 
 	function exportInexcel(fileName) {
-		if(searchExecuted === false){
-     		searchVlRequestData();
-  		}
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
@@ -592,40 +598,38 @@ $state = $geoLocationDb->getProvinces("yes");
 		}
 	}
 
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facilityName").html('');
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facilityName").html('');
 		$("#testingLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
 				$("#testingLab").html(Obj['labs']);
-				});
+			});
 	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$("#testingLab").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['facilities']);
-			$("#testingLab").html(Obj['labs']);
-				});
+
+	function getByDistrict(districtId) {
+		$("#facilityName").html('');
+		$("#testingLab").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+			});
 	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

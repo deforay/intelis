@@ -1,11 +1,16 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
   
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
@@ -18,7 +23,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -55,10 +60,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

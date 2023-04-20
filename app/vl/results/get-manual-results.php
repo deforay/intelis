@@ -1,13 +1,18 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 
 $sarr = $general->getSystemConfig();
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 
 $tableName = "form_vl";
@@ -160,10 +165,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -171,10 +176,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      //print_r($s_t_date);die;
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $t_start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $t_end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -300,7 +305,7 @@ foreach ($rResult as $aRow) {
           } else {
                $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
           }
-          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ',\'\');"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
      } else {
           $print = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
@@ -326,7 +331,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

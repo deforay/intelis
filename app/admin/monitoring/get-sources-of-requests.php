@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -142,10 +146,10 @@ $end_date = '';
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
     $s_c_date = explode("to", $_POST['dateRange']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -254,7 +258,7 @@ foreach ($rResult as $key => $aRow) {
         $row[] = $aRow['noOfResultsReturned'];
     }
     $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
-    $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequest']);
+    $row[] = DateUtils::humanReadableDateFormat($aRow['lastRequest']);
     // $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '\',?id=' . base64_encode() . ');"> View more</a>';
 
     $output['aaData'][] = $row;

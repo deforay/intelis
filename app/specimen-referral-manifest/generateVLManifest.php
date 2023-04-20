@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 $id = base64_decode($_POST['id']);
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
@@ -27,13 +31,13 @@ class MYPDF extends TCPDF
     public function Header()
     {
         // Logo
-        //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+        //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         // Set font
         if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($image_file, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
             }
         }
         $this->SetFont('helvetica', '', 7);
@@ -45,8 +49,8 @@ class MYPDF extends TCPDF
 
         if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($image_file, 262, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
             }
         }
         $this->SetFont('helvetica', '', 7);
@@ -117,7 +121,7 @@ if (trim($id) != '') {
     $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
-    if (count($bResult) > 0) {
+    if (!empty($bResult)) {
 
 
         // create new PDF document
@@ -148,7 +152,7 @@ if (trim($id) != '') {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -270,11 +274,11 @@ if (trim($id) != '') {
                 if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $cDate = explode(" ", $sample['sample_collection_date']);
                     //$collectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
-                    $collectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($cDate[0]);
+                    $collectionDate = DateUtils::humanReadableDateFormat($cDate[0]);
                 }
                 $patientDOB = '';
                 if (isset($sample['patient_dob']) && $sample['patient_dob'] != '' && $sample['patient_dob'] != null && $sample['patient_dob'] != '0000-00-00') {
-                    $patientDOB = \App\Utilities\DateUtils::humanReadableDateFormat($sample['patient_dob']);
+                    $patientDOB = DateUtils::humanReadableDateFormat($sample['patient_dob']);
                 }
                 // $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', 0, 9, 0.25, array('border' => false, 'align' => 'L', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 9, 'stretchtext' => 2), 'N'));
                 $tbl .= '<table nobr="true" style="width:100%;" border="1" cellpadding="2">';

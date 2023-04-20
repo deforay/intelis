@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Models\Users;
+
 ob_start();
 $title = "Enter Hepatitis Result";
 
@@ -6,10 +12,10 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$userDb = new \App\Models\Users();
-$hepatitisDb = new \App\Models\Hepatitis();
+$general = new General();
+$facilitiesDb = new Facilities();
+$userDb = new Users();
+$hepatitisDb = new Hepatitis();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
@@ -141,7 +147,7 @@ require($fileArray[$arr['vl_form']]);
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -156,7 +162,7 @@ require($fileArray[$arr['vl_form']]);
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -176,7 +182,7 @@ require($fileArray[$arr['vl_form']]);
 				$('#sampleReceivedDate').val('');
 				$('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -196,7 +202,7 @@ require($fileArray[$arr['vl_form']]);
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -215,7 +221,7 @@ require($fileArray[$arr['vl_form']]);
 			onSelect: function(e) {
 
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -285,4 +291,3 @@ require($fileArray[$arr['vl_form']]);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

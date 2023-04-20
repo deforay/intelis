@@ -1,15 +1,21 @@
 <?php
 
+use App\Models\App;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Tb;
+use App\Models\Users;
+
 session_unset(); // no need of session in json response
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 
-$general = new \App\Models\General();
-$userDb = new \App\Models\Users();
-$facilityDb = new \App\Models\Facilities();
-$tbDb = new \App\Models\Tb();
-$app = new \App\Models\App();
+$general = new General();
+$userDb = new Users();
+$facilityDb = new Facilities();
+$tbDb = new Tb();
+$app = new App();
 $transactionId = $general->generateUUID();
 $arr = $general->getGlobalConfig();
 $user = null;
@@ -30,7 +36,7 @@ try {
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
         http_response_code(401);
-        throw new \Exception('Bearer Token Invalid');
+        throw new Exception('Bearer Token Invalid');
     }
     $sQuery = "SELECT 
         vl.app_sample_code                      as appSampleCode,

@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch";
@@ -7,8 +11,8 @@ $title = "Edit Batch";
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -145,7 +149,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if ($batchInfo[0]['machine'] == $machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -155,34 +159,34 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 						</div>
 						<div class="row" id="sampleDetails">
 
-						<div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php
-												foreach ($result as $key => $sample) {
-												?>
-													<option value="<?php echo $sample['covid19_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-												<?php
-												}
-												?>
-                                        </select>
-                                   </div>
+							<div class="col-md-5">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+									<?php
+									foreach ($result as $key => $sample) {
+									?>
+										<option value="<?php echo $sample['covid19_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 
-										</select>
-                                   </div>
+								</select>
+							</div>
 
 
-						
+
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -212,52 +216,51 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 	var startDate = "";
 	var endDate = "";
 	var resultSampleArray = [];
+
 	function validateNow() {
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-          $("#selectedSample").val(selVal);
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-		
-		if(selVal=="")
-		{
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+
+		if (selVal == "") {
 			alert("Please select sample code");
 			return false;
 		}
-		
-          flag = deforayValidator.init({
-               formId: 'editBatchForm'
-          });
-          if (flag) {
+
+		flag = deforayValidator.init({
+			formId: 'editBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('editBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('editBatchForm').submit();
+		}
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _('Select Facilities'); ?>"
 		});
 		setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
+			$("#search_rightSelected").trigger('click');
+		}, 10);
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _("Clear"); ?>",
@@ -370,4 +373,3 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

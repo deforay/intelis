@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch";
@@ -6,8 +10,8 @@ $title = "Edit Batch";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -176,13 +180,13 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if ($batchInfo[0]['machine'] == $machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
+							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<!--<div class="col-md-8">
@@ -206,31 +210,31 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 								</div>
 							</div>-->
 							<h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php
-												foreach ($result as $key => $sample) {
-												?>
-													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-												<?php
-												}
-												?>
-                                        </select>
-                                   </div>
+							<div class="col-md-5">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+									<?php
+									foreach ($result as $key => $sample) {
+									?>
+										<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 
-										</select>
-                                   </div>
+								</select>
+							</div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -262,62 +266,60 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	var resultSampleArray = [];
 
 	function validateNow() {
-		
+
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-          $("#selectedSample").val(selVal);
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-		
-		if(selVal=="")
-		{
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+
+		if (selVal == "") {
 			alert("Please select sample code");
 			return false;
 		}
-		
-          flag = deforayValidator.init({
-               formId: 'editBatchForm'
-          });
-          if (flag) {
+
+		flag = deforayValidator.init({
+			formId: 'editBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('editBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('editBatchForm').submit();
+		}
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		
+
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
-		  setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
-		  $("#facilityName").select2({
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
+		setTimeout(function() {
+			$("#search_rightSelected").trigger('click');
+		}, 10);
+		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -510,7 +512,7 @@ startDate: moment().subtract(28, 'days'),
 
 	function getSampleCodeDetails() {
 		$.blockUI();
-		
+
 		/*var urgent = $("input:radio[name=urgency]");
 		if ((urgent[0].checked == false && urgent[1].checked == false) || urgent == 'undefined') {
 			urgent = '';
@@ -578,4 +580,3 @@ startDate: moment().subtract(28, 'days'),
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

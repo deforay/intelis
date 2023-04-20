@@ -1,6 +1,6 @@
 <?php
 $title = "Sync History";
- 
+
 require_once(APPLICATION_PATH . '/header.php');
 
 ?>
@@ -22,7 +22,7 @@ require_once(APPLICATION_PATH . '/header.php');
                 <div class="box">
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="syncDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table id="syncDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th scope="row">Lab Name</th>
@@ -51,7 +51,7 @@ require_once(APPLICATION_PATH . '/header.php');
 </div>
 <script>
     var oTable = null;
-    
+
     $(document).ready(function() {
         $.blockUI();
         oTable = $('#syncDataTable').dataTable({
@@ -98,4 +98,3 @@ require_once(APPLICATION_PATH . '/header.php');
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

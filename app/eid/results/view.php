@@ -1,6 +1,6 @@
 <?php
 use App\Models\General;
-$general = new \App\Models\General();
+$general = new General();
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = General::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));

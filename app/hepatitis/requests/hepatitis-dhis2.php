@@ -1,12 +1,16 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 $title = _("Hepatitis | View All Requests");
 // echo "<pre>";
 // var_dump($_SESSION['privileges']);die;
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();

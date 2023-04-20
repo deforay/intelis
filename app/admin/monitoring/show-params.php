@@ -1,7 +1,9 @@
 <?php
 
 
-$general = new \App\Models\General();
+use App\Models\General;
+
+$general = new General();
 
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);
@@ -10,21 +12,21 @@ $zip = new ZipArchive();
 $request = $response = [];
 $folder = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
 if (file_exists($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
-    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', ZipArchive::RDONLY);
     if ($res === true) {
         $request = $zip->getFromName($result['transaction_id'] . '.json');
     }
 }
-$zip->close();
+//$zip->close();
 
 $zip = new ZipArchive();
 if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
-    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip');
+    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', ZipArchive::RDONLY);
     if ($res === true) {
         $response = $zip->getFromName($result['transaction_id'] . '.json');
     }
 }
-$zip->close();
+//$zip->close();
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />

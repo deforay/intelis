@@ -1,6 +1,8 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Models\Covid19;
+
 ob_start();
 
 //Funding source list
@@ -19,7 +21,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 
@@ -685,7 +687,7 @@ foreach ($fResult as $fDetails) {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

@@ -1,10 +1,13 @@
 <?php
+
+use App\Models\Facilities;
+
 $title = _("EID | Sample Rejection Report");
  
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
@@ -153,4 +156,3 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -1,9 +1,12 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_vl_test_reasons";
 try {
     $id = explode(",", $_POST['id']);

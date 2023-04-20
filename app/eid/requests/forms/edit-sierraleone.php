@@ -2,8 +2,11 @@
 
 // imported in eid-edit-request.php based on country in global config
 
+use App\Models\Eid;
+use App\Utilities\DateUtils;
+
 ob_start();
-$eidObj = new \App\Models\Eid();
+$eidObj = new Eid();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -56,9 +59,9 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = $_GET['c'];
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new \App\Models\Eid();
+    $vlObj = new Eid();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -205,7 +208,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels"><label for="childDob">Date of Birth </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -301,7 +304,7 @@ $aResult = $db->query($aQuery);
 
                                         <th scope="row" class="labels">If yes, test date :</th>
                                         <td>
-                                            <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
+                                            <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>">
                                         </td>
                                     </tr>
                                     <tr>
@@ -373,7 +376,7 @@ $aResult = $db->query($aQuery);
 
                                         <th scope="row" class="labels">Previous PCR test date :</th>
                                         <td>
-                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
+                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
                                     <tr class="pcrBox">
@@ -431,7 +434,7 @@ $aResult = $db->query($aQuery);
                                         <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>
@@ -487,12 +490,12 @@ $aResult = $db->query($aQuery);
                                         <tr class="rejected" style="display: none;">
                                             
                                             <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
-                                            <td class="rejected" style="display: none;"><input value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td class="rejected" style="display: none;"><input value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <tr>
                                             <td style="width:25%;" class="labels"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo \App\Utilities\DateUtils::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
                                             <th scope="row" class="labels">Result</th>
@@ -838,7 +841,7 @@ function getTestingPoint()
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');

@@ -1,11 +1,14 @@
 <?php
+
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
 
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 

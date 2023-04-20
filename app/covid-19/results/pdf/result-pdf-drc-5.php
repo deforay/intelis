@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
@@ -12,23 +17,23 @@ if (!class_exists('DRC_PDF')) {
                 if (trim($this->logo) != '') {
                     // Check facility have the logo
                     // if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
-                    //     $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                    //     $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    //     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
+                    //     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     // } else {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png")) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png";
-                        $this->Image($image_file, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png";
+                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                     //}
                 }
                 if (trim($this->logo) != '') {
                     if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                        $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
+                        $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     } else {
                         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                            $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                            $this->Image($image_file, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                            $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                         }
                     }
                 }
@@ -103,7 +108,7 @@ if (!class_exists('DRC_PDF')) {
         }
     }
 }
-$users = new \App\Models\Users();
+$users = new Users();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -117,11 +122,11 @@ $resultPrintedDate = '';
 $resultPrintedTime = '';
 if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['result_printed_datetime']);
-    $resultPrintedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $resultPrintedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 } else {
     $expStr = explode(" ", $currentDateTime);
-    $resultPrintedDate = $currentDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $resultPrintedDate = $currentDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $currentTime = $expStr[1];
 }
 $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
@@ -147,7 +152,7 @@ $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin("20");
 
 // set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+$pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -193,7 +198,7 @@ if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $resu
 
 if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_collection_date']);
-    $result['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
     $sampleCollectionTime = $expStr[1];
 } else {
     $result['sample_collection_date'] = '';
@@ -203,17 +208,17 @@ $sampleReceivedDate = '';
 $sampleReceivedTime = '';
 if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-    $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 } else if (isset($result['sample_registered_at_lab']) && trim($result['sample_registered_at_lab']) != '' && $result['sample_registered_at_lab'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_registered_at_lab']);
-    $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_tested_datetime']);
-    $result['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $result['sample_tested_datetime'] = '';
 }
@@ -351,13 +356,13 @@ $html .= '</tr>';
 
 $html .= '<tr>';
 $html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:center;" colspan="3">
-            <br><br><strong>Fait à Kinshasa, le: </strong>' . \App\Utilities\DateUtils::humanReadableDateFormat($result['result_approved_datetime']) .
+            <br><br><strong>Fait à Kinshasa, le: </strong>' . DateUtils::humanReadableDateFormat($result['result_approved_datetime']) .
     '<br><span style="font-size:8;font-weight:normal;">(Done in Kinshasa, on)</span></td>';
 $html .= '</tr>';
 
 
 if (empty($result['lab_manager'])) {
-    $facilityDb = new \App\Models\Facilities();
+    $facilityDb = new Facilities();
     $labDetails = $facilityDb->getFacilityById($result['lab_id']);
     if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
         $result['lab_manager'] = $labDetails['contact_person'];

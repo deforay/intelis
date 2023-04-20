@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\General;
 use Exception;
 use DateTimeImmutable;
 
@@ -22,7 +23,7 @@ class Results
             return null;
         }
 
-        $general = new \App\Models\General();
+        $general = new General();
 
         if ($interpretFormat === true) {
             $find =     ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];

@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -6,7 +10,7 @@ $title = _("VL | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -14,7 +18,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
@@ -111,7 +115,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample ID"); ?></th>
@@ -180,7 +184,7 @@ $batResult = $db->rawQuery($batQuery);
 		searchResultData();
 		loadVlTATData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -292,8 +296,7 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchResultData();
 		}
 		$.blockUI();
@@ -320,4 +323,3 @@ $batResult = $db->rawQuery($batQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

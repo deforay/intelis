@@ -1,7 +1,10 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
-$eidModel = new \App\Models\Eid();
+use App\Models\Eid;
+use App\Utilities\DateUtils;
+
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
@@ -17,7 +20,7 @@ if (sizeof($requestResult) > 0) {
     $pages = array();
     $page = 1;
     foreach ($requestResult as $result) {
-        $currentTime = \App\Utilities\DateUtils::getCurrentDateTime();
+        $currentTime = DateUtils::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -61,7 +64,7 @@ if (sizeof($requestResult) > 0) {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

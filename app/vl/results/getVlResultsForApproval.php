@@ -1,17 +1,22 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 $vlsmFormId = $general->getGlobalConfig('vl_form');
-$userType = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -20,9 +25,9 @@ $userType = $general->getSystemConfig('sc_user_type');
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($userType == 'remoteuser') {
+if ($systemType == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($userType == 'standalone') {
+} else if ($systemType == 'standalone') {
      $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 }
@@ -108,10 +113,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -141,7 +146,7 @@ if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      }
 }
 
-if ($userType == 'remoteuser') {
+if ($systemType == 'remoteuser') {
      $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
      if (!empty($facilityMap)) {
           $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ")  ";
@@ -191,7 +196,7 @@ if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['
 
 foreach ($rResult as $aRow) {
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+          $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
      } else {
           $aRow['sample_collection_date'] = '';
      }
@@ -211,7 +216,7 @@ foreach ($rResult as $aRow) {
      $row = array();
      $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
-     if ($userType != 'standalone') {
+     if ($systemType != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['sample_collection_date'];
@@ -222,7 +227,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

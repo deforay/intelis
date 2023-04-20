@@ -1,6 +1,9 @@
 <?php
 
 
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
 
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
@@ -18,8 +21,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
+$general = new General();
+$covid19Obj = new Covid19();
 $covid19Results = $covid19Obj->getCovid19Results();
 $tableName = "form_tb";
 $primaryKey = "tb_id";
@@ -181,12 +184,12 @@ $output = array(
 foreach ($rResult as $aRow) {
 
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+          $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
      } else {
           $aRow['sample_collection_date'] = '';
      }
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

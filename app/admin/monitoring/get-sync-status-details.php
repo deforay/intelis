@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -74,7 +78,7 @@ foreach ($rResult as $key => $aRow) { ?>
         <td><?php echo ($_POST['testType']); ?></td>
         <td><?php echo ($aRow['province']); ?></td>
         <td><?php echo ($aRow['district']); ?></td>
-        <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
-        <td><?php echo \App\Utilities\DateUtils::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+        <td><?php echo DateUtils::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
+        <td><?php echo DateUtils::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
     </tr>
 <?php } ?>

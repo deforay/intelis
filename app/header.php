@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Users;
+
 if (!isset($_SESSION['userId'])) {
 	header("location:/login/login.php");
 } else if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
@@ -12,9 +16,9 @@ if (!isset($_SESSION['userId'])) {
 error_reporting(E_ALL ^ E_NOTICE);  
 
 
-$general = new \App\Models\General();
-$usersModel = new \App\Models\Users();
-$facilitiesModel = new \App\Models\Facilities();
+$general = new General();
+$usersModel = new Users();
+$facilitiesModel = new Facilities();
 
 $_SESSION['module'] = $_SESSION['module'] ?? array();
 

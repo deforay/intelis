@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -6,8 +10,8 @@ $title = _("Covid-19 | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
@@ -95,7 +99,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
-						<table id="covid19RequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="covid19RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Covid-19 Sample ID"); ?></th>
@@ -287,4 +291,3 @@ $batResult = $db->rawQuery($batQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -2,12 +2,17 @@
 
 //this file gets the data from the local database and updates the remote database
 
+use App\Models\App;
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (php_sapi_name() == 'cli') {
     require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 }
 
-$general = new \App\Models\General();
-$app = new \App\Models\App();
+$general = new General();
+$app = new App();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -162,7 +167,7 @@ try {
 
         $forms = array_column($c19LabResult, 'covid19_id');
 
-        $covid19Obj = new \App\Models\Covid19();
+        $covid19Obj = new Covid19();
         $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
         $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
         $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
@@ -265,7 +270,7 @@ try {
 
     /* Update last_remote_results_sync in s_vlsm_instance */
     $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-    $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => \App\Utilities\DateUtils::getCurrentDateTime()));
+    $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => DateUtils::getCurrentDateTime()));
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

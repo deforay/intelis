@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -7,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new \App\Models\General();
+$general = new General();
 
 
 
@@ -21,7 +25,7 @@ try {
 		$data = array(
 			'comorbidity_name' => $_POST['comorbidityName'],
 			'comorbidity_status' => $_POST['comorbidityStatus'],
-			'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtils::getCurrentDateTime(),
 		);
 
         $db = $db->where('comorbidity_id', $comorbidityId);

@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\General;
+use App\Models\Users;
+use App\Models\Vl;
+
 require_once(__DIR__ . "/../bootstrap.php");
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
@@ -9,9 +13,9 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 
 $db  = MysqliDb::getInstance();
 
-$usersModel = new \App\Models\Users();
-$general = new \App\Models\General();
-$vlDb = new \App\Models\Vl();
+$usersModel = new Users();
+$general = new General();
+$vlDb = new Vl();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -29,10 +33,12 @@ if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CO
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
 
+$sqliteDb = null;
+
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
     //$sqliteDb = new SQLite3(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
-    $sqliteDb = new \PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
+    $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
 //get the value from interfacing DB
@@ -227,7 +233,6 @@ if (count($interfaceInfo) > 0) {
 
             $data = array(
                 'tested_by' => $result['tested_by'],
-                'result_approved_by' => $result['tested_by'],
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 'result' => $eidResult,
@@ -256,7 +261,7 @@ if (count($interfaceInfo) > 0) {
             }
         } else if (isset($tableInfo['covid19_id'])) {
 
-            // TBD
+            // TODO: Add covid19 results
 
         } else if (isset($tableInfo['hepatitis_id'])) {
 
@@ -295,7 +300,6 @@ if (count($interfaceInfo) > 0) {
             $data = array(
                 'lab_id' => $labId,
                 'tested_by' => $userId,
-                'result_approved_by' => $userId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
                 $resultField => $hepatitisResult,

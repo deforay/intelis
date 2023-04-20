@@ -113,4 +113,3 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

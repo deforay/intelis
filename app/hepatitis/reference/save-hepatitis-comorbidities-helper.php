@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new \App\Models\General();
+$general = new General();
 $tableName = "r_hepatitis_comorbidities";
 $primaryKey = "comorbidity_id";
 // print_r($_POST);die;
@@ -13,7 +17,7 @@ try {
 		$data = array(
 			'comorbidity_name' 		=> $_POST['comorbidityName'],
 			'comorbidity_status' 	=> $_POST['comorbidityStatus'],
-			'updated_datetime' 	=> \App\Utilities\DateUtils::getCurrentDateTime(),
+			'updated_datetime' 	=> DateUtils::getCurrentDateTime(),
 		);
 		if(isset($_POST['comorbidityId']) && $_POST['comorbidityId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['comorbidityId']));

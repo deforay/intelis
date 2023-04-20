@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $title = "Covid-19 | Add Batch";
 
@@ -7,7 +10,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $module = 'C19';
 
-$general = new \App\Models\General();
+$general = new General();
 $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -244,4 +247,3 @@ $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -1,6 +1,10 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Models\Covid19;
+use App\Models\General;
+use App\Models\GeoLocations;
+
 ob_start();
 
 
@@ -21,8 +25,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$general = new \App\Models\General();
-$covid19Obj = new \App\Models\Covid19();
+$general = new General();
+$covid19Obj = new Covid19();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -58,7 +62,7 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
-$geolocation = new \App\Models\GeoLocations();
+$geolocation = new GeoLocations();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
@@ -1314,7 +1318,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "+1Y",
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
                
 				var dt2 = $('#sampleDispatchedDate');
@@ -1608,7 +1612,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

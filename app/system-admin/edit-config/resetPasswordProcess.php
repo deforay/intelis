@@ -1,11 +1,14 @@
 <?php
+
+use App\Models\Users;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
 $tableName = "system_admin";
-$user = new \App\Models\Users();
+$user = new Users();
 
 try {
     $userId = base64_decode($_POST['userId']);

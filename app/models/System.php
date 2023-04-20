@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
+use MysqliDb;
+use Whoops\Handler\JsonResponseHandler;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run;
+use Whoops\Util\Misc;
+
 class System
 {
 
-    public \MysqliDb $db;
+    public MysqliDb $db;
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? \MysqliDb::getInstance();
+        $this->db = $db ?? MysqliDb::getInstance();
     }
 
     public function setDb($db)
@@ -29,7 +35,7 @@ class System
     // Setup Locale
     public function setupTranslation($domain = "messages")
     {
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
             $general->getGlobalConfig('app_locale') ?? 'en_US';
 
@@ -44,7 +50,7 @@ class System
     // Setup Timezone
     public function setupDateTimeZone()
     {
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $general->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);
@@ -56,17 +62,17 @@ class System
 
         if ($debugMode) {
 
-            $whoops = new \Whoops\Run;
+            $whoops = new Run;
 
             // We want the error page to be shown by default, if this is a
             // regular request, so that's the first thing to go into the stack:
-            $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+            $whoops->pushHandler(new PrettyPageHandler);
 
             // Now, we want a second handler that will run before the error page,
             // and immediately return an error message in JSON format, if something
             // goes awry.
-            if (\Whoops\Util\Misc::isAjaxRequest()) {
-                $jsonHandler = new \Whoops\Handler\JsonResponseHandler;
+            if (Misc::isAjaxRequest()) {
+                $jsonHandler = new JsonResponseHandler;
 
                 // You can also tell JsonResponseHandler to give you a full stack trace:
                 // $jsonHandler->addTraceToOutput(true);

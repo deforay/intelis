@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__ . '/../bootstrap.php');
 
+$db = \MysqliDb::getInstance();
+
 ini_set('memory_limit', -1);
 
 if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api')) {

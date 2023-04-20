@@ -1,10 +1,13 @@
 <?php
+
+use Vlsm\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
 
-$general = new \Vlsm\Models\General();
+$general = new General();
 $tableName = "r_test_types";
 $testAttribute=array();
 /*echo "<pre>";

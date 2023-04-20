@@ -3,6 +3,11 @@
 namespace App\Models;
 
 
+use App\Utilities\DateUtils;
+use DateTimeImmutable;
+use Exception;
+use MysqliDb;
+
 /**
  * General functions
  *
@@ -41,7 +46,7 @@ class Vl
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
@@ -52,15 +57,15 @@ class Vl
         }
 
 
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \App\Utilities\DateUtils();
-        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
+        $dateUtils = new DateUtils();
+        if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
-        $dateObj = new \DateTimeImmutable($sampleCollectionDate);
+        $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
         $month = $dateObj->format('m');
@@ -100,7 +105,7 @@ class Vl
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \App\Models\GeoLocations($this->db);
+                    $geoLocations = new GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -267,7 +272,7 @@ class Vl
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -354,7 +359,7 @@ class Vl
             return $result;
         }
 
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -428,7 +433,7 @@ class Vl
     {
         try {
 
-            $general = new \App\Models\General();
+            $general = new General();
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
@@ -454,7 +459,7 @@ class Vl
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -554,7 +559,7 @@ class Vl
             } else {
                 return 0;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('Insert VL Sample : ' . $this->db->getLastErrno());
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());

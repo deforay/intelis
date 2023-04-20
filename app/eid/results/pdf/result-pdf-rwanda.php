@@ -1,8 +1,11 @@
 <?php
+
+use App\Models\Eid;
 use App\Models\General;
+use App\Utilities\DateUtils;
 
 // this file is included in eid/results/generate-result-pdf.php
-$eidModel = new \App\Models\Eid();
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
@@ -59,7 +62,7 @@ if (sizeof($requestResult) > 0) {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -105,7 +108,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+            $result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -115,20 +118,20 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-            $sampleReceivedDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+            $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $sampleDispatchDate = '';
         $sampleDispatchTime = '';
         if (isset($result['result_dispatched_datetime']) && trim($result['result_dispatched_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_dispatched_datetime']);
-            $sampleDispatchDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = DateUtils::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }
@@ -331,7 +334,7 @@ if (sizeof($requestResult) > 0) {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }
 
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . \App\Utilities\DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -390,7 +393,7 @@ if (sizeof($requestResult) > 0) {
                 'event_type' => $eventType,
                 'action' => $action,
                 'resource' => $resource,
-                'date_time' => \App\Utilities\DateUtils::getCurrentDateTime()
+                'date_time' => DateUtils::getCurrentDateTime()
             );
             $db->insert($tableName1, $data);
             //Update print datetime in VL tbl.
@@ -398,7 +401,7 @@ if (sizeof($requestResult) > 0) {
             $vlResult = $db->query($vlQuery);
             if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                 $db = $db->where('eid_id', $result['eid_id']);
-                $db->update($tableName2, array('result_printed_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()));
+                $db->update($tableName2, array('result_printed_datetime' => DateUtils::getCurrentDateTime()));
             }
         }
     }

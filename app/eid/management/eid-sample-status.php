@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -8,14 +12,14 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new \App\Models\General(); 
+$general = new General();
 
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 // $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 // $configFormResult = $db->rawQuery($configFormQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 $sarr = $general->getSystemConfig();
 
@@ -305,4 +309,3 @@ $batResult = $db->rawQuery($batQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

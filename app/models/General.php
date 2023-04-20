@@ -8,7 +8,11 @@
 
 namespace App\Models;
 
+use App\Utilities\DateUtils;
+use Exception;
+use MysqliDb;
 use Ramsey\Uuid\Uuid;
+use TCPDFBarcode;
 use ZipArchive;
 
 class General
@@ -18,7 +22,7 @@ class General
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? \MysqliDb::getInstance();
+        $this->db = $db ?? MysqliDb::getInstance();
     }
 
     public static function generateRandomString($length = 32)
@@ -201,10 +205,10 @@ class General
     {
         $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
         if ($decoded === false) {
-            throw new \Exception('The message encoding failed');
+            throw new Exception('The message encoding failed');
         }
         if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
-            throw new \Exception('The message was truncated');
+            throw new Exception('The message was truncated');
         }
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
         $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
@@ -215,7 +219,7 @@ class General
             $key
         );
         if ($plain === false) {
-            throw new \Exception('The message was tampered with in transit');
+            throw new Exception('The message was tampered with in transit');
         }
         sodium_memzero($ciphertext);
         sodium_memzero($key);
@@ -243,7 +247,7 @@ class General
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'date_time' => DateUtils::getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -255,7 +259,7 @@ class General
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'imported_on' => DateUtils::getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -511,7 +515,7 @@ class General
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'date_time' => DateUtils::getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -734,7 +738,7 @@ class General
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
                     $zip->addFromString(basename($path), $requestData);
-                    $zip->close();
+                    //$zip->close();
                     //unlink($path);
                 }
             }
@@ -750,7 +754,7 @@ class General
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
                     $zip->addFromString(basename($path), $responseData);
-                    $zip->close();
+                    //$zip->close();
                     //unlink($path);
                 }
             }
@@ -758,7 +762,7 @@ class General
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
-                'requested_on'      => \App\Utilities\DateUtils::getCurrentDateTime(),
+                'requested_on'      => DateUtils::getCurrentDateTime(),
                 'number_of_records' => $numberOfRecords ?: 0,
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,
@@ -767,7 +771,7 @@ class General
                 'data_format'       => $format ?: null
             );
             return $this->db->insert("track_api_requests", $data);
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($this->db->getLastError());
             error_log($exc->getTraceAsString());
@@ -776,7 +780,7 @@ class General
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0))
     {
-        $barcodeobj = new \TCPDFBarcode($code, $type);
+        $barcodeobj = new TCPDFBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 }

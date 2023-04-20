@@ -144,4 +144,3 @@ $rejReaons = $general->getRejectionReasons('tb');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

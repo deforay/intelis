@@ -1,6 +1,8 @@
 <?php
 
-$app = new \App\Models\App();
+use App\Models\App;
+
+$app = new App();
 $test = "";
 if(isset($_POST['testType']) && $_POST['testType']!='')
 {

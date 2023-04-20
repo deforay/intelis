@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+use App\Models\Vl;
+use App\Utilities\DateUtils;
+
 ob_start();
 $title = "Enter VL Result";
 
@@ -6,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
-$vlDb = new \App\Models\Vl();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
+$vlDb = new Vl();
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 $reasonForFailure = $vlDb->getReasonForFailure();
@@ -54,20 +60,20 @@ $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
 
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
-	$vlQueryInfo['patient_dob'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['patient_dob']);
+	$vlQueryInfo['patient_dob'] = DateUtils::humanReadableDateFormat($vlQueryInfo['patient_dob']);
 } else {
 	$vlQueryInfo['patient_dob'] = '';
 }
 
 if (isset($vlQueryInfo['sample_collection_date']) && trim($vlQueryInfo['sample_collection_date']) != '' && $vlQueryInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_collection_date']);
-	$vlQueryInfo['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_collection_date'] = '';
 }
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-	$vlQueryInfo['sample_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_dispatched_datetime'] = '';
 }
@@ -75,26 +81,26 @@ if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['samp
 if (isset($vlQueryInfo['result_approved_datetime']) && trim($vlQueryInfo['result_approved_datetime']) != '' && $vlQueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $vlQueryInfo['result_approved_datetime'];
 	$expStr = explode(" ", $vlQueryInfo['result_approved_datetime']);
-	$vlQueryInfo['result_approved_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_approved_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$sampleCollectionDate = '';
-	$vlQueryInfo['result_approved_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat(\App\Utilities\DateUtils::getCurrentDateTime());
+	$vlQueryInfo['result_approved_datetime'] = DateUtils::humanReadableDateFormat(DateUtils::getCurrentDateTime());
 }
 
 if (isset($vlQueryInfo['treatment_initiated_date']) && trim($vlQueryInfo['treatment_initiated_date']) != '' && $vlQueryInfo['treatment_initiated_date'] != '0000-00-00') {
-	$vlQueryInfo['treatment_initiated_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['treatment_initiated_date']);
+	$vlQueryInfo['treatment_initiated_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['treatment_initiated_date']);
 } else {
 	$vlQueryInfo['treatment_initiated_date'] = '';
 }
 
 if (isset($vlQueryInfo['date_of_initiation_of_current_regimen']) && trim($vlQueryInfo['date_of_initiation_of_current_regimen']) != '' && $vlQueryInfo['date_of_initiation_of_current_regimen'] != '0000-00-00') {
-	$vlQueryInfo['date_of_initiation_of_current_regimen'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen']);
+	$vlQueryInfo['date_of_initiation_of_current_regimen'] = DateUtils::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen']);
 } else {
 	$vlQueryInfo['date_of_initiation_of_current_regimen'] = '';
 }
 
 if (isset($vlQueryInfo['test_requested_on']) && trim($vlQueryInfo['test_requested_on']) != '' && $vlQueryInfo['test_requested_on'] != '0000-00-00') {
-	$vlQueryInfo['test_requested_on'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['test_requested_on']);
+	$vlQueryInfo['test_requested_on'] = DateUtils::humanReadableDateFormat($vlQueryInfo['test_requested_on']);
 } else {
 	$vlQueryInfo['test_requested_on'] = '';
 }
@@ -102,7 +108,7 @@ if (isset($vlQueryInfo['test_requested_on']) && trim($vlQueryInfo['test_requeste
 
 if (isset($vlQueryInfo['sample_received_at_hub_datetime']) && trim($vlQueryInfo['sample_received_at_hub_datetime']) != '' && $vlQueryInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_received_at_hub_datetime']);
-	$vlQueryInfo['sample_received_at_hub_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_received_at_hub_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_received_at_hub_datetime'] = '';
 }
@@ -110,39 +116,39 @@ if (isset($vlQueryInfo['sample_received_at_hub_datetime']) && trim($vlQueryInfo[
 
 if (isset($vlQueryInfo['sample_received_at_vl_lab_datetime']) && trim($vlQueryInfo['sample_received_at_vl_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_received_at_vl_lab_datetime']);
-	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['sample_tested_datetime']) && trim($vlQueryInfo['sample_tested_datetime']) != '' && $vlQueryInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_tested_datetime']);
-	$vlQueryInfo['sample_tested_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_tested_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['result_dispatched_datetime']) && trim($vlQueryInfo['result_dispatched_datetime']) != '' && $vlQueryInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['result_dispatched_datetime']);
-	$vlQueryInfo['result_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['result_dispatched_datetime'] = '';
 }
 if (isset($vlQueryInfo['last_viral_load_date']) && trim($vlQueryInfo['last_viral_load_date']) != '' && $vlQueryInfo['last_viral_load_date'] != '0000-00-00') {
-	$vlQueryInfo['last_viral_load_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['last_viral_load_date']);
+	$vlQueryInfo['last_viral_load_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['last_viral_load_date']);
 } else {
 	$vlQueryInfo['last_viral_load_date'] = '';
 }
 //Set Date of demand
 if (isset($vlQueryInfo['date_test_ordered_by_physician']) && trim($vlQueryInfo['date_test_ordered_by_physician']) != '' && $vlQueryInfo['date_test_ordered_by_physician'] != '0000-00-00') {
-	$vlQueryInfo['date_test_ordered_by_physician'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician']);
+	$vlQueryInfo['date_test_ordered_by_physician'] = DateUtils::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician']);
 } else {
 	$vlQueryInfo['date_test_ordered_by_physician'] = '';
 }
 //Has patient changed regimen section
 if (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") {
 	if (isset($vlQueryInfo['regimen_change_date']) && trim($vlQueryInfo['regimen_change_date']) != '' && $vlQueryInfo['regimen_change_date'] != '0000-00-00') {
-		$vlQueryInfo['regimen_change_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($vlQueryInfo['regimen_change_date']);
+		$vlQueryInfo['regimen_change_date'] = DateUtils::humanReadableDateFormat($vlQueryInfo['regimen_change_date']);
 	} else {
 		$vlQueryInfo['regimen_change_date'] = '';
 	}
@@ -153,21 +159,21 @@ if (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") {
 //Set Dispatched From Clinic To Lab Date
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-	$vlQueryInfo['sample_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['sample_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 //Set Date of result printed datetime
 if (isset($vlQueryInfo['result_printed_datetime']) && trim($vlQueryInfo['result_printed_datetime']) != "" && $vlQueryInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['result_printed_datetime']);
-	$vlQueryInfo['result_printed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_printed_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['result_printed_datetime'] = '';
 }
 //reviewed datetime
 if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != null && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
-	$vlQueryInfo['result_reviewed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_reviewed_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['result_reviewed_datetime'] = '';
 }
@@ -255,7 +261,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 8) {
 	include('forms/update-angola-result.php');
 }
-require_once(APPLICATION_PATH . '/footer.php');
+
 ?>
 <script>
 	$(document).ready(function() {
@@ -265,7 +271,7 @@ require_once(APPLICATION_PATH . '/footer.php');
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -280,7 +286,7 @@ require_once(APPLICATION_PATH . '/footer.php');
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -306,3 +312,6 @@ require_once(APPLICATION_PATH . '/footer.php');
 		});
 	});
 </script>
+
+<?php
+require_once(APPLICATION_PATH . '/footer.php');

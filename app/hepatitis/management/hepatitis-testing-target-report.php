@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 $title = _("Hepatitis Quarterly Monitoring Report");
  
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -22,7 +26,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
@@ -694,4 +698,3 @@ startDate: moment().subtract(28, 'days'),
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+
 $title = _("Hepatitis | View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
@@ -19,9 +24,9 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 }
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$general = new General();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 /* Global config data */

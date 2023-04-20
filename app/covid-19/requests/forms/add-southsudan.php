@@ -1,6 +1,8 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Models\Covid19;
+
 ob_start();
 
 //Funding source list
@@ -33,7 +35,7 @@ $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$covid19Obj = new \App\Models\Covid19();
+$covid19Obj = new Covid19();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -435,7 +437,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?php echo ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?php echo ($indexKey + 1); ?>">
+                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
@@ -1001,7 +1003,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -1025,7 +1027,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             // minDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -1123,7 +1125,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -1137,7 +1139,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             // minDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -1153,7 +1155,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         }); */

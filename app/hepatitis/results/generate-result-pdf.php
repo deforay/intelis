@@ -4,6 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 ini_set('memory_limit', -1);
@@ -12,8 +15,8 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_hepatitis";
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
+$general = new General();
+$users = new Users();
 
 $arr = $general->getGlobalConfig();
 
@@ -30,7 +33,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]);
+$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['hepatitisPrintQuery'];
@@ -93,14 +96,14 @@ class MYPDF extends TCPDF
 	public function Header()
 	{
 		// Logo
-		//$image_file = K_PATH_IMAGES.'logo_example.jpg';
-		//$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		//$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		// Set font
 		if ($this->htitle != '') {
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($image_file, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+					$this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 				}
 			}
 			$this->SetFont('helvetica', 'B', 16);
@@ -115,16 +118,16 @@ class MYPDF extends TCPDF
 		} else {
 			if (trim($this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($image_file, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
+					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 				} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-					$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-					$this->Image($image_file, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 				}
 			}
 			if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-				$image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-				$this->Image($image_file, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
+				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
 			}
 
 			// $this->SetFont('helvetica', 'B', 7);

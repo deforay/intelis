@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Utilities\DateUtils;
+use DateTime;
+use MysqliDb;
+
 /**
  * General functions
  *
@@ -17,7 +21,7 @@ class Users
 
     public function __construct($db = null, $systemConfig = SYSTEM_CONFIG)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
         $this->systemConfig = $systemConfig;
     }
 
@@ -262,7 +266,7 @@ class Users
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new \App\Models\General();
+            $general = new General();
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -311,15 +315,15 @@ class Users
         $data = array();
         // Tokens with expiration = 0 are tokens that never expire
         if ($tokenExpiration != 0 || empty($result['api_token'])) {
-            $today = new \DateTime();
+            $today = new DateTime();
             $lastTokenDate = null;
             if (!empty($result['api_token_generated_datetime'])) {
-                $lastTokenDate = new \DateTime($result['api_token_generated_datetime']);
+                $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
-                $general = new \App\Models\General($this->db);
+                $general = new General($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
-                $data['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);
                 $id = $this->db->update($this->table, $data);
@@ -375,7 +379,7 @@ class Users
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;
@@ -398,7 +402,7 @@ class Users
         $data = array(
             'login_id' => $loginId,
             'user_id' => $userId,
-            'login_attempted_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+            'login_attempted_datetime' => DateUtils::getCurrentDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,

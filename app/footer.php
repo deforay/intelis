@@ -1,5 +1,9 @@
 <?php
 
+
+$db = \MysqliDb::getInstance();
+$general = new \App\Models\General($db);
+
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 ?>
@@ -831,7 +835,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					},
 					function(data) {
 						$.unblockUI();
-						alert("<?php _("Thank you. Your message has been submitted."); ?>");
+						alert("<?= _("Thank you. Your message has been submitted."); ?>");
 					});
 			});
 		} else {
@@ -842,7 +846,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				},
 				function(data) {
 					$.unblockUI();
-					alert("<?php _("Thank you. Your message has been submitted."); ?>");
+					alert("<?= _("Thank you. Your message has been submitted."); ?>");
 				});
 		}
 	}

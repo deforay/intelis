@@ -61,7 +61,7 @@ if ($value != '') {
                     $data = 0;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
         }

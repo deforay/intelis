@@ -170,7 +170,7 @@ require_once(APPLICATION_PATH . '/header.php');
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -185,7 +185,7 @@ require_once(APPLICATION_PATH . '/header.php');
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -195,4 +195,3 @@ require_once(APPLICATION_PATH . '/header.php');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

@@ -176,7 +176,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	sortedTitle = [];
 	$(document).ready(function() {
 		function cleanArray(actual) {
-			var newArray = new Array();
+			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
 				if (actual[i]) {
 					newArray.push(actual[i]);
@@ -209,4 +209,3 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

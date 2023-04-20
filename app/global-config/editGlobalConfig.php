@@ -1,10 +1,13 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $title = _("Edit General Configuration");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 // Get locale directory list
 $localeLists = $general->getLocaleLists();
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
@@ -1333,7 +1336,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$(".select2").select2();
 
 		var editSet = '<?php if (isset($_GET['e'])) {
-							echo $_GET['e'];
+							echo htmlspecialchars($_GET['e']);
 						} ?>'
 		// alert(editSet)
 		if (editSet == 1) {} else {

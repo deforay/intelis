@@ -2,6 +2,11 @@
 
 session_unset(); // no need of session in json response
 
+use App\Models\Covid19;
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Users;
+use App\Models\Vl;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
@@ -9,11 +14,11 @@ use Aranyasen\HL7\Segments\MSH;
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
 $user = null;
-$general = new \App\Models\General();
-$userDb = new \App\Models\Users();
-$facilityDb = new \App\Models\Facilities();
-$c19Db = new \App\Models\Covid19();
-$vlDb = new \App\Models\Vl();
+$general = new General();
+$userDb = new Users();
+$facilityDb = new Facilities();
+$c19Db = new Covid19();
+$vlDb = new Vl();
 
 $transactionId = $general->generateUUID();
 

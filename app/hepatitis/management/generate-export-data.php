@@ -5,12 +5,19 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 
-
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new \App\Models\General();
+$general = new General();
 
-$hepatitisObj = new \App\Models\Hepatitis();
+$hepatitisObj = new Hepatitis();
 $hepatitisResults = $hepatitisObj->gethepatitisResults();
 $sarr = $general->getSystemConfig();
 /* Global config data */
@@ -21,7 +28,7 @@ $sessionQuery = $_SESSION['hepatitisResultQuery'];
 if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$rResult = $db->rawQuery($sessionQuery);
 
-	$excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+	$excel = new Spreadsheet();
 	$output = array();
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -45,23 +52,23 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 			'size' => 12,
 		),
 		'alignment' => array(
-			'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-			'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
+			'vertical' => Alignment::VERTICAL_CENTER,
 		),
 		'borders' => array(
 			'outline' => array(
-				'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				'style' => Border::BORDER_THIN,
 			),
 		)
 	);
 
 	$borderStyle = array(
 		'alignment' => array(
-			'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
 		),
 		'borders' => array(
 			'outline' => array(
-				'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				'style' => Border::BORDER_THIN,
 			),
 		)
 	);
@@ -74,19 +81,19 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		}
 	}
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 			$colNo++;
 		}
 	}
@@ -185,7 +192,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $sampleTestedOn;
 		$row[] = ($aRow['hcv_vl_result']);
 		$row[] = ($aRow['hbv_vl_result']);
-		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
@@ -206,7 +213,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 			$colNo++;
 		}
 	}
-	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+	$writer = IOFactory::createWriter($excel, 'Xlsx');
 	$filename = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo $filename;

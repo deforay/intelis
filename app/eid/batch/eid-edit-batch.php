@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 
 $title = "Edit Batch";
@@ -8,8 +12,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 //global config
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -471,4 +475,3 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

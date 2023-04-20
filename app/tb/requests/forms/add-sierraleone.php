@@ -5,6 +5,8 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
+use App\Models\Tb;
+
 ob_start();
 
 //Funding source list
@@ -31,7 +33,7 @@ $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_sta
 $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
-$tbObj = new \App\Models\Tb();
+$tbObj = new Tb();
 
 
 $tbXPertResults = $tbObj->getTbResults('x-pert');
@@ -771,7 +773,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "+1Y",
-           // yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>",
+           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -792,7 +794,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
             changeYear: true,
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
                 //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use MysqliDb;
+
 class Facilities
 {
 
@@ -10,7 +12,7 @@ class Facilities
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)

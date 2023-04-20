@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\General;
+use App\Models\Hepatitis;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
@@ -19,7 +24,7 @@ $sarr = array();
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new \App\Models\General();
+$general = new General();
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -141,10 +146,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -233,7 +238,7 @@ $output = array(
      "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
-$hepatitisDb = new \App\Models\Hepatitis();
+$hepatitisDb = new Hepatitis();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = array();
@@ -258,7 +263,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['hbv_vl_count'];
 
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

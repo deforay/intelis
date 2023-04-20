@@ -1,10 +1,15 @@
 <?php
+
+use App\Models\Eid;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new \App\Models\General();
-$eidModel = new \App\Models\Eid();
+$general = new General();
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 $sarr = $general->getSystemConfig();
@@ -133,10 +138,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
      }
 }
 $sReceivedDate = '';
@@ -144,10 +149,10 @@ $eReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleReceivedDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sReceivedDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eReceivedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eReceivedDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 $sResultDispatchedDate = '';
@@ -155,10 +160,10 @@ $eResultDispatchedDate = '';
 if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
      $s_t_date = explode("to", $_POST['resultDispatchedOn']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sResultDispatchedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sResultDispatchedDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eResultDispatchedDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eResultDispatchedDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Sample test date filter */
@@ -167,10 +172,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
      }
 }
 /* Print date filter */
@@ -179,10 +184,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */
@@ -345,7 +350,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['status_name']);
      $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
      $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
-     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
+     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }

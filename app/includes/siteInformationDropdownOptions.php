@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\Users;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -6,9 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersDb = new \App\Models\Users();
+$general = new General();
+$facilitiesDb = new Facilities();
+$usersDb = new Users();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 

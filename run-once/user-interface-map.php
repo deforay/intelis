@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Users;
+
 require_once(__DIR__ . '/../bootstrap.php');
 
-$db = \MysqliDb::getInstance();
+$db = MysqliDb::getInstance();
 
-$usersDb = new \App\Models\Users();
+$usersDb = new Users();
 
 
 $sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_name as interface_user_name    

@@ -1,9 +1,12 @@
 <?php
+
+use App\Models\General;
+
 ob_start();
 $title = "Enter Covid-19 Result";
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new \App\Models\General();
+$general = new General();
 $id = base64_decode($_GET['id']);
 
 $configQuery = "SELECT * from global_config";
@@ -136,7 +139,7 @@ if ($arr['vl_form'] == 1) {
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -151,7 +154,7 @@ if ($arr['vl_form'] == 1) {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -171,7 +174,7 @@ if ($arr['vl_form'] == 1) {
 				$('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -191,7 +194,7 @@ if ($arr['vl_form'] == 1) {
 				$('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -234,4 +237,3 @@ if ($arr['vl_form'] == 1) {
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

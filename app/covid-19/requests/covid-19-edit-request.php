@@ -1,4 +1,9 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 ob_start();
 $title = _("COVID-19 | Edit Request");
 
@@ -29,8 +34,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 
@@ -84,7 +89,7 @@ if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'aut
 if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_collection_date']) != '' && $covid19Info['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $covid19Info['sample_collection_date'];
     $expStr = explode(" ", $covid19Info['sample_collection_date']);
-    $covid19Info['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $covid19Info['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $covid19Info['sample_collection_date'] = '';
@@ -92,7 +97,7 @@ if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_c
 
 if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $reviewedOn = explode(" ", $covid19Info['result_reviewed_datetime']);
-    $covid19Info['result_reviewed_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    $covid19Info['result_reviewed_datetime'] = DateUtils::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 } else {
     $covid19Info['result_reviewed_datetime'] = '';
 }
@@ -147,7 +152,7 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -158,7 +163,7 @@ require($fileArray[$arr['vl_form']]);
             changeYear: true,
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
@@ -179,7 +184,7 @@ require($fileArray[$arr['vl_form']]);
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -199,7 +204,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -219,7 +224,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

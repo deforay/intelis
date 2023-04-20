@@ -1,7 +1,11 @@
 <?php
 
-$general = new \App\Models\General();
-$facilityDb = new \App\Models\Facilities();
+use App\Models\Facilities;
+use App\Models\General;
+use App\Utilities\DateUtils;
+
+$general = new General();
+$facilityDb = new Facilities();
 
 
 $cDate = date('Y-m-d');
@@ -70,9 +74,9 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesOverviewChart   = "tbSamplesOverviewChart";
 }
 
-$u = $general->getSystemConfig('sc_user_type');
+$systemType = $general->getSystemConfig('sc_user_type');
 
-if ($u != 'remoteuser') {
+if ($systemType != 'remoteuser') {
     $whereCondition = " result_status!=9  AND ";
 } else {
     $whereCondition = "";
@@ -95,10 +99,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $lastSevenDay = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $lastSevenDay = DateUtils::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $cDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $cDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $sWhere = '';

@@ -1,6 +1,9 @@
 <?php
 
-$general = new \App\Models\General();
+use App\Models\General;
+use App\Utilities\DateUtils;
+
+$general = new General();
 
 $sarr = $general->getSystemConfig();
 $gconfig = $general->getGlobalConfig();
@@ -159,12 +162,12 @@ $output = array(
 foreach ($rResult as $aRow) {
 
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+          $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
      } else {
           $aRow['sample_collection_date'] = '';
      }
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

@@ -1,13 +1,20 @@
 <?php
 
+use App\Models\App;
+use App\Models\General;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
 
-$general = new \App\Models\General();
-$usersModel = new \App\Models\Users();
-$app = new \App\Models\App();
+$general = new General();
+$usersModel = new Users();
+$app = new App();
 
 $transactionId = $general->generateUUID();
 
@@ -22,11 +29,11 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
     $lab = array();
     $options = [
-        'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+        'decoder' => new ExtJsonDecoder(true)
     ];
-    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+    $parsedData = Items::fromString($jsonResponse, $options);
 
-    $parsedData = \JsonMachine\Items::fromString($jsonResponse, $options);
+    $parsedData = Items::fromString($jsonResponse, $options);
     foreach ($parsedData as $name => $data) {
         if ($name === 'labId') {
             $labId = $data;
@@ -62,13 +69,13 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  \App\Utilities\DateUtils::getCurrentDateTime();
+            $lab['result_approved_datetime'] =  DateUtils::getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $lab['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -114,7 +121,7 @@ $payload = json_encode($sampleCodes);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
-$currentDateTime = \App\Utilities\DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtils::getCurrentDateTime();
 if (!empty($sampleCodes)) {
     $sql = 'UPDATE form_hepatitis SET data_sync = ?,
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)

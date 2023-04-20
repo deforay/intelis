@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\GeoLocations;
+
 $title = _("Hepatitis | Clinics Report");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -8,8 +12,8 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$facilitiesDb = new \App\Models\Facilities();
-$geoLocationDb = new \App\Models\GeoLocations();
+$facilitiesDb = new Facilities();
+$geoLocationDb = new GeoLocations();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
@@ -1047,4 +1051,3 @@ $state = $geoLocationDb->getProvinces("yes");
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

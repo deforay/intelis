@@ -42,7 +42,7 @@ var deforayValidator = {
             formInputs[i].onfocus = function () {
                 this.style.background = "#FFFFFF";
             }
-        };
+        }
         var error = deforayValidator.validate();
         if (error == "" || error == null) {
             return true;
@@ -190,7 +190,7 @@ function isRequiredCheckBox(name) {
             break;
         }
         else {
-            continue;
+
         }
     }
     return flag;

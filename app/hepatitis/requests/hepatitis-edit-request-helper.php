@@ -1,11 +1,14 @@
 <?php
 
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new \App\Models\General();
+$general = new General();
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -28,7 +31,7 @@ try {
 
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+		$_POST['sampleCollectionDate'] = DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
 		$_POST['sampleCollectionDate'] = null;
 	}
@@ -36,14 +39,14 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = \App\Utilities\DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = \App\Utilities\DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
@@ -51,7 +54,7 @@ try {
 
 	if (isset($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
 		$arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-		$_POST['arrivalDateTime'] = \App\Utilities\DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+		$_POST['arrivalDateTime'] = DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
 	} else {
 		$_POST['arrivalDateTime'] = null;
 	}
@@ -103,7 +106,7 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = \App\Utilities\DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
 	}
@@ -120,7 +123,7 @@ try {
 		'patient_id'                          => isset($_POST['patientId']) ? $_POST['patientId'] : null,
 		'patient_name'                        => isset($_POST['firstName']) ? $_POST['firstName'] : null,
 		'patient_surname'                     => isset($_POST['lastName']) ? $_POST['lastName'] : null,
-		'patient_dob'                         => isset($_POST['patientDob']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['patientDob']) : null,
+		'patient_dob'                         => isset($_POST['patientDob']) ? DateUtils::isoDateFormat($_POST['patientDob']) : null,
 		'patient_gender'                      => isset($_POST['patientGender']) ? $_POST['patientGender'] : null,
 		'patient_age'                         => isset($_POST['patientAge']) ? $_POST['patientAge'] : null,
 		'patient_marital_status'              => isset($_POST['maritalStatus']) ? $_POST['maritalStatus'] : null,
@@ -156,10 +159,10 @@ try {
 		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'authorized_by'                       => isset($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? \App\Utilities\DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtils::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? \App\Utilities\DateUtils::getCurrentDateTime() : "",
-		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? \App\Utilities\DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
+		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : "",
+		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => $status,
 		'result_sent_to_source'               => $resultSentToSource,
 		'data_sync'                           => 0,
@@ -193,8 +196,8 @@ try {
 				$riskFactorsData = array();
 				$riskFactorsData["hepatitis_id"] = $_POST['hepatitisSampleId'];
 				$riskFactorsData["riskfactors_id"] = $id;
-				$riskFactorsData["riskfactors_detected"] = (isset($value) && $value == 'other') ? $_POST['riskFactorsOther'][$id] : $value;;
-				$db->insert("hepatitis_risk_factors", $riskFactorsData);
+				$riskFactorsData["riskfactors_detected"] = (isset($value) && $value == 'other') ? $_POST['riskFactorsOther'][$id] : $value;
+                $db->insert("hepatitis_risk_factors", $riskFactorsData);
 			}
 		}
 

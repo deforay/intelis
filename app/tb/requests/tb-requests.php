@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\Users;
+
 $title = _("TB | View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
@@ -13,16 +19,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 $facilityId = null;
 $labId = null;
-if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
-	$facilityId = base64_decode($_GET['facilityId']);
-	$labId = base64_decode($_GET['labId']);
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
+    $facilityId = base64_decode($_GET['facilityId']);
+    $labId = base64_decode($_GET['labId']);
 }
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
-$geoLocationDb = new \App\Models\GeoLocations();
+$general = new General();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
+$geoLocationDb = new GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 $healthFacilites = $facilitiesDb->getHealthFacilities('tb');
 /* Global config data */
@@ -106,10 +112,10 @@ foreach ($srcResults as $list) {
                                     <?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
                                 </select>
                             </td>
-                          
+
                         </tr>
                         <tr>
-                       
+
                             <td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
                             <td>
                                 <input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
@@ -140,7 +146,7 @@ foreach ($srcResults as $list) {
                             </td>
                         </tr>
                         <tr>
-                   
+
                             <td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -169,21 +175,21 @@ foreach ($srcResults as $list) {
                                     <option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
                                 </select>
                             </td>
-                           
+
                         </tr>
                         <tr>
-                       
+
                             <td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
-							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value="" selected=selected><?php echo _("All Status"); ?></option>
-									<option value="7"><?php echo _("Accepted"); ?></option>
-									<option value="4"><?php echo _("Rejected"); ?></option>
-									<option value="8"><?php echo _("Awaiting Approval"); ?></option>
-									<option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
-									<option value="10"><?php echo _("Expired"); ?></option>
-								</select>
-							</td>
+                            <td>
+                                <select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+                                    <option value="" selected=selected><?php echo _("All Status"); ?></option>
+                                    <option value="7"><?php echo _("Accepted"); ?></option>
+                                    <option value="4"><?php echo _("Rejected"); ?></option>
+                                    <option value="8"><?php echo _("Awaiting Approval"); ?></option>
+                                    <option value="6"><?php echo _("Registered At Testing Lab"); ?></option>
+                                    <option value="10"><?php echo _("Expired"); ?></option>
+                                </select>
+                            </td>
                             <td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
@@ -192,20 +198,20 @@ foreach ($srcResults as $list) {
                                     <option value="no"><?php echo _("No"); ?></option>
                                 </select>
                             </td>
-                            
-                        <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+
+                            <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
                             <td>
-                            <select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
-									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
+                                <select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+                                    <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                </select>
                             </td>
                         </tr>
                         <tr>
-                       
+
                             <td><strong><?php echo _("District/County"); ?> :</strong></td>
                             <td>
-                            <select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
-                            </select>
+                                <select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                                </select>
                             </td>
                             <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
                             <td>
@@ -222,32 +228,32 @@ foreach ($srcResults as $list) {
 
                         </tr>
                         <tr>
-                        <td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
-									<option value="yes"><?php echo _("Yes"); ?></option>
-									<option value="no"><?php echo _("No"); ?></option>
-								</select>
+                            <td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
+                                    <option value="yes"><?php echo _("Yes"); ?></option>
+                                    <option value="no"><?php echo _("No"); ?></option>
+                                </select>
 
-							</td>
+                            </td>
                             <td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
-							</td>
-							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
-							</td>
-                                    </tr>
-                                    <tr>
-                                    <td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
-							<td>
-								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
-									<option value="yes"><?php echo _("Yes"); ?></option>
-									<option value="no" selected="selected"><?php echo _("No"); ?></option>
-								</select>
-							</td>
-                                    </tr>
+                            <td>
+                                <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+                            </td>
+                            <td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
+                                    <option value="yes"><?php echo _("Yes"); ?></option>
+                                    <option value="no" selected="selected"><?php echo _("No"); ?></option>
+                                </select>
+                            </td>
+                        </tr>
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -437,8 +443,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         });
 
         $("#advanceFilter input, #advanceFilter select").on("change", function() {
-			searchExecuted = false;
-		});
+            searchExecuted = false;
+        });
 
     });
 
@@ -547,9 +553,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "value": $("#gender").val()
                 });
                 aoData.push({
-					"name": "status",
-					"value": $("#status").val()
-				});
+                    "name": "status",
+                    "value": $("#status").val()
+                });
                 aoData.push({
                     "name": "showReordSample",
                     "value": $("#showReordSample").val()
@@ -575,13 +581,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "value": $("#srcOfReq").val()
                 });
                 aoData.push({
-					"name": "patientId",
-					"value": $("#patientId").val()
-				});
-				aoData.push({
-					"name": "patientName",
-					"value": $("#patientName").val()
-				});
+                    "name": "patientId",
+                    "value": $("#patientId").val()
+                });
+                aoData.push({
+                    "name": "patientName",
+                    "value": $("#patientName").val()
+                });
                 aoData.push({
                     "name": "dateRangeModel",
                     "value": '<?php echo $dateRange; ?>'
@@ -603,9 +609,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     "value": '<?php echo $hidesrcofreq; ?>'
                 });
                 aoData.push({
-					"name": "rejectedSamples",
-					"value": $("#rejectedSamples").val()
-				});
+                    "name": "rejectedSamples",
+                    "value": $("#rejectedSamples").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -657,9 +663,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
     function exportAllPendingTbRequest() {
         if (searchExecuted === false) {
-			searchVlRequestData();
-		}
-         $.blockUI();
+            searchVlRequestData();
+        }
+        $.blockUI();
         $.post("/tb/requests/generate-pending-tb-request-excel.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
@@ -707,38 +713,37 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     <?php } ?>
 
     function getByProvince(provinceId) {
-		$("#district").html('');
+        $("#district").html('');
         $("#facilityName").html('');
         $("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
-	}
+        $.post("/common/get-by-province-id.php", {
+                provinceId: provinceId,
+                districts: true,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#district").html(Obj['districts']);
+                $("#facilityName").html(Obj['facilities']);
+                $("#vlLab").html(Obj['labs']);
+            });
+    }
 
-	function getByDistrict(districtId) {
-		$("#facilityName").html('');
-		$("#vlLab").html('');
-		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities : true,
-				labs : true,
-			},
-			function(data) {
-				Obj = $.parseJSON(data);
-				$("#facilityName").html(Obj['facilities']);
-				$("#vlLab").html(Obj['labs']);
-			});
-	}
+    function getByDistrict(districtId) {
+        $("#facilityName").html('');
+        $("#vlLab").html('');
+        $.post("/common/get-by-district-id.php", {
+                districtId: districtId,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#facilityName").html(Obj['facilities']);
+                $("#vlLab").html(Obj['labs']);
+            });
+    }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

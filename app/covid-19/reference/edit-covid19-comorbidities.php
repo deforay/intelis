@@ -108,4 +108,3 @@ $comorbidityInfo = $db->query($comorbidityQuery);
 
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

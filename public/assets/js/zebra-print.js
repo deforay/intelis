@@ -83,7 +83,7 @@ function setup_web_print()
 					showErrorMessage("No Zebra Printers could be found!");
 					hideLoading();
 					$('#print_form').hide();
-					return;
+
 				}
 				else if(selected_printer == null)
 				{
@@ -98,12 +98,12 @@ function setup_web_print()
 	{
 		showBrowserPrintNotFound();
 	});
-};
+}
 function showBrowserPrintNotFound()
 {
 	showErrorMessage("An error occured while attempting to connect to your Zebra Printer. You may not have Zebra Browser Print installed, or it may not be running. Install Zebra Browser Print, or start the Zebra Browser Print Service, and try again.");
 
-};
+}
 function printBarcodeLabel(bcode,facility)
 {
 	//showLoading("Printing...");
@@ -121,13 +121,13 @@ function printBarcodeLabel(bcode,facility)
 			printerError(text);
 		}
 	});
-};
+}
 function checkPrinterStatus(finishedFunction)
 {
 	selected_printer.sendThenRead("~HQES", 
 				function(text){
 						var that = this;
-						var statuses = new Array();
+						var statuses = [];
 						var ok = false;
 						var is_error = text.charAt(70);
 						var media = text.charAt(88);
@@ -161,15 +161,15 @@ function checkPrinterStatus(finishedFunction)
 							statuses.push("Error: Unknown Error");
 						finishedFunction(statuses.join());
 			}, printerError);
-};
+}
 function hidePrintForm()
 {
 	$('#print_form').hide();
-};
+}
 function showPrintForm()
 {
 	$('#print_form').show();
-};
+}
 function showLoading(text)
 {
 	$('#loading_message').text(text);
@@ -177,7 +177,7 @@ function showLoading(text)
 	hidePrintForm();
 	$('#printer_details').hide();
 	$('#printer_select').hide();
-};
+}
 function printComplete()
 {
 	hideLoading();
@@ -196,7 +196,7 @@ function hideLoading()
 		$('#printer_select').show();
 		showPrintForm();
 	}
-};
+}
 function changePrinter()
 {
 	default_mode = false;

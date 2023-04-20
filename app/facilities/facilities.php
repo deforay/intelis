@@ -1,17 +1,22 @@
 <?php
+
+use App\Models\General;
+use App\Models\GeoLocations;
+use App\Models\System;
+
 $title = _("Facilities");
  
 require_once(APPLICATION_PATH . '/header.php');
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
-$general = new \App\Models\General();
+$general = new General();
 
-$activeTestModules = \App\Models\System::getActiveTestModules();
+$activeTestModules = System::getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
-$geoLocationDb = new \App\Models\GeoLocations();
+$geoLocationDb = new GeoLocations();
 $state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>
@@ -53,7 +58,7 @@ select { width:400px; !important }
 						<tr>
 							<td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
 							<td>
-              <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>; getTestType(); showSignature(this.value);">
+              <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											foreach ($fResult as $type) {
@@ -106,16 +111,16 @@ select { width:400px; !important }
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Facility Code");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Facility Code");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Facility Name");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Facility Name");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Facility Type");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Facility Type");?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="javascript:fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
                 </div>
               </div>
             </div>
@@ -308,4 +313,3 @@ select { width:400px; !important }
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

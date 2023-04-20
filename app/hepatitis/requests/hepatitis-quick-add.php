@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\Users;
+
 ob_start();
 $title = "COVID-19 | Add New Request";
 
@@ -33,8 +37,8 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 // $general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
-$userDb = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$userDb = new Users();
 
 // $arr = $general->getGlobalConfig();
 // $sarr = $general->getSystemConfig();
@@ -94,7 +98,7 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -104,7 +108,7 @@ require($fileArray[$arr['vl_form']]);
             changeYear: true,
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?php echo (date('Y')) ?>",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
@@ -148,7 +152,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -168,7 +172,7 @@ require($fileArray[$arr['vl_form']]);
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
-            yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

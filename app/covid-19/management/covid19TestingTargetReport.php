@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 $title = _("Covid-19 Quarterly Monitoring Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -22,7 +26,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 
 // $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
@@ -209,7 +213,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _("Facility Name"); ?></th>
@@ -258,8 +262,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           separator: ' to ',
         },
         showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+        alwaysShowCalendars: false,
+        startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {
@@ -277,9 +281,9 @@ startDate: moment().subtract(28, 'days'),
       });
     $('#sampleTestDate').val("");
     loadVlRequestData();
-    $("#filterDiv input, #filterDiv select").on("change", function(){
-			searchExecuted = false;
-		});
+    $("#filterDiv input, #filterDiv select").on("change", function() {
+      searchExecuted = false;
+    });
 
   });
 
@@ -354,8 +358,7 @@ startDate: moment().subtract(28, 'days'),
   }
 
   function exportInexcel() {
-    if(searchExecuted === false)
-    {
+    if (searchExecuted === false) {
       searchVlRequestData();
     }
     $.blockUI();
@@ -695,4 +698,3 @@ startDate: moment().subtract(28, 'days'),
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

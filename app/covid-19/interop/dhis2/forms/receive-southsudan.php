@@ -2,6 +2,13 @@
 
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 
+use App\Interop\Dhis2;
+use App\Models\Covid19;
+use App\Models\General;
+use App\Utilities\DateUtils;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 $programStages = [
     'clinicalExaminationAndDiagnosis' => 'LpWNjNGvCO5',
     'labRequest' => 'iR8O4hSLHnu',
@@ -42,13 +49,13 @@ $eventsDataElementMapping = [
 ];
 
 
-$general = new \App\Models\General();
-$covid19Model = new \App\Models\Covid19();
+$general = new General();
+$covid19Model = new Covid19();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
-$dhis2 = new \App\Interop\Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+$dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 $receivedCounter = 0;
 $processedCounter = 0;
@@ -74,9 +81,9 @@ if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('N
 
 $options = [
     'pointer' => '/trackedEntityInstances',
-    'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true)
+    'decoder' => new ExtJsonDecoder(true)
 ];
-$trackedEntityInstances = \JsonMachine\Items::fromString($jsonResponse, $options);
+$trackedEntityInstances = Items::fromString($jsonResponse, $options);
 
 foreach ($trackedEntityInstances as $tracker) {
 
@@ -146,7 +153,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $reasonData = array(
                     'test_reason_name' => $formData['reason_for_covid19_test'],
                     'test_reason_status' => 'active',
-                    'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
+                    'updated_datetime' => DateUtils::getCurrentDateTime()
                 );
                 $formData['reason_for_covid19_test'] =   $db->insert("r_covid19_test_reasons", $reasonData);
             }
@@ -200,7 +207,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $sampleTypeData = array(
                     'sample_name' => $formData['specimen_type'],
                     'status' => 'active',
-                    'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime()
+                    'updated_datetime' => DateUtils::getCurrentDateTime()
                 );
                 $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
             }
@@ -213,7 +220,7 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
         $formData['result_status'] = $status;
-        $formData['last_modified_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $formData['last_modified_datetime'] = DateUtils::getCurrentDateTime();
 
 
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower($formData['patient_gender']) : null);
@@ -229,7 +236,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
 
-        $sampleJson = $covid19Model->generateCovid19SampleCode(null, \App\Utilities\DateUtils::humanReadableDateFormat($formData['sample_collection_date']), null, $formData['province_id']);
+        $sampleJson = $covid19Model->generateCovid19SampleCode(null, DateUtils::humanReadableDateFormat($formData['sample_collection_date']), null, $formData['province_id']);
 
         $sampleData = json_decode($sampleJson, true);
 
@@ -252,7 +259,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
 
         $formData['request_created_by'] = 1;
-        $formData['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+        $formData['request_created_datetime'] = DateUtils::getCurrentDateTime();
 
         $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

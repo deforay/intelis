@@ -1,10 +1,15 @@
 <?php
+
+use App\Models\App;
+use App\Models\General;
+use App\Models\Users;
+
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
-$general = new \App\Models\General();
-$users = new \App\Models\Users();
-$app = new \App\Models\App();
+$general = new General();
+$users = new Users();
+$app = new App();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $transactionId = $general->generateUUID();

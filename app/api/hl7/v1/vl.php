@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Vl;
+use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
 use Aranyasen\HL7\Segments\PID;
@@ -7,7 +9,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$vlModel = new \App\Models\Vl();
+$vlModel = new Vl();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -423,11 +425,11 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'consent_to_receive_sms' => (isset($_POST['receiveSms']) && $_POST['receiveSms'] != '') ? $_POST['receiveSms'] :  null,
             'sample_type' => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  null,
             'arv_adherance_percentage' => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  null,
-            'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($_POST['rmTestingLastVLDate']) :  null,
+            'last_vl_date_routine' => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? DateUtils::isoDateFormat($_POST['rmTestingLastVLDate']) :  null,
             'last_vl_result_routine' => (isset($_POST['rmTestingVlValue']) && $_POST['rmTestingVlValue'] != '') ? $_POST['rmTestingVlValue'] :  null,
-            'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($_POST['repeatTestingLastVLDate']) :  null,
+            'last_vl_date_failure_ac' => (isset($_POST['repeatTestingLastVLDate']) && $_POST['repeatTestingLastVLDate'] != '') ? DateUtils::isoDateFormat($_POST['repeatTestingLastVLDate']) :  null,
             'last_vl_result_failure_ac' => (isset($_POST['repeatTestingVlValue']) && $_POST['repeatTestingVlValue'] != '') ? $_POST['repeatTestingVlValue'] :  null,
-            'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? \App\Utilities\DateUtils::isoDateFormat($_POST['suspendTreatmentLastVLDate']) :  null,
+            'last_vl_date_failure' => (isset($_POST['suspendTreatmentLastVLDate']) && $_POST['suspendTreatmentLastVLDate'] != '') ? DateUtils::isoDateFormat($_POST['suspendTreatmentLastVLDate']) :  null,
             'last_vl_result_failure' => (isset($_POST['suspendTreatmentVlValue']) && $_POST['suspendTreatmentVlValue'] != '') ? $_POST['suspendTreatmentVlValue'] :  null,
             'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  null,
             'vl_test_platform' => $testingPlatform,

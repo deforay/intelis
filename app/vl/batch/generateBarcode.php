@@ -1,7 +1,11 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 ob_start();
 
-$general = new \App\Models\General();
+$general = new General();
 $id = base64_decode($_GET['id']);
 
 $showPatientName = false;
@@ -77,14 +81,14 @@ if ($id > 0) {
     $createdBy = '';
     if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != null && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
-        $resulted = \App\Utilities\DateUtils::humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $resulted = DateUtils::humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     }
     if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != null && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
-        $reviewed = \App\Utilities\DateUtils::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
+        $reviewed = DateUtils::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
    
-    if (count($bResult) > 0) {
+    if (!empty($bResult)) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
@@ -106,13 +110,13 @@ if ($id > 0) {
             public function Header()
             {
                 // Logo
-                //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-                //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
+                //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 // Set font
                 if (trim($this->logo) != "") {
                     if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                        $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($image_file, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                        $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
                     }
                 }
                 $this->SetFont('helvetica', '', 7);
@@ -172,7 +176,7 @@ if ($id > 0) {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -266,7 +270,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -323,7 +327,7 @@ if ($id > 0) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= DateUtils::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -440,7 +444,7 @@ if ($id > 0) {
                     if (trim($sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }
-                    $lotExpirationDate .= \App\Utilities\DateUtils::humanReadableDateFormat($sample['lot_expiration_date']);
+                    $lotExpirationDate .= DateUtils::humanReadableDateFormat($sample['lot_expiration_date']);
                 }
                 $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 

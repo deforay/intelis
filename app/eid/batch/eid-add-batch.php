@@ -1,11 +1,15 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 ob_start();
 $title = "EID | Add Batch";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new General();
+$facilitiesDb = new Facilities();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

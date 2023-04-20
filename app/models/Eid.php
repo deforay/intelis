@@ -2,6 +2,16 @@
 
 namespace App\Models;
 
+use App\Utilities\DateUtils;
+use DateTimeImmutable;
+use Exception;
+use MysqliDb;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 /**
  * General functions
  *
@@ -17,21 +27,20 @@ class Eid
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : \MysqliDb::getInstance();
+        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
     }
 
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new \App\Models\General($this->db);
+        $general = new General($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new \App\Utilities\DateUtils();
-        if (\App\Utilities\DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
-        $dateObj = new \DateTimeImmutable($sampleCollectionDate);
+        $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
         $month = $dateObj->format('m');
@@ -70,7 +79,7 @@ class Eid
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new \App\Models\GeoLocations($this->db);
+                    $geoLocations = new GeoLocations($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -160,9 +169,9 @@ class Eid
 
     public function generateExcelExport($params)
     {
-        $general = new \App\Models\General();
+        $general = new General();
 
-        $eidModel = new \App\Models\Eid();
+        $eidModel = new Eid();
         $eidResults = $eidModel->getEidResults();
 
         //$sarr = $general->getSystemConfig();
@@ -171,7 +180,7 @@ class Eid
 
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
 
-            $excel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $excel = new Spreadsheet();
             $output = array();
             $sheet = $excel->getActiveSheet();
 
@@ -184,23 +193,23 @@ class Eid
                     'size' => 12,
                 ),
                 'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'style' => Border::BORDER_THIN,
                     ),
                 )
             );
 
             $borderStyle = array(
                 'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'style' => Border::BORDER_THIN,
                     ),
                 )
             );
@@ -212,17 +221,17 @@ class Eid
                     $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
                 }
             }
-            $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . "1", html_entity_decode($nameValue));
             if ($params['withAlphaNum'] == 'yes') {
                 foreach ($headings as $field => $value) {
                     $string = str_replace(' ', '', $value);
                     $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-                    $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . "3", html_entity_decode($value));
                     $colNo++;
                 }
             } else {
                 foreach ($headings as $field => $value) {
-                    $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . "3", html_entity_decode($value));
                     $colNo++;
                 }
             }
@@ -337,16 +346,14 @@ class Eid
                 $colNo = 1;
                 foreach ($rowData as $field => $value) {
                     $rRowCount = $rowNo + 4;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
+                    $cellName = Coordinate::stringFromColumnIndex($colNo);
                     $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
                     $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-                    // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
-                    // // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValue($cellName . ($rowNo + 4), html_entity_decode($value));
                     $colNo++;
                 }
             }
-            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xlsx');
+            $writer = IOFactory::createWriter($excel, 'Xlsx');
             $filename = 'VLSM-EID-Requested-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
@@ -355,7 +362,7 @@ class Eid
 
     public function insertSampleCode($params)
     {
-        $general = new \App\Models\General();
+        $general = new General();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -381,7 +388,7 @@ class Eid
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = \App\Utilities\DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -495,7 +502,7 @@ class Eid
             } else {
                 return 0;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('Insert EID Sample : ' . $this->db->getLastErrno());
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $this->db->getLastQuery());

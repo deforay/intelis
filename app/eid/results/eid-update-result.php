@@ -1,4 +1,10 @@
 <?php
+
+use App\Models\Eid;
+use App\Models\Facilities;
+use App\Models\Users;
+use App\Utilities\DateUtils;
+
 ob_start();
 $title = "Enter EID Result";
 
@@ -7,8 +13,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
 
-$facilitiesDb = new \App\Models\Facilities();
-$usersModel = new \App\Models\Users();
+$facilitiesDb = new Facilities();
+$usersModel = new Users();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
@@ -48,7 +54,7 @@ $id = base64_decode($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
-$eidModel = new \App\Models\Eid();
+$eidModel = new Eid();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -63,7 +69,7 @@ foreach ($iResult as $val) {
 }
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-	$eidInfo['result_dispatched_datetime'] = \App\Utilities\DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$eidInfo['result_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
 }
@@ -201,7 +207,7 @@ require($fileArray[$arr['vl_form']]);
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
@@ -216,7 +222,7 @@ require($fileArray[$arr['vl_form']]);
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			yearRange: <?php echo (date('Y') - 100); ?> + ":" + "<?php echo (date('Y')) ?>"
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});

@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\Facilities;
+use App\Models\General;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -6,9 +10,9 @@ $title = _("TB | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new \App\Models\General();
+$general = new General();
 
-$facilitiesDb = new \App\Models\Facilities();
+$facilitiesDb = new Facilities();
 
 $sarr = $general->getSystemConfig();
 
@@ -97,7 +101,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="tbExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
-						<table id="tbRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table id="tbRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("TB Sample ID"); ?></th>
@@ -289,4 +293,3 @@ $batResult = $db->rawQuery($batQuery);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

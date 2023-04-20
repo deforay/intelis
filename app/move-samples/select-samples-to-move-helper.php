@@ -1,10 +1,14 @@
 <?php
+
+use App\Models\General;
+use App\Utilities\DateUtils;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ob_start();
   
-$general = new \App\Models\General();
+$general = new General();
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";
 $tableName2    = "move_samples_map";
@@ -43,8 +47,8 @@ try {
                 "lab_id"                    => $_POST['labNameTo'],
                 "referring_lab_id"          => $_POST['labNameTo'],
                 "data_sync"                 => 0,
-                "samples_referred_datetime" => \App\Utilities\DateUtils::getCurrentDateTime(),
-                "last_modified_datetime"    => \App\Utilities\DateUtils::getCurrentDateTime()
+                "samples_referred_datetime" => DateUtils::getCurrentDateTime(),
+                "last_modified_datetime"    => DateUtils::getCurrentDateTime()
             );
             $db->where($primaryKey . " IN (" . implode(",", $_POST['sampleCode']) . ")");
             $db->where("lab_id", $_POST['labId']);

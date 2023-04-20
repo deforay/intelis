@@ -1,5 +1,8 @@
 <?php
-$general = new \App\Models\General();
+
+use App\Models\General;
+
+$general = new General();
 
 
 $sources = array(
