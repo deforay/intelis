@@ -9,7 +9,7 @@ $primaryKey="facility_map_id";
 //system config
     $systemConfigQuery ="SELECT * from system_config";
     $systemConfigResult=$db->query($systemConfigQuery);
-    $sarr = array();
+    $sarr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
       $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -139,7 +139,7 @@ $primaryKey="facility_map_id";
 	
         
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 			$row[] = ($aRow['facility_name']);
 			$row[] = ($aRow['healthCenterName']);
 			if(isset($_SESSION['privileges']) && in_array("editVlFacilityMap.php", $_SESSION['privileges']) && (($sarr['sc_user_type']=='remoteuser') || ($sarr['sc_user_type']=='standalone'))){ 
@@ -149,4 +149,3 @@ $primaryKey="facility_map_id";
         }
         
         echo json_encode($output);
-?>

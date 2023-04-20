@@ -137,7 +137,7 @@ foreach ($rResult as $aRow) {
         $humanDate =  date("d-M-Y H:i:s", strtotime($date));
     }
 
-    $row = array();
+    $row = [];
     $date = '';
     if ($aRow['moved_on'] != '0000-00-00' && $aRow['moved_on'] != null) {
         $date = DateUtils::humanReadableDateFormat($aRow['moved_on']);

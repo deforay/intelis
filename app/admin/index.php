@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("COVID-19 | Add New Request");
 require_once(APPLICATION_PATH . '/header.php');
 ?>

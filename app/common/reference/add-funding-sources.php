@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("Funding Source");
 
 require_once(APPLICATION_PATH . '/header.php');

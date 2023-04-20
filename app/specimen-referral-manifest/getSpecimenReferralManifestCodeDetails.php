@@ -85,7 +85,7 @@ if (isset($_POST['iSortCol_0'])) {
         * word by word on any field. It's possible to do here, but concerned about efficiency
         * on very large tables, and MySQL's regex functionality is very limited
     */
-$sWhere = array();
+$sWhere = [];
 $sWhere[] = "p.module = '$module'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
@@ -186,7 +186,7 @@ foreach ($rResult as $aRow) {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }
-    $row = array();
+    $row = [];
     //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['package_id'] . '"  value="' . $aRow['package_id'] . '" onclick="checkPackage(this);"  />';
     $row[] = $aRow['package_code'];
     $row[] = strtoupper($aRow['module']);

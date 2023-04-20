@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-ob_start();
+
   
 
 
@@ -23,7 +23,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
   $rResult = $db->rawQuery($_SESSION['covid19TATQuery']);
 
   $excel = new Spreadsheet();
-  $output = array();
+  $output = [];
   $sheet = $excel->getActiveSheet();
 
   $headings = array("Covid-19 Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date");
@@ -65,7 +65,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
 
   $no = 1;
   foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     //sample collecion date
     $sampleCollectionDate = '';
     if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {

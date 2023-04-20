@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -32,7 +32,7 @@ try {
             $general->activityLog('Covid-19 qc test kit', $_SESSION['userName'] . ' added new qc test kit for ' . $_POST['testKitName'], 'covid19-reference');
         }
     }
-    header("location:covid19-qc-test-kits.php");
+    header("Location:covid19-qc-test-kits.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

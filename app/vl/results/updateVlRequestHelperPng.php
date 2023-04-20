@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 $general = new General();
@@ -147,7 +147,7 @@ try {
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }
-    header("location:vlResultApproval.php");
+    header("Location:vlResultApproval.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

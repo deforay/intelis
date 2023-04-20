@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "Implementation Partners";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -7,7 +7,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
-    header("location:province-details.php");
+    header("Location:province-details.php");
 }
 $query = "SELECT * from r_funding_sources where funding_source_id = $id";
 $partnerInfo = $db->query($query);

@@ -71,7 +71,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -346,7 +346,7 @@ foreach ($rResult as $aRow) {
      //  $patientLname = ($general->crypto('doNothing',$aRow['patient_last_name'],$aRow['patient_art_no']));
 
 
-     $row = array();
+     $row = [];
 
      //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];

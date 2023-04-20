@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 $tableName = "r_test_types";
@@ -52,7 +52,7 @@ try {
         $_SESSION['alertMsg'] = _("Test type added successfully");
     }
     error_log($db->getLastError());
-    header("location:testType.php");
+    header("Location:testType.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 
@@ -15,7 +15,7 @@ $tableName = "form_vl";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE `type` = 'result'";
 $geResult = $db->rawQuery($geQuery);
-$mailconf = array();
+$mailconf = [];
 foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
@@ -109,7 +109,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
       $pdf->SetFont('helvetica', '', 8);
       $pdf->AddPage();
       $pdfContent = '';
-      $filedGroup = array();
+      $filedGroup = [];
       $filedGroup = explode(",", $mailconf['rs_field']);
       $pdfContent .= '<table style="width;100%;border:1px solid #333;padding:0px 2px 2px 2px;" cellspacing="0" cellpadding="2">';
       $pdfContent .= '<tr>';
@@ -287,7 +287,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
                      </thead>
                      <tbody>
                         <?php
-                        $resultOlySamples = array();
+                        $resultOlySamples = [];
                         for ($s = 0; $s < count($selectedSamplesArray); $s++) {
                            $sampleQuery = "SELECT vl_sample_id,sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);

@@ -59,8 +59,8 @@ class Tb
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
-        $sampleCodeFormat = isset($globalConfig['tb_sample_code']) ? $globalConfig['tb_sample_code'] : 'MMYY';
-        $prefixFromConfig = isset($globalConfig['tb_sample_code_prefix']) ? $globalConfig['tb_sample_code_prefix'] : '';
+        $sampleCodeFormat = $globalConfig['tb_sample_code'] ?? 'MMYY';
+        $prefixFromConfig = $globalConfig['tb_sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
@@ -144,7 +144,7 @@ class Tb
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
         }
@@ -197,7 +197,7 @@ class Tb
         }
         $query .= " ORDER BY result_id DESC";
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
         }
@@ -211,7 +211,7 @@ class Tb
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
         }
@@ -221,7 +221,7 @@ class Tb
     public function getTbReasonsForTestingDRC()
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' AND (parent_reason IS NULL OR parent_reason = 0)");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
         }
@@ -230,7 +230,7 @@ class Tb
 
     public function getTbTestsByFormId($tbId = "")
     {
-        $response = array();
+        $response = [];
 
         // Using this in sync requests/results
         if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
@@ -281,7 +281,7 @@ class Tb
             }
 
 
-            $oldSampleCodeKey = isset($params['oldSampleCodeKey']) ? $params['oldSampleCodeKey'] : null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
@@ -345,11 +345,7 @@ class Tb
                     $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
                 } else if (isset($_SERVER['HTTP_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else if (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
+                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
                 $formAttributes = array(
                     'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress

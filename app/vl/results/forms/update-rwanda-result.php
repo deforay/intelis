@@ -2,7 +2,7 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
@@ -47,7 +47,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = '';
 }
 //district details
-$districtResult = array();
+$districtResult = [];
 if (trim($stateName) != '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);

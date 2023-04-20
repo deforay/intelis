@@ -9,7 +9,7 @@ $primaryKey = "sample_id";
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -141,7 +141,7 @@ foreach ($rResult as $aRow) {
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
                </select><br><br>';
-    $row = array();
+    $row = [];
     $row[] = ($aRow['sample_name']);
     if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
          $row[] = $status;

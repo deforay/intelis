@@ -49,7 +49,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -137,7 +137,7 @@ foreach ($rResult as $aRow) {
         $interfaceUsers = implode(", ", json_decode($aRow['interface_user_name'], true));
         $aRow['user_name'] = $aRow['user_name'] . "<br><small>[". $interfaceUsers ."]</small>";
     }
-    $row = array();
+    $row = [];
     $row[] = ($aRow['user_name']);
     $row[] = ($aRow['login_id']);
     $row[] = $aRow['email'];

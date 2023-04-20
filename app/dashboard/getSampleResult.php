@@ -176,7 +176,7 @@ $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
 
 $tRes = $db->rawQuery($accessionQuery); //overall result
-$tResult = array();
+$tResult = [];
 foreach ($tRes as $tRow) {
     $receivedTotal += $tRow['count'];
     $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
@@ -201,7 +201,7 @@ if ($table == "form_eid") {
 }
 
 $tRes = $db->rawQuery($sampleTestedQuery); //overall result
-$acceptedResult = array();
+$acceptedResult = [];
 $acceptedTotal = 0;
 foreach ($tRes as $tRow) {
     $acceptedTotal += $tRow['count'];
@@ -226,7 +226,7 @@ if ($table == "form_eid") {
     $sampleRejectedQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(vl_sample_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id  INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 4) AND  ' . $vlWhereCondition . ' DATE(vl.sample_collection_date) <= "' . $cDate . '" AND DATE(vl.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
 }
 $tRes = $db->rawQuery($sampleRejectedQuery); //overall result
-$rejectedResult = array();
+$rejectedResult = [];
 foreach ($tRes as $tRow) {
     $rejectedTotal += $tRow['count'];
     $rejectedResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);

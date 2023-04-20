@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 
@@ -33,7 +33,7 @@ if (isset($_SESSION['eidTatData']['sOrder']) && !empty($_SESSION['eidTatData']['
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 
 $headings = array("EID Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date");
@@ -74,7 +74,7 @@ $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-	$row = array();
+	$row = [];
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {

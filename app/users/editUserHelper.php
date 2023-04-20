@@ -6,7 +6,6 @@ use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 use GuzzleHttp\Client;
 
-ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -107,7 +106,7 @@ try {
 
         $systemType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
-            // $nUser = array();
+            // $nUser = [];
             // $_POST['userId'] = $userId;
             // $nUser['userName'] = $_POST['userName']; 
             // $nUser['email'] = $_POST['email']; 
@@ -153,7 +152,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("location:users.php");
+    header("Location:users.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -11,7 +11,7 @@ try {
     $numberOfResults = 0;
 
     $arr = $general->getGlobalConfig();
-    $printSampleCode = array();
+    $printSampleCode = [];
 
     $importNonMatching = (isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no') ? false : true;
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
@@ -285,7 +285,7 @@ try {
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {
-        $importedBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 'AUTO';
+        $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $general->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
     echo "importedStatistics.php";

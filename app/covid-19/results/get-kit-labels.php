@@ -3,7 +3,7 @@
 use App\Models\Covid19;
 use App\Models\General;
 
-ob_start();
+
 
 $generalObj = new General();
 $covid19Obj = new Covid19();

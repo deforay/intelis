@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -81,7 +81,7 @@ try {
             $general->activityLog('Covid-19 qc data', $_SESSION['userName'] . ' added new qc data for ' . $_POST['qcCode'], 'covid19-results');
         }
     }
-    header("location:covid-19-qc-data.php");
+    header("Location:covid-19-qc-data.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

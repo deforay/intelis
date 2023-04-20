@@ -55,7 +55,7 @@ if (empty($user) || empty($user['user_id'])) {
 }
 $updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
 /* Status name list */
-$statusList = array();
+$statusList = [];
 $tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";
 $tsResult = $db->rawQuery($tsQuery);
 foreach ($tsResult as $row) {
@@ -64,7 +64,7 @@ foreach ($tsResult as $row) {
 // Check if covid-19 module active/inactive
 $status = false;
 /* Funding Source List */
-$fundingSourceList = array();
+$fundingSourceList = [];
 $fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ";
 if ($updatedDateTime) {
     $fundingSourceQry .= " AND updated_datetime >= '$updatedDateTime'";
@@ -76,7 +76,7 @@ foreach ($fundingSourceResult as $funding) {
     $fundingSourceList[$funding['funding_source_id']] = $funding['funding_source_name'];
 }
 /* Implementing Partner Details */
-$implementingPartnerList = array();
+$implementingPartnerList = [];
 $implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ";
 if ($updatedDateTime) {
     $implementingPartnerQry .= " AND updated_datetime >= '$updatedDateTime'";
@@ -95,7 +95,7 @@ foreach ($nationalityResult as $key => $nrow) {
     $nationalityList[$key]['show'] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
     $nationalityList[$key]['value'] = $nrow['id'];
 }
-$commonResultsList = array();
+$commonResultsList = [];
 $commonResult = array('positive', 'negative', 'unknown');
 foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['value'] = $result;
@@ -104,11 +104,11 @@ foreach ($commonResult as $key => $result) {
 /* Lab Technician Details */
 $facilityMap = $facilitiesDb->getUserFacilityMap($user['user_id']);
 $userResult = $userDb->getActiveUsers($facilityMap, $updatedDateTime);
-$labTechniciansList = array();
+$labTechniciansList = [];
 foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
-$activeModule = array();
+$activeModule = [];
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
     $activeModule[] = '"vl"';
 }
@@ -125,7 +125,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     $activeModule[] = '"tb"';
 }
 
-$data = array();
+$data = [];
 $data['formId'] = $formId;
 $data['activeModule'] = implode(",", $activeModule);
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
@@ -147,7 +147,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
-    $sourceOfAlertList = array();
+    $sourceOfAlertList = [];
     $sourceOfAlert = array('Hotline', 'Community Surveillance', 'POE', 'Contact Tracing', 'Clinic', 'Sentinel Site', 'Screening', 'Others');
     foreach ($sourceOfAlert as $key => $src) {
         $sourceOfAlertList[$key]['value'] = strtolower(str_replace(" ", "-", $src));
@@ -166,7 +166,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $data['covid19']['nationalityList'] = $nationalityList;
 
     /* Type of Test Request */
-    $typeOfTestReqList = array();
+    $typeOfTestReqList = [];
     if ($formId == 3) {
         $typeOfTestReqResult = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "Other");
     } else {
@@ -177,7 +177,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
         $typeOfTestReqList[$key]['show'] = $req;
     }
     $data['covid19']['typeOfTestRequestList'] = $typeOfTestReqList;
-    $platformTestKits = array();
+    $platformTestKits = [];
     $platformTestKitsResult = array('Abbott Panbio™ COVID-19 Ag Test', 'STANDARD™ Q COVID-19 Ag Test', 'LumiraDx ™ SARS-CoV-2 Ag Test', 'Sure Status® COVID-19 Antigen Card Test');
     foreach ($platformTestKitsResult as $key => $req) {
         $platformTestKits[$key]['value'] = $req;
@@ -194,7 +194,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $data['covid19']['testingPoint'] = $testingPoint;
     $data['covid19']['testingLabsList'] = $app->getTestingLabs('covid19', null, true, false, $updatedDateTime);
     /* Type of Test Request */
-    $qualityList = array();
+    $qualityList = [];
     $qualityResults = array('Good', 'Poor');
     foreach ($qualityResults as $key => $req) {
         $qualityList[$key]['value'] = strtolower($req);
@@ -209,7 +209,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $rejectionTypeQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = array();
+    $rejectionReason = [];
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
@@ -225,7 +225,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     $data['covid19']['rejectedReasonList'] = $rejectionReason;
 
     /* Testing Platform Details */
-    $testPlatformList = array();
+    $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('covid19');
     foreach ($testPlatformResult as $row) {
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
@@ -263,7 +263,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     /* Infant and Mother's Health Information Section */
     $data['eid']['mothersHIVStatus'] = $commonResultsList;
 
-    $motherTreatmentList = array();
+    $motherTreatmentList = [];
     $motherTreatmentArray = array('No ART given', 'Pregnancy', 'Labour/Delivery', 'Postnatal', 'Unknown');
     foreach ($motherTreatmentArray as $key => $treatment) {
         $motherTreatmentList[$key]['value'] = $treatment;
@@ -273,7 +273,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     $data['eid']['rapidTestResult'] = $app->generateSelectOptions($eidObj->getEidResults($updatedDateTime));
     $data['eid']['prePcrTestResult'] = $commonResultsList;
 
-    $pcrTestReasonList = array();
+    $pcrTestReasonList = [];
     $pcrTestReasonArray = array('Confirmation of positive first EID PCR test result', 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months', 'Positive HIV rapid test result at 9 months or later', 'Other');
     foreach ($pcrTestReasonArray as $key => $reason) {
         $pcrTestReasonList[$key]['value'] = $reason;
@@ -288,7 +288,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
     }
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = array();
+    $rejectionReason = [];
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
@@ -304,7 +304,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     $data['eid']['rejectedReasonList'] = $rejectionReason;
 
     /* Testing Platform Details */
-    $testPlatformList = array();
+    $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('eid');
     foreach ($testPlatformResult as $row) {
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
@@ -334,7 +334,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     }
     $aResult = $db->query($aQuery);
 
-    $regimenResult = array();
+    $regimenResult = [];
     foreach ($aResult as $subKey => $regimen) {
         $regimenResult[$subKey]['value'] = $regimen['art_code'];
         $regimenResult[$subKey]['show'] = $regimen['art_code'];
@@ -354,7 +354,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     }
     $rejectionQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = array();
+    $rejectionReason = [];
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
@@ -370,7 +370,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     $data['vl']['rejectedReasonList'] = $rejectionReason;
 
     /* Testing Platform Details */
-    $testPlatformList = array();
+    $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('vl');
     foreach ($testPlatformResult as $row) {
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
@@ -395,7 +395,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     /* Infant and Mother's Health Information Section */
     // $data['eid']['mothersHIVStatus'] = $commonResultsList;
 
-    // $motherTreatmentList = array();
+    // $motherTreatmentList = [];
     // $motherTreatmentArray = array('No ART given', 'Pregnancy', 'Labour/Delivery', 'Postnatal', 'Unknown');
     // foreach ($motherTreatmentArray as $key => $treatment) {
     //     $motherTreatmentList[$key]['value'] = $treatment;
@@ -405,7 +405,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults(null, $updatedDateTime));
     // $data['eid']['prePcrTestResult'] = $commonResultsList;
 
-    // $pcrTestReasonList = array();
+    // $pcrTestReasonList = [];
     // $pcrTestReasonArray = array('Confirmation of positive first EID PCR test result', 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months', 'Positive HIV rapid test result at 9 months or later', 'Other');
     // foreach ($pcrTestReasonArray as $key => $reason) {
     //     $pcrTestReasonList[$key]['value'] = $reason;
@@ -421,7 +421,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     }
     $rejectionTypeQuery .= " GROUP BY rejection_type";
     $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = array();
+    $rejectionReason = [];
     foreach ($rejectionTypeResult as $key => $type) {
         $rejectionReason[$key]['show'] = ($type['rejection_type']);
         $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active' AND rejection_type LIKE '" . $type['rejection_type'] . "%' ";
@@ -437,7 +437,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     $data['tb']['rejectedReasonList'] = $rejectionReason;
 
     /* Testing Platform Details */
-    $testPlatformList = array();
+    $testPlatformList = [];
     $testPlatformResult = $general->getTestingPlatforms('tb');
     foreach ($testPlatformResult as $row) {
         $testPlatformList[$row['machine_name']] = $row['machine_name'];

@@ -5,7 +5,7 @@ use App\Models\Hepatitis;
 use App\Models\Users;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $title = "Hepatitis | Edit Request";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -45,7 +45,7 @@ $healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $userDb->getActiveUsers($facilityMap);
-$labTechniciansResults = array();
+$labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
@@ -112,7 +112,7 @@ $specimenResult = $hepatitisDb->getHepatitisSampleTypes();
 
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
-$testPlatformList = array();
+$testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }

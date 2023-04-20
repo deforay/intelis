@@ -18,7 +18,7 @@ $app = new App();
 
 $transactionId = $general->generateUUID();
 
-$sampleCodes = $facilityIds = array();
+$sampleCodes = $facilityIds = [];
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_hepatitis'";
@@ -27,7 +27,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $counter = 0;
 
 
-    $lab = array();
+    $lab = [];
     $options = [
         'decoder' => new ExtJsonDecoder(true)
     ];
@@ -45,7 +45,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $counter = 0;
     foreach ($resultData as $key => $resultRow) {
         $counter++;
-        $lab = array();
+        $lab = [];
         foreach ($oneDimensionalArray as $result) {
             if (isset($resultRow[$result])) {
                 $lab[$result] = $resultRow[$result];

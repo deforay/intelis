@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 
@@ -30,12 +30,12 @@ if ($systemType == 'remoteuser') {
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = array();
+// $sampleStatusArray = [];
 // foreach($tsResult as $tsRow){
 //     $sampleStatusArray = $tsRow['status_name'];
 // }
 
-$sampleStatusColors = array();
+$sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
@@ -85,7 +85,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 		$testedEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
 	}
 }
-$sWhere = array();
+$sWhere = [];
 if(!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 
@@ -122,7 +122,7 @@ $tResult = $db->rawQuery($tQuery);
 
 
 //HVL and LVL Samples
-$sWhere = array();
+$sWhere = [];
 if(!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
@@ -170,7 +170,7 @@ if ($start_date == '' && $end_date == '') {
 	$start_date = date('Y-m-d', $date);
 	$end_date = date('Y-m-d');
 }
-$sWhere = array();
+$sWhere = [];
 if(!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 $tatSampleQuery = "SELECT 

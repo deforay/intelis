@@ -4,7 +4,7 @@
 use App\Models\Covid19;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $covid19Obj = new Covid19();
 
 //Funding source list
@@ -74,7 +74,7 @@ foreach ($pdResult as $provinceName) {
     $provinceSelect .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $pdResult = $db->query($pdQuery);
-$provinceInfo = array();
+$provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }

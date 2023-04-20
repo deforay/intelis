@@ -48,7 +48,7 @@ $batResult = $db->rawQuery($batQuery);
 // Src of alert req
 $srcQuery = "SELECT DISTINCT source_of_request from form_hepatitis where source_of_request is not null AND source_of_request not like ''";
 $srcResults = $db->rawQuery($srcQuery);
-$srcOfReqList = array();
+$srcOfReqList = [];
 foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }

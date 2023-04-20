@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = "VL Test Reasons";
 
 require_once(APPLICATION_PATH . '/header.php');

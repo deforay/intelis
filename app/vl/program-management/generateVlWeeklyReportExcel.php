@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 
@@ -201,7 +201,7 @@ $sQuery = $sQuery . ' GROUP BY lab_name, vl.facility_id';
 //error_log($sQuery);
 $resultSet = $db->rawQuery($sQuery);
 
-$excelResultSet = array();
+$excelResultSet = [];
 foreach ($resultSet as $row) {
     $excelResultSet[$row['lab_name']][] = $row;
 }
@@ -275,11 +275,11 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet->getStyle('S2:S3')->applyFromArray($styleArray);
     $sheet->getStyle('T2:T3')->applyFromArray($styleArray);
 
-    $output = array();
+    $output = [];
     $r = 1;
     if (count($labResult) > 0) {
         foreach ($labResult as $aRow) {
-            $row = array();
+            $row = [];
             $row[] = $r;
             $row[] = ($aRow['facility_state']);
             $row[] = ($aRow['facility_district']);
@@ -304,7 +304,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
             $r++;
         }
     } else {
-        $row = array();
+        $row = [];
         $row[] = '';
         $row[] = '';
         $row[] = '';

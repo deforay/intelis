@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 
@@ -18,8 +18,8 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
-$tResult = array();
-$sWhere = array();
+$tResult = [];
+$sWhere = [];
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $start_date = '';
     $end_date = '';

@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-ob_start();
+
 
 
 
@@ -21,7 +21,7 @@ try {
      //system config
      $systemConfigQuery = "SELECT * from system_config";
      $systemConfigResult = $db->query($systemConfigQuery);
-     $sarr = array();
+     $sarr = [];
      // now we create an associative array so that we can easily create view variables
      for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -143,7 +143,7 @@ try {
           $_POST['result'] = $_POST['vlLog'];
      }
      //set patient group
-     $patientGroup = array();
+     $patientGroup = [];
      if (isset($_POST['patientGroup'])) {
           if ($_POST['patientGroup'] == 'general_population') {
                $patientGroup['patient_group'] = 'general_population';
@@ -180,7 +180,7 @@ try {
                $_POST['sampleCodeKey'] = $maxId;
           } else {
                $_SESSION['alertMsg'] = "Please check your sample ID";
-               header("location:addVlRequest.php");
+               header("Location:addVlRequest.php");
           }
      }
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -332,9 +332,9 @@ try {
           //   $db->insert($tableName1,$data);
 
           if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-               header("location:addVlRequest.php");
+               header("Location:addVlRequest.php");
           } else {
-               header("location:vlRequest.php");
+               header("Location:vlRequest.php");
           }
      } else {
           $_SESSION['alertMsg'] = "Please try again later";

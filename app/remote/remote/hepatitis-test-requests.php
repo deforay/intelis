@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Facilities;
+use App\Models\General;
 use App\Models\Hepatitis;
 use App\Utilities\DateUtils;
 
@@ -11,7 +12,7 @@ $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 
-$payload = array();
+$payload = [];
 
 $labId = $data['labName'] ?: $data['labId'] ?: null;
 
@@ -19,6 +20,7 @@ if (empty($labId)) {
     exit(0);
 }
 
+$general = new General($db);
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
@@ -32,7 +34,7 @@ if (!empty($fMapResult)) {
     $condition = "lab_id =" . $labId;
 }
 
-$hepatitisQuery = "SELECT * FROM form_hepatitis 
+$hepatitisQuery = "SELECT * FROM form_hepatitis
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
@@ -44,10 +46,10 @@ if (!empty($data['manifestCode'])) {
 
 
 $hepatitisRemoteResult = $db->rawQuery($hepatitisQuery);
-$data = array();
+$data = [];
 $counter = 0;
 
-$sampleIds = $facilityIds = array();
+$sampleIds = $facilityIds = [];
 if ($db->count > 0) {
     $counter = $db->count;
 
@@ -59,9 +61,9 @@ if ($db->count > 0) {
     $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
 
 
-    $data['result'] = $hepatitisRemoteResult;
-    $data['risks'] = $risks;
-    $data['comorbidities'] = $comorbidities;
+    $data['result'] = $hepatitisRemoteResult ?? [];
+    $data['risks'] = $risks ?? [];
+    $data['comorbidities'] = $comorbidities ?? [];
 }
 
 $payload = json_encode($data);
@@ -71,7 +73,7 @@ $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'h
 
 $currentDateTime = DateUtils::getCurrentDateTime();
 if (!empty($sampleIds)) {
-    $sql = 'UPDATE form_hepatitis SET data_sync = ?, 
+    $sql = 'UPDATE form_hepatitis SET data_sync = ?,
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)
                 WHERE hepatitis_id IN (' . implode(",", $sampleIds) . ')';
     $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
@@ -79,14 +81,14 @@ if (!empty($sampleIds)) {
 
 if (!empty($facilityIds)) {
     $facilityIds = array_unique(array_filter($facilityIds));
-    $sql = 'UPDATE facility_details 
+    $sql = 'UPDATE facility_details
                 SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.hepatitisRemoteRequestsSync", ?) 
                 WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
     $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
 
 // Whether any data got synced or not, we will update sync datetime for the lab
-$sql = 'UPDATE facility_details 
+$sql = 'UPDATE facility_details
           SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.hepatitisLastRequestsSync", ?) 
           WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));

@@ -58,7 +58,7 @@ try {
         throw new Exception(_("Bearer Token Invalid"));
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
-    $responseData = array();
+    $responseData = [];
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
     $rowData = $db->rawQuery($sQuery);
     $instanceId = $rowData[0]['vlsm_instance_id'];
@@ -103,7 +103,7 @@ try {
 
             $sQuery = "SELECT vl_sample_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
 
-            $sQueryWhere = array();
+            $sQueryWhere = [];
 
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
@@ -335,7 +335,7 @@ try {
             'vlsm_instance_id'                      => $data['instanceId'],
             'vlsm_country_id'                       => $data['formId'],
             'unique_id'                             => $uniqueId,
-            'app_sample_code'                       => isset($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
             'sample_code_format'                    => (isset($data['sampleCodeFormat']) && $data['sampleCodeFormat'] != '') ? $data['sampleCodeFormat'] :  null,
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  null,
@@ -399,7 +399,7 @@ try {
             'last_modified_datetime'                => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
-            'external_sample_code'                  => isset($data['serialNo']) ? $data['serialNo'] : null,
+            'external_sample_code'                  => $data['serialNo'] ?? null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  null,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  null,
             'sample_dispatched_datetime'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,

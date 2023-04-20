@@ -6,7 +6,7 @@
 	$tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
 	$tsResult = $db->rawQuery($tsQuery);
 	if (count($tsResult) == 0) {
-		header("location:/dashboard/index.php");
+		header("Location:/dashboard/index.php");
 		exit;
 	}
 	$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";

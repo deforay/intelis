@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $rKey = '';
 $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
@@ -51,7 +51,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="addVlRequestHelperPng.php">
+				<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="addVlRequestHelper.php">
 					<div class="box-body">
 						<div class="box box-default">
 							<div class="box-body">
@@ -122,22 +122,22 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			  </select>
                         </td>-->
 										<td style="width:16%" class="labels">
-											<label for="officerName">Requesting Medical Officer <span class="mandatory">*</span></label>
+											<label for="reqClinician">Requesting Medical Officer <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<input type="text" class="form-control isRequired " name="officerName" id="officerName" placeholder="Officer Name" title="Enter Medical Officer Name" style="width:100%;">
+											<input type="text" class="form-control isRequired " name="reqClinician" id="reqClinician" placeholder="Officer Name" title="Enter Medical Officer Name" style="width:100%;">
 										</td>
 										<td style="width:10%" class="labels">
-											<label for="telephone">Clinic/Ward Telephone </label>
+											<label for="reqClinicianPhoneNumber">Clinic/Ward Telephone </label>
 										</td>
 										<td style="width:20%">
-											<input type="text" class="form-control forceNumeric" name="telephone" id="telephone" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
+											<input type="text" class="form-control forceNumeric" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
 										</td>
 										<td style="width:10%" class="labels">
-											<label for="clinicDate">Date Requested</label>
+											<label for="requestDate">Date Requested</label>
 										</td>
 										<td style="width:20%">
-											<input type="text" class="form-control date" name="clinicDate" id="clinicDate" placeholder="Requested on Date" title="Enter Date" style="width:100%;">
+											<input type="text" class="form-control date" name="requestDate" id="requestDate" placeholder="Requested on Date" title="Enter Date" style="width:100%;">
 										</td>
 									</tr>
 									<tr>
@@ -145,10 +145,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</tr>
 									<tr>
 										<td>
-											<label for="patientARTNo" class="labels">Patient ID <span class="mandatory">*</span></label>
+											<label for="artNo" class="labels">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="patientARTNo" id="patientARTNo" title="Please enter Patient ID" style="width:100%;" />
+											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Patient ID" style="width:100%;" />
 										</td>
 
 										<td>
@@ -214,14 +214,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</tr>
 									<tr>
 										<td style="width:8%">
-											<label for="artLine" class="labels">Line of Treatment </label>
+											<label for="lineOfTreatment" class="labels">Line of Treatment </label>
 										</td>
 										<td style="width:10%">
 											<label class="radio-inline">
-												<input type="radio" class="" id="firstLine" name="artLine" value="1" title="Please check ART Line"> First Line
+												<input type="radio" class="" id="firstLine" name="lineOfTreatment" value="1" title="Please check ART Line"> First Line
 											</label><br>
 											<label class="radio-inline">
-												<input type="radio" class="" id="secondLine" name="artLine" value="2" title="Please check ART Line"> Second Line
+												<input type="radio" class="" id="secondLine" name="lineOfTreatment" value="2" title="Please check ART Line"> Second Line
 											</label>
 										</td>
 										<td style="width:8%">
@@ -239,10 +239,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</tr>
 									<tr>
 										<td style="width:8%">
-											<label for="currentRegimen" class="labels">Current Regimen </label>
+											<label for="artRegimen" class="labels">Current Regimen </label>
 										</td>
 										<td style="width:10%">
-											<select class="form-control" id="currentRegimen" name="currentRegimen" title="Please choose ART Regimen" onchange="checkValue();" style="width: 100%;">
+											<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" onchange="checkValue();" style="width: 100%;">
 												<option value=""> -- Select -- </option>
 												<?php
 												foreach ($aResult as $parentRow) {
@@ -256,10 +256,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="New Art Regimen" title="Please enter new ART regimen" style="display:none;width:100%;margin-top:1vh;">
 										</td>
 										<td>
-											<label for="regStartDate" class="labels">Current Regimen Start Date</label>
+											<label for="regimenInitiatedOn" class="labels">Current Regimen Start Date</label>
 										</td>
 										<td>
-											<input type="text" class="form-control date" name="regStartDate" id="regStartDate" placeholder="Start Date" title="Enter Start Date" style="width:100%;">
+											<input type="text" class="form-control date" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Start Date" title="Enter Start Date" style="width:100%;">
 										</td>
 										<td colspan="2" class="clinicalStage labels"><label for="breastfeeding">WHO Clinical Stage</label>&nbsp;&nbsp;
 											<label class="radio-inline">
@@ -283,18 +283,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										<td colspan="3" class="routine">
 											<label for="routine" class="labels">Routine</label><br />
 											<label class="radio-inline">
-												&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="routineOne" name="reasonForTest" value="First VL, routine monitoring (On ART for at least 6 months)" title="Please Check Routine">First VL, routine monitoring (On ART for at least 6 months)
+												&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="routineOne" name="reasonForVLTesting" value="First VL, routine monitoring (On ART for at least 6 months)" title="Please Check Routine">First VL, routine monitoring (On ART for at least 6 months)
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="routineTwo" name="reasonForTest" value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine">Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label>
+												<input type="radio" id="routineTwo" name="reasonForVLTesting" value="Annual routine follow-up VL (Previous VL < 1000 cp/mL)" title="Please Check Routine">Annual routine follow-up VL (Previous VL < 1000 cp/mL) </label>
 										</td>
 										<td colspan="3" class="suspect">
 											<label for="suspect" class="labels">Suspected Treatment Failure</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="suspectOne" name="reasonForTest" value="Suspected TF" title="Please Suspected TF">Suspected TF
+												<input type="radio" id="suspectOne" name="reasonForVLTesting" value="Suspected TF" title="Please Suspected TF">Suspected TF
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="suspectTwo" name="reasonForTest" value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF">Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
+												<input type="radio" id="suspectTwo" name="reasonForVLTesting" value="Follow-up VL after EAC (Previous VL >= 1000 cp/mL)" title="Please Suspected TF">Follow-up VL after EAC (Previous VL >= 1000 cp/mL)
 											</label>
 										</td>
 									</tr>
@@ -302,19 +302,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										<td colspan="3">
 											<label for="defaulter" class="labels">Defaulter/ LTFU/ Poor Adherer</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="defaulter" name="reasonForTest" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer">VL (after 3 months EAC)
+												<input type="radio" id="defaulter" name="reasonForVLTesting" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer">VL (after 3 months EAC)
 											</label>&nbsp;&nbsp;
 										</td>
-										<td colspan="3">
+										<!--<td colspan="3">
 											<label for="other">Other</label><br />
 											<label class="radio-inline">
-												<input type="radio" id="other" name="reasonForTest" value="Re-collection requested by lab" title="Please check Other">Re-collection requested by lab
+												<input type="radio" id="other" name="reasonForVLTesting" value="Re-collection requested by lab" title="Please check Other">Re-collection requested by lab
 											</label>
 											<label for="reason" class="labels">&nbsp;&nbsp;&nbsp;&nbsp;Reason</label>
 											<label class="radio-inline">
 												<input type="text" class="form-control" id="reason" name="reason" placeholder="Enter Reason" title="Enter Reason" style="width:100%;" readonly />
 											</label>
-										</td>
+										</td>-->
 									</tr>
 									<tr>
 										<td colspan="2" style="font-size: 18px; font-weight: bold;">Section 5: Specimen information </td>
@@ -322,11 +322,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									</tr>
 									<tr>
 										<td class="labels">
-											<label for="collectionDate">Collection Date <span class="mandatory">*</span></label>
+											<label for="sampleCollectionDate">Collection Date <span class="mandatory">*</span></label>
 										</td>
 										<td>
 											<label class="radio-inline">
-												<input type="text" class="form-control isRequired" name="collectionDate" id="collectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="sampleCodeGeneration();" style="width:100%;">
+												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="sampleCodeGeneration();" style="width:100%;">
 											</label>
 										</td>
 										<td colspan="4" class="typeOfSample">
@@ -367,13 +367,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 										</tr>
 										<tr>
-											<td class="labels"><label for="sampleQuality">Sample Quality</label></td>
+											<td class="labels"><label for="noResult">Sample Quality</label></td>
 											<td>
 												<label class="radio-inline">
-													<input type="radio" id="sampleQtyAccept" name="sampleQuality" value="no" title="Check Sample Quality">Accept
+													<input type="radio" id="sampleQtyAccept" name="noResult" value="no" title="Check Sample Quality">Accept
 												</label>
 												<label class="radio-inline">
-													<input type="radio" id="sampleQtyReject" name="sampleQuality" value="yes" title="Check Sample Quality">Reject
+													<input type="radio" id="sampleQtyReject" name="noResult" value="yes" title="Check Sample Quality">Reject
 												</label>
 											</td>
 											<td class="rejectionReason labels" style="display:none;"><label for="rejectionReason">Reason <span class="mandatory">*</span></label></td>
@@ -389,24 +389,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td class="rejectionReason" style="display: none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
-											<td class="laboratoryId labels"><label for="laboratoryId">Laboratory Name</label></td>
+											<td class="labId labels"><label for="labId">Laboratory Name</label></td>
 											<td>
-												<select name="laboratoryId" id="laboratoryId" class="form-control" title="Please choose lab name" style="width: 100%;">
+												<select name="labId" id="labId" class="form-control" title="Please choose lab name" style="width: 100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<td class="sampleType labels"><label for="sampleType">Sample Type Received</label></td>
+											<td class="specimenType labels"><label for="specimenType">Sample Type Received</label></td>
 											<td>
-												<select name="sampleType" id="sampleType" class="form-control" title="Please choose Specimen type" style="width: 100%">
+												<select name="specimenType" id="specimenType" class="form-control" title="Please choose Specimen type" style="width: 100%">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
 														<option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
 													<?php } ?>
 												</select>
 											</td>
-											<td class="receivedDate labels"><label for="receivedDate">Date Received</label></td>
+											<td class="sampleReceivedDate labels"><label for="sampleReceivedDate">Date Received</label></td>
 											<td>
-												<input type="text" class="form-control" name="receivedDate" id="receivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;">
+												<input type="text" class="form-control" name="sampleReceivedDate" id="sampleReceivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;">
 											</td>
 										</tr>
 										<tr>
@@ -414,25 +414,26 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td>
 												<input type="text" class="form-control" name="techName" id="techName" placeholder="Enter Lab Technician Name" title="Please enter lab technician name" style="width:100%;">
 											</td>
-											<td class="labels"><label for="testDate">Test date</label></td>
+											<td class="labels"><label for="sampleTestingDateAtLab">Test date</label></td>
 											<td>
-												<input type="text" class="form-control" name="testDate" id="testDate" placeholder="Test Date" title="Enter Testing Date" style="width:100%;">
+												<input type="text" class="form-control" name="sampleTestingDateAtLab" id="sampleTestingDateAtLab" placeholder="Test Date" title="Enter Testing Date" style="width:100%;">
 											</td>
-											<td class="labels"><label for="testingTech">Testing Platform</label></td>
+											<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 											<td>
-												<select name="testingTech" id="testingTech" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
-											<td class="vlResult labels"><label for="vlResult">VL result</label></td>
+											
+										</tr>
+										<tr>
+										<td class="vlResult labels"><label for="vlResult">VL result</label></td>
 											<td class="vlResult">
 												<input type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;">
 											</td>
-										</tr>
-										<tr>
 											<td class="labels"><label for="batchQuality">Batch quality</label></td>
 											<td>
 												<label class="radio-inline">
@@ -451,7 +452,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<input type="radio" id="failed" name="testQuality" value="invalid" title="Test Quality">Invalid
 												</label>
 											</td>
-											<td class="labels"><label for="batchNo">Batch</label></td>
+											
+										</tr>
+										<tr>
+										<td class="labels"><label for="batchNo">Batch</label></td>
 											<td>
 												<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%">
 													<option value="">-- Select --</option>
@@ -460,7 +464,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<?php } ?>
 												</select>
 											</td>
-										</tr>
+													</tr>
 										<tr>
 											<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 										</tr>
@@ -579,6 +583,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 						<input type="hidden" name="vlSampleId" id="vlSampleId" />
 						<input type="hidden" name="formId" id="formId" value="5" />
 						<input type="hidden" name="provinceId" id="provinceId" />
+						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -617,9 +622,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			$('.ui-datepicker-calendar').show();
 		});
 		$('.date').mask('99-aaa-9999');
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
+		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask('99-aaa-9999 99:99');
 
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').datetimepicker({
+		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
@@ -643,7 +648,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			$('.ui-datepicker-calendar').hide();
 		});
 
-		$('#laboratoryId').select2({
+		$('#labId').select2({
 			placeholder: "Select Laboratory Name"
 		});
 		
@@ -684,7 +689,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			$.blockUI();
 			var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
 			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-				insertSampleCode('vlRequestForm', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 5, 'collectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
+				insertSampleCode('vlRequestForm', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 5, 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
 			<?php } else { ?>
 				document.getElementById('vlRequestForm').submit();
 			<?php } ?>
@@ -711,7 +716,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$.blockUI();
 		var cName = $("#fName").val();
 		var pName = $("#province").val();
-		$('#telephone').val('');
+		$('#reqClinicianPhoneNumber').val('');
 		if (pName != '' && provinceName && facilityName) {
 			facilityName = false;
 		}
@@ -743,7 +748,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$.blockUI();
 		var dName = $("#district").val();
 		var cName = $("#fName").val();
-		$('#telephone').val('');
+		$('#reqClinicianPhoneNumber').val('');
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
@@ -762,7 +767,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 	function getfacilityProvinceDetails(obj) {
 		$.blockUI();
-		$('#telephone').val($("#fName").find(":selected").attr("data-mobile-nos"));
+		$('#reqClinicianPhoneNumber').val($("#fName").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
 		//check facility name
 		//    var cName = $("#fName").val();
@@ -790,7 +795,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	}
 
 	function checkValue() {
-		var artRegimen = $("#currentRegimen").val();
+		var artRegimen = $("#artRegimen").val();
 		if (artRegimen == 'other') {
 			$(".newArtRegimen").show();
 			$("#newArtRegimen").addClass("isRequired");
@@ -827,7 +832,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		}
 
 		var pName = $("#province").val();
-		var sDate = $("#collectionDate").val();
+		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			// $.blockUI();
 			var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
@@ -850,7 +855,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		}
 	}
 
-	$("input:radio[name=sampleQuality]").on("change", function() {
+	$("input:radio[name=noResult]").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$(".rejectionReason,.vlresultequ").show();
 			$(".reasonequ,.vlResult").hide();
@@ -861,7 +866,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			$('#rejectionReason').removeClass("isRequired");
 		}
 	})
-	$("input:radio[name=reasonForTest]").on("change", function() {
+	$("input:radio[name=reasonForVLTesting]").on("change", function() {
 		if ($(this).val() == 'Re-collection requested by lab') {
 			$('#reason').addClass("isRequired").attr('readonly', false);
 		} else {

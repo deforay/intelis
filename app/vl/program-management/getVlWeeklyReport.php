@@ -63,7 +63,7 @@ if (isset($_POST['iSortCol_0'])) {
          * word by word on any field. It's possible to do here, but concerned about efficiency
          * on very large tables, and MySQL's regex functionality is very limited
         */
-$sWhere = array();
+$sWhere = [];
 $sWhere[] = " vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
@@ -229,7 +229,7 @@ $output = array(
 );
 
 foreach ($sResult as $aRow) {
-  $row = array();
+  $row = [];
   $row[] = ($aRow['facility_state']);
   $row[] = ($aRow['facility_district']);
   $row[] = ($aRow['facility_name']);

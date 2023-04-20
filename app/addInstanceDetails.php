@@ -1,7 +1,3 @@
-<?php
-ob_start();
-
-?>
 <link rel="stylesheet" media="all" type="text/css" href="assets/css/jquery-ui.1.11.0.css" />
 <link href="assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <!-- Bootstrap 3.3.6 -->

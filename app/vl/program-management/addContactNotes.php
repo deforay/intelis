@@ -14,7 +14,7 @@
   use App\Models\General;
   use App\Utilities\DateUtils;
 
-  ob_start();
+  
 
 
 

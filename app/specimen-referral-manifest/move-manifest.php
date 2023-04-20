@@ -9,7 +9,7 @@ use App\Models\Tb;
 use App\Models\Users;
 use App\Models\Vl;
 
-ob_start();
+
 
 $title = "Move Manifest";
 
@@ -22,7 +22,7 @@ $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);
 
 $usersDb = new Users();
-$usersList = array();
+$usersList = [];
 $users = $usersDb->getActiveUsers();
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];

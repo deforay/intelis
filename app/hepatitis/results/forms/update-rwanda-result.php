@@ -5,7 +5,7 @@
 use App\Models\Facilities;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $facilitiesDb = new Facilities();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');

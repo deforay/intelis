@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -33,7 +33,7 @@ try {
 		$_SESSION['alertMsg'] = _("Sample Type details added successfully");
 		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new reference sample type' . $_POST['sampleName'], 'reference-tb-sample-type');
 	}
-	header("location:tb-sample-type.php");
+	header("Location:tb-sample-type.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

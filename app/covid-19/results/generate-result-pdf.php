@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 use App\Models\Covid19;
 use App\Models\General;
@@ -29,7 +29,7 @@ if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
 	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
 }
 //set mField Array
-$mFieldArray = array();
+$mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
 }
@@ -290,7 +290,7 @@ class Watermark extends PDF_Rotate
 }
 class Pdf_concat extends FPDI
 {
-	var $files = array();
+	var $files = [];
 	function setFiles($files)
 	{
 		$this->files = $files;
@@ -328,7 +328,7 @@ if (sizeof($requestResult) > 0) {
 		mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
 		$pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
 	}
-	$pages = array();
+	$pages = [];
 	$page = 1;
 	foreach ($requestResult as $result) {
 		//set print time
@@ -373,7 +373,7 @@ if (sizeof($requestResult) > 0) {
 			}
 		}
 
-		$selectedReportFormats = array();
+		$selectedReportFormats = [];
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
 			$selectedReportFormats = json_decode($result['reportFormat'], true);
 		}
@@ -389,7 +389,7 @@ if (sizeof($requestResult) > 0) {
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);
 		$resultPdf->concat();
-		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . General::generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 		$general->removeDirectory($pathFront);
 		unset($_SESSION['rVal']);

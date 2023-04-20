@@ -65,9 +65,9 @@ try {
 
 
         $reader = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, 'r');
-        $infoFromFile = array();
+        $infoFromFile = [];
         foreach ($reader as $offset => $record) {
-            //$newRow = array();
+            //$newRow = [];
             //$sampleCode = null;
             foreach ($record as $o => $v) {
 
@@ -186,11 +186,11 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    header("location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     $_SESSION['alertMsg'] = "Result file could not be imported. Please check if the file is of correct format.";
-    header("location:/import-result/addImportResult.php?t=" . base64_encode('covid19'));
+    header("Location:/import-result/addImportResult.php?t=" . base64_encode('covid19'));
 }

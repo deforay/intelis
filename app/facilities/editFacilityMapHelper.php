@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -22,7 +22,7 @@ try {
         $_SESSION['alertMsg']="Facility map details updated successfully";
 		}
     }
-    header("location:facilityMap.php");
+    header("Location:facilityMap.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

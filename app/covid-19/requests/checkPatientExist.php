@@ -8,7 +8,7 @@ $artNo = $_POST['artPatientNo'];
 //global config
 $cQuery = "SELECT * FROM global_config";
 $cResult = $db->query($cQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($cResult); $i++) {
   $arr[$cResult[$i]['name']] = $cResult[$i]['value'];

@@ -7,7 +7,7 @@ use App\Models\Tb;
 use App\Models\Users;
 use App\Models\Vl;
 
-ob_start();
+
 $title = "Edit Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -16,7 +16,7 @@ $facilitiesDb = new Facilities();
 $usersDb = new Users();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
-$usersList = array();
+$usersList = [];
 $users = $usersDb->getActiveUsers();
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
@@ -31,7 +31,7 @@ $pQuery = "SELECT * FROM package_details WHERE package_id=" . $id;
 $pResult = $db->rawQuery($pQuery);
 
 if ($pResult[0]['package_status'] == 'dispatch') {
-	header("location:packageList.php");
+	header("Location:packageList.php");
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';

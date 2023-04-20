@@ -18,7 +18,7 @@ $formId = $general->getGlobalConfig('vl_form');
 //system config
 $systemConfigQuery = "SELECT * FROM system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -68,7 +68,7 @@ if (isset($_POST['iSortCol_0'])) {
 * word by word on any field. It's possible to do here, but concerned about efficiency
 * on very large tables, and MySQL's regex functionality is very limited
 */
-$sWhere= array();
+$sWhere= [];
 $sWhere[] = " WHERE reason_for_vl_testing != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
@@ -239,7 +239,7 @@ foreach ($rResult as $aRow) {
      $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
      $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 
-     $row = array();
+     $row = [];
      $row[] = $aRow['sample_code'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];

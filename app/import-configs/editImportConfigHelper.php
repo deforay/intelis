@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 $general = new General();
@@ -141,7 +141,7 @@ try {
             fclose($fp);
         }
     }
-    header("location:importConfig.php");
+    header("Location:importConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

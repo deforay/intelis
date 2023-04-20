@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 
@@ -29,7 +29,7 @@ $covid19Results = $covid19Obj->getCovid19Results();
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -40,7 +40,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 
 	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason","Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
@@ -105,10 +105,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
 	$no = 1;
-	$sysmtomsArr = array();
-	$comorbiditiesArr = array();
+	$sysmtomsArr = [];
+	$comorbiditiesArr = [];
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		//date of birth
 		$dob = '';
 		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {

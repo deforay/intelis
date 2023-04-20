@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
   
 
 
@@ -14,9 +14,9 @@ $facilitiesDb = new Facilities();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
-$sWhere = array();
-$tResult = array();
-//$rjResult = array();
+$sWhere = [];
+$tResult = [];
+//$rjResult = [];
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $start_date = '';
     $end_date = '';

@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -53,7 +53,7 @@ try {
 		}
 		if ($lastId > 0) {
 
-			$facilityData = array();
+			$facilityData = [];
 			if ($data['geo_parent'] == 0) {
 				$facilityData['facility_state'] = $data['geo_name'];
 				$facilityData['facility_state_id'] = $data['geo_id'];
@@ -73,7 +73,7 @@ try {
 			$general->activityLog('Geographical Divisions details', $_SESSION['userName'] . ' saved geographical division - ' . $_POST['geoName'], 'common-reference');
 		}
 	}
-	header("location:geographical-divisions-details.php");
+	header("Location:geographical-divisions-details.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Models\GeoLocations;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -21,7 +21,7 @@ try {
     //system config
     $systemConfigQuery = "SELECT * FROM system_config";
     $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = array();
+    $sarr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -220,7 +220,7 @@ try {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
                         'test_result'       => $testResult,
-                        'actual_no'         => isset($_POST['actualNo'][$testKey]) ? $_POST['actualNo'][$testKey] : null,
+                        'actual_no'         => $_POST['actualNo'][$testKey] ?? null,
                         'updated_datetime'  => DateUtils::getCurrentDateTime()
                     ));
                 }
@@ -248,9 +248,9 @@ try {
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-        header("location:/tb/requests/tb-add-request.php");
+        header("Location:/tb/requests/tb-add-request.php");
     } else {
-        header("location:/tb/requests/tb-requests.php");
+        header("Location:/tb/requests/tb-requests.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

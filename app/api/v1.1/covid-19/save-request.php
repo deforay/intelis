@@ -65,7 +65,7 @@ try {
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 
-    $responseData = array();
+    $responseData = [];
     foreach ($input['data'] as $rootKey => $data) {
         $sampleFrom = '';
         /* V1 name to Id mapping */
@@ -109,7 +109,7 @@ try {
 
             $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
 
-            $sQueryWhere = array();
+            $sQueryWhere = [];
 
             if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
@@ -352,7 +352,7 @@ try {
             'travel_country_names'                => !empty($data['countryName']) ? $data['countryName'] : null,
             'travel_return_date'                  => !empty($data['returnDate']) ? DateUtils::isoDateFormat($data['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
-            'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : (isset($data['specimenQuality']) ? $data['specimenQuality'] : null),
+            'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : ($data['specimenQuality'] ?? null),
             'asymptomatic'                        => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
             'lab_technician'                      => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] :  $user['user_id'],
             'is_sample_rejected'                  => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
@@ -393,7 +393,7 @@ try {
             $db->delete("covid19_patient_symptoms");
             if (isset($data['symptomDetected']) && !empty($data['symptomDetected']) || (isset($data['symptom']) && !empty($data['symptom']))) {
                 for ($i = 0; $i < count($data['symptomDetected']); $i++) {
-                    $symptomData = array();
+                    $symptomData = [];
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
                     $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
@@ -408,7 +408,7 @@ try {
         $db = $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_reasons_for_testing");
         if (!empty($data['reasonDetails'])) {
-            $reasonData = array();
+            $reasonData = [];
             $reasonData["covid19_id"]         = $data['covid19SampleId'];
             $reasonData["reasons_id"]         = $data['reasonForCovid19Test'];
             $reasonData["reasons_detected"]    = "yes";
@@ -421,7 +421,7 @@ try {
         $db->delete("covid19_patient_comorbidities");
         if (isset($data['comorbidityDetected']) && !empty($data['comorbidityDetected'])) {
             for ($i = 0; $i < count($data['comorbidityDetected']); $i++) {
-                $comorbidityData = array();
+                $comorbidityData = [];
                 $comorbidityData["covid19_id"] = $data['covid19SampleId'];
                 $comorbidityData["comorbidity_id"] = $data['comorbidityId'][$i];
                 $comorbidityData["comorbidity_detected"] = $data['comorbidityDetected'][$i];
@@ -443,9 +443,9 @@ try {
                         $covid19TestData = array(
                             'covid19_id'             => $data['covid19SampleId'],
                             'test_name'              => ($test['testName'] == 'other') ? $test['testNameOther'] : $test['testName'],
-                            'facility_id'            => isset($data['labId']) ? $data['labId'] : null,
+                            'facility_id'            => $data['labId'] ?? null,
                             'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($test['testDate'])),
-                            'testing_platform'       => isset($test['testingPlatform']) ? $test['testingPlatform'] : null,
+                            'testing_platform'       => $test['testingPlatform'] ?? null,
                             'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
                             'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? DateUtils::isoDateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],

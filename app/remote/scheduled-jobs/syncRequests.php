@@ -62,9 +62,9 @@ if (!empty($forceSyncModule)) {
  * VIRAL LOAD TEST REQUESTS
  ****************************************************************
  */
-$request = array();
+$request = [];
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-    //$remoteSampleCodeList = array();
+    //$remoteSampleCodeList = [];
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
     $payload = array(
@@ -75,7 +75,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($manifestCode) && trim($manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
-    $columnList = array();
+    $columnList = [];
 
     $client = new GuzzleHttp\Client();
     $response = $client->post(
@@ -123,7 +123,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = array();
+            $request = [];
             foreach ($columnList as $colName) {
                 if (isset($remoteData[$colName])) {
                     $request[$colName] = $remoteData[$colName];
@@ -228,8 +228,8 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
   ****************************************************************
   */
 
-$request = array();
-//$remoteSampleCodeList = array();
+$request = [];
+//$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
     $data = array(
@@ -291,7 +291,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = array();
+            $request = [];
             foreach ($columnList as $colName) {
                 if (isset($remoteData[$colName])) {
                     $request[$colName] = $remoteData[$colName];
@@ -384,8 +384,8 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
   *  COVID-19 TEST REQUESTS 
   ****************************************************************
   */
-$request = array();
-//$remoteSampleCodeList = array();
+$request = [];
+//$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
     $data = array(
@@ -447,7 +447,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             $counter++;
-            $request = array();
+            $request = [];
             $covid19Id = $remoteData['covid19_id'];
             foreach ($columnList as $colName) {
                 if (isset($remoteData[$colName])) {
@@ -545,7 +545,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $db = $db->where('covid19_id', $covid19Id);
             $db->delete("covid19_patient_symptoms");
             foreach ($symptoms as $symId => $symValue) {
-                $symptomData = array();
+                $symptomData = [];
                 $symptomData["covid19_id"] = $covid19Id;
                 $symptomData["symptom_id"] = $symId;
                 $symptomData["symptom_detected"] = $symValue;
@@ -563,7 +563,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $db->delete("covid19_patient_comorbidities");
 
             foreach ($comorbidities as $comoId => $comorbidityData) {
-                $comorbidityData = array();
+                $comorbidityData = [];
                 $comorbidityData["covid19_id"] = $covid19Id;
                 $comorbidityData["comorbidity_id"] = $comoId;
                 $comorbidityData["comorbidity_detected"] = $comoValue;
@@ -598,8 +598,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 * Hepatitis TEST REQUESTS
 ****************************************************************
 */
-$request = array();
-//$remoteSampleCodeList = array();
+$request = [];
+//$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
     $data = array(
@@ -665,7 +665,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $request = array();
+            $request = [];
             $hepatitisId = $remoteData['hepatitis_id'];
             foreach ($columnList as $colName) {
                 if (isset($remoteData[$colName])) {
@@ -758,9 +758,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_risk_factors");
 
-            $rData = array();
+            $rData = [];
             foreach ($risks as  $riskId => $riskValue) {
-                $riskFactorsData = array();
+                $riskFactorsData = [];
                 $riskFactorsData["hepatitis_id"] = $hepatitisId;
                 $riskFactorsData["riskfactors_id"] = $riskId;
                 $riskFactorsData["riskfactors_detected"] = $riskValue;
@@ -782,9 +782,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $db = $db->where('hepatitis_id', $hepatitisId);
             $db->delete("hepatitis_patient_comorbidities");
 
-            $cData = array();
+            $cData = [];
             foreach ($comorbidities as $comoId => $comoValue) {
-                $comorbidityData = array();
+                $comorbidityData = [];
                 $comorbidityData["hepatitis_id"] = $hepatitisId;
                 $comorbidityData["comorbidity_id"] = $comoId;
                 $comorbidityData["comorbidity_detected"] = $comoValue;
@@ -807,8 +807,8 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 * TB TEST REQUESTS
 ****************************************************************
 */
-$request = array();
-//$remoteSampleCodeList = array();
+$request = [];
+//$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
     $data = array(
@@ -867,7 +867,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         $parsedData = Items::fromString($jsonResponse, $options);
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
-            $request = array();
+            $request = [];
             $tbId = $remoteData['tb_id'];
             foreach ($columnList as $colName) {
                 if (isset($remoteData[$colName])) {

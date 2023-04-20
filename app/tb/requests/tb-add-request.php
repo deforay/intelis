@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Models\Users;
 
-ob_start();
+
 $title = "TB | Add New Request";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -39,7 +39,7 @@ $usersModel = new Users();
 /* Get Active users for approved / reviewed / examined by */
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
 }

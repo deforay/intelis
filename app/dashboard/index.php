@@ -1,5 +1,6 @@
 <?php
 $title = _("Dashboard");
+
 require_once(APPLICATION_PATH . '/header.php');
 ?>
 <style>
@@ -19,7 +20,7 @@ require_once(APPLICATION_PATH . '/header.php');
 		margin: 60px auto;
 		left: -20px;
 		position: relative;
-		
+
 		border-radius: 4px;
 		box-sizing: border-box;
 		animation: animloader 1s linear infinite alternate;
@@ -367,14 +368,14 @@ require_once(APPLICATION_PATH . '/header.php');
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -636,14 +637,14 @@ startDate: moment().subtract(28, 'days'),
 
 	function resetSearchVlRequestData(requestType) {
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate', '#tbSampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

@@ -17,7 +17,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
-$facilityId = array();
+$facilityId = [];
 //get collection data
 $table = $_POST['table'];
 $primaryKey = $_POST['primaryKey'];

@@ -330,7 +330,7 @@ class Dhis2
 	public function addDataValuesToEventPayload($eventPayload, $inputArray)
 	{
 
-		$dataValues = array();
+		$dataValues = [];
 		if (empty($inputArray)) {
 			return $eventPayload;
 		}

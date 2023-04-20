@@ -11,12 +11,12 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($formConfigQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
     $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -24,9 +24,9 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION['covid19MonitoringThresholdReportQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['covid19MonitoringThresholdReportQuery']);
 
-    $res = array();
+    $res = [];
     foreach ($rResult as $aRow) {
-        $row = array();
+        $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {
                 if (trim($aRow['is_sample_rejected'])  == 'yes')
@@ -77,7 +77,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
     //get current quarter total samples tested
 
     $excel = new Spreadsheet();
-    $output = array();
+    $output = [];
     $sheet = $excel->getActiveSheet();
 
     $colNo = 1;
@@ -181,7 +181,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 if ($rowData['monthly_target'] > $rowData['totalCollected']) {
                     // print_r("Prasath");die;
                     $cnt++;
-                    //    $data = array();
+                    //    $data = [];
                     //    $data[] = ($rowData['facility_name']);
                     //    $data[] = $rowData['monthrange'];
                     //    $data[] = $rowData['totalReceived'];
@@ -206,7 +206,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 if ($rowData['monthly_target'] < $rowData['totalCollected']) {
                     // print_r("Prasath");die;
                     $cnt++;
-                    //    $data = array();
+                    //    $data = [];
                     //    $data[] = ($rowData['facility_name']);
                     //    $data[] = $rowData['monthrange'];
                     //    $data[] = $rowData['totalReceived'];
@@ -229,7 +229,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 }
             } else {
                 $cnt++;
-                //    $data = array();
+                //    $data = [];
                 //    $data[] = ($rowData['facility_name']);
                 //    $data[] = $rowData['monthrange'];
                 //    $data[] = $rowData['totalReceived'];

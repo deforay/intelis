@@ -24,12 +24,12 @@ try {
 
     $transactionId = $general->generateUUID();
 
-    $sampleCodes = $facilityIds = array();
+    $sampleCodes = $facilityIds = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
 
-        $resultData = array();
+        $resultData = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -48,7 +48,7 @@ try {
         foreach ($resultData as $key => $resultRow) {
 
             $counter++;
-            $lab = array();
+            $lab = [];
             foreach ($oneDimensionalArray as $columnName) {
                 if (isset($resultRow[$columnName])) {
                     $lab[$columnName] = $resultRow[$columnName];

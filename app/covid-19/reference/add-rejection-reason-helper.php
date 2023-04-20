@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -34,7 +34,7 @@ try {
 		$_SESSION['alertMsg'] = _("Covid-19 Sample Rejection Reasons details added successfully");
 		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $_POST['rejectionReasonName'], 'reference-covid19-Sample Rejection Reasons');
 	}
-	header("location:covid19-sample-rejection-reasons.php");
+	header("Location:covid19-sample-rejection-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

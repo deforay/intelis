@@ -9,7 +9,7 @@ use App\Models\General;
 use App\Models\Patients;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -28,7 +28,7 @@ try {
 	//system config
 	$systemConfigQuery = "SELECT * FROM system_config";
 	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = array();
+	$sarr = [];
 	// now we create an associative array so that we can easily create view variables
 	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -296,7 +296,7 @@ try {
 	if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
 		if (isset($_POST['symptomDetected']) && !empty($_POST['symptomDetected']) || (isset($_POST['symptom']) && !empty($_POST['symptom']))) {
 			for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
-				$symptomData = array();
+				$symptomData = [];
 				$symptomData["covid19_id"] = $_POST['covid19SampleId'];
 				$symptomData["symptom_id"] = $_POST['symptomId'][$i];
 				$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
@@ -310,7 +310,7 @@ try {
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_reasons_for_testing");
 	if (!empty($_POST['reasonDetails'])) {
-		$reasonData = array();
+		$reasonData = [];
 		$reasonData["covid19_id"] 		= $_POST['covid19SampleId'];
 		$reasonData["reasons_id"] 		= $_POST['reasonForCovid19Test'];
 		$reasonData["reasons_detected"]	= "yes";
@@ -323,7 +323,7 @@ try {
 	if (isset($_POST['comorbidityDetected']) && !empty($_POST['comorbidityDetected'])) {
 
 		for ($i = 0; $i < count($_POST['comorbidityDetected']); $i++) {
-			$comorbidityData = array();
+			$comorbidityData = [];
 			$comorbidityData["covid19_id"] = $_POST['covid19SampleId'];
 			$comorbidityData["comorbidity_id"] = $_POST['comorbidityId'][$i];
 			$comorbidityData["comorbidity_detected"] = $_POST['comorbidityDetected'][$i];
@@ -346,9 +346,9 @@ try {
 					$covid19TestData = array(
 						'covid19_id'			=> $_POST['covid19SampleId'],
 						'test_name'				=> ($testName == 'other') ? $_POST['testNameOther'][$testKey] : $testName,
-						'facility_id'           => isset($_POST['labId']) ? $_POST['labId'] : null,
+						'facility_id'           => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => $_POST['testDate'][$testKey],
-						'testing_platform'      => isset($_POST['testingPlatform'][$testKey]) ? $_POST['testingPlatform'][$testKey] : null,
+						'testing_platform'      => $_POST['testingPlatform'][$testKey] ?? null,
 						'kit_lot_no'      		=> (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
 						'kit_expiry_date'      	=> (strpos($testName, 'RDT') !== false) ? DateUtils::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result'				=> $_POST['testResult'][$testKey],
@@ -419,7 +419,7 @@ try {
 			$_SESSION['alertMsg'] = _("Please try again later");
 		}
 		error_log($db->getLastError());
-		header("location:/covid-19/requests/covid-19-requests.php");
+		header("Location:/covid-19/requests/covid-19-requests.php");
 	}
 } catch (Exception $exc) {
 	error_log($exc->getMessage());

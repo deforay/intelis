@@ -33,7 +33,7 @@ class GeoLocations
 
     public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null)
     {
-        $returnArr = array();
+        $returnArr = [];
         if ($onlyActive) {
             $this->db->where('geo_status', 'active');
         }
@@ -137,7 +137,7 @@ class GeoLocations
 
     public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false){
 
-        $response = array();
+        $response = [];
     
         if($districts === true){
             $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent = $provinceId AND geo_status='active'";
@@ -159,7 +159,7 @@ class GeoLocations
 
     public function getByDistrictId($districtId, $facilities = true, $labs = false){
 
-        $response = array();
+        $response = [];
       
         if($facilities === true){
             $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_district_id = $districtId AND status='active'";

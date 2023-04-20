@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 $title = "EID | Add Batch";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -25,7 +25,7 @@ $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode();
 //Set last machine label order
-$machinesLabelOrder = array();
+$machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
     $lastOrderQuery = "SELECT label_order FROM batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
     $lastOrderInfo = $db->query($lastOrderQuery);

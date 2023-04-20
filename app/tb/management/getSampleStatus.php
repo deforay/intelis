@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Utilities\DateUtils;
 use App\Utilities\MiscUtils;
 
-ob_start();
+
 
 
 
@@ -28,12 +28,12 @@ if ($systemType == 'remoteuser') {
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = array();
+// $sampleStatusArray = [];
 // foreach($tsResult as $tsRow){
 //     $sampleStatusArray = $tsRow['status_name'];
 // }
 
-$sampleStatusColors = array();
+$sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
@@ -89,7 +89,7 @@ $tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
                 JOIN facility_details as f ON vl.lab_id=f.facility_id 
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -133,7 +133,7 @@ $vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
                                 FROM form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -184,7 +184,7 @@ $tatSampleQuery = "SELECT
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
     AND DATE(vl.sample_tested_datetime) <= '$end_date'";
-$sWhere = array();
+$sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -219,7 +219,7 @@ foreach ($tatResult as $sRow) {
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
-$sWhere = array();
+$sWhere = [];
 $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name 
                     from form_tb as vl 
                     INNER JOIN r_tb_test_reasons as tr ON vl.reason_for_tb_test = tr.test_reason_id 

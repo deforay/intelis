@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 
@@ -8,7 +8,7 @@ $roleQuery = "SELECT * from roles where role_id=$id";
 $roleInfo = $db->query($roleQuery);
 /* Not allowed to edit API role */
 if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
-	header("location:roles.php");
+	header("Location:roles.php");
 }
 $activeModules = array('admin', 'common');
 
@@ -33,7 +33,7 @@ $rInfo = $db->query($resourcesQuery);
 
 $priQuery = "SELECT * from roles_privileges_map where role_id=$id";
 $priInfo = $db->query($priQuery);
-$priId = array();
+$priId = [];
 if ($priInfo) {
 	foreach ($priInfo as $id) {
 		$priId[] = $id['privilege_id'];

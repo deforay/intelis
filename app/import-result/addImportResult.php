@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
 $db = MysqliDb::getInstance();

@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
   
 
 
@@ -18,8 +18,8 @@ $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
-$tResult = array();
-//$rjResult = array();
+$tResult = [];
+//$rjResult = [];
 
     //get value by rejection reason id
     $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
@@ -31,7 +31,7 @@ $tResult = array();
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         $start_date = '';
         $end_date = '';
-        $sWhere = array();
+        $sWhere = [];
         $s_c_date = explode("to", $_POST['sampleCollectionDate']);
         //print_r($s_c_date);die;
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {

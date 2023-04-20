@@ -12,7 +12,7 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 $general = new General();
 $lastUpdate = null;
-$output = array();
+$output = [];
 
 try {
 

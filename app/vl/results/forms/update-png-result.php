@@ -2,11 +2,11 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 //global config
 $cSampleQuery = "SELECT * FROM global_config";
 $cSampleResult = $db->query($cSampleQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($cSampleResult); $i++) {
 	$arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];

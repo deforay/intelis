@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 $tableName = "system_config";
@@ -13,7 +13,7 @@ try {
         $db->update($tableName, $data);
     }
     $_SESSION['alertMsg'] = _("System Config values updated successfully");
-    header("location:index.php");
+    header("Location:index.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

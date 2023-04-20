@@ -1,11 +1,11 @@
 <?php
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 
 $otherConfigQuery = "SELECT * from other_config";
 $otherConfigResult = $db->query($otherConfigQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
   $arr[$otherConfigResult[$i]['name']] = $otherConfigResult[$i]['value'];

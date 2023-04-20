@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 $title = _("TB | Add Batch");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -18,7 +18,7 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode();
-$machinesLabelOrder = array();
+$machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
     $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
     $lastOrderInfo = $db->query($lastOrderQuery);

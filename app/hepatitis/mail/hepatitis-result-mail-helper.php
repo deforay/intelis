@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
    session_start();
 }
@@ -27,7 +27,7 @@ $sequencenumber = 'Ref : vlsm/results/' . $year . '/' . $month . $instancefacili
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";
 $geResult = $db->rawQuery($geQuery);
-$mailconf = array();
+$mailconf = [];
 foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }

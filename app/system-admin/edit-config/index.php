@@ -1,10 +1,10 @@
 <?php
-ob_start();
+
 $title = _("Edit Configuration");
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $globalConfigQuery = "SELECT * from system_config";
 $configResult = $db->query($globalConfigQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
   $arr[$configResult[$i]['name']] = $configResult[$i]['value'];

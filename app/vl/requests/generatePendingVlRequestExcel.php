@@ -83,12 +83,11 @@ $sQuery = $_SESSION['vlRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 $excel = new Spreadsheet();
-$output = array();
+$output = [];
 $sheet = $excel->getActiveSheet();
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
-}
-else{
+	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+} else {
 	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 if ($_SESSION['instanceType'] == 'standalone') {
@@ -133,19 +132,19 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+	->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 	foreach ($headings as $field => $value) {
 		$string = str_replace(' ', '', $value);
 		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+			->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 		$colNo++;
 	}
 } else {
 	foreach ($headings as $field => $value) {
 		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+			->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 		$colNo++;
 	}
 }
@@ -153,7 +152,7 @@ $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-	$row = array();
+	$row = [];
 	//date of birth
 	$dob = '';
 	if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
@@ -218,9 +217,9 @@ foreach ($rResult as $aRow) {
 	$arvAdherence = '';
 	if (trim($aRow['arv_adherance_percentage']) == 'good') {
 		$arvAdherence = 'Good >= 95%';
-	} else if (trim($aRow['arv_adherance_percentage']) == 'fair') {
+	} elseif (trim($aRow['arv_adherance_percentage']) == 'fair') {
 		$arvAdherence = 'Fair 85-94%';
-	} else if (trim($aRow['arv_adherance_percentage']) == 'poor') {
+	} elseif (trim($aRow['arv_adherance_percentage']) == 'poor') {
 		$arvAdherence = 'Poor <85%';
 	}
 	//set sample rejection
@@ -264,8 +263,8 @@ foreach ($rResult as $aRow) {
 	$row[] = ($aRow['facility_district']);
 	$row[] = ($aRow['facility_state']);
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-	$row[] = $aRow['patient_art_no'];
-	$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+		$row[] = $aRow['patient_art_no'];
+		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	}
 	$row[] = $dob;
 	$row[] = ($aRow['patient_age_in_years'] != null && trim($aRow['patient_age_in_years']) != '' && $aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
@@ -301,14 +300,11 @@ foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
 	$rRowCount = $rowNo + 4;
 	foreach ($rowData as $field => $value) {
-		$sheet->setCellValue(
-            Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-            html_entity_decode($value)
-        );
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
 		$colNo++;
 	}
 }
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . General::generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

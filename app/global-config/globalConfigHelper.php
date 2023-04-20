@@ -7,7 +7,7 @@ use App\Utilities\ImageResize;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 
@@ -252,7 +252,7 @@ try {
     $resource = 'general-config';
 
     $general->activityLog($eventType, $action, $resource);
-    header("location:editGlobalConfig.php");
+    header("Location:editGlobalConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

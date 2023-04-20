@@ -52,7 +52,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
             LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
             LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-    $where = array();
+    $where = [];
     if (!empty($dateRange[1])) {
         $date = $dateRange[1];
         $where[] = " (DATE(sample_collection_date) between '$date[0]' AND '$date[1]')";
@@ -286,7 +286,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     $provinceCode = (isset($_POST['provinceCode']) && !empty($_POST['provinceCode'])) ? $_POST['provinceCode'] : null;
     $provinceId = (isset($_POST['provinceId']) && !empty($_POST['provinceId'])) ? $_POST['provinceId'] : null;
     $sampleCollectionDate = (isset($_POST['sampleCollectionDate']) && !empty($_POST['sampleCollectionDate'])) ? $_POST['sampleCollectionDate'] : null;
-    $where = array();
+    $where = [];
     $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl";
     if (isset($_POST['sampleCode']) && $_POST['sampleCode'] != "") {
         $where[] =  " (sample_code like '" . $_POST['sampleCode'] . "' or remote_sample_code like '" . $_POST['sampleCode'] . "')";
@@ -406,7 +406,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $sampleCodeKey = 'sample_code_key';
         }
         $vldata = array(
-            'unique_id' => isset($_POST['uniqueId']) ? $_POST['uniqueId'] : $general->generateUUID(),
+            'unique_id' => $_POST['uniqueId'] ?? $general->generateUUID(),
             'vlsm_instance_id' => $instanceId,
             'vlsm_country_id' => 1,
             'sample_code_format' => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,

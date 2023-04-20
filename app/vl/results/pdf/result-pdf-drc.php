@@ -71,7 +71,7 @@ if (sizeof($requestResult) > 0) {
 	}
 
 	//$pathFront = $pathFront;
-	$pages = array();
+	$pages = [];
 	$page = 1;
 	foreach ($requestResult as $result) {
 
@@ -218,7 +218,7 @@ if (sizeof($requestResult) > 0) {
 			$result['patient_gender'] = 'not reported';
 		}
 		$resultApprovedBy  = '';
-		$userRes = array();
+		$userRes = [];
 		if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
 			$resultApprovedBy = ($result['approvedBy']);
 			$userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');

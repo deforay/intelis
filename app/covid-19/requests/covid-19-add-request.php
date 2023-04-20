@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\Users;
 
-ob_start();
+
 $title = _("COVID-19 | Add New Request");
 require_once(APPLICATION_PATH . '/header.php');
 
@@ -39,7 +39,7 @@ $usersModel = new Users();
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$labTechniciansResults = array();
+$labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
@@ -65,7 +65,7 @@ foreach ($rejectionTypeResult as $type) {
 }
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
 $countryResult = $general->fetchDataFromTable('r_countries', null);
-$countyData = array();
+$countyData = [];
 if (isset($countryResult) && sizeof($countryResult) > 0) {
     foreach ($countryResult as $country) {
         $countyData[$country['id']] = $country['iso_name'];

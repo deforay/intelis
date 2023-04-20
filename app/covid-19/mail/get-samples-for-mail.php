@@ -12,10 +12,10 @@ if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
   $formId = intval($configResult[0]['value']);
 }
 if (!is_array($_POST['facility']) || count($_POST['facility']) == 0) {
-  $_POST['facility'] = array();
+  $_POST['facility'] = [];
 }
 if (empty($_POST['batch']) || !is_array($_POST['batch']) || count($_POST['batch']) == 0) {
-  $_POST['batch'] = array();
+  $_POST['batch'] = [];
 }
 $facility = $_POST['facility'];
 $sampleType = $_POST['sType'];

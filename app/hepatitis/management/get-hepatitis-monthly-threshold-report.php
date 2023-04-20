@@ -18,7 +18,7 @@ $formId = $general->getGlobalConfig('vl_form');
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -59,7 +59,7 @@ if (isset($_POST['iSortCol_0'])) {
      $sOrder = substr_replace($sOrder, "", -2);
 }
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -203,7 +203,7 @@ foreach ($rResult as $rowData) {
      }
      if ($targetType1 || $targetType2 || $targetType3) {
           $cnt++;
-          $data = array();
+          $data = [];
           $data[] = ($rowData['facility_name']);
           $data[] = $rowData['monthrange'];
           $data[] = $rowData['totalReceived'];

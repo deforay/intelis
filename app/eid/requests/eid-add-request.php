@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\Users;
 
-ob_start();
+
 $title = "EID | Add New Request";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -32,7 +32,7 @@ $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
 }
@@ -58,7 +58,7 @@ foreach ($rejectionTypeResult as $type) {
 
 $iResultQuery = "select * from  instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
-$machine = array();
+$machine = [];
 foreach ($iResult as $val) {
     $machine[$val['config_machine_id']] = $val['config_machine_name'];
 }

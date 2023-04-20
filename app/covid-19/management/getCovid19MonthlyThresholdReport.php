@@ -15,7 +15,7 @@ $formId = $general->getGlobalConfig('vl_form');
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -66,7 +66,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -220,7 +220,7 @@ $output = array(
 $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
-     $data = array();
+     $data = [];
      $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];

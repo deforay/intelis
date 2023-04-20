@@ -90,7 +90,7 @@ class System
 
     public static function getActiveTestModules(): array
     {
-        $response = array();
+        $response = [];
 
         if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
             $response[] = 'vl';

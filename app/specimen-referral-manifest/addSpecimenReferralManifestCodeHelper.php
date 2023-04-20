@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -64,7 +64,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("location:specimenReferralManifestList.php?t=" . base64_encode($_POST['module']));
+    header("Location:specimenReferralManifestList.php?t=" . base64_encode($_POST['module']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -5,7 +5,7 @@
 use App\Models\Eid;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 
 //Funding source list
@@ -61,7 +61,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 //suggest sample id when lab user add request sample
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
-$sCode = isset($_GET['c']) ? $_GET['c'] : null;
+$sCode = $_GET['c'] ?? null;
 if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
     $vlObj = new Eid();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);

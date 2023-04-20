@@ -6,7 +6,7 @@ use App\Models\Facilities;
 use App\Models\Hepatitis;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 $facilitiesDb = new Facilities();
 

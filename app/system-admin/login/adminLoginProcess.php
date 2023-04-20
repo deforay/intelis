@@ -5,7 +5,7 @@ use App\Models\Users;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $tableName = "system_admin";
 $adminUsername = trim($_POST['username']);
@@ -23,7 +23,7 @@ try {
             if (isset($adminRow) && !empty($adminRow) && password_verify($adminPassword, $adminRow['system_admin_password'])) {
                 $_SESSION['adminUserId'] = $adminRow['system_admin_id'];
                 $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
-                header("location:/system-admin/edit-config/index.php");
+                header("Location:/system-admin/edit-config/index.php");
             } else {
                 throw new Exception("Invalid username or password");
             }
@@ -35,5 +35,5 @@ try {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     $_SESSION['alertMsg'] = _("Please check your login credentials");
-    header("location:/system-admin/login/login.php");
+    header("Location:/system-admin/login/login.php");
 }

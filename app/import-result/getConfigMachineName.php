@@ -28,4 +28,3 @@ if(count($configMachineInfo)>0){
     }
 }
 echo $configMachine;
-?>

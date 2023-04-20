@@ -2,10 +2,6 @@
 
 use App\Models\General;
 
-if (!isset($_SESSION['userId'])) {
-    header("location:/login/login.php");
-}
-
 $webRootPath = realpath(WEB_ROOT);
 
 $general = new General();
@@ -53,7 +49,6 @@ if (!$general->startsWith($file, $webRootPath) || !in_array($mime, $allowedMimeT
 
 $disposition = (isset($_GET['d']) && $_GET['d'] = 'a') ? 'attachment' : 'inline';
 
-
 header('Content-Description: File Transfer');
 header('Content-Type: ' . (($mime !== false) ? $mime : 'application/octet-stream'));
 header('Content-Disposition: ' . $disposition . '; filename=' . basename($file));
@@ -62,6 +57,4 @@ header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Pragma: public');
 header('Content-Length: ' . filesize($file));
-ob_clean();
-flush();
 readfile($file);

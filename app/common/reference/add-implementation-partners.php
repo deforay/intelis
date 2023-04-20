@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("Implementation Partners");
 
 require_once(APPLICATION_PATH . '/header.php');

@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 $general = new General();
 $dateTimeUtil = new DateUtils();
@@ -24,7 +24,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 	$rResult = $db->rawQuery($_SESSION['vlResultQuery']);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 	$sheet->setTitle('VL Results');
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -95,7 +95,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		//date of birth
 		$dob = '';
 		if (!empty($aRow['patient_dob'])) {

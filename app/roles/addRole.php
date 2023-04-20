@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Models\System;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $general = new General();

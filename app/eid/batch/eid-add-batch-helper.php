@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
   
 $general = new General();
 
@@ -12,7 +12,7 @@ try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
         $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
-        header("location:eid-batches.php");
+        header("Location:eid-batches.php");
     } else {
 
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
@@ -40,10 +40,10 @@ try {
                         $db->update($tableName2, $value);
                     }
                 }
-                header("location:eid-add-batch-position.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
+                header("Location:eid-add-batch-position.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }
         } else {
-            header("location:eid-batches.php");
+            header("Location:eid-batches.php");
         }
     }
 } catch (Exception $exc) {

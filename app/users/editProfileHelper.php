@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Models\Users;
 use GuzzleHttp\Client;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -48,7 +48,7 @@ try {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", array($userId));
                 if (password_verify($_POST['password'], $userRow['password'])) {
                     $_SESSION['alertMsg'] = _("Your new password cannot be same as the current password. Please try another password.");
-                    header("location:editProfile.php");
+                    header("Location:editProfile.php");
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
@@ -79,7 +79,7 @@ try {
         $upId = $db->update($tableName, $data);
 
         if ($fromRecencyAPI === true) {
-            $response = array();
+            $response = [];
             if ($upId > 0) {
                 $response['status'] = "success";
                 $response['message'] = "Profile updated successfully!";
@@ -91,7 +91,7 @@ try {
             print_r(json_encode($response));
         } else {
             $_SESSION['alertMsg'] = _("Your profile changes have been saved. You can continue using VLSM. Please click on any menu on the left to navigate");
-            header("location:editProfile.php");
+            header("Location:editProfile.php");
         }
     }
 } catch (Exception $exc) {

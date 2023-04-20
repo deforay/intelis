@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 
 
 

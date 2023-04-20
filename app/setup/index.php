@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {
-  header("location:/login/login.php");
+  header("Location:/login/login.php");
 }
 
 $shortName = _('Lab Sample Management System');

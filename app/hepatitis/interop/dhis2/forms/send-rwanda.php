@@ -18,7 +18,7 @@ $counter = 0;
 $transactionId = $general->generateUUID();
 $url = "/api/events";
 
-$urlData = array();
+$urlData = [];
 
 foreach ($formResults as $row) {
 
@@ -43,7 +43,7 @@ foreach ($formResults as $row) {
     $pStage = 'KPBuhvFV5bK';
   }
 
-  $urlData = array();
+  $urlData = [];
   $urlData[] = "trackedEntityInstance=$trackedEntityInstance";
   $urlData[] = "programStage=" . $pStage;
   $urlData[] = "paging=false";
@@ -60,9 +60,9 @@ foreach ($formResults as $row) {
 
   $strategy = null;
   $eventId = null;
-  $eventPayload = array();
+  $eventPayload = [];
   $eventDate = date("Y-m-d");
-  $payload = array();
+  $payload = [];
 
 
   if (!empty($row['facility_id'])) {
@@ -93,7 +93,7 @@ foreach ($formResults as $row) {
   );
 
 
-  $dataValues = array();
+  $dataValues = [];
 
   $row['sample_code'] = $row['sample_code'] . (!empty($row['remote_sample_code']) ? '/' . $row['remote_sample_code'] : '');
 
@@ -212,7 +212,7 @@ foreach ($formResults as $row) {
         // echo "<br><br><pre>";
         // var_dump($payload);
         // echo "</pre>";
-        $urlParams = array();
+        $urlParams = [];
         $urlParams[] = "mergeMode=REPLACE";
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";

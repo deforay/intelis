@@ -20,8 +20,8 @@ try {
     $numberOfResults  = 0;
     $cSampleQuery = "SELECT * FROM global_config";
     $cSampleResult = $db->query($cSampleQuery);
-    $arr = array();
-    $printSampleCode = array();
+    $arr = [];
+    $printSampleCode = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($cSampleResult); $i++) {
         $arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];
@@ -262,7 +262,7 @@ try {
             } else {
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
-                $data['result_status'] = isset($status[$i]) ? $status[$i] : 7;
+                $data['result_status'] = $status[$i] ?? 7;
             }
             //get bacth code
             $bquery = "SELECT * FROM batch_details where batch_code='" . $accResult[$i]['batch_code'] . "'";
@@ -301,7 +301,7 @@ try {
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {
-        $importedBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 'AUTO';
+        $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $general->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
 

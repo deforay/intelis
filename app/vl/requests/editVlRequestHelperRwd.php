@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 
 //echo "<pre>";var_dump($_POST);die;
@@ -32,12 +32,12 @@ try {
     $chkValidation = $general->checkMandatoryFields($validateField);
     if ($chkValidation) {
         $_SESSION['alertMsg'] = "Please enter all mandatory fields to save the test request";
-        header("location:editVlRequest.php?id=" . base64_encode($_POST['vlSampleId']));
+        header("Location:editVlRequest.php?id=" . base64_encode($_POST['vlSampleId']));
         die;
     }
     $configQuery = "SELECT * from global_config";
     $configResult = $db->query($configQuery);
-    $arr = array();
+    $arr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -45,7 +45,7 @@ try {
     //system config
     $systemConfigQuery = "SELECT * from system_config";
     $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = array();
+    $sarr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -390,7 +390,7 @@ try {
     } else {
         $_SESSION['alertMsg'] = "Please try again later";
     }
-    header("location:vlRequest.php");
+    header("Location:vlRequest.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -96,7 +96,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS ul.history_id,ul.login_id,ul.login_attempt
 
 $start_date = '';
 $end_date = '';
-$cWhere = array();
+$cWhere = [];
 
 if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
     $s_c_date = explode("to", $_POST['userDate']);
@@ -156,7 +156,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = ($aRow['login_id']);
     $row[] = ($aRow['login_attempted_datetime']);
     $row[] = ($aRow['ip_address']);

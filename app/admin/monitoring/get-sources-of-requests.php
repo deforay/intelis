@@ -93,7 +93,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -229,7 +229,7 @@ foreach ($rResult as $key => $aRow) {
         $returnedParams = implode("##", $returned);
     }
 
-    $row = array();
+    $row = [];
     $row[] = $aRow['labname'];
     $row[] = $testName;
     if (isset($aRow['samples']) && $aRow['samples'] > 0) {

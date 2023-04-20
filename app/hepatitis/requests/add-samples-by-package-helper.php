@@ -32,7 +32,7 @@ foreach ($sampleResult as $sampleRow) {
 
         $sampleJson = $hepatitisObj->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'], $provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
-        $hepatitisData = array();
+        $hepatitisData = [];
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];
         $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];

@@ -2,7 +2,7 @@
 
 use App\Models\Facilities;
 
-ob_start();
+
 $title = _("Edit User");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -20,7 +20,7 @@ $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
 $facilityDb = new Facilities();
-$activeFacilities = array();
+$activeFacilities = [];
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
@@ -28,7 +28,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $preselectedFacilities = explode(",", $facilityMap);
 
 
-     $fResult = array();
+     $fResult = [];
      $fQuery = "SELECT facility_name,facility_id
                     FROM facility_details
                     WHERE status='active'

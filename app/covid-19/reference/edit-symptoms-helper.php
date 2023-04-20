@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -35,7 +35,7 @@ try {
 		$_SESSION['alertMsg'] = "Symptom details updated successfully";
 		$general->activityLog('update-symptoms', $_SESSION['userName'] . ' updated new reference symptoms' . $_POST['symptomsName'], 'reference-covid19-symptoms');
 	}
-	header("location:covid19-symptoms.php");
+	header("Location:covid19-symptoms.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

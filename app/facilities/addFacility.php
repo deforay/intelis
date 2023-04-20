@@ -4,7 +4,7 @@ use App\Models\General;
 use App\Models\GeoLocations;
 use App\Models\Users;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $general = new General();
@@ -17,7 +17,7 @@ $pResult = $db->rawQuery($pQuery);
 $usersModel = new Users();
 $userResult = $usersModel->getAllUsers();
 
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
 }

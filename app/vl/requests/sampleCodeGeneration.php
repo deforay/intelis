@@ -2,7 +2,7 @@
 
 use App\Models\Vl;
 
-ob_start();
+
 
 
 
@@ -22,10 +22,6 @@ if (isset($_POST['sampleCollectionDate'])) {
   $sampleCollectionDate = $_POST['sDate'];
 }
 
-if (isset($_POST['sampleFrom'])) {
-  $sampleFrom = $_POST['sampleFrom'];
-} else {
-  $sampleFrom = '';
-}
+$sampleFrom = $_POST['sampleFrom'] ?? '';
 
 echo $vLModel->generateVLSampleID($province, $sampleCollectionDate, $sampleFrom);

@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\Users;
 use App\Models\Vl;
 
-ob_start();
+
 $title = "VL | Add New Request";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -25,7 +25,7 @@ $importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
 $reasonForFailure = $vlDb->getReasonForFailure();
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
 }
@@ -117,9 +117,10 @@ $fileArray = array(
     7 => 'forms/add-rwanda.php',
     8 => 'forms/add-angola.php',
 );
+
 // print_r($arr['vl_form']);die;
 // $arr['vl_form'] = 8;
-require($fileArray[$arr['vl_form']]);
+include __DIR__ . DIRECTORY_SEPARATOR . $fileArray[$arr['vl_form']];
 
 ?>
 <script>
@@ -359,10 +360,10 @@ require($fileArray[$arr['vl_form']]);
         } else if (pName == '' && cName == '') {
             provinceName = true;
             facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#fName").html("<?php echo $facility; ?>");
+            $("#province").html("<?php echo $province ?? ""; ?>");
+            $("#fName").html("<?php echo $facility ?? ""; ?>");
         }
         $.unblockUI();
     }
 </script>
-<?php include APPLICATION_PATH . '/footer.php'; ?>
+<?php include APPLICATION_PATH . '/footer.php';

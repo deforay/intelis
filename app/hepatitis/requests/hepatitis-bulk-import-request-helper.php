@@ -5,12 +5,12 @@ use App\Models\Users;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$arr = array();
+$arr = [];
 $general = new General();
 $usersModel = new Users();
 
@@ -37,7 +37,7 @@ try {
         $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
-        $returnArray = array();
+        $returnArray = [];
         $resultArray = array_slice($sheetData,1);
 
         foreach ($resultArray as $rowIndex => $rowData) {
@@ -72,7 +72,7 @@ try {
                     'vlsm_country_id'                       => $arr['vl_form'],
                     'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "")?strtolower(str_replace(" ","-",$rowData['B'])):null,
                     'source_of_alert_other'                 => $rowData['C'],
-                    'facility_id'                           => isset($facility['facility_id'])?$facility['facility_id']:null,
+                    'facility_id'                           => $facility['facility_id'] ?? null,
                     'patient_name'                          => $rowData['E'],
                     'patient_id'                            => $rowData['F'],
                     'external_sample_code'                  => $rowData['G'],
@@ -86,12 +86,12 @@ try {
                     'patient_city'                          => $rowData['O'],
                     'patient_nationality'                   => $rowData['P'],
                     'type_of_test_requested'                => $rowData['Q'],
-                    'reason_for_covid19_test'               => isset($testReason['test_reason_id'])?$testReason['test_reason_id']:null,
+                    'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null,
                     'sample_collection_date'                => $sampleCollectionDate,
-                    'specimen_type'                         => isset($sampleType['sample_id'])?$sampleType['sample_id']:null,
+                    'specimen_type'                         => $sampleType['sample_id'] ?? null,
                     'test_number'                           => $rowData['U'],
                     'sample_received_at_vl_lab_datetime'    => $sampleReceivedDate,
-                    'lab_id'                                => isset($labName['facility_id'])?$labName['facility_id']:null,
+                    'lab_id'                                => $labName['facility_id'] ?? null,
                     'is_sample_rejected'                    => strtolower($rowData['X']),
                     'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "")?$rejectionReason['rejection_reason_id']:9999,
                     'rejection_on'                          => date('Y-m-d',strtotime($rowData['Z'])),
@@ -101,10 +101,10 @@ try {
                     'authorized_on'                         => date('Y-m-d',strtotime($rowData['AL'])),
                     'last_modified_datetime'                => DateUtils::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
-                    'result_status'                         => isset($resultStatus['status_id'])?$resultStatus['status_id']:null,
+                    'result_status'                         => $resultStatus['status_id'] ?? null,
                     'sample_condition'                      => strtolower($rowData['AN']),
                     'patient_passport_number'               => $rowData['A0'],
-                    'lab_technician'                        => isset($labTechnician)?$labTechnician:null,
+                    'lab_technician'                        => $labTechnician ?? null,
                 );
 
                 // echo "<pre>";print_r($data);die;
@@ -139,7 +139,7 @@ try {
                         $covid19TestData = array(
                             'covid19_id'            => $lastId,
                             'test_name'             => $testKitName['testRequest'],
-                            'facility_id'           => isset($labName['facility_id'])?$labName['facility_id']:null,
+                            'facility_id'           => $labName['facility_id'] ?? null,
                             'testing_platform'      => $testKitName['testingPlatform'],
                             'sample_tested_datetime'=> date('Y-m-d H:i:s', strtotime($testDate)),
                             'result'                => strtolower($testKitName['testResult']),
@@ -155,7 +155,7 @@ try {
         $_SESSION['alertMsg'] = "Data imported successfully";
     }
     // echo "<pre>";print_r($returnArray);die;
-    header("location:/covid-19/requests/covid-19-requests.php");
+    header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

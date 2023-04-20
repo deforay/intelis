@@ -67,7 +67,7 @@ try {
         $lotExpirationDateCol = 13;
 
         if (strpos($mime_type, 'text/plain') !== false) {
-            $infoFromFile = array();
+            $infoFromFile = [];
             $testDateRow = "";
             $skip = 23;
 
@@ -106,7 +106,7 @@ try {
 
                         $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round((float) round(pow(10, $logVal) * 100) / 100);
+                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
 
 
                         if (strpos($sheetData[$resultCol], "<") !== false) {
@@ -315,7 +315,7 @@ try {
         );
         $db->insert("log_result_updates", $data);
     }
-    header("location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

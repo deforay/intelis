@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -48,7 +48,7 @@ try {
             $general->activityLog('Province details', $_SESSION['userName'] . ' added new province for ' . $_POST['provinceName'], 'common-reference');
         }
 	}
-	header("location:province-details.php");
+	header("Location:province-details.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

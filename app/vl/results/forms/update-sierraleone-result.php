@@ -2,7 +2,7 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -57,7 +57,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = '';
 }
 //district details
-$districtResult = array();
+$districtResult = [];
 if (trim($stateName) != '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
@@ -67,7 +67,7 @@ if (trim($stateName) != '') {
 
 //set reason for changes history
 $rch = '';
-$allChange = array();
+$allChange = [];
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '') {
 	$rch .= '<h4>Result Changes History</h4>';
 	$rch .= '<table style="width:100%;">';

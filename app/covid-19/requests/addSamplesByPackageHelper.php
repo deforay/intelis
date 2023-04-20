@@ -31,7 +31,7 @@ foreach ($sampleResult as $sampleRow) {
 
         $sampleJson = $covid19Obj->generateCovid19SampleCode($provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
-        $covid19Data = array();
+        $covid19Data = [];
         $covid19Data['sample_code'] = $sampleData['sampleCode'];
         $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];

@@ -3,8 +3,6 @@
 use App\Models\General;
 use App\Utilities\ImageResize;
 
-ob_start();
-
 $general = new General();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
@@ -62,7 +60,7 @@ try {
     $data['instance_mac_address'] = "not found";
     if (PHP_OS == 'Linux') {
       $data['instance_mac_address'] = getMacLinux();
-    } else if (PHP_OS == 'WINNT') {
+    } elseif (PHP_OS == 'WINNT') {
       $data['instance_mac_address'] = getMacWindows();
     }
 
@@ -75,7 +73,7 @@ try {
           mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-        $string = $general->generateRandomString(6) . ".";
+        $string = General::generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
           $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
@@ -97,10 +95,10 @@ try {
       $_SESSION['alertMsg'] = "Instance details added successfully";
       $_SESSION['success'] = "success";
     } else {
-      $_SESSION['alertMsg'] = "Something went wrong!Please try again.";
+      $_SESSION['alertMsg'] = "Something went wrong! Please try adding the instance again.";
     }
   }
-  header("location:addInstanceDetails.php");
+  header("Location:addInstanceDetails.php");
 } catch (Exception $exc) {
   error_log($exc->getMessage());
   error_log($exc->getTraceAsString());

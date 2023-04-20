@@ -4,17 +4,6 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Models\Users;
 
-if (!isset($_SESSION['userId'])) {
-	header("location:/login/login.php");
-} else if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
-	$_SESSION['alertMsg'] = _("Please change your password to proceed.");
-	if (strpos($_SERVER['REQUEST_URI'], "editProfile.php") === false) {
-		header("location:/users/editProfile.php");
-	}
-}
-
-error_reporting(E_ALL ^ E_NOTICE);  
-
 
 $general = new General();
 $usersModel = new Users();
@@ -48,7 +37,7 @@ if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName']
 
 // Check if the user can access the requested page
 if (!$usersModel->isAllowed(basename($_SERVER['PHP_SELF']))) {
-	header("location:/error/401.php");
+	return new header("Location:/error/401.php");
 }
 
 
@@ -224,8 +213,12 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
 	<script src="/assets/js/select2.min.js"></script>
 	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
-<style>
-	.select2-selection--multiple{ max-height:100px; width: auto; overflow-y:scroll !important; }
+	<style>
+		.select2-selection--multiple {
+			max-height: 100px;
+			width: auto;
+			overflow-y: scroll !important;
+		}
 	</style>
 </head>
 
@@ -391,7 +384,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 												<li class="allMenu treeview sources-of-requests-report-menu">
 													<a href="/admin/monitoring/sources-of-requests.php"><span class="fa-solid fa-circle-notch"></span> <?php echo _("Source of Requests"); ?></a>
 												</li>
-											<?php } 
+											<?php }
 											if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['privileges']) && in_array("sync-status.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu treeview sync-status-menu">
 													<a href="/admin/monitoring/sync-status.php"><span class="fa-solid fa-traffic-light"></span> <?php echo _("Lab Sync Status"); ?></a>
@@ -445,9 +438,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											</li>
 											<?php } ?>
 											<?php if (isset($_SESSION['privileges']) && in_array("testType.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu testTypeConfigurationMenu">
-												<a href="/generic-tests/configuration/testType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
-											</li>
+												<li class="allMenu testTypeConfigurationMenu">
+													<a href="/generic-tests/configuration/testType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
+												</li>
 											<?php } ?>
 										</ul>
 									</li>

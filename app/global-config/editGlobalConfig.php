@@ -2,7 +2,7 @@
 
 use App\Models\General;
 
-ob_start();
+
 $title = _("Edit General Configuration");
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -24,7 +24,7 @@ $arr = [];
 for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
 }
-$mFieldArray = array();
+$mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
 	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
 }

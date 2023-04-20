@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -13,7 +13,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
 	} else {
-		$sampleCode = 'sample_code';
+		$sampleCode = 'sample_code'; 
 	}
 	//check user exist in user_facility_map table
 	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
@@ -97,7 +97,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editVlRequestForm" id="editVlRequestForm" autocomplete="off" action="editVlRequestHelperDrc.php">
+				<form class="form-horizontal" method="post" name="editVlRequestForm" id="editVlRequestForm" autocomplete="off" action="editVlRequestHelper.php">
 					<div class="box-body">
 						<div class="box box-default">
 							<div class="box-body">
@@ -176,13 +176,13 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 									</tr>
 									<tr>
-										<td><label for="clinicianName">Demandeur </label></td>
+										<td><label for="reqClinician">Demandeur </label></td>
 										<td>
-											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="Veuillez saisir le demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="Veuillez saisir le demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="clinicanTelephone">Téléphone </label></td>
+										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
@@ -267,9 +267,9 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 									</tr>
 									<tr>
-										<td><label for="patientArtNo">Code du patient <span class="mandatory">*</span></label></td>
+										<td><label for="artNo">Code du patient <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control isRequired" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="Please enter code du patient" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
 										</td>
 										<td colspan="2"><label for="isPatientNew">Si S/ARV </label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
@@ -283,7 +283,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td class="du"><label for="">Date du début des ARV </label></td>
 										<td class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 										<td></td>
 										<td></td>
@@ -339,7 +339,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td colspan="3">
-											<select name="vlTestReason" id="vlTestReason" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkVLTestReason();">
+											<select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkreasonForVLTesting();">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($vlTestReasonResult as $tReason) { ?>
 													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
@@ -354,10 +354,10 @@ $sampleSuggestionDisplay = 'display:none;';
 											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" value="<?php echo $vlQueryInfo['vl_test_number']; ?>" style="width:100%;" />
 										</td>
 									</tr>
-									<tr class="newVlTestReason" style="display:none;">
-										<td><label for="newVlTestReason">Autre, à préciser <span class="mandatory">*</span></label></td>
+									<tr class="newreasonForVLTesting" style="display:none;">
+										<td><label for="newreasonForVLTesting">Autre, à préciser <span class="mandatory">*</span></label></td>
 										<td colspan="3">
-											<input type="text" class="form-control" name="newVlTestReason" id="newVlTestReason" placeholder="Virale Demande Raison" title="Please enter virale demande raison" style="width:100%;">
+											<input type="text" class="form-control" name="newreasonForVLTesting" id="newreasonForVLTesting" placeholder="Virale Demande Raison" title="Please enter virale demande raison" style="width:100%;">
 										</td>
 										<td></td>
 										<td></td>
@@ -465,7 +465,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -498,7 +498,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr>
 											<td><label for="">Date de réalisation de la charge virale </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
@@ -513,7 +513,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr>
 											<td><label for="">Décision prise </label></td>
 											<td>
-												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control" id="noResult" name="noResult" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -675,7 +675,7 @@ $sampleSuggestionDisplay = 'display:none;';
             maxDate: "+1Y",
            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
-				var dt2 = $('#dateDispatchedFromClinicToLab');
+				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
 				dt2.datetimepicker('setDate', minDate);
@@ -691,10 +691,10 @@ $sampleSuggestionDisplay = 'display:none;';
 	
 
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		if($("#dateDispatchedFromClinicToLab").val()=="")
-		$("#dateDispatchedFromClinicToLab").val($('#sampleCollectionDate').val());
+		if($("#sampleDispatchedDate").val()=="")
+		$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 		
-		$('#dateDispatchedFromClinicToLab').datetimepicker({
+		$('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
@@ -705,11 +705,11 @@ $sampleSuggestionDisplay = 'display:none;';
 	});
 	
 
-	//$('#dateDispatchedFromClinicToLab').val($('#sampleCollectionDate').val());
+	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 	//	var startDate = $('#sampleCollectionDate').datetimepicker('getDate');
 	
-		//$('#dateDispatchedFromClinicToLab').datetimepicker('option', 'minDate', minDate);
- 	//	$("#dateDispatchedFromClinicToLab").datetimepicker( {minDate, minDate });
+		//$('#sampleDispatchedDate').datetimepicker('option', 'minDate', minDate);
+ 	//	$("#sampleDispatchedDate").datetimepicker( {minDate, minDate });
 	function getfacilityDetails(obj) {
 		$.blockUI();
 		var pName = $("#province").val();
@@ -772,7 +772,7 @@ $sampleSuggestionDisplay = 'display:none;';
 			}
 		}
 		if ($.trim(patientArray['patient_art_no']) != '') {
-			$("#patientArtNo").val($.trim(patientArray['patient_art_no']));
+			$("#artNo").val($.trim(patientArray['patient_art_no']));
 		}
 		if ($.trim(patientArray['current_regimen']) != '') {
 			$("#artRegimen").val($.trim(patientArray['current_regimen']));
@@ -810,14 +810,14 @@ $sampleSuggestionDisplay = 'display:none;';
 		}
 	});
 
-	function checkVLTestReason() {
-		var vlTestReason = $("#vlTestReason").val();
-		if (vlTestReason == "other") {
-			$(".newVlTestReason").show();
-			$("#newVlTestReason").addClass("isRequired");
+	function checkreasonForVLTesting() {
+		var reasonForVLTesting = $("#reasonForVLTesting").val();
+		if (reasonForVLTesting == "other") {
+			$(".newreasonForVLTesting").show();
+			$("#newreasonForVLTesting").addClass("isRequired");
 		} else {
-			$(".newVlTestReason").hide();
-			$("#newVlTestReason").removeClass("isRequired");
+			$(".newreasonForVLTesting").hide();
+			$("#newreasonForVLTesting").removeClass("isRequired");
 		}
 	}
 
@@ -831,7 +831,7 @@ $sampleSuggestionDisplay = 'display:none;';
 	}
 
 	function checkTestStatus() {
-		var status = $("#isSampleRejected").val();
+		var status = $("#noResult").val();
 		if (status == 'yes') {
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);

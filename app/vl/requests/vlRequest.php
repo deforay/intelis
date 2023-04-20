@@ -24,7 +24,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$interopConfig = array();
+$interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 }
@@ -55,7 +55,7 @@ $batResult = $db->rawQuery($batQuery);
 // Src of alert req
 $srcQuery = "SELECT DISTINCT source_of_request from form_vl where source_of_request is not null AND source_of_request not like ''";
 $srcResults = $db->rawQuery($srcQuery);
-$srcOfReqList = array();
+$srcOfReqList = [];
 foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }

@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
@@ -35,7 +35,7 @@ try {
 		$_SESSION['alertMsg'] = "Test reason details updated successfully";
 		$general->activityLog('update-test-reasons', $_SESSION['userName'] . ' updated new reference test reasons' . $_POST['test_reason_name'], 'reference-covid19-test-reasons');
 	}
-	header("location:covid19-test-reasons.php");
+	header("Location:covid19-test-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

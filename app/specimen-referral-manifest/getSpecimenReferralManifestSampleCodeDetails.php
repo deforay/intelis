@@ -41,7 +41,7 @@ if ($module == 'vl') {
 } else if ($module == 'tb') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl ";
 }
-$where = array();
+$where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);

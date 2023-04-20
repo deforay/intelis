@@ -18,7 +18,7 @@ $primaryKey = "vl_sample_id";
 //config  query
 $configQuery = "SELECT * from global_config";
 $configResult = $db->query($configQuery);
-$arr = array();
+$arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
     $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
@@ -26,7 +26,7 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -85,7 +85,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 
-$sWhere = array();
+$sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
     $sWhereSub = "";
@@ -231,7 +231,7 @@ foreach ($rResult as $aRow) {
     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]);
     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow[$decrypt]);
     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow[$decrypt]);
-    $row = array();
+    $row = [];
     $row[] = $aRow['sample_code'];
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];

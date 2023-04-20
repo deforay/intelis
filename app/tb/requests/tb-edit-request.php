@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\Users;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 $title = "TB | Edit Request";
 
 require_once(APPLICATION_PATH . '/header.php');
@@ -42,7 +42,7 @@ $testingLabs = $facilitiesDb->getTestingLabs('tb');
 /* Get Active users for approved / reviewed / examined by */
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);
-$userInfo = array();
+$userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
 }
@@ -59,9 +59,9 @@ $id = base64_decode($_GET['id']);
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, array($id));
 if (!$tbInfo) {
-    header("location:/tb/requests/tb-requests.php");
+    header("Location:/tb/requests/tb-requests.php");
 }
-$testRequsted = array();
+$testRequsted = [];
 if (isset($tbInfo['tests_requested']) && $tbInfo['tests_requested'] != "") {
     $testRequsted = json_decode($tbInfo['tests_requested']);
 }

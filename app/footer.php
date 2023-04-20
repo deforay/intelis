@@ -1,8 +1,10 @@
 <?php
 
 
+use App\Models\General;
+
 $db = \MysqliDb::getInstance();
-$general = new \App\Models\General($db);
+$general = new General($db);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 

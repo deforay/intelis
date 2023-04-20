@@ -4,7 +4,7 @@ use App\Models\Facilities;
 use App\Models\General;
 use App\Models\Users;
 
-ob_start();
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }

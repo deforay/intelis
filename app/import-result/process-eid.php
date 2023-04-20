@@ -14,8 +14,8 @@ try {
     $numberOfResults  = 0;
     $cSampleQuery = "SELECT * FROM global_config";
     $cSampleResult = $db->query($cSampleQuery);
-    $arr = array();
-    $printSampleCode = array();
+    $arr = [];
+    $printSampleCode = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($cSampleResult); $i++) {
         $arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];
@@ -250,7 +250,7 @@ try {
     $stResult = $db->rawQuery($stQuery);
 
     if ($numberOfResults > 0) {
-        $importedBy = isset($_SESSION['userId']) ? $_SESSION['userId'] : 'AUTO';
+        $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $general->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
 

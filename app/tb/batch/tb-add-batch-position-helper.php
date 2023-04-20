@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
   
 
 // 
@@ -9,7 +9,7 @@ try {
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim($_POST['sortOrders']) != '') {
         $xplodSortOrders = explode(",", $_POST['sortOrders']);
-        $orderArray = array();
+        $orderArray = [];
         for ($o = 0; $o < count($xplodSortOrders); $o++) {
             $orderArray[$o] = $xplodSortOrders[$o];
         }
@@ -18,9 +18,9 @@ try {
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
-        header("location:tb-batches.php");
+        header("Location:tb-batches.php");
     } else {
-        header("location:tb-batches.php");
+        header("Location:tb-batches.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-ob_start();
+
 
 
 
@@ -20,7 +20,7 @@ try {
      //system config
      $systemConfigQuery = "SELECT * from system_config";
      $systemConfigResult = $db->query($systemConfigQuery);
-     $sarr = array();
+     $sarr = [];
      // now we create an associative array so that we can easily create view variables
      for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -278,12 +278,12 @@ try {
           //   $db->insert($tableName1,$data);
           if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
                $_SESSION['treamentId'] = $id;
-               header("location:addVlRequest.php");
+               header("Location:addVlRequest.php");
           } else {
                $_SESSION['treamentId'] = '';
                $_SESSION['facilityId'] = '';
                unset($_SESSION['treamentId']);
-               header("location:vlRequest.php");
+               header("Location:vlRequest.php");
           }
      } else {
           $_SESSION['alertMsg'] = "Please try again later";

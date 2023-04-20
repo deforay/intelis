@@ -9,7 +9,7 @@ $primaryKey = "province_id";
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
-$sarr = array();
+$sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
@@ -137,7 +137,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = ($aRow['province_name']);
     $row[] = ($aRow['province_code']);
     if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {

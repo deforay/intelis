@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 $title = _("EID | Batches");
 
 require_once(APPLICATION_PATH . '/header.php');

@@ -89,7 +89,7 @@ if (sizeof($requestResult) > 0) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     }
-    $pages = array();
+    $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
 
@@ -252,7 +252,7 @@ if (sizeof($requestResult) > 0) {
             $result['patient_gender'] = 'not reported';
         }
 
-        $userRes = array();
+        $userRes = [];
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
             $userRes = $users->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
             $resultAuthroizedBy = ($userRes['user_name']);
@@ -265,7 +265,7 @@ if (sizeof($requestResult) > 0) {
             $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
         }
 
-        $userApprovedRes = array();
+        $userApprovedRes = [];
         if (isset($result['result_approved_by']) && trim($result['result_approved_by']) != '') {
             $userApprovedRes = $users->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
             $resultApprovedBy = ($userApprovedRes['user_name']);

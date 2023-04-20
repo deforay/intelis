@@ -5,7 +5,7 @@ use App\Models\General;
 use App\Models\Hepatitis;
 use App\Models\Users;
 
-ob_start();
+
 $title = "Enter Hepatitis Result";
 
 require_once(APPLICATION_PATH . '/header.php');

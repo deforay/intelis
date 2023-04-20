@@ -58,8 +58,8 @@ class Covid19
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
-        $sampleCodeFormat = isset($globalConfig['covid19_sample_code']) ? $globalConfig['covid19_sample_code'] : 'MMYY';
-        $prefixFromConfig = isset($globalConfig['covid19_sample_code_prefix']) ? $globalConfig['covid19_sample_code_prefix'] : '';
+        $sampleCodeFormat = $globalConfig['covid19_sample_code'] ?? 'MMYY';
+        $prefixFromConfig = $globalConfig['covid19_sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
@@ -143,7 +143,7 @@ class Covid19
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
         }
@@ -198,7 +198,7 @@ class Covid19
         }
         $query .= " ORDER BY result_id DESC";
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
         }
@@ -212,7 +212,7 @@ class Covid19
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
         }
@@ -222,7 +222,7 @@ class Covid19
     public function getCovid19ReasonsForTestingDRC()
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active' AND (parent_reason IS NULL OR parent_reason = 0)");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
         }
@@ -235,7 +235,7 @@ class Covid19
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['symptom_id']] = $row['symptom_name'];
         }
@@ -245,7 +245,7 @@ class Covid19
     public function getCovid19SymptomsDRC()
     {
         $results = $this->db->rawQuery("SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active' AND (parent_symptom IS NULL OR parent_symptom = 0)");
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['symptom_id']] = $row['symptom_name'];
         }
@@ -259,7 +259,7 @@ class Covid19
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
-        $response = array();
+        $response = [];
         foreach ($results as $row) {
             $response[$row['comorbidity_id']] = $row['comorbidity_name'];
         }
@@ -269,7 +269,7 @@ class Covid19
 
     public function getCovid19TestsByFormId($c19Id = "")
     {
-        $response = array();
+        $response = [];
 
         // Using this in sync requests/results
         if (isset($c19Id) && is_array($c19Id) && count($c19Id) > 0) {
@@ -298,7 +298,7 @@ class Covid19
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = $c19Id");
             }
         }
-        $response = array();
+        $response = [];
 
         // Using this in sync requests/results
         if (is_array($c19Id) && count($c19Id) > 0) {
@@ -336,7 +336,7 @@ class Covid19
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` = $c19Id");
             }
         }
-        $response = array();
+        $response = [];
 
         // Using this in sync requests/results
         if (is_array($c19Id) && count($c19Id) > 0) {
@@ -371,7 +371,7 @@ class Covid19
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = $c19Id");
             }
         }
-        $response = array();
+        $response = [];
 
         // Using this in sync requests/results
         if (is_array($c19Id) && count($c19Id) > 0) {
@@ -521,11 +521,7 @@ class Covid19
                     $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
                 } else if (isset($_SERVER['HTTP_FORWARDED'])) {
                     $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else if (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
+                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
                 $formAttributes = array(
                     'applicationVersion'  => $version,
                     'ip_address'    => $ipaddress

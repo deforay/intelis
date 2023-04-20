@@ -6,7 +6,7 @@ use App\Models\Users;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $tableName = "user_details";
 $userName = ($_POST['userName']);
@@ -27,7 +27,7 @@ try {
         $userPassword = $user->passwordHash($password);
         $userId = $general->generateUUID();
 
-        
+
         $insertData = array(
             'user_id'           => $userId,
             'user_name'         => $userName,
@@ -64,7 +64,7 @@ try {
 
         $_SESSION['alertMsg'] = "New admin user added successfully";
     }
-    header("location:/login/login.php");
+    header("Location:/login/login.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -131,7 +131,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = array();
+    $row = [];
     $row[] = $aRow['display_name'];
     if ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'no') {
         $aRow['value'] = 'Month and Year';

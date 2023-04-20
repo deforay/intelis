@@ -3,7 +3,7 @@
 use App\Models\Facilities;
 use App\Models\General;
 
-ob_start();
+
 $title = _("Email VL Test Results");
 
 require_once(APPLICATION_PATH . '/header.php');

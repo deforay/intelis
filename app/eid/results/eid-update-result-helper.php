@@ -6,7 +6,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-ob_start();
+
 
 
 
@@ -54,12 +54,12 @@ try {
 
   $eidData = array(
     'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
-    'eid_test_platform'                 => isset($_POST['eidPlatform']) ? $_POST['eidPlatform'] : null,
-    'import_machine_name'               => isset($_POST['machineName']) ? $_POST['machineName'] : null,
+    'eid_test_platform'                 => $_POST['eidPlatform'] ?? null,
+    'import_machine_name'               => $_POST['machineName'] ?? null,
     'sample_tested_datetime'            => $_POST['sampleTestedDateTime'],
-    'is_sample_rejected'                => isset($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-    'lab_id'                            => isset($_POST['labId']) ? $_POST['labId'] : null,
-    'result'                            => isset($_POST['result']) ? $_POST['result'] : null,
+    'is_sample_rejected'                => $_POST['isSampleRejected'] ?? null,
+    'lab_id'                            => $_POST['labId'] ?? null,
+    'result'                            => $_POST['result'] ?? null,
     'tested_by'                         => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
     'lab_tech_comments'                 => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  null,
     'result_approved_by'                => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
@@ -72,7 +72,7 @@ try {
     'reason_for_changing'               => (!empty($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
     'result_status'                     => 8,
     'data_sync'                         => 0,
-    'reason_for_sample_rejection'       => isset($_POST['sampleRejectionReason']) ? $_POST['sampleRejectionReason'] : null,
+    'reason_for_sample_rejection'       => $_POST['sampleRejectionReason'] ?? null,
     'rejection_on'                      => isset($_POST['rejectionDate']) ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
     'last_modified_by'                  => $_SESSION['userId'],
     'result_printed_datetime'           => null,
@@ -107,7 +107,7 @@ try {
   );
   $db->insert($tableName2, $data);
 
-  header("location:eid-manual-results.php");
+  header("Location:eid-manual-results.php");
 } catch (Exception $exc) {
   error_log($exc->getMessage());
   error_log($exc->getTraceAsString());

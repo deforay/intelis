@@ -5,7 +5,7 @@ use App\Models\Users;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $tableName= "system_admin";
 $userName = ($_POST['username']);
@@ -32,12 +32,12 @@ try {
     $db->insert($tableName, $insertData);
     unlink("app/system-admin/secretKey.txt");
     $_SESSION['alertMsg'] = _("New User Added successfully");
-    header("location:/system-admin/login/login.php");
+    header("Location:/system-admin/login/login.php");
     }
     }
     else{
         $_SESSION['alertMsg'] = _("Invalid Secret Key, Please enter valid key");
-        header("location:/system-admin/setup/index.php");
+        header("Location:/system-admin/setup/index.php");
     }
     
         

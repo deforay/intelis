@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
   
 
 $tableName = "other_config";
@@ -22,7 +22,7 @@ try {
         }
     }
     $_SESSION['alertMsg'] = _("Test Result Email Config values updated successfully.");
-    header("location:testResultEmailConfig.php");
+    header("Location:testResultEmailConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -17,7 +17,7 @@ if (sizeof($requestResult) > 0) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     }
-    $pages = array();
+    $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
         $currentTime = DateUtils::getCurrentDateTime();
@@ -162,7 +162,7 @@ if (sizeof($requestResult) > 0) {
         }
 
         $revisedBy = '';
-        $revisedByRes = array();
+        $revisedByRes = [];
         if (isset($result['revised_by']) && !empty($result['revised_by'])) {
             $revisedByRes = $users->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
             if ($revisedByRes) {

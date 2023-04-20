@@ -142,7 +142,7 @@ $resultColumn = getColumns($db, $tableName);
 										<tr>
 											<?php
 
-											$colArr = array();
+											$colArr = [];
 											foreach ($resultColumn as $col) {
 												$colArr[] = $col['COLUMN_NAME'];
 											?>

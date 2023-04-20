@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-ob_start();
+
 
 
 use App\Models\General;
@@ -27,7 +27,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 	$rResult = $db->rawQuery($_SESSION['tbResultQuery']);
 
 	$excel = new Spreadsheet();
-	$output = array();
+	$output = [];
 	$sheet = $excel->getActiveSheet();
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			$headings = array("S. No.", "Sample Code", "Remote Sample Code","Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason","Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
@@ -99,7 +99,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
-		$row = array();
+		$row = [];
 		if ($arr['vl_form'] == 1) {
 			// Get testing platform and test method 
 			$tbTestQuery = "SELECT * from tb_tests where tb_id= " . $aRow['tb_id'] . " ORDER BY tb_test_id ASC";

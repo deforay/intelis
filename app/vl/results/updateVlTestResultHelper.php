@@ -7,7 +7,7 @@ use App\Utilities\DateUtils;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+
 
 $general = new General();
 $vlModel = new Vl();
@@ -219,7 +219,7 @@ try {
         $_SESSION['alertMsg'] = _("Please try again later");
     }
 
-    header("location:vlTestResult.php");
+    header("Location:vlTestResult.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

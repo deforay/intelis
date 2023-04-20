@@ -5,7 +5,7 @@
 use App\Models\Covid19;
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 
 //Funding source list

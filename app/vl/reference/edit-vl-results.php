@@ -3,7 +3,7 @@
 use App\Models\General;
 use App\Models\Instruments;
 
-ob_start();
+
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);

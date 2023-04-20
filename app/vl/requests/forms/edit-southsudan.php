@@ -2,7 +2,7 @@
 
 use App\Utilities\DateUtils;
 
-ob_start();
+
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -85,7 +85,7 @@ if (!isset($facilityResult[0]['facility_district'])) {
 }
 //set reason for changes history
 $rch = '';
-$allChange = array();
+$allChange = [];
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
 	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
 	if (!empty($allChange)) {

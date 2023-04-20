@@ -77,11 +77,11 @@ if (trim($id) != '') {
     // die($sQuery);
     $result = $db->query($sQuery);
 
-    $labname = isset($result[0]['lab_name']) ? $result[0]['lab_name'] : "";
+    $labname = $result[0]['lab_name'] ?? "";
 
     $configQuery = "SELECT * from global_config";
     $configResult = $db->query($configQuery);
-    $arr = array();
+    $arr = [];
     // now we create an associative array so that we can easily create view variables
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
