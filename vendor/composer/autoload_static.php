@@ -72,6 +72,11 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
         ),
+        'T' => 
+        array (
+            'Tuupola\\Middleware\\' => 19,
+            'Tuupola\\Http\\Factory\\' => 21,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php81\\' => 23,
@@ -114,6 +119,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
             'PhpOffice\\PhpSpreadsheet\\' => 25,
             'ParagonIE\\ConstantTime\\' => 23,
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'N' => 
+        array (
+            'Neomerx\\Cors\\' => 13,
         ),
         'M' => 
         array (
@@ -202,6 +211,15 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Tuupola\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tuupola/callable-handler/src',
+            1 => __DIR__ . '/..' . '/tuupola/cors-middleware/src',
+        ),
+        'Tuupola\\Http\\Factory\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tuupola/http-factory/src',
         ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (
@@ -340,6 +358,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'Neomerx\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/neomerx/cors-psr7/src',
         ),
         'MyCLabs\\Enum\\' => 
         array (

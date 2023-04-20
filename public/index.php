@@ -10,6 +10,7 @@ use App\Middleware\AuthMiddleware;
 use App\Middleware\SystemAdminMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
+use Tuupola\Middleware\CorsMiddleware;
 
 
 
@@ -20,21 +21,34 @@ $request = ServerRequestFactory::fromGlobals();
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 
-// Add middleware
 
+// 1. CORS Middleware
+$middlewarePipe->pipe(new CorsMiddleware([
+    "origin" => ["*"], // Allow any origin, or specify a list of allowed origins
+    "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
+    "headers.allow" => ["Content-Type", "Authorization", "Accept"], // Allowed request headers
+    "headers.expose" => ["*"], // Headers that clients are allowed to access
+    "credentials" => false, // Set to true if you want to allow cookies to be sent with CORS requests
+    "cache" => 86400, // Cache preflight request for 1 day (in seconds)
+]));
+
+
+// 2. Auth Middleware
 $uri = $request->getUri()->getPath();
 
-// Only apply AuthMiddleware if the request is not for /api or /system-admin
+// 2.1 Only apply AuthMiddleware if the request is not for /api or /system-admin
 if (strpos($uri, '/api') !== 0 && strpos($uri, '/system-admin') !== 0) {
     $middlewarePipe->pipe(new AuthMiddleware());
 }
 
-// API and System Admin middleware
+// 2.2 API and System Admin middleware
 if (strpos($uri, '/api') === 0) {
     $middlewarePipe->pipe(new ApiMiddleware());
 } elseif (strpos($uri, '/system-admin') === 0) {
     $middlewarePipe->pipe(new SystemAdminMiddleware());
 }
+
+// 3. ACL Middleware
 
 $middlewarePipe->pipe(new RequestHandlerMiddleware(new LegacyRequestHandler()));
 
