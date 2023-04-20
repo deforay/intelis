@@ -823,6 +823,10 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".system-config-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".sampleTypeMenu").addClass('active');
+	} else if (splitsUrl == 'testingReason.php' || splitsUrl == 'addTestingReason.php' || splitsUrl == 'editTestingReason.php') {
+		$(".system-config-menu,.manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".testingReasonMenu").addClass('active');
 	}
 	else {
 		$(".allMenu").removeClass('active');

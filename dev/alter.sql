@@ -3549,3 +3549,25 @@ ALTER TABLE `r_sample_types`
 
 ALTER TABLE `r_sample_types`
   MODIFY `sample_type_id` int NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('common-testing-reason', 'admin', 'Common Testing Reason Table');
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-testing-reason', 'testingReason.php', 'Access'), (NULL, 'common-testing-reason', 'editTestingReason.php', 'Edit');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-testing-reason', 'addTestingReason.php', 'Add');
+
+
+CREATE TABLE `r_testing_reasons` (
+  `test_reason_id` int NOT NULL,
+  `test_reason_code` varchar(256) DEFAULT NULL,
+  `test_reason` varchar(256) DEFAULT NULL,
+  `test_reason_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `r_testing_reasons`
+  ADD PRIMARY KEY (`test_reason_id`),
+  ADD UNIQUE KEY `test_reason_code` (`test_reason_code`),
+  ADD UNIQUE KEY `test_reason` (`test_reason`);
+
+ALTER TABLE `r_testing_reasons`
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
