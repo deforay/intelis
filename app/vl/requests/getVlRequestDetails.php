@@ -65,7 +65,6 @@ if (isset($_POST['iSortCol_0'])) {
 * word by word on any field. It's possible to do here, but concerned about efficiency
 * on very large tables, and MySQL's regex functionality is very limited
 */
-
 $sWhere = array();
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
@@ -80,9 +79,11 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    if(!empty($aColumns[$i]))
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    if(!empty($aColumns[$i]))
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
           }
           $sWhereSub .= ")";
@@ -327,7 +328,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
      }
 } else if (!$_POST['hidesrcofreq']) {
-     $sWhere[] = ' vl.result_status!=9';
+     $sWhere[] = ' vl.result_status!=9'; 
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
