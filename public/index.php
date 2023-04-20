@@ -13,7 +13,6 @@ use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 use Tuupola\Middleware\CorsMiddleware;
 
 
-
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
 
@@ -34,21 +33,22 @@ $middlewarePipe->pipe(new CorsMiddleware([
 
 
 // 2. Auth Middleware
+// Only apply AuthMiddleware if the request is not for /api or /system-admin
 $uri = $request->getUri()->getPath();
-
-// 2.1 Only apply AuthMiddleware if the request is not for /api or /system-admin
-if (strpos($uri, '/api') !== 0 && strpos($uri, '/system-admin') !== 0) {
+if (strpos($uri, '/api') === 0) {
+    // API  middleware
+    $middlewarePipe->pipe(new ApiMiddleware());
+} elseif (strpos($uri, '/system-admin') === 0) {
+    // System Admin middleware
+    $middlewarePipe->pipe(new SystemAdminMiddleware());
+} else {
+    // For the rest of the requests, apply AuthMiddleware
     $middlewarePipe->pipe(new AuthMiddleware());
 }
 
-// 2.2 API and System Admin middleware
-if (strpos($uri, '/api') === 0) {
-    $middlewarePipe->pipe(new ApiMiddleware());
-} elseif (strpos($uri, '/system-admin') === 0) {
-    $middlewarePipe->pipe(new SystemAdminMiddleware());
-}
 
 // 3. ACL Middleware
+// TODO: Implement ACL Middleware
 
 $middlewarePipe->pipe(new RequestHandlerMiddleware(new LegacyRequestHandler()));
 
