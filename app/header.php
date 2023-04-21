@@ -432,6 +432,16 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu common-reference-funding-sources">
 												<a href="/common/reference/funding-sources.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Funding Sources"); ?></a>
 											</li>
+											<?php if (isset($_SESSION['privileges']) && in_array("sampleType.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu sampleTypeMenu">
+												<a href="/common/sample-types/sampleType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
+											</li>
+											<?php } ?>
+											<?php if (isset($_SESSION['privileges']) && in_array("testingReason.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu testingReasonMenu">
+												<a href="/common/testing-reasons/testingReason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
+											</li>
+											<?php } ?>
 											<?php if (isset($_SESSION['privileges']) && in_array("testType.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu testTypeConfigurationMenu">
 													<a href="/generic-tests/configuration/testType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>

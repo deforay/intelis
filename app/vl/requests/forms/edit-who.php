@@ -620,6 +620,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
+											<p>&nbsp;</p>
 											<div class="row">
 												<div class="col-md-4">
 													<label for="reqClinician" class="col-lg-5 control-label">Request Clinician</label>
@@ -846,9 +847,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 													</div>
 												</div>
 											</div>
@@ -899,6 +900,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$(document).ready(function() {
 		hivDetectionChange();
+
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -908,6 +910,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
+		});
+
+		$("#labId").on('change', function() {
 			if ($("#labId").val() != "") {
 				$.post("/includes/get-sample-type.php", {
 						facilityId: $('#labId').val(),
@@ -921,6 +926,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 					});
 			}
 		});
+
 
 
 
@@ -954,7 +960,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
-            maxDate: "+1Y",
+            maxDate: "Today",
            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
@@ -962,7 +968,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				var minDate = $(this).datetimepicker('getDate');
 				dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "+1Y");
+				dt2.datetimepicker('option', 'maxDate', "Today");
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
@@ -1338,7 +1344,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
 			$("#reasonForFailure").removeClass('isRequired');
 		} else if ($(this).val() == 'no') {
@@ -1354,7 +1360,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
-			$('#approvedOnDateTime').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields").attr("disabled", false);
@@ -1371,7 +1377,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').removeClass('isRequired');
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
-			$('#approvedOnDateTime').removeClass('isRequired');
+			$('#approvedOn').removeClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		}
 	});

@@ -484,7 +484,6 @@ try {
         $pngSpecificFields['qc_date'] = $_POST['qcDate'];
         $pngSpecificFields['report_date'] = $_POST['reportDate'];
 
-
     }
     $vldata = array_merge($vldata, $pngSpecificFields);
 

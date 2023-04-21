@@ -67,9 +67,9 @@ require_once(APPLICATION_PATH . '/header.php');
 						
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("Test Loinc Code"); ?></label>
+									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("Test LOINC Code"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test Loinc Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)'/>
+										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)'/>
 									</div>
 								</div>
 							</div>
