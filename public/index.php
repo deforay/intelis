@@ -33,12 +33,9 @@ $middlewarePipe->pipe(new CorsMiddleware([
 
 
 // 2. Auth Middleware
-// Only apply AuthMiddleware if the request is not for /api or /system-admin
+// Check if the request is for the system admin or not
 $uri = $request->getUri()->getPath();
-if (strpos($uri, '/api') === 0) {
-    // API  middleware
-    $middlewarePipe->pipe(new ApiMiddleware());
-} elseif (strpos($uri, '/system-admin') === 0) {
+if (strpos($uri, '/system-admin') === 0) {
     // System Admin middleware
     $middlewarePipe->pipe(new SystemAdminMiddleware());
 } else {

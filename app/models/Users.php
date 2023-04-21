@@ -15,6 +15,7 @@ use MysqliDb;
 class Users
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $systemConfig = null;
     protected $table = 'user_details';
@@ -225,7 +226,7 @@ class Users
         return $this->db->rawQueryOne($uQuery, array($userId));
     }
 
-    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime =null)
+    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
     {
 
         if (!empty($facilityMap)) {
@@ -236,7 +237,7 @@ class Users
         if ($status == 'active') {
             $this->db->where("status='active'");
         }
-        
+
         if ($updatedDateTime) {
             $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
@@ -255,7 +256,7 @@ class Users
         }
     }
 
-    public function getActiveUsers($facilityMap = null, $updatedDateTime =null)
+    public function getActiveUsers($facilityMap = null, $updatedDateTime = null)
     {
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
@@ -284,6 +285,18 @@ class Users
     }
 
 
+    public function validateAuthToken($token = null): bool
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $this->db->where('api_token', $token);
+        $this->db->where('status', 'active');
+        $result = $this->db->getOne($this->table, array('user_id'));
+
+        return empty($result) ? false : true;
+    }
 
     public function getAuthToken($token = null, $userId = null)
     {

@@ -7,6 +7,9 @@ use App\Models\Users;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
+
+$db = \MysqliDb::getInstance();
+
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
@@ -42,7 +45,7 @@ try {
         );
         http_response_code(401);
         echo json_encode($response);
-        exit(0);
+        // exit(0); 
     }
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = [];
@@ -370,7 +373,7 @@ try {
         if (!empty($data['tbSampleId'])) {
             $db = $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
-           // error_log($db->getLastError());
+            // error_log($db->getLastError());
         }
         /* echo "<pre>";
         print_r($id);
@@ -431,7 +434,7 @@ try {
 
     http_response_code(200);
     echo json_encode($payload);
-    exit(0);
+    // exit(0); 
 } catch (Exception $exc) {
 
     // http_response_code(500);
@@ -447,5 +450,5 @@ try {
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
+    // exit(0); 
 }

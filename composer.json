@@ -40,7 +40,10 @@
         "laminas/laminas-diactoros": "^2.17",
         "laminas/laminas-httphandlerrunner": "^2.2",
         "laminas/laminas-stratigility": "^3.8",
-        "tuupola/cors-middleware": "^1.4"
+        "tuupola/cors-middleware": "^1.4",
+        "slim/slim": "^4.11",
+        "slim/psr7": "^1.6",
+        "php-di/php-di": "^6.4"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

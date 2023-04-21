@@ -10,6 +10,8 @@ ini_set('memory_limit', -1);
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
+$db = \MysqliDb::getInstance();
+
 try {
 
     $general = new General();
@@ -30,7 +32,7 @@ try {
 
     $origJson = file_get_contents("php://input") ?: '[]';
     $input = json_decode($origJson, true);
-    
+
     if (empty($input) || empty($input['data'])) {
         throw new Exception("Invalid request");
     }
@@ -466,8 +468,8 @@ try {
         } elseif ($vldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = 4;
         }
-      //  echo " SAmple Id update :".$data['vlSampleId']; exit;
-      //  echo '<pre>'; print_r($vlFulldata); 
+        //  echo " SAmple Id update :".$data['vlSampleId']; exit;
+        //  echo '<pre>'; print_r($vlFulldata); 
         $id = 0;
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
@@ -545,4 +547,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

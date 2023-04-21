@@ -11,7 +11,8 @@ session_unset(); // no need of session in json response
 // external_sample_code field in db was unused so we decided to use it to store recency id
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
+
+$db = \MysqliDb::getInstance();
 
 $general = new General();
 $userDb = new Users();

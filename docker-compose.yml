@@ -1,17 +1,24 @@
 version: '3.9'
 
 services:
-  web:
-    build: .
-    depends_on:
-      - db
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
     ports:
-      - "${APACHE_HTTP_PORT}:80"
+      - "${WEBSERVER_HTTP_PORT}:80"
     volumes:
       - .:/var/www/html
-      - ./docker/php-apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
-      - ./docker/php-apache/conf.d/php.ini:/etc/php/7.4/apache2/conf.d/custom-php.ini
+    depends_on:
+      - php
     restart: always
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile-fpm
+    volumes:
+      - .:/var/www/html
+
   db:
     image: "mysql:8.0"
     command: --default-authentication-plugin=mysql_native_password

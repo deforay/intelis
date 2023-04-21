@@ -9,7 +9,8 @@ use App\Models\Users;
 session_unset(); // no need of session in json response
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
+
+$db = \MysqliDb::getInstance();
 
 $general = new General();
 $userDb = new Users();
@@ -20,7 +21,7 @@ $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 /* For API Tracking params */
-$requestUrl .= $_SERVER['HTTP_HOST'];
+$requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 
@@ -129,14 +130,14 @@ try {
     }
 
     /* To check the uniqueId filter */
-    $uniqueId = $input['uniqueId'];
+    $uniqueId = $input['uniqueId'] ?? [];
     if (!empty($uniqueId)) {
         $uniqueId = implode("','", $uniqueId);
         $where[] = " unique_id IN ('$uniqueId')";
     }
 
     /* To check the sample code filter */
-    $sampleCode = $input['sampleCode'];
+    $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
@@ -152,7 +153,7 @@ try {
         $where[] = " DATE(vl.request_created_datetime) >= '" . date('Y-m-d', strtotime($input['lastModifiedDateTime'])) . "'";
     }
 
-    $facilityId = $input['facility'];
+    $facilityId = $input['facility'] ?? [];
     if (!empty($facilityId)) {
         $facilityId = implode("','", $facilityId);
         $where[] = " vl.facility_id IN ('$facilityId') ";
@@ -174,7 +175,7 @@ try {
 
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " limit 100;";
-    // die($sQuery);
+    // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
     // No data found
@@ -216,4 +217,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

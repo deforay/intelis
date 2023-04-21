@@ -5,9 +5,11 @@ use App\Models\General;
 use App\Models\Users;
 use App\Utilities\ImageResize;
 
-header('Content-Type: application/json');
 
 session_unset(); // no need of session in json response
+
+$db = \MysqliDb::getInstance();
+
 $general = new General();
 $userDb = new Users();
 $app = new App();
@@ -35,13 +37,13 @@ try {
             );
             http_response_code(401);
             echo json_encode($response);
-            exit(0);
+            // exit(0); 
         }
     }
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
         //http_response_code(501);
-        //exit(0);
+        //// exit(0); 
     } else if (!empty($_REQUEST)) {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
@@ -176,4 +178,4 @@ try {
     error_log($exc->getTraceAsString());
 }
 $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $decode, $payload, 'json', null);
-exit(0);
+// exit(0); 

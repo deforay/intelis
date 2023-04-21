@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use MysqliDb;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -11,11 +10,11 @@ use Whoops\Util\Misc;
 class System
 {
 
-    public MysqliDb $db;
+    public $db;
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public function setDb($db)

@@ -10,7 +10,6 @@ namespace App\Models;
 
 use App\Utilities\DateUtils;
 use Exception;
-use MysqliDb;
 use Ramsey\Uuid\Uuid;
 use TCPDFBarcode;
 use ZipArchive;
@@ -22,7 +21,7 @@ class General
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public static function generateRandomString($length = 32)
