@@ -6,7 +6,6 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new \App\Services\CommonService();
 
 use App\Services\Covid19Service;
 use App\Services\CommonService;
@@ -18,6 +17,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
+
+$general = new CommonService();
 $covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
