@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -10,9 +10,9 @@ $title = _("TB | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 $sarr = $general->getSystemConfig();
 

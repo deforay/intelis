@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
@@ -20,12 +20,12 @@ if (empty($labId)) {
     exit(0);
 }
 
-$general = new General($db);
+$general = new CommonService($db);
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
 
-$facilityDb = new Facilities();
+$facilityDb = new FacilitiesService();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -56,7 +56,7 @@ if ($db->count > 0) {
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
     $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-    $hepatitisObj = new Hepatitis();
+    $hepatitisObj = new HepatitisService();
     $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($sampleIds);
     $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
 

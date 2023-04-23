@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\ImageResize;
 
 
@@ -10,9 +10,9 @@ session_unset(); // no need of session in json response
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
-$userDb = new Users();
-$app = new App();
+$general = new CommonService();
+$userDb = new UserService();
+$app = new ApiService();
 $jsonResponse = file_get_contents('php://input');
 
 // error_log("------ USER API START-----");

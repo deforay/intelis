@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 
@@ -37,8 +37,8 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 <?php
 $labFieldDisabled = '';
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
 $healthFacilities = $facilitiesDb->getHealthFacilities('tb');
 $testingLabs = $facilitiesDb->getTestingLabs('tb');
 

@@ -1,10 +1,10 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 

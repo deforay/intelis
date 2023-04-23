@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\App;
-use App\Models\Eid;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\EidService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
@@ -13,10 +13,10 @@ $db = \MysqliDb::getInstance();
 
 try {
 
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $eidModel = new Eid();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $eidModel = new EidService();
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();

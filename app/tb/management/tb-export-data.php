@@ -1,18 +1,18 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Tb;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\TbService;
 
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new General();
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -38,7 +38,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$tbModel = new Tb();
+$tbModel = new TbService();
 $tbResults = $tbModel->getTbResults();
 if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';

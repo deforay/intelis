@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\System;
+use App\Services\SystemService;
 use Laminas\Config\Factory;
 
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
+    session_name('appSession');
     session_start();
 }
 
@@ -25,6 +26,6 @@ $db = new MysqliDb(SYSTEM_CONFIG['database']);
 
 $debugMode = SYSTEM_CONFIG['system']['debug_mode'] ?? false;
 
-(new System())
+(new SystemService())
     ->bootstrap()
     ->debug($debugMode);

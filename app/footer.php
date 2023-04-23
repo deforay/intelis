@@ -1,10 +1,10 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 
 $db = \MysqliDb::getInstance();
-$general = new General($db);
+$general = new CommonService($db);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 

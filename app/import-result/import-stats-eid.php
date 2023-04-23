@@ -2,9 +2,9 @@
 
 // imported in importedStatistics.php
 
-use App\Models\Eid;
+use App\Services\EidService;
 
-$eidObj = new Eid();
+$eidObj = new EidService();
 $eidResults = $eidObj->getEidResults();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 

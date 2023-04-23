@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,10 +9,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
-$general = new General();
+$general = new CommonService();
 $barCodeEnabled = $general->getGlobalConfig('bar_code_printing');
 
 

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$covid19Obj = new Covid19();
+$general = new CommonService();
+$covid19Obj = new Covid19Service();
 
 
 $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_covid19 where covid19_id IN (" . $_POST['sampleId'] . ") ORDER BY covid19_id";

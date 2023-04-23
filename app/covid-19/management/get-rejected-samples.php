@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,9 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new General();
+$general = new CommonService();
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');

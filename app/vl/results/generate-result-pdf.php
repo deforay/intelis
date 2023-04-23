@@ -5,15 +5,15 @@
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
-$general = new General();
-$users = new Users();
+$general = new CommonService();
+$users = new UserService();
 
 $arr = $general->getGlobalConfig();
 

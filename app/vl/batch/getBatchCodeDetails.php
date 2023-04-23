@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-$general = new General();
+$general = new CommonService();
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {

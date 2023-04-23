@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTimeImmutable;
@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
  * @author Amit
  */
 
-class Eid
+class EidService
 {
 
     protected $db = null;
@@ -33,7 +33,7 @@ class Eid
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -79,7 +79,7 @@ class Eid
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocations($this->db);
+                    $geoLocations = new GeoLocationsService($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -169,9 +169,9 @@ class Eid
 
     public function generateExcelExport($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
-        $eidModel = new Eid();
+        $eidModel = new EidService();
         $eidResults = $eidModel->getEidResults();
 
         //$sarr = $general->getSystemConfig();
@@ -362,7 +362,7 @@ class Eid
 
     public function insertSampleCode($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

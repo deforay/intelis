@@ -1,11 +1,11 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 
 
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -93,7 +93,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Covid19();
+    $vlObj = new Covid19Service();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

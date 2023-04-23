@@ -3,9 +3,9 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new General();
 
-use App\Models\General;
+
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -13,6 +13,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+
+$general = new CommonService();
 
 $excel = new Spreadsheet();
 $output = [];
@@ -28,11 +30,11 @@ if (isset($_SESSION['vlTatData']['sWhere']) && !empty($_SESSION['vlTatData']['sW
 }
 
 if (isset($_SESSION['vlTatData']['sOrder']) && !empty($_SESSION['vlTatData']['sOrder'])) {
-	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'] ;
+	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'];
 }
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array("Sample Id", "Remote Sample Code","External Sample Code","Sample Collection Date", "Sample Dispatch Date","Sample Received Date in Lab", "Sample Test Date", "Sample Print Date");
+$headings = array("Sample Id", "Remote Sample Code", "External Sample Code", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date");
 
 $colNo = 1;
 
@@ -71,10 +73,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+	->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 foreach ($headings as $field => $value) {
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
 	$colNo++;
 }
 $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
@@ -105,7 +107,7 @@ foreach ($rResult as $aRow) {
 	} else {
 		$printDate = '';
 	}
-	
+
 
 	$row[] = $aRow['sample_code'];
 	$row[] = $aRow['remote_sample_code'];

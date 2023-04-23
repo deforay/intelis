@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";
 $tableName2    = "move_samples_map";

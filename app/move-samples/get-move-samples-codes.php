@@ -1,10 +1,10 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 
 $lName = $_POST['lName'];
 $testType = $_POST['testType'];

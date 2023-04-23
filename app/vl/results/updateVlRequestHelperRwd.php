@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,8 +11,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
-$vlModel = new Vl();
+$general = new CommonService();
+$vlModel = new VlService();
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 

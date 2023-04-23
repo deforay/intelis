@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 
 $title = "Covid-19 | Add Batch";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

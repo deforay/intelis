@@ -2,13 +2,13 @@
 
 // imported in hepatitis-edit-request.php based on country in global config
 
-use App\Models\Facilities;
-use App\Models\Hepatitis;
+use App\Services\FacilitiesService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
@@ -53,7 +53,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Hepatitis();
+    $vlObj = new HepatitisService();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generatehepatitisSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');

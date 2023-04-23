@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -243,7 +243,7 @@ try {
           $vldata['result_status'] = (isset($_POST['status']) && $_POST['status'] != '') ? $_POST['status'] :  null;
      }
 
-     $vlDb = new Vl();
+     $vlDb = new VlService();
      $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
      if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
           $vldata['result_status'] = 5;

@@ -1,19 +1,19 @@
 <?php
+
+use App\Services\CommonService;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "r_funding_sources";
 $primaryKey = "funding_source_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+
+
+$general = new CommonService();
+$sarr = $general->getSystemConfig();
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
@@ -137,16 +137,15 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['funding_source_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['funding_source_status'] . '\')">
-               <option value="active" ' . ($aRow['funding_source_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
-               <option value="inactive" ' . ($aRow['funding_source_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['funding_source_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['funding_source_status'] . '\')">
+               <option value="active" ' . ($aRow['funding_source_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['funding_source_status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['funding_source_name']);
-    if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+    if (isset($_SESSION['privileges']) && in_array("province-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
-    }
-    else {
+    } else {
         $row[] = ($aRow['funding_source_status']);
     }
     $output['aaData'][] = $row;

@@ -2,13 +2,16 @@
 
 /** @noinspection ALL */
 
+use App\Services\CommonService;
+use App\Services\FacilitiesService;
+
 $title = _("VL | Add New Batch");
 
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new \App\Models\General();
-$facilitiesDb = new \App\Models\Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

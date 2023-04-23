@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 $tableName = "form_vl";
 try {
 
@@ -40,7 +40,7 @@ try {
 
 
 
-        $vlDb = new Vl();
+        $vlDb = new VlService();
         $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
             $status['result_status'] = 5;

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 if (!class_exists('DRC_PDF')) {
@@ -78,7 +78,7 @@ if (!class_exists('DRC_PDF')) {
         }
     }
 }
-$users = new Users();
+$users = new UserService();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -332,7 +332,7 @@ $html .= '</tr>';
 
 
 if (empty($result['lab_manager'])) {
-    $facilityDb = new Facilities();
+    $facilityDb = new FacilitiesService();
     $labDetails = $facilityDb->getFacilityById($result['lab_id']);
     if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
         $result['lab_manager'] = $labDetails['contact_person'];

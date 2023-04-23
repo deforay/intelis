@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new General();
+$general = new CommonService();
 
 
 

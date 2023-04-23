@@ -2,7 +2,7 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
@@ -17,7 +17,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 

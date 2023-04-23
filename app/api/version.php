@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 
 session_unset(); // no need of session in json response
 //header('Content-Type: application/json; charset=utf-8');

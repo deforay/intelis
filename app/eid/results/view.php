@@ -1,9 +1,9 @@
 <?php
-use App\Models\General;
-$general = new General();
+use App\Services\CommonService;
+$general = new CommonService();
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-$decryptedString = General::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+$decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
 //$data = explode('&&&', urldecode($decryption));
 
 $invalidRequest = _("INVALID REQUEST");

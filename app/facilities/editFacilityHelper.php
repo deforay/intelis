@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 
@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new General();
-$geolocation = new GeoLocations();
+$general = new CommonService();
+$geolocation = new GeoLocationsService();
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);

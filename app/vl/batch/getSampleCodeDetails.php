@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 $start_date = '';
 $end_date = '';
 $urgent = $_POST['urgent'] ?? null;

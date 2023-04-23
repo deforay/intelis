@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new General();
-$eidModel = new Eid();
+$general = new CommonService();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 $sarr = $general->getSystemConfig();

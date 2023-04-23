@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
@@ -14,10 +14,10 @@ $db = \MysqliDb::getInstance();
 
 try {
 
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $vlModel = new Vl();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $vlModel = new VlService();
 
     $transactionId = $general->generateUUID();
 

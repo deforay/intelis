@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 
-$geoDb = new GeoLocations($db);
-$generalDb = new General($db);
+$geoDb = new GeoLocationsService($db);
+$generalDb = new CommonService($db);
 $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {
     $field = "patient_district";

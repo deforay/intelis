@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Vl;
+use App\Services\VlService;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-$vlDb = new Vl();
+$vlDb = new VlService();
 
 $db = \MysqliDb::getInstance();
 

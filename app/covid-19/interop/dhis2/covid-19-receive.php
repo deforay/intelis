@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(__DIR__ . "/../../../../../bootstrap.php");
 
-$general = new General();
+$general = new CommonService();
 $arr = $general->getGlobalConfig();
 
 

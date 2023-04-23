@@ -6,18 +6,21 @@
  * @author Amit
  */
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use TCPDFBarcode;
 use ZipArchive;
+use Spatie\Once\Cache;
 
-class General
+
+class CommonService
 {
 
     protected $db = null;
+
 
     public function __construct($db = null)
     {
@@ -99,23 +102,25 @@ class General
             return false;
         }
 
-        if (!empty($name)) {
-            $this->db->where('name', $name);
-        }
+        return once(function () use ($name) {
+            if (!empty($name)) {
+                $this->db->where('name', $name);
+            }
 
-        $systemConfigResult = $this->db->get('system_config');
+            $systemConfigResult = $this->db->get('system_config');
 
-        $sarr = [];
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-            $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-        }
+            $sarr = [];
+            // now we create an associative array so that we can easily create view variables
+            for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
+                $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+            }
 
-        if (empty($name)) {
-            return $sarr;
-        } else {
-            return $sarr[$name] ?? null;
-        }
+            if (empty($name)) {
+                return $sarr;
+            } else {
+                return $sarr[$name] ?? null;
+            }
+        });
     }
 
     // get data from the global_config table from database
@@ -125,20 +130,22 @@ class General
         if ($this->db == null) {
             return false;
         }
+        return once(function () use ($name) {
 
-        if (!empty($name)) {
-            $this->db->where('name', $name);
-            return $this->db->getValue("global_config", "value");
-        } else {
-            $garr = [];
-            $globalConfigResult = $this->db->get('global_config');
-            // now we create an associative array so that we can easily create view variables
-            for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
-                $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
+            if (!empty($name)) {
+                $this->db->where('name', $name);
+                return $this->db->getValue("global_config", "value");
+            } else {
+                $garr = [];
+                $globalConfigResult = $this->db->get('global_config');
+                // now we create an associative array so that we can easily create view variables
+                for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
+                    $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
+                }
+
+                return $garr;
             }
-
-            return $garr;
-        }
+        });
     }
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
@@ -263,23 +270,23 @@ class General
     }
 
 
-    public function getFacilitiesByUser($userId = null)
-    {
+    // public function getFacilitiesByUser($userId = null)
+    // {
 
-        $fQuery = "SELECT * FROM facility_details where status='active'";
+    //     $fQuery = "SELECT * FROM facility_details where status='active'";
 
-        $facilityWhereCondition = '';
+    //     $facilityWhereCondition = '';
 
-        if (!empty($userId)) {
-            $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
-            $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
-            if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-                $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-            }
-        }
+    //     if (!empty($userId)) {
+    //         $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
+    //         $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
+    //         if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
+    //             $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+    //         }
+    //     }
 
-        return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
-    }
+    //     return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
+    // }
 
     public function startsWith($string, $startString)
     {
@@ -289,27 +296,28 @@ class General
 
     public function generateSelectOptions($optionList, $selectedOptions = array(), $emptySelectText = false)
     {
-
         if (empty($optionList)) {
             return '';
         }
-        $response = '';
-        if ($emptySelectText !== false) {
-            $response .= "<option value=''>$emptySelectText</option>";
-        }
-
-        foreach ($optionList as $optId => $optName) {
-            $selectedText = '';
-            if (!empty($selectedOptions)) {
-                if (is_array($selectedOptions) && in_array($optId, $selectedOptions)) {
-                    $selectedText = "selected='selected'";
-                } else if ($optId == $selectedOptions) {
-                    $selectedText = "selected='selected'";
-                }
+        return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+            $response = '';
+            if ($emptySelectText !== false) {
+                $response .= "<option value=''>$emptySelectText</option>";
             }
-            $response .= "<option value='" . addslashes($optId) . "' $selectedText>" . addslashes($optName) . "</option>";
-        }
-        return $response;
+
+            foreach ($optionList as $optId => $optName) {
+                $selectedText = '';
+                if (!empty($selectedOptions)) {
+                    if (is_array($selectedOptions) && in_array($optId, $selectedOptions)) {
+                        $selectedText = "selected='selected'";
+                    } elseif ($optId == $selectedOptions) {
+                        $selectedText = "selected='selected'";
+                    }
+                }
+                $response .= "<option value='" . addslashes($optId) . "' $selectedText>" . addslashes($optName) . "</option>";
+            }
+            return $response;
+        });
     }
 
     public function getLastModifiedDateTime($tableName, $modifiedDateTimeColName = 'updated_datetime')
@@ -577,7 +585,6 @@ class General
 
     public function getBrowser($userAgent = null)
     {
-
         $browser        =   "Unknown Browser - " . $userAgent;
         $browserArray  =   array(
             '/msie/i'       =>  'Internet Explorer',
@@ -635,7 +642,7 @@ class General
         return $code;
     }
 
-    function excelColumnRange($lower, $upper)
+    public function excelColumnRange($lower, $upper)
     {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
@@ -669,7 +676,7 @@ class General
     //dump the contents of a variable to the error log in a readable format
     public function var_error_log($object = null): void
     {
-        
+
         var_dump($object);
         error_log(ob_get_clean());
     }

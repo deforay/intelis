@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTime;
@@ -12,7 +12,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Users
+class UserService
 {
 
     /** @var MysqliDb $db */
@@ -267,7 +267,7 @@ class Users
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new General();
+            $general = new CommonService();
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -334,7 +334,7 @@ class Users
                 $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
-                $general = new General($this->db);
+                $general = new CommonService($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
                 $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
 
@@ -392,7 +392,7 @@ class Users
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;

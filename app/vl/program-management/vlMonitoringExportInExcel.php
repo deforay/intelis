@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,7 +14,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
+$general = new CommonService();
 
 if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringResultQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['vlMonitoringResultQuery']);

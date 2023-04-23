@@ -1,20 +1,20 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$geolocation = new GeoLocations();
+$general = new CommonService();
+$geolocation = new GeoLocationsService();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
-$usersModel = new Users();
+$usersModel = new UserService();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = [];

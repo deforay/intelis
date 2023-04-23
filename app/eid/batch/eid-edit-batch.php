@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 
 
@@ -12,8 +12,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 //global config
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');
 //$formId = $general->getGlobalConfig('vl_form');
 

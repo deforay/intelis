@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -16,7 +16,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";
 $configResult = $db->query($formConfigQuery);
 $arr = [];

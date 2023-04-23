@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Facilities;
+use App\Services\FacilitiesService;
 
 $title = _("Hepatitis | Sample Rejection Report");
  
@@ -9,7 +9,7 @@ require_once(APPLICATION_PATH . '/header.php');
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');

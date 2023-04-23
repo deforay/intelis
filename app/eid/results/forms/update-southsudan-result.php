@@ -2,11 +2,11 @@
 
 // imported in /eid/results/eid-update-result.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
-$eidObj = new Eid();
+$eidObj = new EidService();
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);

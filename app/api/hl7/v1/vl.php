@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Vl;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
@@ -9,7 +9,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$vlModel = new Vl();
+$vlModel = new VlService();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 

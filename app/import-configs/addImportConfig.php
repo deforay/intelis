@@ -1,17 +1,17 @@
 <?php
 
-use App\Models\General;
-use App\Models\System;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$userDb = new Users();
-$general = new General();
+$userDb = new UserService();
+$general = new CommonService();
 
-$activeTestModules = System::getActiveTestModules();
+$activeTestModules = SystemService::getActiveTestModules();
 
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
 ?>

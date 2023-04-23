@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 ini_set('memory_limit', -1);
-$general = new General();
+$general = new CommonService();
 $dateTimeUtil = new DateUtils();
 
 $excel = new Spreadsheet();
@@ -121,6 +121,6 @@ foreach ($output as $rowNo => $rowData) {
 }
 // $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . General::generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . CommonService::generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

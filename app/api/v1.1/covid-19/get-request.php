@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\App;
-use App\Models\Covid19;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
@@ -12,11 +12,11 @@ ini_set('memory_limit', -1);
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$c19Db = new Covid19();
-$app = new App();
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$c19Db = new Covid19Service();
+$app = new ApiService();
 
 $transactionId = $general->generateUUID();
 

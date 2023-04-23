@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\Eid;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Hepatitis;
-use App\Models\Tb;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\Covid19Service;
+use App\Services\EidService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
+use App\Services\TbService;
+use App\Services\UserService;
+use App\Services\VlService;
 
 
 
@@ -15,13 +15,13 @@ $title = "Add New Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesDb->getTestingLabs($module);
 
-$usersDb = new Users();
+$usersDb = new UserService();
 $usersList = [];
 $users = $usersDb->getActiveUsers();
 foreach ($users as $u) {
@@ -30,21 +30,21 @@ foreach ($users as $u) {
 $facilities = $facilitiesDb->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
-	$vlDb = new Vl($db);
+	$vlDb = new VlService($db);
 	$sampleTypes = $vlDb->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$eidDb = new Eid($db);
+	$eidDb = new EidService($db);
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
-	$covid19Db = new Covid19($db);
+	$covid19Db = new Covid19Service($db);
 	$sampleTypes = $covid19Db->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
-	$hepDb = new Hepatitis($db);
+	$hepDb = new HepatitisService($db);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
-	$tbDb = new Tb($db);
+	$tbDb = new TbService($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -10,8 +10,8 @@ $title = _("Covid-19 | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {

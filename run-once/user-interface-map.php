@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\Users;
+use App\Services\UserService;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
 $db = MysqliDb::getInstance();
 
-$usersDb = new Users();
+$usersDb = new UserService();
 
 
 $sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_name as interface_user_name    

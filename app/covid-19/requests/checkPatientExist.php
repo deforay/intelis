@@ -1,9 +1,9 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 
-$general = new General();
+$general = new CommonService();
 $artNo = $_POST['artPatientNo'];
 //global config
 $cQuery = "SELECT * FROM global_config";

@@ -1,8 +1,8 @@
 <?php
 
 
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $formConfigQuery = "SELECT * FROM global_config";
@@ -21,8 +21,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new General();
-$covid19Obj = new Covid19();
+$general = new CommonService();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";

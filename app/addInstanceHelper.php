@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\ImageResize;
 
-$general = new General();
+$general = new CommonService();
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
 function getMacLinux()
@@ -73,7 +73,7 @@ try {
           mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-        $string = General::generateRandomString(6) . ".";
+        $string = CommonService::generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
           $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);

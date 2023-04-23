@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Eid;
-use App\Models\Facilities;
-use App\Models\Users;
+use App\Services\EidService;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 
@@ -13,8 +13,8 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
 
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
 $healthFacilities = $facilitiesDb->getHealthFacilities('eid');
 $testingLabs = $facilitiesDb->getTestingLabs('eid');
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
@@ -54,7 +54,7 @@ $id = base64_decode($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 

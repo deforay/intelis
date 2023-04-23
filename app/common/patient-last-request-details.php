@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\App;
+use App\Services\ApiService;
 
-$app = new App();
+$app = new ApiService();
 $test = "";
 if(isset($_POST['testType']) && $_POST['testType']!='')
 {

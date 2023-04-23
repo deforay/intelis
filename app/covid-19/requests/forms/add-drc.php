@@ -1,9 +1,9 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
-use App\Models\Covid19;
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 
 
 
@@ -25,8 +25,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$general = new General();
-$covid19Obj = new Covid19();
+$general = new CommonService();
+$covid19Obj = new Covid19Service();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -62,7 +62,7 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
-$geolocation = new GeoLocations();
+$geolocation = new GeoLocationsService();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";

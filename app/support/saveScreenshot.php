@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $tableName = "support";
 
-$general = new General();
+$general = new CommonService();
 
 try {
 	// File upload folder 

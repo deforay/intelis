@@ -1,10 +1,10 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';

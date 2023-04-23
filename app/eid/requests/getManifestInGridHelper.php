@@ -1,8 +1,8 @@
 <?php
 
 
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $formConfigQuery = "SELECT * FROM global_config";
@@ -21,8 +21,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new General();
-$eidModel = new Eid();
+$general = new CommonService();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 $tableName = "form_eid";
 $primaryKey = "eid_id";

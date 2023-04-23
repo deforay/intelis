@@ -4,10 +4,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Tb;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\TbService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
@@ -16,11 +16,11 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
-$general = new General();
-$users = new Users();
-$tbObj = new Tb();
-$geoObj = new GeoLocations();
-$tbModel = new Tb();
+$general = new CommonService();
+$users = new UserService();
+$tbObj = new TbService();
+$geoObj = new GeoLocationsService();
+$tbModel = new TbService();
 //$tbResults = $tbModel->getTbResults();
 
 $arr = $general->getGlobalConfig();

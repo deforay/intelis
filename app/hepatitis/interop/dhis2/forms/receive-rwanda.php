@@ -4,8 +4,8 @@
 
 
 use App\Interop\Dhis2;
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -13,12 +13,12 @@ use JsonMachine\JsonDecoder\ExtJsonDecoder;
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new General();
+$general = new CommonService();
 
 
 $transactionId = $general->generateUUID();
 
-$hepatitisModel = new Hepatitis();
+$hepatitisModel = new HepatitisService();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 

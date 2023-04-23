@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use MysqliDb;
 
-class Facilities
+class FacilitiesService
 {
 
     protected $db = null;
@@ -115,7 +115,7 @@ class Facilities
         } */
 
         $this->db->where("user_id", $userId);
-        $response = $this->db->getValue("user_facility_map", "facility_id",  null);
+        $response = $this->db->getValue("user_facility_map", "facility_id", null);
         if ($this->db->count > 0) {
             return implode(",", $response);
         } else {

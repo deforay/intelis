@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 
 $global = $general->getGlobalConfig();
 

@@ -3,8 +3,8 @@
 // this file is included in covid-19/results/generate-result-pdf.php
 
 
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 class SouthSudan_PDF extends MYPDF
@@ -83,14 +83,14 @@ class SouthSudan_PDF extends MYPDF
 
 
 $dateUtils = new DateUtils();
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
 if (sizeof($requestResult) > 0) {
-    $_SESSION['rVal'] = General::generateRandomString(6);
+    $_SESSION['rVal'] = CommonService::generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);

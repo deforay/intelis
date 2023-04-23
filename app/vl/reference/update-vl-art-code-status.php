@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "r_vl_art_regimen";
 try {
     $id = explode(",", $_POST['id']);

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
@@ -10,7 +10,7 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();

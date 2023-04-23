@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Facilities;
+use App\Services\FacilitiesService;
 
 $title = _("EID | Sample Rejection Report");
  
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');

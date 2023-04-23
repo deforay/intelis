@@ -1,16 +1,16 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$geolocation = new GeoLocations();
+$general = new CommonService();
+$geolocation = new GeoLocationsService();
 
-$usersModel = new Users();
+$usersModel = new UserService();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = [];

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,12 +10,12 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 
 $sarr = $general->getSystemConfig();

@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Models\Vl;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 
@@ -130,7 +130,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-	$vlObj = new Vl();
+	$vlObj = new VlService();
 	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
 	$sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
 	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');

@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
@@ -15,8 +15,8 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_hepatitis";
-$general = new General();
-$users = new Users();
+$general = new CommonService();
+$users = new UserService();
 
 $arr = $general->getGlobalConfig();
 

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 // this file is included in covid-19/results/generate-result-pdf.php
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $resultFilename = '';
@@ -430,7 +430,7 @@ if (sizeof($requestResult) > 0) {
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
                 if(!empty($keyFromGlobalConfig)){
-                     $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
                      $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
                      $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, $style, 'N');
                 }

@@ -3,8 +3,8 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 
 use App\Interop\Dhis2;
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -49,8 +49,8 @@ $eventsDataElementMapping = [
 ];
 
 
-$general = new General();
-$covid19Model = new Covid19();
+$general = new CommonService();
+$covid19Model = new Covid19Service();
 
 
 $vlsmSystemConfig = $general->getSystemConfig();

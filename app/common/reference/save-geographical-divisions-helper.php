@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -12,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $db = MysqliDb::getInstance();
 
-$general = new General();
+$general = new CommonService();
 $provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {

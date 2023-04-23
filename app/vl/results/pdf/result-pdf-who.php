@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $resultFilename = '';
 if (sizeof($requestResult) > 0) {
-     $_SESSION['rVal'] = General::generateRandomString(6);
+     $_SESSION['rVal'] = CommonService::generateRandomString(6);
      if (
           !file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) &&
           !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use MysqliDb;
 
@@ -10,7 +10,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Instruments
+class InstrumentsService
 {
 
     protected $db = null;

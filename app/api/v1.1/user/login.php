@@ -1,16 +1,16 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
-$users = new Users();
-$app = new App();
+$general = new CommonService();
+$users = new UserService();
+$app = new ApiService();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $transactionId = $general->generateUUID();

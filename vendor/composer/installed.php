@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'deforay/vlsm',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-default',
+        'version' => 'dev-default',
         'reference' => NULL,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -35,8 +35,8 @@
             'dev_requirement' => false,
         ),
         'deforay/vlsm' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+            'pretty_version' => 'dev-default',
+            'version' => 'dev-default',
             'reference' => NULL,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
@@ -549,6 +549,15 @@
             'reference' => 'b0f4ca393ea037be9ac7292ba7d0a34d18bac0c7',
             'type' => 'library',
             'install_path' => __DIR__ . '/../slim/slim',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'spatie/once' => array(
+            'pretty_version' => '2.2.1',
+            'version' => '2.2.1.0',
+            'reference' => 'e6c13ae474a7d4b30975ef6a502a593874ac12d2',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spatie/once',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

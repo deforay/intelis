@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Tb;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\TbService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
@@ -13,10 +13,10 @@ $db = \MysqliDb::getInstance();
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $tbModel = new Tb();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $tbModel = new TbService();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();

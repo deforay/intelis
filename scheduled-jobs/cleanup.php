@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
@@ -9,7 +9,7 @@ $cleanup = array(
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 );
 
-$general = new General();
+$general = new CommonService();
 
 $durationToDelete = 180 * 86400; // 180 days
 

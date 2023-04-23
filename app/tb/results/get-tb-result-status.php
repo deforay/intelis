@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Tb;
+use App\Services\CommonService;
+use App\Services\TbService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -27,8 +27,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-$general = new General();
-$tbModel = new Tb();
+$general = new CommonService();
+$tbModel = new TbService();
 $tbResults = $tbModel->getTbResults();
 
 

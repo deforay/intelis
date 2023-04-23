@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
@@ -14,8 +14,8 @@ ini_set('memory_limit', -1);
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
-$userDb = new Users();
+$general = new CommonService();
+$userDb = new UserService();
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];

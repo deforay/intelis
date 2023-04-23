@@ -1,7 +1,7 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 
 
 
@@ -21,7 +21,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 $labFieldDisabled = '';

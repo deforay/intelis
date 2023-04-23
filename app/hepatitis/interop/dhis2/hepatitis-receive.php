@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(__DIR__ . "/../../../../bootstrap.php");
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new General();
+$general = new CommonService();
 $arr = $general->getGlobalConfig();
 
 // let us do init first

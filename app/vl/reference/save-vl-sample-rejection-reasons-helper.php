@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 // echo "<pre>";print_r($_POST);die;
 
-$general = new General();
+$general = new CommonService();
 $tableName = "r_vl_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 

@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
+$general = new CommonService();
 
 $primaryKey = array(
     "vl" => "vl_sample_id",

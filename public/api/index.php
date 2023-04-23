@@ -13,7 +13,7 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use App\Middleware\ApiAuthMiddleware;
 use App\Middleware\LegacyFallbackMiddleware;
 use Psr\Http\Server\RequestHandlerInterface;
-use App\Models\Users;
+use App\Services\UserService;
 
 $container = new Container();
 AppFactory::setContainer($container);
@@ -33,7 +33,7 @@ $app->add(new CorsMiddleware([
 ]));
 
 // 2. API Auth Middleware that checks for Bearer token
-$userModel = new Users();
+$userModel = new UserService();
 $app->add(new ApiAuthMiddleware($userModel));
 
 

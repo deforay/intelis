@@ -4,9 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-use App\Models\Covid19;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
@@ -15,9 +15,9 @@ ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new General();
-$users = new Users();
-$covid19Obj = new Covid19();
+$general = new CommonService();
+$users = new UserService();
+$covid19Obj = new Covid19Service();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -340,7 +340,7 @@ if (sizeof($requestResult) > 0) {
 		$expStr = explode(" ", $printedTime);
 		$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Obj = new Covid19();
+		$covid19Obj = new Covid19Service();
 		$covid19Results = $covid19Obj->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
@@ -389,7 +389,7 @@ if (sizeof($requestResult) > 0) {
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);
 		$resultPdf->concat();
-		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . General::generateRandomString(6) . '.pdf';
+		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . CommonService::generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 		$general->removeDirectory($pathFront);
 		unset($_SESSION['rVal']);

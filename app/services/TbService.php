@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Tb
+class TbService
 {
 
     protected $db = null;
@@ -28,7 +28,7 @@ class Tb
     public function generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -76,7 +76,7 @@ class Tb
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocations($this->db);
+                    $geoLocations = new GeoLocationsService($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -259,7 +259,7 @@ class Tb
 
     public function insertSampleCode($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

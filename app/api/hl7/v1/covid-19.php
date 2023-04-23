@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
@@ -9,7 +9,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$covid19Model = new Covid19();
+$covid19Model = new Covid19Service();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {

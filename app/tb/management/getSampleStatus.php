@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use App\Utilities\MiscUtils;
 
@@ -8,7 +8,7 @@ use App\Utilities\MiscUtils;
 
 
 
-$general = new General();
+$general = new CommonService();
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);

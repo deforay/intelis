@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -24,7 +24,7 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new General();
+$general = new CommonService();
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -238,7 +238,7 @@ $output = array(
      "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
-$hepatitisDb = new Hepatitis();
+$hepatitisDb = new HepatitisService();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = [];

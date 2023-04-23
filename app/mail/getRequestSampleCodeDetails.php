@@ -1,10 +1,10 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 $configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configResult = $db->rawQuery($configQuery);
 $formId = 0;

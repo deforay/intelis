@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
-$hepatitisDb = new Hepatitis();
+$hepatitisDb = new HepatitisService();
 //$hepatitisResults = $hepatitisDb->getHepatitisResults();
 
 $resultFilename = '';
@@ -449,7 +449,7 @@ if (sizeof($requestResult) > 0) {
             if (isset($arr['hepatitis_report_qr_code']) && $arr['hepatitis_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
                 if (!empty($keyFromGlobalConfig)) {
-                    $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                    $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
                     $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, $style, 'N');
                 }

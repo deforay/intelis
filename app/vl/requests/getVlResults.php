@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Vl;
+use App\Services\VlService;
 
 
 
 
-$vLModel = new Vl();
+$vLModel = new VlService();
 
 
 if (isset($_POST['instrumentId'])) {

@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\App;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
@@ -12,10 +12,10 @@ header('Content-Type: application/json');
 
 $db = \MysqliDb::getInstance();
 
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$app = new App();
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$app = new ApiService();
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);

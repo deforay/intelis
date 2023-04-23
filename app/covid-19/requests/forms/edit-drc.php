@@ -2,9 +2,9 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
-use App\Models\Covid19;
-use App\Models\GeoLocations;
-use App\Models\Patients;
+use App\Services\Covid19Service;
+use App\Services\GeoLocationsService;
+use App\Services\PatientsService;
 use App\Utilities\DateUtils;
 
 
@@ -19,8 +19,8 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new Covid19();
-$patientsModel = new Patients();
+$covid19Obj = new Covid19Service();
+$patientsModel = new PatientsService();
 
 
 $covid19Results = $covid19Obj->getCovid19Results();
@@ -85,7 +85,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Covid19();
+    $vlObj = new Covid19Service();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
@@ -93,7 +93,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';
 }
-$geolocation = new GeoLocations();
+$geolocation = new GeoLocationsService();
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 
 // Province

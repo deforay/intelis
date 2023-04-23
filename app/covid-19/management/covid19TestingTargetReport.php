@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 $title = _("Covid-19 Quarterly Monitoring Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -26,7 +26,7 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 
 // $healthFacilites = $facilitiesDb->getHealthFacilities('vl');

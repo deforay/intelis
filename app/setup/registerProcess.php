@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -14,11 +14,11 @@ $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
-$general = new General();
+$general = new CommonService();
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$user = new Users();
+$user = new UserService();
 
 
 try {

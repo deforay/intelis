@@ -1,12 +1,12 @@
 <?php
 
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 

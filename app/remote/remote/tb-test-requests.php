@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\App;
-use App\Models\Facilities;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
 use App\Utilities\DateUtils;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
@@ -20,11 +20,11 @@ if (empty($labId)) {
 }
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new App();
+$app = new ApiService();
 
 $transactionId = $general->generateUUID();
 
-$facilityDb = new Facilities();
+$facilityDb = new FacilitiesService();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {

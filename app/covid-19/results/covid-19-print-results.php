@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 
 $title = _("Print Covid-19 Results");
 
@@ -16,9 +16,9 @@ try {
 } catch (Exception $e) {
 }
 
-$general = new General();
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');
 $testingLabs = $facilitiesDb->getTestingLabs('covid19');
 

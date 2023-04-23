@@ -52,6 +52,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        'ed33d19cba977f2a7e321f120d94a872' => __DIR__ . '/..' . '/spatie/once/src/functions.php',
         '71ecd0286a4e74fd8732297fb587023c' => __DIR__ . '/..' . '/thingengineer/mysqli-database-class/MysqliDb.php',
         'd383f1ec7b1e54a09cb53eb6fcf751e0' => __DIR__ . '/..' . '/thingengineer/mysqli-database-class/dbObject.php',
     );
@@ -103,6 +104,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
             'Symfony\\Component\\DependencyInjection\\' => 38,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
+            'Spatie\\Once\\' => 12,
             'Slim\\Psr7\\' => 10,
             'Slim\\' => 5,
         ),
@@ -193,7 +195,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'A' => 
         array (
             'App\\Utilities\\' => 14,
-            'App\\Models\\' => 11,
+            'App\\Services\\' => 13,
             'App\\Middleware\\' => 15,
             'App\\Interop\\' => 12,
             'App\\Helpers\\' => 12,
@@ -319,6 +321,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'Symfony\\Component\\Config\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
+        ),
+        'Spatie\\Once\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/once/src',
         ),
         'Slim\\Psr7\\' => 
         array (
@@ -502,9 +508,9 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             0 => __DIR__ . '/../..' . '/app/utilities',
         ),
-        'App\\Models\\' => 
+        'App\\Services\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app/models',
+            0 => __DIR__ . '/../..' . '/app/services',
         ),
         'App\\Middleware\\' => 
         array (
