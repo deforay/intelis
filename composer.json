@@ -44,8 +44,7 @@
         "slim/slim": "^4.11",
         "slim/psr7": "^1.6",
         "php-di/php-di": "^6.4",
-        "spatie/once": "^2.2",
-        "aranyasen/hl7": "^2.1"
+        "spatie/once": "^2.2"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

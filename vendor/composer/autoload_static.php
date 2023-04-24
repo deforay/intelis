@@ -194,7 +194,6 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         ),
         'A' => 
         array (
-            'Aranyasen\\' => 10,
             'App\\Utilities\\' => 14,
             'App\\Services\\' => 13,
             'App\\Middleware\\' => 15,
@@ -504,10 +503,6 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'Brick\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
-        ),
-        'Aranyasen\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/aranyasen/hl7/src',
         ),
         'App\\Utilities\\' => 
         array (

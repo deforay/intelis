@@ -10,15 +10,6 @@
         'dev' => true,
     ),
     'versions' => array(
-        'aranyasen/hl7' => array(
-            'pretty_version' => '2.1.7',
-            'version' => '2.1.7.0',
-            'reference' => 'f4a1cef7d048f888c247d2ff862e832514d39844',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../aranyasen/hl7',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'brick/math' => array(
             'pretty_version' => '0.9.3',
             'version' => '0.9.3.0',
