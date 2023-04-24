@@ -437,7 +437,8 @@ if (sizeof($requestResult) > 0) {
                $pdf->Output($filename, "F");
                if ($draftTextShow) {
                     //Watermark section
-                    $watermark = new Watermark();
+                    $watermark = new \App\Helpers\PdfWatermarkHelper();
+$watermark->setFullPathToFile($filename);
                     $fullPathToFile = $filename;
                     $watermark->Output($filename, "F");
                }
@@ -467,7 +468,7 @@ if (sizeof($requestResult) > 0) {
      }
 
      if (!empty($pages)) {
-          $resultPdf = new PdfConcatenate();
+          $resultPdf = new \App\Helpers\PdfConcatenateHelper();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);

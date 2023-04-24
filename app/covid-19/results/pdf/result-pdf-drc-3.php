@@ -98,8 +98,8 @@ if (!class_exists('DRC_PDF')) {
             } else {
                 $generatedAtTestingLab = "";
             }
-            
-            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'],IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
+
+            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
             $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 
             // Page number
@@ -416,7 +416,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->Output($filename, "F");
     if ($draftTextShow) {
         //Watermark section
-        $watermark = new Watermark();
+        $watermark = new \App\Helpers\PdfWatermarkHelper();
+        $watermark->setFullPathToFile($filename);
         $fullPathToFile = $filename;
         $watermark->Output($filename, "F");
     }

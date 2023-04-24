@@ -418,8 +418,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->Output($filename, "F");
     if ($draftTextShow) {
         //Watermark section
-        $watermark = new Watermark();
-        $fullPathToFile = $filename;
+        $watermark = new \App\Helpers\PdfWatermarkHelper();
+        $watermark->setFullPathToFile($filename);
         $watermark->Output($filename, "F");
     }
     $pages[] = $filename;
