@@ -1,6 +1,63 @@
 {
     "packages": [
         {
+            "name": "aranyasen/hl7",
+            "version": "2.1.7",
+            "version_normalized": "2.1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/senaranya/HL7.git",
+                "reference": "f4a1cef7d048f888c247d2ff862e832514d39844"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/senaranya/HL7/zipball/f4a1cef7d048f888c247d2ff862e832514d39844",
+                "reference": "f4a1cef7d048f888c247d2ff862e832514d39844",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "dms/phpunit-arraysubset-asserts": "^0.2",
+                "ext-pcntl": "*",
+                "ext-sockets": "*",
+                "phpunit/phpunit": "^9",
+                "squizlabs/php_codesniffer": "^3.6"
+            },
+            "time": "2022-09-17T06:38:34+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Aranyasen\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aranya Sen",
+                    "email": "sen.aranya@gmail.com",
+                    "role": "Owner"
+                }
+            ],
+            "description": "HL7 parser, generator and sender.",
+            "support": {
+                "issues": "https://github.com/senaranya/HL7/issues",
+                "source": "https://github.com/senaranya/HL7/tree/2.1.7"
+            },
+            "install-path": "../aranyasen/hl7"
+        },
+        {
             "name": "brick/math",
             "version": "0.9.3",
             "version_normalized": "0.9.3.0",

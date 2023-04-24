@@ -1,5 +1,4 @@
 <?php
-
 session_unset(); // no need of session in json response
 
 use App\Services\Covid19Service;
@@ -13,6 +12,7 @@ use Aranyasen\HL7\Segments\MSH;
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
+$db = \MySqlidb::getInstance();
 $user = null;
 $general = new CommonService();
 $userDb = new UserService();

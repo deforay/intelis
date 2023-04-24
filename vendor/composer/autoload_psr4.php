@@ -80,6 +80,7 @@ return array(
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
+    'Aranyasen\\' => array($vendorDir . '/aranyasen/hl7/src'),
     'App\\Utilities\\' => array($baseDir . '/app/utilities'),
     'App\\Services\\' => array($baseDir . '/app/services'),
     'App\\Middleware\\' => array($baseDir . '/app/middlewares'),

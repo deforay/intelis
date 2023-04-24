@@ -20,7 +20,6 @@ if (!file_exists($configFile)) {
 }
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', Factory::fromFile($configFile));
-
 // Database Connection
 $db = new MysqliDb(SYSTEM_CONFIG['database']);
 
