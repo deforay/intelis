@@ -42,7 +42,7 @@ try {
         );
         http_response_code(401);
         echo json_encode($response);
-        exit(0);
+        //exit(0);
     }
 
     $hl7Msg = file_get_contents("php://input");
@@ -127,5 +127,5 @@ try {
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
+    //exit(0);
 }

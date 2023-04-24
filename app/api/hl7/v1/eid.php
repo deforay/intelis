@@ -373,7 +373,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             // http_response_code(204);
             unset($ack);
             $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'eid', $_SERVER['REQUEST_URI'], $hl7Msg, $returnString, 'hl7');
-            exit(0);
+            //exit(0);
         } else {
             $id = $db->insert("form_eid", $eidData);
             $_POST['eidSampleId'] = $id;

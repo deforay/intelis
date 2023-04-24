@@ -427,7 +427,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             // http_response_code(204);
             $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $returnString, 'hl7');
             unset($ack);
-            exit(0);
+            //exit(0);
         } else {
             $id = $db->insert("form_covid19", $covid19Data);
             $_POST['covid19SampleId'] = $id;
