@@ -8,7 +8,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\RedirectResponse;
 
-class SystemAdminMiddleware implements MiddlewareInterface
+class AppAuthMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -25,10 +25,17 @@ class SystemAdminMiddleware implements MiddlewareInterface
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
             return $handler->handle($request);
-        } elseif (!isset($_SESSION['adminUserId']) || empty($_SESSION['adminUserId'])) {
+        } elseif (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
 
-            // Redirect to the login page if the system user is not logged in
-            $redirect = new RedirectResponse('/system-admin/login/login.php');
+            // Redirect to the login page if the user is not logged in
+            $redirect = new RedirectResponse('/login/login.php');
+        } elseif (isset($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
+
+            // Redirect to the edit profile page if the user is logged in but needs to change their password
+            $_SESSION['alertMsg'] = _("Please change your password to proceed.");
+            if (stripos($_SERVER['REQUEST_URI'], "editProfile.php") === false) {
+                $redirect = new RedirectResponse('/users/editProfile.php');
+            }
         }
 
         if (!is_null($redirect)) {
@@ -60,8 +67,10 @@ class SystemAdminMiddleware implements MiddlewareInterface
         //error_log($uri);
 
         $excludedRoutes = [
-            '/system-admin/login/login.php',
-            '/system-admin/setup/index.php',
+            '/login/login.php',
+            '/login/loginProcess.php',
+            '/setup/index.php',
+            '/setup/registerProcess.php',
             // Add other routes to exclude from the authentication check here
         ];
 

@@ -13,7 +13,6 @@ use Exception;
 use Ramsey\Uuid\Uuid;
 use TCPDFBarcode;
 use ZipArchive;
-use Spatie\Once\Cache;
 
 
 class CommonService
@@ -420,92 +419,36 @@ class CommonService
         return $localeLists;
     }
 
-    public function activeReportFormats($module = "vl", $countryCode = "southsudan", $format = "", $list = true)
+    public function activeReportFormats($module, $countryShortCode)
     {
+
         $list = [];
-        if ($module == 'vl') {
 
-            if (isset($format) && $format != null) {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/resultPdf' . $countryCode . '-' . $format . '.php';
-            } else {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/resultPdf' . $countryCode . '*.php';
-            }
-            $pdfFormat = glob($path, true);
-            if (isset($pdfFormat) && sizeof($pdfFormat) > 0) {
-                foreach ($pdfFormat as $formatPath) {
-                    $index = substr($formatPath, strpos($formatPath, "results/") + 8);
-                    $cut = str_replace("-", "", substr($index, strpos($index, "resultPdf" . $countryCode . "-") + 14));
-                    $value = substr($cut, 0, strpos($cut, ".php"));
-                    $list[$index] = ($value);
-                }
-            } else {
-                $list['pdf/resultPdf-' . $countryCode . '.pdf'] = "Default";
-            }
-        } else {
+        $pdfFormat = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-            if (isset($format) && $format != null) {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/result-pdf-' . $countryCode . '-' . $format . '.php';
-            } else {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/result-pdf-' . $countryCode . '*.php';
-            }
-            $pdfFormat = glob($path, true);
-            if (isset($pdfFormat) && sizeof($pdfFormat) > 0) {
-                foreach ($pdfFormat as $formatPath) {
-                    $index = substr($formatPath, strpos($formatPath, "results/") + 8);
-                    /* Previous code updated */
-                    $str = explode("/", $index);
-                    $str = explode("-", $str[1]);
-                    $str = ($str[2]) . "-" . ($str[3]);
-                    $value = substr($str, 0, strpos($str, ".php"));
-                    /* $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
-                    $value = substr($cut, 0, strpos($cut, ".php")); */
-                    $list[$index] = strtoupper($value);
-                }
-            } else {
-                $list['pdf/result-pdf-' . $countryCode . '.pdf'] = "Default";
+        if (false !== $pdfFormat && !empty($pdfFormat)) {
+            foreach ($pdfFormat as $formatPath) {
+                $baseName = basename($formatPath);
+                $value = str_replace(array('.php', 'result-pdf-'), '', $baseName);
+                $list["pdf/$baseName"] = strtoupper($value);
             }
         }
+
+        $list["pdf/result-pdf-$countryShortCode.php"] = "Default";
+
         return $list;
     }
 
-    public function reportPdfNames($module = null)
+    public function getCountryShortCode()
     {
-        $arr = $this->getGlobalConfig();
-        $cntId = [];
-        if ($arr['vl_form'] == 1) {
-            $cntId['covid19'] = 'ssudan';
-            $cntId['eid'] = 'ssudan';
-            $cntId['vl'] = 'SouthSudan';
-        } else if ($arr['vl_form'] == 2) {
-            $cntId['vl'] = 'Zm';
-            $cntId['covid19'] = 'zm';
-        } else if ($arr['vl_form'] == 3) {
-            $cntId['vl'] = 'Drc';
-            $cntId['eid'] = 'drc';
-            $cntId['covid19'] = 'drc';
-        } else if ($arr['vl_form'] == 4) {
-            $cntId['vl'] = 'Zam';
-            $cntId['covid19'] = 'zam';
-        } else if ($arr['vl_form'] == 5) {
-            $cntId['vl'] = 'Png';
-            $cntId['covid19'] = 'png';
-        } else if ($arr['vl_form'] == 6) {
-            $cntId['vl'] = 'Who';
-            $cntId['covid19'] = 'who';
-        } else if ($arr['vl_form'] == 7) {
-            $cntId['vl'] = 'Rwd';
-            $cntId['hepatitis'] = 'rwanda';
-            $cntId['eid'] = 'rwanda';
-            $cntId['covid19'] = 'rwanda';
-        } else if ($arr['vl_form'] == 8) {
-            $cntId['vl'] = 'Ang';
-            $cntId['eid'] = 'angola';
-            $cntId['covid19'] = 'angola';
+
+        if ($this->db == null) {
+            return false;
         }
-        if ($module != null) {
-            return $cntId[$module];
-        }
-        return $cntId;
+        return once(function () {
+            $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
+            return $this->db->getValue("s_available_country_forms", "short_name");
+        });
     }
 
     public function trackQrViewPage($type, $typeId, $sampleCode)
@@ -527,23 +470,25 @@ class CommonService
 
     public function getIPAddress()
     {
-        $ipaddress = '';
-        if (getenv('HTTP_CLIENT_IP')) {
-            $ipaddress = getenv('HTTP_CLIENT_IP');
-        } else if (getenv('HTTP_X_FORWARDED_FOR')) {
-            $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-        } else if (getenv('HTTP_X_FORWARDED')) {
-            $ipaddress = getenv('HTTP_X_FORWARDED');
-        } else if (getenv('HTTP_FORWARDED_FOR')) {
-            $ipaddress = getenv('HTTP_FORWARDED_FOR');
-        } else if (getenv('HTTP_FORWARDED')) {
-            $ipaddress = getenv('HTTP_FORWARDED');
-        } else if (getenv('REMOTE_ADDR')) {
-            $ipaddress = getenv('REMOTE_ADDR');
-        } else {
-            $ipaddress = 'UNKNOWN';
-        }
-        return $ipaddress;
+        return once(function () {
+            $ipaddress = '';
+            if (getenv('HTTP_CLIENT_IP')) {
+                $ipaddress = getenv('HTTP_CLIENT_IP');
+            } else if (getenv('HTTP_X_FORWARDED_FOR')) {
+                $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+            } else if (getenv('HTTP_X_FORWARDED')) {
+                $ipaddress = getenv('HTTP_X_FORWARDED');
+            } else if (getenv('HTTP_FORWARDED_FOR')) {
+                $ipaddress = getenv('HTTP_FORWARDED_FOR');
+            } else if (getenv('HTTP_FORWARDED')) {
+                $ipaddress = getenv('HTTP_FORWARDED');
+            } else if (getenv('REMOTE_ADDR')) {
+                $ipaddress = getenv('REMOTE_ADDR');
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            return $ipaddress;
+        });
     }
 
     public function getOperatingSystem($userAgent = null)

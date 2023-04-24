@@ -3,16 +3,13 @@
 namespace App\Helpers;
 
 use App\Services\CommonService;
-use Exception;
 use DateTimeImmutable;
 
-class Results
+class ResultsHelper
 {
     public function __construct()
     {
     }
-
-
 
     // $interpretFormat = true will try to parse and change the format to d/m/Y or m/d/Y
     // $interpretFormat = false will keep the format as is
@@ -37,7 +34,7 @@ class Results
 
         if ($numberOfColons === 1) {
             $testingDateFormat = "$dateFormat h:i";
-        } else if ($numberOfColons === 2) {
+        } elseif ($numberOfColons === 2) {
             $testingDateFormat = "$dateFormat H:i:s";
         }
 

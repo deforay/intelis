@@ -238,14 +238,14 @@ class Watermark extends PDF_Rotate
     //$this->SetAlpha(0.7);
   }
 }
-class Pdf_concat extends FPDI
+class PdfConcatenate extends FPDI
 {
-  var $files = [];
-  function setFiles($files)
+  public $files = [];
+  public function setFiles($files)
   {
     $this->files = $files;
   }
-  function concat()
+  public function concat()
   {
     foreach ($this->files as $file) {
       $pagecount = $this->setSourceFile($file);

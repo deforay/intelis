@@ -407,7 +407,7 @@ if (sizeof($requestResult) > 0) {
     }
 
     if (!empty($pages)) {
-        $resultPdf = new Pdf_concat();
+        $resultPdf = new PdfConcatenate();
         $resultPdf->setFiles($pages);
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);

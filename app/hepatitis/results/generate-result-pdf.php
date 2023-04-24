@@ -235,14 +235,14 @@ class Watermark extends PDF_Rotate
 		//$this->SetAlpha(0.7);
 	}
 }
-class Pdf_concat extends FPDI
+class PdfConcatenate extends FPDI
 {
-	var $files = [];
-	function setFiles($files)
+	public $files = [];
+	public function setFiles($files)
 	{
 		$this->files = $files;
 	}
-	function concat()
+	public function concat()
 	{
 		foreach ($this->files as $file) {
 			$pagecount = $this->setSourceFile($file);
@@ -269,11 +269,11 @@ $fileArray = array(
 
 $country = array(
 	1 => 'South sudan',
-	2 => 'Zimbabwe',
+	2 => 'Sierra Leone',
 	3 => 'Democratic Republic of the Congo',
 	4 => 'Zambia',
 	5 => 'Papua New Guinea',
-	6 => 'Who',
+	6 => 'WHO',
 	7 => 'Rwanda',
 	8 => 'Angola',
 );

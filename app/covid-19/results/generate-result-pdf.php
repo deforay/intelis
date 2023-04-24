@@ -60,14 +60,14 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 				FROM form_covid19 as vl
 				LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
 				LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-				LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
-				LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-				LEFT JOIN r_covid19_test_reasons as testres ON testres.test_reason_id=vl.reason_for_covid19_test 
-				LEFT JOIN r_covid19_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
+				LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
+				LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+				LEFT JOIN r_covid19_test_reasons as testres ON testres.test_reason_id=vl.reason_for_covid19_test
+				LEFT JOIN r_covid19_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
-				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source 
-				LEFT JOIN r_covid19_sample_type as rst ON rst.sample_id=vl.specimen_type 
+				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
+				LEFT JOIN r_covid19_sample_type as rst ON rst.sample_id=vl.specimen_type
 				WHERE vl.covid19_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;
@@ -288,14 +288,14 @@ class Watermark extends PDF_Rotate
 		//$this->SetAlpha(0.7);
 	}
 }
-class Pdf_concat extends FPDI
+class PdfConcatenate extends FPDI
 {
-	var $files = [];
-	function setFiles($files)
+	public $files = [];
+	public function setFiles($files)
 	{
 		$this->files = $files;
 	}
-	function concat()
+	public function concat()
 	{
 		foreach ($this->files as $file) {
 			$pagecount = $this->setSourceFile($file);
@@ -321,7 +321,7 @@ $fileArray = array(
 );
 
 $resultFilename = '';
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
 	$_SESSION['rVal'] = $general->generateRandomString(6);
 	$pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
 	if (!file_exists($pathFront) && !is_dir($pathFront)) {
@@ -384,7 +384,7 @@ if (sizeof($requestResult) > 0) {
 		}
 	}
 	if (!empty($pages)) {
-		$resultPdf = new Pdf_concat();
+		$resultPdf = new PdfConcatenate();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);

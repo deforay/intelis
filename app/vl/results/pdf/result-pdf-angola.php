@@ -128,14 +128,14 @@ class WatermarkANG extends PDF_RotateANG
           //$this->SetAlpha(0.7);
      }
 }
-class Pdf_concatANG extends FPDI
+class PdfConcatenateANG extends FPDI
 {
-     var $files = [];
-     function setFiles($files)
+     public $files = [];
+     public function setFiles($files)
      {
           $this->files = $files;
      }
-     function concat()
+     public function concat()
      {
           foreach ($this->files as $file) {
                $pagecount = $this->setSourceFile($file);
@@ -604,7 +604,7 @@ if (sizeof($requestResult) > 0) {
      }
 
      if (!empty($pages)) {
-          $resultPdf = new Pdf_concat();
+          $resultPdf = new PdfConcatenate();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);

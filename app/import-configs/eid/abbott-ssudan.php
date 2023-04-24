@@ -2,7 +2,7 @@
 
 // File included in addImportResultHelper.php
 
-use App\Helpers\Results;
+use App\Helpers\ResultsHelper;
 use App\Services\UserService;
 use App\Utilities\DateUtils;
 
@@ -79,7 +79,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $testingDateArray = Results::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $testingDateArray = ResultsHelper::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
                         }
