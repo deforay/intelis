@@ -4,16 +4,17 @@ require_once(dirname(__DIR__) . '/../bootstrap.php');
 
 // api/index.php
 use DI\Container;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use App\Services\UserService;
+use App\Middleware\Api\ApiAuthMiddleware;
 use Tuupola\Middleware\CorsMiddleware;
+use App\Middleware\Api\TokenResetMiddleware;
+use Laminas\Stratigility\MiddlewarePipe;
+use App\Middleware\Api\LegacyFallbackMiddleware;
+use function Laminas\Stratigility\middleware;
+
 use Slim\Factory\ServerRequestCreatorFactory;
 
-use App\Middleware\ApiAuthMiddleware;
-use App\Middleware\LegacyFallbackMiddleware;
-use Psr\Http\Server\RequestHandlerInterface;
-use App\Services\UserService;
 
 $container = new Container();
 AppFactory::setContainer($container);
@@ -22,8 +23,12 @@ $app = AppFactory::create();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
+
+// Instantiate the middleware pipeline
+$middlewarePipe = new MiddlewarePipe();
+
 // 1. CORS Middleware
-$app->add(new CorsMiddleware([
+$middlewarePipe->pipe(new CorsMiddleware([
     'origin' => ['*'],
     'methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     'headers.allow' => ['Content-Type', 'Authorization'],
@@ -32,10 +37,16 @@ $app->add(new CorsMiddleware([
     'cache' => 0,
 ]));
 
-// 2. API Auth Middleware that checks for Bearer token
-$userModel = new UserService();
-$app->add(new ApiAuthMiddleware($userModel));
 
+// 2. Middleware to ensure we always return JSON only
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response->withHeader('Content-Type', 'application/json');
+}));
+
+// 3. API Auth Middleware that checks for Bearer token
+$userModel = new UserService();
+$middlewarePipe->pipe(new ApiAuthMiddleware($userModel));
 
 //API Routes
 $app->any('/api/v1.1/init', function ($request, $response, $args) {
@@ -53,14 +64,15 @@ $app->any('/api/v1.1/init', function ($request, $response, $args) {
 // TODO - Next version API to use Controllers/Actions
 
 
-// 3. Allow existing PHP includes using LegacyFallbackMiddleware
-$app->add(new LegacyFallbackMiddleware());
+// 4. Allow existing PHP includes using LegacyFallbackMiddleware
+$middlewarePipe->pipe(new LegacyFallbackMiddleware());
 
 
-// 4. Always return JSON only
-$app->add(function (Request $request, RequestHandlerInterface $handler) {
-    $response = $handler->handle($request);
-    return $response->withHeader('Content-Type', 'application/json');
-});
+// 5. Checking if Token needs to be reset using TokenResetMiddleware
+$middlewarePipe->pipe(new TokenResetMiddleware($userModel));
+
+
+$app->add($middlewarePipe);
+
 
 $app->run();

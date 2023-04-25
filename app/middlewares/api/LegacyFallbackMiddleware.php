@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Api;
 
 use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,6 @@ class LegacyFallbackMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
 
         try {
             // Try to handle the request with Slim routing

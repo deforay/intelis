@@ -1,15 +1,14 @@
 <?php
 
 
-namespace App\Middleware;
+namespace App\Middleware\Api;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Psr7\Response;
 
-class ApiAuthMiddleware implements MiddlewareInterface
+class TokenResetMiddleware implements MiddlewareInterface
 {
     private \App\Services\UserService $userModel;
 
@@ -20,29 +19,23 @@ class ApiAuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
+        $response = $handler->handle($request);
+
         if ($this->shouldExcludeFromAuthCheck($request)) {
 
             // Skip the authentication check if the request is an AJAX request,
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
-            return $handler->handle($request);
+            return $response;
         }
+
         $authorization = $request->getHeaderLine('Authorization');
         $token = $this->getTokenFromAuthorizationHeader($authorization);
 
-        $tokenValidation = $this->validateToken($token);
-
-        if (false === $tokenValidation) {
-            $response = new Response();
-            $response->getBody()->write(json_encode(['error' => 'Unauthorized']));
-            return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-        }
-
-        // If the token is valid, proceed to the next middleware
-        $response = $handler->handle($request);
 
         // Check if the token needs to be reset and get the new token
         $newToken = $this->checkAndResetTokenIfNeeded($token);
+
 
         if ($newToken !== null) {
             // Add the new_token to the response object
@@ -62,15 +55,6 @@ class ApiAuthMiddleware implements MiddlewareInterface
             return $matches[1];
         }
         return null;
-    }
-
-    private function validateToken(string $token): bool
-    {
-        if ($token === false) {
-            return false;
-        }
-
-        return $this->userModel->validateAuthToken($token);
     }
 
     private function checkAndResetTokenIfNeeded(string $token): ?string
