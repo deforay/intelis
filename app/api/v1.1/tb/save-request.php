@@ -157,8 +157,8 @@ try {
 
 
         $id = 0;
-        if ($rowData) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+        if ($rowData !== false && !empty($rowData)) {
+            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('tb_id', $rowData['tb_id']);
                 $id = $db->update("form_tb", $tbData);
             }
@@ -356,7 +356,7 @@ try {
         }
         $id = 0;
         if (!empty($data['tbSampleId'])) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
                 $db = $db->where('tb_id', $data['tbSampleId']);
                 $id = $db->update($tableName, $tbData);
                 // error_log($db->getLastError());

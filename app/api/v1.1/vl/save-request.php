@@ -175,8 +175,8 @@ try {
 
 
         $id = 0;
-        if ($rowData) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+        if ($rowData !== false && !empty($rowData)) {
+            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
                 $id = $db->update("form_vl", $vlData);
             }
@@ -457,7 +457,7 @@ try {
         //  echo '<pre>'; print_r($vlFulldata); 
         $id = 0;
         if (!empty($data['vlSampleId'])) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
                 $db = $db->where('vl_sample_id', $data['vlSampleId']);
                 $id = $db->update($tableName, $vlFulldata);
                 // error_log($db->getLastError());

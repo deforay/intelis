@@ -169,7 +169,7 @@ try {
 
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('eid_id', $rowData['eid_id']);
                 $id = $db->update("form_eid", $eidData);
             }
@@ -375,8 +375,10 @@ try {
         die; */
         $id = 0;
         if (!empty($data['eidSampleId'])) {
-            $db = $db->where('eid_id', $data['eidSampleId']);
-            $id = $db->update($tableName, $eidData);
+            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
+                $db = $db->where('eid_id', $data['eidSampleId']);
+                $id = $db->update($tableName, $eidData);
+            }
         }
         if ($id > 0) {
             $eidData = $app->getTableDataUsingId($tableName, 'eid_id', $data['eidSampleId']);

@@ -37,7 +37,7 @@ try {
     $auth = $general->getHeader('Authorization');
     $authToken = str_replace("Bearer ", "", $auth);
     $user = $userDb->getUserFromToken($authToken);
-    
+
     $roleUser = $userDb->getUserRole($user['user_id']);
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
     $rowData = $db->rawQuery($sQuery);
@@ -172,8 +172,8 @@ try {
 
 
         $id = 0;
-        if ($rowData) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+        if ($rowData !== false && !empty($rowData)) {
+            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('covid19_id', $rowData['covid19_id']);
                 $id = $db->update("form_covid19", $covid19Data);
                 // error_log($db->getLastError());
@@ -448,7 +448,7 @@ try {
         }
         $id = 0;
         if (!empty($data['covid19SampleId'])) {
-            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
                 $db = $db->where('covid19_id', $data['covid19SampleId']);
                 $id = $db->update($tableName, $covid19Data);
                 // error_log($db->getLastError());
