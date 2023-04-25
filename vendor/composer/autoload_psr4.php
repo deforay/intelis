@@ -82,6 +82,7 @@ return array(
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
     'App\\Utilities\\' => array($baseDir . '/app/utilities'),
     'App\\Services\\' => array($baseDir . '/app/services'),
+    'App\\Middleware\\Api\\' => array($baseDir . '/app/middlewares/api'),
     'App\\Middleware\\' => array($baseDir . '/app/middlewares'),
     'App\\Interop\\' => array($baseDir . '/app/interop'),
     'App\\Helpers\\' => array($baseDir . '/app/helpers'),

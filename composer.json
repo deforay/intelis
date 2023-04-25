@@ -58,6 +58,7 @@
             "App\\Helpers\\": "app/helpers/",
             "App\\Utilities\\": "app/utilities/",
             "App\\Middleware\\": "app/middlewares/",
+            "App\\Middleware\\Api\\": "app/middlewares/api",
             "App\\Exceptions\\": "app/exceptions/"
         }
     },
