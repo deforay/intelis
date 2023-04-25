@@ -265,21 +265,6 @@ class ApiService
         return $response;
     }
 
-    public function getCovid19TestsByFormId($formId)
-    {
-        if (empty($formId)) {
-            return null;
-        }
-
-        // Using this in sync requests/results
-        if (is_array($formId)) {
-            $sQuery = "SELECT * FROM covid19_tests WHERE `covid19_id` IN (" . implode(",", $formId) . ") ORDER BY test_id ASC";
-        } else {
-            $sQuery = "SELECT * FROM covid19_tests WHERE `covid19_id` = $formId ORDER BY test_id ASC";
-        }
-        return $this->db->rawQuery($sQuery);
-    }
-
     public function addApiTracking($user, $records, $type, $testType, $url = null, $params = null, $format = null)
     {
         $general = new CommonService($this->db);
@@ -302,14 +287,6 @@ class ApiService
     public function getTableDataUsingId($tablename, $fieldName, $value)
     {
         return $this->db->rawQueryOne("SELECT * FROM " . $tablename . " WHERE " . $fieldName . " = " . $value);
-    }
-
-    public function getCovid19TestsByC19Id($c19Id)
-    {
-        if (empty($c19Id)) {
-            return null;
-        }
-        return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, kit_lot_no as kitLotNo, kit_expiry_date as kitExpiryDate, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
     }
 
     public function getLastRequestForPatientID($testType, $patientId)

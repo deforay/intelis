@@ -247,7 +247,7 @@ try {
         );
     } else {
         foreach ($rowData as $key => $row) {
-            $rowData[$key]['c19Tests'] = $app->getCovid19TestsByC19Id($row['covid19Id']);
+            $rowData[$key]['c19Tests'] = $c19Db->getCovid19TestsByC19Id($row['covid19Id']);
             $rowData[$key]['c19Symptoms'] = $c19Db->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19Comorbidities'] = $c19Db->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19ReasonForTesting'] = $c19Db->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);

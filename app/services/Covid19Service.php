@@ -139,7 +139,7 @@ class Covid19Service
     public function getCovid19SampleTypes($updatedDateTime = null)
     {
         $query = "SELECT * FROM r_covid19_sample_type where status='active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -177,7 +177,7 @@ class Covid19Service
         if (empty($covid19SampleId)) {
             return false;
         }
-        
+
         $response = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` = $covid19SampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {
@@ -193,7 +193,7 @@ class Covid19Service
     public function getCovid19Results($updatedDateTime = null)
     {
         $query = "SELECT result_id,result FROM r_covid19_results where status='active' ";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $query .= " ORDER BY result_id DESC";
@@ -208,7 +208,7 @@ class Covid19Service
     public function getCovid19ReasonsForTesting($updatedDateTime = null)
     {
         $query = "SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active'";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -231,7 +231,7 @@ class Covid19Service
     public function getCovid19Symptoms($updatedDateTime = null)
     {
         $query = "SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active'";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -255,7 +255,7 @@ class Covid19Service
     public function getCovid19Comorbidities($updatedDateTime = null)
     {
         $query = "SELECT comorbidity_id,comorbidity_name FROM r_covid19_comorbidities WHERE `comorbidity_status` LIKE 'active'";
-        if($updatedDateTime){
+        if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
         $results = $this->db->rawQuery($query);
@@ -558,12 +558,20 @@ class Covid19Service
         return 0;
     }
 
+    public function getCovid19TestsByC19Id($c19Id)
+    {
+        if (empty($c19Id)) {
+            return null;
+        }
+        return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, kit_lot_no as kitLotNo, kit_expiry_date as kitExpiryDate, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
+    }
+
     public function generateCovid19QcCode()
     {
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
         if (!isset($exist['qc_code_key']) || empty($exist['qc_code_key'])) {
             $number = 001;
-        } else if (!empty($exist['qc_code_key'])) {
+        } elseif (!empty($exist['qc_code_key'])) {
             $number = ($exist['qc_code_key'] + 1);
         }
         $sCodeKey = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
