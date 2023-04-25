@@ -3571,3 +3571,87 @@ ALTER TABLE `r_testing_reasons`
 
 ALTER TABLE `r_testing_reasons`
   MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
+
+
+-- ilahir 24-Apr-2023
+
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('common-symptoms', 'admin', 'Common Symptoms Table');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-symptoms', 'symptoms.php', 'Access');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-symptoms', 'addSymptoms.php', 'Add');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-symptoms', 'editSymptoms.php', 'Edit');
+
+CREATE TABLE `r_symptoms` (
+  `symptom_id` int NOT NULL,
+  `symptom_name` varchar(256) DEFAULT NULL,
+  `symptom_code` varchar(256) DEFAULT NULL,
+  `symptom_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `r_symptoms`
+  ADD PRIMARY KEY (`symptom_id`),
+  ADD UNIQUE KEY `symptom_code` (`symptom_code`),
+  ADD UNIQUE KEY `symptom_name` (`symptom_name`);
+
+ALTER TABLE `r_symptoms`
+  MODIFY `symptom_id` int NOT NULL AUTO_INCREMENT;
+
+
+-- ilahir 25-Apr-2023
+
+CREATE TABLE `generic_test_sample_type_map` (
+  `map_id` int NOT NULL,
+  `sample_type_id` int NOT NULL,
+  `test_type_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `generic_test_sample_type_map`
+  ADD PRIMARY KEY (`map_id`),
+  ADD KEY `sample_type_id` (`sample_type_id`),
+  ADD KEY `test_type_id` (`test_type_id`);
+
+ALTER TABLE `generic_test_sample_type_map`
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE `generic_test_sample_type_map`
+  ADD CONSTRAINT `generic_test_sample_type_map_ibfk_1` FOREIGN KEY (`sample_type_id`) REFERENCES `r_sample_types` (`sample_type_id`),
+  ADD CONSTRAINT `generic_test_sample_type_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
+
+
+CREATE TABLE `generic_test_reason_map` (
+  `map_id` int NOT NULL,
+  `test_reason_id` int NOT NULL,
+  `test_type_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `generic_test_reason_map`
+  ADD PRIMARY KEY (`map_id`),
+  ADD KEY `test_type_id` (`test_type_id`),
+  ADD KEY `test_reason_id` (`test_reason_id`);
+
+ALTER TABLE `generic_test_reason_map`
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `generic_test_reason_map`
+  ADD CONSTRAINT `generic_test_reason_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
+  ADD CONSTRAINT `generic_test_reason_map_ibfk_2` FOREIGN KEY (`test_reason_id`) REFERENCES `r_testing_reasons` (`test_reason_id`);
+
+
+CREATE TABLE `generic_test_symptoms_map` (
+  `map_id` int NOT NULL,
+  `symptom_id` int NOT NULL,
+  `test_type_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `generic_test_symptoms_map`
+  ADD PRIMARY KEY (`map_id`),
+  ADD KEY `symptom_id` (`symptom_id`),
+  ADD KEY `test_type_id` (`test_type_id`);
+
+ALTER TABLE `generic_test_symptoms_map`
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `generic_test_symptoms_map`
+  ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_symptoms` (`symptom_id`),
+  ADD CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);

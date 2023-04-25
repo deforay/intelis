@@ -827,6 +827,10 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".system-config-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".testingReasonMenu").addClass('active');
+	} else if (splitsUrl == 'symptoms.php' || splitsUrl == 'addSymptoms.php' || splitsUrl == 'editSymptoms.php') {
+		$(".system-config-menu,.manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".symptomsMenu").addClass('active');
 	}
 	else {
 		$(".allMenu").removeClass('active');

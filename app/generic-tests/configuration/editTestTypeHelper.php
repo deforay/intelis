@@ -10,6 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new General();
 $tableName = "r_test_types";
+$tableName2="generic_test_sample_type_map";
+$tableName3="generic_test_reason_map";
+$tableName4="generic_test_symptoms_map";
 $testAttribute=array();
 /*echo "<pre>";
 print_r($_POST);
@@ -50,9 +53,38 @@ try {
         $db = $db->where('test_type_id', $testTypeId);
         $db->update($tableName, $data);
         
+        if ($testTypeId != 0 && $testTypeId != '') {
+
+            if (isset($_POST['sampleType']) && count($_POST['sampleType'])>0) {
+                $db = $db->where('test_type_id',$testTypeId);
+                $db->delete($tableName2);
+                foreach($_POST['sampleType'] as $val){
+                    $value = array('sample_type_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName2,$value);
+                }
+            }
+
+            if (isset($_POST['testingReason']) && count($_POST['testingReason'])>0) {
+                $db = $db->where('test_type_id',$testTypeId);
+                $db->delete($tableName3);
+                foreach($_POST['testingReason'] as $val){
+                    $value = array('test_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName3,$value);
+                }
+            }
+
+            if (isset($_POST['symptoms']) && count($_POST['symptoms'])>0) {
+                $db = $db->where('test_type_id',$testTypeId);
+                $db->delete($tableName4);
+                foreach($_POST['symptoms'] as $val){
+                    $value = array('symptom_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName4,$value);
+                }
+            }
+        }
         $_SESSION['alertMsg'] = _("Test type updated successfully");
     }
-    error_log($db->getLastError());
+    //error_log($db->getLastError());
     header("Location:testType.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

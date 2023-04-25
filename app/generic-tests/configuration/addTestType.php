@@ -1,9 +1,14 @@
 <?php
-
-
 require_once(APPLICATION_PATH . '/header.php');
 
+$stQuery = "SELECT * from r_sample_types where sample_type_status='active'";
+$sampleTypeInfo=$db->query($stQuery);
 
+$tQuery = "SELECT * from r_testing_reasons where test_reason_status='active'";
+$testReasonInfo=$db->query($tQuery);
+
+$symQuery = "SELECT * from r_symptoms where symptom_status='active'";
+$symptomInfo=$db->query($symQuery);
 ?>
 <style>
 	.tooltip-inner {
@@ -74,7 +79,62 @@ require_once(APPLICATION_PATH . '/header.php');
 								</div>
 							</div>
 						</div>
+
 						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($sampleTypeInfo as $sampleType){
+											?>
+											<option value="<?php echo $sampleType['sample_type_id'];?>"><?php echo $sampleType['sample_type_name'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Testing Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($testReasonInfo as $testReason){
+											?>
+											<option value="<?php echo $testReason['test_reason_id'];?>"><?php echo $testReason['test_reason'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($symptomInfo as $val){
+											?>
+											<option value="<?php echo $val['symptom_id'];?>"><?php echo $val['symptom_name'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
@@ -250,6 +310,15 @@ require_once(APPLICATION_PATH . '/header.php');
 	$(document).ready(function() {
 		$('input').tooltip();
 		generateRandomString('1');
+		$("#sampleType").select2({
+			placeholder: "<?php echo _("Select Sample Type"); ?>"
+		});
+		$("#testingReason").select2({
+			placeholder: "<?php echo _("Select Testing Reason"); ?>"
+		});
+		$("#symptoms").select2({
+			placeholder: "<?php echo _("Select Symptoms"); ?>"
+		});
 	});
 
 	function validateNow() {

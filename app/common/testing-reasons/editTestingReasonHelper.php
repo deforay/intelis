@@ -30,7 +30,7 @@ try {
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _("Testing reason updated successfully");
     }
-    error_log($db->getLastError());
+    //error_log($db->getLastError());
     header("location:testingReason.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

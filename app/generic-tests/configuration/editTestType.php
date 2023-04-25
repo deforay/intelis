@@ -8,6 +8,34 @@ $tQuery = "SELECT * from r_test_types where test_type_id=$id";
 $testTypeInfo = $db->query($tQuery);
 $testAttribute=json_decode($testTypeInfo[0]['test_form_config'],true);
 $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
+
+$stQuery = "SELECT * from r_sample_types where sample_type_status='active'";
+$sampleTypeInfo=$db->query($stQuery);
+
+$tQuery = "SELECT * from r_testing_reasons where test_reason_status='active'";
+$testReasonInfo=$db->query($tQuery);
+
+$symQuery = "SELECT * from r_symptoms where symptom_status='active'";
+$symptomInfo=$db->query($symQuery);
+
+$testSampleMapQuery = "SELECT * from generic_test_sample_type_map where test_type_id=$id";
+$testSampleMapInfo=$db->query($testSampleMapQuery);
+$testSampleId=array();
+foreach($testSampleMapInfo as $val){
+	$testSampleId[]=$val['sample_type_id'];
+}
+$testReasonMapQuery = "SELECT * from generic_test_reason_map where test_type_id=$id";
+$testReasonMapInfo=$db->query($testReasonMapQuery);
+$testReasonId=array();
+foreach($testReasonMapInfo as $val){
+	$testReasonId[]=$val['test_reason_id'];
+}
+$testSymptomsMapQuery = "SELECT * from generic_test_symptoms_map where test_type_id=$id";
+$testSymptomsMapInfo=$db->query($testSymptomsMapQuery);
+$testSymptomsId=array();
+foreach($testSymptomsMapInfo as $val){
+	$testSymptomsId[]=$val['symptom_id'];
+}
 ?>
 <style>
 	.tooltip-inner {
@@ -79,7 +107,62 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 								</div>
 							</div>
 						</div>
+
 						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($sampleTypeInfo as $sampleType){
+											?>
+											<option value="<?php echo $sampleType['sample_type_id'];?>" <?php echo in_array($sampleType['sample_type_id'],$testSampleId) ? "selected='selected'" : "" ?>><?php echo $sampleType['sample_type_name'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Testing Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($testReasonInfo as $testReason){
+											?>
+											<option value="<?php echo $testReason['test_reason_id'];?>" <?php echo in_array($testReason['test_reason_id'],$testReasonId) ? "selected='selected'" : "" ?>><?php echo $testReason['test_reason'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms');?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach($symptomInfo as $val){
+											?>
+											<option value="<?php echo $val['symptom_id'];?>" <?php echo in_array($val['symptom_id'],$testSymptomsId) ? "selected='selected'" : "" ?>><?php echo $val['symptom_name'];?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
@@ -285,6 +368,15 @@ $testResultAttribute=json_decode($testTypeInfo[0]['test_results_config'],true);
 	$(document).ready(function() {
 		$('input').tooltip();
 		checkResultType();
+		$("#sampleType").select2({
+			placeholder: "<?php echo _("Select Sample Type"); ?>"
+		});
+		$("#testingReason").select2({
+			placeholder: "<?php echo _("Select Testing Reason"); ?>"
+		});
+		$("#symptoms").select2({
+			placeholder: "<?php echo _("Select Symptoms"); ?>"
+		});
 	});
 
 	function validateNow() {
