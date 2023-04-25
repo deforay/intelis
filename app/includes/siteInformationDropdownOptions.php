@@ -1,19 +1,21 @@
 <?php
 
-use App\Services\FacilitiesService;
-use App\Services\CommonService;
-use App\Services\UserService;
-
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 $general = new CommonService();
 $facilitiesDb = new FacilitiesService();
 $usersDb = new UserService();
+$arr = $general->getGlobalConfig();
+$sarr = $general->getSystemConfig();
+
+
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
