@@ -2,7 +2,7 @@
 
 
 use App\Interop\Dhis2;
-use App\Models\General;
+use App\Services\CommonService;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
@@ -13,7 +13,7 @@ $dhis2 = new Dhis2(
 );
 
 
-$general = new General();
+$general = new CommonService();
 
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

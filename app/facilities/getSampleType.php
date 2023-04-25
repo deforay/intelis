@@ -1,16 +1,16 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\Eid;
-use App\Models\Hepatitis;
-use App\Models\Tb;
-use App\Models\Vl;
+use App\Services\Covid19Service;
+use App\Services\EidService;
+use App\Services\HepatitisService;
+use App\Services\TbService;
+use App\Services\VlService;
 
-$vlDb = new Vl($db);
-$eidDb = new Eid($db);
-$covid19Db = new Covid19($db);
-$hepatitisDb = new Hepatitis($db);
-$tbDb = new Tb($db);
+$vlDb = new VlService($db);
+$eidDb = new EidService($db);
+$covid19Db = new Covid19Service($db);
+$hepatitisDb = new HepatitisService($db);
+$tbDb = new TbService($db);
 /* Selected Sample Types from Facility Edit */
 $selectedSamplesTypes = [];
 if (!empty($_POST['facilityId'])) {

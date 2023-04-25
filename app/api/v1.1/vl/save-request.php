@@ -1,27 +1,28 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
+$db = \MysqliDb::getInstance();
+
 try {
 
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $vlModel = new Vl();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $vlModel = new VlService();
 
     $transactionId = $general->generateUUID();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
-    $user = null;
     $logVal = null;
     $absDecimalVal = null;
     $absVal = null;
@@ -30,7 +31,7 @@ try {
 
     $origJson = file_get_contents("php://input") ?: '[]';
     $input = json_decode($origJson, true);
-    
+
     if (empty($input) || empty($input['data'])) {
         throw new Exception("Invalid request");
     }
@@ -38,25 +39,9 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-
     $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        /* Check if API token exists */
-        $user = $userDb->getAuthToken($authToken);
-    }
-
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        // $response = array(
-        //     'status' => 'failed',
-        //     'timestamp' => time(),
-        //     'error' => 'Bearer Token Invalid',
-        //     'data' => array()
-        // );
-        http_response_code(401);
-        throw new Exception(_("Bearer Token Invalid"));
-    }
+    $authToken = str_replace("Bearer ", "", $auth);
+    $user = $userDb->getUserFromToken($authToken);
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = [];
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
@@ -191,8 +176,10 @@ try {
 
         $id = 0;
         if ($rowData) {
-            $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
-            $id = $db->update("form_vl", $vlData);
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
+                $id = $db->update("form_vl", $vlData);
+            }
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
             $id = $db->insert("form_vl", $vlData);
@@ -463,16 +450,18 @@ try {
         $vlFulldata['vl_result_category'] = $vlModel->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
             $vlFulldata['result_status'] = 5;
-        } elseif ($vldata['vl_result_category'] == 'rejected') {
+        } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = 4;
         }
-      //  echo " SAmple Id update :".$data['vlSampleId']; exit;
-      //  echo '<pre>'; print_r($vlFulldata); 
+        //  echo " SAmple Id update :".$data['vlSampleId']; exit;
+        //  echo '<pre>'; print_r($vlFulldata); 
         $id = 0;
         if (!empty($data['vlSampleId'])) {
-            $db = $db->where('vl_sample_id', $data['vlSampleId']);
-            $id = $db->update($tableName, $vlFulldata);
-            error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('vl_sample_id', $data['vlSampleId']);
+                $id = $db->update($tableName, $vlFulldata);
+                // error_log($db->getLastError());
+            }
             // echo "ID=>" . $id;
         }
         if ($id > 0) {
@@ -522,12 +511,6 @@ try {
         );
     }
 
-    if (isset($user['token_updated']) && $user['token_updated'] === true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
-    }
-
     http_response_code(200);
 } catch (Exception $exc) {
 
@@ -545,4 +528,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

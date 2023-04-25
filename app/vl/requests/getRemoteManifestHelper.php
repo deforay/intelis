@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
-$general = new General();
+$general = new CommonService();
 $sampleData = [];
 $sampleQuery = 'SELECT vl_sample_id FROM form_vl WHERE sample_code IS NULL AND (sample_package_code LIKE "' . $_POST['samplePackageCode'] . '" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '")';
 $sampleResult = $db->query($sampleQuery);

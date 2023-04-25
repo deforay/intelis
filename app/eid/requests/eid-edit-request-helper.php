@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 
 // echo "<pre>";
 // var_dump($_POST);
@@ -259,7 +259,7 @@ try {
 	//   if ($_POST['sampleCodeCol'] != '') {
 	//     //$eidData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
 	//   } else {
-	//     $eidModel = new \App\Models\Eid();
+	//     $eidModel = new \App\Services\EidService();
 
 	//     $sampleCodeKeysJson = $eidModel->generateEIDSampleCode($_POST['provinceCode'], $_POST['sampleCollectionDate']);
 	//     $sampleCodeKeys = json_decode($sampleCodeKeysJson, true);

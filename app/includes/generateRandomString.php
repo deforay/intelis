@@ -1,13 +1,5 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-$general = new General();
-$randomString =$general->generateRandomString(16);
-
-echo $randomString;
+echo CommonService::generateRandomString(16);

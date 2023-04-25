@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use App\Utilities\MiscUtils;
 
 
 
-$general = new General();
+$general = new CommonService();
 
 $systemType = $general->getSystemConfig('sc_user_type');
 

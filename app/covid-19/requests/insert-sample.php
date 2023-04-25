@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$covid19Model = new Covid19();
+$covid19Model = new Covid19Service();
 echo $covid19Model->insertSampleCode($_POST);

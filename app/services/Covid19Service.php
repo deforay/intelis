@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Covid19
+class Covid19Service
 {
 
     protected $db = null;
@@ -28,7 +28,7 @@ class Covid19
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -75,7 +75,7 @@ class Covid19
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocations($this->db);
+                    $geoLocations = new GeoLocationsService($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -410,8 +410,8 @@ class Covid19
 
     public function insertSampleCode($params)
     {
-        $general = new General();
-        $patientsModel = new Patients();
+        $general = new CommonService();
+        $patientsModel = new PatientsService();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

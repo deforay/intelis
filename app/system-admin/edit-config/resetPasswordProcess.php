@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Users;
+use App\Services\UserService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "system_admin";
-$user = new Users();
+$user = new UserService();
 
 try {
     $userId = base64_decode($_POST['userId']);

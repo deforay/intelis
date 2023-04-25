@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use GuzzleHttp\Client;
 
 
@@ -10,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$userModel = new Users();
+$userModel = new UserService();
 $tableName = "user_details";
 $upId = 0;
 
@@ -34,7 +34,7 @@ try {
 
         if ($fromRecencyAPI === true) {
             $data['user_name'] = $_POST['userName'];
-            $decryptedPassword = General::decrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+            $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
             $data['password'] = $decryptedPassword;
             $db->where('user_name', $data['user_name']);
         } else {
@@ -52,7 +52,7 @@ try {
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
-                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new Client();
                     $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [

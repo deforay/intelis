@@ -13,17 +13,17 @@ function prettyJson($json)
 }
 
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\VlService;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new General();
-$vlModel = new Vl();
-$facilityDb = new Facilities();
+$general = new CommonService();
+$vlModel = new VlService();
+$facilityDb = new FacilitiesService();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 

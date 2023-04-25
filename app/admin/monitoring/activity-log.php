@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 $title = _("User Activity Log");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$userDb = new Users();
+$general = new CommonService();
+$userDb = new UserService();
 $userNameList = $userDb->getAllUsers(null, null, 'drop-down');
 
 $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");

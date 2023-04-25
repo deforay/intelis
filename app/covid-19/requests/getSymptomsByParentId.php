@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
-$general = new General();
+$general = new CommonService();
 $sampleData = [];
 $symptomsQuery = 'SELECT * FROM r_covid19_symptoms where parent_symptom = "' . $_POST['symptomParent'] . '"';
 $covid19Symptoms = $db->query($symptomsQuery);

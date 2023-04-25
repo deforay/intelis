@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -12,8 +12,8 @@ if (session_status() == PHP_SESSION_NONE) {
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 $arr = [];
-$general = new General();
-$usersModel = new Users();
+$general = new CommonService();
+$usersModel = new UserService();
 
 $tableName = "form_eid";
 // echo "<pre>";print_r($_FILES);die;
@@ -31,7 +31,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = General::generateRandomString(12);
+    $ranNumber = CommonService::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 

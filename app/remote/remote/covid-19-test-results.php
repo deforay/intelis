@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -13,9 +13,9 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 $jsonResponse = file_get_contents('php://input');
 
 
-$general = new General();
-$usersModel = new Users();
-$app = new App();
+$general = new CommonService();
+$usersModel = new UserService();
+$app = new ApiService();
 
 $transactionId = $general->generateUUID();
 

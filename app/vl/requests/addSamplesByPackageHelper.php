@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$vlObj = new Vl();
+$general = new CommonService();
+$vlObj = new VlService();
 
 
 $sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'] . ")";

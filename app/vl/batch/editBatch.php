@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 
 
@@ -10,8 +10,8 @@ $title = "Edit Batch";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -264,6 +264,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	var startDate = "";
 	var endDate = "";
 	var resultSampleArray = [];
+	var noOfSamples = $("#machine").find('option:selected').data('no-of-samples');
 
 	function validateNow() {
 
@@ -576,6 +577,28 @@ startDate: moment().subtract(28, 'days'),
 			$('#alertText').html('');
 		}
 	});
+
+	$(document.body).on("change", "#search, #search_to", function() {
+		countOff().then(function(count) {
+			// use the result here
+			if (count > 0) {
+				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+			} else {
+				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+			}
+		});
+	});
+
+	function countOff() {
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				resolve();
+			}, 300);
+		}).then(function() {
+			var count = $("#search_to option").length;
+			return count;
+		});
+	}
 </script>
 
 <?php

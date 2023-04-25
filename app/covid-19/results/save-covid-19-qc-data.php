@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 $tableName = "qc_covid19";
 $tableName1 = "qc_covid19_tests";
 $primaryKey = "qc_id";

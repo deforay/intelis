@@ -1,19 +1,19 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\UserService;
 
 $title = _("Hepatitis | View All Requests");
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
+$geoLocationDb = new GeoLocationsService();
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 

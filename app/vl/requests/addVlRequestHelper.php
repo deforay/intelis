@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,8 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
-$vlModel = new Vl();
+$general = new CommonService();
+$vlModel = new VlService();
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -63,14 +63,14 @@ try {
     } else {
         $_POST['dob'] = null;
     }
-    if(!isset($_POST['isPatientNew'])){
-        if (trim($_POST['isPatientNew']) == '') {
+    if(isset($_POST['countryFormId']) && $_POST['countryFormId']=='3'){
+        if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
             $_POST['isPatientNew'] = null;
             $_POST['dateOfArtInitiation'] = null;
         } else if ($_POST['isPatientNew'] == "yes") {
             //Ser ARV initiation date
             if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-                $_POST['dateOfArtInitiation'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
+                $_POST['dateOfArtInitiation'] = DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
             } else {
                 $_POST['dateOfArtInitiation'] = null;
             }
@@ -483,7 +483,6 @@ try {
         $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
         $pngSpecificFields['qc_date'] = $_POST['qcDate'];
         $pngSpecificFields['report_date'] = $_POST['reportDate'];
-
 
     }
     $vldata = array_merge($vldata, $pngSpecificFields);

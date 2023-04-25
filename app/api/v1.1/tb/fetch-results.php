@@ -1,42 +1,33 @@
 <?php
 
-use App\Models\App;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Tb;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\TbService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$tbDb = new Tb();
-$app = new App();
+$db = \MysqliDb::getInstance();
+
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$tbDb = new TbService();
+$app = new ApiService();
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 /* For API Tracking params */
-$requestUrl .= $_SERVER['HTTP_HOST'];
+$requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-
-// The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
-if (!empty($auth)) {
-    $authToken = str_replace("Bearer ", "", $auth);
-    /* Check if API token exists */
-    $user = $userDb->getAuthToken($authToken);
-}
+$authToken = str_replace("Bearer ", "", $auth);
+$user = $userDb->getUserFromToken($authToken);
 try {
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        http_response_code(401);
-        throw new Exception('Bearer Token Invalid');
-    }
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT 
         vl.app_sample_code                      as appSampleCode,
@@ -129,14 +120,14 @@ try {
     }
 
     /* To check the uniqueId filter */
-    $uniqueId = $input['uniqueId'];
+    $uniqueId = $input['uniqueId'] ?? [];
     if (!empty($uniqueId)) {
         $uniqueId = implode("','", $uniqueId);
         $where[] = " unique_id IN ('$uniqueId')";
     }
 
     /* To check the sample code filter */
-    $sampleCode = $input['sampleCode'];
+    $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
@@ -152,7 +143,7 @@ try {
         $where[] = " DATE(vl.request_created_datetime) >= '" . date('Y-m-d', strtotime($input['lastModifiedDateTime'])) . "'";
     }
 
-    $facilityId = $input['facility'];
+    $facilityId = $input['facility'] ?? [];
     if (!empty($facilityId)) {
         $facilityId = implode("','", $facilityId);
         $where[] = " vl.facility_id IN ('$facilityId') ";
@@ -171,10 +162,12 @@ try {
         $sampleStatus = implode("','", $sampleStatus);
         $where[] = " result_status IN ('$sampleStatus') ";
     }
-
-    $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " limit 100;";
-    // die($sQuery);
+    $whereStr = "";
+    if(!empty($where)){
+        $whereStr = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= $whereStr . " limit 100;";
+    // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
     // No data found
@@ -196,11 +189,6 @@ try {
             'timestamp' => time(),
             'data' => $rowData
         );
-        if (isset($user['token_updated']) && $user['token_updated'] == true) {
-            $payload['token'] = $user['new_token'];
-        } else {
-            $payload['token'] = null;
-        }
         http_response_code(200);
     }
 } catch (Exception $exc) {
@@ -216,4 +204,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

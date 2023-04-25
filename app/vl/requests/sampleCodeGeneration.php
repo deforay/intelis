@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\Vl;
+use App\Services\VlService;
 
 
 
 
 
-$vLModel = new Vl();
+$vLModel = new VlService();
 
 $sampleCollectionDate = $province = '';
 

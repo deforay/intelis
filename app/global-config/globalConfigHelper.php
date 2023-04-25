@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 
@@ -13,7 +13,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "global_config";
 $instanceTableName = "s_vlsm_instance";
 try {

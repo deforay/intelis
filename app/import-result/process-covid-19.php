@@ -3,8 +3,8 @@
 // this file is included in /import-result/procesImportedResults.php
 
 
-use App\Models\Covid19;
-use App\Models\Facilities;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
 use App\Utilities\DateUtils;
 
 $tableName = "temp_sample_import";
@@ -12,8 +12,8 @@ $tableName1 = "form_covid19";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
-$covid19Obj = new Covid19();
-$facilityDb = new Facilities();
+$covid19Obj = new Covid19Service();
+$facilityDb = new FacilitiesService();
 
 
 try {

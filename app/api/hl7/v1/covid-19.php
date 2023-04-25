@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
@@ -9,7 +9,7 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$covid19Model = new Covid19();
+$covid19Model = new Covid19Service();
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
@@ -427,7 +427,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             // http_response_code(204);
             $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'covid19', $requestUrl, $hl7Msg, $returnString, 'hl7');
             unset($ack);
-            exit(0);
+            //exit(0);
         } else {
             $id = $db->insert("form_covid19", $covid19Data);
             $_POST['covid19SampleId'] = $id;

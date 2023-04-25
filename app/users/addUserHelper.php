@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 
@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new Users();
-$general = new General();
+$userDb = new UserService();
+$general = new CommonService();
 
 $tableName = "user_details";
 $tableName2 = "user_facility_map";

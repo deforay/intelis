@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use MysqliDb;
@@ -11,7 +11,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Patients
+class PatientsService
 {
 
     protected $db = null;
@@ -49,7 +49,7 @@ class Patients
 
     public function savePatient($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
         $data['patient_code'] = $params['patientId'];
 
@@ -82,7 +82,7 @@ class Patients
 
     public function updatePatient($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
         $data['patient_code'] = $params['patientId'];
 

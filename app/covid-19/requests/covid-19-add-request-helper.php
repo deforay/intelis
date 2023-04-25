@@ -3,9 +3,9 @@
 ///  if you change anyting in this file make sure Api file for covid 19 add also 
 // Path   /vlsm/api/covid-19/v1/add-request.php
 
-use App\Models\App;
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -14,8 +14,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
-$facilityDb = new Facilities();
+$general = new CommonService();
+$facilityDb = new FacilitiesService();
 
 /* echo "<pre>";
 print_r($_POST);
@@ -329,7 +329,7 @@ try {
 				'timestamp' => time(),
 				'message' => 'Successfully added.'
 			);
-			$app = new App();
+			$app = new ApiService();
 			$trackId = $app->addApiTracking($user['user_id'], 1, 'add-request', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {

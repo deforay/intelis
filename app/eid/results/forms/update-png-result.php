@@ -2,7 +2,7 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
@@ -24,7 +24,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -71,7 +71,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = $_GET['c'];
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Eid();
+    $vlObj = new EidService();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($provinceCode, $sampleCollectionDate, 'png');

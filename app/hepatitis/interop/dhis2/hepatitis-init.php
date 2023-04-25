@@ -1,11 +1,11 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new General();
+$general = new CommonService();
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 $instanceId = $instanceResult['vlsm_instance_id'];

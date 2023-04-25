@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\CommonService;
+use App\Services\UserService;
+use App\Services\VlService;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
@@ -13,9 +13,9 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 
 $db  = MysqliDb::getInstance();
 
-$usersModel = new Users();
-$general = new General();
-$vlDb = new Vl();
+$usersModel = new UserService();
+$general = new CommonService();
+$vlDb = new VlService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 

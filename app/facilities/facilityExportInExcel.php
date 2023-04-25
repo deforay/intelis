@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 
 $excel = new Spreadsheet();
 $output = [];

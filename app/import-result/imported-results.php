@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 require_once(APPLICATION_PATH . '/header.php');
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -19,7 +19,7 @@ if (!empty($tResult['sample_review_by'])) {
 $module = $tResult['module'];
 // echo "<pre>";print_r($module);die;
 
-$general = new General();
+$general = new CommonService();
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {

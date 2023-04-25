@@ -2,9 +2,9 @@
 
 // imported in importedStatistics.php
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
 
 
 $title = _("COVID-19 | Add New Request");
@@ -31,11 +31,9 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-// $general = new \App\Models\General();
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
-// $arr = $general->getGlobalConfig();
-// $sarr = $general->getSystemConfig();
+
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
 
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersModel->getActiveUsers($facilityMap);

@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
-$userDb = new Users();
-$general = new General();
+$userDb = new UserService();
+$general = new CommonService();
 
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from instruments where config_id=?";

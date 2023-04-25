@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -14,9 +14,9 @@ $userName = ($_POST['username']);
 $password = ($_POST['password']);
 
 
-$general = new General();
-$facilityDb = new Facilities();
-$user = new Users();
+$general = new CommonService();
+$facilityDb = new FacilitiesService();
+$user = new UserService();
 
 
 
@@ -32,7 +32,7 @@ try {
         $_GET['u'] = ($_GET['u']);
         $_POST['username'] = base64_decode($_GET['u']);
 
-        $decryptedPassword = General::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+        $decryptedPassword = CommonService::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
         $_POST['password'] = $decryptedPassword;
     }
     //  else {
@@ -119,6 +119,10 @@ try {
 
             if (isset($userRow) && !empty($userRow)) {
 
+                // regenerate session id
+                session_regenerate_id(true);
+
+
                 $user->userHistoryLog($userName, 'successful', $userRow['user_id']);
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
@@ -156,7 +160,7 @@ try {
                 }
                 $_SESSION['crossLoginPass'] = null;
                 if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-                    $_SESSION['crossLoginPass'] = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                    $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 }
                 //Add event log
                 $eventType = 'login';

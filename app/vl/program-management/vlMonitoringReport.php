@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 
 $title = _("VL Quarterly Monitoring Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -27,8 +27,8 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 $testingLabs = $facilitiesDb->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

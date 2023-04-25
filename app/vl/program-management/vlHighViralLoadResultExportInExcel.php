@@ -1,15 +1,10 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
-  
 
-
- 
-$general=new General();
-
-use App\Models\General;
+use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -17,25 +12,18 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-//system config
-$systemConfigQuery ="SELECT * from system_config";
-$systemConfigResult=$db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+$general = new CommonService();
+$sarr = $general->getSystemConfig();
 
-
-if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""){
+if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) != "") {
      $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code','Remote Sample Code',"Facility Name","Patient ART no.","Patient's Name","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
-     if($sarr['sc_user_type']=='standalone') {
-     $headings = array('Sample Code',"Facility Name","Patient ART no.","Patient's Name","Patient phone no.","Sample Collection Date","Sample Tested Date","Lab Name","VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     if ($sarr['sc_user_type'] == 'standalone') {
+          $headings = array('Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
 
      $colNo = 1;
@@ -81,17 +69,17 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
           'hvlPatientBreastfeeding' => 'Is Patient Breastfeeding'
      );
 
-     foreach($_POST as $key=>$value){
-          if(trim($value)!='' && trim($value)!='-- Select --' && trim($key)!='markAsComplete'){
-               $nameValue .= str_replace("_"," ",$key)." : ".$value."&nbsp;&nbsp;";
+     foreach ($_POST as $key => $value) {
+          if (trim($value) != '' && trim($value) != '-- Select --' && trim($key) != 'markAsComplete') {
+               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+          ->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+               ->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -103,46 +91,47 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
      $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
      $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
      $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-     if($sarr['sc_user_type']!='standalone') {
-        $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
+     if ($sarr['sc_user_type'] != 'standalone') {
+          $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
      }
 
      $vlSampleId = [];
      foreach ($rResult as $aRow) {
           $row = [];
           //sample collecion date
-          $sampleCollectionDate = '';$sampleTestDate = '';
-          if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
-               $expStr = explode(" ",$aRow['sample_collection_date']);
+          $sampleCollectionDate = '';
+          $sampleTestDate = '';
+          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
-          if($aRow['sample_tested_datetime']!= null && trim($aRow['sample_tested_datetime'])!='' && $aRow['sample_tested_datetime']!='0000-00-00 00:00:00'){
-               $expStr = explode(" ",$aRow['sample_tested_datetime']);
+          if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", $aRow['sample_tested_datetime']);
                $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if($aRow['patient_first_name']!=''){
-               $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_first_name'] != '') {
+               $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
+          } else {
                $patientFname = '';
           }
-          if($aRow['patient_middle_name']!=''){
-               $patientMname = ($general->crypto('doNothing',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_middle_name'] != '') {
+               $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+          } else {
                $patientMname = '';
           }
-          if($aRow['patient_last_name']!=''){
-               $patientLname = ($general->crypto('doNothing',$aRow['patient_last_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_last_name'] != '') {
+               $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+          } else {
                $patientLname = '';
           }
           $row[] = $aRow['sample_code'];
-          if($sarr['sc_user_type']!='standalone'){
-           $row[] = $aRow['remote_sample_code'];
-            }
+          if ($sarr['sc_user_type'] != 'standalone') {
+               $row[] = $aRow['remote_sample_code'];
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname." ".$patientMname." ".$patientLname);
+          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           $row[] = $aRow['patient_mobile_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
@@ -151,21 +140,21 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
           $vlSampleId[] = $aRow['vl_sample_id'];
           $output[] = $row;
      }
-     if($_POST['markAsComplete']=='true'){
-          $vlId = implode(",",$vlSampleId);
-          if(!empty($vlId))
-               $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (".$vlId.")");
+     if ($_POST['markAsComplete'] == 'true') {
+          $vlId = implode(",", $vlSampleId);
+          if (!empty($vlId))
+               $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (" . $vlId . ")");
      }
 
-     $start = (count($output))+2;
+     $start = (count($output)) + 2;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
                $colNo++;
           }
      }
@@ -173,5 +162,4 @@ if(isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult'])!=""
      $filename = 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
-
 }

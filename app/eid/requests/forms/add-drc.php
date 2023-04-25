@@ -1,7 +1,7 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
@@ -22,7 +22,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -533,7 +533,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<tr>
 											<th scope="row">Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
 											<th scope="row">Approuvé par</th>
 											<td>

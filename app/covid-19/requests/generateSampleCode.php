@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$c19Model = new Covid19();
+$c19Model = new Covid19Service();
 
 $sampleCollectionDate = $province = '';
 

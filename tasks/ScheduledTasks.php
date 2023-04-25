@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use Crunz\Schedule;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-$general = new General();
+$general = new CommonService();
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
 $timeZone = $_SESSION['APP_TIMEZONE'];

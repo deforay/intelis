@@ -1,17 +1,17 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalDb = new General();
-$covid19Obj = new Covid19();
-$facilityDb = new Facilities();
-$userDb = new Users();
+$generalDb = new CommonService();
+$covid19Obj = new Covid19Service();
+$facilityDb = new FacilitiesService();
+$userDb = new UserService();
 
 $covid19Results = $covid19Obj->getCovid19Results();
 $code = $covid19Obj->generateCovid19QcCode();

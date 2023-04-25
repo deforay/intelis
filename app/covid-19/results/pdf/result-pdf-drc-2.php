@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Users;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 class DRC_PDF extends MYPDF
@@ -84,7 +84,7 @@ class DRC_PDF extends MYPDF
     }
 }
 
-$users = new Users();
+$users = new UserService();
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -369,8 +369,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->Output($filename, "F");
     if ($draftTextShow) {
         //Watermark section
-        $watermark = new Watermark();
-        $fullPathToFile = $filename;
+        $watermark = new \App\Helpers\PdfWatermarkHelper();
+        $watermark->setFullPathToFile($filename);
         $watermark->Output($filename, "F");
     }
     $pages[] = $filename;

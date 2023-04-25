@@ -42,3 +42,4 @@ configs/bg.png
 configs/bg.jpg
 secretKey.txt
 vendor
+.user.ini

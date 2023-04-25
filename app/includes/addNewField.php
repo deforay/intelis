@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;

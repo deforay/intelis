@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Tb;
+use App\Services\TbService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$tbModel = new Tb();
+$tbModel = new TbService();
 echo $tbModel->insertSampleCode($_POST);

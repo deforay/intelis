@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -12,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName = "move_samples";
 $primaryKey = "move_sample_id";
 
-$general = new General();
+$general = new CommonService();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */

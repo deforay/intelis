@@ -2,7 +2,7 @@
 
 // imported in /covid-19/results/covid-19-update-result.php based on country in global config
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 
 
@@ -16,7 +16,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 

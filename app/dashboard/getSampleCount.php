@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$facilityDb = new Facilities();
+$general = new CommonService();
+$facilityDb = new FacilitiesService();
 
 $facilityInfo = $facilityDb->getAllFacilities();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";

@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
+use App\Services\VlService;
 
 
 $title = "VL | Add New Request";
@@ -12,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new Facilities();
-$vlDb = new Vl();
-$usersModel = new Users();
+$facilitiesDb = new FacilitiesService();
+$vlDb = new VlService();
+$usersModel = new UserService();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');

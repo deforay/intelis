@@ -2,7 +2,7 @@
 
 // this file is included in /import-result/procesImportedResults.php
 
-use App\Models\Vl;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 $fileName = null;
@@ -162,7 +162,7 @@ try {
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
 
-                    $vlDb = new Vl();
+                    $vlDb = new VlService();
                     $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
@@ -268,7 +268,7 @@ try {
                 }
             }
 
-            $vlDb = new Vl();
+            $vlDb = new VlService();
             $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {

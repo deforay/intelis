@@ -1,10 +1,10 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
+$general = new CommonService();
 $id = base64_decode($_GET['id']);
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer

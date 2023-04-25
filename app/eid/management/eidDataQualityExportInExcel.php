@@ -1,15 +1,9 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
-  
-
-
- 
-$general=new General();
-
-use App\Models\General;
+use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -17,16 +11,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-//system config
-$systemConfigQuery ="SELECT * from system_config";
-$systemConfigResult=$db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+$general = new CommonService();
+$sarr = $general->getSystemConfig();
 
-if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=""){
+if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) != "") {
      // error_log($_SESSION['vlIncompleteForm']);
      $rResult = $db->rawQuery($_SESSION['vlIncompleteForm']);
 
@@ -34,11 +22,11 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
      $output = [];
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code','Remote Sample Code',"Sample Collection Date","Batch Code", "Child Id.", "Child's Name","Facility Name","Province/State","District/County","Sample Type","Result","Status");
-     if($sarr['sc_user_type']=='standalone') {
+     $headings = array('Sample Code', 'Remote Sample Code', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
+     if ($sarr['sc_user_type'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+               unset($headings[$key]);
+          }
      }
 
      $colNo = 1;
@@ -62,17 +50,17 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
 
      $sheet->mergeCells('A1:AE1');
      $nameValue = '';
-     foreach($_POST as $key=>$value){
-          if(trim($value)!='' && trim($value)!='-- Select --'){
-               $nameValue .= str_replace("_"," ",$key)." : ".$value."&nbsp;&nbsp;";
+     foreach ($_POST as $key => $value) {
+          if (trim($value) != '' && trim($value) != '-- Select --') {
+               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+          ->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+               ->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
           $colNo++;
      }
      $sheet->getStyle('A3:M3')->applyFromArray($styleArray);
@@ -81,24 +69,23 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
-          if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
-               $expStr = explode(" ",$aRow['sample_collection_date']);
+          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if($aRow['remote_sample']=='yes'){
+          if ($aRow['remote_sample'] == 'yes') {
                $decrypt = 'remote_sample_code';
-          
-          }else{
+          } else {
                $decrypt = 'sample_code';
           }
 
-          $childName = ($general->crypto('doNothing',$aRow['child_name'],$aRow[$decrypt]));
+          $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
           $row[] = $aRow['sample_code'];
-          if($sarr['sc_user_type']!='standalone'){
-            $row[] = $aRow['remote_sample_code'];
-             }
+          if ($sarr['sc_user_type'] != 'standalone') {
+               $row[] = $aRow['remote_sample_code'];
+          }
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['child_id'];
@@ -112,15 +99,15 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
           $output[] = $row;
      }
 
-     $start = (count($output))+2;
+     $start = (count($output)) + 2;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
                $colNo++;
           }
      }
@@ -128,5 +115,4 @@ if(isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm'])!=
      $filename = 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
-
 }

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
+$general = new CommonService();
 
 
 $gconfig = $general->getGlobalConfig();
@@ -299,7 +299,7 @@ if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_
      $editRequest = true;
      $syncRequest = true;
 }
-$hepatitisDb = new Hepatitis();
+$hepatitisDb = new HepatitisService();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $vlResult = '';

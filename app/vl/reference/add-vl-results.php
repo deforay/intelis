@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
-use App\Models\Instruments;
+use App\Services\CommonService;
+use App\Services\InstrumentsService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$instrumentsDb = new Instruments();
+$general = new CommonService();
+$instrumentsDb = new InstrumentsService();
 $activeInstruments = $instrumentsDb->getInstruments(null, true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null, "-- Select --");
 ?>

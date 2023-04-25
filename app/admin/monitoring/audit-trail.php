@@ -10,14 +10,14 @@
 
 <?php
 
-use App\Models\General;
-use App\Models\System;
+use App\Services\CommonService;
+use App\Services\SystemService;
 
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
+$general = new CommonService();
 
-$activeTestModules = System::getActiveTestModules();
+$activeTestModules = SystemService::getActiveTestModules();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];

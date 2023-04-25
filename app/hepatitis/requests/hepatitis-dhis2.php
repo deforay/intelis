@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 $title = _("Hepatitis | View All Requests");
 // echo "<pre>";
@@ -9,8 +9,8 @@ $title = _("Hepatitis | View All Requests");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();

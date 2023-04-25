@@ -490,6 +490,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                        </div>
+                                                       <p>&nbsp;</p>
                                                        <div class="row">
                                                             <div class="col-md-4">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Requesting Clinician</label>
@@ -700,9 +701,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -749,6 +750,9 @@ $sFormat = '';
                                    </div>
                               </div>
                          </div>
+                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+
                     </form>
                </div>
           </div>
@@ -780,6 +784,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
+        
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -789,6 +794,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
                     $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
+          });
+
+          $("#labId").on('change', function() {
                if ($("#labId").val() != "") {
                     $.post("/includes/get-sample-type.php", {
                               facilityId: $('#labId').val(),
@@ -801,7 +809,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          });
                }
           });
-        /*  $("#sampleCollectionDate").datetimepicker({
+
+          $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
                dateFormat: 'dd-M-yy',
@@ -811,41 +820,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     var dt2 = $('#sampleDispatchedDate');
                     var startDate = $(this).datetimepicker('getDate');
                     var minDate = $(this).datetimepicker('getDate');
-                    //dt2.datetimepicker('setDate', minDate);
+                    dt2.datetimepicker('setDate', minDate);
                     startDate.setDate(startDate.getDate() + 1000000);
                     dt2.datetimepicker('option', 'maxDate', "Today");
                     dt2.datetimepicker('option', 'minDate', minDate);
                     dt2.datetimepicker('option', 'minDateTime', minDate);
+                    dt2.val($(this).val());
                }
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
           });
-          $('#sampleDispatchedDate').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               yearRange: "-100:+100",
-          });*/
-          $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "+1Y");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
@@ -1014,6 +998,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
+         
+          if($("#selectedSample").val()!="")
+          {
+               patientInfo = JSON.parse($("#selectedSample").val());
+               if ($.trim(patientInfo['sample_tested_datetime']) != '') {
+                    $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    
+               }
+               if ($.trim(patientInfo['result']) != '') {
+                         $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                         $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                         $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+               }
+          }
      }
 
      function getProvinceDistricts(obj) {
@@ -1155,7 +1155,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').addClass('isRequired');
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
-               $('#approvedOnDateTime').addClass('isRequired');
+               $('#approvedOn').addClass('isRequired');
                $(".result-optional").removeClass("isRequired");
                $("#reasonForFailure").removeClass('isRequired');
           } else if ($(this).val() == 'no') {
@@ -1171,7 +1171,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').addClass('isRequired');
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
-               $('#approvedOnDateTime').addClass('isRequired');
+               $('#approvedOn').addClass('isRequired');
                //$(".hivDetection").trigger("change");
           } else {
                $(".result-fields").attr("disabled", false);
@@ -1188,7 +1188,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedBy').removeClass('isRequired');
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
-               $('#approvedOnDateTime').removeClass('isRequired');
+               $('#approvedOn').removeClass('isRequired');
                //$(".hivDetection").trigger("change");
           }
      });
@@ -1213,7 +1213,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
 
      $('#vlResult').on('change', function() {
-          if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+          if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
                if ($(this).val().trim().toLowerCase() == 'failed') {
                     $('.reasonForFailure').show();
                     $('#reasonForFailure').addClass('isRequired');
@@ -1358,57 +1358,84 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function setPatientDetails(pDetails) {
-          patientArray = pDetails.split("##");
-          $("#patientFirstName").val(patientArray[0] + " " + patientArray[1]);
-          $("#patientPhoneNumber").val(patientArray[8]);
-          if ($.trim(patientArray[3]) != '') {
-               $("#dob").val(patientArray[3]);
+          $("#selectedSample").val(pDetails);
+          var patientArray = JSON.parse(pDetails);
+       //  alert(pDetails);
+          $("#patientFirstName").val(patientArray['name']);
+          $("#patientPhoneNumber").val(patientArray['mobile']);
+          if ($.trim(patientArray['dob']) != '') {
+               $("#dob").val(patientArray['dob']);
                getAge();
-          } else if ($.trim(patientArray[4]) != '' && $.trim(patientArray[4]) != 0) {
-               $("#ageInYears").val(patientArray[4]);
-          } else if ($.trim(patientArray[5]) != '') {
-               $("#ageInMonths").val(patientArray[5]);
+          } else if ($.trim(patientArray['age_in_years']) != '' && $.trim(patientArray['age_in_years']) != 0) {
+               $("#ageInYears").val(patientArray['age_in_years']);
+          } else if ($.trim(patientArray['age_in_months']) != '') {
+               $("#ageInMonths").val(patientArray['age_in_months']);
           }
 
-          if ($.trim(patientArray[2]) != '') {
-               if (patientArray[2] == 'male' || patientArray[2] == 'not_recorded') {
+          if ($.trim(patientArray['gender']) != '') {
+               $('#breastfeedingYes').removeClass('isRequired');
+               $('#pregYes').removeClass('isRequired');
+               if (patientArray['gender'] == 'male' || patientArray['gender'] == 'not_recorded') {
                     $('.femaleSection').hide();
                     $('input[name="breastfeeding"]').prop('checked', false);
                     $('input[name="patientPregnant"]').prop('checked', false);
-                    if (patientArray[2] == 'male') {
+                    if (patientArray['gender'] == 'male') {
                          $("#genderMale").prop('checked', true);
                     } else {
                          $("#genderNotRecorded").prop('checked', true);
                     }
-               } else if (patientArray[2] == 'female') {
+               } else if (patientArray['gender'] == 'female') {
                     $('.femaleSection').show();
                     $("#genderFemale").prop('checked', true);
-                    if ($.trim(patientArray[6]) != '') {
-                         if ($.trim(patientArray[6]) == 'yes') {
+                    $('#breastfeedingYes').addClass('isRequired');
+                    $('#pregYes').addClass('isRequired');
+                    if ($.trim(patientArray['is_pregnant']) != '') {
+                         if ($.trim(patientArray['is_pregnant']) == 'yes') {
                               $("#pregYes").prop('checked', true);
-                         } else if ($.trim(patientArray[6]) == 'no') {
+                         } else if ($.trim(patientArray['is_pregnant']) == 'no') {
                               $("#pregNo").prop('checked', true);
                          }
                     }
-                    if ($.trim(patientArray[7]) != '') {
-                         if ($.trim(patientArray[7]) == 'yes') {
+                    if ($.trim(patientArray['is_pregnant']) != '') {
+                         if ($.trim(patientArray['is_pregnant']) == 'yes') {
                               $("#breastfeedingYes").prop('checked', true);
-                         } else if ($.trim(patientArray[7]) == 'no') {
+                         } else if ($.trim(patientArray['is_pregnant']) == 'no') {
                               $("#breastfeedingNo").prop('checked', true);
                          }
                     }
                }
           }
-          if ($.trim(patientArray[9]) != '') {
-               if (patientArray[9] == 'yes') {
+          if ($.trim(patientArray['consent_to_receive_sms']) != '') {
+               if (patientArray['consent_to_receive_sms'] == 'yes') {
                     $("#receivesmsYes").prop('checked', true);
-               } else if (patientArray[9] == 'no') {
+               } else if (patientArray['consent_to_receive_sms'] == 'no') {
                     $("#receivesmsNo").prop('checked', true);
                }
           }
-          if ($.trim(patientArray[15]) != '') {
-               $("#artNo").val($.trim(patientArray[15]));
+          if ($.trim(patientArray['patient_art_no']) != '') {
+               $("#artNo").val($.trim(patientArray['patient_art_no']));
           }
+
+          if ($.trim(patientArray['treatment_initiated_date']) != '') {
+               $("#dateOfArtInitiation").val($.trim(patientArray['treatment_initiated_date']));
+          }
+
+          if ($.trim(patientArray['current_regimen']) != '') {
+               $("#artRegimen").val($.trim(patientArray['current_regimen']));
+          }
+
+          if ($.trim(patientArray['sample_tested_datetime']) != '') {
+                    $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+                    
+               }
+               if ($.trim(patientArray['result']) != '') {
+                         $("#rmTestingVlValue").val($.trim(patientArray['result']));
+                         $("#repeatTestingVlValue").val($.trim(patientArray['result']));
+                         $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
+               }
+
      }
 
      function calculateLogValue(obj) {
@@ -1440,4 +1467,5 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#vlResult').val(value);
           }
      }
+
 </script>

@@ -3573,6 +3573,9 @@ ALTER TABLE `r_testing_reasons`
   MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
 
 
+-- Amit 25-Apr-2023
+ALTER TABLE `s_available_country_forms` ADD `short_name` VARCHAR(256) NOT NULL AFTER `form_name`;
+UPDATE `s_available_country_forms` SET `short_name` = 'ssudan' WHERE `s_available_country_forms`.`vlsm_country_id` = 1; UPDATE `s_available_country_forms` SET `short_name` = 'sierra-leone' WHERE `s_available_country_forms`.`vlsm_country_id` = 2; UPDATE `s_available_country_forms` SET `short_name` = 'drc' WHERE `s_available_country_forms`.`vlsm_country_id` = 3; UPDATE `s_available_country_forms` SET `short_name` = 'zambia' WHERE `s_available_country_forms`.`vlsm_country_id` = 4; UPDATE `s_available_country_forms` SET `short_name` = 'png' WHERE `s_available_country_forms`.`vlsm_country_id` = 5; UPDATE `s_available_country_forms` SET `short_name` = 'who' WHERE `s_available_country_forms`.`vlsm_country_id` = 6; UPDATE `s_available_country_forms` SET `short_name` = 'rwanda' WHERE `s_available_country_forms`.`vlsm_country_id` = 7; UPDATE `s_available_country_forms` SET `short_name` = 'angola' WHERE `s_available_country_forms`.`vlsm_country_id` = 8;
 -- ilahir 24-Apr-2023
 
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('common-symptoms', 'admin', 'Common Symptoms Table');

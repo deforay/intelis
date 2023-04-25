@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Models\Vl;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 
@@ -130,7 +130,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-	$vlObj = new Vl();
+	$vlObj = new VlService();
 	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
 	$sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
 	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
@@ -341,8 +341,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 										</td>
 									</tr>
-
-									<tr class="femaleFactor" <?php if($vlQueryInfo['patient_gender'] == 'female') echo "style='display:block;'"; else echo "style='display:none;'" ?> >
+<?php if($vlQueryInfo['patient_gender'] == 'female') { ?> 
+									<tr class="femaleFactor">
 										<td class="labels">
 											<label for="patientPregnant">Patient Pregnant ?</label>
 										</td>
@@ -368,6 +368,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td></td>
 										<td></td>
 									</tr>
+<?php } ?>
 									<tr>
 										<td class="labels"><label for="dob">Date Of Birth</label></td>
 										<td>
@@ -487,7 +488,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<input type="radio" id="defaulter" name="reasonForVLTesting" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer" <?php echo ($vlQueryInfo['reason_testing_png'] == 'VL (after 3 months EAC)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'VL (after 3 months EAC)') ? "checked='checked'" : "" ?>>VL (after 3 months EAC)
 											</label>&nbsp;&nbsp;
 										</td>
-										<td colspan="3">
+										<!--<td colspan="3">
 											<label for="other">Other</label><br />
 											<label class="radio-inline">
 												<input type="radio" id="other" name="reasonForVLTesting" value="Re-collection requested by lab" title="Please check Other" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "checked='checked'" : "" ?>>Re-collection requested by lab
@@ -496,7 +497,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<label class="radio-inline">
 												<input type="text" class="form-control" id="reason" name="reason" placeholder="Enter Reason" title="Enter Reason" style="width:100%;" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "" : "readonly='readonly'" ?> value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>" />
 											</label>
-										</td>
+										</td>-->
 									</tr>
 									<tr>
 										<td colspan="2" style="font-size: 18px; font-weight: bold;">Section 5: Specimen information </td>
@@ -563,8 +564,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<?php } ?>
 											</select>
 										</td>
-										<td class="rejectionReason labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
-										<td class="rejectionReason" style="display: none;"><input value="<?php echo DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+										<td class="rejectionReason labels" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>">Rejection Date<span class="mandatory">*</span></td>
+										<td class="rejectionReason" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"><input value="<?php echo DateUtils::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
 									<tr>
 										<td class="labId labels"><label for="labId">Laboratory Name</label></td>
@@ -582,9 +583,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<?php } ?>
 											</select>
 										</td>
-										<td class="receivedDate labels"><label for="receivedDate">Date Received</label></td>
+										<td class="sampleReceivedDate labels"><label for="sampleReceivedDate">Date Received</label></td>
 										<td>
-											<input type="text" class="form-control" name="receivedDate" id="receivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
+											<input type="text" class="form-control" name="sampleReceivedDate" id="sampleReceivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
 										</td>
 									</tr>
 									<tr>
@@ -607,17 +608,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
+										
+									</tr>
+									<tr>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result</label></td>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
 											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
-											<datalist id="possibleVlResults">
-
-</datalist>
+											<datalist id="possibleVlResults"></datalist>
 										</td>
-										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
-										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
-									</tr>
-									<tr>
+										<!--<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
+										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>-->
 										<td class="labels"><label for="batchQuality">Batch quality</label></td>
 										<td>
 											<label class="radio-inline">
@@ -636,7 +636,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<input type="radio" id="failed" name="testQuality" value="invalid" title="Test Quality" <?php echo ($vlQueryInfo['sample_test_quality'] == 'invalid') ? "checked='checked'" : "" ?>>Invalid
 											</label>
 										</td>
-										<td class="labels"><label for="batchNo">Batch</label></td>
+									</tr>
+									<tr>
+									<td class="labels"><label for="batchNo">Batch</label></td>
 										<td>
 											<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
@@ -647,7 +649,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
-									</tr>
+											</tr>
 									<tr>
 										<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 									</tr>
@@ -661,7 +663,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>
@@ -767,6 +769,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 						<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
 						<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
 					</div>
@@ -811,6 +814,22 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 			else
 				$(".femaleFactor").hide();
 		});
+		$("input[name='typeOfSample']").click(function(){
+			if($(this).val()=="DBS")
+			{
+				$("#plasmaOne,#plasmaTwo").val("");
+				$("#wholeBloodOne,#wholeBloodTwo").val("");
+			}
+			else if($(this).val()=="Whole blood")
+			{
+				$("#plasmaOne,#plasmaTwo").val("");
+			}
+			else if($(this).val()=="Plasma")
+			{
+				$("#wholeBloodOne,#wholeBloodTwo").val("");
+			}
+		});
+		
 		//getfacilityProvinceDetails($("#fName").val());
 		$('.date').datepicker({
 			changeMonth: true,
@@ -823,9 +842,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		});
 		$('.date').mask('99-aaa-9999');
 
-		$('#sampleCollectionDate,#receivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
+		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
 
-		$('#sampleCollectionDate,#receivedDate,#testDate,#failedTestDate').datetimepicker({
+		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',

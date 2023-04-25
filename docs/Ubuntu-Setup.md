@@ -19,7 +19,7 @@ export LC_ALL=en_US.UTF-8;
 sudo update-locale ;
 sudo apt install software-properties-common  \
 gnupg apt-transport-https ca-certificates \
-lsb-release wget vim zip unzip curl  \
+lsb-release wget vim zip unzip curl \
 acl snapd rsync git gdebi wget gedit -y;
 ```
 

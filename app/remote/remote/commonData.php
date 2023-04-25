@@ -1,6 +1,6 @@
 <?php
 //get data from remote db send to lab db
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
@@ -9,7 +9,7 @@ ini_set('max_execution_time', -1);
 
 header('Content-Type: application/json');
 
-$general = new General();
+$general = new CommonService();
 
 $payload = [];
 

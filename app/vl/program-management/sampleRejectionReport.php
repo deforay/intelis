@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Facilities;
+use App\Services\FacilitiesService;
 
 $title = _("Sample Rejection Report");
 
@@ -14,7 +14,7 @@ $sResult = $db->rawQuery($sQuery);
 
 
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('vl');

@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 
 $title = "TB | Add New Request";
@@ -32,9 +32,9 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$general = new General();
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
 
 /* Get Active users for approved / reviewed / examined by */
 $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);

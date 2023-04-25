@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,12 +10,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 
 $sarr = $general->getSystemConfig();
 
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 

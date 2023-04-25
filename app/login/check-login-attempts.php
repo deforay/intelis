@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $db = MysqliDb::getInstance();
 $loginId = (trim($_POST['loginId']));
-$general = new General();
+$general = new CommonService();
 $ipAddress = $general->getIpAddress();
 $data = 0;
 $ipdata = 0;

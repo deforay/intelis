@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\System;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\SystemService;
 
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
-$facilityDb = new Facilities();
+$general = new CommonService();
+$facilityDb = new FacilitiesService();
 $labNameList = $facilityDb->getTestingLabs();
 
 $sources = array(
@@ -19,7 +19,7 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
-$activeTestModules = System::getActiveTestModules();
+$activeTestModules = SystemService::getActiveTestModules();
 
 ?>
 <style>

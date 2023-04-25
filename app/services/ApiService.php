@@ -6,12 +6,12 @@
  * @author Amit
  */
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use MysqliDb;
 
-class App
+class ApiService
 {
 
     protected $db = null;
@@ -24,6 +24,7 @@ class App
     public function generateSelectOptions($options)
     {
         $i = 0;
+        $response = array();
         foreach ($options as $key => $show) {
             $response[$i]['value'] = $key;
             $response[$i]['show'] = $show;
@@ -34,7 +35,7 @@ class App
 
     public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new Facilities($this->db);
+        $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT hf.test_type, 
                         f.facility_id, 
                         f.facility_name, 
@@ -115,7 +116,7 @@ class App
 
     public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new Facilities($this->db);
+        $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl 
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
@@ -162,8 +163,8 @@ class App
             $response[$key]['district'] = $row['facility_district'];
             if (!$module) {
                 $response[$key]['test_type'] = $row['test_type'];
-                $response[$key]['monthly_target'] = $row['monthly_target'];
-                $response[$key]['suppressed_monthly_target'] = $row['suppressed_monthly_target'];
+                $response[$key]['monthly_target'] = (isset($row['monthly_target']) && !empty($row['monthly_target']))?$row['monthly_target']:0;
+                $response[$key]['suppressed_monthly_target'] = (isset($row['suppressed_monthly_target']) && !empty($row['suppressed_monthly_target']))?$row['suppressed_monthly_target']:0;
             }
             // $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
             // $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
@@ -173,7 +174,7 @@ class App
 
     public function getProvinceDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new Facilities($this->db);
+        $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
@@ -211,7 +212,7 @@ class App
 
     public function getDistrictDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new Facilities($this->db);
+        $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
                     from geographical_divisions AS gd 
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
@@ -282,7 +283,7 @@ class App
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $params = null, $format = null)
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $data = array(
             'requested_by' => $user ?: 'vlsm-system',
             'requested_on' => DateUtils::getCurrentDateTime(),

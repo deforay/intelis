@@ -4,12 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
-
-$general = new General();
-
-use App\Models\Covid19;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -18,8 +14,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-
-$covid19Obj = new Covid19();
+$general = new CommonService();
+$covid19Obj = new Covid19Service();
 $covid19Symptoms = $covid19Obj->getCovid19Symptoms();
 $covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
 

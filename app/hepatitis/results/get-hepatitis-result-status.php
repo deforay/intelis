@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -27,8 +27,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 
-$general = new General();
-$hepatitisDb = new Hepatitis();
+$general = new CommonService();
+$hepatitisDb = new HepatitisService();
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 
 

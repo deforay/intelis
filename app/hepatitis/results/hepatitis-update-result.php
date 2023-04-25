@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Hepatitis;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
+use App\Services\UserService;
 
 
 $title = "Enter Hepatitis Result";
@@ -12,10 +12,10 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$general = new General();
-$facilitiesDb = new Facilities();
-$userDb = new Users();
-$hepatitisDb = new Hepatitis();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$userDb = new UserService();
+$hepatitisDb = new HepatitisService();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

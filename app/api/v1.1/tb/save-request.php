@@ -1,19 +1,22 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Tb;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\TbService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
+
+$db = \MysqliDb::getInstance();
+
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $tbModel = new Tb();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $tbModel = new TbService();
 
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -24,26 +27,9 @@ try {
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
-
     $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        /* Check if API token exists */
-        $user = $userDb->getAuthToken($authToken);
-    }
-
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
-        http_response_code(401);
-        echo json_encode($response);
-        exit(0);
-    }
+    $authToken = str_replace("Bearer ", "", $auth);
+    $user = $userDb->getUserFromToken($authToken);
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = [];
 
@@ -172,8 +158,10 @@ try {
 
         $id = 0;
         if ($rowData) {
-            $db = $db->where('tb_id', $rowData['tb_id']);
-            $id = $db->update("form_tb", $tbData);
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('tb_id', $rowData['tb_id']);
+                $id = $db->update("form_tb", $tbData);
+            }
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
             $id = $db->insert("form_tb", $tbData);
@@ -368,9 +356,11 @@ try {
         }
         $id = 0;
         if (!empty($data['tbSampleId'])) {
-            $db = $db->where('tb_id', $data['tbSampleId']);
-            $id = $db->update($tableName, $tbData);
-           // error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('tb_id', $data['tbSampleId']);
+                $id = $db->update($tableName, $tbData);
+                // error_log($db->getLastError());
+            }
         }
         /* echo "<pre>";
         print_r($id);
@@ -421,17 +411,12 @@ try {
             'message' => $msg
         );
     }
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
-    }
 
     $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 
     http_response_code(200);
     echo json_encode($payload);
-    exit(0);
+    // exit(0); 
 } catch (Exception $exc) {
 
     // http_response_code(500);
@@ -447,5 +432,5 @@ try {
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
+    // exit(0); 
 }

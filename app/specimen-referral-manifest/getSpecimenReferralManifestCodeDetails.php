@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -9,8 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 //system config
 $sarr = $general->getSystemConfig();
 $facilityMap = null;

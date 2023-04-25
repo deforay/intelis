@@ -5,7 +5,7 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
-use App\Models\Tb;
+use App\Services\TbService;
 use App\Utilities\DateUtils;
 
 
@@ -30,7 +30,7 @@ foreach ($testPlatformResult as $row) {
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$tbObj = new Tb();
+$tbObj = new TbService();
 $tbXPertResults = $tbObj->getTbResults('x-pert');
 $tbLamResults = $tbObj->getTbResults('lam');
 $specimenTypeResult = $tbObj->getTbSampleTypes();

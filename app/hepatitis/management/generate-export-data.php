@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -15,9 +15,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new General();
+$general = new CommonService();
 
-$hepatitisObj = new Hepatitis();
+$hepatitisObj = new HepatitisService();
 $hepatitisResults = $hepatitisObj->gethepatitisResults();
 $sarr = $general->getSystemConfig();
 /* Global config data */

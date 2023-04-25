@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
  
@@ -26,7 +26,7 @@ $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
 
 $module = $tResult['module'];
 
-$general = new General();
+$general = new CommonService();
 
 if ($module == 'vl') {
   require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');

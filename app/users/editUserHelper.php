@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use App\Utilities\ImageResize;
 use GuzzleHttp\Client;
@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new Users();
-$general = new General();
+$userDb = new UserService();
+$general = new CommonService();
 
 
 $userId = base64_decode($_POST['userId']);
@@ -63,7 +63,7 @@ try {
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new Client();
                 $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
-                $newCrossLoginPassword = General::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],

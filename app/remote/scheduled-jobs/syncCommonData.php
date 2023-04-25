@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\App;
-use App\Models\General;
+use App\Services\ApiService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -18,8 +18,8 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-$general = new General();
-$app = new App();
+$general = new CommonService();
+$app = new ApiService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;

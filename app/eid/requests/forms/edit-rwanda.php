@@ -2,7 +2,7 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
@@ -18,7 +18,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -63,7 +63,7 @@ $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 $sCode = $_GET['c'] ?? null;
 if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
-    $vlObj = new Eid();
+    $vlObj = new EidService();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
     $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
@@ -463,7 +463,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         </tr>
                                         <tr>
                                             <th scope="row">Approved On</td>
-                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
+                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th scope="row">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 
@@ -8,7 +8,7 @@ $title = "Edit Batch Position";
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
+$general = new CommonService();
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("Location:eid-batches.php");

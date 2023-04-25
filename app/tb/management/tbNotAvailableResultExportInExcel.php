@@ -4,18 +4,15 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
-
-
-$general = new General();
-
-use App\Models\General;
+use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+
+$general = new CommonService();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";

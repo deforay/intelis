@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
+$general = new CommonService();
 $whereCondition = '';
 // $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 // $configFormResult = $db->rawQuery($configFormQuery);

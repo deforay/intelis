@@ -1,39 +1,20 @@
 <?php
 
-use App\Models\App;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
-// Allow from any origin
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
-
-// Access-Control headers are received during OPTIONS requests
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
-    exit(0);
-}
-
-
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$app = new App();
+$db = \MysqliDb::getInstance();
+
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$app = new ApiService();
 $arr = $general->getGlobalConfig();
 $user = null;
 
@@ -42,24 +23,10 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $input = json_decode($params, true);
-
-// if(empty($params) || empty($input)){
-//     throw new \Exception("Input parameters are missing");
-// }
-
-// The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
-if (!empty($auth)) {
-    $authToken = str_replace("Bearer ", "", $auth);
-    /* Check if API token exists */
-    $user = $userDb->getAuthToken($authToken);
-}
+$authToken = str_replace("Bearer ", "", $auth);
+$user = $userDb->getUserFromToken($authToken);
 try {
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        http_response_code(401);
-        throw new Exception('Bearer Token Invalid');
-    }
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT 
         vl.app_sample_code                             as appSampleCode,
@@ -190,14 +157,14 @@ try {
     }
 
     /* To check the uniqueId filter */
-    $uniqueId = $input['uniqueId'];
+    $uniqueId = $input['uniqueId'] ?? [];
     if (!empty($uniqueId)) {
         $uniqueId = implode("','", $uniqueId);
         $where[] = " unique_id IN ('$uniqueId')";
     }
 
     /* To check the sample code filter */
-    $sampleCode = $input['sampleCode'];
+    $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') )";
@@ -205,7 +172,7 @@ try {
     /* To check the facility and date range filter */
     $from = $input['sampleCollectionDate'][0];
     $to = $input['sampleCollectionDate'][1];
-    $facilityId = $input['facility'];
+    $facilityId = $input['facility'] ?? [];
     if (!empty($from) && !empty($to) && !empty($facilityId)) {
         $where[] = " DATE(vl.sample_collection_date) between '$from' AND '$to' ";
 
@@ -236,7 +203,7 @@ try {
 
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " limit 100;";
-    // die($sQuery);
+    // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
     // No data found
@@ -256,11 +223,6 @@ try {
             'timestamp' => time(),
             'data' => $rowData
         );
-        if (isset($user['token_updated']) && $user['token_updated'] === true) {
-            $payload['token'] = $user['new_token'];
-        } else {
-            $payload['token'] = null;
-        }
 
         http_response_code(200);
     }
@@ -279,4 +241,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'vl', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

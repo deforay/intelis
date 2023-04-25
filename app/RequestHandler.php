@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Models\General;
+use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -14,7 +14,7 @@ class RequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $db = \MysqliDb::getInstance();
-        $general = new General();
+        $general = new CommonService();
 
         // Get the requested URI
         $uri = $request->getUri()->getPath();

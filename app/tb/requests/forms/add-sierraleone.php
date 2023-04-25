@@ -5,7 +5,7 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
-use App\Models\Tb;
+use App\Services\TbService;
 
 
 
@@ -33,7 +33,7 @@ $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_sta
 $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
-$tbObj = new Tb();
+$tbObj = new TbService();
 
 
 $tbXPertResults = $tbObj->getTbResults('x-pert');

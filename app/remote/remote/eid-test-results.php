@@ -1,9 +1,9 @@
 <?php
 //this file receives the lab results and updates in the remote db
 
-use App\Models\App;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -20,9 +20,9 @@ for ($i = 0; $i < sizeof($cResult); $i++) {
     $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
 
-$general = new General();
-$usersModel = new Users();
-$app = new App();
+$general = new CommonService();
+$usersModel = new UserService();
+$app = new ApiService();
 $sampleCodes = $facilityIds = [];
 $labId = null;
 

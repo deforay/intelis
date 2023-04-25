@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
@@ -10,7 +10,7 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -373,7 +373,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             // http_response_code(204);
             unset($ack);
             $trackId = $general->addApiTracking($transactionId, $user['user_id'], count($rowData), $type[1], 'eid', $_SERVER['REQUEST_URI'], $hl7Msg, $returnString, 'hl7');
-            exit(0);
+            //exit(0);
         } else {
             $id = $db->insert("form_eid", $eidData);
             $_POST['eidSampleId'] = $id;

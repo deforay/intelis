@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -20,7 +20,7 @@ if ($_POST['testType'] == 'vl') {
     $table = 'form_tb';
 }
 
-$general = new General();
+$general = new CommonService();
 try {
     if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && count($_POST['packageCode']) > 0) {
         $value = array(

@@ -2,17 +2,17 @@
 
 // this file is included in /vl/interop/fhir/vl-receive.php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Vl;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new General();
-$vlModel = new Vl();
+$general = new CommonService();
+$vlModel = new VlService();
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -33,7 +33,7 @@ $metaResource = $parser->parse($json);
 $db = MysqliDb::getInstance();
 
 $entries = $metaResource->getEntry();
-$facilityDb = new Facilities();
+$facilityDb = new FacilitiesService();
 
 foreach ($entries as $entry) {
     $resource = $entry->getResource();

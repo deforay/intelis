@@ -1,13 +1,12 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
-
-$general = new General();
-$usersModel = new Users();
-$facilitiesModel = new Facilities();
+$general = new CommonService();
+$usersModel = new UserService();
+$facilitiesModel = new FacilitiesService();
 
 $_SESSION['module'] = $_SESSION['module'] ?? array();
 

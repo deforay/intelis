@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTime;
@@ -12,9 +12,10 @@ use MysqliDb;
  * @author Amit
  */
 
-class Users
+class UserService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $systemConfig = null;
     protected $table = 'user_details';
@@ -225,7 +226,7 @@ class Users
         return $this->db->rawQueryOne($uQuery, array($userId));
     }
 
-    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime =null)
+    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
     {
 
         if (!empty($facilityMap)) {
@@ -236,7 +237,7 @@ class Users
         if ($status == 'active') {
             $this->db->where("status='active'");
         }
-        
+
         if ($updatedDateTime) {
             $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
@@ -255,7 +256,7 @@ class Users
         }
     }
 
-    public function getActiveUsers($facilityMap = null, $updatedDateTime =null)
+    public function getActiveUsers($facilityMap = null, $updatedDateTime = null)
     {
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
@@ -266,7 +267,7 @@ class Users
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new General();
+            $general = new CommonService();
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -284,6 +285,29 @@ class Users
     }
 
 
+    public function getUserFromToken($token = null): ?array
+    {
+        if (empty($token)) {
+            return null;
+        }
+
+        $this->db->where('api_token', $token);
+        $this->db->where('status', 'active');
+        return $this->db->getOne($this->table);
+    }
+
+    public function validateAuthToken($token = null): bool
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $this->db->where('api_token', $token);
+        $this->db->where('status', 'active');
+        $result = $this->db->getOne($this->table, array('user_id'));
+
+        return empty($result) ? false : true;
+    }
 
     public function getAuthToken($token = null, $userId = null)
     {
@@ -308,7 +332,7 @@ class Users
         //error_log($this->db->getLastQuery());
         // $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
         // $result = $this->db->rawQueryOne($query, array($token));
-        $tokenExpiration = !empty($result['api_token_exipiration_days']) ? $result['api_token_exipiration_days'] : 0;
+        $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
 
 
         $id = false;
@@ -321,7 +345,7 @@ class Users
                 $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
-                $general = new General($this->db);
+                $general = new CommonService($this->db);
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
                 $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
 
@@ -379,7 +403,7 @@ class Users
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;

@@ -1,22 +1,22 @@
 <?php
 
-use App\Models\App;
-use App\Models\Eid;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\EidService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
+$db = \MysqliDb::getInstance();
 
 try {
 
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $eidModel = new Eid();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $eidModel = new EidService();
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -30,27 +30,11 @@ try {
     }
 
     /* For API Tracking params */
-    $requestUrl .= $_SERVER['HTTP_HOST'];
+    $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-
     $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        /* Check if API token exists */
-        $user = $userDb->getAuthToken($authToken);
-    }
-
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        // $response = array(
-        //     'status' => 'failed',
-        //     'timestamp' => time(),
-        //     'error' => 'Bearer Token Invalid',
-        //     'data' => array()
-        // );
-        http_response_code(401);
-        throw new Exception(_("Bearer Token Invalid"));
-    }
+    $authToken = str_replace("Bearer ", "", $auth);
+    $user = $userDb->getUserFromToken($authToken);
     $roleUser = $userDb->getUserRole($user['user_id']);
 
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
@@ -185,8 +169,10 @@ try {
 
         $id = 0;
         if (isset($rowData) && $rowData['eid_id'] > 0) {
-            $db = $db->where('eid_id', $rowData['eid_id']);
-            $id = $db->update("form_eid", $eidData);
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('eid_id', $rowData['eid_id']);
+                $id = $db->update("form_eid", $eidData);
+            }
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
             $id = $db->insert("form_eid", $eidData);
@@ -439,12 +425,6 @@ try {
         );
     }
 
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
-    }
-
     http_response_code(200);
 } catch (Exception $exc) {
 
@@ -462,4 +442,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

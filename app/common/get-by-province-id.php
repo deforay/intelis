@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\GeoLocations;
+use App\Services\GeoLocationsService;
 
-$geoLocationDb = new GeoLocations();
+$geoLocationDb = new GeoLocationsService();
 $list = [];
 
 if(isset($_POST['provinceId']))

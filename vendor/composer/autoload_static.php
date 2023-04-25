@@ -4,24 +4,25 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
+class ComposerStaticInit21cd089b0bfdd1204bea2ad5184b646e
 {
     public static $files = array (
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
-        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '07d7f1a47144818725fd8d91a907ac57' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/create_uploaded_file.php',
         'da94ac5d3ca7d2dbab84ce561ce72bfd' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_headers_from_sapi.php',
@@ -48,8 +49,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         '44f5a19d6d262baf7ab55c8a8bb56f5a' => __DIR__ . '/..' . '/laminas/laminas-stratigility/src/functions/middleware.legacy.php',
         'dd89a2771fc24829c6aade9a7786bd8f' => __DIR__ . '/..' . '/laminas/laminas-stratigility/src/functions/path.legacy.php',
         '9e4824c5afbdc1482b6025ce3d4dfde8' => __DIR__ . '/..' . '/league/csv/src/functions_include.php',
+        'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        'ed33d19cba977f2a7e321f120d94a872' => __DIR__ . '/..' . '/spatie/once/src/functions.php',
         '71ecd0286a4e74fd8732297fb587023c' => __DIR__ . '/..' . '/thingengineer/mysqli-database-class/MysqliDb.php',
         'd383f1ec7b1e54a09cb53eb6fcf751e0' => __DIR__ . '/..' . '/thingengineer/mysqli-database-class/dbObject.php',
     );
@@ -101,6 +104,9 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
             'Symfony\\Component\\DependencyInjection\\' => 38,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
+            'Spatie\\Once\\' => 12,
+            'Slim\\Psr7\\' => 10,
+            'Slim\\' => 5,
         ),
         'R' => 
         array (
@@ -117,6 +123,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
+            'PhpDocReader\\' => 13,
             'ParagonIE\\ConstantTime\\' => 23,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
@@ -146,6 +153,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             'JsonMachine\\' => 12,
         ),
+        'I' => 
+        array (
+            'Invoker\\' => 8,
+        ),
         'H' => 
         array (
             'Hackzilla\\PasswordGenerator\\' => 28,
@@ -159,6 +170,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'F' => 
         array (
             'Fig\\Http\\Message\\' => 17,
+            'FastRoute\\' => 10,
         ),
         'E' => 
         array (
@@ -168,6 +180,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             'Doctrine\\Deprecations\\' => 22,
             'Doctrine\\Common\\Lexer\\' => 22,
+            'DI\\' => 3,
         ),
         'C' => 
         array (
@@ -182,7 +195,8 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'A' => 
         array (
             'App\\Utilities\\' => 14,
-            'App\\Models\\' => 11,
+            'App\\Services\\' => 13,
+            'App\\Middleware\\Api\\' => 19,
             'App\\Middleware\\' => 15,
             'App\\Interop\\' => 12,
             'App\\Helpers\\' => 12,
@@ -309,6 +323,18 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
+        'Spatie\\Once\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/once/src',
+        ),
+        'Slim\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/psr7/src',
+        ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
@@ -350,6 +376,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'PhpOffice\\PhpSpreadsheet\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
+        'PhpDocReader\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/phpdoc-reader/src/PhpDocReader',
         ),
         'ParagonIE\\ConstantTime\\' => 
         array (
@@ -415,6 +445,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             0 => __DIR__ . '/..' . '/halaxa/json-machine/src',
         ),
+        'Invoker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/invoker/src',
+        ),
         'Hackzilla\\PasswordGenerator\\' => 
         array (
             0 => __DIR__ . '/..' . '/hackzilla/password-generator',
@@ -435,6 +469,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             0 => __DIR__ . '/..' . '/fig/http-message-util/src',
         ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
         'Egulias\\EmailValidator\\' => 
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/src',
@@ -446,6 +484,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/src',
+        ),
+        'DI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/php-di/src',
         ),
         'Crunz\\' => 
         array (
@@ -467,9 +509,13 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             0 => __DIR__ . '/../..' . '/app/utilities',
         ),
-        'App\\Models\\' => 
+        'App\\Services\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app/models',
+            0 => __DIR__ . '/../..' . '/app/services',
+        ),
+        'App\\Middleware\\Api\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/middlewares/api',
         ),
         'App\\Middleware\\' => 
         array (
@@ -532,10 +578,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit21cd089b0bfdd1204bea2ad5184b646e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit21cd089b0bfdd1204bea2ad5184b646e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit21cd089b0bfdd1204bea2ad5184b646e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit21cd089b0bfdd1204bea2ad5184b646e::$classMap;
 
         }, null, ClassLoader::class);
     }

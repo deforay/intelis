@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 $title = "Enter Covid-19 Result";
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
+$general = new CommonService();
 $id = base64_decode($_GET['id']);
 
 $configQuery = "SELECT * from global_config";

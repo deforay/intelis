@@ -91,7 +91,7 @@ if (trim($facilityResult[0]['facility_state']) != '') {
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 // if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-//      $vlObj = new \App\Models\Vl();
+//      $vlObj = new \App\Services\VlService();
 //      $sampleCollectionDate = explode(" ", $sampleCollectionDate);
 //      $sampleCollectionDate = \App\Utilities\DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
 //      $sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['province_code'], $sampleCollectionDate);
@@ -776,6 +776,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
                                              <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
                                              <input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+                                             <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
                                              <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
                                              <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                         </div>
@@ -891,7 +892,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                          if (data != "") {
                               details = data.split("###");
                               $("#fName").html(details[0]);
-                              $("#labId").html(details[1]);
+                              //$("#labId").html(details[1]);
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');

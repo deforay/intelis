@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
 
-$general = new General();
+$general = new CommonService();
 $id = base64_decode($_GET['id']);
 
 $showPatientName = false;

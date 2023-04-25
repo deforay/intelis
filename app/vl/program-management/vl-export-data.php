@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

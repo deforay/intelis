@@ -611,7 +611,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			else
 				$(".femaleFactor").hide();
 		});
-
+		$("input[name='typeOfSample']").click(function(){
+			if($(this).val()=="DBS")
+			{
+				$("#plasmaOne,#plasmaTwo").val("");
+				$("#wholeBloodOne,#wholeBloodTwo").val("");
+			}
+			else if($(this).val()=="Whole blood")
+			{
+				$("#plasmaOne,#plasmaTwo").val("");
+			}
+			else if($(this).val()=="Plasma")
+			{
+				$("#wholeBloodOne,#wholeBloodTwo").val("");
+			}
+		});
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,

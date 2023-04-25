@@ -2,7 +2,7 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
 
@@ -17,7 +17,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 
@@ -563,7 +563,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<tr>
 											<th scope="row">Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
 											<th scope="row">Approuvé par</th>
 											<td>
