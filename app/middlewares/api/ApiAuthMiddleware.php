@@ -2,6 +2,7 @@
 
 namespace App\Middleware\Api;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -15,7 +16,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
     {
         $this->userModel = $userModel;
     }
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): Response
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         
         if ($this->shouldExcludeFromAuthCheck($request)) {
@@ -37,7 +38,24 @@ class ApiAuthMiddleware implements MiddlewareInterface
         }
 
         // If the token is valid, proceed to the next middleware
-        return $handler->handle($request);
+        $response = $handler->handle($request);
+
+
+        // Check if the token needs to be reset and get the new token
+        $newToken = $this->checkAndResetTokenIfNeeded($token);
+
+        if ($newToken !== null) {
+            // Add the new_token to the response object
+            $responseBody = json_decode($response->getBody(), true);
+            $responseBody['new_token'] = $newToken;
+            $responseBody['token_updated'] = true;
+            $response->getBody()->rewind();
+            $response->getBody()->write(json_encode($responseBody));
+        }
+
+        return $response;
+
+
     }
 
     private function getTokenFromAuthorizationHeader(string $authorization): ?string
@@ -55,6 +73,16 @@ class ApiAuthMiddleware implements MiddlewareInterface
         }
 
         return $this->userModel->validateAuthToken($token);
+    }
+
+    private function checkAndResetTokenIfNeeded(string $token): ?string
+    {
+        $user = $this->userModel->getAuthToken($token);
+        if (isset($user['token_updated']) && $user['token_updated'] === true) {
+            return $user['new_token'];
+        } else {
+            return null;
+        }
     }
 
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool

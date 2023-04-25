@@ -36,7 +36,6 @@ class TokenResetMiddleware implements MiddlewareInterface
         // Check if the token needs to be reset and get the new token
         $newToken = $this->checkAndResetTokenIfNeeded($token);
 
-
         if ($newToken !== null) {
             // Add the new_token to the response object
             $responseBody = json_decode($response->getBody(), true);

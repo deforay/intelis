@@ -8,7 +8,6 @@ use Slim\Factory\AppFactory;
 use App\Services\UserService;
 use App\Middleware\Api\ApiAuthMiddleware;
 use Tuupola\Middleware\CorsMiddleware;
-use App\Middleware\Api\TokenResetMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middleware\Api\LegacyFallbackMiddleware;
 use function Laminas\Stratigility\middleware;
@@ -68,8 +67,6 @@ $app->any('/api/v1.1/init', function ($request, $response, $args) {
 $middlewarePipe->pipe(new LegacyFallbackMiddleware());
 
 
-// 5. Checking if Token needs to be reset using TokenResetMiddleware
-$middlewarePipe->pipe(new TokenResetMiddleware($userModel));
 
 
 $app->add($middlewarePipe);
