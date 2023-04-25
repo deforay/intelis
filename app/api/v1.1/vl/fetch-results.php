@@ -23,24 +23,10 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $input = json_decode($params, true);
-
-// if(empty($params) || empty($input)){
-//     throw new \Exception("Input parameters are missing");
-// }
-
-// The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
-if (!empty($auth)) {
-    $authToken = str_replace("Bearer ", "", $auth);
-    /* Check if API token exists */
-    $user = $userDb->getAuthToken($authToken);
-}
+$authToken = str_replace("Bearer ", "", $auth);
+$user = $userDb->getUserFromToken($authToken);
 try {
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        http_response_code(401);
-        throw new Exception('Bearer Token Invalid');
-    }
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT 
         vl.app_sample_code                             as appSampleCode,
@@ -237,11 +223,6 @@ try {
             'timestamp' => time(),
             'data' => $rowData
         );
-        if (isset($user['token_updated']) && $user['token_updated'] === true) {
-            $payload['token'] = $user['new_token'];
-        } else {
-            $payload['token'] = null;
-        }
 
         http_response_code(200);
     }

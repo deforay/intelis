@@ -27,26 +27,9 @@ try {
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
-
     $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        /* Check if API token exists */
-        $user = $userDb->getAuthToken($authToken);
-    }
-
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        $response = array(
-            'status' => 'failed',
-            'timestamp' => time(),
-            'error' => 'Bearer Token Invalid',
-            'data' => array()
-        );
-        http_response_code(401);
-        echo json_encode($response);
-        // exit(0); 
-    }
+    $authToken = str_replace("Bearer ", "", $auth);
+    $user = $userDb->getUserFromToken($authToken);
     $roleUser = $userDb->getUserRole($user['user_id']);
     $responseData = [];
 
@@ -434,11 +417,6 @@ try {
             'timestamp' => time(),
             'message' => $msg
         );
-    }
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
     }
 
     $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
