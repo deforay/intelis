@@ -196,6 +196,7 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         array (
             'App\\Utilities\\' => 14,
             'App\\Services\\' => 13,
+            'App\\Middleware\\Api\\' => 19,
             'App\\Middleware\\' => 15,
             'App\\Interop\\' => 12,
             'App\\Helpers\\' => 12,
@@ -511,6 +512,10 @@ class ComposerStaticInit2372f2eadff3b71b908e6f30b77e361d
         'App\\Services\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app/services',
+        ),
+        'App\\Middleware\\Api\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/middlewares/api',
         ),
         'App\\Middleware\\' => 
         array (

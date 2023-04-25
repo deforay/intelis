@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Middleware\Api;
 
 use Psr\Http\Message\ServerRequestInterface;
