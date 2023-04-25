@@ -608,17 +608,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
+										
+									</tr>
+									<tr>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result</label></td>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
 											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
-											<datalist id="possibleVlResults">
-
-</datalist>
+											<datalist id="possibleVlResults"></datalist>
 										</td>
-										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
-										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
-									</tr>
-									<tr>
+										<!--<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
+										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>-->
 										<td class="labels"><label for="batchQuality">Batch quality</label></td>
 										<td>
 											<label class="radio-inline">
@@ -637,7 +636,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<input type="radio" id="failed" name="testQuality" value="invalid" title="Test Quality" <?php echo ($vlQueryInfo['sample_test_quality'] == 'invalid') ? "checked='checked'" : "" ?>>Invalid
 											</label>
 										</td>
-										<td class="labels"><label for="batchNo">Batch</label></td>
+									</tr>
+									<tr>
+									<td class="labels"><label for="batchNo">Batch</label></td>
 										<td>
 											<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
@@ -648,7 +649,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
-									</tr>
+											</tr>
 									<tr>
 										<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 									</tr>
@@ -662,7 +663,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>

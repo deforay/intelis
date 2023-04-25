@@ -533,7 +533,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<tr>
 											<th scope="row">Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
 											<th scope="row">Approuvé par</th>
 											<td>

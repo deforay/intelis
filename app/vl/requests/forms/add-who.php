@@ -751,6 +751,8 @@ $sFormat = '';
                               </div>
                          </div>
                          <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+
                     </form>
                </div>
           </div>

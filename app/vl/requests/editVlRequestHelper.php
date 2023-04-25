@@ -427,7 +427,6 @@ try {
           $vldata['result_status'] = $resultStatus;
      }
 
-
      if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else
           $vldata['last_modified_by'] =  $_SESSION['userId'];

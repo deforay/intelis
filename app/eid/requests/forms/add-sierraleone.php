@@ -515,7 +515,7 @@ $aResult = $db->query($aQuery);
                                             </td>
                                             <th scope="row" class="labels">Approved On </th>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php DateUtils::humanReadableDateFormat(DateUtils::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
+                                                <input type="text" value="<?php DateUtils::humanReadableDateFormat(DateUtils::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>

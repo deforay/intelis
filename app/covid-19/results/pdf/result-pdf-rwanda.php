@@ -215,7 +215,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td colspan="3">';
         $html .= '<table style="padding:2px;">';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DISTRICT/COUNTRY</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DISTRICT/COUNTY</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT ID</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PHYSICAL ADDRESS</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PHONE</td>';
