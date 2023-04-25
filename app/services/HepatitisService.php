@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Hepatitis
+class HepatitisService
 {
 
     protected $db = null;
@@ -46,7 +46,7 @@ class Hepatitis
     public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -94,7 +94,7 @@ class Hepatitis
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocations($this->db);
+                    $geoLocations = new GeoLocationsService($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -265,7 +265,7 @@ class Hepatitis
 
     public function insertSampleCode($params)
     {
-        $general = new General();
+        $general = new CommonService();
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

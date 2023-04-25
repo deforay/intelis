@@ -2,10 +2,10 @@
 
 // this file is included in eid/results/generate-result-pdf.php
 
-use App\Models\Eid;
+use App\Services\EidService;
 use App\Utilities\DateUtils;
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 $eidResults = $eidModel->getEidResults();
 
 $resultFilename = '';
@@ -392,7 +392,8 @@ if (sizeof($requestResult) > 0) {
             $pdf->Output($filename, "F");
             if ($draftTextShow) {
                 //Watermark section
-                $watermark = new Watermark();
+                $watermark = new \App\Helpers\PdfWatermarkHelper();
+$watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }
@@ -422,7 +423,7 @@ if (sizeof($requestResult) > 0) {
     }
 
     if (!empty($pages)) {
-        $resultPdf = new Pdf_concat();
+        $resultPdf = new \App\Helpers\PdfConcatenateHelper();
         $resultPdf->setFiles($pages);
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);

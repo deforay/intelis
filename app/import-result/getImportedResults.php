@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -25,12 +25,12 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = new Eid();
+    $eidObj = new EidService();
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    $covid19Obj = new Covid19();
+    $covid19Obj = new Covid19Service();
     $covid19Results = $covid19Obj->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";

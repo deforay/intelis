@@ -11,7 +11,7 @@
   <script src="/assets/js/deforayModal.js"></script>
   <?php
 
-  use App\Models\General;
+  use App\Services\CommonService;
   use App\Utilities\DateUtils;
 
   
@@ -19,7 +19,7 @@
 
 
   $id = base64_decode($_GET['id']);
-  $general = new General();
+  $general = new CommonService();
   $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
   $contact = $db->query($contactInfo);
   //get patient info
@@ -31,7 +31,7 @@
   } else {
     $vlResult[0]['sample_collection_date'] = '';
   }
-  $general = new General();
+  $general = new CommonService();
   ?>
   <div class="content-wrapper" style="padding: 20px;">
     <!-- Content Header (Page header) -->

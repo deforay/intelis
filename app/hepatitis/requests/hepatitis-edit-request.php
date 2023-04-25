@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Hepatitis;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\HepatitisService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 
@@ -35,9 +35,9 @@ $id = base64_decode($_GET['id']);
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new Facilities();
-$userDb = new Users();
-$hepatitisDb = new Hepatitis();
+$facilitiesDb = new FacilitiesService();
+$userDb = new UserService();
+$hepatitisDb = new HepatitisService();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

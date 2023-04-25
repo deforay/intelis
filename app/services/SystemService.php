@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
-use MysqliDb;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\Util\Misc;
 
-class System
+class SystemService
 {
 
-    public MysqliDb $db;
+    public $db;
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public function setDb($db)
@@ -35,7 +34,7 @@ class System
     // Setup Locale
     public function setupTranslation($domain = "messages")
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
             $general->getGlobalConfig('app_locale') ?? 'en_US';
 
@@ -50,7 +49,7 @@ class System
     // Setup Timezone
     public function setupDateTimeZone()
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $general->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);

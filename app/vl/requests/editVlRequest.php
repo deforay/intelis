@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\FacilitiesService;
+use App\Services\UserService;
+use App\Services\VlService;
 use App\Utilities\DateUtils;
 
 
@@ -12,9 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 $sCode = $labFieldDisabled = '';
 
 
-$facilitiesDb = new Facilities();
-$usersModel = new Users();
-$vlDb = new Vl();
+$facilitiesDb = new FacilitiesService();
+$usersModel = new UserService();
+$vlDb = new VlService();
 
 $healthFacilities = $facilitiesDb->getHealthFacilities('vl');
 $testingLabs = $facilitiesDb->getTestingLabs('vl');

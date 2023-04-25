@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 $title = "Add Sample List";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 
 
 //get lab facility details

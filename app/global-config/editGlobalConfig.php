@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 $title = _("Edit General Configuration");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new General();
+$general = new CommonService();
 // Get locale directory list
 $localeLists = $general->getLocaleLists();
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";

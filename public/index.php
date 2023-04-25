@@ -2,15 +2,15 @@
 
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
-use App\Middleware\ApiMiddleware;
-use Laminas\Diactoros\ServerRequestFactory;
+
+use App\Middleware\AppAuthMiddleware;
+use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
+use Laminas\Diactoros\ServerRequestFactory;
+use App\Middleware\SystemAdminAuthMiddleware;
 use App\RequestHandler as LegacyRequestHandler;
-use App\Middleware\AuthMiddleware;
-use App\Middleware\SystemAdminMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
-use Tuupola\Middleware\CorsMiddleware;
 
 
 // Create a server request object from the globals
@@ -33,17 +33,14 @@ $middlewarePipe->pipe(new CorsMiddleware([
 
 
 // 2. Auth Middleware
-// Only apply AuthMiddleware if the request is not for /api or /system-admin
+// Check if the request is for the system admin or not
 $uri = $request->getUri()->getPath();
-if (strpos($uri, '/api') === 0) {
-    // API  middleware
-    $middlewarePipe->pipe(new ApiMiddleware());
-} elseif (strpos($uri, '/system-admin') === 0) {
-    // System Admin middleware
-    $middlewarePipe->pipe(new SystemAdminMiddleware());
+if (strpos($uri, '/system-admin') === 0) {
+    // System Admin Authentication Middleware
+    $middlewarePipe->pipe(new SystemAdminAuthMiddleware());
 } else {
-    // For the rest of the requests, apply AuthMiddleware
-    $middlewarePipe->pipe(new AuthMiddleware());
+    // For the rest of the requests, apply AppAuthMiddleware
+    $middlewarePipe->pipe(new AppAuthMiddleware());
 }
 
 
@@ -53,7 +50,9 @@ if (strpos($uri, '/api') === 0) {
 $middlewarePipe->pipe(new RequestHandlerMiddleware(new LegacyRequestHandler()));
 
 
-// Handle the request and emit the response
+// Handle the request and generate the response
 $response = $middlewarePipe->handle($request);
+
+//Emit the response
 $emitter = new SapiEmitter();
 $emitter->emit($response);

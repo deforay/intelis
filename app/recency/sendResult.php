@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use GuzzleHttp\Client;
 
 try {
@@ -8,7 +8,7 @@ try {
       
 
 
-    $general = new General();
+    $general = new CommonService();
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';

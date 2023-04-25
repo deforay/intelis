@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
@@ -8,7 +8,7 @@ ini_set('memory_limit', -1);
 require_once(__DIR__ . "/../../bootstrap.php");
 
 
-$general = new General();
+$general = new CommonService();
 $lastUpdate = null;
 $output = [];
 

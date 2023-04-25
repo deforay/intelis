@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,9 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
-$facilitiesDb = new Facilities();
-$usersDb = new Users();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
+$usersDb = new UserService();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 

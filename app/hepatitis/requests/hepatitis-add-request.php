@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\Hepatitis;
-use App\Models\Users;
+use App\Services\FacilitiesService;
+use App\Services\HepatitisService;
+use App\Services\UserService;
 
 
 $title = "Hepatitis | Add New Request";
@@ -37,10 +37,9 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-// $general = new \App\Models\General();
-$facilitiesDb = new Facilities();
-$hepatitisDb = new Hepatitis();
-$userDb = new Users();
+$facilitiesDb = new FacilitiesService();
+$hepatitisDb = new HepatitisService();
+$userDb = new UserService();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();

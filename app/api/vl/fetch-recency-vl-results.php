@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
@@ -11,10 +11,11 @@ session_unset(); // no need of session in json response
 // external_sample_code field in db was unused so we decided to use it to store recency id
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
-$general = new General();
-$userDb = new Users();
+$db = \MysqliDb::getInstance();
+
+$general = new CommonService();
+$userDb = new UserService();
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -138,5 +139,3 @@ try {
 
 echo json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
-
-exit(0);

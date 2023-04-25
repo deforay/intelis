@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
   
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
+$general = new CommonService();
 $tableName = "batch_details";
 try {
     $labelOrder = '';

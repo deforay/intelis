@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-$general = new General();
+$general = new CommonService();
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
@@ -122,9 +122,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`, 
                 MAX(vl.sample_tested_datetime) as last_tested_date,
                 b.request_created_datetime,
-                b.batch_code, 
-                b.batch_id, 
-                COUNT(vl.sample_code) AS total_samples 
+                b.batch_code,
+                b.batch_id,
+                COUNT(vl.sample_code) AS total_samples
                 FROM $refTable vl, batch_details b";
 
 if (!empty($sWhere)) {

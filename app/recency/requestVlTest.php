@@ -1,6 +1,6 @@
 <?php
 // Allow from any origin
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -25,7 +25,7 @@ try {
     
     
 
-    $general = new General();
+    $general = new CommonService();
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');

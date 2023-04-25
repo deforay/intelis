@@ -1,10 +1,10 @@
 <?php
 
 // this file is included in covid-19/results/generate-result-pdf.php
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $resultFilename = '';
@@ -451,7 +451,8 @@ if (sizeof($requestResult) > 0) {
             $pdf->Output($filename, "F");
             if ($draftTextShow) {
                 //Watermark section
-                $watermark = new Watermark();
+                $watermark = new \App\Helpers\PdfWatermarkHelper();
+$watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Tb;
+use App\Services\CommonService;
+use App\Services\TbService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -14,9 +14,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 
-$tbModel = new Tb();
+$tbModel = new TbService();
 $tbResults = $tbModel->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();

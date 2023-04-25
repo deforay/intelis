@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -25,7 +25,7 @@ try {
     );
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber = General::generateRandomString(12);
+    $ranNumber = CommonService::generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $ranNumber . "." . $extension;
 
@@ -205,7 +205,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new Users();
+                $usersModel = new UserService();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 

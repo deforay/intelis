@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $machineImportScript = ($_POST['fileName']);
 
-$general = new General();
+$general = new CommonService();
 $arr = $general->getGlobalConfig();
 /* echo "<pre>";
 print_r($machineImportScript);

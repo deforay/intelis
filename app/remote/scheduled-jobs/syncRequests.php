@@ -1,8 +1,8 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
-use App\Models\App;
-use App\Models\General;
+use App\Services\ApiService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -12,8 +12,8 @@ if (php_sapi_name() == 'cli') {
 }
 
 
-$general = new General();
-$app = new App();
+$general = new CommonService();
+$app = new ApiService();
 
 
 

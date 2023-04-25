@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Hepatitis;
+use App\Services\HepatitisService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$hepatitisModel = new Hepatitis();
+$hepatitisModel = new HepatitisService();
 
 $sampleCollectionDate = $province = '';
 

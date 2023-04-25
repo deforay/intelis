@@ -1,12 +1,12 @@
 <?php
 
 
-use App\Models\Eid;
-use App\Models\General;
+use App\Services\EidService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$eidObj = new Eid();
+$general = new CommonService();
+$eidObj = new EidService();
 
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";

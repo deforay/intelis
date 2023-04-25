@@ -2,11 +2,11 @@
 
 
 // echo "<pre>";print_r($_POST['bulkIds']);die;
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 try {
-    $general = new General();
+    $general = new CommonService();
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;

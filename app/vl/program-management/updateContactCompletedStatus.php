@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
   
 
 
-$general=new General();
+$general=new CommonService();
 $tableName="form_vl";
 try {
     $id = $_POST['id'];

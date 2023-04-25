@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "r_vl_test_failure_reasons";
 $result = 0;
 try {

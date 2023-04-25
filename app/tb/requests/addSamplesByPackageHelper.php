@@ -1,12 +1,12 @@
 <?php
 
 
-use App\Models\General;
-use App\Models\Tb;
+use App\Services\CommonService;
+use App\Services\TbService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$tbObj = new Tb();
+$general = new CommonService();
+$tbObj = new TbService();
 
 
 $sampleQuery = "SELECT tb_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_tb where tb_id IN (" . $_POST['sampleId'] . ") ORDER BY tb_id";

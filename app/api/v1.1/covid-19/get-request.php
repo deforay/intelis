@@ -1,21 +1,22 @@
 <?php
 
-use App\Models\App;
-use App\Models\Covid19;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
 
 session_unset(); // no need of session in json response
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$c19Db = new Covid19();
-$app = new App();
+$db = \MysqliDb::getInstance();
+
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$c19Db = new Covid19Service();
+$app = new ApiService();
 
 $transactionId = $general->generateUUID();
 
@@ -23,7 +24,7 @@ $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
 /* For API Tracking params */
-$requestUrl .= $_SERVER['HTTP_HOST'];
+$requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 
@@ -193,7 +194,7 @@ try {
     }
     /* To check the sample code filter */
     if (!empty($input['sampleCode'])) {
-        $sampleCode = $input['sampleCode'];
+        $sampleCode = $input['sampleCode'] ?? [];
         if (!empty($sampleCode)) {
             $sampleCode = implode("','", $sampleCode);
             $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
@@ -216,7 +217,7 @@ try {
     $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
-    // die($sQuery);
+    // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     // No data found
     if (!$rowData) {
@@ -261,4 +262,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'covid19', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

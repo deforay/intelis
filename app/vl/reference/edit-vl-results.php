@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\General;
-use App\Models\Instruments;
+use App\Services\CommonService;
+use App\Services\InstrumentsService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
-$general = new General();
-$instrumentsDb = new Instruments();
+$general = new CommonService();
+$instrumentsDb = new InstrumentsService();
 $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 

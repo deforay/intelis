@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\GeoLocations;
+use App\Services\FacilitiesService;
+use App\Services\GeoLocationsService;
 
 $title = _("EID | Clinics Report");
  
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('eid');

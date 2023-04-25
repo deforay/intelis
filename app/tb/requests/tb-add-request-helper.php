@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
 use App\Utilities\DateUtils;
 
 
@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$geoLocationDb = new GeoLocationsService();
 
 $tableName = "form_tb";
 $tableName1 = "activity_log";

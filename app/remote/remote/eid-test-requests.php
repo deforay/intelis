@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\App;
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\ApiService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
-$general = new General();
+$general = new CommonService();
 header('Content-Type: application/json');
 
 $origData = $jsonData = file_get_contents('php://input');
@@ -26,9 +26,9 @@ $transactionId = $general->generateUUID();
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new App();
+$app = new ApiService();
 
-$facilityDb = new Facilities();
+$facilityDb = new FacilitiesService();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {

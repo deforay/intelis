@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
 $title = "Covid-19 | Add Batch";
@@ -10,7 +10,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $module = 'C19';
 
-$general = new General();
+$general = new CommonService();
 $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />

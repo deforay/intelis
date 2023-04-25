@@ -1,7 +1,7 @@
 <?php
 
 // This file is included in /vl/results/generate-result-pdf.php
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 $resultFilename = '';
@@ -442,7 +442,7 @@ if (sizeof($requestResult) > 0) {
                if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $keyFromGlobalConfig = $general->getGlobalConfig('key');
                     if(!empty($keyFromGlobalConfig)){
-                         $encryptedString = General::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                         $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
                          $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
                          $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
                     }
@@ -452,7 +452,8 @@ if (sizeof($requestResult) > 0) {
                $pdf->Output($filename, "F");
                if ($draftTextShow) {
                     //Watermark section
-                    $watermark = new Watermark();
+                    $watermark = new \App\Helpers\PdfWatermarkHelper();
+$watermark->setFullPathToFile($filename);
                     $fullPathToFile = $filename;
                     $watermark->Output($filename, "F");
                }
@@ -482,7 +483,7 @@ if (sizeof($requestResult) > 0) {
      }
 
      if (!empty($pages)) {
-          $resultPdf = new Pdf_concat();
+          $resultPdf = new \App\Helpers\PdfConcatenateHelper();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);

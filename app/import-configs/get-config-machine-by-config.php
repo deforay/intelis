@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 

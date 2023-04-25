@@ -1,22 +1,22 @@
 <?php
 
-use App\Models\App;
-use App\Models\Eid;
-use App\Models\General;
-use App\Models\Users;
+use App\Services\ApiService;
+use App\Services\EidService;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
 
+$db = \MysqliDb::getInstance();
 
 try {
 
-    $general = new General();
-    $userDb = new Users();
-    $app = new App();
-    $eidModel = new Eid();
+    $general = new CommonService();
+    $userDb = new UserService();
+    $app = new ApiService();
+    $eidModel = new EidService();
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -30,7 +30,7 @@ try {
     }
 
     /* For API Tracking params */
-    $requestUrl .= $_SERVER['HTTP_HOST'];
+    $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
 
     $auth = $general->getHeader('Authorization');
@@ -462,4 +462,4 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-exit(0);
+// exit(0); 

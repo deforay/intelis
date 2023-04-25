@@ -1,58 +1,47 @@
 <?php
 // Allow from any origin
-use App\Models\App;
-use App\Models\Covid19;
-use App\Models\Eid;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Tb;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\ApiService;
+use App\Services\Covid19Service;
+use App\Services\EidService;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\TbService;
+use App\Services\UserService;
+use App\Services\VlService;
 
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
-// Access-Control headers are received during OPTIONS requests
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    exit(0);
-}
-header('Content-Type: application/json');
+$db = \MysqliDb::getInstance();
 
-$general = new General();
-$app = new App();
-$userDb = new Users();
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$general = new CommonService();
+$app = new ApiService();
+$userDb = new UserService();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
-$auth = $general->getHeader('Authorization');
-if (!empty($auth)) {
-    $authToken = str_replace("Bearer ", "", $auth);
-    /* Check if API token exists */
-    $user = $userDb->getAuthToken($authToken);
-}
+// $auth = $general->getHeader('Authorization');
+// if (!empty($auth)) {
+//     $authToken = str_replace("Bearer ", "", $auth);
+//     /* Check if API token exists */
+//     $user = $userDb->getAuthToken($authToken);
+// }
+
+$user = $userDb->getUserFromToken($authToken);
 
 // If authentication fails then do not proceed
-if (empty($user) || empty($user['user_id'])) {
-    $response = array(
-        'status' => 'failed',
-        'timestamp' => time(),
-        'error' => 'Bearer Token Invalid',
-        'data' => array()
-    );
-    http_response_code(401);
-    echo json_encode($response);
-    exit(0);
-}
+// if (empty($user) || empty($user['user_id'])) {
+//     $response = array(
+//         'status' => 'failed',
+//         'timestamp' => time(),
+//         'error' => 'Bearer Token Invalid',
+//         'data' => array()
+//     );
+//     http_response_code(401);
+//     echo json_encode($response);
+//     // exit(0); 
+// }
 $updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
 /* Status name list */
 $statusList = [];
@@ -143,7 +132,7 @@ $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $covid19Obj = new Covid19();
+    $covid19Obj = new Covid19Service();
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
@@ -247,7 +236,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
 // Check if eid module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidObj = new Eid();
+    $eidObj = new EidService();
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
@@ -324,7 +313,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 
 // Check if vl module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlObj = new Vl();
+    $vlObj = new VlService();
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
@@ -389,7 +378,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
 
 // Check if tb module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-    $tbObj = new Tb();
+    $tbObj = new TbService();
     /* SITE INFORMATION SECTION */
 
     /* Infant and Mother's Health Information Section */
@@ -470,14 +459,14 @@ if ($status) {
         'data' => array()
     );
     http_response_code(401);
-    // exit(0);
+    // // exit(0); 
 }
 
-if (isset($user['token_updated']) && $user['token_updated'] === true) {
-    $payload['token'] = $user['new_token'];
-} else {
-    $payload['token'] = null;
-}
+// if (isset($user['token_updated']) && $user['token_updated'] === true) {
+//     $payload['token'] = $user['new_token'];
+// } else {
+//     $payload['token'] = null;
+// }
 $trackId = $general->addApiTracking(
     $transactionId,
     $user['user_id'],

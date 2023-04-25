@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\General;
-use App\Models\System;
+use App\Services\CommonService;
+use App\Services\SystemService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
+$general = new CommonService();
 
-$activeTestModules = System::getActiveTestModules();
+$activeTestModules = SystemService::getActiveTestModules();
 $activeModules = array('admin', 'common');
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {

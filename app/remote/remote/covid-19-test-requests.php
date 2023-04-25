@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Covid19;
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
-$general = new General();
+$general = new CommonService();
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -29,7 +29,7 @@ $transactionId = $general->generateUUID();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 
-$facilityDb = new Facilities();
+$facilityDb = new FacilitiesService();
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -58,7 +58,7 @@ if ($db->count > 0) {
   $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
   $facilityIds = array_column($covid19RemoteResult, 'facility_id');
 
-  $covid19Obj = new Covid19();
+  $covid19Obj = new Covid19Service();
   $symptoms = $covid19Obj->getCovid19SymptomsByFormId($sampleIds);
   $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($sampleIds);
   $testResults = $covid19Obj->getCovid19TestsByFormId($sampleIds);

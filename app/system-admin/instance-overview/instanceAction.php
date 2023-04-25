@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tblName = 's_vlsm_instance';
-$general = new General();
+$general = new CommonService();
 
 if (isset($_POST['instance_facility_name']) && trim($_POST['instance_facility_name']) != "") {
     $instanceName = $_POST['instance_facility_name'];

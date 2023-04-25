@@ -2,11 +2,11 @@
 
 // imported in /hepatitis/results/hepatitis-update-result.php based on country in global config
 
-use App\Models\Facilities;
+use App\Services\FacilitiesService;
 use App\Utilities\DateUtils;
 
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 $testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");

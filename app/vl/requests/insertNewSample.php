@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Vl;
+use App\Services\VlService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$vlModel = new Vl();
+$vlModel = new VlService();
 echo $vlModel->insertSampleCode($_POST);

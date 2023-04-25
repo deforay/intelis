@@ -6,12 +6,12 @@
  * @author Thana
  */
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use MysqliDb;
 
-class GeoLocations
+class GeoLocationsService
 {
 
     protected $db = null;
@@ -95,7 +95,7 @@ class GeoLocations
 
     function addGeoLocation($geoName, $parent = 0)
     {
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
 
         $data = array(
             'geo_name'         => $geoName,

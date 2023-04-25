@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
 
 
 
-$general = new General();
+$general = new CommonService();
 $tableName = "form_covid19";
 try {
     $id = explode(",", $_POST['id']);

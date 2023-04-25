@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 
   
 
 
-$general = new General();
+$general = new CommonService();
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
     if (isset($_POST['manifestCode']) && trim($_POST['manifestCode']) != "" && count($_POST['sampleCode']) > 0) {

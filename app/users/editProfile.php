@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
 $db = MysqliDb::getInstance();
-$general = new General();
+$general = new CommonService();
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");

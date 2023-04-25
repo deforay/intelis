@@ -1,12 +1,12 @@
 <?php
 
 
-use App\Models\General;
-use App\Models\Hepatitis;
+use App\Services\CommonService;
+use App\Services\HepatitisService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$hepatitisObj = new Hepatitis();
+$general = new CommonService();
+$hepatitisObj = new HepatitisService();
 
 
 $sampleQuery = "SELECT hepatitis_id, hepatitis_test_type, sample_collection_date, sample_package_code, province_id, sample_code FROM form_hepatitis where hepatitis_id IN (" . $_POST['sampleId'] . ") ORDER BY hepatitis_id";

@@ -6,23 +6,24 @@
  * @author Amit
  */
 
-namespace App\Models;
+namespace App\Services;
 
 use App\Utilities\DateUtils;
 use Exception;
-use MysqliDb;
 use Ramsey\Uuid\Uuid;
 use TCPDFBarcode;
 use ZipArchive;
 
-class General
+
+class CommonService
 {
 
     protected $db = null;
 
+
     public function __construct($db = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? \MysqliDb::getInstance();
     }
 
     public static function generateRandomString($length = 32)
@@ -100,23 +101,25 @@ class General
             return false;
         }
 
-        if (!empty($name)) {
-            $this->db->where('name', $name);
-        }
+        return once(function () use ($name) {
+            if (!empty($name)) {
+                $this->db->where('name', $name);
+            }
 
-        $systemConfigResult = $this->db->get('system_config');
+            $systemConfigResult = $this->db->get('system_config');
 
-        $sarr = [];
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-            $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-        }
+            $sarr = [];
+            // now we create an associative array so that we can easily create view variables
+            for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
+                $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
+            }
 
-        if (empty($name)) {
-            return $sarr;
-        } else {
-            return $sarr[$name] ?? null;
-        }
+            if (empty($name)) {
+                return $sarr;
+            } else {
+                return $sarr[$name] ?? null;
+            }
+        });
     }
 
     // get data from the global_config table from database
@@ -126,20 +129,22 @@ class General
         if ($this->db == null) {
             return false;
         }
+        return once(function () use ($name) {
 
-        if (!empty($name)) {
-            $this->db->where('name', $name);
-            return $this->db->getValue("global_config", "value");
-        } else {
-            $garr = [];
-            $globalConfigResult = $this->db->get('global_config');
-            // now we create an associative array so that we can easily create view variables
-            for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
-                $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
+            if (!empty($name)) {
+                $this->db->where('name', $name);
+                return $this->db->getValue("global_config", "value");
+            } else {
+                $garr = [];
+                $globalConfigResult = $this->db->get('global_config');
+                // now we create an associative array so that we can easily create view variables
+                for ($i = 0; $i < sizeof($globalConfigResult); $i++) {
+                    $garr[$globalConfigResult[$i]['name']] = $globalConfigResult[$i]['value'];
+                }
+
+                return $garr;
             }
-
-            return $garr;
-        }
+        });
     }
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
@@ -264,23 +269,23 @@ class General
     }
 
 
-    public function getFacilitiesByUser($userId = null)
-    {
+    // public function getFacilitiesByUser($userId = null)
+    // {
 
-        $fQuery = "SELECT * FROM facility_details where status='active'";
+    //     $fQuery = "SELECT * FROM facility_details where status='active'";
 
-        $facilityWhereCondition = '';
+    //     $facilityWhereCondition = '';
 
-        if (!empty($userId)) {
-            $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
-            $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
-            if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-                $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-            }
-        }
+    //     if (!empty($userId)) {
+    //         $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
+    //         $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
+    //         if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
+    //             $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+    //         }
+    //     }
 
-        return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
-    }
+    //     return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
+    // }
 
     public function startsWith($string, $startString)
     {
@@ -290,27 +295,28 @@ class General
 
     public function generateSelectOptions($optionList, $selectedOptions = array(), $emptySelectText = false)
     {
-
         if (empty($optionList)) {
             return '';
         }
-        $response = '';
-        if ($emptySelectText !== false) {
-            $response .= "<option value=''>$emptySelectText</option>";
-        }
-
-        foreach ($optionList as $optId => $optName) {
-            $selectedText = '';
-            if (!empty($selectedOptions)) {
-                if (is_array($selectedOptions) && in_array($optId, $selectedOptions)) {
-                    $selectedText = "selected='selected'";
-                } else if ($optId == $selectedOptions) {
-                    $selectedText = "selected='selected'";
-                }
+        return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+            $response = '';
+            if ($emptySelectText !== false) {
+                $response .= "<option value=''>$emptySelectText</option>";
             }
-            $response .= "<option value='" . addslashes($optId) . "' $selectedText>" . addslashes($optName) . "</option>";
-        }
-        return $response;
+
+            foreach ($optionList as $optId => $optName) {
+                $selectedText = '';
+                if (!empty($selectedOptions)) {
+                    if (is_array($selectedOptions) && in_array($optId, $selectedOptions)) {
+                        $selectedText = "selected='selected'";
+                    } elseif ($optId == $selectedOptions) {
+                        $selectedText = "selected='selected'";
+                    }
+                }
+                $response .= "<option value='" . addslashes($optId) . "' $selectedText>" . addslashes($optName) . "</option>";
+            }
+            return $response;
+        });
     }
 
     public function getLastModifiedDateTime($tableName, $modifiedDateTimeColName = 'updated_datetime')
@@ -413,92 +419,36 @@ class General
         return $localeLists;
     }
 
-    public function activeReportFormats($module = "vl", $countryCode = "southsudan", $format = "", $list = true)
+    public function activeReportFormats($module, $countryShortCode)
     {
+
         $list = [];
-        if ($module == 'vl') {
 
-            if (isset($format) && $format != null) {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/resultPdf' . $countryCode . '-' . $format . '.php';
-            } else {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/resultPdf' . $countryCode . '*.php';
-            }
-            $pdfFormat = glob($path, true);
-            if (isset($pdfFormat) && sizeof($pdfFormat) > 0) {
-                foreach ($pdfFormat as $formatPath) {
-                    $index = substr($formatPath, strpos($formatPath, "results/") + 8);
-                    $cut = str_replace("-", "", substr($index, strpos($index, "resultPdf" . $countryCode . "-") + 14));
-                    $value = substr($cut, 0, strpos($cut, ".php"));
-                    $list[$index] = ($value);
-                }
-            } else {
-                $list['pdf/resultPdf-' . $countryCode . '.pdf'] = "Default";
-            }
-        } else {
+        $pdfFormat = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-            if (isset($format) && $format != null) {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/result-pdf-' . $countryCode . '-' . $format . '.php';
-            } else {
-                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'results/pdf/result-pdf-' . $countryCode . '*.php';
-            }
-            $pdfFormat = glob($path, true);
-            if (isset($pdfFormat) && sizeof($pdfFormat) > 0) {
-                foreach ($pdfFormat as $formatPath) {
-                    $index = substr($formatPath, strpos($formatPath, "results/") + 8);
-                    /* Previous code updated */
-                    $str = explode("/", $index);
-                    $str = explode("-", $str[1]);
-                    $str = ($str[2]) . "-" . ($str[3]);
-                    $value = substr($str, 0, strpos($str, ".php"));
-                    /* $cut = str_replace("-", "", substr($index, strpos($index, "result-pdf-" . $countryCode . "-") - 15));
-                    $value = substr($cut, 0, strpos($cut, ".php")); */
-                    $list[$index] = strtoupper($value);
-                }
-            } else {
-                $list['pdf/result-pdf-' . $countryCode . '.pdf'] = "Default";
+        if (false !== $pdfFormat && !empty($pdfFormat)) {
+            foreach ($pdfFormat as $formatPath) {
+                $baseName = basename($formatPath);
+                $value = str_replace(array('.php', 'result-pdf-'), '', $baseName);
+                $list["pdf/$baseName"] = strtoupper($value);
             }
         }
+
+        $list["pdf/result-pdf-$countryShortCode.php"] = "Default";
+
         return $list;
     }
 
-    public function reportPdfNames($module = null)
+    public function getCountryShortCode()
     {
-        $arr = $this->getGlobalConfig();
-        $cntId = [];
-        if ($arr['vl_form'] == 1) {
-            $cntId['covid19'] = 'ssudan';
-            $cntId['eid'] = 'ssudan';
-            $cntId['vl'] = 'SouthSudan';
-        } else if ($arr['vl_form'] == 2) {
-            $cntId['vl'] = 'Zm';
-            $cntId['covid19'] = 'zm';
-        } else if ($arr['vl_form'] == 3) {
-            $cntId['vl'] = 'Drc';
-            $cntId['eid'] = 'drc';
-            $cntId['covid19'] = 'drc';
-        } else if ($arr['vl_form'] == 4) {
-            $cntId['vl'] = 'Zam';
-            $cntId['covid19'] = 'zam';
-        } else if ($arr['vl_form'] == 5) {
-            $cntId['vl'] = 'Png';
-            $cntId['covid19'] = 'png';
-        } else if ($arr['vl_form'] == 6) {
-            $cntId['vl'] = 'Who';
-            $cntId['covid19'] = 'who';
-        } else if ($arr['vl_form'] == 7) {
-            $cntId['vl'] = 'Rwd';
-            $cntId['hepatitis'] = 'rwanda';
-            $cntId['eid'] = 'rwanda';
-            $cntId['covid19'] = 'rwanda';
-        } else if ($arr['vl_form'] == 8) {
-            $cntId['vl'] = 'Ang';
-            $cntId['eid'] = 'angola';
-            $cntId['covid19'] = 'angola';
+
+        if ($this->db == null) {
+            return false;
         }
-        if ($module != null) {
-            return $cntId[$module];
-        }
-        return $cntId;
+        return once(function () {
+            $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
+            return $this->db->getValue("s_available_country_forms", "short_name");
+        });
     }
 
     public function trackQrViewPage($type, $typeId, $sampleCode)
@@ -520,23 +470,25 @@ class General
 
     public function getIPAddress()
     {
-        $ipaddress = '';
-        if (getenv('HTTP_CLIENT_IP')) {
-            $ipaddress = getenv('HTTP_CLIENT_IP');
-        } else if (getenv('HTTP_X_FORWARDED_FOR')) {
-            $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-        } else if (getenv('HTTP_X_FORWARDED')) {
-            $ipaddress = getenv('HTTP_X_FORWARDED');
-        } else if (getenv('HTTP_FORWARDED_FOR')) {
-            $ipaddress = getenv('HTTP_FORWARDED_FOR');
-        } else if (getenv('HTTP_FORWARDED')) {
-            $ipaddress = getenv('HTTP_FORWARDED');
-        } else if (getenv('REMOTE_ADDR')) {
-            $ipaddress = getenv('REMOTE_ADDR');
-        } else {
-            $ipaddress = 'UNKNOWN';
-        }
-        return $ipaddress;
+        return once(function () {
+            $ipaddress = '';
+            if (getenv('HTTP_CLIENT_IP')) {
+                $ipaddress = getenv('HTTP_CLIENT_IP');
+            } else if (getenv('HTTP_X_FORWARDED_FOR')) {
+                $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+            } else if (getenv('HTTP_X_FORWARDED')) {
+                $ipaddress = getenv('HTTP_X_FORWARDED');
+            } else if (getenv('HTTP_FORWARDED_FOR')) {
+                $ipaddress = getenv('HTTP_FORWARDED_FOR');
+            } else if (getenv('HTTP_FORWARDED')) {
+                $ipaddress = getenv('HTTP_FORWARDED');
+            } else if (getenv('REMOTE_ADDR')) {
+                $ipaddress = getenv('REMOTE_ADDR');
+            } else {
+                $ipaddress = 'UNKNOWN';
+            }
+            return $ipaddress;
+        });
     }
 
     public function getOperatingSystem($userAgent = null)
@@ -578,7 +530,6 @@ class General
 
     public function getBrowser($userAgent = null)
     {
-
         $browser        =   "Unknown Browser - " . $userAgent;
         $browserArray  =   array(
             '/msie/i'       =>  'Internet Explorer',
@@ -636,7 +587,7 @@ class General
         return $code;
     }
 
-    function excelColumnRange($lower, $upper)
+    public function excelColumnRange($lower, $upper)
     {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
@@ -670,7 +621,7 @@ class General
     //dump the contents of a variable to the error log in a readable format
     public function var_error_log($object = null): void
     {
-        
+
         var_dump($object);
         error_log(ob_get_clean());
     }

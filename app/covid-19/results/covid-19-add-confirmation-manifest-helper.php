@@ -1,16 +1,16 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 
   
 
 
-$general=new General();
+$general=new CommonService();
 
 $module = 'C19';
-$general = new General();
+$general = new CommonService();
 
 $tableName1="covid19_positive_confirmation_manifest";
 $tableName2="form_covid19";

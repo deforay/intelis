@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -16,7 +16,7 @@ if ($count == 0) {
 	header("Location:/setup/index.php");
 }
 
-$general = new General();
+$general = new CommonService();
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

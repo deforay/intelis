@@ -2,12 +2,12 @@
 
 // File included in addImportResultHelper.php
 
-use App\Models\General;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\UserService;
 use App\Utilities\DateUtils;
 use League\Csv\Reader;
 
-$general = new General();
+$general = new CommonService();
 
 try {
 
@@ -34,7 +34,7 @@ try {
         throw new Exception("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \App\Models\General::generateRandomString(12);
+    // $ranNumber = \App\Services\CommonService::generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
 
@@ -140,7 +140,7 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new Users();
+                $usersModel = new UserService();
                 $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
             }
 

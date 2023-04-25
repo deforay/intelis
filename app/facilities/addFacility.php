@@ -1,20 +1,20 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$geolocation = new GeoLocations();
+$general = new CommonService();
+$geolocation = new GeoLocationsService();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
-$usersModel = new Users();
+$usersModel = new UserService();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = [];
@@ -22,25 +22,28 @@ foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 
-$cntId = $general->reportPdfNames();
+$countryShortCode = $general->getCountryShortCode();
+$reportFormats = [];
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $cntId['covid19'], null, true);
+	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $countryShortCode);
 }
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$reportFormats['eid'] = $general->activeReportFormats('eid', $cntId['eid'], null, true);
+	$reportFormats['eid'] = $general->activeReportFormats('eid', $countryShortCode);
 }
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$reportFormats['vl'] = $general->activeReportFormats('vl', $cntId['vl'], null, true);
+	$reportFormats['vl'] = $general->activeReportFormats('vl', $countryShortCode);
 }
-if ($arr['vl_form'] == 7) {
-	if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-		$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $cntId['hepatitis'], null, true);
-	}
+
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+	$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $countryShortCode);
 }
+
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$reportFormats['tb'] = $general->activeReportFormats('tb', $cntId['tb'], null, true);
+	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
 }
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+
+
 ?>
 <style>
 	.ms-choice {
@@ -330,7 +333,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 														<option value=""><?php echo _("-- Select --"); ?></option>
 													<?php } ?>
 													<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
+														<option value="<?php echo $key; ?>"><?= ($value); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -399,7 +402,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
 										<div class="col-lg-8">
 											<div class="fileinput fileinput-new labLogo" data-provides="fileinput">
 												<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-													
+
 												</div>
 												<div>
 													<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>

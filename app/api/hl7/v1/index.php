@@ -1,24 +1,24 @@
 <?php
-
 session_unset(); // no need of session in json response
 
-use App\Models\Covid19;
-use App\Models\Facilities;
-use App\Models\General;
-use App\Models\Users;
-use App\Models\Vl;
+use App\Services\Covid19Service;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
+use App\Services\UserService;
+use App\Services\VlService;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
+$db = \MySqlidb::getInstance();
 $user = null;
-$general = new General();
-$userDb = new Users();
-$facilityDb = new Facilities();
-$c19Db = new Covid19();
-$vlDb = new Vl();
+$general = new CommonService();
+$userDb = new UserService();
+$facilityDb = new FacilitiesService();
+$c19Db = new Covid19Service();
+$vlDb = new VlService();
 
 $transactionId = $general->generateUUID();
 
@@ -42,7 +42,7 @@ try {
         );
         http_response_code(401);
         echo json_encode($response);
-        exit(0);
+        //exit(0);
     }
 
     $hl7Msg = file_get_contents("php://input");
@@ -127,5 +127,5 @@ try {
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    exit(0);
+    //exit(0);
 }

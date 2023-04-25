@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\General;
-use App\Models\Tb;
+use App\Services\CommonService;
+use App\Services\TbService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,13 +9,13 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new General();
+$general = new CommonService();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$tbModel = new Tb();
+$tbModel = new TbService();
 $tbResults = $tbModel->getTbResults();
 
 $tableName = "form_tb";

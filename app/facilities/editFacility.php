@@ -1,16 +1,16 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\Users;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new General();
-$geolocation = new GeoLocations();
+$general = new CommonService();
+$geolocation = new GeoLocationsService();
 
-$usersModel = new Users();
+$usersModel = new UserService();
 $userResult = $usersModel->getAllUsers();
 
 $userInfo = [];
@@ -90,24 +90,24 @@ if (!empty($testTypeInfo)) {
 	}
 	$div .= '</tbody></table>';
 }
-$cntId = $general->reportPdfNames();
-
+$countryShortCode = $general->getCountryShortCode();
+$reportFormats = [];
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $cntId['covid19'], null, true);
+	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $countryShortCode);
 }
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$reportFormats['eid'] = $general->activeReportFormats('eid', $cntId['eid'], null, true);
+	$reportFormats['eid'] = $general->activeReportFormats('eid', $countryShortCode);
 }
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$reportFormats['vl'] = $general->activeReportFormats('vl', $cntId['vl'], null, true);
+	$reportFormats['vl'] = $general->activeReportFormats('vl', $countryShortCode);
 }
-if ($arr['vl_form'] == 7) {
-	if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-		$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $cntId['hepatitis'], null, true);
-	}
+
+if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+	$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $countryShortCode);
 }
+
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$reportFormats['tb'] = $general->activeReportFormats('tb', $cntId['tb'], null, true);
+	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
 }
 $formats = json_decode($facilityInfo['report_format'], true);
 $labDiv = "none";

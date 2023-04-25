@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 $tableName = "track_api_requests";
 $primaryKey = "api_track_id";
 

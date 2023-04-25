@@ -1,9 +1,9 @@
 <?php
 
 
-use App\Models\General;
+use App\Services\CommonService;
 
-$general = new General();
+$general = new CommonService();
 $start_date = '';
 $end_date = '';
 //global config

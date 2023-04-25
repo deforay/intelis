@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\General;
-use App\Models\GeoLocations;
-use App\Models\System;
+use App\Services\CommonService;
+use App\Services\GeoLocationsService;
+use App\Services\SystemService;
 
 $title = _("Facilities");
  
@@ -10,13 +10,13 @@ require_once(APPLICATION_PATH . '/header.php');
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
-$general = new General();
+$general = new CommonService();
 
-$activeTestModules = System::getActiveTestModules();
+$activeTestModules = SystemService::getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
-$geoLocationDb = new GeoLocations();
+$geoLocationDb = new GeoLocationsService();
 $state = $geoLocationDb->getProvinces("yes");
 ?>
 <style>

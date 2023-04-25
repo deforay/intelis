@@ -1,0 +1,87 @@
+<?php
+
+
+namespace App\Middleware\Api;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class TokenResetMiddleware implements MiddlewareInterface
+{
+    private \App\Services\UserService $userModel;
+
+    public function __construct($userModel)
+    {
+        $this->userModel = $userModel;
+    }
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+
+        $response = $handler->handle($request);
+
+        if ($this->shouldExcludeFromAuthCheck($request)) {
+
+            // Skip the authentication check if the request is an AJAX request,
+            // a CLI request, or if the requested URI is excluded from the
+            // authentication check
+            return $response;
+        }
+
+        $authorization = $request->getHeaderLine('Authorization');
+        $token = $this->getTokenFromAuthorizationHeader($authorization);
+
+
+        // Check if the token needs to be reset and get the new token
+        $newToken = $this->checkAndResetTokenIfNeeded($token);
+
+
+        if ($newToken !== null) {
+            // Add the new_token to the response object
+            $responseBody = json_decode($response->getBody(), true);
+            $responseBody['new_token'] = $newToken;
+            $responseBody['token_updated'] = true;
+            $response->getBody()->rewind();
+            $response->getBody()->write(json_encode($responseBody));
+        }
+
+        return $response;
+    }
+
+    private function getTokenFromAuthorizationHeader(string $authorization): ?string
+    {
+        if (preg_match('/^Bearer\s+(.+)$/i', $authorization, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
+    private function checkAndResetTokenIfNeeded(string $token): ?string
+    {
+        $user = $this->userModel->getAuthToken($token);
+        if (isset($user['token_updated']) && $user['token_updated'] === true) {
+            return $user['new_token'];
+        } else {
+            return null;
+        }
+    }
+    private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
+    {
+        // Get the requested URI
+        $uri = $request->getUri()->getPath();
+
+        // Clean up the URI
+        $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
+
+
+        //error_log($uri);
+
+        $excludedRoutes = [
+            '/api/v1.1/user/login.php',
+            // Add other routes to exclude from the authentication check here
+        ];
+
+        return in_array($uri, $excludedRoutes, true);
+    }
+}

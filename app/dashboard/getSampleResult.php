@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new General();
-$facilityDb = new Facilities();
+$general = new CommonService();
+$facilityDb = new FacilitiesService();
 
 
 $cDate = date('Y-m-d');

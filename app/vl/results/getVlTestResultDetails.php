@@ -1,18 +1,18 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new General();
+$general = new CommonService();
 
 $sarr = $general->getSystemConfig();
 
-$facilitiesDb = new Facilities();
+$facilitiesDb = new FacilitiesService();
 
 
 $tableName = "form_vl";

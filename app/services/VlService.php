@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
 
 use App\Utilities\DateUtils;
@@ -14,7 +14,7 @@ use MysqliDb;
  * @author Amit
  */
 
-class Vl
+class VlService
 {
 
     protected $db = null;
@@ -57,7 +57,7 @@ class Vl
         }
 
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -105,7 +105,7 @@ class Vl
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocations($this->db);
+                    $geoLocations = new GeoLocationsService($this->db);
                     $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
                 }
 
@@ -272,7 +272,7 @@ class Vl
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -359,7 +359,7 @@ class Vl
             return $result;
         }
 
-        $general = new General($this->db);
+        $general = new CommonService($this->db);
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -433,7 +433,7 @@ class Vl
     {
         try {
 
-            $general = new General();
+            $general = new CommonService();
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();

@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 
 $webRootPath = realpath(WEB_ROOT);
 
-$general = new General();
+$general = new CommonService();
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';

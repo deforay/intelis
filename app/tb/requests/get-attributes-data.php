@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\General;
+use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
   
-$general = new General();
-$facilitiesDb = new Facilities();
+$general = new CommonService();
+$facilitiesDb = new FacilitiesService();
 $results = [];
 if (isset($_POST['id']) && $_POST['id'] > 0) {
     $db->where("f.facility_id", $_POST['id']);

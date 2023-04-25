@@ -2,13 +2,13 @@
 
 // ini_set('memory_limit', -1);
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
 $db = \MysqliDb::getInstance();
-$general = new General();
+$general = new CommonService();
 
 /* Save Province / State details to geolocation table */
 $query = "SELECT DISTINCT facility_state FROM facility_details WHERE facility_state not in (SELECT geo_name FROM geographical_divisions WHERE geo_parent = 0) ORDER BY facility_state ASC";

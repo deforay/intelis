@@ -2,7 +2,7 @@
 
 // imported in covid-19-update-result.php based on country in global config
 
-use App\Models\Covid19;
+use App\Services\Covid19Service;
 use App\Utilities\DateUtils;
 
 
@@ -29,7 +29,7 @@ foreach ($testPlatformResult as $row) {
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new Covid19();
+$covid19Obj = new Covid19Service();
 $covid19Results = $covid19Obj->getCovid19Results();
 
 $specimenTypeResult = $covid19Obj->getCovid19SampleTypes();

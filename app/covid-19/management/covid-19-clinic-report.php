@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Facilities;
-use App\Models\GeoLocations;
+use App\Services\FacilitiesService;
+use App\Services\GeoLocationsService;
 
 $title = _("Covid-19 | Clinics Report");
 
@@ -12,8 +12,8 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$facilitiesDb = new Facilities();
-$geoLocationDb = new GeoLocations();
+$facilitiesDb = new FacilitiesService();
+$geoLocationDb = new GeoLocationsService();
 
 
 $healthFacilites = $facilitiesDb->getHealthFacilities('covid19');

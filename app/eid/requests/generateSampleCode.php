@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Eid;
+use App\Services\EidService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$eidModel = new Eid();
+$eidModel = new EidService();
 
 
 
