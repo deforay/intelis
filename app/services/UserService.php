@@ -285,6 +285,17 @@ class UserService
     }
 
 
+    public function getUserFromToken($token = null): ?array
+    {
+        if (empty($token)) {
+            return null;
+        }
+
+        $this->db->where('api_token', $token);
+        $this->db->where('status', 'active');
+        return $this->db->getOne($this->table);
+    }
+
     public function validateAuthToken($token = null): bool
     {
         if (empty($token)) {
@@ -321,7 +332,7 @@ class UserService
         //error_log($this->db->getLastQuery());
         // $query = "SELECT * FROM $this->table as ud INNER JOIN roles as r ON ud.role_id=r.role_id WHERE api_token = ? and ud.`status` = 'active'";
         // $result = $this->db->rawQueryOne($query, array($token));
-        $tokenExpiration = !empty($result['api_token_exipiration_days']) ? $result['api_token_exipiration_days'] : 0;
+        $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
 
 
         $id = false;
