@@ -1173,7 +1173,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 
 		$('#vlResult').on('change', function() {
-			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
 				if ($(this).val().trim().toLowerCase() == 'failed') {
 					$('.reasonForFailure').show();
 					$('#reasonForFailure').addClass('isRequired');
@@ -1244,7 +1244,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 					if (data != "") {
 						details = data.split("###");
 						$("#fName").html(details[0]);
-						$("#labId").html(details[1]);
+						//$("#labId").html(details[1]);
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
 						$(".facilityMobileNumbers").html('');

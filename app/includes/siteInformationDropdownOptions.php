@@ -182,9 +182,9 @@ if (!empty($facilityIdRequested)) {
 
 function getProvinceDropdown($selectedProvince = null)
 {
-	global $db;
-	global $option;
-	global $facilityMap;
+	$db=$GLOBALS['db'];
+	$option=$GLOBALS['option'];
+	$facilityMap=$GLOBALS['facilityMap'];
 
 	if (!empty($facilityMap)) {
 		$db->join("facility_details f", "f.facility_state=p.geo_name", "INNER");

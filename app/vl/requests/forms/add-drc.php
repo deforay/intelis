@@ -751,7 +751,8 @@ $sFormat = '';
 		}else{
 			$('.authorisation').removeClass("isRequired");
 		}
-		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+		//if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
 			if ($(this).val().trim().toLowerCase() == 'failed') {
 				$('.reasonForFailure').show();
 				$('#reasonForFailure').addClass('isRequired');

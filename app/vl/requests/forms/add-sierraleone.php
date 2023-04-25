@@ -1197,7 +1197,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data != "") {
                               details = data.split("###");
                               $("#fName").html(details[0]);
-                              $("#labId").html(details[1]);
+                              //$("#labId").html(details[1]);
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');
@@ -1327,7 +1327,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
 
      $('#vlResult').on('change', function() {
-          if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+          if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
                if ($(this).val().trim().toLowerCase() == 'failed') {
                     $('.reasonForFailure').show();
                     $('#reasonForFailure').addClass('isRequired');

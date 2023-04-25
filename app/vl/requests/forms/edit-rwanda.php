@@ -892,7 +892,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                          if (data != "") {
                               details = data.split("###");
                               $("#fName").html(details[0]);
-                              $("#labId").html(details[1]);
+                              //$("#labId").html(details[1]);
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');
