@@ -129,7 +129,7 @@ if (session_status() == PHP_SESSION_NONE) {
         );
 	
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 	        $row[] = ($aRow['sample_type_name']);
             $row[] = ($aRow['sample_type_code']);
             $row[] = ($aRow['sample_type_status']);

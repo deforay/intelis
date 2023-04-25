@@ -24,8 +24,9 @@ class ApiService
     public function generateSelectOptions($options)
     {
         $i = 0;
-        $response = array();
+        $response = [];
         foreach ($options as $key => $show) {
+            $response[$i] = [];
             $response[$i]['value'] = $key;
             $response[$i]['show'] = $show;
             $i++;
@@ -36,20 +37,20 @@ class ApiService
     public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
     {
         $facilityDb = new FacilitiesService($this->db);
-        $query = "SELECT hf.test_type, 
-                        f.facility_id, 
-                        f.facility_name, 
-                        f.facility_code, f.other_id, 
-                        f.facility_state_id, 
-                        f.facility_state, 
-                        f.facility_district_id, 
-                        f.facility_district, 
-                        f.testing_points, 
+        $query = "SELECT hf.test_type,
+                        f.facility_id,
+                        f.facility_name,
+                        f.facility_code, f.other_id,
+                        f.facility_state_id,
+                        f.facility_state,
+                        f.facility_district_id,
+                        f.facility_district,
+                        f.testing_points,
                         f.facility_attributes,
-                        f.status, 
-                        gd.geo_id as province_id, 
+                        f.status,
+                        gd.geo_id as province_id,
                         gd.geo_name as province_name
-                    FROM health_facilities AS hf 
+                    FROM health_facilities AS hf
                     INNER JOIN facility_details as f ON hf.facility_id=f.facility_id
                     INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
@@ -81,7 +82,7 @@ class ApiService
             $where[] = " f.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (count($where) > 0) {
+        if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC ';
@@ -118,7 +119,7 @@ class ApiService
     {
         $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
-                    from testing_labs AS tl 
+                    from testing_labs AS tl
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
@@ -147,27 +148,24 @@ class ApiService
             $where[] = " f.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (count($where) > 0) {
+        if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
         // die($query);
         $result = $this->db->rawQuery($query);
+        $response = [];
         foreach ($result as $key => $row) {
-            // $condition1 = " province_name like '" . $row['province_name'] . "%'";
-            // $condition2 = " facility_state like '" . $row['province_name'] . "%'";
-
+            $response[$key] = [];
             $response[$key]['value'] = $row['facility_id'];
             $response[$key]['show'] = $row['facility_name'] . ' (' . $row['facility_code'] . ')';
             $response[$key]['state'] = $row['facility_state'];
             $response[$key]['district'] = $row['facility_district'];
             if (!$module) {
                 $response[$key]['test_type'] = $row['test_type'];
-                $response[$key]['monthly_target'] = (isset($row['monthly_target']) && !empty($row['monthly_target']))?$row['monthly_target']:0;
-                $response[$key]['suppressed_monthly_target'] = (isset($row['suppressed_monthly_target']) && !empty($row['suppressed_monthly_target']))?$row['suppressed_monthly_target']:0;
+                $response[$key]['monthly_target'] = $row['monthly_target'] ?? 0;
+                $response[$key]['suppressed_monthly_target'] = $row['suppressed_monthly_target'] ?? 0;
             }
-            // $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
-            // $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
         }
         return $response;
     }
@@ -176,7 +174,7 @@ class ApiService
     {
         $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
-                    from geographical_divisions AS gd 
+                    from geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
@@ -194,7 +192,7 @@ class ApiService
             $where[] = " gd.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (count($where) > 0) {
+        if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
@@ -214,7 +212,7 @@ class ApiService
     {
         $facilityDb = new FacilitiesService($this->db);
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
-                    from geographical_divisions AS gd 
+                    from geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
@@ -232,12 +230,13 @@ class ApiService
             $where[] = " gd.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (count($where) > 0) {
+        if (!empty($where)) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
         // die($query);
         $result = $this->db->rawQuery($query);
+        $response = [];
         foreach ($result as $key => $row) {
             $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
             $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
@@ -334,7 +333,6 @@ class ApiService
                         (SELECT count(*) FROM `form_hepatitis` WHERE `patient_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_hepatitis 
                         WHERE `patient_id`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         }
-        $rowData = $this->db->rawQueryOne($sQuery);
-        return $rowData;
+        return $this->db->rawQueryOne($sQuery);
     }
 }

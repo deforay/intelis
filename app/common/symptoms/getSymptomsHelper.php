@@ -129,7 +129,7 @@ if (session_status() == PHP_SESSION_NONE) {
         );
 	
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             //$expDateTime=explode(" ",$aRow['updated_datetime']);
             $row[] = ($aRow['symptom_name']);
             $row[] = ($aRow['symptom_code']);
