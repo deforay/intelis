@@ -93,17 +93,6 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
 
             if ($rowData) {
-                if($rowData['result_status'] == 7 || (isset($rowData['locked']) && $rowData['locked'] == 'yes')){
-                    $payload = array(
-                        'status' => 'failed',
-                        'timestamp' => time(),
-                        'error' => 'Unable to add this VL sample. Please try again later',
-                        'data' => array()
-                    );
-                    $payload = json_encode($payload);
-                    echo $payload;
-                    exit(0);
-                }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
@@ -169,8 +158,10 @@ try {
 
         $id = 0;
         if ($rowData) {
-            $db = $db->where('tb_id', $rowData['tb_id']);
-            $id = $db->update("form_tb", $tbData);
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('tb_id', $rowData['tb_id']);
+                $id = $db->update("form_tb", $tbData);
+            }
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
             $id = $db->insert("form_tb", $tbData);
@@ -365,9 +356,11 @@ try {
         }
         $id = 0;
         if (!empty($data['tbSampleId'])) {
-            $db = $db->where('tb_id', $data['tbSampleId']);
-            $id = $db->update($tableName, $tbData);
-            // error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('tb_id', $data['tbSampleId']);
+                $id = $db->update($tableName, $tbData);
+                // error_log($db->getLastError());
+            }
         }
         /* echo "<pre>";
         print_r($id);

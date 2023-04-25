@@ -104,17 +104,6 @@ try {
 
             $rowData = $db->rawQueryOne($sQuery);
             if ($rowData) {
-                if($rowData['result_status'] == 7 || (isset($rowData['locked']) && $rowData['locked'] == 'yes')){
-                    $payload = array(
-                        'status' => 'failed',
-                        'timestamp' => time(),
-                        'error' => 'Unable to add this VL sample. Please try again later',
-                        'data' => array()
-                    );
-                    $payload = json_encode($payload);
-                    echo $payload;
-                    exit(0);
-                }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
@@ -187,8 +176,10 @@ try {
 
         $id = 0;
         if ($rowData) {
-            $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
-            $id = $db->update("form_vl", $vlData);
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
+                $id = $db->update("form_vl", $vlData);
+            }
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
             $id = $db->insert("form_vl", $vlData);
@@ -466,9 +457,11 @@ try {
         //  echo '<pre>'; print_r($vlFulldata); 
         $id = 0;
         if (!empty($data['vlSampleId'])) {
-            $db = $db->where('vl_sample_id', $data['vlSampleId']);
-            $id = $db->update($tableName, $vlFulldata);
-            error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('vl_sample_id', $data['vlSampleId']);
+                $id = $db->update($tableName, $vlFulldata);
+                // error_log($db->getLastError());
+            }
             // echo "ID=>" . $id;
         }
         if ($id > 0) {

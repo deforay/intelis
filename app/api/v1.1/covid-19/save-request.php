@@ -110,17 +110,6 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
 
             if ($rowData) {
-                if($rowData['result_status'] == 7 || (isset($rowData['locked']) && $rowData['locked'] == 'yes')){
-                    $payload = array(
-                        'status' => 'failed',
-                        'timestamp' => time(),
-                        'error' => 'Unable to add this VL sample. Please try again later',
-                        'data' => array()
-                    );
-                    $payload = json_encode($payload);
-                    echo $payload;
-                    exit(0);
-                }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
@@ -184,9 +173,11 @@ try {
 
         $id = 0;
         if ($rowData) {
-            $db = $db->where('covid19_id', $rowData['covid19_id']);
-            $id = $db->update("form_covid19", $covid19Data);
-            error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('covid19_id', $rowData['covid19_id']);
+                $id = $db->update("form_covid19", $covid19Data);
+                // error_log($db->getLastError());
+            }
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
             $id = $db->insert("form_covid19", $covid19Data);
@@ -457,9 +448,11 @@ try {
         }
         $id = 0;
         if (!empty($data['covid19SampleId'])) {
-            $db = $db->where('covid19_id', $data['covid19SampleId']);
-            $id = $db->update($tableName, $covid19Data);
-            error_log($db->getLastError());
+            if($rowData['result_status'] != 7 || (!isset($rowData['locked']) || $rowData['locked'] != 'yes')){
+                $db = $db->where('covid19_id', $data['covid19SampleId']);
+                $id = $db->update($tableName, $covid19Data);
+                // error_log($db->getLastError());
+            }
         }
 
         // $general->var_error_log($db->getLastQuery());
