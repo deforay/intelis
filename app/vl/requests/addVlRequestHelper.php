@@ -63,14 +63,14 @@ try {
     } else {
         $_POST['dob'] = null;
     }
-    if(!isset($_POST['isPatientNew'])){
-        if (trim($_POST['isPatientNew']) == '') {
+    if(isset($_POST['countryFormId']) && $_POST['countryFormId']=='3'){
+        if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
             $_POST['isPatientNew'] = null;
             $_POST['dateOfArtInitiation'] = null;
         } else if ($_POST['isPatientNew'] == "yes") {
             //Ser ARV initiation date
             if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-                $_POST['dateOfArtInitiation'] = \App\Utilities\DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
+                $_POST['dateOfArtInitiation'] = DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
             } else {
                 $_POST['dateOfArtInitiation'] = null;
             }

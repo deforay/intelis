@@ -3,12 +3,13 @@
 namespace App\Middleware\Api;
 
 use App\Services\CommonService;
+use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Psr7\Response;
+
 
 class LegacyFallbackMiddleware implements MiddlewareInterface
 {
@@ -19,6 +20,8 @@ class LegacyFallbackMiddleware implements MiddlewareInterface
             // Try to handle the request with Slim routing
             $response = $handler->handle($request);
         } catch (HttpNotFoundException $e) {
+
+
             // If the route is not found in Slim routing, fallback to legacy routes
 
             $uri = $request->getUri()->getPath();
