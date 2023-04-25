@@ -953,9 +953,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 													</div>
 												</div>
 											</div>
@@ -988,6 +988,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 								<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 								<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
 							</div>
@@ -1296,7 +1297,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 		});
 
 		$('#vlResult').on('change', function() {
-			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
 				if ($(this).val().trim().toLowerCase() == 'failed') {
 					$('.reasonForFailure').show();
 					$('#reasonForFailure').addClass('isRequired');
@@ -1365,7 +1366,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 					if (data != "") {
 						details = data.split("###");
 						$("#fName").html(details[0]);
-						$("#labId").html(details[1]);
+						//$("#labId").html(details[1]);
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
 						$(".facilityMobileNumbers").html('');

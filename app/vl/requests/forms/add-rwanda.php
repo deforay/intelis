@@ -684,6 +684,8 @@ $sFormat = '';
                                         <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
                                    </div>
                                    <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
+                                   <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+
                     </form>
                </div>
      </section>
@@ -877,7 +879,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data != "") {
                               details = data.split("###");
                               $("#fName").html(details[0]);
-                              $("#labId").html(details[1]);
+                              //$("#labId").html(details[1]);
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');

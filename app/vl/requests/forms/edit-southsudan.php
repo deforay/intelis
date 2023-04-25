@@ -156,7 +156,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	}
 }
-
+//echo $vlQueryInfo['lab_id']; die;
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -311,7 +311,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<?php } ?>
 										</select>
 									</div>
-
 								</div>
 							</div>
 						</div>
@@ -882,6 +881,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 								<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
 							</div>
@@ -900,7 +900,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$(document).ready(function() {
 		hivDetectionChange();
-
+		//getFacilities(document.getElementById("district"));
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1173,7 +1173,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 
 		$('#vlResult').on('change', function() {
-			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
 				if ($(this).val().trim().toLowerCase() == 'failed') {
 					$('.reasonForFailure').show();
 					$('#reasonForFailure').addClass('isRequired');
@@ -1229,6 +1229,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function getFacilities(obj) {
+		//alert(obj);
 		$.blockUI();
 		var dName = $("#district").val();
 		var cName = $("#fName").val();
@@ -1236,13 +1237,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
 					cliName: cName,
+					fType:2,
 					testType: 'vl'
 				},
 				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#fName").html(details[0]);
-						$("#labId").html(details[1]);
+						//$("#labId").html(details[1]);
 						$(".facilityDetails").hide();
 						$(".facilityEmails").html('');
 						$(".facilityMobileNumbers").html('');
