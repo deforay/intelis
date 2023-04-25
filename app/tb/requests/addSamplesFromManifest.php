@@ -211,7 +211,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncRequests.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
+						url: "/remote/scheduled-jobs/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})
 					.done(function(data) {
 						//console.log(data);

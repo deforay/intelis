@@ -55,19 +55,19 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/../scheduled-jobs/update-
 
 // REMOTE SYNC JOBS START
 if (!empty(SYSTEM_CONFIG['remoteURL'])) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncCommonData.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/commonDataSync.php")
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing common/reference data from remote system');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncRequests.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/requestsSync.php")
         ->everyFifteenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing requests from remote system');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/syncResults.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/remote/scheduled-jobs/resultsSync.php")
         ->everyTenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()

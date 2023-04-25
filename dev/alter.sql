@@ -3535,11 +3535,11 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 CREATE TABLE `r_sample_types` (
   `sample_type_id` int NOT NULL,
-  `sample_type_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `sample_type_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `sample_type_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `sample_type_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_type_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_type_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `r_sample_types`
   ADD PRIMARY KEY (`sample_type_id`),
@@ -3562,7 +3562,7 @@ CREATE TABLE `r_testing_reasons` (
   `test_reason` varchar(256) DEFAULT NULL,
   `test_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `r_testing_reasons`
   ADD PRIMARY KEY (`test_reason_id`),
@@ -3589,7 +3589,7 @@ CREATE TABLE `r_symptoms` (
   `symptom_code` varchar(256) DEFAULT NULL,
   `symptom_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `r_symptoms`
   ADD PRIMARY KEY (`symptom_id`),
@@ -3606,7 +3606,7 @@ CREATE TABLE `generic_test_sample_type_map` (
   `map_id` int NOT NULL,
   `sample_type_id` int NOT NULL,
   `test_type_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `generic_test_sample_type_map`
   ADD PRIMARY KEY (`map_id`),
@@ -3626,7 +3626,7 @@ CREATE TABLE `generic_test_reason_map` (
   `map_id` int NOT NULL,
   `test_reason_id` int NOT NULL,
   `test_type_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `generic_test_reason_map`
   ADD PRIMARY KEY (`map_id`),
@@ -3645,7 +3645,7 @@ CREATE TABLE `generic_test_symptoms_map` (
   `map_id` int NOT NULL,
   `symptom_id` int NOT NULL,
   `test_type_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `generic_test_symptoms_map`
   ADD PRIMARY KEY (`map_id`),

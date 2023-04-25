@@ -101,7 +101,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					message: "<h3><?= _("Preparing for VLSTS Remote sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncCommonData.php",
+						url: "/remote/scheduled-jobs/commonDataSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);
@@ -126,7 +126,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncRequests.php",
+						url: "/remote/scheduled-jobs/requestsSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);
@@ -152,7 +152,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncResults.php",
+						url: "/remote/scheduled-jobs/resultsSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);

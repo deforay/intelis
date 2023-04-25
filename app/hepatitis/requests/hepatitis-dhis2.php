@@ -562,7 +562,7 @@ startDate: moment().subtract(28, 'days'),
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/syncResults.php?sampleCode=" + sampleCode + "&forceSyncModule=hepatitis",
+						url: "/remote/scheduled-jobs/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=hepatitis",
 					})
 					.done(function(data) {
 						//console.log(data);
