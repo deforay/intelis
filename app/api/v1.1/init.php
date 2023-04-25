@@ -21,27 +21,11 @@ $geoLocationDb = new GeoLocationsService();
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
-// $auth = $general->getHeader('Authorization');
-// if (!empty($auth)) {
-//     $authToken = str_replace("Bearer ", "", $auth);
-//     /* Check if API token exists */
-//     $user = $userDb->getAuthToken($authToken);
-// }
 
+$auth = $general->getHeader('Authorization');
+$authToken = str_replace("Bearer ", "", $auth);
 $user = $userDb->getUserFromToken($authToken);
 
-// If authentication fails then do not proceed
-// if (empty($user) || empty($user['user_id'])) {
-//     $response = array(
-//         'status' => 'failed',
-//         'timestamp' => time(),
-//         'error' => 'Bearer Token Invalid',
-//         'data' => array()
-//     );
-//     http_response_code(401);
-//     echo json_encode($response);
-//     // exit(0); 
-// }
 $updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
 /* Status name list */
 $statusList = [];
@@ -462,11 +446,6 @@ if ($status) {
     // // exit(0); 
 }
 
-// if (isset($user['token_updated']) && $user['token_updated'] === true) {
-//     $payload['token'] = $user['new_token'];
-// } else {
-//     $payload['token'] = null;
-// }
 $trackId = $general->addApiTracking(
     $transactionId,
     $user['user_id'],

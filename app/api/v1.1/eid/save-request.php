@@ -32,25 +32,9 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-
     $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        /* Check if API token exists */
-        $user = $userDb->getAuthToken($authToken);
-    }
-
-    // If authentication fails then do not proceed
-    if (empty($user) || empty($user['user_id'])) {
-        // $response = array(
-        //     'status' => 'failed',
-        //     'timestamp' => time(),
-        //     'error' => 'Bearer Token Invalid',
-        //     'data' => array()
-        // );
-        http_response_code(401);
-        throw new Exception(_("Bearer Token Invalid"));
-    }
+    $authToken = str_replace("Bearer ", "", $auth);
+    $user = $userDb->getUserFromToken($authToken);
     $roleUser = $userDb->getUserRole($user['user_id']);
 
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
@@ -448,12 +432,6 @@ try {
             'timestamp' => time(),
             'message' => $msg
         );
-    }
-
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
     }
 
     http_response_code(200);

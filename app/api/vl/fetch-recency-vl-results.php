@@ -21,22 +21,9 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 
 $transactionId = $general->generateUUID();
-
-$user = null;
-// The request has to send an Authorization Bearer token 
 $auth = $general->getHeader('Authorization');
-if (!empty($auth)) {
-    $authToken = str_replace("Bearer ", "", $auth);
-    /* Check if API token exists */
-    $user = $userDb->getAuthToken($authToken);
-}
-
-// If authentication fails then do not proceed
-if (empty($user) || empty($user['user_id'])) {
-    http_response_code(401);
-    throw new Exception("Bearer token is invalid");
-}
-
+$authToken = str_replace("Bearer ", "", $auth);
+$user = $userDb->getUserFromToken($authToken);
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
 $from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;
@@ -111,11 +98,6 @@ try {
         'timestamp' => time(),
         'data' => $rowData
     );
-    if (isset($user['token_updated']) && $user['token_updated'] === true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
-    }
 
     http_response_code(200);
 } catch (Exception $exc) {
@@ -127,11 +109,6 @@ try {
         'error' => $exc->getMessage(),
         'data' => array()
     );
-    if (isset($user['token_updated']) && $user['token_updated'] === true) {
-        $payload['token'] = $user['new_token'];
-    } else {
-        $payload['token'] = null;
-    }
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

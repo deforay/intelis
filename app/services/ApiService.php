@@ -24,6 +24,7 @@ class ApiService
     public function generateSelectOptions($options)
     {
         $i = 0;
+        $response = array();
         foreach ($options as $key => $show) {
             $response[$i]['value'] = $key;
             $response[$i]['show'] = $show;
@@ -162,8 +163,8 @@ class ApiService
             $response[$key]['district'] = $row['facility_district'];
             if (!$module) {
                 $response[$key]['test_type'] = $row['test_type'];
-                $response[$key]['monthly_target'] = $row['monthly_target'];
-                $response[$key]['suppressed_monthly_target'] = $row['suppressed_monthly_target'];
+                $response[$key]['monthly_target'] = (isset($row['monthly_target']) && !empty($row['monthly_target']))?$row['monthly_target']:0;
+                $response[$key]['suppressed_monthly_target'] = (isset($row['suppressed_monthly_target']) && !empty($row['suppressed_monthly_target']))?$row['suppressed_monthly_target']:0;
             }
             // $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
             // $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
