@@ -3658,3 +3658,4 @@ ALTER TABLE `generic_test_symptoms_map`
 ALTER TABLE `generic_test_symptoms_map`
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_symptoms` (`symptom_id`),
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
+

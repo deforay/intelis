@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $general = new CommonService();
 $vlModel = new VlService();
-$tableName = "form_vl";
+$tableName = "generic_tests";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
@@ -317,7 +317,7 @@ try {
 
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId, 
-        'vlsm_country_id'                       => isset($_POST['countryFormId']) ? $_POST['countryFormId'] : 1,
+        'vlsm_country_id'                       => 1,
         'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
         'sample_code_format'                    => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,
         'external_sample_code'                  => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
@@ -497,7 +497,7 @@ try {
     } else {
         //check existing sample code
 
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_vl where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM generic_tests where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
         if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
             if ($existResult[0][$sampleCodeKey] != '') {
@@ -558,7 +558,7 @@ try {
             if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
                 header("Location:addVlRequest.php");
             } else {
-                header("Location:vlRequest.php");
+                header("Location:add-request.php");
             }
         } else {
             $_SESSION['alertMsg'] = _("Please try again later");
