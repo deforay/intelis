@@ -2,6 +2,7 @@
 
 namespace App\Middleware\Api;
 
+use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -28,7 +29,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
         }
         $authorization = $request->getHeaderLine('Authorization');
         $token = $this->getTokenFromAuthorizationHeader($authorization);
-
+        
         $tokenValidation = $this->validateToken($token);
 
         if (false === $tokenValidation) {
@@ -98,6 +99,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
 
         $excludedRoutes = [
             '/api/v1.1/user/login.php',
+            '/api/v1.1/version.php',
             // Add other routes to exclude from the authentication check here
         ];
 

@@ -33,13 +33,13 @@ try {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
     } else {
-        //$general->var_error_log($decode);
+        //$general->elog($decode);
         throw new Exception("2 Invalid request. Please check your request parameters.");
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
     if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
-        //$general->var_error_log($decode);
+        //$general->elog($decode);
         throw new Exception("3 Invalid request. Please check your request parameters.");
     } else {
         if (isset($user)) {
