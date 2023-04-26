@@ -252,7 +252,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Zone de santé</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_code'] . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_code']. '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
         $html .= '</tr>';
