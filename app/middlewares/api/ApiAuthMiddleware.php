@@ -29,7 +29,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
         }
         $authorization = $request->getHeaderLine('Authorization');
         $token = $this->getTokenFromAuthorizationHeader($authorization);
-        
+
         $tokenValidation = $this->validateToken($token);
 
         if (false === $tokenValidation) {
@@ -54,7 +54,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
             $response->getBody()->write(json_encode($responseBody));
         }
 
-        return $response;
+        return $response->withStatus(200);
 
 
     }
