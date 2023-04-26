@@ -185,9 +185,9 @@ try {
             $data['covid19SampleId'] = $id;
         }
 
-        // $general->var_error_log($data);
-        // $general->var_error_log($db->getLastQuery());
-        // $general->var_error_log($db->getLastError());
+        // $general->elog($data);
+        // $general->elog($db->getLastQuery());
+        // $general->elog($db->getLastError());
 
         $tableName = "form_covid19";
         $tableName1 = "activity_log";
@@ -455,8 +455,8 @@ try {
             }
         }
 
-        // $general->var_error_log($db->getLastQuery());
-        // $general->var_error_log($db->getLastError());
+        // $general->elog($db->getLastQuery());
+        // $general->elog($db->getLastError());
 
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);

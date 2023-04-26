@@ -233,7 +233,7 @@ $tatSampleQuery .= " GROUP BY monthDate";
 //$tatSampleQuery .= " HAVING ABS(TIMESTAMPDIFF(DAY,sample_tested_datetime,sample_collection_date)) < 120";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 
-// $general->var_error_log($_POST['labName']);
+// $general->elog($_POST['labName']);
 // error_log($tatSampleQuery);
 
 $tatResult = $db->rawQuery($tatSampleQuery);

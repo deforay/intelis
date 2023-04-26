@@ -311,7 +311,7 @@ $_SESSION['eidExportResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//$general->var_error_log($sQuery);
+//$general->elog($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

@@ -129,9 +129,7 @@ try {
     $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
     echo json_encode($payload);
-    // exit(0); 
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    // exit(0); 
 }

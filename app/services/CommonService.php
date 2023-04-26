@@ -619,7 +619,7 @@ class CommonService
     }
 
     //dump the contents of a variable to the error log in a readable format
-    public function var_error_log($object = null): void
+    public static function elog($object = null): void
     {
 
         var_dump($object);
