@@ -39,6 +39,6 @@ class LegacyFallbackMiddleware implements MiddlewareInterface
             $response->getBody()->write($output);
         }
 
-        return $response;
+        return $response->withStatus(200);
     }
 }

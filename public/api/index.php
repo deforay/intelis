@@ -9,6 +9,8 @@ use App\Services\UserService;
 use App\Middleware\Api\ApiAuthMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middleware\Api\LegacyFallbackMiddleware;
+use App\Services\CommonService;
+
 use function Laminas\Stratigility\middleware;
 
 use Slim\Factory\ServerRequestCreatorFactory;
@@ -25,34 +27,34 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 
-//1. CORS Middleware
+// 1. CORS Middleware
+
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
-
-    $response = $handler->handle($request);
-
+    session_destroy();
     if (isset($_SERVER['HTTP_ORIGIN'])) {
-        $response = $response->withHeader('Access-Control-Allow-Origin', $_SERVER['HTTP_ORIGIN'])
-            ->withHeader('Access-Control-Allow-Credentials', 'true')
-            ->withHeader('Access-Control-Max-Age', '86400');    // cache for 1 day
+        header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 86400');    // cache for 1 day
     }
-    $response = $response->withHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-        $response = $response->withHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
-    } else {
-        $response = $response->withHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        }
+
+        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        }
+        exit(0);
     }
-    return $response;
+    return $handler->handle($request);
 }));
 
 
 // 2. Middleware to ensure we always return JSON only
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     $response = $handler->handle($request);
-    $response = $response->withHeader('e-Type', 'application/json');
-    return $response
-        ->withHeader('f-Type', 'application/json')
-        ->withHeader('d-Type', 'application/json');
+    return $response->withHeader('Content-Type', 'application/json');
 }));
 
 // 3. API Auth Middleware that checks for Bearer token
