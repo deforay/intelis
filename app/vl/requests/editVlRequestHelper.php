@@ -335,7 +335,7 @@ try {
 
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId, 
-          'vlsm_country_id'                       => 1,
+          'vlsm_country_id'                       => isset($_POST['countryFormId']) ? $_POST['countryFormId'] : 1,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
           'sample_code_format'                    => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,
           'external_sample_code'                  => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
