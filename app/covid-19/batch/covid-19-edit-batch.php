@@ -216,6 +216,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 	var startDate = "";
 	var endDate = "";
 	var resultSampleArray = [];
+	var noOfSamples = $("#machine").find('option:selected').data('no-of-samples');
 
 	function validateNow() {
 		var selVal = [];
@@ -369,6 +370,27 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 			$('#alertText').html('');
 		}
 	});
+	$(document.body).on("change", "#search, #search_to", function() {
+		countOff().then(function(count) {
+			// use the result here
+			if (count > 0) {
+				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+			} else {
+				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+			}
+		});
+	});
+
+	function countOff() {
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				resolve();
+			}, 300);
+		}).then(function() {
+			var count = $("#search_to option").length;
+			return count;
+		});
+	}
 </script>
 
 <?php

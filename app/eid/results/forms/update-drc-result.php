@@ -186,7 +186,8 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 											<option value='single' <?php echo ($eidInfo['mother_marital_status'] == 'single') ? "selected='selected'" : ""; ?>> Single </option>
 											<option value='married' <?php echo ($eidInfo['mother_marital_status'] == 'married') ? "selected='selected'" : ""; ?>> Married </option>
 											<option value='cohabitating' <?php echo ($eidInfo['mother_marital_status'] == 'cohabitating') ? "selected='selected'" : ""; ?>> Cohabitating </option>
-
+											<option value='widow'  <?php echo ($eidInfo['mother_marital_status'] == 'widow') ? "selected='selected'" : ""; ?>> Widow </option>
+											<option value='unknown' <?php echo ($eidInfo['mother_marital_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
 										</select>
 									</td>
 								</tr>

@@ -193,7 +193,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<option value='single'> Single </option>
 												<option value='married'> Married </option>
 												<option value='cohabitating'> Cohabitating </option>
-
+												<option value='widow'> Widow </option>
+												<option value='unknown'> Unknown </option>
 											</select>
 										</td>
 									</tr>

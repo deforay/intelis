@@ -75,7 +75,6 @@ if (isset($_POST['iSortCol_0'])) {
 * word by word on any field. It's possible to do here, but concerned about efficiency
 * on very large tables, and MySQL's regex functionality is very limited
 */
-
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
@@ -89,10 +88,12 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           $colSize = count($aColumns);
 
           for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+               if(isset($aColumns[$i]) && !empty($aColumns[$i])){
+                    if ($i < $colSize - 1) {
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    } else {
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    }
                }
           }
           $sWhereSub .= ")";
@@ -214,7 +215,7 @@ $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo ($sQuery);die();
+// echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
