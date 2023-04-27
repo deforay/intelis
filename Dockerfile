@@ -1,11 +1,12 @@
-FROM php:7.4-apache
+# First stage: PHP with Apache
+FROM php:7.4-apache AS php-apache
 
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
     libonig-dev libpng-dev libicu-dev libcurl3-openssl-dev \
-    git zip unzip rsync vim openssl curl cron acl && \
+    git zip unzip rsync vim openssl curl cron acl gettext && \
     rm -rf /var/lib/apt/lists/*
 
 # Install required PHP extensions
@@ -22,26 +23,22 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY ./docker/php-apache/custom-php.ini /usr/local/etc/php/conf.d/custom-php.ini
 
 # Copy Apache configuration
-#COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/app.conf
 COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/000-default.conf
-#COPY ./docker/php-apache/api.conf /etc/apache2/sites-enabled/api.conf
 
 # Set working directory
 WORKDIR /var/www/html
 
+# Second stage: Final image
+FROM php-apache
+
 # Copy the application code to the container
 COPY . /var/www/html/
 
-
 # Install project dependencies using composer
-#RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN composer install --no-dev --optimize-autoloader --no-progress
 
-
 # Fix permissions
-#RUN chown -R www-data:www-data /var/www/html/
 RUN setfacl -R -m u:www-data:rwx /var/www/html;
-
 
 # Configure the cron job
 COPY ./docker/php-apache/crontab /etc/cron.d/crontab
