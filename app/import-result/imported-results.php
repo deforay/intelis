@@ -134,7 +134,7 @@ foreach ($rejectionTypeResult as $type) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<?php if ($errorInImport == false) { ?>
+					<?php if (!$errorInImport) { ?>
 
 						<div class="box-header without-border">
 							<div class="box-header with-border">

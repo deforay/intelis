@@ -25,19 +25,19 @@ class SouthSudan_PDF extends MYPDF
             if (isset($this->formId) && $this->formId == 1) {
                 if (trim($this->logo) != '') {
                     if ($this->imageExists($this->logo)) {
-                        $this->Image($this->logo, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                     }
                 }
                 $this->SetFont('helvetica', 'B', 15);
-                $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 40, 7, $this->text, 0, 0, 0, true, 'L');
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
                     // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
-                    $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L', true);
+                    $this->writeHTMLCell(0, 0, 40, 15, 'Public Health Laboratory', 0, 0, 0, true, 'L');
                 }
 
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 40, 21, $this->facilityInfo['address'], 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 40, 21, $this->facilityInfo['address'], 0, 0, 0, true, 'L');
 
                 $this->SetFont('helvetica', '', 9);
 
@@ -48,33 +48,33 @@ class SouthSudan_PDF extends MYPDF
                 } else {
                     $space = "";
                 }
-                $this->writeHTMLCell(0, 0, 40, 26, $emil . $space . $phone, 0, 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0, 40, 26, $emil . $space . $phone, 0, 0, 0, true, 'L');
 
 
-                $this->writeHTMLCell(0, 0, 10, 33, '<hr>', 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 10, 34, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 33, '<hr>', 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 10, 34, '<hr>', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'B', 12);
-                $this->writeHTMLCell(0, 0, 20, 35, 'SARS-CoV-2 Laboratory Report', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 20, 35, 'SARS-CoV-2 Laboratory Report', 0, 0, 0, true, 'C');
 
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
                 if (trim($this->logo) != '') {
                     if ($this->imageExists($this->logo)) {
-                        $this->Image($this->logo, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                     }
                 }
 
                 $this->SetFont('helvetica', 'B', 8);
-                $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
-                    $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                    $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
 
                 $this->SetFont('helvetica', '', 14);
-                $this->writeHTMLCell(0, 0, 10, 30, 'PATIENT REPORT FOR COVID-19 TEST', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 30, 'PATIENT REPORT FOR COVID-19 TEST', 0, 0, 0, true, 'C');
 
-                $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             }
         }
     }

@@ -51,14 +51,14 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
             if (trim($this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                   $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                  $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                  $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
                }
             }
             $this->SetFont('helvetica', 'B', 7);
-            $this->writeHTMLCell(30, 0, 16, 28, $this->text, 0, 0, 0, true, 'A', true);
+            $this->writeHTMLCell(30, 0, 16, 28, $this->text, 0, 0, 0, true, 'A');
             $this->SetFont('helvetica', '', 18);
-            $this->writeHTMLCell(0, 0, 10, 18, 'VIRAL LOAD TEST RESULT', 0, 0, 0, true, 'C', true);
-            $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 18, 'VIRAL LOAD TEST RESULT', 0, 0, 0, true, 'C');
+            $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C');
          }
 
          // Page footer
@@ -69,7 +69,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
             // Set font
             $this->SetFont('helvetica', '', 8);
             // Page number
-            $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+            $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
          }
       }
       $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

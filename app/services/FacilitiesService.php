@@ -140,7 +140,6 @@ class FacilitiesService
         }
 
         return once(function () use ($labId) {
-            $fMapResult = "";
             $this->db->where("vl_lab_id", $labId);
             $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
 

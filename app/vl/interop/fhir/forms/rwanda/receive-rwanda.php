@@ -336,7 +336,7 @@ foreach ($formData as $serviceRequest => $data) {
         error_log($e->getMessage());
     }
 
-    if (isset($id) && $id != false) {
+    if (isset($id) && $id) {
         $processedCounter++;
     }
 }
@@ -354,6 +354,6 @@ if (!empty($errors)) {
 }
 
 
-$trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json', null);
+$trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
 echo prettyJson($response);

@@ -72,10 +72,10 @@ if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""
                $nameValue .= str_replace("_"," ",$key)." : ".$value."&nbsp;&nbsp;";
           }
      }
-     $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+     $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
-          $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+          $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
@@ -99,7 +99,7 @@ if(isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples'])!=""
                $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
                // $sheet->getDefaultRowDimension()->setRowHeight(18);
                // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-               $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+               $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value));
                $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
                $colNo++;
           }

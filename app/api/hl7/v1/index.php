@@ -119,7 +119,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => array()
     );
-    if (isset($user['token_updated']) && $user['token_updated'] == true) {
+    if (isset($user['token_updated']) && $user['token_updated']) {
         $payload['token'] = $user['new_token'];
     }
 

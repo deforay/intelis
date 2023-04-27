@@ -111,7 +111,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 }
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
-$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0)) ? true : false;
+$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
@@ -288,7 +288,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?php echo ($implementingPartner['i_partner_name']); ?></option>
+													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -301,7 +301,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?php echo ($fundingSource['funding_source_name']); ?></option>
+													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -312,7 +312,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
 											<option value="">-- Select --</option>
 											<?php foreach ($lResult as $labName) { ?>
-												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ($labName['facility_name']); ?></option>
+												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -415,7 +415,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -468,7 +468,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
 														<option value="">-- Select --</option>
 														<?php foreach ($artRegimenResult as $heading) { ?>
-															<optgroup label="<?php echo ($heading['headings']); ?>">
+															<optgroup label="<?= $heading['headings']; ?>">
 																<?php foreach ($aResult as $regimen) {
 																	if ($heading['headings'] == $regimen['headings']) { ?>
 																		<option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
@@ -622,7 +622,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<select name="rmLastVLTestSampleType" id="rmLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
 															<option value=""> -- Select -- </option>
 															<?php foreach ($sResult as $name) { ?>
-																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_routine'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_routine'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -671,7 +671,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<select name="repeatLastVLTestSampleType" id="repeatLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
 															<option value=""> -- Select -- </option>
 															<?php foreach ($sResult as $name) { ?>
-																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure_ac'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure_ac'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -720,7 +720,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<select name="suspendLastVLTestSampleType" id="suspendLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
 															<option value=""> -- Select -- </option>
 															<?php foreach ($sResult as $name) { ?>
-																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+																<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['last_vl_sample_type_failure'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -772,7 +772,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab" onchange="autoFillFocalDetails();">
 															<option value="">-- Select --</option>
 															<?php foreach ($lResult as $labName) { ?>
-																<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ($labName['facility_name']); ?></option>
+																<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -845,7 +845,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 																	<?php
 																	foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
 																	<?php }
 																	} ?>
 																</optgroup>

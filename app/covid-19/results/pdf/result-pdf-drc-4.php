@@ -15,35 +15,35 @@ if (!class_exists('DRC_PDF')) {
             if ($this->htitle != '') {
 
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . 'inrb.png';
-                $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
 
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . 'inrb.png';
-                $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
                 $this->SetFont('helvetica', 'B', 12);
-                $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'B', 10);
-                $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
                 //if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', 'B', 11);
-                $this->writeHTMLCell(0, 0, 0, 17, $this->lab, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 17, $this->lab, 0, 0, 0, true, 'C');
                 //}
 
                 //$this->SetFont('helvetica', 'U', 11);
                 //$this->writeHTMLCell(0, 0, 0, 27, 'Laboratoire National de Référence Pour la Grippe et les virus respiratoires', 0, 0, 0, true, 'C', true);
 
                 $this->SetFont('helvetica', 'B', 10);
-                $this->writeHTMLCell(0, 0, 0, 24, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 24, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'U', 10);
-                $this->writeHTMLCell(0, 0, 0, 30, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 30, 'TESTES AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C');
 
-                $this->writeHTMLCell(0, 0, 10, 36, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 36, '<hr>', 0, 0, 0, true, 'C');
 
                 // Define the path to the image that you want to use as watermark.
                 $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 // Render the image
                 if ($img_file != "") {
                     $this->SetAlpha(0.1);
-                    $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+                    $this->Image($img_file, 20, 75, 150, null, '', '', '', false, 300, 'M');
                 }
                 $stamp = "";
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
@@ -51,8 +51,8 @@ if (!class_exists('DRC_PDF')) {
                 }
                 if ($stamp != "") {
                     $this->SetAlpha(0.6);
-                    $this->Image($stamp, 50, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
-                    $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
+                    $this->Image($stamp, 50, 160, 50, null);
+                    $this->Image($stamp, 145, 160, 50, null);
                 }
             }
         }

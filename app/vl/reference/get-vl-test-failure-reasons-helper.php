@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\elementType;
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

@@ -51,7 +51,6 @@ class HepatitisService
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new DateUtils();
         if(DateUtils::verifyIfDateValid($sampleCollectionDate) === false){
             $sampleCollectionDate = 'now';
         }
@@ -298,7 +297,6 @@ class HepatitisService
                 $params['countryId'] = null;
             }
 
-            $hepatitisData = [];
 
             $hepatitisData = array(
                 'vlsm_country_id' => $params['countryId'],
@@ -339,7 +337,6 @@ class HepatitisService
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
             if (isset($version) && !empty($version)) {
-                $ipaddress = '';
                 if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                     $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
                 } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

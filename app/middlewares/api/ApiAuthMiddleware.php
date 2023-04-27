@@ -2,7 +2,6 @@
 
 namespace App\Middleware\Api;
 
-use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

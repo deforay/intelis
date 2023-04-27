@@ -40,7 +40,7 @@ foreach ($entries as $entry) {
 
 
     $facilityFHIRId = ((string) $resource->getId());
-    $facilityName = (string) $resource->getName() . "-$facilityFHIRId";
+    $facilityName = $resource->getName() . "-$facilityFHIRId";
     $facilityCode = ((string) $resource->getIdentifier()[0]->getValue()) . "-$facilityFHIRId";
     $facilityState = ((string) $resource->getAddress()[0]->getState());
 

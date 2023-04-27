@@ -50,7 +50,7 @@ try {
 
 
         //load the CSV document from a file path
-        $csv = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, 'r');
+        $csv = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $csv->setDelimiter("\t");
 
         $stmt = new Statement();
@@ -190,7 +190,7 @@ try {
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
-            if ($scResult == false) {
+            if (!$scResult) {
                 $scData = array('r_sample_control_name' => trim($d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }

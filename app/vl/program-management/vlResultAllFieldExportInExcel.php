@@ -65,7 +65,7 @@ if (session_status() == PHP_SESSION_NONE) {
  
  foreach ($headings as $field => $value) {
   
-  $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+  $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value));
   $colNo++;
   
  }
@@ -151,7 +151,7 @@ if (session_status() == PHP_SESSION_NONE) {
     $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
     // $sheet->getDefaultRowDimension()->setRowHeight(18);
     // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-    $sheet->getCellByColumnAndRow($colNo, $rowNo + 2)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, $rowNo + 2)->setValueExplicit(html_entity_decode($value));
     $sheet->getStyleByColumnAndRow($colNo, $rowNo + 2)->getAlignment()->setWrapText(true);
     $colNo++;
   }

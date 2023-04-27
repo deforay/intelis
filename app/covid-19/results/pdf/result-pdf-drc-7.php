@@ -20,49 +20,49 @@ if (!class_exists('DRC_PDF')) {
                 //left logo
                 if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } else {
                     if ($this->imageExists($inrbImage)) {
-                        $this->Image($inrbImage, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($inrbImage, 10, 5, 25, '', '', '', 'T');
                     }
                 }
 
                 //right logo
                 if ($this->imageExists($inrbImage)) {
-                    $this->Image($inrbImage, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($inrbImage, 175, 5, 25, '', '', '', 'T');
                 }
 
 
 
                 $this->SetFont('helvetica', 'B', 12);
-                $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'B', 10);
-                $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DU HAUT KATANGA", 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 11, $this->text, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 0, 16, "DIVISION PROVINCIALE DE LA SANTÉ", 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 0, 22, "PROVINCE DU HAUT KATANGA", 0, 0, 0, true, 'C');
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', 'B', 11);
-                    $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C', true);
+                    $this->writeHTMLCell(0, 0, 0, 27, ($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 10);
                 $this->SetTextColor(0, 0, 250);
-                $this->writeHTMLCell(0, 0, 0, 32, '<em>Service de Biologie Moléculaire</em>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 32, '<em>Service de Biologie Moléculaire</em>', 0, 0, 0, true, 'C');
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('helvetica', 'U', 11);
-                $this->writeHTMLCell(0, 0, 0, 38, 'Laboratoire National de Référence pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 38, 'Laboratoire National de Référence pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C');
 
                 $this->SetFont('helvetica', 'B', 10);
-                $this->writeHTMLCell(0, 0, 0, 44, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 44, 'RÉSULTATS DES LABORATOIRES DES ECHANTILLONS RESPIRATOIRES', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'U', 10);
-                $this->writeHTMLCell(0, 0, 0, 49, 'TEST AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 49, 'TEST AU nCOV-19 PAR RT-PCR en temps réel', 0, 0, 0, true, 'C');
 
-                $this->writeHTMLCell(0, 0, 10, 54, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 54, '<hr>', 0, 0, 0, true, 'C');
 
                 // Define the path to the image that you want to use as watermark.
                 $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
                 if ($this->imageExists($watermarkImage)) {
                     $this->SetAlpha(0.1);
-                    $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M', false, false, 0);
+                    $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M');
                 }
 
                 $stamp = "";
@@ -71,8 +71,8 @@ if (!class_exists('DRC_PDF')) {
                 }
                 if ($stamp != "") {
                     $this->SetAlpha(0.6);
-                    $this->Image($stamp, 50, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
-                    $this->Image($stamp, 145, 160, 50, null, '', '', '', false, 300, '', false, false, 0);
+                    $this->Image($stamp, 50, 160, 50, null);
+                    $this->Image($stamp, 145, 160, 50, null);
                 }
             }
         }
@@ -92,7 +92,7 @@ if (!class_exists('DRC_PDF')) {
             $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'], IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
             $this->writeHTML($formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab);
             //$this->writeHTML(strftime("%A %d %B, %Y", strtotime($this->resultPrintedDate)) . $generatedAtTestingLab);
-            $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Moléculaire', 0, 0, false, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 280, 'Service de Biologie Moléculaire', 0, 0, false, true, 'C');
             // Page number
             //$this->SetFont('helvetica', '', 8);
             //$this->Cell(0, 15, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'R', 0, '', 0, false, 'C', 'M');

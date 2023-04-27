@@ -332,5 +332,5 @@ foreach ($trackedEntityInstances as $tracker) {
 }
 
 $response = array('received' => $receivedCounter, 'processed' => $processedCounter);
-$general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'DHIS2-Hepatitis-Receive', 'hepatitis', $url, $data, null, 'json', null);
+$general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'DHIS2-Hepatitis-Receive', 'hepatitis', $url, $data, null, 'json');
 echo json_encode($response);

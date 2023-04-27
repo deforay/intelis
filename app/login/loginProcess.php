@@ -29,7 +29,6 @@ $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemI
 
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-        $_GET['u'] = ($_GET['u']);
         $_POST['username'] = base64_decode($_GET['u']);
 
         $decryptedPassword = CommonService::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
@@ -131,7 +130,7 @@ try {
                     $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
                     $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
                 } else {
-                    $id = $general->generateRandomString(32);
+                    $id = $general->generateRandomString();
                     // deleting just in case there is a row already inserted
                     $db->delete('s_vlsm_instance');
                     $db->insert('s_vlsm_instance', array('vlsm_instance_id' => $id));

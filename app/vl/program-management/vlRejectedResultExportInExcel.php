@@ -1,13 +1,11 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+     session_start();
 }
 
-  
-=
+
 use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -16,17 +14,17 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 $general = new CommonService();
 $sarr = $general->getSystemConfig();
 
-if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralLoadResult'])!=""){
+if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralLoadResult']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
 
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code','Remote Sample Code',"Facility Name","Patient ART no.","Patient Name","Sample Collection Date","Lab Name","Rejection Reason");
-     if($sarr['sc_user_type']=='standalone') {
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
+     if ($sarr['sc_user_type'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-			unset($headings[$key]);
-		}
+               unset($headings[$key]);
+          }
      }
 
      $colNo = 1;
@@ -50,17 +48,17 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
 
      $sheet->mergeCells('A1:AE1');
      $nameValue = '';
-     foreach($_POST as $key=>$value){
-          if(trim($value)!='' && trim($value)!='-- Select --'){
-               $nameValue .= str_replace("_"," ",$key)." : ".$value."&nbsp;&nbsp;";
+     foreach ($_POST as $key => $value) {
+          if (trim($value) != '' && trim($value) != '-- Select --') {
+               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+          ->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+               ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
@@ -69,48 +67,48 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
-          if($aRow['sample_collection_date']!= null && trim($aRow['sample_collection_date'])!='' && $aRow['sample_collection_date']!='0000-00-00 00:00:00'){
-               $expStr = explode(" ",$aRow['sample_collection_date']);
+          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if($aRow['patient_first_name']!=''){
-               $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_first_name'] != '') {
+               $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
+          } else {
                $patientFname = '';
           }
-          if($aRow['patient_middle_name']!=''){
-               $patientMname = ($general->crypto('doNothing',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_middle_name'] != '') {
+               $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+          } else {
                $patientMname = '';
           }
-          if($aRow['patient_last_name']!=''){
-               $patientLname = ($general->crypto('doNothing',$aRow['patient_last_name'],$aRow['patient_art_no']));
-          }else{
+          if ($aRow['patient_last_name'] != '') {
+               $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+          } else {
                $patientLname = '';
           }
           $row[] = $aRow['sample_code'];
-          if($sarr['sc_user_type']!='standalone'){
-           $row[] = $aRow['remote_sample_code'];
-            }
+          if ($sarr['sc_user_type'] != 'standalone') {
+               $row[] = $aRow['remote_sample_code'];
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname." ".$patientMname." ".$patientLname);
+          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];
           $output[] = $row;
      }
 
-     $start = (count($output))+2;
+     $start = (count($output)) + 2;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
                $colNo++;
           }
      }
@@ -118,6 +116,4 @@ if(isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViralL
      $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
-
 }
-

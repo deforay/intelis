@@ -259,7 +259,6 @@ if (sizeof($requestResult) > 0) {
                     $showMessage = ($arr['l_vl_msg']);
                     $tndMessage = 'TND* - Target not Detected';
                } else if (in_array(strtolower($vlResult), array("failed", "fail", "no_sample", "invalid"))) {
-                    $vlResult = ($vlResult);
                     $smileyContent = '';
                     $showMessage = '';
                     $messageTextSize = '14px';

@@ -61,7 +61,6 @@ class VlService
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new DateUtils();
         if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
@@ -179,7 +178,6 @@ class VlService
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        $dateUtils = new DateUtils();
         if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
@@ -339,9 +337,6 @@ class VlService
                     $vlResultCategory = 'not suppressed';
                 }
             } else {
-
-                $textResult = null;
-
                 if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;
                 } else {
@@ -582,7 +577,7 @@ class VlService
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
-            $vlData = [];
+
 
             $vlData = array(
                 'vlsm_country_id' => $params['countryId'],
@@ -624,7 +619,6 @@ class VlService
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
             if (isset($version) && !empty($version)) {
-                $ipaddress = '';
                 if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                     $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
                 } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -749,7 +743,6 @@ class VlService
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
-            $vlData = [];
 
             $vlData = array(
                 'vlsm_country_id' => $params['countryId'],
@@ -791,7 +784,6 @@ class VlService
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
             if (isset($version) && !empty($version)) {
-                $ipaddress = '';
                 if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                     $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
                 } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

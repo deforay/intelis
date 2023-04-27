@@ -91,7 +91,7 @@ try {
 
             $sampleCode = $row[$sampleIdCol];
 
-            if (strpos(strtolower($sampleCode), 'control') == false && !in_array($sampleCode, array('cn', 'cp'))) {
+            if (!strpos(strtolower($sampleCode), 'control') && !in_array($sampleCode, array('cn', 'cp'))) {
                 $sampleType = "S";
             } else {
                 $sampleType = 'Control';

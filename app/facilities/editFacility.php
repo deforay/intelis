@@ -118,7 +118,7 @@ if ($facilityInfo['test_type'] == 2) {
 if ($fType == "2") {
 	$allowFileDiv = "block";
 }
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
 ?>
 <style>

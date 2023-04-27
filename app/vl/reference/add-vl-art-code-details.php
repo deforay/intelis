@@ -93,7 +93,7 @@ foreach ($categoryInfo as $category) {
 				<a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 			</div>
 			<!-- /.box-footer -->
-			</form>
+
 			<!-- /.row -->
 		</div>
 </div>

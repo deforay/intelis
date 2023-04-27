@@ -50,7 +50,7 @@ $borderStyle = array(
 // $sheet->mergeCells('A1:AH1');
 // $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode("Lab Sync Status Report"), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 foreach ($headings as $field => $value) {
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value));
     $sheet->getStyle($colNo . 1)->applyFromArray($borderStyle);
     // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
     // $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
@@ -107,7 +107,7 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = ($rowNo+2);
-        $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+        $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value));
         // echo "Col : ".$colNo ." => Row : " . $rRowCount . " => Color : " .$color[$colorNo]['color'];
         // echo "<br>";
         $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();

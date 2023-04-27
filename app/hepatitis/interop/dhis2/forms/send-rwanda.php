@@ -232,5 +232,5 @@ foreach ($formResults as $row) {
 
 
 $response = array('processed' => $counter);
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'DHIS2-Hepatitis-send', 'hepatitis', $url, $urlData, null, 'json', null);
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'DHIS2-Hepatitis-send', 'hepatitis', $url, $urlData, null, 'json');
 echo json_encode($response);

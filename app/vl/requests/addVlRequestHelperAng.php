@@ -125,15 +125,15 @@ try {
           $_POST['vlResult'] = '';
           $_POST['vlLog'] = '';
      }
-     if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && $isRejection == false) {
+     if (isset($_POST['tnd']) && $_POST['tnd'] == 'yes' && !$isRejection) {
           $_POST['vlResult'] = 'Target Not Detected';
           $_POST['vlLog'] = '';
      }
-     if (isset($_POST['ldl']) && $_POST['ldl'] == 'yes' && $isRejection == false) {
+     if (isset($_POST['ldl']) && $_POST['ldl'] == 'yes' && !$isRejection) {
           $_POST['vlResult'] = 'Low Detection Level';
           $_POST['vlLog'] = '';
      }
-     if (isset($_POST['hdl']) && $_POST['hdl'] == 'yes' && $isRejection == false) {
+     if (isset($_POST['hdl']) && $_POST['hdl'] == 'yes' && !$isRejection) {
           $_POST['vlResult'] = 'High Detection Level';
           $_POST['vlLog'] = '';
      }

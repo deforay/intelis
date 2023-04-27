@@ -147,7 +147,7 @@ foreach ($trackedEntityInstances as $tracker) {
         if (!empty($formData['reason_for_covid19_test'])) {
             $db->where("test_reason_name", $formData['reason_for_covid19_test']);
             $reason = $db->getOne("r_covid19_test_reasons");
-            if (!empty($reason) && $reason != false) {
+            if (!empty($reason) && $reason) {
                 $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
             } else {
                 $reasonData = array(
@@ -201,7 +201,7 @@ foreach ($trackedEntityInstances as $tracker) {
             $db->where("sample_name", $formData['specimen_type']);
             $sampleType = $db->getOne("r_covid19_sample_type");
 
-            if (!empty($sampleType) && $sampleType != false) {
+            if (!empty($sampleType) && $sampleType) {
                 $formData['specimen_type'] = $sampleType['sample_id'];
             } else {
                 $sampleTypeData = array(
@@ -269,7 +269,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         //$db->onDuplicate($updateColumns, 'unique_id');
         $id = $db->insert("form_covid19", $formData);
-        if ($id != false) {
+        if ($id) {
             $processedCounter++;
         }
     }

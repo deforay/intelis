@@ -130,7 +130,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?php echo ($implementingPartner['i_partner_name']); ?></option>
+													<option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -141,7 +141,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?php echo ($fundingSource['funding_source_name']); ?></option>
+													<option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -391,7 +391,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
 												<option value="">-- Selecione --</option>
 												<?php foreach ($sampleResult as $name) { ?>
-													<option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+													<option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -490,7 +490,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																	<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
 															<?php }
 															} ?>
 														</optgroup>

@@ -4,7 +4,6 @@
 
 
 use App\Utilities\DateUtils;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 class MYPDFANG extends TCPDF
 {
@@ -29,24 +28,24 @@ class MYPDFANG extends TCPDF
           if (trim($this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    $this->Image($imageFilePath, 95, 3, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($imageFilePath, 95, 3, 15, '', '', '', 'T');
                }
           }
           //$this->SetFont('helvetica', 'B', 7);
           //$this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);
           $this->SetFont('helvetica', '', 7);
-          $this->writeHTMLCell(0, 0, 10, 18, 'República de Angola', 0, 0, 0, true, 'C', true);
+          $this->writeHTMLCell(0, 0, 10, 18, 'República de Angola', 0, 0, 0, true, 'C');
           $this->SetFont('helvetica', '', 7);
-          $this->writeHTMLCell(0, 0, 10, 22, 'Ministério da Saúde', 0, 0, 0, true, 'C', true);
+          $this->writeHTMLCell(0, 0, 10, 22, 'Ministério da Saúde', 0, 0, 0, true, 'C');
           $this->SetFont('helvetica', '', 7);
-          $this->writeHTMLCell(0, 0, 10, 26, 'Instituto Nacional de Luta contra a SIDA', 0, 0, 0, true, 'C', true);
+          $this->writeHTMLCell(0, 0, 10, 26, 'Instituto Nacional de Luta contra a SIDA', 0, 0, 0, true, 'C');
           $this->SetFont('helvetica', 'B', 8);
-          $this->writeHTMLCell(0, 0, 10, 30, 'RELATÓRIO DE RESULTADOS DE QUANTIFICAÇÃO DE CARGA VIRAL DE VIH', 0, 0, 0, true, 'C', true);
+          $this->writeHTMLCell(0, 0, 10, 30, 'RELATÓRIO DE RESULTADOS DE QUANTIFICAÇÃO DE CARGA VIRAL DE VIH', 0, 0, 0, true, 'C');
           //if(trim($this->lab)!= ''){
           // $this->SetFont('helvetica', '', 9);
           //$this->writeHTMLCell(0,0,10,26,strtoupper($this->lab), 0, 0, 0, true, 'C', true);
           //}
-          $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C', true);
+          $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C');
      }
 
      // Page footer
@@ -57,7 +56,7 @@ class MYPDFANG extends TCPDF
           // Set font
           $this->SetFont('helvetica', '', 8);
           // Page number
-          $this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
+          $this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0);
      }
 }
 

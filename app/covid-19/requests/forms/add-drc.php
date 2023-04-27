@@ -63,7 +63,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 $geolocation = new GeoLocationsService();
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
 $pResult = $db->rawQuery($pQuery);

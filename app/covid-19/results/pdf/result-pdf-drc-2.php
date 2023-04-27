@@ -13,31 +13,31 @@ class DRC_PDF extends MYPDF
             if (trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 }
             }
             if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
-                $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
             }
         }
         $this->SetFont('helvetica', 'B', 12);
-        $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
         $this->SetFont('helvetica', 'B', 10);
-        $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
         if (trim($this->lab) != '') {
             $this->SetFont('helvetica', 'B', 11);
-            $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
         }
         $this->SetFont('helvetica', 'B', 11);
-        $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 12, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 12, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 20, 'Province du Nord-Kivu', 0, 0, false, true, 'C');
+        $this->writeHTMLCell(0, 0, 12, 25, 'Laboratoire P3/P2/P2 Rodolphe Merleux INRB-COMA', 0, 0, false, true, 'C');
+        $this->writeHTMLCell(0, 0, 12, 30, 'Laboratoire Réglonal de Santé Publique', 0, 0, false, true, 'C');
         $this->SetTextColor(255, 0, 0);
-        $this->writeHTMLCell(0, 0, 12, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 35, 'Membre du réseau GABRIEL', 0, 0, false, true, 'C');
         $this->SetTextColor(0, 0, 0);
-        $this->writeHTMLCell(0, 0, 12, 40, '<hr>', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 12, 41, '<hr>', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 12, 40, '<hr>', 0, 0, false, true, 'C');
+        $this->writeHTMLCell(0, 0, 12, 41, '<hr>', 0, 0, false, true, 'C');
 
         // Define the path to the image that you want to use as watermark.
         $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
@@ -52,7 +52,7 @@ class DRC_PDF extends MYPDF
         // Render the image
         if ($img_file != "") {
             $this->SetAlpha(0.1);
-            $this->Image($img_file, 55, 60, 100, null, '', '', '', false, 300, 'M', false, false, 0);
+            $this->Image($img_file, 55, 60, 100, null, '', '', '', false, 300, 'M');
         }
         /* $stamp = "";
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'stamp-1.png')) {
@@ -77,10 +77,10 @@ class DRC_PDF extends MYPDF
         }
 
         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::FULL, $_SESSION['APP_TIMEZONE'],IntlDateFormatter::GREGORIAN, "EEEE dd MMMM, Y");
-        $this->writeHTMLCell(0, 0, 10, 290, $formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab, 0, 0, false, true, 'L', true);
-        $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C', true);
-        $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 10, 290, $formatter->format(strtotime($this->resultPrintedDate)) . ' ' . $generatedAtTestingLab, 0, 0, false, true, 'L');
+        $this->writeHTMLCell(0, 0, 10, 280, 'N 29 Av des Orchidees O. le volcan C. de Goma Tel: +243 817933409 +234 993549796', 0, 0, false, true, 'C');
+        $this->writeHTMLCell(0, 0, 10, 285, 'E-mail : info@inrbgoma.com, inrbgoma@gmail.com', 0, 0, false, true, 'C');
+        $this->writeHTMLCell(0, 0, 10, 290, 'inrbgoma.com', 0, 0, false, true, 'C');
     }
 }
 

@@ -16,7 +16,7 @@ $sarr = $general->getSystemConfig();
 $facilityMap = null;
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sCode = 'remote_sample_code';
-    $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId'], null);
+    $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
     $sCode = 'sample_code';
 }
