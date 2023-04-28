@@ -17,10 +17,6 @@ $mailconf = [];
 foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
-//get logo
-$configQuery = "SELECT * from global_config WHERE name='logo'";
-$configResult = $db->query($configQuery);
-//print_r($configResult);die;
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';

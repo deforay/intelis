@@ -3,6 +3,7 @@ version: '3.9'
 services:
   web:
     build: .
+    #image: deforay/vlsm
     ports:
       - "${APACHE_PORT}:80"
     volumes:

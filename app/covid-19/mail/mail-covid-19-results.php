@@ -1,14 +1,14 @@
 <?php
 
+use App\Services\CommonService;
+
 $title = "Email Covid-19 Test Results";
 
 require_once(APPLICATION_PATH . '/header.php');
-$configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configResult = $db->rawQuery($configQuery);
-$formId = 0;
-if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
-  $formId = intval($configResult[0]['value']);
-}
+
+$general = new CommonService();
+$formId = $general->getGlobalConfig('vl_form');
+
 //main query
 $query = "SELECT covid19.sample_code,covid19.covid19_id,covid19.facility_id,f.facility_name,f.facility_code FROM form_covid19 as covid19 LEFT JOIN facility_details as f ON covid19.facility_id=f.facility_id where is_result_mail_sent like 'no' AND covid19.result IS NOT NULL AND covid19.result!= '' ORDER BY f.facility_name ASC";
 $result = $db->rawQuery($query);

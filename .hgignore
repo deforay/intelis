@@ -43,3 +43,4 @@ configs/bg.jpg
 secretKey.txt
 vendor
 .user.ini
+rector.php

@@ -14,10 +14,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-// $configQuery = "SELECT * from global_config";
-// $configResult = $db->query($configQuery);
-// $arr = [];
-// $prefix = $arr['sample_code_prefix'];
+
 
 // Getting the list of Provinces, Districts and Facilities
 

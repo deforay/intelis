@@ -74,7 +74,7 @@ $removeKeys = array(
   'last_modified_datetime'
 );
 
-$vlQuery = "SELECT * FROM form_vl 
+$vlQuery = "SELECT * FROM form_vl
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
