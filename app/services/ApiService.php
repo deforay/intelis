@@ -267,7 +267,6 @@ class ApiService
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $params = null, $format = null)
     {
-        $general = new CommonService($this->db);
         $data = array(
             'requested_by' => $user ?: 'vlsm-system',
             'requested_on' => DateUtils::getCurrentDateTime(),

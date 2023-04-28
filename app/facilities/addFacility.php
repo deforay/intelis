@@ -41,7 +41,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
 }
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 
 
 ?>

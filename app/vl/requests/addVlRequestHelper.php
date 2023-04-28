@@ -18,6 +18,7 @@ $fDetails = "facility_details";
 $vl_result_category = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
+$formId = $general->getGlobalConfig('vl_form');
 
 try {
     if (isset($_POST['api']) && $_POST['api'] == "yes") {
@@ -32,13 +33,11 @@ try {
     }
 
     $resultStatus = 6;
-  
+
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $resultStatus = 9;
     }
-    $countryFormId = '';
-    if(isset($_POST['countryFormId']) && $_POST['countryFormId']!="")
-        $countryFormId = $_POST['countryFormId'];
+
     //add province
     $splitProvince = explode("##", $_POST['province']);
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
@@ -63,7 +62,7 @@ try {
     } else {
         $_POST['dob'] = null;
     }
-    if(isset($_POST['countryFormId']) && $_POST['countryFormId']=='3'){
+    if (isset($formId) && $formId == '3') {
         if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
             $_POST['isPatientNew'] = null;
             $_POST['dateOfArtInitiation'] = null;
@@ -77,11 +76,9 @@ try {
         } else if ($_POST['isPatientNew'] == "no") {
             $_POST['dateOfArtInitiation'] = null;
         }
-    }
-    else
-    {
+    } else {
         if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-        $_POST['dateOfArtInitiation'] = DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
+            $_POST['dateOfArtInitiation'] = DateUtils::isoDateFormat($_POST['dateOfArtInitiation']);
         } else {
             $_POST['dateOfArtInitiation'] = null;
         }
@@ -100,7 +97,7 @@ try {
         if (!isset($artResult[0]['art_id'])) {
             $data = array(
                 'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => $countryFormId,
+                'parent_art' => $formId,
                 'updated_datetime' => DateUtils::getCurrentDateTime(),
             );
             $result = $db->insert('r_vl_art_regimen', $data);
@@ -131,8 +128,8 @@ try {
         $_POST['lastViralLoadTestDate'] = null;
     }
 
-     //Sample type section
-     if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
+    //Sample type section
+    if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
         if (trim($_POST['specimenType']) != 2) {
             $_POST['conservationTemperature'] = null;
             $_POST['durationOfConservation'] = null;
@@ -230,7 +227,6 @@ try {
         $resultStatus = 4;
         $_POST['vlResult'] = '';
         $_POST['vlLog'] = '';
-
     }
 
     if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
@@ -284,9 +280,8 @@ try {
 
     //set vl test reason
     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
-        if(!is_numeric($_POST['reasonForVLTesting']))
-        {
-        $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons
+        if (!is_numeric($_POST['reasonForVLTesting'])) {
+            $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons
                         WHERE test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
             $reasonResult = $db->rawQuery($reasonQuery);
             if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
@@ -316,8 +311,8 @@ try {
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
 
     $vldata = array(
-        'vlsm_instance_id'                      => $instanceId, 
-        'vlsm_country_id'                       => isset($_POST['countryFormId']) ? $_POST['countryFormId'] : 1,
+        'vlsm_instance_id'                      => $instanceId,
+        'vlsm_country_id'                       => isset($formId) ? $formId : 1,
         'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
         'sample_code_format'                    => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,
         'external_sample_code'                  => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
@@ -353,7 +348,7 @@ try {
         'arv_adherance_percentage'              => (isset($_POST['arvAdherence']) && $_POST['arvAdherence'] != '') ? $_POST['arvAdherence'] :  null,
         'reason_for_vl_testing'                 => (isset($_POST['reasonForVLTesting'])) ? $_POST['reasonForVLTesting'] : null,
         'last_viral_load_result'                => (isset($_POST['lastViralLoadResult']) && $_POST['lastViralLoadResult'] != '') ? $_POST['lastViralLoadResult'] :  null,
-        'last_viral_load_date'                  => $_POST['lastViralLoadTestDate'], 
+        'last_viral_load_date'                  => $_POST['lastViralLoadTestDate'],
         'community_sample'                      => (isset($_POST['communitySample'])) ? $_POST['communitySample'] : null,
         'last_vl_date_routine'                  => (isset($_POST['rmTestingLastVLDate']) && $_POST['rmTestingLastVLDate'] != '') ? DateUtils::isoDateFormat($_POST['rmTestingLastVLDate']) :  null,
         'last_vl_result_routine'                => (isset($_POST['rmTestingVlValue']) && $_POST['rmTestingVlValue'] != '') ? $_POST['rmTestingVlValue'] :  null,
@@ -427,35 +422,34 @@ try {
     if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
         $_POST['cdDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['cdDate']);
     } else {
-            $_POST['cdDate'] = null;
+        $_POST['cdDate'] = null;
     }
 
     if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
         $failedtestDate = explode(" ", $_POST['failedTestDate']);
         $_POST['failedTestDate'] = \App\Utilities\DateUtils::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
-   } else {
+    } else {
         $_POST['failedTestDate'] = null;
-   }
-    if(isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
+    }
+    if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
         $platForm = explode("##", $_POST['failedTestingTech']);
         $_POST['failedTestingTech'] = $platForm[0];
     }
     if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
         $_POST['qcDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['qcDate']);
-   } else {
+    } else {
         $_POST['qcDate'] = null;
-   }
+    }
 
-   if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
+    if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
         $_POST['reportDate'] = \App\Utilities\DateUtils::isoDateFormat($_POST['reportDate']);
-   } else {
+    } else {
         $_POST['reportDate'] = null;
-   }
+    }
 
     //For PNG form
     $pngSpecificFields = [];
-    if(isset($_POST['countryFormId']) && $_POST['countryFormId']=='5')
-    {
+    if (isset($formId) && $formId == '5') {
         $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
         $pngSpecificFields['art_cd_date'] = $_POST['cdDate'];
         $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
@@ -483,13 +477,12 @@ try {
         $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
         $pngSpecificFields['qc_date'] = $_POST['qcDate'];
         $pngSpecificFields['report_date'] = $_POST['reportDate'];
-
     }
     $vldata = array_merge($vldata, $pngSpecificFields);
 
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
-   //echo '<pre>'; print_r($vldata); die;
+    //echo '<pre>'; print_r($vldata); die;
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

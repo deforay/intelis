@@ -1,16 +1,8 @@
 <?php
 
-
-use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
-$general = new CommonService();
-$configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configResult = $db->rawQuery($configQuery);
-$formId = 0;
-if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
-  $formId = intval($configResult[0]['value']);
-}
+
 if (!is_array($_POST['facility']) || count($_POST['facility']) == 0) {
   $_POST['facility'] = [];
 }
@@ -90,7 +82,7 @@ $result = $db->rawQuery($query);
         foreach ($result as $sample) {
           if (trim($sample['sample_code']) != '') {
         ?>
-            <option value="<?php echo $sample['covid19_id']; ?>"><?php echo ($sample['sample_code']); ?></option>
+            <option value="<?php echo $sample['covid19_id']; ?>"><?= $sample['sample_code']; ?></option>
         <?php
           }
         }

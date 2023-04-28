@@ -303,7 +303,7 @@ $state = $geoLocationDb->getProvinces("yes");
 																	<?php foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) {
 																	?>
-																			<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+																			<option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
 																	<?php }
 																	} ?>
 																</optgroup>

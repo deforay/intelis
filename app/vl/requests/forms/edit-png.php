@@ -560,7 +560,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<select name="rejectionReason" id="rejectionReason" class="form-control <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "isRequired" : ""; ?>" title="Please choose reason" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($rejectionResult as $reject) { ?>
-													<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "" ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+													<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? "selected='selected'" : "" ?>><?= $reject['rejection_reason_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -579,7 +579,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<select name="specimenType" id="specimenType" class="form-control" title="Please choose Specimen type" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($sResult as $name) { ?>
-													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>

@@ -47,7 +47,7 @@ $borderStyle = array(
 );
 
 foreach ($headings as $field => $value) {
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($value));
     $sheet->getStyle($colNo . 1)->applyFromArray($borderStyle);
     // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);
     // $sheet->getColumnDimensionByColumn($colNo)->setWidth(30);
@@ -77,7 +77,7 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = ($rowNo+2);
-        $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+        $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value));
         $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
         $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
         // // $sheet->getDefaultRowDimension($colNo)->setRowHeight(18);

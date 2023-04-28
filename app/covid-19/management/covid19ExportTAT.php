@@ -56,11 +56,11 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     }
   }
   $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
   $sheet->getStyle('A3:F3')->applyFromArray($styleArray);

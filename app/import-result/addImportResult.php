@@ -69,7 +69,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 					</ol>
 					</p>
 
-				</div>
+
 				<form class="form-horizontal" method='post' name='addImportResultForm' id='addImportResultForm' enctype="multipart/form-data" autocomplete="off" action="addImportResultHelper.php">
 					<div class="box-body">
 						<div class="wizard_content">

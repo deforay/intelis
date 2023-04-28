@@ -3,6 +3,7 @@ version: '3.9'
 services:
   web:
     build: .
+    #image: deforay/vlsm
     ports:
       - "${APACHE_PORT}:80"
     volumes:
@@ -14,10 +15,10 @@ services:
       - API_DOMAIN=${API_DOMAIN}
       - APACHE_PORT=${APACHE_PORT}
     entrypoint: /usr/local/bin/entrypoint.sh
-    restart: always
+    restart: unless-stopped
   db:
     image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --innodb-strict-mode=OFF --sql-mode=""
     ports:
       - "${MYSQL_PORT}:3306"
     environment:
@@ -27,8 +28,8 @@ services:
       #- MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf # Add this line
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Update this line
-    restart: always
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
 volumes:
   db_data: {}

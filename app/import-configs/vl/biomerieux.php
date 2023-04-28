@@ -89,7 +89,7 @@ try {
 
             $sampleCode = $row[$sampleIdCol];
 
-            if (strpos(strtolower($sampleCode), 'control') == false && (int)$sampleCode > 0) {
+            if (!strpos(strtolower($sampleCode), 'control') && (int)$sampleCode > 0) {
                 $sampleType = "S";
             } else {
                 $sampleType = $sampleCode;

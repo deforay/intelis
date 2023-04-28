@@ -183,7 +183,7 @@ $sFormat = '';
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?php echo ($implementingPartner['i_partner_name']); ?></option>
+                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -196,7 +196,7 @@ $sFormat = '';
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?php echo ($fundingSource['funding_source_name']); ?></option>
+                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -207,7 +207,7 @@ $sFormat = '';
                                                   <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
                                                        <option value="">-- Select --</option>
                                                        <?php foreach ($lResult as $labName) { ?>
-                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ($labName['facility_name']); ?></option>
+                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -312,7 +312,7 @@ $sFormat = '';
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php foreach ($sResult as $name) { ?>
-                                                                      <option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+                                                                      <option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -337,7 +337,7 @@ $sFormat = '';
                                                                  <select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                                           <optgroup label="<?= $heading['headings']; ?>">
                                                                                 <?php
                                                                                 foreach ($aResult as $regimen) {
                                                                                      if ($heading['headings'] == $regimen['headings']) {
@@ -535,7 +535,7 @@ $sFormat = '';
                                                                            <select name="labId" id="labId" class="select2 form-control" title="Please choose the testing lab" onchange="autoFillFocalDetails();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($lResult as $labName) { ?>
-                                                                                     <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?php echo ($labName['facility_name']); ?></option>
+                                                                                     <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>
@@ -606,7 +606,7 @@ $sFormat = '';
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>

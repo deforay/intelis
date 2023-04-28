@@ -372,7 +372,7 @@ if (sizeof($requestResult) > 0) {
         if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
             $finalResult = 'Rejected';
         } else {
-            $finalResult = $eidResults[$result['result']];
+            $finalResult = $eidResults[$result['result']] ?? ucwords($result['result']);
         }
 
         $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';

@@ -132,18 +132,18 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
     }
     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-    ->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);    if ($_POST['withAlphaNum'] == 'yes') {
+    ->setValueExplicit(html_entity_decode($nameValue));    if ($_POST['withAlphaNum'] == 'yes') {
         foreach ($headings as $field => $value) {
             $string = str_replace(' ', '', $value);
             $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
             $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-            ->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+            ->setValueExplicit(html_entity_decode($value));
             $colNo++;
         }
     } else {
         foreach ($headings as $field => $value) {
             $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value));
             $colNo++;
         }
     }

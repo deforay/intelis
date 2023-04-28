@@ -73,10 +73,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+	->setValueExplicit(html_entity_decode($nameValue));
 foreach ($headings as $field => $value) {
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-		->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($value));
 	$colNo++;
 }
 $sheet->getStyle('A3:H3')->applyFromArray($styleArray);

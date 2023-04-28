@@ -74,7 +74,7 @@ try {
             $row = 1;
             if (($handle = fopen(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, "r")) !== false) {
 
-                while (($sheetData = fgetcsv($handle, 10000, ",")) !== FALSE) {
+                while (($sheetData = fgetcsv($handle, 10000)) !== FALSE) {
                     $num = count($sheetData);
 
 
@@ -234,7 +234,7 @@ try {
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
-            if ($scResult == false) {
+            if (!$scResult) {
                 $scData = array('r_sample_control_name' => trim($d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }

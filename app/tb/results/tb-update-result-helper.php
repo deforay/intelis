@@ -153,7 +153,6 @@ try {
         'last_modified_by'                    => $_SESSION['userId'],
         'last_modified_datetime'              => $db->now(),
         'request_created_by'                  => $_SESSION['userId'],
-        'last_modified_by'                    => $_SESSION['userId'],
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
     );
 //echo '<pre>'; print_r($tbData); die;

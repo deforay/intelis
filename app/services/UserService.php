@@ -306,7 +306,7 @@ class UserService
         $this->db->where('status', 'active');
         $result = $this->db->getOne($this->table, array('user_id'));
 
-        return empty($result) ? false : true;
+        return !empty($result);
     }
 
     public function getAuthToken($token = null, $userId = null)
@@ -315,8 +315,6 @@ class UserService
         if (empty($token) && empty($userId)) {
             return null;
         }
-
-        $result = [];
 
         if (!empty($userId)) {
             $this->db->where('user_id', $userId);
@@ -403,8 +401,6 @@ class UserService
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        $general = new CommonService($this->db);
-        $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {

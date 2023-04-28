@@ -206,7 +206,7 @@ $sFormat = '';
 												<select class="form-control " id="artRegimen" name="artRegimen" placeholder="Esquema de TARV actual" title="Please enter Esquema de TARV actual" style="width:100%;" onchange="checkARTRegimenValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
-														<optgroup label="<?php echo ($heading['headings']); ?>">
+														<optgroup label="<?= $heading['headings']; ?>">
 															<?php foreach ($aResult as $regimen) {
 																if ($heading['headings'] == $regimen['headings']) {
 															?>
@@ -390,7 +390,7 @@ $sFormat = '';
 												<select name="specimenType" id="specimenType" class="form-control" title="Please choose Tipo de amostra" style="width:100%">
 													<option value="">-- Selecione --</option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -476,7 +476,7 @@ $sFormat = '';
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																	<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
 															<?php
 																}
 															} ?>

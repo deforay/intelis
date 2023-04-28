@@ -3659,6 +3659,9 @@ ALTER TABLE `generic_test_symptoms_map`
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_symptoms` (`symptom_id`),
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
 
+
+
+-- Amit 27-Apr-2023 version 5.1.3
+UPDATE `system_config` SET `value` = '5.1.3' WHERE `system_config`.`name` = 'sc_version';
 -- Thana 28-Apr-2023
 ALTER TABLE `instruments` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `status`;
-ALTER TABLE `instruments` ADD `lab_id` INT NULL DEFAULT NULL AFTER `machine_name`;

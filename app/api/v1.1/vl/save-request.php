@@ -253,7 +253,7 @@ try {
         }
 
         if (isset($data['patientDob']) && trim($data['patientDob']) != "") {
-            $data['patientDob'] = DateUtils::isoDateFormat($data['patientDob'], false);
+            $data['patientDob'] = DateUtils::isoDateFormat($data['patientDob']);
         } else {
             $data['patientDob'] = null;
         }
@@ -389,7 +389,7 @@ try {
             'external_sample_code'                  => $data['serialNo'] ?? null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  null,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  null,
-            'sample_dispatched_datetime'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,
+            //'sample_dispatched_datetime'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,
             'vl_test_number'                        => (isset($data['viralLoadNo'])) ? $data['viralLoadNo'] : null,
             'last_viral_load_result'                => (isset($data['lastViralLoadResult'])) ? $data['lastViralLoadResult'] : null,
             'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? DateUtils::isoDateFormat($data['lastViralLoadTestDate']) : null,

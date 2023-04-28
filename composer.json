@@ -62,5 +62,8 @@
             "App\\Exceptions\\": "app/exceptions/"
         }
     },
-    "config": {}
+    "config": {},
+    "require-dev": {
+        "rector/rector": "^0.15.25"
+    }
 }

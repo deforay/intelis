@@ -9,7 +9,6 @@ use App\Services\UserService;
 use App\Middleware\Api\ApiAuthMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middleware\Api\LegacyFallbackMiddleware;
-use App\Services\CommonService;
 
 use function Laminas\Stratigility\middleware;
 

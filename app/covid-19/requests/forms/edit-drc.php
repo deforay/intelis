@@ -94,7 +94,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $sampleSuggestionDisplay = 'display:block;';
 }
 $geolocation = new GeoLocationsService();
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
@@ -840,7 +840,7 @@ if (!empty($patientData)) {
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
                                                             <?php }
                                                             } ?>
                                                         </optgroup>

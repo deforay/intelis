@@ -264,7 +264,7 @@ $sFormat = '';
                                                                  if (count($sResult) == 1)
                                                                       $selected = "selected='selected'";
                                                                  foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -289,7 +289,7 @@ $sFormat = '';
                                                                  <select class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                                           <optgroup label="<?= $heading['headings']; ?>">
                                                                                 <?php
                                                                                 foreach ($aResult as $regimen) {
 
@@ -447,7 +447,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
 
-                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">
@@ -572,7 +572,7 @@ $sFormat = '';
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
