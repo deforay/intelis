@@ -2,15 +2,18 @@
 
 use App\Services\CommonService;
 use App\Services\UserService;
-
-
+use App\Services\FacilitiesService;
+use App\Services\SystemService;
 
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
 $userDb = new UserService();
 $general = new CommonService();
+$facilityDb = new FacilitiesService();
 
+$vlsmSystemConfig = $general->getSystemConfig();
+$labNameList = $facilityDb->getTestingLabs();
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from instruments where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, array($id));
@@ -80,6 +83,22 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						</div>
+						<?php if(isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser'){ ?>
+							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id');?>" name="testingLab"/>
+						<?php  }else{ ?>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
+											<div class="col-lg-7">
+												<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
+													<?php echo $general->generateSelectOptions($labNameList, $sInfo['lab_id'], '--Select--'); ?>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+						<?php } ?>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
