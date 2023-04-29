@@ -196,10 +196,10 @@ $sFormat = '';
 <div class="content-wrapper">
      <!-- Content Header (Page header) -->
      <section class="content-header">
-          <h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
+          <h1><em class="fa-solid fa-pen-to-square"></em> LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
                <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-               <li class="active">Add Vl Request</li>
+               <li class="active">Add Request</li>
           </ol>
      </section>
      <!-- Main content -->
@@ -211,7 +211,7 @@ $sFormat = '';
                </div>
                <div class="box-body">
                     <!-- form start -->
-                    <form class="form-inline" method="post" name="vlRequestFormSs" id="vlRequestFormSs" autocomplete="off" action="addVlRequestHelper.php">
+                    <form class="form-inline" method="post" name="vlRequestFormSs" id="vlRequestFormSs" autocomplete="off" action="add-request-helper.php">
                          <div class="box-body">
                               <div class="box box-primary">
                                    <div class="box-header with-border">
@@ -345,7 +345,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
+                                                       <label for="artNo">Patient ID <span class="mandatory">*</span></label>
                                                        <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                   </div>
                                              </div>
@@ -407,6 +407,36 @@ $sFormat = '';
                                                   </div>
                                              </div>
                                         </div>
+                                        <div class="row ">
+                                                       <div class="col-xs-3 col-md-3 femaleSection">
+                                                            <div class="form-group">
+                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                                 </label>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3 femaleSection">
+                                                            <div class="form-group">
+                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                                 </label>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3" style="display:none;">
+                                                            <div class="form-group">
+                                                                 <label for="">How long has this patient been on treatment ? </label>
+                                                                 <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
+                                                            </div>
+                                                       </div>
+                                                  </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -444,86 +474,7 @@ $sFormat = '';
                                                   <h3 class="box-title">Treatment Information</h3>
                                              </div>
                                              <div class="box-body">
-                                                  <div class="row">
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="">Date of Treatment Initiation</label>
-                                                                 <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" style="width:100%;" onchange="checkARTInitiationDate();">
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="artRegimen">Current Regimen</label>
-                                                                 <select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
-                                                                      <option value="">-- Select --</option>
-                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
-                                                                                <?php
-                                                                                foreach ($aResult as $regimen) {
-                                                                                     if ($heading['headings'] == $regimen['headings']) {
-                                                                                ?>
-                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
-                                                                                <?php
-                                                                                     }
-                                                                                }
-                                                                                ?>
-                                                                           </optgroup>
-                                                                      <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
-                                                                           <option value="other">Other</option>
-                                                                      <?php } ?>
-                                                                 </select>
-                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="">Date of Initiation of Current Regimen </label>
-                                                                 <input type="text" class="form-control date" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on">
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="arvAdherence">ARV Adherence </label>
-                                                                 <select name="arvAdherence" id="arvAdherence" class="form-control" title="Please choose adherence">
-                                                                      <option value=""> -- Select -- </option>
-                                                                      <option value="good">Good >= 95%</option>
-                                                                      <option value="fair">Fair (85-94%)</option>
-                                                                      <option value="poor">Poor < 85%</option>
-                                                                 </select>
-                                                            </div>
-                                                       </div>
-                                                  </div>
-                                                  <div class="row ">
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3" style="display:none;">
-                                                            <div class="form-group">
-                                                                 <label for="">How long has this patient been on treatment ? </label>
-                                                                 <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
-                                                            </div>
-                                                       </div>
-                                                  </div>
+                                                  
                                              </div>
                                            
                                              <?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>

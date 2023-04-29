@@ -119,9 +119,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
 									<th><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
-										<th><?php echo _("Action"); ?></th>
-									<?php } ?>
+									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -333,11 +331,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+				{
 						"sClass": "center",
 						"bSortable": false
 					},
-				<?php } ?>
 			],
 			"aaSorting": [
 				[<?php echo ($_SESSION['instanceType'] ==  'remoteuser' || $_SESSION['instanceType'] ==  'vluser') ? 12 : 11 ?>, "desc"]
@@ -353,7 +350,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getRequestDetails.php",
+			"sAjaxSource": "get-request-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
