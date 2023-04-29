@@ -395,7 +395,6 @@ class CommonService
             return null;
         }
 
-        $where = "";
         if ($exact) {
             $where = $condtionField . " LIKE '%$name%'";
         } else {
@@ -471,7 +470,6 @@ class CommonService
     public function getIPAddress()
     {
         return once(function () {
-            $ipaddress = '';
             if (getenv('HTTP_CLIENT_IP')) {
                 $ipaddress = getenv('HTTP_CLIENT_IP');
             } else if (getenv('HTTP_X_FORWARDED_FOR')) {
@@ -640,9 +638,9 @@ class CommonService
 
     public function isJSON($string)
     {
-        return (is_string($string) &&
+        return is_string($string) &&
             is_array(json_decode($string, true)) &&
-            (json_last_error() == JSON_ERROR_NONE)) ? true : false;
+            (json_last_error() == JSON_ERROR_NONE);
     }
 
     public function prettyJson($json)

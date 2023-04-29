@@ -25,7 +25,7 @@ class PatientsService
     public function generatePatientId($prefix)
     {
         $this->db->where("patient_code_prefix", $prefix);
-        $this->db->orderBy("patient_code_key", "DESC");
+        $this->db->orderBy("patient_code_key");
         $res = $this->db->getOne($this->table, array("patient_code_key"));
 
         if ($res) {
@@ -49,7 +49,6 @@ class PatientsService
 
     public function savePatient($params)
     {
-        $general = new CommonService();
 
         $data['patient_code'] = $params['patientId'];
 
@@ -82,8 +81,6 @@ class PatientsService
 
     public function updatePatient($params)
     {
-        $general = new CommonService();
-
         $data['patient_code'] = $params['patientId'];
 
         if (!empty($params['patientCodeKey'])) {

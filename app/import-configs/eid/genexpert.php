@@ -65,19 +65,19 @@ try {
         $resultCol = "I";
 
 
-        $reader = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, 'r');
+        $reader = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $infoFromFile = [];
         foreach ($reader as $offset => $record) {
             //$newRow = [];
             //$sampleCode = null;
             foreach ($record as $o => $v) {
 
-                $v = $general->removeCntrlCharsAndEncode($v, true);
+                $v = $general->removeCntrlCharsAndEncode($v);
                 // echo "<pre>";
                 // var_dump(($v));
                 // echo "</pre><br><br><br>";
                 if ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = $general->removeCntrlCharsAndEncode($record[1], true);
+                    $testedOn = $general->removeCntrlCharsAndEncode($record[1]);
                     $timestamp = DateTimeImmutable::createFromFormat("!$dateFormat", $testedOn);
                     if (!empty($timestamp)) {
                         $timestamp = $timestamp->getTimestamp();
@@ -86,11 +86,11 @@ try {
                         $testedOn = null;
                     }
                 } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = $general->removeCntrlCharsAndEncode($record[1], true);
+                    $testedBy = $general->removeCntrlCharsAndEncode($record[1]);
                 } else if ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
                 } else if ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = $general->removeCntrlCharsAndEncode($record[1], true);
+                    $sampleCode = $general->removeCntrlCharsAndEncode($record[1]);
                     if (empty($sampleCode)) {
                         continue;
                     }
@@ -101,13 +101,13 @@ try {
                     if (empty($sampleCode)) {
                         continue;
                     }
-                    $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1], true);
+                    $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1]);
                 } else if ($v == "Test Result" || $v == "Résultat du test") {
                     if (empty($sampleCode)) {
                         continue;
                     }
 
-                    $parsedResult = (str_replace("|", "", strtoupper($general->removeCntrlCharsAndEncode($record[1], true))));
+                    $parsedResult = (str_replace("|", "", strtoupper($general->removeCntrlCharsAndEncode($record[1]))));
 
                     if ($general->checkIfStringExists($parsedResult, array('not detected', 'notdetected')) !== false) {
                         $parsedResult = 'negative';

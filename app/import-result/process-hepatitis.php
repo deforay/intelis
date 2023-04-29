@@ -13,7 +13,7 @@ try {
     $arr = $general->getGlobalConfig();
     $printSampleCode = [];
 
-    $importNonMatching = (isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no') ? false : true;
+    $importNonMatching = !((isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no'));
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
     $result = '';
@@ -166,7 +166,7 @@ try {
                         $result = $db->update('form_hepatitis', $data);
                         $hepatitisId = $vlResult[0]['hepatitis_id'];
                     } else {
-                        if ($importNonMatching == false) continue;
+                        if (!$importNonMatching) continue;
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];

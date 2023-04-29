@@ -289,7 +289,7 @@ $disable = "disabled = 'disabled'";
 												<select class="form-control " id="artRegimen" name="artRegimen" placeholder="Esquema de TARV actual" title="Please enter Esquema de TARV actual" style="width:100%;" <?php echo $disable; ?> onchange="checkARTValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
-														<optgroup label="<?php echo ($heading['headings']); ?>">
+														<optgroup label="<?= $heading['headings']; ?>">
 															<?php
 															foreach ($aResult as $regimen) {
 																if ($heading['headings'] == $regimen['headings']) {
@@ -479,7 +479,7 @@ $disable = "disabled = 'disabled'";
 													<?php
 													foreach ($sResult as $name) {
 													?>
-														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? 'selected="selected"' : ''; ?>><?php echo ($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? 'selected="selected"' : ''; ?>><?= $name['sample_name']; ?></option>
 													<?php
 													}
 													?>
@@ -559,7 +559,7 @@ $disable = "disabled = 'disabled'";
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) {
 															?>
-																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
 															<?php
 																}
 															}

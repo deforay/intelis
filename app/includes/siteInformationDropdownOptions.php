@@ -47,7 +47,7 @@ $GLOBALS['facilityTypeTable'] = $facilityTypeTableList[$facilityTypeRequested];
 
 $GLOBALS['facilityMap'] = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
-	$GLOBALS['facilityMap'] = $facilitiesDb->getUserFacilityMap($_SESSION['userId'], null);
+	$GLOBALS['facilityMap'] = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
 }
 
 

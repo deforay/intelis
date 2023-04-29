@@ -9,7 +9,6 @@ use App\Services\GeoLocationsService;
 use App\Services\TbService;
 use App\Services\UserService;
 use App\Utilities\DateUtils;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
@@ -118,62 +117,62 @@ class MYPDF extends TCPDF
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     if ($this->formId == 3) {
-                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                     } else {
-                        $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
                     }
                 }
             }
             if ($this->formId == 3) {
                 $this->SetFont('helvetica', 'B', 16);
-                $this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
-                    $this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                    $this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', 'b', 10);
-                $this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'u', 10);
-                $this->writeHTMLCell(0, 0, 10, 25, 'Laboratoire National de Reference pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 25, 'Laboratoire National de Reference pour la Grippe et les Virus Respiratoires', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'b', 12);
-                $this->writeHTMLCell(0, 0, 10, 33, 'RESULTATS DE LABORATOIRE DES ECHANTIONS RESPIRATOIRES', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 33, 'RESULTATS DE LABORATOIRE DES ECHANTIONS RESPIRATOIRES', 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', 'u', 10);
-                $this->writeHTMLCell(0, 0, 10, 40, 'TESTES AU COVID-19 PAR RT-PCR en temps réel N°', 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 15, 48, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 40, 'TESTES AU COVID-19 PAR RT-PCR en temps réel N°', 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 15, 48, '<hr>', 0, 0, 0, true, 'C');
             } else {
                 $this->SetFont('helvetica', 'B', 16);
-                $this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
                 if (trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
-                    $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                    $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 12);
-                $this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             }
         } else {
             if (trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-                    $this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
                 } else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                    $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
                 }
             }
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-                $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
             }
 
             // $this->SetFont('helvetica', 'B', 7);
             // $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
             $this->SetFont('helvetica', '', 14);
-            $this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
             if ($this->text != '') {
                 $this->SetFont('helvetica', '', 12);
                 //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
                 $thirdHeading = '23';
                 $fourthHeading = '28';
                 $hrLine = '36';
@@ -186,11 +185,11 @@ class MYPDF extends TCPDF
             }
             if (trim($this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
             }
             $this->SetFont('helvetica', '', 12);
-            $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C', true);
-            $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C', true);
+            $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
+            $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
         }
     }
 
@@ -202,7 +201,7 @@ class MYPDF extends TCPDF
         // Set font
         $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0);
     }
 }
 

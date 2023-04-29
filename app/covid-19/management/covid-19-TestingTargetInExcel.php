@@ -14,13 +14,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $general = new CommonService();
-$formConfigQuery = "SELECT * from global_config where name='vl_form'";
-$configResult = $db->query($formConfigQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-    $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+
 if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION['covid19MonitoringThresholdReportQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['covid19MonitoringThresholdReportQuery']);
 

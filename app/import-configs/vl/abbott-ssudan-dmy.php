@@ -189,10 +189,6 @@ try {
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
                         );
-                    } else {
-                        // if (isset($logVal) && trim($logVal) != "") {
-                        //     $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
-                        // }
                     }
 
                     $m++;
@@ -253,7 +249,7 @@ try {
             //insert sample controls
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
-            if ($scResult == false) {
+            if (!$scResult) {
                 $scData = array('r_sample_control_name' => trim($d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }

@@ -27,7 +27,7 @@ try {
         $arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];
     }
 
-    $importNonMatching = (isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no') ? false : true;
+    $importNonMatching = !((isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no'));
 
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
@@ -185,7 +185,7 @@ try {
                         $covid19Id = $vlResult[0]['covid19_id'];
                         $covid19Obj->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
                     } else {
-                        if ($importNonMatching == false) continue;
+                        if (!$importNonMatching) continue;
                         // if ($data['result'] == 'positive') {
                         //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
                         //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY

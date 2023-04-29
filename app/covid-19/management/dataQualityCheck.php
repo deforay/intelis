@@ -7,23 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 $general = new CommonService();
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
@@ -33,7 +16,7 @@ $primaryKey = "covid19_id";
 */
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-if ($sarr['sc_user_type'] == 'standalone') {
+if ($_SESSION['instanceType'] == 'standalone') {
      if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
           unset($aColumns[$key]);
      }
@@ -187,15 +170,6 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
-$aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id,vl.facility_id,vl.patient_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC, $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length 
-$aResultTotal =  $db->rawQuery("select COUNT(covid19_id) as total FROM form_covid19 as vl where vlsm_country_id='" . $gconfig['vl_form'] . "' $dWhere");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];*/
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

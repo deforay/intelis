@@ -249,7 +249,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ($aRow['status_name']);
 
-    if ($editRequest == true) {
+    if ($editRequest) {
         $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Test Sample Again") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['covid19_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em> ' . _("Retest") . '</a>';
     }
     $output['aaData'][] = $row;

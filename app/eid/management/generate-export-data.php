@@ -80,19 +80,19 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 	}
 	
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue), DataType::TYPE_STRING);
+		->setValueExplicit(html_entity_decode($nameValue));
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value));
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+				->setValueExplicit(html_entity_decode($value));
 			$colNo++;
 		}
 	}

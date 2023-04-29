@@ -256,7 +256,7 @@ $disable = "disabled = 'disabled'";
 												<?php
 												foreach ($sResult as $name) {
 												?>
-													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= $name['sample_name']; ?></option>
 												<?php
 												}
 												?>
@@ -283,7 +283,7 @@ $disable = "disabled = 'disabled'";
 												<select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
-														<optgroup label="<?php echo ($heading['headings']); ?>">
+														<optgroup label="<?= $heading['headings']; ?>">
 															<?php
 															foreach ($aResult as $regimen) {
 																if ($heading['headings'] == $regimen['headings']) {
@@ -486,7 +486,7 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 										
-										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] == true) {  ?>
+										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
 											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">
@@ -614,7 +614,7 @@ $disable = "disabled = 'disabled'";
 																	foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) {
 																	?>
-																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
 																	<?php
 																		}
 																	}

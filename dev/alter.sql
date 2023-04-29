@@ -3661,6 +3661,8 @@ ALTER TABLE `generic_test_symptoms_map`
 
 
 
+-- Thana 28-Apr-2023
+ALTER TABLE `instruments` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `status`;
 -- Jeyabanu 29-Apr-2023
 
 CREATE TABLE `generic_tests` (

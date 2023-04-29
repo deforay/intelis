@@ -12,7 +12,7 @@ $general = new CommonService();
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
 
-$db->orderBy("login_attempted_datetime", "DESC");
+$db->orderBy("login_attempted_datetime");
 $db->where("login_id", $_SESSION['loginId']);
 $db->orWhere('user_id', $_SESSION['userId']);
 $data = $db->get("user_login_history", 25);

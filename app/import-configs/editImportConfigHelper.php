@@ -49,6 +49,7 @@ try {
 
         $importConfigData = array(
             'machine_name' => $_POST['configurationName'],
+            'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'],
             'import_machine_file_name' => $_POST['configurationFile'],
             'lower_limit' => $_POST['lowerLimit'],

@@ -37,26 +37,26 @@ class MYPDF extends TCPDF
         if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
             }
         }
         $this->SetFont('helvetica', '', 7);
-        $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A', true);
+        $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
         $this->SetFont('helvetica', '', 13);
-        $this->writeHTMLCell(0, 0, 0, 10, 'Hepatitis Sample Referral Manifest ', 0, 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 0, 10, 'Hepatitis Sample Referral Manifest ', 0, 0, 0, true, 'C');
         $this->SetFont('helvetica', '', 10);
-        $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
         if (trim($this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
             }
         }
         $this->SetFont('helvetica', '', 7);
-        $this->writeHTMLCell(30, 0, 255, 26, $this->text, 0, 0, 0, true, 'A', true);
+        $this->writeHTMLCell(30, 0, 255, 26, $this->text, 0, 0, 0, true, 'A');
         $html = '<hr/>';
-        $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J', true);
+        $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J');
     }
 
     // Page footer
@@ -67,7 +67,7 @@ class MYPDF extends TCPDF
         // Set font
         $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10,  'Specimen Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10,  'Specimen Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }
 }
 
@@ -146,7 +146,7 @@ if (trim($id) != '') {
         $pdf->AddPage();
         $tbl = '';
         $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['package_code'];
-        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($result[0]['package_code'], 'C39').'">';
+        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($result[0]['package_code']).'">';
         $tbl .=  '</span><br>';
 
         if(isset($result) && !empty($result) && sizeof($result) > 0){
@@ -208,7 +208,7 @@ if (trim($id) != '') {
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
                 // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code'], 'C39') . '"/></td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
                 $tbl .= '</tr>';
                 //$tbl .='</table>';
                 $sampleCounter++;
@@ -223,7 +223,7 @@ if (trim($id) != '') {
         $tbl .= '</tr>';
         $tbl .= '</table>';
         //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
-        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C', true);
+        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
         $filename = trim($bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;

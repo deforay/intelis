@@ -8,7 +8,6 @@ ini_set('max_execution_time', -1);
 use App\Services\CommonService;
 use App\Services\UserService;
 use App\Utilities\DateUtils;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
@@ -58,7 +57,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
 }
 
 
-if (empty($requestResult) || $requestResult == false) {
+if (empty($requestResult) || !$requestResult) {
   return null;
 }
 
@@ -100,45 +99,45 @@ class MYPDF extends TCPDF
       if (trim($this->logo) != '') {
         error_log($this->logo);
         if ($this->imageExists($this->logo)) {
-          $this->Image($this->logo, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
         } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
           $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
         } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
           $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
         }
       }
       $this->SetFont('helvetica', 'B', 8);
-      $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
       if (trim($this->lab) != '') {
         $this->SetFont('helvetica', '', 9);
-        $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
       }
       $this->SetFont('helvetica', '', 14);
-      $this->writeHTMLCell(0, 0, 10, 30, 'HIV VIRAL LOAD PATIENT REPORT', 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 10, 30, 'HIV VIRAL LOAD PATIENT REPORT', 0, 0, 0, true, 'C');
 
-      $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
     } else {
       if (trim($this->logo) != '') {
         if ($this->imageExists($this->logo)) {
-          $this->Image($this->logo, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
         } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
           $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
         } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
           $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-          $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+          $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
         }
       }
       if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-        $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
       }
 
       if ($this->text != '') {
         $this->SetFont('helvetica', '', 16);
-        $this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
         $thirdHeading = '21';
         $fourthHeading = '28';
         $hrLine = '36';
@@ -151,11 +150,11 @@ class MYPDF extends TCPDF
       }
       if (trim($this->lab) != '') {
         $this->SetFont('helvetica', '', 10);
-        $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
       }
       $this->SetFont('helvetica', '', 12);
-      $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C', true);
-      $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C', true);
+      $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
+      $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
     }
   }
 
@@ -168,7 +167,7 @@ class MYPDF extends TCPDF
     $this->SetFont('helvetica', '', 8);
     // Page number
     //$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
-    $this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    $this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0);
   }
 }
 

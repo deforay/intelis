@@ -3,14 +3,16 @@
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\UserService;
-
-
+use App\Services\FacilitiesService;
 
 require_once(APPLICATION_PATH . '/header.php');
 
 $userDb = new UserService();
 $general = new CommonService();
+$facilityDb = new FacilitiesService();
 
+$vlsmSystemConfig = $general->getSystemConfig();
+$labNameList = $facilityDb->getTestingLabs();
 $activeTestModules = SystemService::getActiveTestModules();
 
 $userList = $userDb->getAllUsers(null, null, 'drop-down');
@@ -54,8 +56,23 @@ $userList = $userDb->getAllUsers(null, null, 'drop-down');
 									</div>
 								</div>
 							</div>
-
 						</div>
+						<?php if(isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser'){ ?>
+							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id');?>" name="testingLab"/>
+						<?php  }else{ ?>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
+											<div class="col-lg-7">
+												<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
+													<?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+						<?php } ?>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">

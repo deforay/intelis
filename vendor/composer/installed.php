@@ -373,6 +373,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '1.10.14',
+            'version' => '1.10.14.0',
+            'reference' => 'd232901b09e67538e5c86a724be841bea5768a7c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'psr/container' => array(
             'pretty_version' => '1.1.2',
             'version' => '1.1.2.0',
@@ -518,6 +527,15 @@
             'install_path' => __DIR__ . '/../ramsey/uuid',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'rector/rector' => array(
+            'pretty_version' => '0.15.25',
+            'version' => '0.15.25.0',
+            'reference' => '015935c7ed9e48a4f5895ba974f337e20a263841',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../rector/rector',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'rhumsaa/uuid' => array(
             'dev_requirement' => false,

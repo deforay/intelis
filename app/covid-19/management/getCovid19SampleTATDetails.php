@@ -7,23 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 $general = new CommonService();
 $whereCondition = '';
 $tableName = "form_covid19";
@@ -32,7 +15,7 @@ $primaryKey = "covid19_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 } else {
 	$sampleCode = 'sample_code';
@@ -115,7 +98,7 @@ $sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.result is not null
                         AND vl.result != ''";
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
 	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
@@ -218,7 +201,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $rUser = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
+if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
 } else {
 	$rUser = " vl.result_status!=9";

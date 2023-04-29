@@ -60,10 +60,10 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . ",&nbsp;&nbsp;";
         }
     }
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode(($nameValue)), DataType::TYPE_STRING);
+    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode(($nameValue)));
 
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value), DataType::TYPE_STRING);
+        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value));
         $colNo++;
     }
     $sheet->getStyle('A3:N3')->applyFromArray($styleArray);

@@ -28,10 +28,7 @@ foreach ($testPlatformResult as $row) {
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 
-// $configQuery = "SELECT * from global_config";
-// $configResult = $db->query($configQuery);
-// $arr = [];
-// $prefix = $arr['sample_code_prefix'];
+
 
 // Getting the list of Provinces, Districts and Facilities
 

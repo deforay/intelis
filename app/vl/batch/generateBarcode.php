@@ -116,20 +116,20 @@ if ($id > 0) {
                 if (trim($this->logo) != "") {
                     if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                        $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
                     }
                 }
                 $this->SetFont('helvetica', '', 7);
-                $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A', true);
+                $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
                 $this->SetFont('helvetica', '', 13);
-                $this->writeHTMLCell(0, 0, 0, 10, 'Batch Number/Code : ' . $this->batch, 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 0, 20, $this->worksheetName, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 0, 10, 'Batch Number/Code : ' . $this->batch, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 0, 20, $this->worksheetName, 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 144, 10, 'Result On : ' . $this->resulted, 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 144, 16, 'Reviewed On : ' . $this->reviewed, 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 144, 22, 'Created By : ' . $this->createdBy, 0, 0, 0, true, 'C', true);
+                $this->writeHTMLCell(0, 0, 144, 10, 'Result On : ' . $this->resulted, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 144, 16, 'Reviewed On : ' . $this->reviewed, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 144, 22, 'Created By : ' . $this->createdBy, 0, 0, 0, true, 'C');
                 $html = '<hr/>';
-                $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J', true);
+                $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J');
             }
 
             // Page footer
@@ -140,7 +140,7 @@ if ($id > 0) {
                 // Set font
                 $this->SetFont('helvetica', 'I', 8);
                 // Page number
-                $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
             }
         }
 
@@ -483,11 +483,11 @@ if ($id > 0) {
         }
 
 
-        $pdf->writeHTML($tbl, true, false, false, false, '');
+        $pdf->writeHTML($tbl);
         //$pdf->writeHTMLCell('', '', 12,$pdf->getY(),$tbl, 0, 1, 0, true, 'C', true);
         $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
         // $pdf->Output($filename, 'I');
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename, "I");
+        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename);
         exit;
         // echo $filename;
     }

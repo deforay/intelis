@@ -381,7 +381,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionResult as $reject) { ?>
-														<option value="<?php echo $reject['rejection_reason_id']; ?>"><?php echo ($reject['rejection_reason_name']); ?></option>
+														<option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -400,7 +400,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="specimenType" id="specimenType" class="form-control" title="Please choose Specimen type" style="width: 100%">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>"><?php echo ($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>

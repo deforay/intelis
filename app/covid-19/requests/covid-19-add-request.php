@@ -62,7 +62,7 @@ foreach ($rejectionTypeResult as $type) {
     $rejectionReason .= '</optgroup>';
 }
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
-$countryResult = $general->fetchDataFromTable('r_countries', null);
+$countryResult = $general->fetchDataFromTable('r_countries');
 $countyData = [];
 if (isset($countryResult) && sizeof($countryResult) > 0) {
     foreach ($countryResult as $country) {

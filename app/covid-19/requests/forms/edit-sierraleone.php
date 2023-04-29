@@ -464,7 +464,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
                                                             <?php }
                                                             } ?>
                                                         </optgroup>

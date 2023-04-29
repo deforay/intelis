@@ -18,10 +18,7 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-// $configQuery = "SELECT * from global_config";
-// $configResult = $db->query($configQuery);
-// $arr = [];
-// $prefix = $arr['sample_code_prefix'];
+
 
 // Getting the list of Provinces, Districts and Facilities
 
@@ -63,7 +60,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 $geolocation = new GeoLocationsService();
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations(0, 0);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
 $pResult = $db->rawQuery($pQuery);
