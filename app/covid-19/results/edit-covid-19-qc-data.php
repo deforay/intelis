@@ -2,21 +2,30 @@
 
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$generalDb = new CommonService();
-$covid19Obj = new Covid19Service();
-$facilityDb = new FacilitiesService();
-$userDb = new UserService();
 
-$covid19Results = $covid19Obj->getCovid19Results();
-$code = $covid19Obj->generateCovid19QcCode();
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+
+/** @var FacilitiesService $facilityDb */
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+
+$covid19Results = $covid19Service->getCovid19Results();
+$code = $covid19Service->generateCovid19QcCode();
 $testingLabs = $facilityDb->getTestingLabs("covid19");
-$users = $userDb->getAllUsers(null, null, "drop-down");
+$users = $usersService->getAllUsers(null, null, "drop-down");
 
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");
 $testKitsList = [];
@@ -81,7 +90,7 @@ foreach ($pdResult as $provinceName) {
                                     <label for="testKit" class="col-lg-4 control-label"><?php echo _("Test Kit"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2 isRequired" id="testKit" name="testKit" title="<?php echo _('Please select test kit'); ?>" onchange="getKitLabels(this.value);">
-                                            <?= $generalDb->generateSelectOptions($testKitsList, base64_encode($qcDataInfo['testkit']), "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($testKitsList, base64_encode($qcDataInfo['testkit']), "--Select--"); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -134,7 +143,7 @@ foreach ($pdResult as $provinceName) {
                                     <label for="labName" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2 isRequired" id="labName" name="labName" title="<?php echo _('Please select lab name'); ?>" onchange="getTestingPoints();">
-                                            <?= $generalDb->generateSelectOptions($testingLabs, $qcDataInfo['lab_id'], "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($testingLabs, $qcDataInfo['lab_id'], "--Select--"); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -153,7 +162,7 @@ foreach ($pdResult as $provinceName) {
                                     <label for="testerName" class="col-lg-4 control-label"><?php echo _("Tester Name"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2 isRequired" id="testerName" name="testerName" title="<?php echo _('Please select tester name'); ?>">
-                                            <?= $generalDb->generateSelectOptions($users, $qcDataInfo['tested_by'], "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($users, $qcDataInfo['tested_by'], "--Select--"); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -193,7 +202,7 @@ foreach ($pdResult as $provinceName) {
                                         <input type="hidden" value="<?php echo $row['test_label']; ?>" id="testLabel<?php echo ($key + 1); ?>" name="testLabel[]" />
                                     </td>
                                     <td><select class="form-control" id="testResults<?php echo ($key + 1); ?>" name="testResults[]" class="form-control" title="Please enter the test result">
-                                            <?= $generalDb->generateSelectOptions($covid19Results, $row['test_result'], "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($covid19Results, $row['test_result'], "--Select--"); ?>
                                         </select>
                                     </td>
                                 </tr>
@@ -381,7 +390,7 @@ foreach ($pdResult as $provinceName) {
                 });
         } else if (pName == '') {
             $("#province").html("<?php echo $province; ?>");
-            $("#labName").html("<?= $generalDb->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
+            $("#labName").html("<?= $general->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
             $("#labName").select2("val", "");
             $("#district").html("<option value=''> -- Select -- </option>");
         }
@@ -404,7 +413,7 @@ foreach ($pdResult as $provinceName) {
                     }
                 });
         } else {
-            $("#labName").html("<?= $generalDb->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
+            $("#labName").html("<?= $general->generateSelectOptions($testingLabs, null, "--Select--"); ?>");
         }
         $.unblockUI();
     }

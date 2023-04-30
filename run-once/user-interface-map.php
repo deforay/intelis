@@ -1,12 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\UserService;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-$db = MysqliDb::getInstance();
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
 
-$usersDb = new UserService();
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 
 $sql = "SELECT u.user_id, u.user_name, i.user_id as interface_user_id, i.user_name as interface_user_name    

@@ -1,9 +1,10 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $formConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($formConfigQuery);
@@ -21,7 +22,9 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $hepatitisObj = new HepatitisService();
 $hepatitisResults = $hepatitisObj->getHepatitisResults();
 $tableName = "form_hepatitis";
@@ -184,12 +187,12 @@ $output = array(
 foreach ($rResult as $aRow) {
 
      if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
      } else {
           $aRow['sample_collection_date'] = '';
      }
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

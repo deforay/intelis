@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
 
@@ -10,7 +11,9 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $lastUpdate = null;
 $output = [];
 
@@ -85,7 +88,7 @@ try {
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(
-            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtils::getCurrentDateTime())
+            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );
         
         $db->update('s_vlsm_instance', $data);

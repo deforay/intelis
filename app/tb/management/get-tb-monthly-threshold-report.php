@@ -1,17 +1,22 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
   
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -23,7 +28,9 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
@@ -114,10 +121,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 

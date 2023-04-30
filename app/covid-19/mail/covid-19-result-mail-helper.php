@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
    session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_covid19";
 $configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);
@@ -105,7 +108,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
             $sampleQuery = "SELECT covid19_id FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
             $sampleResult = $db->rawQuery($sampleQuery);
             $db = $db->where('covid19_id', $sampleResult[0]['covid19_id']);
-            $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtils::getCurrentDateTime()));
+            $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
          //put file in sync path
          if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {

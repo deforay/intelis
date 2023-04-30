@@ -8,7 +8,7 @@ use App\Services\VlService;
 
 $vlDb = new VlService($db);
 $eidDb = new EidService($db);
-$covid19Db = new Covid19Service($db);
+$covid19Service = new Covid19Service($db);
 $hepatitisDb = new HepatitisService($db);
 $tbDb = new TbService($db);
 /* Selected Sample Types from Facility Edit */
@@ -28,7 +28,7 @@ if ($_POST['testType'] != "") {
             $sampleType['eid'] = $eidDb->getEidSampleTypes();
         }
         if ($test == 'covid19') {
-            $sampleType['covid19'] = $covid19Db->getCovid19SampleTypes();
+            $sampleType['covid19'] = $covid19Service->getCovid19SampleTypes();
         }
         if ($test == 'hepatitis') {
             $sampleType['hepatitis'] = $hepatitisDb->getHepatitisSampleTypes();

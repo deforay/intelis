@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $id = base64_decode($_POST['id']);
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
@@ -225,9 +228,7 @@ if (trim($id) != '') {
     
         }
 
-        $tbl = '';
-
-        $tbl .= '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];
+        $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
         $tbl .=  '</span><br>';
 
@@ -270,11 +271,11 @@ if (trim($id) != '') {
                 $collectionDate = '';
                 if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
                     $cDate = explode(" ", $sample['sample_collection_date']);
-                    $collectionDate = DateUtils::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
+                    $collectionDate = DateUtility::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
                 }
                 $patientDOB = '';
                 if (isset($sample['child_dob']) && $sample['child_dob'] != '' && $sample['child_dob'] != null && $sample['child_dob'] != '0000-00-00') {
-                    $patientDOB = DateUtils::humanReadableDateFormat($sample['child_dob']);
+                    $patientDOB = DateUtility::humanReadableDateFormat($sample['child_dob']);
                 }
                 $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', '', 9, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2), 'N'));
                 //$tbl.='<table cellspacing="0" cellpadding="3" style="width:100%">';

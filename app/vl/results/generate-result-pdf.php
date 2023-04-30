@@ -5,14 +5,17 @@
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";
-$general = new CommonService();
-$users = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$users = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $arr = $general->getGlobalConfig();
 
@@ -64,7 +67,7 @@ if (empty($requestResult) || !$requestResult) {
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
-$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
+$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 
 $_SESSION['nbPages'] = sizeof($requestResult);

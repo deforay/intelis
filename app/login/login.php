@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -16,7 +17,9 @@ if ($count == 0) {
 	header("Location:/setup/index.php");
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

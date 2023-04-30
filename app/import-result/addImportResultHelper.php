@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
@@ -10,7 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $machineImportScript = ($_POST['fileName']);
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 /* echo "<pre>";
 print_r($machineImportScript);

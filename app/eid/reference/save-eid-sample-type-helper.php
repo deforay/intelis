@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
   
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "r_eid_sample_type";
 $primaryKey = "sample_id";
 try {
@@ -16,7 +19,7 @@ try {
 		$data = array(
 			'sample_name' 		=> $_POST['sampleName'],
 			'status' 			=> $_POST['sampleStatus'],
-			'updated_datetime' 	=> DateUtils::getCurrentDateTime(),
+			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
 		if(isset($_POST['sampleId']) && $_POST['sampleId'] != ""){
 			$db = $db->where($primaryKey, base64_decode($_POST['sampleId']));

@@ -3,7 +3,8 @@
 namespace App\Services;
 
 
-use App\Utilities\DateUtils;
+use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use DateTimeImmutable;
 use Exception;
 use MysqliDb;
@@ -57,11 +58,13 @@ class VlService
         }
 
 
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -174,11 +177,13 @@ class VlService
         }
 
 
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        if (DateUtils::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -385,7 +390,9 @@ class VlService
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -472,7 +479,9 @@ class VlService
             return $result;
         }
 
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
 
@@ -546,7 +555,8 @@ class VlService
     {
         try {
 
-            $general = new CommonService();
+            /** @var CommonService $general */
+            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
@@ -567,12 +577,12 @@ class VlService
                 exit();
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ? : null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
 
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -704,15 +714,15 @@ class VlService
             $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
         }
         $this->db->where('status', 'active');
-        $results = $this->db->get('r_vl_results');
-        return $results;
+        return $this->db->get('r_vl_results');
     }
 
     public function insertSampleCodeGenericTest($params)
     {
         try {
 
-            $general = new CommonService();
+            /** @var CommonService $general */
+            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
@@ -733,12 +743,12 @@ class VlService
                 exit();
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ? : null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
 
             $sampleJson = $this->generateVLSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;

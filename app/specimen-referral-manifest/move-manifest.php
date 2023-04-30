@@ -3,31 +3,40 @@
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
 use App\Services\TbService;
 use App\Services\UserService;
 use App\Services\VlService;
 
-
-
 $title = "Move Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
-$testingLabs = $facilitiesDb->getTestingLabs($module);
+$testingLabs = $facilitiesService->getTestingLabs($module);
 
-$usersDb = new UserService();
 $usersList = [];
-$users = $usersDb->getActiveUsers();
+$users = $usersService->getActiveUsers();
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
-$facilities = $facilitiesDb->getHealthFacilities($module);
+$facilities = $facilitiesService->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
 	$vlDb = new VlService($db);
@@ -37,8 +46,8 @@ if ($module == 'vl') {
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
-	$covid19Db = new Covid19Service($db);
-	$sampleTypes = $covid19Db->getCovid19SampleTypes();
+	$covid19Service = new Covid19Service($db);
+	$sampleTypes = $covid19Service->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
 	$hepDb = new HepatitisService($db);
@@ -49,15 +58,15 @@ if ($module == 'vl') {
 }
 
 $testTypes = array(
-    "vl" => "Viral Load", 
-    "eid" => "Early Infant Diagnosis", 
-    "covid19" => "Covid-19",
-    "hepatitis" => "Hepatitis",
-    "tb" => "TB"
+	"vl" => "Viral Load",
+	"eid" => "Early Infant Diagnosis",
+	"covid19" => "Covid-19",
+	"hepatitis" => "Hepatitis",
+	"tb" => "TB"
 );
-if(!empty(SYSTEM_CONFIG['modules'])){
-	foreach(SYSTEM_CONFIG['modules'] as $type=>$status){
-		if($status){
+if (!empty(SYSTEM_CONFIG['modules'])) {
+	foreach (SYSTEM_CONFIG['modules'] as $type => $status) {
+		if ($status) {
 			$testTypesNames[$type] = $testTypes[$type];
 		}
 	}
@@ -130,7 +139,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityName" class="col-lg-4 control-label"><?php echo _("Facility Name");?> :</label>
+									<label for="facilityName" class="col-lg-4 control-label"><?php echo _("Facility Name"); ?> :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2" id="facilityName" name="facilityName" title="Choose one facility name">
 											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
@@ -142,7 +151,7 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab");?> <span class="mandatory">*</span> :</label>
+									<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span> :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
 											<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
@@ -160,17 +169,17 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 									</div>
 								</div>
 							</div>
-                            <div class="col-md-12 text-center">
-                                <div class="form-group">
-                                    <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getManifestCodeDetails();return false;">Search </a>
-                                    <a href="move-manifest.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
-                                </div>
-                            </div>
+							<div class="col-md-12 text-center">
+								<div class="form-group">
+									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getManifestCodeDetails();return false;">Search </a>
+									<a href="move-manifest.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-md-12" style="text-align:center;padding: 20px;background: aliceblue;">
 						<div class="form-group">
-							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assign Manifests to Testing Lab");?> <span class="mandatory">*</span> :</label>
+							<label for="assignLab" class="col-lg-4 control-label"><?php echo _("Assign Manifests to Testing Lab"); ?> <span class="mandatory">*</span> :</label>
 							<div class="col-lg-4" style="margin-left:3%;">
 								<select type="text" class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this)">
 									<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
@@ -227,10 +236,10 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 		}
 	}
 
-	function checkLab(obj){
+	function checkLab(obj) {
 		let _assign = $(obj).val();
 		let _lab = $('#testingLab').val();
-		if(_lab == _assign){
+		if (_lab == _assign) {
 			confirm("Please choose different lab to assign the package details.");
 			$(obj).val(null).trigger('change');
 			return false;
@@ -240,29 +249,29 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 	$(document).ready(function() {
 
 		$('#daterange').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
 			},
-			showDropdowns: true,
-			alwaysShowCalendars: false,
-			startDate: moment().subtract(28, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			}
-		},
-		function(start, end) {
-			startDate = start.format('YYYY-MM-DD');
-			endDate = end.format('YYYY-MM-DD');
-		});
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
 
 		$(".select2").select2();
 		$(".select2").select2({

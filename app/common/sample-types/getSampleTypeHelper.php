@@ -1,5 +1,5 @@
 <?php
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -133,11 +133,10 @@ if (session_status() == PHP_SESSION_NONE) {
 	        $row[] = ($aRow['sample_type_name']);
             $row[] = ($aRow['sample_type_code']);
             $row[] = ($aRow['sample_type_status']);
-            $row[] = $aRow['updated_datetime'] = DateUtils::humanReadableDateFormat($aRow['updated_datetime'], true);
+            $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
             if (isset($_SESSION['privileges']) && in_array("editSampleType.php", $_SESSION['privileges'])) {
 	            $row[] = '<a href="editSampleType.php?id=' . base64_encode($aRow['sample_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
             }
             $output['aaData'][] = $row;
         }
         echo json_encode($output);
-?>

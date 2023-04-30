@@ -1,10 +1,13 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -101,10 +104,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode(" ", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtils::isoDateFormat($s_c_date[0]);
+        $start_date = DateUtility::isoDateFormat($s_c_date[0]);
     }
     if (isset($s_c_date[2]) && trim($s_c_date[2]) != "") {
-        $end_date = DateUtils::isoDateFormat($s_c_date[2]);
+        $end_date = DateUtility::isoDateFormat($s_c_date[2]);
     }
 }
 
@@ -207,13 +210,13 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     if (isset($aRow['patient_dob']) && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-        $aRow['patient_dob'] = DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+        $aRow['patient_dob'] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
     } else {
         $aRow['patient_dob'] = '';
     }
     $patientDetails = $aRow['patient_art_no'] . "##" . $aRow['sample_code'] . "##" . $aRow['patient_other_id'] . "##" . $aRow['patient_first_name'] . "##" . $aRow['patient_dob'] . "##" . $aRow['patient_gender'] . "##" . $aRow['patient_age_in_years'] . "##" . $aRow['patient_mobile_number'] . "##" . $aRow['patient_location'];
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }

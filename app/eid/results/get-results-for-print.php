@@ -1,19 +1,24 @@
 <?php
 
 use App\Services\EidService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 $tableName = "form_eid";
 $primaryKey = "eid_id";
@@ -132,10 +137,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -143,10 +148,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     $s_t_date = explode("to", $_POST['sampleTestDate']);
     //print_r($s_t_date);die;
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-        $t_start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
+        $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
     }
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-        $t_end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
+        $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
     }
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
@@ -304,7 +309,7 @@ foreach ($rResult as $aRow) {
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+        $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';
     }

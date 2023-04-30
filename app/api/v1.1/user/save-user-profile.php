@@ -1,17 +1,22 @@
 <?php
 
 use App\Services\ApiService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\ImageResize;
+use App\Utilities\ImageResizeUtility;
 
 
 session_unset(); // no need of session in json response
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
-$userDb = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 $app = new ApiService();
 $jsonResponse = file_get_contents('php://input');
 
@@ -24,7 +29,7 @@ try {
     ini_set('memory_limit', -1);
     $auth = $general->getHeader('Authorization');
     $authToken = str_replace("Bearer ", "", $auth);
-    $user = $userDb->getUserFromToken($authToken);
+    $user = $usersService->getUserFromToken($authToken);
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
         //http_response_code(501);
@@ -84,7 +89,7 @@ try {
 
     if (!empty($post['password'])) {
         $data['hash_algorithm'] = $post['hashAlgorithm'];
-        $data['password'] = $userDb->passwordHash($post['password']);
+        $data['password'] = $usersService->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);
@@ -102,7 +107,7 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new ImageResize($signatureImagePath);
+            $resizeObj = new ImageResizeUtility($signatureImagePath);
             $resizeObj->resizeToWidth(100);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;

@@ -1,12 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 
 
 
 
 
-$vLModel = new VlService();
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
 
 $sampleCollectionDate = $province = '';
 
@@ -24,4 +27,4 @@ if (isset($_POST['sampleCollectionDate'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
-echo $vLModel->generateVLSampleID($province, $sampleCollectionDate, $sampleFrom);
+echo $vlService->generateVLSampleID($province, $sampleCollectionDate, $sampleFrom);

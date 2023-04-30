@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
 use Aranyasen\HL7\Segments\PID;
@@ -9,7 +10,9 @@ use Aranyasen\HL7\Segments\OBX;
 use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
-$covid19Model = new Covid19Service();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
@@ -256,7 +259,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $data['sampleCode'] = $spm->getField(2);
         // $data['sample_name'] = $spm->getField(4);
         if ($spm->getField(4) != "" && !empty($spm->getField(4))) {
-            $c19Details = $c19Db->getCovid19SampleTypesByName($spm->getField(4));
+            $c19Details = $covid19Service->getCovid19SampleTypesByName($spm->getField(4));
             $data['specimenType'] = $c19Details[0]['sample_id'];
         }
 
@@ -384,7 +387,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $sampleData['sampleCodeFormat'] = (!empty($c19DuplicateData['sample_code_format'])) ? $c19DuplicateData['sample_code_format'] : $c19DuplicateData['remote_sample_code_format'];
         $sampleData['sampleCodeKey'] = (!empty($c19DuplicateData['sample_code_key'])) ? $c19DuplicateData['sample_code_key'] : $c19DuplicateData['remote_sample_code_key'];
     } else {
-        $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+        $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
         $sampleData = json_decode($sampleJson, true);
     }
 
@@ -497,8 +500,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'is_sample_post_mortem'               => !empty($_POST['isSamplePostMortem']) ? $_POST['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($_POST['priorityStatus']) ? $_POST['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($_POST['numberOfDaysSick']) ? $_POST['numberOfDaysSick'] : null,
-            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? DateUtils::isoDateFormat($_POST['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? DateUtils::isoDateFormat($_POST['dateOfInitialConsultation']) : null,
+            'date_of_symptom_onset'               => !empty($_POST['dateOfSymptomOnset']) ? DateUtility::isoDateFormat($_POST['dateOfSymptomOnset']) : null,
+            'date_of_initial_consultation'        => !empty($_POST['dateOfInitialConsultation']) ? DateUtility::isoDateFormat($_POST['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($_POST['feverTemp']) ? $_POST['feverTemp'] : null,
             'medical_history'                     => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
             'recent_hospitalization'              => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
@@ -511,7 +514,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'contact_with_confirmed_case'         => !empty($_POST['contactWithConfirmedCase']) ? $_POST['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
             'travel_country_names'                => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
-            'travel_return_date'                  => !empty($_POST['returnDate']) ? DateUtils::isoDateFormat($_POST['returnDate']) : null,
+            'travel_return_date'                  => !empty($_POST['returnDate']) ? DateUtility::isoDateFormat($_POST['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : ($_POST['specimenQuality'] ?? null),
             'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
@@ -520,7 +523,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : DateUtils::getCurrentDateTime(),
+            'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : DateUtility::getCurrentDateTime(),
             'sample_registered_at_lab'            => $db->now(),
             'last_modified_datetime'              => $db->now()
         );

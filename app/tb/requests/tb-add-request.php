@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -32,22 +33,28 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 /* Get Active users for approved / reviewed / examined by */
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
 }
 /* Health facility list */
-$healthFacilities = $facilitiesDb->getHealthFacilities('tb');
+$healthFacilities = $facilitiesService->getHealthFacilities('tb');
 
 /* Testing lab list */
-$testingLabs = $facilitiesDb->getTestingLabs('tb');
+$testingLabs = $facilitiesService->getTestingLabs('tb');
 
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_tb_sample_rejection_reasons where rejection_reason_status = 'active'";

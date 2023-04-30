@@ -1,16 +1,20 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 ini_set('memory_limit', -1);
-$general = new CommonService();
-$dateTimeUtil = new DateUtils();
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$dateTimeUtil = new DateUtility();
 
 $excel = new Spreadsheet();
 $output = [];
@@ -65,8 +69,8 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['testType'];
     $row[] = ($aRow['province']);
     $row[] = ($aRow['district']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['lastResultsSync']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync']);
     $output[] = $row;
 
     $no++;

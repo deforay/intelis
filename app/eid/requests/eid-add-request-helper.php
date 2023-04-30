@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,7 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 // echo "<pre>";
 // var_dump($_POST);die;
@@ -37,14 +40,14 @@ try {
 	}
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
 		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
 		$_POST['sampleCollectionDate'] = null;
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
 		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-		$_POST['sampleDispatchedDate'] = DateUtils::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
 	} else {
 		$_POST['sampleDispatchedDate'] = null;
 	}
@@ -52,35 +55,35 @@ try {
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
 		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
 		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
 
 	if (isset($_POST['rapidtestDate']) && trim($_POST['rapidtestDate']) != "") {
 		$rapidtestDate = explode(" ", $_POST['rapidtestDate']);
-		$_POST['rapidtestDate'] = DateUtils::isoDateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
+		$_POST['rapidtestDate'] = DateUtility::isoDateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
 	} else {
 		$_POST['rapidtestDate'] = null;
 	}
 
 	if (isset($_POST['childDob']) && trim($_POST['childDob']) != "") {
 		$childDob = explode(" ", $_POST['childDob']);
-		$_POST['childDob'] = DateUtils::isoDateFormat($childDob[0]) . " " . $childDob[1];
+		$_POST['childDob'] = DateUtility::isoDateFormat($childDob[0]) . " " . $childDob[1];
 	} else {
 		$_POST['childDob'] = null;
 	}
 
 	if (isset($_POST['mothersDob']) && trim($_POST['mothersDob']) != "") {
 		$mothersDob = explode(" ", $_POST['mothersDob']);
-		$_POST['mothersDob'] = DateUtils::isoDateFormat($mothersDob[0]) . " " . $mothersDob[1];
+		$_POST['mothersDob'] = DateUtility::isoDateFormat($mothersDob[0]) . " " . $mothersDob[1];
 	} else {
 		$_POST['mothersDob'] = null;
 	}
@@ -88,7 +91,7 @@ try {
 
 	if (isset($_POST['motherTreatmentInitiationDate']) && trim($_POST['motherTreatmentInitiationDate']) != "") {
 		$motherTreatmentInitiationDate = explode(" ", $_POST['motherTreatmentInitiationDate']);
-		$_POST['motherTreatmentInitiationDate'] = DateUtils::isoDateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
+		$_POST['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
 	} else {
 		$_POST['motherTreatmentInitiationDate'] = null;
 	}
@@ -100,7 +103,7 @@ try {
             $data = array(
                 'art_code' => $_POST['newArtRegimen'],
                 'parent_art' => '1',
-                'updated_datetime' => DateUtils::getCurrentDateTime(),
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
             );
             $result = $db->insert('r_vl_art_regimen', $data);
             $_POST['motherRegimen'] = $_POST['newArtRegimen'];
@@ -111,7 +114,7 @@ try {
 
 	if (isset($_POST['previousPCRTestDate']) && trim($_POST['previousPCRTestDate']) != "") {
 		$previousPCRTestDate = explode(" ", $_POST['previousPCRTestDate']);
-		$_POST['previousPCRTestDate'] = DateUtils::isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
+		$_POST['previousPCRTestDate'] = DateUtility::isoDateFormat($previousPCRTestDate[0]) . " " . $previousPCRTestDate[1];
 	} else {
 		$_POST['previousPCRTestDate'] = null;
 	}
@@ -140,20 +143,20 @@ try {
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
 		$reviewedOn = explode(" ", $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
 	}
 	if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
 		$resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
-		$_POST['resultDispatchedOn'] = DateUtils::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
+		$_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
 	} else {
 		$_POST['resultDispatchedOn'] = null;
 	}
 
 	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
 		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = DateUtils::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
 	} else {
 		$_POST['approvedOnDateTime'] = null;
 	}
@@ -225,12 +228,12 @@ try {
 		'result_status' 									=> $status,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> $_POST['sampleRejectionReason'] ?? null,
-		'rejection_on' 						                => isset($_POST['rejectionDate']) ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
+		'rejection_on' 						                => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		// 'request_created_by' 								=> $_SESSION['userId'],
-		'request_created_datetime' 							=> DateUtils::getCurrentDateTime(),
-		'sample_registered_at_lab' 							=> DateUtils::getCurrentDateTime(),
+		'request_created_datetime' 							=> DateUtility::getCurrentDateTime(),
+		'sample_registered_at_lab' 							=> DateUtility::getCurrentDateTime(),
 		// 'last_modified_by' 									=> $_SESSION['userId'],
-		'last_modified_datetime' 							=> DateUtils::getCurrentDateTime()
+		'last_modified_datetime' 							=> DateUtility::getCurrentDateTime()
 	);
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
@@ -275,7 +278,7 @@ try {
 			// 'event_type'=>$eventType,
 			// 'action'=>$action,
 			// 'resource'=>$resource,
-			// 'date_time'=>\App\Utilities\DateUtils::getCurrentDateTime()
+			// 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
 			// );
 			// $db->insert($tableName1,$data);
 

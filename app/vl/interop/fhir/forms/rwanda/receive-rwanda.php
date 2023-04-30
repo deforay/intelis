@@ -13,17 +13,22 @@ function prettyJson($json)
 }
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
-$general = new CommonService();
-$vlModel = new VlService();
-$facilityDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var VlService $vlService */
+$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -262,10 +267,10 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['form_attributes']['apiTransactionId'] = $transactionId;
             $formData[$basedOnServiceRequest]['form_attributes']['fhir'] = (array_merge($taskAttributes[$basedOnServiceRequest], $serviceAttributes[$basedOnServiceRequest]));
             $formData[$basedOnServiceRequest]['form_attributes'] = json_encode($formData[$basedOnServiceRequest]['form_attributes']);
-            $formData[$basedOnServiceRequest]['request_created_datetime'] = DateUtils::getCurrentDateTime();
+            $formData[$basedOnServiceRequest]['request_created_datetime'] = DateUtility::getCurrentDateTime();
             $formData[$basedOnServiceRequest]['vlsm_instance_id'] = $instanceId;
             $formData[$basedOnServiceRequest]['vlsm_country_id'] = 7; // RWANDA
-            $formData[$basedOnServiceRequest]['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+            $formData[$basedOnServiceRequest]['last_modified_datetime'] = DateUtility::getCurrentDateTime();
             $formData[$basedOnServiceRequest]['source_of_request'] = 'fhir';
             //$formData[$basedOnServiceRequest]['source_data_dump'] = $json;
             $formData[$basedOnServiceRequest]['result_status'] = 6;
@@ -298,7 +303,7 @@ foreach ($formData as $serviceRequest => $data) {
         continue;
     }
 
-    $sampleJson = $vlModel->generateVLSampleID(null, ($data['sample_collection_date']));
+    $sampleJson = $vlService->generateVLSampleID(null, ($data['sample_collection_date']));
 
     $sampleData = json_decode($sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

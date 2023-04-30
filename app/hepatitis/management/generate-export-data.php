@@ -5,9 +5,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -15,7 +16,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $hepatitisObj = new HepatitisService();
 $hepatitisResults = $hepatitisObj->gethepatitisResults();
@@ -192,7 +195,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = $sampleTestedOn;
 		$row[] = ($aRow['hcv_vl_result']);
 		$row[] = ($aRow['hbv_vl_result']);
-		$row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

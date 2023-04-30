@@ -1,14 +1,19 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 $title = _("Export Data");
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -19,9 +24,9 @@ $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 

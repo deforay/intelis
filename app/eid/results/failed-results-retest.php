@@ -1,11 +1,14 @@
 <?php
 
 // echo "<pre>";print_r($_POST['eidId']);die;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 try {
-    $general = new CommonService();
+    /** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
@@ -45,7 +48,7 @@ try {
                     'facility_id'           => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
                     'result'                => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
                     'result_status'         => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
-                    'updated_datetime'      => DateUtils::getCurrentDateTime(),
+                    'updated_datetime'      => DateUtility::getCurrentDateTime(),
                     'update_by'             => $_SESSION['userId']
                 ));
             }

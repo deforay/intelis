@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
 $db = MysqliDb::getInstance();
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
@@ -132,7 +135,7 @@ $data = $db->get("user_login_history", 25);
             ?>
                 <tr>
 
-                  <td><?php echo DateUtils::humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
+                  <td><?php echo DateUtility::humanReadableDateFormat($project['login_attempted_datetime']); ?></td>
                   <td><?php echo $project['login_id']; ?></td>
                   <td><?php echo $project['ip_address']; ?></td>
                   <td><?php echo $project['browser']; ?></td>

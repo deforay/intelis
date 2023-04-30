@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$tbModel = new TbService();
+$tbService = new TbService();
 
 $sampleCollectionDate = $province = '';
 
@@ -26,4 +26,4 @@ if (isset($_POST['sampleCollectionDate'])) {
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
 
-echo $tbModel->generateTbSampleCode($province, $sampleCollectionDate, $sampleFrom);
+echo $tbService->generateTbSampleCode($province, $sampleCollectionDate, $sampleFrom);

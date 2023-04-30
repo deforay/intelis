@@ -1,7 +1,8 @@
 <?php
 
 
-use App\Utilities\DateUtils;
+use App\Helpers\PdfWatermarkHelper;
+use App\Utilities\DateUtility;
 
 class SouthSudan_PDF extends MYPDF
 {
@@ -59,7 +60,7 @@ for ($m = 0; $m < count($mFieldArray); $m++) {
     }
 }
 
-$dateUtils = new DateUtils();
+$dateUtils = new DateUtility();
 
 // create new PDF document
 $pdf = new SouthSudan_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -133,7 +134,7 @@ if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $resu
 
 if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_collection_date']);
-    $result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
+    $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleCollectionTime = $expStr[1];
 } else {
     $result['sample_collection_date'] = '';
@@ -143,18 +144,18 @@ $sampleReceivedDate = '';
 $sampleReceivedTime = '';
 if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-    $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
 $sampleDispatchDate = '';
 $sampleDispatchTime = '';
 if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['result_printed_datetime']);
-    $sampleDispatchDate = DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 } else {
     $expStr = explode(" ", $currentDateTime);
-    $sampleDispatchDate = DateUtils::humanReadableDateFormat($expStr[0]);
+    $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 }
 
@@ -173,7 +174,7 @@ if (!empty($testedByRes['user_signature'])) {
 
 if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $result['sample_tested_datetime']);
-    $result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $result['sample_tested_datetime'] = '';
 }
@@ -462,7 +463,7 @@ if (($result['result'] != '') || ($result['result'] == '' && $result['result_sta
     $pdf->Output($filename, "F");
     if ($draftTextShow) {
         //Watermark section
-        $watermark = new \App\Helpers\PdfWatermarkHelper();
+        $watermark = new PdfWatermarkHelper();
 $watermark->setFullPathToFile($filename);
         $fullPathToFile = $filename;
         $watermark->Output($filename, "F");

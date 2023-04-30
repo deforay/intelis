@@ -1,13 +1,18 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = _("Enter Covid-19 Result");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -40,7 +45,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 
 	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
 }
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+$testingLabs = $facilitiesService->getTestingLabs('covid19');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 ?>
 <style>

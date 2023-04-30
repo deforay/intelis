@@ -2,6 +2,7 @@
 // imported in covid-19-add-request.php based on country in global config
 
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -22,15 +23,19 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$general = new CommonService();
-$covid19Obj = new Covid19Service();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
 
-$covid19Results = $covid19Obj->getCovid19Results();
-$specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
-$covid19ReasonsForTesting = $covid19Obj->getCovid19ReasonsForTestingDRC();
-$covid19Symptoms = $covid19Obj->getCovid19SymptomsDRC();
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
+$covid19Results = $covid19Service->getCovid19Results();
+$specimenTypeResult = $covid19Service->getCovid19SampleTypes();
+$covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingDRC();
+$covid19Symptoms = $covid19Service->getCovid19SymptomsDRC();
+$covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 
 
 $rKey = '';

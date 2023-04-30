@@ -4,16 +4,19 @@
 
 
 use App\Interop\Dhis2;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 $transactionId = $general->generateUUID();
@@ -280,12 +283,12 @@ foreach ($trackedEntityInstances as $tracker) {
         //var_dump($uniqueID . " -- " . $formData['hepatitis_test_type']);
         //continue;
 
-        $formData['request_created_datetime'] = DateUtils::getCurrentDateTime();
+        $formData['request_created_datetime'] = DateUtility::getCurrentDateTime();
         $updateColumns = array_keys($formData);
 
         $formData['unique_id'] = $uniqueID;
 
-        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, DateUtils::humanReadableDateFormat($formData['sample_collection_date']));
+        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, DateUtility::humanReadableDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -309,7 +312,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
         $formData['vlsm_country_id'] = 7; // RWANDA
-        $formData['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+        $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
         $formAttributes = [];

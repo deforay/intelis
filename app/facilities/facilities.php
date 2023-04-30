@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\SystemService;
@@ -10,7 +11,9 @@ require_once(APPLICATION_PATH . '/header.php');
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $activeTestModules = SystemService::getActiveTestModules();
 // if($sarr['sc_user_type']=='vluser'){

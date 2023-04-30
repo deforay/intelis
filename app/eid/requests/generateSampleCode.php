@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 
 
@@ -7,7 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$eidModel = new EidService();
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
 
 
 
@@ -28,4 +31,4 @@ if (isset($_POST['sampleCollectionDate'])) {
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
 
-echo $eidModel->generateEIDSampleCode($province, $sampleCollectionDate, $sampleFrom);
+echo $eidService->generateEIDSampleCode($province, $sampleCollectionDate, $sampleFrom);

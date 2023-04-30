@@ -1,20 +1,19 @@
 <?php
 
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$usersDb = new UserService();
-$arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -47,11 +46,11 @@ $GLOBALS['facilityTypeTable'] = $facilityTypeTableList[$facilityTypeRequested];
 
 $GLOBALS['facilityMap'] = null;
 if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
-	$GLOBALS['facilityMap'] = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+	$GLOBALS['facilityMap'] = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 }
 
 
-function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersDb = null)
+function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null)
 {
 	$db=$GLOBALS['db'];
 	$option=$GLOBALS['option'];
@@ -85,7 +84,7 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 		foreach ($facilityInfo as $fDetails) {
 			$fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
 
-			$labContactUser = $usersDb->getUserInfo($fDetails['contact_person']);
+			$labContactUser = $usersService->getUserInfo($fDetails['contact_person']);
 			if (!empty($labContactUser)) {
 				$fDetails['contact_person'] = $labContactUser['user_name'];
 			}
@@ -148,7 +147,7 @@ if (!empty($facilityIdRequested)) {
 	$db->where("f.facility_id", $facilityIdRequested);
 	$facilityInfo = $db->getOne('facility_details f');
 
-	$labContactUser = $usersDb->getUserInfo($facilityInfo['contact_person']);
+	$labContactUser = $usersService->getUserInfo($facilityInfo['contact_person']);
 	if (!empty($labContactUser)) {
 		$facilityInfo['contact_person'] = $labContactUser['user_name'];
 	}
@@ -158,7 +157,7 @@ if (!empty($facilityIdRequested)) {
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
 } else if (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
 	$provinceName = explode("##", $provinceRequested);
-	$districtOptions = getDistrgetDistrictDropdownictDropdown($provinceName[0], $districtRequested);
+	$districtOptions = getDistrictDropdown($provinceName[0], $districtRequested);
 	echo "###" . $districtOptions . "###";
 } else if (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
 	$districtOptions = getDistrictDropdown($provinceRequested, $districtRequested);
@@ -166,19 +165,19 @@ if (!empty($facilityIdRequested)) {
 } else if (!empty($provinceRequested)) {
 	$provinceName = explode("##", $provinceRequested);
 
-	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersDb);
+	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersService);
 	$districtOptions = getDistrictDropdown($provinceName[0]);
 
 	echo $facilityOptions . "###" . $districtOptions . "###";
 } else if (!empty($districtRequested)) {
 
-	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersDb);
-	$testingLabsList = $facilitiesDb->getTestingLabs($testType);
+	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersService);
+	$testingLabsList = $facilitiesService->getTestingLabs($testType);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } else if (!empty($facilityTypeRequested)) {
-	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersDb);
+	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersService);
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }
 

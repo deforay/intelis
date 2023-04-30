@@ -1,7 +1,8 @@
 <?php
 // Allow from any origin
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -25,7 +26,9 @@ try {
     
     
 
-    $general = new CommonService();
+    /** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');
@@ -78,8 +81,8 @@ try {
         $data['sample_type'] = 2;
         $data['request_created_by'] = $result[8];
         $data['lab_id'] = $result[7];
-        $data['request_created_datetime'] = DateUtils::getCurrentDateTime();
-        $data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+        $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
+        $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
         $data['result_status'] = 6;
         $data['data_sync'] = 0;
         $data['recency_vl'] = 'yes';

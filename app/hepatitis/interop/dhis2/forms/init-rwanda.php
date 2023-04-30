@@ -1,7 +1,7 @@
 <?php
 
 use App\Interop\Dhis2;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 require_once(__DIR__ . "/../../../../../bootstrap.php");
 
@@ -61,7 +61,7 @@ foreach ($initOptionSets as $t => $id) {
                 'other_id' => $lab['id'],
                 'facility_type' => 2,
                 'test_type' => 'hepatitis',
-                'updated_datetime' => DateUtils::getCurrentDateTime(),
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
@@ -74,7 +74,7 @@ foreach ($initOptionSets as $t => $id) {
                 'facility_id' => $id,
                 'monthly_target' => null,
                 'suppressed_monthly_target' => null,
-                "updated_datetime" => DateUtils::getCurrentDateTime()
+                "updated_datetime" => DateUtility::getCurrentDateTime()
             );
             $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
         }
@@ -109,7 +109,7 @@ foreach ($response['organisationUnits'] as $facility) {
         'other_id' => $facility['id'],
         'facility_type' => 1,
         'test_type' => 'hepatitis',
-        'updated_datetime' => DateUtils::getCurrentDateTime(),
+        'updated_datetime' => DateUtility::getCurrentDateTime(),
         'status' => 'active'
     );
     $updateColumns = array("other_id", "updated_datetime");
@@ -120,7 +120,7 @@ foreach ($response['organisationUnits'] as $facility) {
     $dataTest = array(
         'test_type' => 'hepatitis',
         'facility_id' => $id,
-        "updated_datetime" => DateUtils::getCurrentDateTime()
+        "updated_datetime" => DateUtility::getCurrentDateTime()
     );
     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 }

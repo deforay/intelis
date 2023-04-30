@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,14 +11,18 @@ $title = _("Covid-19 | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
-	$testingLabs = $facilitiesDb->getTestingLabs('covid19', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
+	$testingLabs = $facilitiesService->getTestingLabs('covid19', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
 } else {
-	$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+	$testingLabs = $facilitiesService->getTestingLabs('covid19');
 }
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 

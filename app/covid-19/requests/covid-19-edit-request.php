@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 $title = _("COVID-19 | Edit Request");
@@ -34,13 +35,17 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
-$healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
 
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+$healthFacilities = $facilitiesService->getHealthFacilities('covid19');
+$testingLabs = $facilitiesService->getTestingLabs('covid19');
+
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -89,7 +94,7 @@ if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'aut
 if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_collection_date']) != '' && $covid19Info['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $covid19Info['sample_collection_date'];
     $expStr = explode(" ", $covid19Info['sample_collection_date']);
-    $covid19Info['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $covid19Info['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $covid19Info['sample_collection_date'] = '';
@@ -97,7 +102,7 @@ if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_c
 
 if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $reviewedOn = explode(" ", $covid19Info['result_reviewed_datetime']);
-    $covid19Info['result_reviewed_datetime'] = DateUtils::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+    $covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 } else {
     $covid19Info['result_reviewed_datetime'] = '';
 }

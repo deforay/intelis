@@ -2,11 +2,14 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 use App\Services\GeoLocationsService;
 use App\Services\PatientsService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
 
 
 
@@ -19,15 +22,17 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new Covid19Service();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 $patientsModel = new PatientsService();
 
 
-$covid19Results = $covid19Obj->getCovid19Results();
-$specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
+$covid19Results = $covid19Service->getCovid19Results();
+$specimenTypeResult = $covid19Service->getCovid19SampleTypes();
 
-$covid19Symptoms = $covid19Obj->getCovid19SymptomsDRC();
-$covid19SelectedSymptomsData = $covid19Obj->getCovid19SymptomsByFormId($covid19Info['covid19_id'], true);
+$covid19Symptoms = $covid19Service->getCovid19SymptomsDRC();
+$covid19SelectedSymptomsData = $covid19Service->getCovid19SymptomsByFormId($covid19Info['covid19_id'], true);
 $covid19SelectedSymptoms = [];
 foreach ($covid19SelectedSymptomsData as $row) {
     $covid19SelectedSymptoms[$row['symptom_id']]['value'] = $row['symptom_detected'];
@@ -35,14 +40,14 @@ foreach ($covid19SelectedSymptomsData as $row) {
 }
 
 
-$covid19ReasonsForTesting = $covid19Obj->getCovid19ReasonsForTestingDRC();
-$covid19SelectedReasonsForTesting = $covid19Obj->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
-$covid19SelectedReasonsDetailsForTesting = $covid19Obj->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
+$covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingDRC();
+$covid19SelectedReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
+$covid19SelectedReasonsDetailsForTesting = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
 // To get the reason details value
 $reasonDetails = json_decode($covid19SelectedReasonsDetailsForTesting['reason_details'], true);
 
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
-$covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
+$covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
+$covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
 
 
 // Getting the list of Provinces, Districts and Facilities
@@ -87,7 +92,7 @@ $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new Covid19Service();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -180,7 +185,7 @@ if (!empty($patientData)) {
                                             if ($covid19Info['sample_code'] != '') {
                                             ?>
                                                 <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Veuillez noter que cet exemple distant a déjà été importé avec VLSM Échantillon ID </td>
-                                                <td colspan="4" align="left"> <?php echo $covid19Info['sample_code']; ?></label> </td>
+                                                <td colspan="4" align="left"> <label><?php echo $covid19Info['sample_code']; ?></label> </td>
                                             <?php
                                             } else {
                                             ?>
@@ -276,7 +281,7 @@ if (!empty($patientData)) {
                                         </td>
                                         <th scope="row"><label for="patientDob">Date de naissance</label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
+                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -555,11 +560,11 @@ if (!empty($patientData)) {
                                     <tr>
                                         <th style="width:15% !important">Date d'apparition des symptômes </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
+                                            <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                         </td>
                                         <th style="width:15% !important">Date de la consultation initiale</th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date of Initial Consultation" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['date_of_initial_consultation']); ?> " />
+                                            <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date of Initial Consultation" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_initial_consultation']); ?> " />
                                         </td>
                                     </tr>
                                     <tr>
@@ -747,7 +752,7 @@ if (!empty($patientData)) {
                                     <tr>
                                         <th style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                         <td style="width:35% !important;">
-                                            <input type="text" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
+                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
                                         </td>
 
                                         <th scope="row">Compagnie aérienne</th>
@@ -758,7 +763,7 @@ if (!empty($patientData)) {
                                         <td><input type="text" class="form-control " value="<?php echo $covid19Info['flight_seat_no']; ?>" id="seatNo" name="seatNo" placeholder="Numéro de siège" title="Numéro de siège" style="width:100%;" /></td>
 
                                         <th scope="row">Date et heure d'arrivée</th>
-                                        <td><input type="text" class="form-control dateTime" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['flight_arrival_datetime']); ?>" id="arrivalDateTime" name="arrivalDateTime" placeholder="Date et heure d'arrivée" title="Date et heure d'arrivée" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control dateTime" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['flight_arrival_datetime']); ?>" id="arrivalDateTime" name="arrivalDateTime" placeholder="Date et heure d'arrivée" title="Date et heure d'arrivée" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Aeroport DE DEPART</th>
@@ -802,7 +807,7 @@ if (!empty($patientData)) {
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>
@@ -848,7 +853,7 @@ if (!empty($patientData)) {
                                                 </select>
                                             </td>
                                             <th class="show-rejection" style="display: none;">Date de rejet<span class="mandatory">*</span></th>
-                                            <td class="show-rejection" style="display: none;"><input value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
+                                            <td class="show-rejection" style="display: none;"><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
                                         </tr>
 
                                         <tr>
@@ -888,7 +893,7 @@ if (!empty($patientData)) {
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testInputOther<?= ($indexKey + 1); ?>" title="Veuillez saisir le nom du test pour les lignes <?= ($indexKey + 1); ?>" placeholder="Entrez le nom du test <?= ($indexKey + 1); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
                                                                     <!-- <td><input type="text" value="<?php echo $rows['test_name']; ?>" name="testName[]" id="testName<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" placeholder="Nom du test" title="Veuillez saisir le nom du test pour la ligne<?= ($indexKey + 1); ?>" /></td> -->
-                                                                    <td><input type="text" value="<?php echo DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Testé sur" title="Veuillez sélectionner la Date de l analyse pour la ligne <?= ($indexKey + 1); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Testé sur" title="Veuillez sélectionner la Date de l analyse pour la ligne <?= ($indexKey + 1); ?>" /></td>
                                                                     <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Veuillez sélectionner le résultat pour la ligne<?= ($indexKey + 1); ?>">
                                                                             <option value=''> -- Sélectionner -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>

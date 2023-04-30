@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
-use App\Utilities\MiscUtils;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $whereCondition = '';
 $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
@@ -52,10 +55,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -64,10 +67,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
@@ -76,10 +79,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleTestedDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name 
@@ -523,7 +526,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                     ?> {
                             name: '<?= ($tRow['test_reason_name']); ?>',
                             y: <?= ($tRow['total']); ?>,
-                            color: '#<?php echo MiscUtils::randomHexColor(); ?>',
+                            color: '#<?php echo MiscUtility::randomHexColor(); ?>',
                         },
                     <?php
                     }

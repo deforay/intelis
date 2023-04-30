@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -30,14 +31,18 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 }
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 $state = $geoLocationDb->getProvinces("yes");
-$healthFacilites = $facilitiesDb->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
 //Funding source list

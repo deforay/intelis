@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
@@ -24,7 +25,9 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 $tableName = "form_hepatitis";
@@ -153,10 +156,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 /* Sample recieved date filter */
@@ -166,10 +169,10 @@ if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) !=
      $s_r_date = explode("to", $_POST['sampleRecievedDate']);
      //print_r($s_r_date);die;
      if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = DateUtils::isoDateFormat(trim($s_r_date[0]));
+          $rstart_date = DateUtility::isoDateFormat(trim($s_r_date[0]));
      }
      if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = DateUtils::isoDateFormat(trim($s_r_date[1]));
+          $rend_date = DateUtility::isoDateFormat(trim($s_r_date[1]));
      }
 }
 $sTestDate = '';
@@ -177,10 +180,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 $sPrintDate = '';
@@ -188,10 +191,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
      }
 }
 

@@ -1,10 +1,14 @@
 <?php
 // this file is included in covid-19/results/generate-result-pdf.php
+use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$covid19Obj = new Covid19Service();
-$covid19Results = $covid19Obj->getCovid19Results();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$covid19Results = $covid19Service->getCovid19Results();
 
 $resultFilename = '';
 
@@ -24,7 +28,7 @@ if (sizeof($requestResult) > 0) {
 
         $signQuery = "SELECT * FROM lab_report_signatories WHERE lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-        $currentTime = DateUtils::getCurrentDateTime();
+        $currentTime = DateUtility::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
             $result['labName'] = '';
@@ -114,7 +118,7 @@ if (sizeof($requestResult) > 0) {
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
-            $result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
+            $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleCollectionTime = $expStr[1];
         } else {
             $result['sample_collection_date'] = '';
@@ -124,24 +128,24 @@ if (sizeof($requestResult) > 0) {
         $sampleReceivedTime = '';
         if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-            $sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
+            $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleReceivedTime = $expStr[1];
         }
         $sampleDispatchDate = '';
         $sampleDispatchTime = '';
         if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['result_printed_datetime']);
-            $sampleDispatchDate = DateUtils::humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         } else {
             $expStr = explode(" ", $currentTime);
-            $sampleDispatchDate = DateUtils::humanReadableDateFormat($expStr[0]);
+            $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }
 
         if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_tested_datetime']);
-            $result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+            $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
         } else {
             $result['sample_tested_datetime'] = '';
         }
@@ -220,7 +224,7 @@ if (sizeof($requestResult) > 0) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_id'] . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtils::humanReadableDateFormat($result['patient_dob']) . '/' . $age . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['patient_dob']) . '/' . $age . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_address'] . '</td>';
 
@@ -316,7 +320,7 @@ if (sizeof($requestResult) > 0) {
                 $html .= '<tr>
                                             <td align="center" width="15%">' . ($indexKey + 1) . '</td>
                                             <td align="center" width="45%">' . $rows['test_name'] . '</td>
-                                            <td align="center" width="25%">' . DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
+                                            <td align="center" width="25%">' . DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']) . '</td>
                                             <td align="center" width="15%">' . ($rows['result']) . '</td>
                                         </tr>';
             }
@@ -389,7 +393,7 @@ if (sizeof($requestResult) > 0) {
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
             }
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtils::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['result_approved_datetime']) . '</td>';
             $html .= '</tr>';
         }
 
@@ -477,7 +481,7 @@ if (sizeof($requestResult) > 0) {
             $pdf->Output($filename, "F");
             if ($draftTextShow) {
                 //Watermark section
-                $watermark = new \App\Helpers\PdfWatermarkHelper();
+                $watermark = new PdfWatermarkHelper();
 $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");

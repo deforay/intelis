@@ -4,6 +4,7 @@ use App\Services\ApiService;
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\TbService;
@@ -12,10 +13,14 @@ use App\Services\VlService;
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $app = new ApiService();
-$userDb = new UserService();
-$facilitiesDb = new FacilitiesService();
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
 $transactionId = $general->generateUUID();
@@ -24,7 +29,7 @@ $formId = $general->getGlobalConfig('vl_form');
 
 $auth = $general->getHeader('Authorization');
 $authToken = str_replace("Bearer ", "", $auth);
-$user = $userDb->getUserFromToken($authToken);
+$user = $usersService->getUserFromToken($authToken);
 
 $updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
 /* Status name list */
@@ -75,8 +80,8 @@ foreach ($commonResult as $key => $result) {
     $commonResultsList[$key]['show'] = ($result);
 }
 /* Lab Technician Details */
-$facilityMap = $facilitiesDb->getUserFacilityMap($user['user_id']);
-$userResult = $userDb->getActiveUsers($facilityMap, $updatedDateTime);
+$facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
+$userResult = $usersService->getActiveUsers($facilityMap, $updatedDateTime);
 $labTechniciansList = [];
 foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
@@ -116,7 +121,9 @@ $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $covid19Obj = new Covid19Service();
+    
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
@@ -158,8 +165,8 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $data['covid19']['rdtAntigenOptions'] = $platformTestKits;
 
-    $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Obj->getCovid19ReasonsForTesting($updatedDateTime));
-    $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Obj->getCovid19SampleTypes($updatedDateTime));
+    $data['covid19']['covid19ReasonsForTestingList'] = $app->generateSelectOptions($covid19Service->getCovid19ReasonsForTesting($updatedDateTime));
+    $data['covid19']['specimenTypeResultList'] = $app->generateSelectOptions($covid19Service->getCovid19SampleTypes($updatedDateTime));
     foreach (range(1, 5) as $key => $req) {
         $testingPoint[$key]['value'] = $req;
         $testingPoint[$key]['show'] = $req;
@@ -205,9 +212,9 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $data['covid19']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Results($updatedDateTime));
-    $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Obj->getCovid19Symptoms($updatedDateTime));
-    $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Obj->getCovid19Comorbidities($updatedDateTime));
+    $data['covid19']['resultsList'] = $app->generateSelectOptions($covid19Service->getCovid19Results($updatedDateTime));
+    $data['covid19']['symptomsList'] = $app->generateSelectOptions($covid19Service->getCovid19Symptoms($updatedDateTime));
+    $data['covid19']['comorbiditiesList'] = $app->generateSelectOptions($covid19Service->getCovid19Comorbidities($updatedDateTime));
     // $data['covid19']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['covid19']['statusFilterList'] = array(
@@ -220,7 +227,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
 
 // Check if eid module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidObj = new EidService();
+    $eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
@@ -297,7 +304,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 
 // Check if vl module active/inactive
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlObj = new VlService();
+    $vlObj = \App\Registries\ContainerRegistry::get(VlService::class);
     /* SAMPLE INFORMATION SECTION */
     $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
     /* Current regimen */

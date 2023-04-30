@@ -2,15 +2,18 @@
 
 // imported in hepatitis-edit-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
-$facilitiesDb = new FacilitiesService();
 
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -55,7 +58,7 @@ $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new HepatitisService();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generatehepatitisSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -206,7 +209,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                         <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
+                                            <input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['patient_dob']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -299,7 +302,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         </div>
 
 
-                        <?php if ($usersModel->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -309,7 +312,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                                <input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                             </td>
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>
@@ -321,7 +324,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for="sampleTestedDateTime">VL Testing Date</label></th>
                                             <td>
-                                                <input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['sample_tested_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter testing date" style="width:100%;" />
+                                                <input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['sample_tested_datetime']) ?>" type="text" class="labSecInput form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter testing date" style="width:100%;" />
                                             </td>
                                             <th scope="row"><label for="vlTestingSite">VL Testing Site</label></th>
                                             <td>
@@ -360,7 +363,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <th scope="row">Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <!-- <tr>
                                             <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
@@ -419,7 +422,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
                                             <td>Authorized on</td>
-                                            <td><input value="<?php echo DateUtils::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on" /></td>
+                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on" /></td>
                                             <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>

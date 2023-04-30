@@ -1,6 +1,7 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 
 
@@ -18,8 +19,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 $labFieldDisabled = '';
 // $rejectionReason = '';
@@ -342,7 +345,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

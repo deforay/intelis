@@ -1,12 +1,14 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-  
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
 
-
-$general = new CommonService();
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 $tableName1 = "batch_details";
@@ -37,7 +39,7 @@ try {
                 $uniqueSampleId = array_unique($selectedSample);
                 for ($j = 0; $j <= count($selectedSample); $j++) {
                     if (isset($uniqueSampleId[$j])) {
-                      
+
                         $vlSampleId = $uniqueSampleId[$j];
                         $value = array('sample_batch_id' => $lastId);
                         $db = $db->where('hepatitis_id', $vlSampleId);

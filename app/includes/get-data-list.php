@@ -1,10 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
-$geoDb = new GeoLocationsService($db);
-$generalDb = new CommonService($db);
+/** @var GeoLocationsService $geoDb */
+$geoDb = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
 $text = '';
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];

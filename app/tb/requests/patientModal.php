@@ -1,10 +1,13 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_tb as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -77,12 +80,12 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_name']) . strtolower($patient['patient_surname']) . $patient['patient_age'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtils::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
+										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
 										$patientDetails = json_encode(array(
 											"firstname"=>($patient['patient_name']),
 											"lastname"=>($patient['patient_surname']),
 											"gender"=>$patient['patient_gender'],
-											"dob"=> DateUtils::humanReadableDateFormat($patient['patient_dob']),
+											"dob"=> DateUtility::humanReadableDateFormat($patient['patient_dob']),
 											"age"=>$patient['patient_age'],
 											"patient_id"=>$patient['patient_id'],
 										));

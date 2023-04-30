@@ -1,8 +1,9 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -10,8 +11,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $sarr = $general->getSystemConfig();
 //global config
@@ -23,7 +28,7 @@ $country = $configResult[0]['value'];
 // $rpResult = $db->rawQuery($rpQuery);
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
-	$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+	$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';
 }
@@ -47,10 +52,10 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	//print_r($dateRange);die;
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = DateUtils::isoDateFormat(trim($dateRange[0]));
+		$startDate = DateUtility::isoDateFormat(trim($dateRange[0]));
 	}
 	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = DateUtils::isoDateFormat(trim($dateRange[1]));
+		$endDate = DateUtility::isoDateFormat(trim($dateRange[1]));
 	}
 
 	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";

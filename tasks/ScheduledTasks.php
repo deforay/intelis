@@ -1,11 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use Crunz\Schedule;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
 $timeZone = $_SESSION['APP_TIMEZONE'];

@@ -2,11 +2,14 @@
 
 
 use App\Services\EidService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
-$eidObj = new EidService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
 
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";
@@ -22,7 +25,7 @@ foreach ($sampleResult as $sampleRow) {
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = DateUtils::isoDateFormat($testDate[0]);
+        $_POST['testDate'] = DateUtility::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
         $_POST['testDate'] = null;
@@ -30,7 +33,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $eidObj->generateEIDSampleCode($provinceCode, DateUtils::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $eidObj->generateEIDSampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
 
         $eidData['sample_code'] = $sampleData['sampleCode'];
@@ -43,7 +46,7 @@ foreach ($sampleResult as $sampleRow) {
             $eidData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
         $eidData['last_modified_by'] = $_SESSION['userId'];
-        $eidData['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+        $eidData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
         $db = $db->where('eid_id', $sampleRow['eid_id']);
         $id = $db->update('form_eid', $eidData);

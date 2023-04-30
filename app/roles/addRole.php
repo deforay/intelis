@@ -1,12 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $activeTestModules = SystemService::getActiveTestModules();
 $activeModules = array('admin', 'common');

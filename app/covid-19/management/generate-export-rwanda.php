@@ -5,8 +5,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,13 +15,17 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new CommonService();
-$covid19Obj = new Covid19Service();
-$covid19Symptoms = $covid19Obj->getCovid19Symptoms();
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Symptoms = $covid19Service->getCovid19Symptoms();
+$covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 
 
-$covid19Results = $covid19Obj->getCovid19Results();
+$covid19Results = $covid19Service->getCovid19Results();
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
@@ -155,13 +160,13 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$patientLname = '';
 		}
 		/* To get Symptoms and Comorbidities details */
-		$covid19SelectedSymptoms = $covid19Obj->getCovid19SymptomsByFormId($aRow['covid19_id']);
+		$covid19SelectedSymptoms = $covid19Service->getCovid19SymptomsByFormId($aRow['covid19_id']);
 		foreach ($covid19Symptoms as $symptomId => $symptomName) {
 			if ($covid19SelectedSymptoms[$symptomId] == 'yes') {
 				$sysmtomsArr[] = $symptomName . ':' . $covid19SelectedSymptoms[$symptomId];
 			}
 		}
-		$covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($aRow['covid19_id']);
+		$covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($aRow['covid19_id']);
 		foreach ($covid19Comorbidities as $comId => $comName) {
 			if ($covid19SelectedComorbidities[$symptomId] == 'yes') {
 				$comorbiditiesArr[] = $comName . ':' . $covid19SelectedComorbidities[$comId];
@@ -188,16 +193,16 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		/* To get Symptoms and Comorbidities details */
 		$row[] = implode(',', $sysmtomsArr);
 		$row[] = implode(',', $comorbiditiesArr);
-		/* $row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
+		/* $row[] = \App\Utilities\DateUtility::humanReadableDateFormat($aRow['date_of_symptom_onset']);
 		$row[] = ($aRow['contact_with_confirmed_case']);
 		$row[] = ($aRow['has_recent_travel_history']);
 		$row[] = ($aRow['travel_country_names']);
-		$row[] = \App\Utilities\DateUtils::humanReadableDateFormat($aRow['travel_return_date']); */
+		$row[] = \App\Utilities\DateUtility::humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $covid19Results[$aRow['result']];
-		$row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,7 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;
@@ -20,7 +23,7 @@ if ($value != '') {
     if(count($rejInfo)==0){
         $data = array(
 			'rejection_type' => $value,
-			'updated_datetime' => DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
 		$db->insert($tableName, $data);

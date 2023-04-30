@@ -2,9 +2,10 @@
 //this file receives the lab results and updates in the remote db
 
 use App\Services\ApiService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -20,8 +21,12 @@ for ($i = 0; $i < sizeof($cResult); $i++) {
     $arr[$cResult[$i]['name']] = $cResult[$i]['value'];
 }
 
-$general = new CommonService();
-$usersModel = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 $app = new ApiService();
 $sampleCodes = $facilityIds = [];
 $labId = null;
@@ -75,14 +80,14 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
-            $lab['result_approved_by'] = $usersModel->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  DateUtils::getCurrentDateTime();
+            $lab['result_approved_by'] = $usersService->addUserIfNotExists($resultRow['approved_by_name']);
+            $lab['result_approved_datetime'] =  DateUtility::getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
 
         $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-        $lab['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+        $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
         // unset($lab['request_created_by']);
         // unset($lab['last_modified_by']);
@@ -128,7 +133,7 @@ $payload = json_encode($sampleCodes);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtility::getCurrentDateTime();
 if (!empty($sampleCodes)) {
     $sql = 'UPDATE form_eid SET data_sync = ?,
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)

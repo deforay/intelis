@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use MysqliDb;
 
 /**
@@ -65,8 +65,8 @@ class PatientsService
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
         $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
         $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-        $data['updated_datetime'] = DateUtils::getCurrentDateTime();
-        $data['patient_registered_on'] = DateUtils::getCurrentDateTime();
+        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+        $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
         $data['patient_registered_by'] = $params['registeredBy'];
 
         // $updateColumns = $data;
@@ -96,8 +96,8 @@ class PatientsService
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
         $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
         $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-        $data['updated_datetime'] = DateUtils::getCurrentDateTime();
-        $data['patient_registered_on'] = DateUtils::getCurrentDateTime();
+        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+        $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
         $data['patient_registered_by'] = $params['registeredBy'];
 
         $this->db->where("patient_code", $params['patientId']);

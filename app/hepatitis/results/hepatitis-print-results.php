@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -21,11 +22,15 @@ $batResult = $db->rawQuery($batQuery);
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+$healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

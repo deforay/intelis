@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,7 +12,9 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 
@@ -25,7 +28,7 @@ try {
 		$data = array(
 			'sample_name' => $_POST['sampleName'],
 			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => DateUtils::getCurrentDateTime(),
+			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
         $db = $db->where('sample_id', $sampleId);

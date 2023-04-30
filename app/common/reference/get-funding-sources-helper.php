@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,7 +12,9 @@ $tableName = "r_funding_sources";
 $primaryKey = "funding_source_id";
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where

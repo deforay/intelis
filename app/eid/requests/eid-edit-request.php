@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 $title = "EID | Edit Request";
@@ -34,12 +35,16 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
-$healthFacilities = $facilitiesDb->getHealthFacilities('eid');
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+$healthFacilities = $facilitiesService->getHealthFacilities('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
@@ -107,7 +112,7 @@ foreach ($testPlatformResult as $row) {
 if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
     $expStr = explode(" ", $eidInfo['sample_collection_date']);
-    $eidInfo['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $eidInfo['sample_collection_date'] = '';
@@ -115,21 +120,21 @@ if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collectio
 
 if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_approved_datetime']);
-    $eidInfo['result_approved_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_approved_datetime'] = '';
 }
 
 if (isset($eidInfo['result_reviewed_datetime']) && trim($eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_reviewed_datetime']);
-    $eidInfo['result_reviewed_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_reviewed_datetime'] = '';
 }
 
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-    $eidInfo['result_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $eidInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_dispatched_datetime'] = '';
 }

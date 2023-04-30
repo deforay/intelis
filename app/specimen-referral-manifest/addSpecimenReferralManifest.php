@@ -3,6 +3,7 @@
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
 use App\Services\TbService;
@@ -15,19 +16,25 @@ $title = "Add New Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
-$testingLabs = $facilitiesDb->getTestingLabs($module);
+$testingLabs = $facilitiesService->getTestingLabs($module);
 
-$usersDb = new UserService();
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 $usersList = [];
-$users = $usersDb->getActiveUsers();
+$users = $usersService->getActiveUsers();
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
-$facilities = $facilitiesDb->getHealthFacilities($module);
+$facilities = $facilitiesService->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
 	$vlDb = new VlService($db);
@@ -37,8 +44,8 @@ if ($module == 'vl') {
 	$sampleTypes = $eidDb->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
-	$covid19Db = new Covid19Service($db);
-	$sampleTypes = $covid19Db->getCovid19SampleTypes();
+	$covid19Service = new Covid19Service($db);
+	$sampleTypes = $covid19Service->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
 	$shortCode = 'HEP';
 	$hepDb = new HepatitisService($db);

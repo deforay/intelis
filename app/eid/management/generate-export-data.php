@@ -1,8 +1,9 @@
 <?php
 
 use App\Services\EidService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -17,11 +18,15 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
-$dateTimeUtil = new DateUtils();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$dateTimeUtil = new DateUtility();
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {
 
@@ -104,7 +109,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//date of birth
 		$dob = '';
 		if (!empty($aRow['child_dob'])) {
-			$dob =  DateUtils::humanReadableDateFormat($aRow['child_dob']);
+			$dob =  DateUtility::humanReadableDateFormat($aRow['child_dob']);
 		}
 		//set gender
 		$gender = '';
@@ -118,17 +123,17 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if (!empty($aRow['sample_collection_date'])) {
-			$sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
 		}
 
 		$sampleTestedOn = '';
 		if (!empty($aRow['sample_tested_datetime'])) {
-			$sampleTestedOn =  DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+			$sampleTestedOn =  DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 		}
 
 		$sampleReceivedOn = '';
 		if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-			$sampleReceivedOn =  DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+			$sampleReceivedOn =  DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		}
 
 
@@ -141,13 +146,13 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		//result dispatched date
 		$resultDispatchedDate = '';
 		if (!empty($aRow['result_printed_datetime'])) {
-			$resultDispatchedDate =  DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+			$resultDispatchedDate =  DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 		}
 
 		//requeste created date time
 		$requestCreatedDatetime = '';
 		if (!empty($aRow['request_created_datetime'])) {
-			$requestCreatedDatetime =  DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
+			$requestCreatedDatetime =  DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 		}
 
 

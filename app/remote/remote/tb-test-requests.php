@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
 use App\Services\FacilitiesService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
@@ -24,7 +25,7 @@ $app = new ApiService();
 
 $transactionId = $general->generateUUID();
 
-$facilityDb = new FacilitiesService();
+$facilityDb = ContainerRegistry::get(FacilitiesService::class);
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -61,7 +62,7 @@ $payload = json_encode($data);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtility::getCurrentDateTime();
 if (!empty($sampleIds)) {
     $sql = 'UPDATE form_tb SET data_sync = ?, 
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

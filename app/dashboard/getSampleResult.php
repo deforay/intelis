@@ -1,11 +1,14 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
-$facilityDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 
 $cDate = date('Y-m-d');
@@ -99,10 +102,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $lastSevenDay = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $lastSevenDay = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $cDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $cDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 $sWhere = '';

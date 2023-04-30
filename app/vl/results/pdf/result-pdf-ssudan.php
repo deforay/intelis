@@ -3,7 +3,9 @@
 // This file is included in /vl/results/generate-result-pdf.php
 
 
-use App\Utilities\DateUtils;
+use App\Helpers\PdfConcatenateHelper;
+use App\Helpers\PdfWatermarkHelper;
+use App\Utilities\DateUtility;
 
 $resultFilename = '';
 
@@ -17,7 +19,7 @@ if (sizeof($requestResult) > 0) {
      $pages = [];
      $page = 1;
      foreach ($requestResult as $result) {
-          $currentTime = DateUtils::getCurrentDateTime();
+          $currentTime = DateUtility::getCurrentDateTime();
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
@@ -615,7 +617,7 @@ if (sizeof($requestResult) > 0) {
                $pdf->Output($filename, "F");
                if ($draftTextShow) {
                     //Watermark section
-                    $watermark = new \App\Helpers\PdfWatermarkHelper();
+                    $watermark = new PdfWatermarkHelper();
 $watermark->setFullPathToFile($filename);
                     $fullPathToFile = $filename;
                     $watermark->Output($filename, "F");
@@ -646,7 +648,7 @@ $watermark->setFullPathToFile($filename);
      }
 
      if (!empty($pages)) {
-          $resultPdf = new \App\Helpers\PdfConcatenateHelper();
+          $resultPdf = new PdfConcatenateHelper();
           $resultPdf->setFiles($pages);
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);

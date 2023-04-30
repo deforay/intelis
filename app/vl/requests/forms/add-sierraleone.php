@@ -8,7 +8,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$lResult = $facilitiesDb->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -618,7 +618,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>

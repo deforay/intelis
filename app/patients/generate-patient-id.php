@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\PatientsService;
 
@@ -8,7 +9,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $patientsModel = new PatientsService();
 
 $prefix  = $_POST['patientCodePrefix'];

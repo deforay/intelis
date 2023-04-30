@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $tableName = "vl_contact_notes";
 
@@ -17,8 +20,8 @@ try {
         $data = array(
             'contact_notes' => $_POST['notes'],
             'treament_contact_id' => $_POST['treamentId'],
-            'collected_on' => DateUtils::isoDateFormat($_POST['dateVal']),
-            'added_on' => DateUtils::getCurrentDateTime()
+            'collected_on' => DateUtility::isoDateFormat($_POST['dateVal']),
+            'added_on' => DateUtility::getCurrentDateTime()
         );
         //print_r($data);die;
         $result = $db->insert($tableName, $data);

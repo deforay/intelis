@@ -1,8 +1,9 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
@@ -19,8 +20,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 
 $rKey = '';
@@ -497,7 +500,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</tr>
 										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
-											<td><input value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<td></td>
 											<td></td>
 										</tr>

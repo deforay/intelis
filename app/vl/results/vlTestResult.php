@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = _("Enter VL Result");
@@ -8,12 +9,18 @@ $title = _("Enter VL Result");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('vl');
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";

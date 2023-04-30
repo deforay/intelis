@@ -8,7 +8,7 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use MysqliDb;
 
 class GeoLocationsService
@@ -95,14 +95,13 @@ class GeoLocationsService
 
     function addGeoLocation($geoName, $parent = 0)
     {
-        $general = new CommonService($this->db);
 
         $data = array(
             'geo_name'         => $geoName,
             'geo_status'       => 'active',
             'created_by'       => $_SESSION['userId'],
-            'created_on'       => DateUtils::getCurrentDateTime(),
-            'updated_datetime' => DateUtils::getCurrentDateTime(),
+            'created_on'       => DateUtility::getCurrentDateTime(),
+            'updated_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync'       => 0
         );
         if ($parent > 0) {

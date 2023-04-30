@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
 
@@ -36,15 +37,17 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-$facilitiesDb = new FacilitiesService();
-$userDb = new UserService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$usersService = ContainerRegistry::get(UserService::class);
 
 
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$labTechnicians = $userDb->getActiveUsers($facilityMap);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$labTechnicians = $usersService->getActiveUsers($facilityMap);
 
-$healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+$healthFacilities = $facilitiesService->getHealthFacilities('covid19');
+$testingLabs = $facilitiesService->getTestingLabs('covid19');
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);

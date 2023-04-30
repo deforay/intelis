@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -12,7 +13,9 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName = "move_samples";
 $primaryKey = "move_sample_id";
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
@@ -140,7 +143,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $date = '';
     if ($aRow['moved_on'] != '0000-00-00' && $aRow['moved_on'] != null) {
-        $date = DateUtils::humanReadableDateFormat($aRow['moved_on']);
+        $date = DateUtility::humanReadableDateFormat($aRow['moved_on']);
     }
     $row[] = ($aRow['labNameFrom']);
     $row[] = ($aRow['labNameTo']);

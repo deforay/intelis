@@ -5,8 +5,9 @@ if (php_sapi_name() == 'cli') {
 }
 
 use App\Services\ApiService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -21,7 +22,9 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $app = new ApiService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
@@ -378,4 +381,4 @@ $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_n
 
 /* Update last_remote_results_sync in s_vlsm_instance */
 $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => DateUtils::getCurrentDateTime()));
+$id = $db->update('s_vlsm_instance', array('last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()));

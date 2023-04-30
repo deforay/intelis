@@ -1,7 +1,7 @@
 <?php
 // imported in /eid/results/eid-update-result.php based on country in global config
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
@@ -177,7 +177,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									</td>
 									<th scope="row"><label for="mothersDob">Date de naissance </label></th>
 									<td>
-										<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['mother_dob']); ?>" onchange="" />
+										<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_dob']); ?>" onchange="" />
 									</td>
 									<th scope="row"><label for="mothersMaritalStatus">Etat civil </label></th>
 									<td>
@@ -208,7 +208,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									</td>
 									<th scope="row"><label for="childDob">Date de naissance </label></th>
 									<td>
-										<input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
+										<input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
 									</td>
 									<th scope="row"><label for="childGender">Gender </label></th>
 									<td>
@@ -370,7 +370,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row">Date de collecte</th>
 									<td>
-										<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
+										<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -427,7 +427,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row">Si oui, date :</th>
 									<td>
-										<input class="form-control" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
+										<input class="form-control" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -459,7 +459,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
 											<td>
-												<input type="text" readonly class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+												<input type="text" readonly class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
@@ -496,14 +496,14 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 										</tr>
 										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
-											<td><input value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
+											<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<td></td>
 											<td></td>
 										</tr>
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
 											<td style="width:25%;">
-												<input type="text" readonly class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtils::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+												<input type="text" readonly class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
 											</td>
 
 
@@ -525,7 +525,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 											<th scope="row">Date de Revu</td>
-											<td><input type="text" value="<?= DateUtils::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
+											<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
 										</tr>
 										<tr class="change-reason">
 											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>

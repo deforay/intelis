@@ -5,7 +5,7 @@ namespace App\Utilities;
 use Exception;
 use DateTimeImmutable;
 
-class DateUtils
+class DateUtility
 {
     public function __construct()
     {

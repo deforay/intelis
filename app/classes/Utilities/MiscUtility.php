@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-class MiscUtils
+class MiscUtility
 {
     public function __construct()
     {

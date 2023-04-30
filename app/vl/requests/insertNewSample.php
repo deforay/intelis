@@ -1,10 +1,13 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$vlModel = new VlService();
-echo $vlModel->insertSampleCode($_POST);
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
+echo $vlService->insertSampleCode($_POST);

@@ -2,14 +2,17 @@
 
 use App\Services\ApiService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -33,7 +36,7 @@ $transactionId = $general->generateUUID();
 $counter = 0;
 
 
-$facilityDb = new FacilitiesService();
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -108,7 +111,7 @@ if ($db->count > 0) {
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtility::getCurrentDateTime();
 if (!empty($sampleIds)) {
   $sql = 'UPDATE form_vl SET data_sync = ?,
               form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

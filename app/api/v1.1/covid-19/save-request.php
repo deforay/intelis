@@ -2,9 +2,10 @@
 
 use App\Services\ApiService;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
@@ -13,10 +14,14 @@ $db = \MysqliDb::getInstance();
 
 try {
 
-    $general = new CommonService();
-    $userDb = new UserService();
+    /** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+    $usersService = \App\Registries\ContainerRegistry::get(UserService::class);
     $app = new ApiService();
-    $covid19Model = new Covid19Service();
+    
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
     $transactionId = $general->generateUUID();
 
@@ -36,9 +41,9 @@ try {
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $auth = $general->getHeader('Authorization');
     $authToken = str_replace("Bearer ", "", $auth);
-    $user = $userDb->getUserFromToken($authToken);
+    $user = $usersService->getUserFromToken($authToken);
 
-    $roleUser = $userDb->getUserRole($user['user_id']);
+    $roleUser = $usersService->getUserRole($user['user_id']);
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
     $rowData = $db->rawQuery($sQuery);
     $instanceId = $rowData[0]['vlsm_instance_id'];
@@ -80,7 +85,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? DateUtils::isoDateFormat($data['sampleCollectionDate'], true) : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? DateUtility::isoDateFormat($data['sampleCollectionDate'], true) : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -116,11 +121,11 @@ try {
                 $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
                 $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
             } else {
-                $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
+                $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
             }
         } else {
-            $sampleJson = $covid19Model->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
+            $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
             $sampleData = json_decode($sampleJson, true);
         }
 
@@ -138,9 +143,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime(),
+            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime()
+            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
         );
 
 
@@ -195,7 +200,7 @@ try {
 
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $data['arrivalDateTime'] = DateUtils::isoDateFormat($data['arrivalDateTime'], true);
+            $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = null;
         }
@@ -225,43 +230,43 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = DateUtils::isoDateFormat($data['sampleCollectionDate'], true);
+            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $data['sampleCollectionDate'] = null;
         }
 
         //Set sample received date
         if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $data['sampleReceivedDate'] = DateUtils::isoDateFormat($data['sampleReceivedDate'], true);
+            $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
         if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $data['sampleTestedDateTime'] = DateUtils::isoDateFormat($data['sampleTestedDateTime'], true);
+            $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $data['arrivalDateTime'] = DateUtils::isoDateFormat($data['arrivalDateTime'], true);
+            $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = null;
         }
 
         if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $data['revisedOn'] = DateUtils::isoDateFormat($data['revisedOn'], true);
+            $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
-            $data['approvedOn'] = DateUtils::isoDateFormat($data['approvedOn'], true);
+            $data['approvedOn'] = DateUtility::isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = null;
         }
 
         if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
-            $data['reviewedOn'] = DateUtils::isoDateFormat($data['reviewedOn'], true);
+            $data['reviewedOn'] = DateUtility::isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = null;
         }
@@ -290,7 +295,7 @@ try {
             'patient_id'                          => !empty($data['patientId']) ? $data['patientId'] : null,
             'patient_name'                        => !empty($data['firstName']) ? trim($data['firstName']) : null,
             'patient_surname'                     => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob'                         => !empty($data['patientDob']) ? DateUtils::isoDateFormat($data['patientDob']) : null,
+            'patient_dob'                         => !empty($data['patientDob']) ? DateUtility::isoDateFormat($data['patientDob']) : null,
             'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,
             'is_patient_pregnant'                 => !empty($data['isPatientPregnant']) ? $data['isPatientPregnant'] : null,
             'patient_age'                         => !empty($data['patientAge']) ? $data['patientAge'] : null,
@@ -316,13 +321,13 @@ try {
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'sample_collection_date'              => $data['sampleCollectionDate'],
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
-            'health_outcome_date'                 => !empty($data['outcomeDate']) ? DateUtils::isoDateFormat($data['outcomeDate']) : null,
+            'health_outcome_date'                 => !empty($data['outcomeDate']) ? DateUtility::isoDateFormat($data['outcomeDate']) : null,
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
             'priority_status'                     => !empty($data['priorityStatus']) ? $data['priorityStatus'] : null,
             'number_of_days_sick'                 => !empty($data['numberOfDaysSick']) ? $data['numberOfDaysSick'] : null,
             'suspected_case'                      => !empty($data['suspectedCase']) ? $data['suspectedCase'] : null,
-            'date_of_symptom_onset'               => !empty($data['dateOfSymptomOnset']) ? DateUtils::isoDateFormat($data['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation'        => !empty($data['dateOfInitialConsultation']) ? DateUtils::isoDateFormat($data['dateOfInitialConsultation']) : null,
+            'date_of_symptom_onset'               => !empty($data['dateOfSymptomOnset']) ? DateUtility::isoDateFormat($data['dateOfSymptomOnset']) : null,
+            'date_of_initial_consultation'        => !empty($data['dateOfInitialConsultation']) ? DateUtility::isoDateFormat($data['dateOfInitialConsultation']) : null,
             'fever_temp'                          => !empty($data['feverTemp']) ? $data['feverTemp'] : null,
             'medical_history'                     => !empty($data['medicalHistory']) ? $data['medicalHistory'] : null,
             'recent_hospitalization'              => !empty($data['recentHospitalization']) ? $data['recentHospitalization'] : null,
@@ -335,7 +340,7 @@ try {
             'contact_with_confirmed_case'         => !empty($data['contactWithConfirmedCase']) ? $data['contactWithConfirmedCase'] : null,
             'has_recent_travel_history'           => !empty($data['hasRecentTravelHistory']) ? $data['hasRecentTravelHistory'] : null,
             'travel_country_names'                => !empty($data['countryName']) ? $data['countryName'] : null,
-            'travel_return_date'                  => !empty($data['returnDate']) ? DateUtils::isoDateFormat($data['returnDate']) : null,
+            'travel_return_date'                  => !empty($data['returnDate']) ? DateUtility::isoDateFormat($data['returnDate']) : null,
             'sample_received_at_vl_lab_datetime'  => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'sample_condition'                    => !empty($data['sampleCondition']) ? $data['sampleCondition'] : ($data['specimenQuality'] ?? null),
             'asymptomatic'                        => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
@@ -348,7 +353,7 @@ try {
             'is_result_authorised'                => !empty($data['isResultAuthorized']) ? $data['isResultAuthorized'] : null,
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'authorized_by'                       => !empty($data['authorizedBy']) ? $data['authorizedBy'] : null,
-            'authorized_on'                       => !empty($data['authorizedOn']) ? DateUtils::isoDateFormat($data['authorizedOn']) : null,
+            'authorized_on'                       => !empty($data['authorizedOn']) ? DateUtility::isoDateFormat($data['authorizedOn']) : null,
             'revised_by'                          => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on'                          => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : null,
             'result_reviewed_by'                  => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
@@ -356,18 +361,18 @@ try {
             'result_approved_by'                  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
             'result_approved_datetime'            => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  null,
             'reason_for_changing'                 => (isset($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
-            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($data['rejectionDate']) : null,
+            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
         if ($rowData) {
-            $covid19Data['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtils::isoDateFormat($data['updatedOn'], true) : DateUtils::getCurrentDateTime();
+            $covid19Data['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
         } else {
-            $covid19Data['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtils::isoDateFormat($data['createdOn'], true) : DateUtils::getCurrentDateTime();
-            $covid19Data['sample_registered_at_lab']  = DateUtils::getCurrentDateTime();
+            $covid19Data['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $covid19Data['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }
 
@@ -421,7 +426,7 @@ try {
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (isset($test['testName']) && !empty($test['testName'])) {
                         if (isset($test['testDate']) && trim($test['testDate']) != "") {
-                            $data['testDate'] = DateUtils::isoDateFormat($data['testDate'], true);
+                            $data['testDate'] = DateUtility::isoDateFormat($data['testDate'], true);
                         } else {
                             $test['testDate'] = null;
                         }
@@ -432,7 +437,7 @@ try {
                             'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($test['testDate'])),
                             'testing_platform'       => $test['testingPlatform'] ?? null,
                             'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
-                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? DateUtils::isoDateFormat($test['kitExpiryDate']) : null,
+                            'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],
                         );
                         $db->insert($testTableName, $covid19TestData);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -9,12 +10,18 @@ $title = _("Print VL Results");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('vl');
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

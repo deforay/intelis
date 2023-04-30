@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -14,11 +15,13 @@ $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$user = new UserService();
+$user = \App\Registries\ContainerRegistry::get(UserService::class);
 
 
 try {

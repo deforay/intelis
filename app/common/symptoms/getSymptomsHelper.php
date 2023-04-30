@@ -1,5 +1,5 @@
 <?php
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -134,11 +134,10 @@ if (session_status() == PHP_SESSION_NONE) {
             $row[] = ($aRow['symptom_name']);
             $row[] = ($aRow['symptom_code']);
             $row[] = ($aRow['symptom_status']);
-            $row[] = $aRow['updated_datetime'] = DateUtils::humanReadableDateFormat($aRow['updated_datetime'], true);
+            $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
             if (isset($_SESSION['privileges']) && in_array("editSymptoms.php", $_SESSION['privileges'])) {
 	            $row[] = '<a href="editSymptoms.php?id=' . base64_encode($aRow['symptom_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
             }
             $output['aaData'][] = $row;
         }
         echo json_encode($output);
-?>

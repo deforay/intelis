@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
@@ -106,9 +109,9 @@ foreach ($rResult as $key => $aRow) {
     /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>">
         <td><?= $aRow['facility_name']; ?></td>
-        <td><?= DateUtils::humanReadableDateFormat($aRow['latest'], true); ?></td>
-        <td><?= DateUtils::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
-        <td><?= DateUtils::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
+        <td><?= DateUtility::humanReadableDateFormat($aRow['latest'], true); ?></td>
+        <td><?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+        <td><?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
         <td><?= $aRow['version'] ?? '-'; ?></td>
     </tr>
 <?php } ?>

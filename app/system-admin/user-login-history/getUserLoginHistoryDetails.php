@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "user_login_history";
 $primaryKey = "history_id";
 
@@ -101,10 +104,10 @@ $cWhere = [];
 if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
     $s_c_date = explode("to", $_POST['userDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 

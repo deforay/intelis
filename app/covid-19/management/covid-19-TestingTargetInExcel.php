@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -13,7 +14,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION['covid19MonitoringThresholdReportQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['covid19MonitoringThresholdReportQuery']);

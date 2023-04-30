@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = _("Enter EID Result");
@@ -8,10 +9,14 @@ $title = _("Enter EID Result");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('eid');
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 

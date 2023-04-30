@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\General;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -22,7 +22,7 @@ try {
             'symptom_name' => trim($_POST['symptomName']),
             'symptom_code' => trim($_POST['symptomCode']),
             'symptom_status' => $_POST['status'],
-            'updated_datetime' => DateUtils::getCurrentDateTime()
+            'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         
         $db = $db->where('symptom_id', $symptomId);

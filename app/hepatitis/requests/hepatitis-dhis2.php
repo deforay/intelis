@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = _("Hepatitis | View All Requests");
@@ -9,14 +10,18 @@ $title = _("Hepatitis | View All Requests");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
 //Funding source list

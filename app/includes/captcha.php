@@ -1,6 +1,6 @@
 <?php
 
-use App\Utilities\Captcha;
+use App\Utilities\CaptchaUtility;
 
-$captcha = new Captcha();
+$captcha = new CaptchaUtility();
 echo $captcha->getCaptcha();

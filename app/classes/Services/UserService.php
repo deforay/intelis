@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use DateTime;
 use MysqliDb;
 
@@ -30,7 +31,7 @@ class UserService
     public function isAllowed($currentFileName, $systemConfig = SYSTEM_CONFIG)
     {
 
-        $skippedPrivileges = $this->getSkippedPrivileges($systemConfig);
+        $skippedPrivileges = $this->getSkippedPrivileges();
         $sharedPrivileges = $this->getSharedPrivileges($systemConfig);
 
         // Does the current file share privileges with another privilege ?
@@ -267,7 +268,9 @@ class UserService
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            $general = new CommonService();
+            /** @var MysqliDb $db */
+            /** @var CommonService $general */
+            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -343,9 +346,11 @@ class UserService
                 $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
-                $general = new CommonService($this->db);
+                /** @var CommonService $general */
+                $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
-                $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
+                $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);
                 $id = $this->db->update($this->table, $data);
@@ -418,7 +423,7 @@ class UserService
         $data = array(
             'login_id' => $loginId,
             'user_id' => $userId,
-            'login_attempted_datetime' => DateUtils::getCurrentDateTime(),
+            'login_attempted_datetime' => DateUtility::getCurrentDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,

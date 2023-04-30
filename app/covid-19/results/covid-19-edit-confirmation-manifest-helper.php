@@ -1,12 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
   
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
     if (isset($_POST['manifestCode']) && trim($_POST['manifestCode']) != "" && count($_POST['sampleCode']) > 0) {

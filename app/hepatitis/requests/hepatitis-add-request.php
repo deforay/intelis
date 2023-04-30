@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
 use App\Services\UserService;
@@ -37,16 +38,18 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-$facilitiesDb = new FacilitiesService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $hepatitisDb = new HepatitisService();
-$userDb = new UserService();
+$usersService = ContainerRegistry::get(UserService::class);
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
-$healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $userDb->getActiveUsers($facilityMap);
+$healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);

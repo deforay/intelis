@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\UserService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "system_admin";
-$user = new UserService();
+$user = ContainerRegistry::get(UserService::class);
 
 try {
     $userId = base64_decode($_POST['userId']);

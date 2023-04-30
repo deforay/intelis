@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -14,7 +15,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringResultQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['vlMonitoringResultQuery']);
@@ -63,10 +66,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         $s_c_date = explode("to", $_POST['sampleCollectionDate']);
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+            $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
         }
         if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+            $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
         }
     }
     $sTestDate = '';
@@ -74,10 +77,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
    /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         $s_t_date = explode("to", $_POST['sampleTestDate']);
         if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-            $sTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[0]));
+            $sTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[0]));
         }
         if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-            $eTestDate = \App\Utilities\DateUtils::isoDateFormat(trim($s_t_date[1]));
+            $eTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[1]));
         }
     }*/
 
@@ -183,8 +186,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     //question three
    
     $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
-    $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
-    $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+    $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
+    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     $startMonth = date("Y-m", strtotime($start_date));
     $endMonth = date("Y-m", strtotime($end_date));
     $start = $month = strtotime($startMonth);

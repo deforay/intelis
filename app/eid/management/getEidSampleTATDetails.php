@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -24,7 +25,9 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $whereCondition = '';
 $tableName = "form_eid";
 $primaryKey = "eid_id";
@@ -130,10 +133,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -142,10 +145,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
 	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$labStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+		$labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$labEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+		$labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 
@@ -154,10 +157,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleTestedDate']);
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$testedStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+		$testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$testedEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+		$testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 }
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -241,27 +244,27 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 	if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+		$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['sample_received_at_vl_lab_datetime'] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$aRow['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	} else {
 		$aRow['sample_received_at_vl_lab_datetime'] = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$aRow['sample_tested_datetime'] = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['result_printed_datetime'] = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$aRow['result_printed_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['result_mail_datetime'] = DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
+		$aRow['result_mail_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}

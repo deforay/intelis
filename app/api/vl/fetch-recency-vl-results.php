@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -14,8 +15,12 @@ ini_set('memory_limit', -1);
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
-$userDb = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -23,7 +28,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $transactionId = $general->generateUUID();
 $auth = $general->getHeader('Authorization');
 $authToken = str_replace("Bearer ", "", $auth);
-$user = $userDb->getUserFromToken($authToken);
+$user = $usersService->getUserFromToken($authToken);
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
 $from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;

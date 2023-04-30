@@ -1,12 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
@@ -186,7 +189,7 @@ foreach ($rResult as $aRow) {
     $lastDate = null;
     if ($aRow['last_tested_date'] != '0000-00-00 00:00:00' && $aRow['last_tested_date'] != null) {
         $exp = explode(" ", $aRow['last_tested_date']);
-        $lastDate = DateUtils::humanReadableDateFormat($exp[0]);
+        $lastDate = DateUtility::humanReadableDateFormat($exp[0]);
     }
     $row[] = ($aRow['batch_code']);
     $row[] = $aRow['total_samples'];

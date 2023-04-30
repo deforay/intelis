@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -11,7 +12,9 @@ if (count($adminCount) != 0) {
 }
 
 $path = '/assets/img/remote-bg.jpg';
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
 

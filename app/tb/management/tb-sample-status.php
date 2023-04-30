@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,16 +11,20 @@ $title = _("TB | Sample Status Report");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
-$facilitiesDb = new FacilitiesService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $sarr = $general->getSystemConfig();
 
 if (isset($sarr['sc_user_type']) && $sarr['sc_user_type'] == 'vluser' && !empty($sarr['sc_testing_lab_id'])) {
-	$testingLabs = $facilitiesDb->getTestingLabs('tb', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
+	$testingLabs = $facilitiesService->getTestingLabs('tb', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
 } else {
-	$testingLabs = $facilitiesDb->getTestingLabs('tb');
+	$testingLabs = $facilitiesService->getTestingLabs('tb');
 }
 
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

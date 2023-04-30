@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -9,14 +10,18 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 //system config
 $sarr = $general->getSystemConfig();
 $facilityMap = null;
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sCode = 'remote_sample_code';
-    $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+    $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
     $sCode = 'sample_code';
 }

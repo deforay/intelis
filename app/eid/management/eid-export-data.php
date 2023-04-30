@@ -2,6 +2,7 @@
 
 use App\Services\EidService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -10,8 +11,12 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -22,9 +27,9 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_eid_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('eid');
+$healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='eid' AND batch_status='completed'";
@@ -37,8 +42,10 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 $state = $geoLocationDb->getProvinces("yes");
 

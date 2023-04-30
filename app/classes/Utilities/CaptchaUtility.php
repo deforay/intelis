@@ -10,7 +10,7 @@ namespace App\Utilities;
 
 use Exception;
 
-class Captcha
+class CaptchaUtility
 {
 
     public function getCaptcha($config = array())

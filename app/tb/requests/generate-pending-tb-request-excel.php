@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\TbService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,10 +15,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
-$tbModel = new TbService();
-$tbResults = $tbModel->getTbResults();
+$tbService = new TbService();
+$tbResults = $tbService->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -183,20 +186,20 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
     }
-    $row[] = DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
     $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ($aRow['patient_gender']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
     $row[] = ($aRow['test_reason_name']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = ($aRow['status_name']);
     $row[] = ($aRow['sample_name']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
     $row[] = ($testPlatform);
     $row[] = ($testMethod);
     $row[] = $tbResults[$aRow['result']];
-    $row[] = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 
     $output[] = $row;
     $no++;

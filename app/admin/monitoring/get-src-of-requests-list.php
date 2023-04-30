@@ -1,8 +1,13 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 $sources = array(

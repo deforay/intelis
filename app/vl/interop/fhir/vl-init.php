@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 require_once(__DIR__ . "/../../../../bootstrap.php");
@@ -10,7 +11,9 @@ if (php_sapi_name() !== 'cli' && !isset($_SESSION['userId'])) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 
 // $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");

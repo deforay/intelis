@@ -2,13 +2,16 @@
 
 // ini_set('memory_limit', -1);
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
 $db = \MysqliDb::getInstance();
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 /* Save Province / State details to geolocation table */
 $query = "SELECT DISTINCT facility_state FROM facility_details WHERE facility_state not in (SELECT geo_name FROM geographical_divisions WHERE geo_parent = 0) ORDER BY facility_state ASC";
@@ -21,8 +24,8 @@ foreach ($provinceResult as $p) {
         $db->update('geographical_divisions', array(
             "geo_name"          => $p['facility_state'],
             "geo_status"        => "active",
-            "created_on"        => DateUtils::getCurrentDateTime(),
-            "updated_datetime"  => DateUtils::getCurrentDateTime()
+            "created_on"        => DateUtility::getCurrentDateTime(),
+            "updated_datetime"  => DateUtility::getCurrentDateTime()
         ));
         $lastInsertId = $exist['geo_id'];
     } else {
@@ -30,8 +33,8 @@ foreach ($provinceResult as $p) {
             "geo_name"          => $p['facility_state'],
             "geo_parent"        => "0",
             "geo_status"        => "active",
-            "created_on"        => DateUtils::getCurrentDateTime(),
-            "updated_datetime"  => DateUtils::getCurrentDateTime()
+            "created_on"        => DateUtility::getCurrentDateTime(),
+            "updated_datetime"  => DateUtility::getCurrentDateTime()
         ));
     }
 
@@ -39,7 +42,7 @@ foreach ($provinceResult as $p) {
     $db->where("facility_state", $p['facility_state']);
     $db->update("facility_details", array(
         "facility_state_id" => $lastInsertId,
-        "updated_datetime"  => DateUtils::getCurrentDateTime()
+        "updated_datetime"  => DateUtility::getCurrentDateTime()
     ));
 }
 
@@ -55,8 +58,8 @@ foreach ($districtResult as $d) {
             "geo_name"          => $d['facility_district'],
             "geo_parent"        => $d['facility_state_id'],
             "geo_status"        => "active",
-            "created_on"        => DateUtils::getCurrentDateTime(),
-            "updated_datetime"  => DateUtils::getCurrentDateTime()
+            "created_on"        => DateUtility::getCurrentDateTime(),
+            "updated_datetime"  => DateUtility::getCurrentDateTime()
         ));
         $lastInsertId = $exist['geo_id'];
     } else {
@@ -64,8 +67,8 @@ foreach ($districtResult as $d) {
             "geo_name"          => $d['facility_district'],
             "geo_parent"        => $d['facility_state_id'],
             "geo_status"        => "active",
-            "created_on"        => DateUtils::getCurrentDateTime(),
-            "updated_datetime"  => DateUtils::getCurrentDateTime()
+            "created_on"        => DateUtility::getCurrentDateTime(),
+            "updated_datetime"  => DateUtility::getCurrentDateTime()
         ));
     }
 
@@ -73,6 +76,6 @@ foreach ($districtResult as $d) {
     $db->where("facility_district", $d['facility_district']);
     $db->update("facility_details", array(
         "facility_district_id" => $lastInsertId,
-        "updated_datetime"  => DateUtils::getCurrentDateTime()
+        "updated_datetime"  => DateUtility::getCurrentDateTime()
     ));
 }

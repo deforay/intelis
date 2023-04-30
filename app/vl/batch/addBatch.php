@@ -2,6 +2,7 @@
 
 /** @noinspection ALL */
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 
@@ -10,9 +11,13 @@ $title = _("VL | Add New Batch");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('vl');
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 

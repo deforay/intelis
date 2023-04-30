@@ -1,17 +1,20 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
-use App\Utilities\ImageResize;
+use App\Utilities\DateUtility;
+use App\Utilities\ImageResizeUtility;
 use GuzzleHttp\Client;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$userDb = new UserService();
-$general = new CommonService();
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 
 $userId = base64_decode($_POST['userId']);
@@ -32,7 +35,7 @@ try {
         if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             // $data['testing_user'] = $_POST['testingUser'];
-            $data['api_token_generated_datetime'] = DateUtils::getCurrentDateTime();
+            $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
@@ -50,7 +53,7 @@ try {
             $imageName = "usign-" . $userId . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new ImageResize($signatureImagePath);
+                $resizeObj = new ImageResizeUtility($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;
@@ -76,7 +79,7 @@ try {
                 }
             }
 
-            $password = $userDb->passwordHash($_POST['password']);
+            $password = $usersService->passwordHash($_POST['password']);
             $data['password'] = $password;
             $data['hash_algorithm'] = 'phb';
             $data['force_password_reset'] = 1;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\HepatitisService;
@@ -10,8 +11,12 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $hepatitisDb = new HepatitisService();
 $geoLocationDb = new GeoLocationsService();
 
@@ -24,9 +29,9 @@ $sQuery = "SELECT * FROM r_hepatitis_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
+$healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='hepatitis' AND batch_status='completed'";

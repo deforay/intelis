@@ -1,13 +1,16 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_eid";
 $result = "";
 try {
@@ -17,8 +20,8 @@ try {
 
         $status = array(
             'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'     =>  DateUtils::getCurrentDateTime(),
+            'result_approved_datetime'  =>  DateUtility::getCurrentDateTime(),
+            'last_modified_datetime'     =>  DateUtility::getCurrentDateTime(),
             'data_sync'                 => 0
         );
 

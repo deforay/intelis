@@ -1,17 +1,24 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -23,7 +30,7 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
@@ -80,13 +87,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere[]= $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -109,52 +116,48 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
 
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
-               $sWhere[] =' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (trim($sTestDate) == trim($eTestDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     } else {
+          $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
+}
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
-          $out = '';
-        //  print_r($fac);
-         /// die;
-          for ($s = 0; $s < count($fac); $s++) {
-               if ($out)
-                    $out = $out . ',"' . $fac[$s] . '"';
-               else
-                    $out = '("' . $fac[$s] . '"';
-          }
-          $out = $out . ')';
-               $sWhere[] = ' vl.lab_id IN ' . $out;
-         
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $fac = explode(',', $_POST['facilityName']);
+     $out = '';
+     //  print_r($fac);
+     /// die;
+     for ($s = 0; $s < count($fac); $s++) {
+          if ($out)
+               $out = $out . ',"' . $fac[$s] . '"';
+          else
+               $out = '("' . $fac[$s] . '"';
      }
+     $out = $out . ')';
+     $sWhere[] = ' vl.lab_id IN ' . $out;
+}
 
-     $sWhere[] = '  vl.result_status!=9';
+$sWhere[] = '  vl.result_status!=9';
 
 
 if (!empty($facilityMap)) {
-     $sWhere[]= " vl.facility_id IN ($facilityMap) ";
+     $sWhere[] = " vl.facility_id IN ($facilityMap) ";
 }
-$sWhere[]= " hf.test_type = 'hepatitis'";
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' where '.implode(' AND ',$sWhere);
-}
-else
-{
-    $sWhere = "";
+$sWhere[] = " hf.test_type = 'hepatitis'";
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
+     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['hepatitisMonitoringThresholdReportQuery'] = $sQuery;

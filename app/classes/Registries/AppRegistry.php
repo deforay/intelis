@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Utilities;
+namespace App\Registries;
 
 use Exception;
 use ArrayObject;
 
-class Registry extends ArrayObject
+class AppRegistry extends ArrayObject
 {
-    private static $_registry = null;
+    private static $appRegistry = null;
 
     public function __construct($array = array(), $flags = parent::ARRAY_AS_PROPS)
     {
         parent::__construct($array, $flags);
     }
 
-    public static function setInstance(Registry $registry)
+    public static function setInstance(AppRegistry $registry)
     {
-        if (self::$_registry !== null) {
+        if (self::$appRegistry !== null) {
             throw new Exception('Registry is already initialized');
         }
-        self::$_registry = $registry;
+        self::$appRegistry = $registry;
     }
 
     public static function getInstance()
     {
-        if (self::$_registry === null) {
+        if (self::$appRegistry === null) {
             self::init();
         }
-        return self::$_registry;
+        return self::$appRegistry;
     }
 
     protected static function init()

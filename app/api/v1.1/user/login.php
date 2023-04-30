@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -8,8 +9,10 @@ session_unset(); // no need of session in json response
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
-$users = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$users = \App\Registries\ContainerRegistry::get(UserService::class);
 $app = new ApiService();
 
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -78,7 +81,7 @@ try {
                 //$randomString = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
 
                 // $userData['api_token'] = $randomString;
-                // $userData['api_token_generated_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                // $userData['api_token_generated_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
                 // $db = $db->where('user_id', $userResult['user_id']);
                 // $upId = $db->update('user_details', $userData);
 

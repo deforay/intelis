@@ -3,12 +3,15 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
 
 use App\Interop\Dhis2;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
-$users = new UserService();
+$users = \App\Registries\ContainerRegistry::get(UserService::class);
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $programStages = [
   'clinicalExaminationAndDiagnosis' => 'LpWNjNGvCO5',

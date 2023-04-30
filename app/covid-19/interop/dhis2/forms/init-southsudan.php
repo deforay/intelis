@@ -3,7 +3,7 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-init.php
 
 use App\Interop\Dhis2;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $instanceId = 'dhis2';
@@ -35,7 +35,7 @@ foreach ($initOptionSets as $t => $id) {
                 'other_id' => $lab['id'],
                 'facility_type' => 2,
                 'test_type' => 'covid19',
-                'updated_datetime' => DateUtils::getCurrentDateTime(),
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'status' => 'active'
             );
             $updateColumns = array("other_id", "updated_datetime");
@@ -48,7 +48,7 @@ foreach ($initOptionSets as $t => $id) {
                 'facility_id' => $id,
                 'monthly_target' => null,
                 'suppressed_monthly_target' => null,
-                "updated_datetime" => DateUtils::getCurrentDateTime()
+                "updated_datetime" => DateUtility::getCurrentDateTime()
             );
             $db->setQueryOption(array('IGNORE'))->insert('testing_labs', $dataTest);
         }
@@ -87,7 +87,7 @@ foreach ($initOptionSets as $t => $id) {
 //         'other_id' => $facility['id'],
 //         'facility_type' => 1,
 //         'test_type' => 'covid19',
-//         'updated_datetime' => \App\Utilities\DateUtils::getCurrentDateTime(),
+//         'updated_datetime' => \App\Utilities\DateUtility::getCurrentDateTime(),
 //         'status' => 'active'
 //     );
 //     $updateColumns = array("other_id", "updated_datetime");
@@ -99,7 +99,7 @@ foreach ($initOptionSets as $t => $id) {
 //     $dataTest = array(
 //         'test_type' => 'covid19',
 //         'facility_id' => $id,
-//         "updated_datetime" => \App\Utilities\DateUtils::getCurrentDateTime()
+//         "updated_datetime" => \App\Utilities\DateUtility::getCurrentDateTime()
 //     );
 //     $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 // }

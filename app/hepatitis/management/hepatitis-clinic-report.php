@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\GeoLocationsService;
 
@@ -12,13 +13,15 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$facilitiesDb = new FacilitiesService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('hepatitis');
+$healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 

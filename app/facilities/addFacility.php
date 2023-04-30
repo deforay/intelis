@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\UserService;
@@ -7,15 +8,19 @@ use App\Services\UserService;
 
 
 require_once(APPLICATION_PATH . '/header.php');
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $geolocation = new GeoLocationsService();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
-$usersModel = new UserService();
-$userResult = $usersModel->getAllUsers();
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$userResult = $usersService->getAllUsers();
 
 $userInfo = [];
 foreach ($userResult as $user) {

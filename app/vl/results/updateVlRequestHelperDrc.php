@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -11,8 +12,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
-$vlModel = new VlService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var VlService $vlService */
+$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";
@@ -34,7 +39,7 @@ try {
         $allChange = $_POST['reasonForResultChangesHistory'];
     }
     if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
-        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtils::getCurrentDateTime();
+        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
     }
     if (trim($allChange) != '' && trim($reasonForChanges) != '') {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
@@ -45,7 +50,7 @@ try {
     //Set sample received date
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
@@ -53,14 +58,14 @@ try {
     //Set result prinetd date time
     if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
         $sampleTestingDateLab = explode(" ", $_POST['sampleTestingDateAtLab']);
-        $_POST['sampleTestingDateAtLab'] = DateUtils::isoDateFormat($sampleTestingDateLab[0]) . " " . $sampleTestingDateLab[1];
+        $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($sampleTestingDateLab[0]) . " " . $sampleTestingDateLab[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = null;
     }
     //Set sample testing date
     if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
         $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
-        $_POST['dateOfCompletionOfViralLoad'] = DateUtils::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+        $_POST['dateOfCompletionOfViralLoad'] = DateUtility::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
     } else {
         $_POST['dateOfCompletionOfViralLoad'] = null;
     }
@@ -111,7 +116,7 @@ try {
 
         $resultStatus = 8; // Awaiting Approval
 
-        $interpretedResults = $vlModel->interpretViralLoadResult($_POST['vlResult']);
+        $interpretedResults = $vlService->interpretViralLoadResult($_POST['vlResult']);
 
         //Result is saved as entered
         $finalResult  = $_POST['vlResult'];
@@ -124,14 +129,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
     $vldata = array(
         'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
         'reason_for_sample_rejection' => $_POST['rejectionReason'] ?: null,
-        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['noResult'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['dateOfCompletionOfViralLoad'],
         'result_value_hiv_detection' => (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] :  null,
@@ -146,7 +151,7 @@ try {
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '' ? $_POST['labId'] : null),
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtils::getCurrentDateTime() : null,
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'result_dispatched_datetime' => null,
         'reason_for_vl_result_changes' => $allChange,
         'last_modified_datetime' => $db->now(),
@@ -163,7 +168,7 @@ try {
     // }
     /* Updating the high and low viral load data */
 
-    $vldata['vl_result_category'] = $vlModel->getVLResultCategory($vldata['result_status'], $vldata['result']);
+    $vldata['vl_result_category'] = $vlService->getVLResultCategory($vldata['result_status'], $vldata['result']);
 
     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
         $vldata['result_status'] = 5;
@@ -185,7 +190,7 @@ try {
     // 'event_type'=>$eventType,
     // 'action'=>$action,
     // 'resource'=>$resource,
-    // 'date_time'=>\App\Utilities\DateUtils::getCurrentDateTime()
+    // 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
     // );
     // $db->insert($tableName1,$data);
     //Add update result log
@@ -193,7 +198,7 @@ try {
         'user_id' => $_SESSION['userId'],
         'vl_sample_id' => $_POST['vlSampleId'],
         'test_type' => 'vl',
-        'updated_on' => DateUtils::getCurrentDateTime()
+        'updated_on' => DateUtility::getCurrentDateTime()
     );
     $db->insert($tableName2, $data);
     header("Location:vlTestResult.php");

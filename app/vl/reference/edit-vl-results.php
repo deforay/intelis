@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\InstrumentsService;
 
@@ -7,7 +8,9 @@ use App\Services\InstrumentsService;
 
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $instrumentsDb = new InstrumentsService();
 $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);

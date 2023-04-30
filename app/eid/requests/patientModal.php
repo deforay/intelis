@@ -1,10 +1,13 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -77,19 +80,19 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['child_id'] . strtolower($patient['child_name']) . strtolower($patient['child_surname']) . $patient['mother_age_in_years'] . strtolower($patient['child_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtils::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtils::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
+										//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
 								
 								$patientDetails = json_encode(array(
 									"name"=>$patient['child_name']." ".$patient['child_surname'],
 									"gender"=>$patient['child_gender'],
-									"dob"=> DateUtils::humanReadableDateFormat($patient['child_dob']),
+									"dob"=> DateUtility::humanReadableDateFormat($patient['child_dob']),
 									"age"=>$patient['child_age'],
 									"caretaker_no"=>$patient['caretaker_phone_number'],
 									"child_id"=>$patient['child_id'],
 									"mother_id"=>$patient['mother_id'],
 									"caretaker_address"=>$patient['caretaker_address'],
 									"mother_name"=>$patient['mother_name'],
-									"mother_dob"=> DateUtils::humanReadableDateFormat($patient['mother_dob']),
+									"mother_dob"=> DateUtility::humanReadableDateFormat($patient['mother_dob']),
 									"mother_marital_status"=>$patient['mother_marital_status'],
 								));
 								?>

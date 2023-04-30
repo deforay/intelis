@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\UserService;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -14,7 +15,7 @@ $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
 $secretKey = trim($_POST['secretKey']);
 
-$user = new UserService();
+$user = ContainerRegistry::get(UserService::class);
 
 $userPassword = $user->passwordHash($password);
 

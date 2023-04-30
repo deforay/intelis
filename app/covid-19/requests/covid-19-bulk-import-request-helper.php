@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -11,8 +12,12 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $arr = [];
-$general = new CommonService();
-$usersModel = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';
@@ -53,7 +58,7 @@ try {
                 $rejectionReason    = $general->getDuplicateDataFromField('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['BA']);
                 $result             = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['BK']);
                 $resultStatus       = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['BO']);
-                $labTechnician      = $usersModel->addUserIfNotExists($rowData['BR']);
+                $labTechnician      = $usersService->addUserIfNotExists($rowData['BR']);
 
                 $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
                 $instanceId = $db->rawQueryOne($sQuery);
@@ -131,7 +136,7 @@ try {
                     'is_result_authorised'                  => strtolower($rowData['BL']),
                     'authorized_by'                         => ($rowData['BM']),
                     'authorized_on'                         => date('Y-m-d', strtotime($rowData['BN'])),
-                    'last_modified_datetime'                => DateUtils::getCurrentDateTime(),
+                    'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => $resultStatus['status_id'] ?? null,
                     'sample_condition'                      => strtolower($rowData['BP']),

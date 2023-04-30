@@ -5,12 +5,12 @@ namespace App\Utilities;
 use Exception;
 
 /**
- * 
+ *
  * PHP class to resize and scale images
  * https://github.com/gumlet/php-image-resize
- * 
+ *
  */
-class ImageResize
+class ImageResizeUtility
 {
     const CROPTOP = 1;
     const CROPCENTRE = 2;
@@ -58,7 +58,7 @@ class ImageResize
      * Create instance from a strng
      *
      * @param string $image_data
-     * @return ImageResize
+     * @return ImageResizeUtility
      * @throws Exception
      */
     public static function createFromString($image_data)
@@ -100,7 +100,7 @@ class ImageResize
      * Loads image source and its properties to the instanciated object
      *
      * @param string $filename
-     * @return ImageResize
+     * @return ImageResizeUtility
      * @throws Exception
      */
     public function __construct($filename)

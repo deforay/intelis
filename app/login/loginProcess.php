@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -14,9 +15,11 @@ $userName = ($_POST['username']);
 $password = ($_POST['password']);
 
 
-$general = new CommonService();
-$facilityDb = new FacilitiesService();
-$user = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$user = \App\Registries\ContainerRegistry::get(UserService::class);
 
 
 

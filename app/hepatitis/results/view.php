@@ -1,6 +1,9 @@
 <?php
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));

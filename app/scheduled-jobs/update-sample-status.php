@@ -7,11 +7,14 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $primaryKey = array(
     "vl" => "vl_sample_id",

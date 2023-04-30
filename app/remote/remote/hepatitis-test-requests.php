@@ -1,9 +1,10 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
@@ -20,12 +21,14 @@ if (empty($labId)) {
     exit(0);
 }
 
-$general = new CommonService($db);
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
 
-$facilityDb = new FacilitiesService();
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
@@ -71,7 +74,7 @@ $payload = json_encode($data);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'hepatitis', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtils::getCurrentDateTime();
+$currentDateTime = DateUtility::getCurrentDateTime();
 if (!empty($sampleIds)) {
     $sql = 'UPDATE form_hepatitis SET data_sync = ?,
                 form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)

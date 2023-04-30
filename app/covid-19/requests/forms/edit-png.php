@@ -1,11 +1,18 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
 
-$covid19Obj = new Covid19Service();
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -28,17 +35,17 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Results = $covid19Obj->getCovid19Results();
-$specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
+$covid19Results = $covid19Service->getCovid19Results();
+$specimenTypeResult = $covid19Service->getCovid19SampleTypes();
 
-$covid19Symptoms = $covid19Obj->getCovid19Symptoms();
-$covid19SelectedSymptoms = $covid19Obj->getCovid19SymptomsByFormId($covid19Info['covid19_id']);
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
-$covid19SelectedComorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
+$covid19Symptoms = $covid19Service->getCovid19Symptoms();
+$covid19SelectedSymptoms = $covid19Service->getCovid19SymptomsByFormId($covid19Info['covid19_id']);
+$covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
+$covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
 
-$covid19ReasonsForTesting = $covid19Obj->getCovid19ReasonsForTestingDRC();
-$covid19SelectedReasonsForTesting = $covid19Obj->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
-$covid19SelectedReasonsDetailsForTesting = $covid19Obj->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
+$covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingDRC();
+$covid19SelectedReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
+$covid19SelectedReasonsDetailsForTesting = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
 // To get the reason details value
 $reasonDetails = json_decode($covid19SelectedReasonsDetailsForTesting['reason_details'], true);
 // Getting the list of Provinces, Districts and Facilities
@@ -95,7 +102,7 @@ $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new Covid19Service();
     $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtils::humanReadableDateFormat($sampleCollectionDate[0]);
+    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
     $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
@@ -248,7 +255,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                         <th scope="row"><label for="patientDob">Patient date of birth<span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['patient_dob']); ?>" id="patientDob" name="patientDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control isRequired" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" id="patientDob" name="patientDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -315,7 +322,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                     <th scope="row"><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
                                     <td>
-                                        <input class="form-control date" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
+                                        <input class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                     </td>
                                     <tr>
                                         <th colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
@@ -370,7 +377,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                         <th scope="row"><label for="returnDate">Return Date</label></th>
                                         <td>
-                                            <input class="historyfield form-control date" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="returnDate" id="returnDate" placeholder="Return Date" title="Please enter the return date" />
+                                            <input class="historyfield form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="returnDate" id="returnDate" placeholder="Return Date" title="Please enter the return date" />
                                         </td>
                                     </tr>
                                     <tr class="historyfield">
@@ -509,7 +516,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                         <th style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control date" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['health_outcome_date']); ?>" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
+                                            <input class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['health_outcome_date']); ?>" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
                                         </td>
                                     </tr>
                                 </table>
@@ -525,7 +532,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <tr>
                                             <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
-                                                <input type="text" class="form-control" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
+                                                <input type="text" class="form-control" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
                                             </td>
 
                                             <td class="lab-show"><label for="labId">Lab ID number (Filled by lab staff)</label> </td>
@@ -554,7 +561,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                             <th class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
-                                            <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['rejection_on']); ?>" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
+                                            <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
                                         </tr>
                                         <tr>
                                             <td colspan="4">
@@ -592,7 +599,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                         } ?>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <td><input type="text" value="<?php echo DateUtils::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
@@ -696,7 +703,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <th scope="row"><label for="isResultAuthorized">Referred On</label></td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo DateUtils::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
+                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>

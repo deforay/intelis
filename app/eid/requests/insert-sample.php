@@ -1,10 +1,13 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-$eidModel = new EidService();
-echo $eidModel->insertSampleCode($_POST);
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+echo $eidService->insertSampleCode($_POST);

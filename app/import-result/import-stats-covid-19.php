@@ -2,10 +2,13 @@
 
 // imported in importedStatistics.php
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 
-$covid19Obj = new Covid19Service();
-$covid19Results = $covid19Obj->getCovid19Results();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$covid19Results = $covid19Service->getCovid19Results();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive, 

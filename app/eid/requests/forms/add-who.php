@@ -1,8 +1,9 @@
 <?php
 // imported in eid-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 //Funding source list
@@ -18,7 +19,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidObj = new EidService();
+$eidObj = ContainerRegistry::get(EidService::class);
 $eidResults = $eidObj->getEidResults();
 
 $specimenTypeResult = $eidObj->getEidSampleTypes();
@@ -354,7 +355,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
@@ -364,7 +365,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -453,7 +454,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th scope="row" class="labels">Approved On </th>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php DateUtils::humanReadableDateFormat(DateUtils::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
+                                                <input type="text" value="<?php DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>

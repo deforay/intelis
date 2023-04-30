@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
   
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_qc_testkits";
 $primaryKey = "testkit_id";
 try {
@@ -17,7 +20,7 @@ try {
             'testkit_name'                  => $_POST['testKitName'],
             'status'                        => $_POST['testKitStatus'],
             'labels_and_expected_results'   => json_encode(array("label" => $_POST['qcTestLable'], 'expected' => $_POST['expectedResult'])),
-            'updated_datetime'              => DateUtils::getCurrentDateTime(),
+            'updated_datetime'              => DateUtility::getCurrentDateTime(),
         );
 
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {

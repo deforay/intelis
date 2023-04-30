@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
@@ -11,7 +12,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -27,59 +30,59 @@ try {
      }
 
      if (isset($_POST['dob']) && trim($_POST['dob']) != "") {
-          $_POST['dob'] = DateUtils::isoDateFormat($_POST['dob']);
+          $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
      } else {
           $_POST['dob'] = null;
      }
 
      if (isset($_POST['collectionDate']) && trim($_POST['collectionDate']) != "") {
           $sampleDate = explode(" ", $_POST['collectionDate']);
-          $_POST['collectionDate'] = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+          $_POST['collectionDate'] = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
      } else {
           $_POST['collectionDate'] = null;
      }
      if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
           $failedtestDate = explode(" ", $_POST['failedTestDate']);
-          $_POST['failedTestDate'] = DateUtils::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+          $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
      } else {
           $_POST['failedTestDate'] = null;
      }
 
      if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
-          $_POST['regStartDate'] = DateUtils::isoDateFormat($_POST['regStartDate']);
+          $_POST['regStartDate'] = DateUtility::isoDateFormat($_POST['regStartDate']);
      } else {
           $_POST['regStartDate'] = null;
      }
 
      if (isset($_POST['receivedDate']) && trim($_POST['receivedDate']) != "") {
           $sampleReceivedDate = explode(" ", $_POST['receivedDate']);
-          $_POST['receivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+          $_POST['receivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
      } else {
           $_POST['receivedDate'] = null;
      }
      if (isset($_POST['testDate']) && trim($_POST['testDate']) != "") {
           $sampletestDate = explode(" ", $_POST['testDate']);
-          $_POST['testDate'] = DateUtils::isoDateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
+          $_POST['testDate'] = DateUtility::isoDateFormat($sampletestDate[0]) . " " . $sampletestDate[1];
      } else {
           $_POST['testDate'] = null;
      }
      if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
-          $_POST['cdDate'] = DateUtils::isoDateFormat($_POST['cdDate']);
+          $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
      } else {
           $_POST['cdDate'] = null;
      }
      if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-          $_POST['qcDate'] = DateUtils::isoDateFormat($_POST['qcDate']);
+          $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
      } else {
           $_POST['qcDate'] = null;
      }
      if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
-          $_POST['clinicDate'] = DateUtils::isoDateFormat($_POST['clinicDate']);
+          $_POST['clinicDate'] = DateUtility::isoDateFormat($_POST['clinicDate']);
      } else {
           $_POST['clinicDate'] = null;
      }
      if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-          $_POST['reportDate'] = DateUtils::isoDateFormat($_POST['reportDate']);
+          $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
      } else {
           $_POST['reportDate'] = null;
      }
@@ -134,13 +137,13 @@ try {
 
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
           $reviewedOn = explode(" ", $_POST['reviewedOn']);
-          $_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+          $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
      } else {
           $_POST['reviewedOn'] = null;
      }
      if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
           $approvedOn = explode(" ", $_POST['approvedOn']);
-          $_POST['approvedOn'] = DateUtils::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+          $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
      } else {
           $_POST['approvedOn'] = null;
      }
@@ -236,7 +239,7 @@ try {
      //$vldata['patient_last_name'] = $general->crypto('doNothing', $_POST['surName'], $vldata['patient_art_no']);
 
 
-     $vlDb = new VlService();
+     $vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
      $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
      if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
           $vldata['result_status'] = 5;
@@ -273,7 +276,7 @@ try {
           //        'event_type'=>$eventType,
           //        'action'=>$action,
           //        'resource'=>$resource,
-          //        'date_time'=>\App\Utilities\DateUtils::getCurrentDateTime()
+          //        'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
           //   );
           //   $db->insert($tableName1,$data);
           if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

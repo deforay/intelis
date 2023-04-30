@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
@@ -7,7 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $tableName1 = "batch_details";
 $tableName2 = "form_covid19";

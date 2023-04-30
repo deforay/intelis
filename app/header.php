@@ -1,12 +1,22 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
 use App\Services\UserService;
 
-$general = new CommonService();
-$usersModel = new UserService();
-$facilitiesModel = new FacilitiesService();
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $_SESSION['module'] = $_SESSION['module'] ?? array();
 
@@ -35,8 +45,8 @@ if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName']
 }
 
 // Check if the user can access the requested page
-if (!$usersModel->isAllowed(basename($_SERVER['PHP_SELF']))) {
-	return new header("Location:/error/401.php");
+if (!$usersService->isAllowed(basename($_SERVER['PHP_SELF']))) {
+	header("Location:/error/401.php");
 }
 
 
@@ -432,19 +442,19 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 												<a href="/common/reference/funding-sources.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Funding Sources"); ?></a>
 											</li>
 											<?php if (isset($_SESSION['privileges']) && in_array("sampleType.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu sampleTypeMenu">
-												<a href="/common/sample-types/sampleType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
-											</li>
+												<li class="allMenu sampleTypeMenu">
+													<a href="/common/sample-types/sampleType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
+												</li>
 											<?php } ?>
 											<?php if (isset($_SESSION['privileges']) && in_array("testingReason.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu testingReasonMenu">
-												<a href="/common/testing-reasons/testingReason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
-											</li>
+												<li class="allMenu testingReasonMenu">
+													<a href="/common/testing-reasons/testingReason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
+												</li>
 											<?php } ?>
 											<?php if (isset($_SESSION['privileges']) && in_array("symptoms.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu symptomsMenu">
-												<a href="/common/symptoms/symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
-											</li>
+												<li class="allMenu symptomsMenu">
+													<a href="/common/symptoms/symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
+												</li>
 											<?php } ?>
 											<?php if (isset($_SESSION['privileges']) && in_array("testType.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu testTypeConfigurationMenu">

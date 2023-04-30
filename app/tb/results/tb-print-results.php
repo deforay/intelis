@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -10,11 +11,15 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('tb');
-$testingLabs = $facilitiesDb->getTestingLabs('tb');
+$healthFacilites = $facilitiesService->getHealthFacilities('tb');
+$testingLabs = $facilitiesService->getTestingLabs('tb');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $state = $geoLocationDb->getProvinces("yes");

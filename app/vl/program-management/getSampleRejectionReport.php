@@ -1,8 +1,9 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,10 +11,14 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
-$facilitiesDb = new FacilitiesService();
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -130,10 +135,10 @@ if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '
     $s_c_date = explode("to", $_POST['rjtSampleTestDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
@@ -219,7 +224,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }

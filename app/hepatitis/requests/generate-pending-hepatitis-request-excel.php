@@ -4,8 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -13,9 +14,13 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new CommonService();
-$covid19Obj = new Covid19Service();
-$covid19Results = $covid19Obj->getCovid19Results();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Results = $covid19Service->getCovid19Results();
 
 /* Global config data */
 $arr = $general->getGlobalConfig();
@@ -205,26 +210,26 @@ foreach ($rResult as $aRow) {
             $row[] = $aRow['patient_id'];
             $row[] = $patientFname . " " . $patientLname;
         }
-        $row[] = DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = ($aRow['patient_gender']);
         $row[] = ($aRow['nationality']);
         $row[] = ($aRow['patient_province']);
         $row[] = ($aRow['patient_district']);
         $row[] = ($aRow['patient_city']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
         $row[] = ($aRow['test_reason_name']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['request_created_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
         $row[] = ($aRow['sample_condition']);
         $row[] = ($aRow['status_name']);
         $row[] = ($aRow['sample_name']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
         // $row[] = ($testPlatform);
         // $row[] = ($testMethod);
         $row[] = ($aRow['hcv_vl_result']);
         $row[] = ($aRow['hbv_vl_result']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
     } else {
 
         $row[] = $no;
@@ -244,16 +249,16 @@ foreach ($rResult as $aRow) {
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $gender;
         $row[] = $sampleCollectionDate;
-        $row[] = DateUtils::humanReadableDateFormat($aRow['date_of_symptom_onset']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_symptom_onset']);
         $row[] = ($aRow['contact_with_confirmed_case']);
         $row[] = ($aRow['has_recent_travel_history']);
         $row[] = ($aRow['travel_country_names']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['travel_return_date']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['travel_return_date']);
         $row[] = $sampleRejection;
         $row[] = $sampleTestedOn;
         $row[] = ($aRow['hcv_vl_result']);
         $row[] = ($aRow['hbv_vl_result']);
-        $row[] = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
         $row[] = $resultDispatchedDate;
         $row[] = ($aRow['lab_tech_comments']);
       //  $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';

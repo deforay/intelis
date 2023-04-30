@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -12,7 +13,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $db = MysqliDb::getInstance();
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {
@@ -22,7 +25,7 @@ try {
 			'geo_code' 			=> $_POST['geoCode'],
 			'geo_parent' 		=> (isset($_POST['geoParent']) && trim($_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
 			'geo_status' 		=> $_POST['geoStatus'],
-			'updated_datetime'	=> DateUtils::getCurrentDateTime()
+			'updated_datetime'	=> DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['geoId']) && $_POST['geoId'] != "") {
 			$db = $db->where("geo_id", base64_decode($_POST['geoId']));
@@ -31,7 +34,7 @@ try {
 			
 		} else {
 			$data['created_by'] = $_SESSION['userId'];
-			$data['created_on'] = DateUtils::getCurrentDateTime();
+			$data['created_on'] = DateUtility::getCurrentDateTime();
 			$data['data_sync'] = 0;
 			$db->insert("geographical_divisions", $data);
 			$geoId = $lastId = $db->getInsertId();
@@ -42,7 +45,7 @@ try {
 			$pdata = array(
 				'province_name' => $_POST['geoName'],
 				'province_code' => $_POST['geoCode'],
-				'updated_datetime' => DateUtils::getCurrentDateTime(),
+				'updated_datetime' => DateUtility::getCurrentDateTime(),
 			);
 			if ($provinceInfo && $provinceInfo['province_id'] > 0) {
 				$db->where("province_id", $provinceInfo['province_id']);

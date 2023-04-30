@@ -1,9 +1,10 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 $title = "Hepatitis | Edit Request";
@@ -35,16 +36,18 @@ $id = base64_decode($_GET['id']);
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new FacilitiesService();
-$userDb = new UserService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$usersService = ContainerRegistry::get(UserService::class);
 $hepatitisDb = new HepatitisService();
 
 $hepatitisResults = $hepatitisDb->getHepatitisResults();
 $testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
-$healthFacilities = $facilitiesDb->getHealthFacilities('hepatitis');
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $userDb->getActiveUsers($facilityMap);
+$healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -83,7 +86,7 @@ if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 
 if (isset($hepatitisInfo['sample_collection_date']) && trim($hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
     $expStr = explode(" ", $hepatitisInfo['sample_collection_date']);
-    $hepatitisInfo['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+    $hepatitisInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
     $hepatitisInfo['sample_collection_date'] = '';

@@ -3,17 +3,20 @@
 // this file is included in /import-result/procesImportedResults.php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $tableName = "temp_sample_import";
 $tableName1 = "form_covid19";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
-$covid19Obj = new Covid19Service();
-$facilityDb = new FacilitiesService();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$facilityDb = ContainerRegistry::get(FacilitiesService::class);
 
 
 try {
@@ -59,16 +62,16 @@ try {
                     'control_type' => $rResult[0]['sample_type'],
                     'lot_number' => $rResult[0]['lot_number'],
                     'lot_expiration_date' => $rResult[0]['lot_expiration_date'],
-                    'sample_tested_datetime'        => !empty($rResult[0]['sample_tested_datetime']) ? $rResult[0]['sample_tested_datetime'] : DateUtils::getCurrentDateTime(),
+                    'sample_tested_datetime'        => !empty($rResult[0]['sample_tested_datetime']) ? $rResult[0]['sample_tested_datetime'] : DateUtility::getCurrentDateTime(),
                     //'is_sample_rejected'=>'yes',
                     //'reason_for_sample_rejection'=>$rResult[0]['reason_for_sample_rejection'],
                     'result' => $rResult[0]['result'],
                     'tested_by' => $_POST['testBy'],
                     'lab_tech_comments' => $comments,
                     'result_reviewed_by' => $rResult[0]['result_reviewed_by'],
-                    'result_reviewed_datetime' => DateUtils::getCurrentDateTime(),
+                    'result_reviewed_datetime' => DateUtility::getCurrentDateTime(),
                     'result_approved_by' => $_POST['appBy'],
-                    'result_approved_datetime' => DateUtils::getCurrentDateTime(),
+                    'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult[0]['import_machine_file_name'],
                     'imported_date_time' => $rResult[0]['result_imported_datetime']
@@ -127,7 +130,7 @@ try {
                     $data['sample_type'] = $rResult[0]['sample_type'];
                     $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
                     //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
-                    //$data['last_modified_datetime']=\App\Utilities\DateUtils::getCurrentDateTime();
+                    //$data['last_modified_datetime']=\App\Utilities\DateUtility::getCurrentDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
@@ -136,11 +139,11 @@ try {
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult[0]['sample_tested_datetime'];
                     //$data['request_created_by'] = $rResult[0]['result_reviewed_by'];
-                    //$data['request_created_datetime'] = \App\Utilities\DateUtils::getCurrentDateTime();
+                    //$data['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+                    $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
-                    $data['result_approved_datetime'] = DateUtils::getCurrentDateTime();
+                    $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult[0]['sample_code'];
 
                     if ($status[$i] == '4') {
@@ -174,7 +177,7 @@ try {
                     if (count($vlResult) > 0) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
-                        // if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($vlResult[0]['covid19_id'])) {
+                        // if ($data['result'] == 'positive' || $covid19Service->checkAllCovid19TestsForPositive($vlResult[0]['covid19_id'])) {
                         //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
                         //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
                         //     //var_dump($data);die;
@@ -183,7 +186,7 @@ try {
 
                         $result = $db->update($tableName1, $data);
                         $covid19Id = $vlResult[0]['covid19_id'];
-                        $covid19Obj->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
+                        $covid19Service->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
                     } else {
                         if (!$importNonMatching) continue;
                         // if ($data['result'] == 'positive') {
@@ -194,7 +197,7 @@ try {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
                         $covid19Id = $db->insert($tableName1, $data);
-                        $covid19Obj->insertCovid19Tests($covid19Id, $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
+                        $covid19Service->insertCovid19Tests($covid19Id, $rResult[0]['lot_number'], $rResult[0]['lab_id'], $rResult[0]['sample_tested_datetime'], $rResult[0]['result']);
                     }
                     $printSampleCode[] = "'" . $rResult[0]['sample_code'] . "'";
                 }
@@ -206,7 +209,7 @@ try {
                     "test_type" => "vl",
                     "result_method" => "import",
                     "file_name" => $rResult[0]['import_machine_file_name'],
-                    "updated_on" => DateUtils::getCurrentDateTime()
+                    "updated_on" => DateUtility::getCurrentDateTime()
                 ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
@@ -240,7 +243,7 @@ try {
                 //'request_created_datetime' => $db->now(),
                 'last_modified_datetime' => $db->now(),
                 'result_approved_by' => $_POST['appBy'],
-                'result_approved_datetime' => DateUtils::getCurrentDateTime(),
+                'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
                 'manual_result_entry' => 'no',
                 //'result_status'=>'7',
@@ -274,7 +277,7 @@ try {
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
-            // if ($data['result'] == 'positive' || $covid19Obj->checkAllCovid19TestsForPositive($accResult[$i]['covid19_id'])) {
+            // if ($data['result'] == 'positive' || $covid19Service->checkAllCovid19TestsForPositive($accResult[$i]['covid19_id'])) {
             //     $data['result'] = null;  // CANNOT PUT FINAL RESULT FOR POSITIVE
             //     $data['result_status'] = 6; // CANNOT ACCEPT IT AUTOMATICALLY
             //     //var_dump($data);die;

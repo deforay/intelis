@@ -1,12 +1,15 @@
 <?php
 // imported in hepatitis-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 
 
-$facilitiesDb = new FacilitiesService();
 
-$testingLabs = $facilitiesDb->getTestingLabs('hepatitis');
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -264,7 +267,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </tr>
                             </table>
                         </div>
-                        <?php if ($usersModel->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

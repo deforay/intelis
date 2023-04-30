@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -8,13 +9,17 @@ $title = _("Print EID Results");
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
-$healthFacilites = $facilitiesDb->getHealthFacilities('eid');
+$healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 // $tsQuery = "SELECT * FROM r_sample_status";

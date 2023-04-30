@@ -3,6 +3,7 @@
 use App\Services\ApiService;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -12,10 +13,16 @@ ini_set('memory_limit', -1);
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
-$userDb = new UserService();
-$facilityDb = new FacilitiesService();
-$c19Db = new Covid19Service();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 $app = new ApiService();
 
 $transactionId = $general->generateUUID();
@@ -29,7 +36,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $auth = $general->getHeader('Authorization');
 $authToken = str_replace("Bearer ", "", $auth);
-$user = $userDb->getUserFromToken($authToken);
+$user = $usersService->getUserFromToken($authToken);
 
 
 try {
@@ -223,11 +230,11 @@ try {
         );
     } else {
         foreach ($rowData as $key => $row) {
-            $rowData[$key]['c19Tests'] = $c19Db->getCovid19TestsByC19Id($row['covid19Id']);
-            $rowData[$key]['c19Symptoms'] = $c19Db->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
-            $rowData[$key]['c19Comorbidities'] = $c19Db->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
-            $rowData[$key]['c19ReasonForTesting'] = $c19Db->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
-            $rowData[$key]['c19ReasonDetails'] = $c19Db->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
+            $rowData[$key]['c19Tests'] = $covid19Service->getCovid19TestsByC19Id($row['covid19Id']);
+            $rowData[$key]['c19Symptoms'] = $covid19Service->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
+            $rowData[$key]['c19Comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
+            $rowData[$key]['c19ReasonForTesting'] = $covid19Service->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
+            $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
         }
         $payload = array(
             'status' => 'success',

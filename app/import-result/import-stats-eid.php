@@ -2,9 +2,10 @@
 
 // imported in importedStatistics.php
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 
-$eidObj = new EidService();
+$eidObj = ContainerRegistry::get(EidService::class);
 $eidResults = $eidObj->getEidResults();
 
 $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 

@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -11,8 +12,12 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $arr = [];
-$general = new CommonService();
-$usersModel = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';
@@ -53,7 +58,7 @@ try {
 
                 $result = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['AI']);
                 $resultStatus = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['AM']);
-                $labTechnician = $usersModel->addUserIfNotExists($rowData['AP']);
+                $labTechnician = $usersService->addUserIfNotExists($rowData['AP']);
 
                 if (trim($rowData['S']) != '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['S']));
@@ -99,7 +104,7 @@ try {
                     'is_result_authorised'                  => strtolower($rowData['AJ']),
                     'authorized_by'                         => ($rowData['AK']),
                     'authorized_on'                         => date('Y-m-d',strtotime($rowData['AL'])),
-                    'last_modified_datetime'                => DateUtils::getCurrentDateTime(),
+                    'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => $resultStatus['status_id'] ?? null,
                     'sample_condition'                      => strtolower($rowData['AN']),

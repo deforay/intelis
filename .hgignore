@@ -2,6 +2,7 @@ syntax: regexp
 ^public/uploads/(?!.htaccess)
 ^public/temporary/(?!.htaccess)
 ^vendor/*
+^cache/(?!.htaccess)
 ^vendor/dcarbone/(?!.htaccess)
 ^docker/mysql/data/(?!.htaccess)
 ^interop/dhis2/examples/(?!index.php)
@@ -18,7 +19,6 @@ error_log
 
 
 syntax: glob
-error_log
 error.log
 errors.log
 npm-debug.log

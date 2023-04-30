@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
@@ -8,7 +9,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $db = MysqliDb::getInstance();
 $loginId = (trim($_POST['loginId']));
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $ipAddress = $general->getIpAddress();
 $data = 0;
 $ipdata = 0;

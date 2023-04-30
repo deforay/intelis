@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 
@@ -11,9 +12,13 @@ ini_set('memory_limit', -1);
 
 $db = \MysqliDb::getInstance();
 
-$general = new CommonService();
-$userDb = new UserService();
-$facilityDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $app = new ApiService();
 $arr = $general->getGlobalConfig();
 $user = null;
@@ -25,7 +30,7 @@ $params = file_get_contents("php://input");
 $input = json_decode($params, true);
 $auth = $general->getHeader('Authorization');
 $authToken = str_replace("Bearer ", "", $auth);
-$user = $userDb->getUserFromToken($authToken);
+$user = $usersService->getUserFromToken($authToken);
 try {
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT 

@@ -1,9 +1,12 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $artNo = $_POST['artPatientNo'];
 //global config
 $cQuery = "SELECT * FROM global_config";

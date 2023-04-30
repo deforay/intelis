@@ -2,12 +2,15 @@
 
 // File included in addImportResultHelper.php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use League\Csv\Reader;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 try {
 
@@ -153,8 +156,10 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new UserService();
-                $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
+                
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+                $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
             $query = "SELECT facility_id, eid_id, result
@@ -174,7 +179,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if (!empty($sampleCode)) {
-                $data['result_imported_datetime'] = DateUtils::getCurrentDateTime();
+                $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
@@ -195,7 +200,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $id,
             'test_type' => 'covid19',
-            'updated_on' => DateUtils::getCurrentDateTime(),
+            'updated_on' => DateUtility::getCurrentDateTime(),
         );
         $db->insert("log_result_updates", $data);
     }

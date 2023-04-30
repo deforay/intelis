@@ -8,7 +8,7 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use MysqliDb;
 
 class ApiService
@@ -269,7 +269,7 @@ class ApiService
     {
         $data = array(
             'requested_by' => $user ?: 'vlsm-system',
-            'requested_on' => DateUtils::getCurrentDateTime(),
+            'requested_on' => DateUtility::getCurrentDateTime(),
             'number_of_records' => $records ?: 0,
             'request_type' => $type ?: null,
             'test_type' => $testType ?: null,

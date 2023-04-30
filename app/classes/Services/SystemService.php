@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Registries\ContainerRegistry;
+use MysqliDb;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -14,7 +16,7 @@ class SystemService
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? \MysqliDb::getInstance();
+        $this->db = $db ?? MysqliDb::getInstance();
     }
 
     public function setDb($db)
@@ -34,7 +36,9 @@ class SystemService
     // Setup Locale
     public function setupTranslation($domain = "messages")
     {
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        
         $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
             $general->getGlobalConfig('app_locale') ?? 'en_US';
 
@@ -49,7 +53,9 @@ class SystemService
     // Setup Timezone
     public function setupDateTimeZone()
     {
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $general->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);

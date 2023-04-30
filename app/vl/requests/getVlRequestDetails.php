@@ -1,13 +1,18 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -134,10 +139,10 @@ $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -146,10 +151,10 @@ $labEndDate = '';
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $labEnddate = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -158,10 +163,10 @@ $testedEndDate = '';
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleTestedDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -204,10 +209,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
      }
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -267,7 +272,7 @@ if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
 }
 /* Source of request show model conditions */
 if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
-     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtils::isoDateFormat($_POST['dateRangeModel']) . '"';
+     $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
 }
 if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
@@ -305,10 +310,10 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 
      $date = explode("to", $_POST['requestCreatedDatetime']);
      if (isset($date[0]) && trim($date[0]) != "") {
-          $sRequestCreatedDatetime = DateUtils::isoDateFormat(trim($date[0]));
+          $sRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[0]));
      }
      if (isset($date[1]) && trim($date[1]) != "") {
-          $eRequestCreatedDatetime = DateUtils::isoDateFormat(trim($date[1]));
+          $eRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[1]));
      }
 
      if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
@@ -378,8 +383,8 @@ foreach ($rResult as $aRow) {
      $sync = '';
      $barcode = '';
 
-     $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
-     $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
      $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));

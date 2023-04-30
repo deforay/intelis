@@ -4,19 +4,25 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
+use App\Helpers\PdfConcatenateHelper;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
-$general = new CommonService();
-$users = new UserService();
-$covid19Obj = new Covid19Service();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$users = \App\Registries\ContainerRegistry::get(UserService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -250,13 +256,15 @@ if (!empty($requestResult)) {
 		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
 			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
 		} else {
-			$printedTime = DateUtils::getCurrentDateTime();
+			$printedTime = DateUtility::getCurrentDateTime();
 		}
 		$expStr = explode(" ", $printedTime);
-		$printDate = DateUtils::humanReadableDateFormat($expStr[0]);
+		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		$covid19Obj = new Covid19Service();
-		$covid19Results = $covid19Obj->getCovid19Results();
+		
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+		$covid19Results = $covid19Service->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
 		$covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
@@ -274,7 +282,7 @@ if (!empty($requestResult)) {
 
 		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-		$currentDateTime = DateUtils::getCurrentDateTime();
+		$currentDateTime = DateUtility::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';
@@ -299,7 +307,7 @@ if (!empty($requestResult)) {
 		}
 	}
 	if (!empty($pages)) {
-		$resultPdf = new \App\Helpers\PdfConcatenateHelper();
+		$resultPdf = new PdfConcatenateHelper();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);

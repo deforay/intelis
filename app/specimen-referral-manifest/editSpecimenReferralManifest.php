@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
@@ -12,12 +13,16 @@ $title = "Edit Specimen Referral Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$facilitiesDb = new FacilitiesService();
-$usersDb = new UserService();
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $usersList = [];
-$users = $usersDb->getActiveUsers();
+$users = $usersService->getActiveUsers();
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
@@ -56,16 +61,16 @@ if ($module == 'vl') {
 } else if ($module == 'covid19') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'C19') ? 'covid19' : $module;
-	$covid19Db = new Covid19Service($db);
-	$sampleTypes = $covid19Db->getCovid19SampleTypes();
+	$covid19Service = new Covid19Service($db);
+	$sampleTypes = $covid19Service->getCovid19SampleTypes();
 } else if ($module == 'tb') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'TB') ? 'tb' : $module;
 	$tbDb = new TbService($db);
 	$sampleTypes = $tbDb->getTbSampleTypes();
 }
-$testingLabs = $facilitiesDb->getTestingLabs($m);
-$facilities = $facilitiesDb->getHealthFacilities($module);
+$testingLabs = $facilitiesService->getTestingLabs($m);
+$facilities = $facilitiesService->getHealthFacilities($module);
 
 if (!empty($facilityMap)) {
 	$query = $query . " AND facility_id IN($facilityMap)";

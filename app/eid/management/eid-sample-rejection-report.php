@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 
 $title = _("EID | Sample Rejection Report");
@@ -7,12 +8,14 @@ $title = _("EID | Sample Rejection Report");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$facilitiesDb = new FacilitiesService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('eid');
+$healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 

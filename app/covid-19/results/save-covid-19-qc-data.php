@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "qc_covid19";
 $tableName1 = "qc_covid19_tests";
 $primaryKey = "qc_id";
@@ -24,7 +27,7 @@ try {
             'qc_code'               => $_POST['qcCode'],
             'testkit'               => base64_decode($_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],
-            'expiry_date'           => DateUtils::isoDateFormat($_POST['expiryDate']),
+            'expiry_date'           => DateUtility::isoDateFormat($_POST['expiryDate']),
             'lab_id'                => $_POST['labName'],
             'testing_point'                => $_POST['testingPoint'],
             'tested_by'             => $_POST['testerName'],

@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -10,7 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $geoLocationDb = new GeoLocationsService();
 
 $tableName = "form_tb";
@@ -36,7 +39,7 @@ try {
     }
     if (!empty($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
         $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-        $_POST['sampleCollectionDate'] = DateUtils::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+        $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = null;
     }
@@ -44,33 +47,33 @@ try {
     //Set sample received date
     if (!empty($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
         $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-        $_POST['sampleReceivedDate'] = DateUtils::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+        $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
     if (!empty($_POST['resultDispatchedDatetime']) && trim($_POST['resultDispatchedDatetime']) != "") {
         $resultDispatchedDatetime = explode(" ", $_POST['resultDispatchedDatetime']);
-        $_POST['resultDispatchedDatetime'] = DateUtils::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
+        $_POST['resultDispatchedDatetime'] = DateUtility::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = null;
     }
     if (!empty($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
         $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-        $_POST['sampleTestedDateTime'] = DateUtils::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+        $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = null;
     }
 
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-        $_POST['arrivalDateTime'] = DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = null;
     }
 
     if (!empty($_POST['requestedDate']) && trim($_POST['requestedDate']) != "") {
         $arrivalDate = explode(" ", $_POST['requestedDate']);
-        $_POST['requestedDate'] = DateUtils::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+        $_POST['requestedDate'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['requestedDate'] = null;
     }
@@ -100,7 +103,7 @@ try {
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
-        $_POST['patientDob'] = DateUtils::isoDateFormat($_POST['patientDob']);
+        $_POST['patientDob'] = DateUtility::isoDateFormat($_POST['patientDob']);
     }
 
     if (!empty($_POST['result'])) {
@@ -109,14 +112,14 @@ try {
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = DateUtils::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+        $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
 
     if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
         $approvedOn = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = DateUtils::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+        $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = null;
     }
@@ -145,7 +148,7 @@ try {
         'result_approved_datetime'            => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
         'sample_tested_datetime'              => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
         'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtils::isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result_status'                       => $status,
         'data_sync'                           => 0,
         'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -169,7 +172,7 @@ try {
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => $_POST['actualNo'][$testKey] ?? null,
                         'test_result'       => $testResult,
-                        'updated_datetime'  => DateUtils::getCurrentDateTime()
+                        'updated_datetime'  => DateUtility::getCurrentDateTime()
                     ));
                 }
             }

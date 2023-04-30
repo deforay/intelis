@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\SystemService;
@@ -8,8 +9,10 @@ use App\Services\SystemService;
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
-$facilityDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $labNameList = $facilityDb->getTestingLabs();
 
 $geoLocationDb = new GeoLocationsService();

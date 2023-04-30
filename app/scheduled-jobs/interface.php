@@ -7,6 +7,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 use App\Services\VlService;
@@ -18,9 +19,13 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 
 $db  = MysqliDb::getInstance();
 
-$usersModel = new UserService();
-$general = new CommonService();
-$vlDb = new VlService();
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -169,9 +174,9 @@ if (count($interfaceInfo) > 0) {
             if (strpos(strtolower($result['tested_by']), '^') !== false) {
                 $operatorArray = explode("^", $result['tested_by']);
                 $tester = $operatorArray[0];
-                $testedByUserId = $usersModel->addUserIfNotExists($tester);
+                $testedByUserId = $usersService->addUserIfNotExists($tester);
             } else {
-                $testedByUserId = $usersModel->addUserIfNotExists($result['tested_by']);
+                $testedByUserId = $usersService->addUserIfNotExists($result['tested_by']);
             }
 
             $data = array(
@@ -300,7 +305,7 @@ if (count($interfaceInfo) > 0) {
                 $hepatitisResult = $interpretedResults['result'];
             }
 
-            $userId = $usersModel->addUserIfNotExists($result['tested_by']);
+            $userId = $usersService->addUserIfNotExists($result['tested_by']);
 
             $data = array(
                 'lab_id' => $labId,

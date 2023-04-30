@@ -2,7 +2,9 @@
 
 // imported in /vl/results/generate-result-pdf.php
 
-use App\Utilities\DateUtils;
+use App\Helpers\PdfConcatenateHelper;
+use App\Helpers\PdfWatermarkHelper;
+use App\Utilities\DateUtility;
 
 class DRC_PDF extends MYPDF
 {
@@ -181,7 +183,7 @@ if (sizeof($requestResult) > 0) {
 
 		if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $result['sample_collection_date']);
-			$result['sample_collection_date'] = DateUtils::humanReadableDateFormat($expStr[0]);
+			$result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
 			$sampleCollectionTime = $expStr[1];
 		} else {
 			$result['sample_collection_date'] = '';
@@ -191,26 +193,26 @@ if (sizeof($requestResult) > 0) {
 		$sampleReceivedTime = '';
 		if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
-			$sampleReceivedDate = DateUtils::humanReadableDateFormat($expStr[0]);
+			$sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
 			$sampleReceivedTime = $expStr[1];
 		}
 
 		if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $result['result_printed_datetime']);
-			$result['result_printed_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+			$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 		} else {
-			$result['result_printed_datetime'] = DateUtils::getCurrentDateTime();
+			$result['result_printed_datetime'] = DateUtility::getCurrentDateTime();
 		}
 
 		if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", $result['sample_tested_datetime']);
-			$result['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+			$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 		} else {
 			$result['sample_tested_datetime'] = '';
 		}
 
 		if (isset($result['last_viral_load_date']) && trim($result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
-			$result['last_viral_load_date'] = DateUtils::humanReadableDateFormat($result['last_viral_load_date']);
+			$result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date']);
 		} else {
 			$result['last_viral_load_date'] = '';
 		}
@@ -536,7 +538,7 @@ if (sizeof($requestResult) > 0) {
 			$pdf->Output($filename, "F");
 			if ($draftTextShow) {
 				//Watermark section
-				$watermark = new \App\Helpers\PdfWatermarkHelper();
+				$watermark = new PdfWatermarkHelper();
 $watermark->setFullPathToFile($filename);
 				$fullPathToFile = $filename;
 				$watermark->Output($filename, "F");
@@ -553,7 +555,7 @@ $watermark->setFullPathToFile($filename);
 				'event_type' => $eventType,
 				'action' => $action,
 				'resource' => $resource,
-				'date_time' => DateUtils::getCurrentDateTime()
+				'date_time' => DateUtility::getCurrentDateTime()
 			);
 			$db->insert($tableName1, $data);
 			//Update print datetime in VL tbl.
@@ -561,13 +563,13 @@ $watermark->setFullPathToFile($filename);
 			$vlResult = $db->query($vlQuery);
 			if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
 				$db = $db->where('vl_sample_id', $result['vl_sample_id']);
-				$db->update($tableName2, array('result_printed_datetime' => DateUtils::getCurrentDateTime()));
+				$db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
 			}
 		}
 	}
 
 	if (!empty($pages)) {
-		$resultPdf = new \App\Helpers\PdfConcatenateHelper();
+		$resultPdf = new PdfConcatenateHelper();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);

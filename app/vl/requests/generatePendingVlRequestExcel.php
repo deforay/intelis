@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -11,8 +12,10 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 ini_set('memory_limit', -1);
-$general = new CommonService();
-$dateTimeUtil = new DateUtils();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$dateTimeUtil = new DateUtility();
 /*
 $sQuery = "SELECT  
                         vl.vl_sample_id,
@@ -156,7 +159,7 @@ foreach ($rResult as $aRow) {
 	//date of birth
 	$dob = '';
 	if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-		$dob =  DateUtils::humanReadableDateFormat($aRow['patient_dob']);
+		$dob =  DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 	}
 
 	$age = null;
@@ -179,38 +182,38 @@ foreach ($rResult as $aRow) {
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if (!empty($aRow['sample_collection_date'])) {
-		$sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	//treatment initiation date
 	$treatmentInitiationDate = '';
 	if (!empty($aRow['treatment_initiated_date'])) {
-		$treatmentInitiationDate =  DateUtils::humanReadableDateFormat($aRow['treatment_initiated_date']);
+		$treatmentInitiationDate =  DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
 	}
 	//date of initiation of current regimen
 	$dateOfInitiationOfCurrentRegimen = '';
 	if (!empty($aRow['date_of_initiation_of_current_regimen'])) {
-		$dateOfInitiationOfCurrentRegimen =  DateUtils::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
+		$dateOfInitiationOfCurrentRegimen =  DateUtility::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen']);
 	}
 	//requested date
 	$requestedDate = '';
 	if (!empty($aRow['test_requested_on'])) {
-		$requestedDate =  DateUtils::humanReadableDateFormat($aRow['test_requested_on']);
+		$requestedDate =  DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
 	}
 
 	//request created date time
 	$requestCreatedDatetime = '';
 	if (!empty($aRow['request_created_datetime'])) {
-		$requestCreatedDatetime =  DateUtils::humanReadableDateFormat($aRow['request_created_datetime'], true);
+		$requestCreatedDatetime =  DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 	}
 
 	$sampleTestedOn = '';
 	if (!empty($aRow['sample_tested_datetime'])) {
-		$sampleTestedOn =  DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$sampleTestedOn =  DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	}
 
 	$sampleReceivedOn = '';
 	if (!empty($aRow['sample_received_at_vl_lab_datetime'])) {
-		$sampleReceivedOn =  DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$sampleReceivedOn =  DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	}
 
 	//set ARV adherecne
@@ -231,7 +234,7 @@ foreach ($rResult as $aRow) {
 	//result dispatched date
 	$resultDispatchedDate = '';
 	if (!empty($aRow['result_printed_datetime'])) {
-		$resultDispatchedDate =  DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$resultDispatchedDate =  DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	}
 
 	if ($aRow['patient_first_name'] != '') {

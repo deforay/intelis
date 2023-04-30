@@ -6,10 +6,12 @@ if (php_sapi_name() !== 'cli') {
 }
 
 require_once(__DIR__ . "/../../bootstrap.php");
+
+use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 
 
-$vlDb = new VlService();
+$vlDb = ContainerRegistry::get(VlService::class);
 
 $db = \MysqliDb::getInstance();
 

@@ -1,17 +1,24 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $formId = $general->getGlobalConfig('vl_form');
 
 //system config
@@ -22,7 +29,7 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -134,10 +141,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -154,14 +161,13 @@ if (isset($sWhere) && $sWhere != "") {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
-          for($s=0; $s < count($fac); $s++)
-          {
-               if($out)
-                    $out = $out.',"'.$fac[$s].'"';
+          for ($s = 0; $s < count($fac); $s++) {
+               if ($out)
+                    $out = $out . ',"' . $fac[$s] . '"';
                else
-                    $out = '("'.$fac[$s].'"';
+                    $out = '("' . $fac[$s] . '"';
           }
-          $out = $out.')';
+          $out = $out . ')';
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
@@ -170,7 +176,7 @@ if (isset($sWhere) && $sWhere != "") {
                $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
           }
      }
-     
+
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
@@ -194,11 +200,10 @@ if ($sWhere != '') {
 $sWhere .= " AND tl.test_type = 'vl'";
 
 
-$sQuery = $sQuery . ' ' . $sWhere .' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
-if($_POST['targetType'] == 1){
+$sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-}
-else if($_POST['targetType'] == 2){
+} else if ($_POST['targetType'] == 2) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 // echo $sQuery;die;
@@ -222,10 +227,9 @@ $output = array(
      // "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
-     //  print_r($sQuery);die;    
+//  print_r($sQuery);die;    
 $cnt = 0;
-foreach($rResult as $rowData)
-{
+foreach ($rResult as $rowData) {
      $cnt++;
      $data = [];
      $data[] = ($rowData['facility_name']);
@@ -235,7 +239,7 @@ foreach($rResult as $rowData)
      $data[] = $rowData['totalCollected'];
      $data[] = $rowData['monthly_target'];
      $output['aaData'][] = $data;
-}   
+}
 $output['iTotalDisplayRecords'] = $cnt;
 $output['iTotalRecords'] = $cnt;
 echo json_encode($output);

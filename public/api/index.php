@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__) . '/../bootstrap.php');
 
 // api/index.php
+use App\Registries\ContainerRegistry;
 use DI\Container;
 use Slim\Factory\AppFactory;
 use App\Services\UserService;
@@ -57,7 +58,7 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 }));
 
 // 3. API Auth Middleware that checks for Bearer token
-$userModel = new UserService();
+$userModel = ContainerRegistry::get(UserService::class);
 $middlewarePipe->pipe(new ApiAuthMiddleware($userModel));
 
 //API Routes

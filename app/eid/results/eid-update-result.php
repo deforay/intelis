@@ -1,9 +1,10 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 $title = "Enter EID Result";
@@ -13,12 +14,16 @@ require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
 
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
-$healthFacilities = $facilitiesDb->getHealthFacilities('eid');
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+$healthFacilities = $facilitiesService->getHealthFacilities('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
@@ -54,8 +59,10 @@ $id = base64_decode($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 
-$eidModel = new EidService();
-$eidResults = $eidModel->getEidResults();
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 
 $disable = "disabled = 'disabled'";
@@ -69,7 +76,7 @@ foreach ($iResult as $val) {
 }
 if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
-	$eidInfo['result_dispatched_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$eidInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
 }

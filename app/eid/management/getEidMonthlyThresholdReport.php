@@ -1,14 +1,18 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
-// print_r("Prasath");die;
-$general = new CommonService();
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -20,7 +24,7 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
+
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -93,7 +97,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -126,54 +130,53 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
 
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
-               $sWhere[] =  ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (trim($sTestDate) == trim($eTestDate)) {
+          $sWhere[] =  ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
+}
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
-          $out = '';
-          // print_r($fac);die;
-          for ($s = 0; $s < count($fac); $s++) {
-               if ($out)
-                    $out = $out . ',"' . $fac[$s] . '"';
-               else
-                    $out = '("' . $fac[$s] . '"';
-          }
-          $out = $out . ')';
-      
-               $sWhere[] = ' vl.lab_id IN ' . $out;
+if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     $fac = explode(',', $_POST['facilityName']);
+     $out = '';
+     // print_r($fac);die;
+     for ($s = 0; $s < count($fac); $s++) {
+          if ($out)
+               $out = $out . ',"' . $fac[$s] . '"';
+          else
+               $out = '("' . $fac[$s] . '"';
      }
-     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-               $sWhere[] =  " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
-     }
-     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-               $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-     }
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+     $out = $out . ')';
 
-     $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
+     $sWhere[] = ' vl.lab_id IN ' . $out;
+}
+if (isset($_POST['district']) && trim($_POST['district']) != '') {
+     $sWhere[] =  " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+}
+if (isset($_POST['state']) && trim($_POST['state']) != '') {
+     $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+}
+if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 
-$sWhere[]= "  tl.test_type = 'eid'";
+     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+}
 
-if(isset($sWhere) && count($sWhere)>0)
-{
-    $sWhere = ' where '.implode(' AND ',$sWhere);
+$sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
+
+$sWhere[] = "  tl.test_type = 'eid'";
+
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = ' where ' . implode(' AND ', $sWhere);
 }
 
 

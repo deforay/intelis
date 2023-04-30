@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -12,8 +13,12 @@ if (session_status() == PHP_SESSION_NONE) {
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 $arr = [];
-$general = new CommonService();
-$usersModel = new UserService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var UserService $usersService */
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 
 $tableName = "form_eid";
 // echo "<pre>";print_r($_FILES);die;
@@ -146,10 +151,10 @@ try {
                     'specimen_type'                                     => $sampleType['sample_id'] ?? null,
                     'data_sync'                                         => 0,
                     'request_created_by'                                => $_SESSION['userId'],
-                    'request_created_datetime'                          => DateUtils::getCurrentDateTime(),
-                    'sample_registered_at_lab'                          => DateUtils::getCurrentDateTime(),
+                    'request_created_datetime'                          => DateUtility::getCurrentDateTime(),
+                    'sample_registered_at_lab'                          => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                                  => $_SESSION['userId'],
-                    'last_modified_datetime'                            => DateUtils::getCurrentDateTime()
+                    'last_modified_datetime'                            => DateUtility::getCurrentDateTime()
                 );
 
                 // echo "<pre>";print_r($sampleCode);die;

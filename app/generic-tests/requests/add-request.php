@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
 use App\Services\VlService;
@@ -13,18 +14,22 @@ require_once(APPLICATION_PATH . '/header.php');
 $labFieldDisabled = '';
 
 
-$facilitiesDb = new FacilitiesService();
-$vlDb = new VlService();
-$usersModel = new UserService();
 
-$healthFacilities = $facilitiesDb->getHealthFacilities('vl');
-$testingLabs = $facilitiesDb->getTestingLabs('vl');
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$vlDb = ContainerRegistry::get(VlService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+
+$healthFacilities = $facilitiesService->getHealthFacilities('vl');
+$testingLabs = $facilitiesService->getTestingLabs('vl');
 
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $reasonForFailure = $vlDb->getReasonForFailure();
 $userInfo = [];
 foreach ($userResult as $user) {
@@ -128,7 +133,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$lResult = $facilitiesDb->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('vl', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -478,7 +483,7 @@ $sFormat = '';
                                                                            <optgroup label="<?php echo ($heading['headings']); ?>">
                                              </div>
                                            
-                                             <?php if ($usersModel->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>

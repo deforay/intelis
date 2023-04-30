@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\TbService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
@@ -25,9 +26,11 @@ $sarr = [];
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$general = new CommonService();
-$tbModel = new TbService();
-$tbResults = $tbModel->getTbResults();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$tbService = new TbService();
+$tbResults = $tbService->getTbResults();
 
 $tableName = "form_tb";
 $primaryKey = "tb_id";
@@ -172,10 +175,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -185,10 +188,10 @@ $eSampleReceivedDate = '';
 if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
      $s_p_date = explode("to", $_POST['sampleRecievedDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $eSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample tested date filter */
@@ -197,10 +200,10 @@ $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -210,10 +213,10 @@ $ePrintDate = '';
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      $s_p_date = explode("to", $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtils::isoDateFormat(trim($s_p_date[0]));
+          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
      }
      if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtils::isoDateFormat(trim($s_p_date[1]));
+          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
      }
 }
 /* Sample type filter */

@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
 
@@ -26,12 +27,16 @@ require_once(APPLICATION_PATH . '/header.php');
 </style>
 
 <?php
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
-$healthFacilities = $facilitiesDb->getHealthFacilities('eid');
-$testingLabs = $facilitiesDb->getTestingLabs('eid');
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+$healthFacilities = $facilitiesService->getHealthFacilities('eid');
+$testingLabs = $facilitiesService->getTestingLabs('eid');
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);

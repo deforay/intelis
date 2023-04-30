@@ -8,7 +8,7 @@ use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use Laminas\Diactoros\ServerRequestFactory;
 use App\Middlewares\SystemAdminAuthMiddleware;
-use App\Middlewares\App\HttpHandlers\LegacyRequestHandler;
+use App\HttpHandlers\LegacyRequestHandler;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 

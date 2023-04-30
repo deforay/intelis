@@ -3,8 +3,9 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -12,7 +13,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 /*
 $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' AND DATE(vl.sample_collection_date) !='0000-00-00')
@@ -77,25 +80,25 @@ foreach ($rResult as $aRow) {
 	$sampleCollectionDate = '';
 	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$expStr = explode(" ", $aRow['sample_collection_date']);
-		$sampleCollectionDate =  DateUtils::humanReadableDateFormat($expStr[0]);
+		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($expStr[0]);
 	}
 	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-		$sampleRecievedDate = DateUtils::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$testDate = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$printDate = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$printDate = '';
 	}
 	if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-		$mailDate = DateUtils::humanReadableDateFormat($aRow['result_mail_datetime']);
+		$mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$mailDate = '';
 	}

@@ -2,8 +2,9 @@
 
 // File included in addImportResultHelper.php
 
+use App\Registries\ContainerRegistry;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
@@ -219,8 +220,10 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                $usersModel = new UserService();
-                $data['sample_review_by'] = $usersModel->addUserIfNotExists($d['reviewBy']);
+                
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+                $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where sample_code='" . $sampleCode . "'";
@@ -244,7 +247,7 @@ try {
             }
             //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
-                $data['result_imported_datetime'] = DateUtils::getCurrentDateTime();
+                $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
@@ -265,7 +268,7 @@ try {
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $id,
             'test_type' => 'covid19',
-            'updated_on' => DateUtils::getCurrentDateTime(),
+            'updated_on' => DateUtility::getCurrentDateTime(),
         );
         $db->insert("log_result_updates", $data);
     }

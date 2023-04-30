@@ -1,10 +1,13 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $lName = $_POST['lName'];
 $testType = $_POST['testType'];
@@ -45,10 +48,10 @@ if (isset($scDate) && trim($scDate) != '') {
 	$s_c_date = explode("to", $scDate);
 	//print_r($s_c_date);die;
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
 	}
 	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 
 	if (trim($start_date) == trim($end_date)) {

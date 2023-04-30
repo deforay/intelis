@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
@@ -9,7 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $packageTable = "package_details";
 try {
     if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && count($_POST['sampleCode']) > 0) {

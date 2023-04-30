@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UserService;
 use App\Services\FacilitiesService;
@@ -8,9 +9,11 @@ use App\Services\SystemService;
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
-$userDb = new UserService();
-$general = new CommonService();
-$facilityDb = new FacilitiesService();
+$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilityDb->getTestingLabs();
@@ -49,7 +52,7 @@ $lowerText = "";
 if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
 	$lowerText = "style='display:none;'";
 }
-$userList = $userDb->getAllUsers(null, null, 'drop-down');
+$userList = $usersService->getAllUsers(null, null, 'drop-down');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

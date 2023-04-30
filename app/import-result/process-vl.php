@@ -2,8 +2,9 @@
 
 // this file is included in /import-result/procesImportedResults.php
 
+use App\Registries\ContainerRegistry;
 use App\Services\VlService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -54,9 +55,9 @@ try {
                     'tested_by'                     => $_POST['testBy'],
                     'lab_tech_comments'             => $comments,
                     'result_reviewed_by'            => $rResult[0]['result_reviewed_by'],
-                    'result_reviewed_datetime'      => DateUtils::getCurrentDateTime(),
+                    'result_reviewed_datetime'      => DateUtility::getCurrentDateTime(),
                     'result_approved_by'            => $_POST['appBy'],
-                    'result_approved_datetime'      => DateUtils::getCurrentDateTime(),
+                    'result_approved_datetime'      => DateUtility::getCurrentDateTime(),
                     'vlsm_country_id'               => $arr['vl_form'],
                     'file_name'                     => $rResult[0]['import_machine_file_name'],
                     'imported_date_time'            => $rResult[0]['result_imported_datetime'],
@@ -111,7 +112,7 @@ try {
                     $data['sample_type'] = $rResult[0]['sample_type'];
                     $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
                     //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
-                    //$data['last_modified_datetime']=\App\Utilities\DateUtils::getCurrentDateTime();
+                    //$data['last_modified_datetime']=\App\Utilities\DateUtility::getCurrentDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
@@ -120,11 +121,11 @@ try {
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult[0]['sample_tested_datetime'];
                     $data['request_created_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['request_created_datetime'] = DateUtils::getCurrentDateTime();
+                    $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult[0]['result_reviewed_by'];
-                    $data['last_modified_datetime'] = DateUtils::getCurrentDateTime();
+                    $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
-                    $data['result_approved_datetime'] = DateUtils::getCurrentDateTime();
+                    $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult[0]['sample_code'];
 
                     if ($status[$i] == '4') {
@@ -162,7 +163,7 @@ try {
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
 
-                    $vlDb = new VlService();
+                    $vlDb = ContainerRegistry::get(VlService::class);
                     $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
@@ -198,7 +199,7 @@ try {
                     "test_type" => "vl",
                     "result_method" => "import",
                     "file_name" => $rResult[0]['import_machine_file_name'],
-                    "updated_on" => DateUtils::getCurrentDateTime()
+                    "updated_on" => DateUtility::getCurrentDateTime()
                 ));
             }
             $db = $db->where('temp_sample_id', $id[$i]);
@@ -235,7 +236,7 @@ try {
                 'request_created_datetime' => $db->now(),
                 'last_modified_datetime' => $db->now(),
                 'result_approved_by' => $_POST['appBy'],
-                'result_approved_datetime' => DateUtils::getCurrentDateTime(),
+                'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
@@ -268,7 +269,7 @@ try {
                 }
             }
 
-            $vlDb = new VlService();
+            $vlDb = ContainerRegistry::get(VlService::class);
             $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {

@@ -8,8 +8,9 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use Exception;
+use MysqliDb;
 use Ramsey\Uuid\Uuid;
 use TCPDFBarcode;
 use ZipArchive;
@@ -23,7 +24,7 @@ class CommonService
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? \MysqliDb::getInstance();
+        $this->db = $db ?? MysqliDb::getInstance();
     }
 
     public static function generateRandomString($length = 32)
@@ -248,7 +249,7 @@ class CommonService
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
-            'date_time' => DateUtils::getCurrentDateTime(),
+            'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $ipaddress,
         );
 
@@ -260,7 +261,7 @@ class CommonService
 
         $data = array(
             'no_of_results_imported' => $numberOfResults,
-            'imported_on' => DateUtils::getCurrentDateTime(),
+            'imported_on' => DateUtility::getCurrentDateTime(),
             'import_mode' => $importMode,
             'imported_by' => $importedBy,
         );
@@ -460,7 +461,7 @@ class CommonService
             'sample_code' => $sampleCode,
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
-            'date_time' => DateUtils::getCurrentDateTime(),
+            'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $this->getIPAddress(),
         );
 
@@ -707,7 +708,7 @@ class CommonService
             $data = array(
                 'transaction_id'    => $transactionId ?: null,
                 'requested_by'      => $user ?: 'vlsm-system',
-                'requested_on'      => DateUtils::getCurrentDateTime(),
+                'requested_on'      => DateUtility::getCurrentDateTime(),
                 'number_of_records' => $numberOfRecords ?: 0,
                 'request_type'      => $requestType ?: null,
                 'test_type'         => $testType ?: null,

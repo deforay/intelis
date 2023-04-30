@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Segment;
 use Aranyasen\HL7\Segments\PID;
@@ -10,12 +11,14 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 use Aranyasen\HL7\Segments\MSA;
 
-$eidModel = new EidService();
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
 
 $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
             vl.*,
             rtr.test_reason_name,
             b.batch_code,
@@ -327,7 +330,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $sampleData['sampleCodeFormat'] = (!empty($eidDuplicateData['sample_code_format'])) ? $eidDuplicateData['sample_code_format'] : $eidDuplicateData['remote_sample_code_format'];
         $sampleData['sampleCodeKey'] = (!empty($eidDuplicateData['sample_code_key'])) ? $eidDuplicateData['sample_code_key'] : $eidDuplicateData['remote_sample_code_key'];
     } else {
-        $sampleJson = $eidModel->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
+        $sampleJson = $eidService->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId);
         $sampleData = json_decode($sampleJson, true);
     }
     /* echo "<pre>";
@@ -442,9 +445,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                         => $_POST['sampleRejectionReason'] ?? null,
-            'request_created_datetime'                             => DateUtils::getCurrentDateTime(),
-            'sample_registered_at_lab'                             => DateUtils::getCurrentDateTime(),
-            'last_modified_datetime'                             => DateUtils::getCurrentDateTime()
+            'request_created_datetime'                             => DateUtility::getCurrentDateTime(),
+            'sample_registered_at_lab'                             => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime'                             => DateUtility::getCurrentDateTime()
         );
 
         $eidData['source_of_request'] = 'hl7';

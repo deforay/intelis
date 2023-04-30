@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 
 
@@ -19,7 +20,7 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-$facilityDb = new FacilitiesService();
+$facilityDb = ContainerRegistry::get(FacilitiesService::class);
 $activeFacilities = [];
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {

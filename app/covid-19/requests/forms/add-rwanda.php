@@ -1,6 +1,7 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 
 
@@ -14,14 +15,16 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$covid19Obj = new Covid19Service();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 
-$covid19Results = $covid19Obj->getCovid19Results();
-$specimenTypeResult = $covid19Obj->getCovid19SampleTypes();
-$covid19ReasonsForTesting = $covid19Obj->getCovid19ReasonsForTesting();
-$covid19Symptoms = $covid19Obj->getCovid19Symptoms();
-$covid19Comorbidities = $covid19Obj->getCovid19Comorbidities();
+$covid19Results = $covid19Service->getCovid19Results();
+$specimenTypeResult = $covid19Service->getCovid19SampleTypes();
+$covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTesting();
+$covid19Symptoms = $covid19Service->getCovid19Symptoms();
+$covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 
 
 $rKey = '';
@@ -396,7 +399,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($usersModel->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

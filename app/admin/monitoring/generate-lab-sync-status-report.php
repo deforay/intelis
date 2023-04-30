@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -10,8 +11,13 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 ini_set('memory_limit', -1);
-$general = new CommonService();
-$dateTimeUtil = new DateUtils();
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$dateTimeUtil = new DateUtility();
 
 $excel = new Spreadsheet();
 $output = [];
@@ -91,9 +97,9 @@ foreach ($rResult as $aRow) {
 
     $row[] = ($aRow['facility_name']);
     //$row[] = ($aRow['test_type']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['latest']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['lastResultsSync']);
-    $row[] = DateUtils::humanReadableDateFormat($aRow['lastRequestsSync']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['latest']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync']);
     $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - ";
     $output[] = $row;
 

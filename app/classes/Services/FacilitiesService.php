@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use MysqliDb;
 
 class FacilitiesService
@@ -213,7 +213,7 @@ class FacilitiesService
 
     public function updateFacilitySyncTime($facilityIds, $currentDateTime = null)
     {
-        $currentDateTime = $currentDateTime ?? DateUtils::getCurrentDateTime();
+        $currentDateTime = $currentDateTime ?? DateUtility::getCurrentDateTime();
         if (!empty($facilityIds)) {
             $facilityIds = array_unique(array_filter($facilityIds));
             $sql = 'UPDATE facility_details

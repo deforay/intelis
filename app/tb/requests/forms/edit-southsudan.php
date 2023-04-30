@@ -2,7 +2,7 @@
 // imported in tb-add-request.php based on country in global config
 
 use App\Services\TbService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
@@ -80,7 +80,7 @@ $attributes = null;
 if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$db->where("f.facility_id", $tbInfo['lab_id']);
 	$db->join("testing_labs as l", "l.facility_id=f.facility_id", "INNER");
-	$results = $db->getOne("facility_details as f", null, "*");
+	$results = $db->getOne("facility_details as f", "*");
 	if (isset($results['attributes']) && $results['attributes'] != "") {
 		$attributes = json_decode($results['attributes'], true);
 	}
@@ -219,7 +219,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<th scope="row"><label for="patientDob">Date of Birth </label></th>
 										<td>
-											<input type="text" value="<?php echo DateUtils::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
@@ -352,7 +352,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</table>
 							</div>
 						</div>
-						<?php if ($usersModel->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) { 
 							?>
 							<div class="box box-primary">
@@ -420,7 +420,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</select>
 											</td>
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
-											<td><input value="<?php echo DateUtils::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 										</tr>
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
@@ -491,7 +491,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></td>
+											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the reviewed on" /></td>
 										</tr>
 										<tr>
@@ -501,7 +501,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></td>
+											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 

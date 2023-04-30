@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtils;
+use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use DateTimeImmutable;
 use Exception;
 use MysqliDb;
@@ -46,12 +47,13 @@ class HepatitisService
     public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        $general = new CommonService($this->db);
+        /** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        if(DateUtils::verifyIfDateValid($sampleCollectionDate) === false){
+        if(DateUtility::verifyIfDateValid($sampleCollectionDate) === false){
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -264,7 +266,9 @@ class HepatitisService
 
     public function insertSampleCode($params)
     {
-        $general = new CommonService();
+        /** @var MysqliDb $db */
+/** @var CommonService $general */
+        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -291,7 +295,7 @@ class HepatitisService
             $sampleData = json_decode($sampleJson, true);
 
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = DateUtils::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
             if (!isset($params['countryId']) || empty($params['countryId'])) {
                 $params['countryId'] = null;
@@ -305,9 +309,9 @@ class HepatitisService
                 'hepatitis_test_type' => $prefix,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => DateUtils::getCurrentDateTime(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => DateUtils::getCurrentDateTime()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {

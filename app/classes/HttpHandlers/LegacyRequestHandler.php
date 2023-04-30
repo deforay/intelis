@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Middlewares\App\HttpHandlers;
+namespace App\HttpHandlers;
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use MysqliDb;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -13,8 +15,10 @@ class LegacyRequestHandler implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $db = \MysqliDb::getInstance();
-        $general = new CommonService();
+        $db = MysqliDb::getInstance();
+        /** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
         // Get the requested URI
         $uri = $request->getUri()->getPath();

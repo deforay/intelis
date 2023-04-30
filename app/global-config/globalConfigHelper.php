@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
-use App\Utilities\ImageResize;
+use App\Utilities\DateUtility;
+use App\Utilities\ImageResizeUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,7 +14,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "global_config";
 $instanceTableName = "s_vlsm_instance";
 try {
@@ -37,7 +40,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => DateUtils::getCurrentDateTime(),
+                "updated_on" => DateUtility::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -53,7 +56,7 @@ try {
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["instanceLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
 
-            $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
+            $resizeObj = new ImageResizeUtility(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
             $resizeObj->resizeToWidth(100);
             $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 
@@ -67,7 +70,7 @@ try {
         'instance_facility_name' => $_POST['fName'],
         'instance_facility_code' => $_POST['fCode'],
         'instance_facility_type' => $_POST['instance_type'],
-        'instance_update_on' => DateUtils::getCurrentDateTime(),
+        'instance_update_on' => DateUtility::getCurrentDateTime(),
     );
     $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
     $updateInstance = $db->update($instanceTableName, $instanceData);
@@ -86,7 +89,7 @@ try {
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
-            $resizeObj = new ImageResize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
+            $resizeObj = new ImageResizeUtility(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
             if ($_POST['vl_form'] == 4) {
                 list($width, $height) = getimagesize(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName);
                 if ($width > 240) {
@@ -103,7 +106,7 @@ try {
             if ($id) {
                 $db = $db->where('name', 'logo');
                 $db->update($tableName, array(
-                    "updated_on" => DateUtils::getCurrentDateTime(),
+                    "updated_on" => DateUtility::getCurrentDateTime(),
                     "updated_by" => $_SESSION['userId']
                 ));
             }
@@ -116,7 +119,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => DateUtils::getCurrentDateTime(),
+                "updated_on" => DateUtility::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -134,7 +137,7 @@ try {
             if ($id) {
                 $db = $db->where('name', $fieldName);
                 $db->update($tableName, array(
-                    "updated_on" => DateUtils::getCurrentDateTime(),
+                    "updated_on" => DateUtility::getCurrentDateTime(),
                     "updated_by" => $_SESSION['userId']
                 ));
             }
@@ -214,7 +217,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => DateUtils::getCurrentDateTime(),
+                "updated_on" => DateUtility::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -226,7 +229,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => DateUtils::getCurrentDateTime(),
+                "updated_on" => DateUtility::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -238,7 +241,7 @@ try {
         if ($id) {
             $db = $db->where('name', 'logo');
             $db->update($tableName, array(
-                "updated_on" => DateUtils::getCurrentDateTime(),
+                "updated_on" => DateUtility::getCurrentDateTime(),
                 "updated_by" => $_SESSION['userId']
             ));
         }

@@ -1,21 +1,17 @@
-<style>
-	.current {
-		display: block;
-		overflow-x: auto;
-		white-space: nowrap;
-	}
-</style>
-<link href="/assets/css/multi-select.css" rel="stylesheet" />
-<link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
-
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 
 $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
-$general = new CommonService();
+
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $activeTestModules = SystemService::getActiveTestModules();
 
@@ -56,6 +52,16 @@ function getColumnValues($db, $tableName, $sampleCode)
 $resultColumn = getColumns($db, $tableName);
 
 ?>
+<style>
+	.current {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+</style>
+<link href="/assets/css/multi-select.css" rel="stylesheet" />
+<link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
+
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

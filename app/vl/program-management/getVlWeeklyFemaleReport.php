@@ -1,7 +1,8 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
@@ -9,7 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
   
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 $country = $general->getGlobalConfig('vl_form');
@@ -150,10 +153,10 @@ $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleTestDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
+    $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
+    $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
   }
 }
 
@@ -170,10 +173,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleCollectionDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
+    $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
   }
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
+    $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
   }
   if($start_date!='0000-00-00' && $end_date!='0000-00-00')
   {

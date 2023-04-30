@@ -1,10 +1,14 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$db = \MysqliDb::getInstance();
-$general = new CommonService($db);
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 

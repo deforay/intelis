@@ -1,10 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 $geoDb = new GeoLocationsService($db);
-$generalDb = new CommonService($db);
+
+/** @var GeoLocationsService $geoDb */
+$geoDb = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
 $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {
     $field = "patient_district";
@@ -48,7 +55,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
         }
         $option["other"] = "Other";
     }
-    $options = $generalDb->generateSelectOptions($option, null, '-- Sélectionner --');
+    $options = $general->generateSelectOptions($option, null, '-- Sélectionner --');
     echo $options;
 } else if (isset($_POST['zName']) && $_POST['zName'] != "") {
     $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $_POST['zName'] . "%' AND patient_district is not null";
@@ -60,6 +67,6 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
         }
         $option["other"] = "Other";
     }
-    $options = $generalDb->generateSelectOptions($option, null, '-- Sélectionner --');
+    $options = $general->generateSelectOptions($option, null, '-- Sélectionner --');
     echo $options;
 }

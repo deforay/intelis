@@ -1,6 +1,7 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 
 
@@ -18,8 +19,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$covid19Obj = new Covid19Service();
-$covid19Results = $covid19Obj->getCovid19Results();
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$covid19Results = $covid19Service->getCovid19Results();
 
 
 $rKey = '';
@@ -444,7 +447,7 @@ foreach ($fResult as $fDetails) {
                                         </tr>
                                         <tr>
 
-                                            <th scope="row">Authorized on</td>
+                                            <th scope="row">Authorized on</th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" /></td>
                                             <th scope="row"></th>
                                             <td></td>

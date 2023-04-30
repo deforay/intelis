@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
 //print_r($_POST); die;
@@ -25,7 +28,7 @@ try {
         $db->where('test_type', $testType);
        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
-        $currentDateTime = DateUtils::getCurrentDateTime();
+        $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [];
         foreach ($mappedFacility as $facility) {
             $data[] = array(

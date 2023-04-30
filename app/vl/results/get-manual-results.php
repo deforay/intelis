@@ -1,18 +1,23 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 
-$facilitiesDb = new FacilitiesService();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 
 
 $tableName = "form_vl";
@@ -165,10 +170,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtils::isoDateFormat(trim($s_c_date[0]));
+          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
      if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtils::isoDateFormat(trim($s_c_date[1]));
+          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
@@ -176,10 +181,10 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
      //print_r($s_t_date);die;
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = DateUtils::isoDateFormat(trim($s_t_date[0]));
+          $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = DateUtils::isoDateFormat(trim($s_t_date[1]));
+          $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
@@ -261,7 +266,7 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
      $sWhere[] = " vl.result_status!=9 ";
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
+     $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
      if (!empty($facilityMap)) {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")";
      }
@@ -331,7 +336,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtils::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }

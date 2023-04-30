@@ -5,8 +5,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,7 +15,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $excel = new Spreadsheet();
 $output = [];
@@ -87,23 +90,23 @@ foreach ($rResult as $aRow) {
 	//sample collecion date
 	$sampleCollectionDate = '';
 	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$sampleCollectionDate =  DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
 	}
 	if ($aRow['sample_dispatched_datetime'] != null && trim($aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-		$sampleDispatchedDate = DateUtils::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
+		$sampleDispatchedDate = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 	}
 	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-		$sampleRecievedDate = DateUtils::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$testDate = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$testDate = '';
 	}
 	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$printDate = DateUtils::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$printDate = '';
 	}

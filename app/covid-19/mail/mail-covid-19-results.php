@@ -1,12 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = "Email Covid-19 Test Results";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $formId = $general->getGlobalConfig('vl_form');
 
 //main query

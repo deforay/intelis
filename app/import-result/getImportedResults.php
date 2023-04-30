@@ -2,8 +2,9 @@
 
 use App\Services\Covid19Service;
 use App\Services\EidService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -11,7 +12,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -25,13 +28,15 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = new EidService();
+    $eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    $covid19Obj = new Covid19Service();
-    $covid19Results = $covid19Obj->getCovid19Results();
+    
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+    $covid19Results = $covid19Service->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";
     $rejectionTableName = 'r_hepatitis_sample_rejection_reasons';
@@ -256,12 +261,12 @@ foreach ($rResult as $aRow) {
         }
     }
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtils::humanReadableDateFormat($aRow['sample_collection_date']);
+        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
     } else {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['sample_tested_datetime'] = DateUtils::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
     } else {
         $aRow['sample_tested_datetime'] = '';
     }
@@ -311,7 +316,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['facility_name'];
     $row[] = '<input style="width:90%;" type="text" name="batchCode" id="batchCode' . $aRow['temp_sample_id'] . '" value="' . $aRow['batch_code'] . '" onchange="updateBatchCode(this,' . $batchCode . ',' . $aRow['temp_sample_id'] . ');"/>';
     $row[] = $aRow['lot_number'];
-    $row[] = DateUtils::humanReadableDateFormat($aRow['lot_expiration_date']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lot_expiration_date']);
     $row[] = '<span id="rejectReasonName' . $aRow['temp_sample_id'] . '"><input type="hidden" id="rejectedReasonId' . $aRow['temp_sample_id'] . '" name="rejectedReasonId[]"/>'
         . $aRow['rejection_reason_name'] .
         '</span>';

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use DateTimeImmutable;
 
@@ -20,7 +21,9 @@ class ResultsHelper
             return null;
         }
 
-        $general = new CommonService();
+        /** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
         if ($interpretFormat === true) {
             $find =     ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\TbService;
@@ -10,8 +11,12 @@ $title = _("Export Data");
 require_once(APPLICATION_PATH . '/header.php');
 
 
-$general = new CommonService();
-$facilitiesDb = new FacilitiesService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $geoLocationDb = new GeoLocationsService();
 
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -23,9 +28,9 @@ $sQuery = "SELECT * FROM r_tb_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 
-$healthFacilites = $facilitiesDb->getHealthFacilities('tb');
+$healthFacilites = $facilitiesService->getHealthFacilities('tb');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesDb->getTestingLabs('tb');
+$testingLabs = $facilitiesService->getTestingLabs('tb');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='tb' AND batch_status='completed'";
@@ -38,8 +43,8 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-$tbModel = new TbService();
-$tbResults = $tbModel->getTbResults();
+$tbService = new TbService();
+$tbResults = $tbService->getTbResults();
 if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';
 } else {

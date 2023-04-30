@@ -1,8 +1,9 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UserService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 $title = _("Enter Covid-19 Result");
@@ -11,14 +12,18 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 
-$facilitiesDb = new FacilitiesService();
-$usersModel = new UserService();
 
-$healthFacilities = $facilitiesDb->getHealthFacilities('covid19');
-$testingLabs = $facilitiesDb->getTestingLabs('covid19');
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesDb->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersModel->getActiveUsers($facilityMap);
+/** @var UserService $usersService */
+$usersService = ContainerRegistry::get(UserService::class);
+
+$healthFacilities = $facilitiesService->getHealthFacilities('covid19');
+$testingLabs = $facilitiesService->getTestingLabs('covid19');
+
+$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+$userResult = $usersService->getActiveUsers($facilityMap);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
 	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -62,7 +67,7 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 $disable = "disabled = 'disabled'";
 if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
-	$vlQueryInfo['result_reviewed_datetime'] = DateUtils::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$vlQueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['result_reviewed_datetime'] = '';
 }

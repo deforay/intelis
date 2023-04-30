@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
@@ -10,7 +11,9 @@ require_once(APPLICATION_PATH . '/header.php');
 
 $module = 'C19';
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />

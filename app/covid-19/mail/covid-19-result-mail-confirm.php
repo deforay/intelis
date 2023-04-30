@@ -1,14 +1,17 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $tableName = "form_covid19";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";
@@ -215,11 +218,11 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
                if (!empty($fValueResult)) {
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
-                        $fieldValue = DateUtils::humanReadableDateFormat($fValueResult[0][$field], true);
+                        $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field], true);
                      }
                   } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
-                        $fieldValue = DateUtils::humanReadableDateFormat($fValueResult[0][$field]);
+                        $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
                      $fieldValue = (str_replace("_", " ", $fValueResult[0][$field]));

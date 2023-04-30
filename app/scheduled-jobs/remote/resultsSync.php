@@ -8,10 +8,13 @@ if (php_sapi_name() == 'cli') {
 
 use App\Services\ApiService;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 
-$general = new CommonService();
+/** @var MysqliDb $db */
+/** @var CommonService $general */
+$general = \App\Registries\ContainerRegistry::get(CommonService::class);
 $app = new ApiService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
@@ -167,10 +170,12 @@ try {
 
         $forms = array_column($c19LabResult, 'covid19_id');
 
-        $covid19Obj = new Covid19Service();
-        $symptoms = $covid19Obj->getCovid19SymptomsByFormId($forms);
-        $comorbidities = $covid19Obj->getCovid19ComorbiditiesByFormId($forms);
-        $testResults = $covid19Obj->getCovid19TestsByFormId($forms);
+        
+/** @var Covid19Service $covid19Service */
+$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+        $symptoms = $covid19Service->getCovid19SymptomsByFormId($forms);
+        $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($forms);
+        $testResults = $covid19Service->getCovid19TestsByFormId($forms);
 
         $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
         $data = array(
@@ -270,7 +275,7 @@ try {
 
     /* Update last_remote_results_sync in s_vlsm_instance */
     $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-    $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => DateUtils::getCurrentDateTime()));
+    $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => DateUtility::getCurrentDateTime()));
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

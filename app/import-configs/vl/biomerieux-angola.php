@@ -1,6 +1,6 @@
 <?php
 
-use App\Utilities\DateUtils;
+use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
@@ -196,7 +196,7 @@ try {
 
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
 
-                $data['result_imported_datetime'] = DateUtils::getCurrentDateTime();
+                $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 //echo "<pre>";var_dump($data);echo "</pre>";die;
                 $id = $db->insert("temp_sample_import", $data);
@@ -216,7 +216,7 @@ try {
         'user_id' => $_SESSION['userId'],
         'vl_sample_id' => $id,
         'test_type' => 'vl',
-        'updated_on' => DateUtils::getCurrentDateTime()
+        'updated_on' => DateUtility::getCurrentDateTime()
     );
     $db->insert("log_result_updates", $data);
 
