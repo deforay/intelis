@@ -1,12 +1,15 @@
 <?php
 
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
+
 use App\Services\ApiService;
 use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);

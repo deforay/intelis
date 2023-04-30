@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware\Api;
+namespace App\Middlewares\Api;
 
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -10,7 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpNotFoundException;
 
 
-class LegacyFallbackMiddleware implements MiddlewareInterface
+class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

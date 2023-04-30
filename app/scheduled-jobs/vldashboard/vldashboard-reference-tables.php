@@ -1,11 +1,14 @@
 <?php
 
+
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
+
 use App\Services\CommonService;
 use App\Utilities\DateUtils;
 
 ini_set('memory_limit', -1);
-
-require_once(__DIR__ . "/../../bootstrap.php");
 
 
 

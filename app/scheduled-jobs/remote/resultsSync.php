@@ -1,15 +1,15 @@
 <?php
 
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
+
 //this file gets the data from the local database and updates the remote database
 
 use App\Services\ApiService;
 use App\Services\Covid19Service;
 use App\Services\CommonService;
 use App\Utilities\DateUtils;
-
-if (php_sapi_name() == 'cli') {
-    require_once(dirname(__FILE__) . "/../../../bootstrap.php");
-}
 
 $general = new CommonService();
 $app = new ApiService();

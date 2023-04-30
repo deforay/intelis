@@ -52,18 +52,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "App\\Services\\": "app/services/",
-            "App\\Interop\\": "app/interop/",
-            "App\\Helpers\\": "app/helpers/",
-            "App\\Utilities\\": "app/utilities/",
-            "App\\Middleware\\": "app/middlewares/",
-            "App\\Middleware\\Api\\": "app/middlewares/api",
-            "App\\Exceptions\\": "app/exceptions/"
+            "App\\": "app/"
         }
     },
-    "config": {},
-    "require-dev": {
-        "rector/rector": "^0.15.25"
-    }
+    "config": {}
 }

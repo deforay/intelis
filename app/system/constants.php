@@ -12,7 +12,7 @@ chdir(__DIR__);
 
 // Setup Application Constants
 defined('ROOT_PATH')
-    || define('ROOT_PATH', realpath(dirname(__FILE__)));
+    || define('ROOT_PATH', realpath(dirname(__FILE__) . "/../../"));
 
 defined('WEB_ROOT')
     || define('WEB_ROOT', ROOT_PATH . DIRECTORY_SEPARATOR . 'public');

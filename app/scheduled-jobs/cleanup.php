@@ -1,8 +1,14 @@
 <?php
 
+// only run from command line
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
+
+require_once(__DIR__ . "/../../bootstrap.php");
+
 use App\Services\CommonService;
 
-require_once(__DIR__ . "/../bootstrap.php");
 
 $cleanup = array(
     APPLICATION_PATH . DIRECTORY_SEPARATOR .  'backups',

@@ -1,10 +1,15 @@
 <?php
 
+// only run from command line
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
+
+require_once(__DIR__ . "/../../bootstrap.php");
+
 use App\Services\CommonService;
 use App\Services\UserService;
 use App\Services\VlService;
-
-require_once(__DIR__ . "/../bootstrap.php");
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');

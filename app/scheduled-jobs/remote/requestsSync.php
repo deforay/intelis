@@ -1,20 +1,18 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
+
 use App\Services\ApiService;
 use App\Services\CommonService;
 use App\Utilities\DateUtils;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
-if (php_sapi_name() == 'cli') {
-    require_once(dirname(__FILE__) . "/../../../bootstrap.php");
-}
-
-
 $general = new CommonService();
 $app = new ApiService();
-
 
 
 $transactionId = $general->generateUUID();

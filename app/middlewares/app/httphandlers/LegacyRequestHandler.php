@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Middlewares\App\HttpHandlers;
 
 use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
@@ -9,7 +9,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 
-class RequestHandler implements RequestHandlerInterface
+class LegacyRequestHandler implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

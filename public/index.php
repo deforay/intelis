@@ -3,12 +3,12 @@
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 
-use App\Middleware\AppAuthMiddleware;
+use App\Middlewares\App\AppAuthMiddleware;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use Laminas\Diactoros\ServerRequestFactory;
-use App\Middleware\SystemAdminAuthMiddleware;
-use App\RequestHandler as LegacyRequestHandler;
+use App\Middlewares\SystemAdminAuthMiddleware;
+use App\Middlewares\App\HttpHandlers\LegacyRequestHandler;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 

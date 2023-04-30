@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware\Api;
+namespace App\Middlewares\Api;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,7 +18,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
     }
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        
+
         if ($this->shouldExcludeFromAuthCheck($request)) {
 
             // Skip the authentication check if the request is an AJAX request,
@@ -54,8 +54,6 @@ class ApiAuthMiddleware implements MiddlewareInterface
         }
 
         return $response->withStatus(200);
-
-
     }
 
     private function getTokenFromAuthorizationHeader(string $authorization): ?string
@@ -99,6 +97,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
         $excludedRoutes = [
             '/api/v1.1/user/login.php',
             '/api/v1.1/version.php',
+            '/api/version.php',
             // Add other routes to exclude from the authentication check here
         ];
 

@@ -80,12 +80,5 @@ return array(
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
-    'App\\Utilities\\' => array($baseDir . '/app/utilities'),
-    'App\\Services\\' => array($baseDir . '/app/services'),
-    'App\\Middleware\\Api\\' => array($baseDir . '/app/middlewares/api'),
-    'App\\Middleware\\' => array($baseDir . '/app/middlewares'),
-    'App\\Interop\\' => array($baseDir . '/app/interop'),
-    'App\\Helpers\\' => array($baseDir . '/app/helpers'),
-    'App\\Exceptions\\' => array($baseDir . '/app/exceptions'),
     'App\\' => array($baseDir . '/app'),
 );

@@ -1,7 +1,11 @@
 <?php
 
-
-require_once(__DIR__ . "/../bootstrap.php");
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../bootstrap.php");
+} else {
+    // only run from command line
+    exit(0);
+}
 
 use phpseclib3\Net\SFTP;
 use phpseclib3\Crypt\PublicKeyLoader;
@@ -43,7 +47,7 @@ $baseFileName = 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';
 $password = hash('sha1', SYSTEM_CONFIG['database']['password'] . $randomString);
 
 try {
-    exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['database']['username'] . ' --password="' . SYSTEM_CONFIG['database']['password'] . '" --host=' . SYSTEM_CONFIG['database']['host'] . ' --port=' . SYSTEM_CONFIG['database']['port'] . ' --databases ' . SYSTEM_CONFIG['database']['db']. '  > ' . $baseFileName);
+    exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['database']['username'] . ' --password="' . SYSTEM_CONFIG['database']['password'] . '" --host=' . SYSTEM_CONFIG['database']['host'] . ' --port=' . SYSTEM_CONFIG['database']['port'] . ' --databases ' . SYSTEM_CONFIG['database']['db'] . '  > ' . $baseFileName);
 
     exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
 

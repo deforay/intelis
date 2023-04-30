@@ -1,8 +1,5 @@
 <?php
 
-use App\Services\SystemService;
-use Laminas\Config\Factory;
-
 if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     session_name('appSession');
     session_start();
@@ -10,8 +7,12 @@ if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
 
 chdir(__DIR__);
 
-include_once(__DIR__ . DIRECTORY_SEPARATOR . 'constants.php');
+require_once(__DIR__ . '/app/system/constants.php');
 require_once(ROOT_PATH . '/vendor/autoload.php');
+
+
+use App\Services\SystemService;
+use Laminas\Config\Factory;
 
 
 $configFile = ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php";

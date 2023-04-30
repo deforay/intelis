@@ -6,9 +6,9 @@ require_once(dirname(__DIR__) . '/../bootstrap.php');
 use DI\Container;
 use Slim\Factory\AppFactory;
 use App\Services\UserService;
-use App\Middleware\Api\ApiAuthMiddleware;
+use App\Middlewares\Api\ApiAuthMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
-use App\Middleware\Api\LegacyFallbackMiddleware;
+use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
 use function Laminas\Stratigility\middleware;
 
@@ -77,7 +77,7 @@ $app->any('/api/v1.1/init', function ($request, $response, $args) {
 
 
 // 4. Allow existing PHP includes using LegacyFallbackMiddleware
-$middlewarePipe->pipe(new LegacyFallbackMiddleware());
+$middlewarePipe->pipe(new ApiLegacyFallbackMiddleware());
 
 
 

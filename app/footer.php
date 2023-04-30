@@ -101,7 +101,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					message: "<h3><?= _("Preparing for VLSTS Remote sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/commonDataSync.php",
+						url: "/scheduled-jobs/remote/commonDataSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);
@@ -126,7 +126,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/requestsSync.php",
+						url: "/scheduled-jobs/remote/requestsSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);
@@ -152,7 +152,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-						url: "/remote/scheduled-jobs/resultsSync.php",
+						url: "/scheduled-jobs/remote/resultsSync.php",
 					})
 					.done(function(data) {
 						//console.log(data);
@@ -178,7 +178,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				(function getLastSyncDateTime() {
 					let currentDateTime = new Date();
 					$.ajax({
-						url: '/remote/scheduled-jobs/getLastSyncTime.php',
+						url: '/scheduled-jobs/remote/getLastSyncTime.php',
 						cache: false,
 						success: function(lastSyncDateString) {
 							if (lastSyncDateString != null && lastSyncDateString != undefined) {
