@@ -509,7 +509,7 @@ try {
                 $_POST['sampleCodeKey'] = $maxId;
             } else {
                 $_SESSION['alertMsg'] = _("Please check your sample ID");
-                header("Location:addVlRequest.php");
+                header("Location:add-request.php");
             }
         }
         // print_r($_POST['sampleCode']);die;
@@ -556,13 +556,13 @@ try {
             }
 
             if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-                header("Location:addVlRequest.php");
+                header("Location:add-request.php");
             } else {
                 header("Location:add-request.php");
             }
         } else {
             $_SESSION['alertMsg'] = _("Please try again later");
-            header("Location:vlRequest.php");
+            header("Location:view-request.php");
         }
     }
 } catch (Exception $exc) {

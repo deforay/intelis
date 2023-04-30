@@ -155,12 +155,12 @@ $output = array(
      "iTotalDisplayRecords" => $iTotal,
      "aaData" => array()
 );
-$editRequest = false;
-$syncRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) {
+//$editRequest = false;
+//$syncRequest = false;
+/*if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
      $syncRequest = true;
-}
+}*/
 
 foreach ($rResult as $aRow) {
 
@@ -200,14 +200,14 @@ foreach ($rResult as $aRow) {
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['vl_sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
      //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '\',900,520);"> Result</a>';
 
-     if ($editRequest) {
-          $edit = '<a href="editVlRequest.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+     //if ($editRequest) {
+          $edit = '<a href="edit-request.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }
-     }
+    // }
 
      if (isset($barCodePrinting) && $barCodePrinting != "off") {
           $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
@@ -223,12 +223,12 @@ foreach ($rResult as $aRow) {
      }
 
      $actions = "";
-     if ($editRequest) {
+   //  if ($editRequest) {
           $actions .= $edit;
-     }
-     if ($syncRequest) {
+    // }
+    // if ($syncRequest) {
           $actions .= $sync;
-     }
+    // }
      if (!$_POST['hidesrcofreq']) {
           $row[] = $actions . $barcode;
      }
