@@ -86,7 +86,8 @@ $systemConfig['recency']['crossloginSalt'] = "PUT-A-RANDOM-STRING-HERE";
 
 
 $systemConfig['system'] =[
-    'debug_mode' => true
+    'debug_mode' => true, // set to true to enable debug mode
+    'cache_di' => false, // set to true to enable DI Container caching
 ];
 
 

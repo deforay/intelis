@@ -248,7 +248,7 @@ if (trim($id) != '') {
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
         $tbl .=  '</span><br>';
 
-        if (isset($result) && !empty($result) && sizeof($result) > 0) {
+        if (isset($result) && !empty($result)) {
 
             $tbl .= '<br><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
             $tbl .=     '<tr nobr="true">

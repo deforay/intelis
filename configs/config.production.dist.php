@@ -95,7 +95,8 @@ $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
 
 $systemConfig['system'] =[
-    'debug_mode' => false
+    'debug_mode' => false, // set to true to enable debug mode
+    'cache_di' => true, // set to true to enable DI Container caching
 ];
 
 return $systemConfig;
