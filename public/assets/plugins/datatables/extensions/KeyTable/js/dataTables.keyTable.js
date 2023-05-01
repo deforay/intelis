@@ -185,7 +185,7 @@ KeyTable = function ( oInit )
 		"action": [],
 		"esc": [],
 		"focus": [],
-		"blur": [];
+		"blur": []
 	};
 
 	/*

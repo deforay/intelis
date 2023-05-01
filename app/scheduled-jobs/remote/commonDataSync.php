@@ -271,6 +271,7 @@ $response = $client->post(
 );
 
 $jsonResponse = $response->getBody()->getContents();
+// $general->errorLog($jsonResponse);
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [

@@ -2,6 +2,8 @@
 
 namespace App\Middlewares\App;
 
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -63,6 +65,10 @@ class AppAuthMiddleware implements MiddlewareInterface
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
+        // Check if the URI matches the /remote/* pattern
+        if (fnmatch('/remote/*', $uri)) {
+            return true;
+        }
 
         //error_log($uri);
 

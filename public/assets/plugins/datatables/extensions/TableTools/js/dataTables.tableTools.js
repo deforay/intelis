@@ -557,7 +557,7 @@ TableTools = function( oDT, oOpts )
 			 * Array of nodes which are currently selected
 			 *  @property selected
 			 *  @type	 array
-			 *  @default  [];
+			 *  @default  []
 			 */
 			"selected": [],
 
@@ -623,7 +623,7 @@ TableTools = function( oDT, oOpts )
 		 * Default button set
 		 *  @property buttonSet
 		 *  @type	 array
-		 *  @default  [];
+		 *  @default  []
 		 */
 		"buttonSet": [],
 
@@ -672,7 +672,7 @@ TableTools = function( oDT, oOpts )
 			 * Nodes which have been removed from the display by setting them to display none
 			 *  @property hidden
 			 *  @type	 array
-			 *  @default  [];
+			 *  @default  []
 			 */
 			"hidden": [],
 
@@ -2211,7 +2211,7 @@ TableTools.prototype = {
 				.rows( oConfig.oSelectorOpts )
 				.indexes()
 				.flatten()
-				.to[];
+				.toArray();
 		}
 		else {
 			// 1.9- style
@@ -2682,7 +2682,7 @@ TableTools.prototype = {
  * there is need of a master)
  *  @property _aInstances
  *  @type	 Array
- *  @default  [];
+ *  @default  []
  *  @private
  */
 TableTools._aInstances = [];
@@ -2692,7 +2692,7 @@ TableTools._aInstances = [];
  * Store of all listeners and their callback functions
  *  @property _aListeners
  *  @type	 Array
- *  @default  [];
+ *  @default  []
  */
 TableTools._aListeners = [];
 

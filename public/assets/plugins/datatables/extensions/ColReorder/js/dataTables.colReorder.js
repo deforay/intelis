@@ -462,9 +462,9 @@ var ColReorder = function( dt, opts )
 		 *   to: insert point
 		 *  @property aoTargets
 		 *  @type     array
-		 *  @default  [];
+		 *  @default  []
 		 */
-		"aoTargets": [];
+		"aoTargets": []
 	};
 
 

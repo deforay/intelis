@@ -26,7 +26,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php
 
-	if (!empty($applicationConfig['remoteURL']) && isset($applicationConfig['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+	if (!empty($applicationConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
 			<small><a href="javascript:syncRemoteData('<?= $applicationConfig['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>

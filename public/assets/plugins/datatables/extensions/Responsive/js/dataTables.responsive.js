@@ -80,7 +80,7 @@ var Responsive = function ( settings, opts ) {
 
 	this.s = {
 		dt: new DataTable.Api( settings ),
-		columns: [];
+		columns: []
 	};
 
 	// Check if responsive has already been initialised on this table

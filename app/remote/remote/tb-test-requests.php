@@ -14,7 +14,7 @@ $data = json_decode($jsonData, true);
 
 $payload = [];
 
-$labId = $data['labName'] ?: $data['labId'] ?: null;
+$labId = $data['labName'] ?? $data['labId'] ?? null;
 
 if (empty($labId)) {
     exit(0);
