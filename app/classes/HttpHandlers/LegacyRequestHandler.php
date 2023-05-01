@@ -2,6 +2,7 @@
 
 namespace App\HttpHandlers;
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use MysqliDb;
@@ -43,7 +44,8 @@ class LegacyRequestHandler implements RequestHandlerInterface
                     $fileToInclude = (APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
                 } else {
                     http_response_code(404);
-                    $fileToInclude = APPLICATION_PATH . '/error/404.php';
+                    throw new SystemException(_('Sorry! We could not find this page or resource.'), 404);
+                    //$fileToInclude = APPLICATION_PATH . '/error/error.php';
                 }
                 break;
         }

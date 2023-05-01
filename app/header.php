@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
@@ -27,7 +28,6 @@ $syncLatestTime = $general->getLastSyncDateTime();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
-
 $skin = "skin-blue";
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
@@ -48,9 +48,9 @@ if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['inst
 
 // Check if the user can access the requested page
 if (!$usersService->isAllowed(basename($_SERVER['PHP_SELF']))) {
-	header("Location:/error/401.php");
+	http_response_code(401);
+	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }
-
 
 if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php', 'otherConfig.php'))) {
 	$allAdminMenuAccess = true;

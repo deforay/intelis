@@ -19,16 +19,17 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
 use App\Helpers\PdfConcatenateHelper;
-use App\HttpHandlers\LegacyRequestHandler;
-use App\Middlewares\Api\ApiAuthMiddleware;
-use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
-use App\Middlewares\App\AppAuthMiddleware;
-use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Middlewares\Api\ApiAuthMiddleware;
+use App\Middlewares\App\AppAuthMiddleware;
 use Laminas\Config\Factory as ConfigFactory;
+use App\ErrorHandlers\ErrorResponseGenerator;
+use App\Middlewares\SystemAdminAuthMiddleware;
+use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
 try {
     // Load configuration
@@ -38,6 +39,7 @@ try {
     }
 
     $systemConfig = ConfigFactory::fromFile($configFile);
+    $debugMode = $systemConfig['system']['debug_mode'] ?? false;
 } catch (Exception $e) {
     echo "Error loading configuration file: Please ensure the config file is present";
     exit;
@@ -94,26 +96,25 @@ $builder->addDefinitions([
 ]);
 
 // Middlewares
-
 $builder->addDefinitions([
     LegacyRequestHandler::class => DI\create(LegacyRequestHandler::class),
     AppAuthMiddleware::class => DI\create(AppAuthMiddleware::class),
     SystemAdminAuthMiddleware::class => DI\create(SystemAdminAuthMiddleware::class),
     ApiAuthMiddleware::class => DI\create(ApiAuthMiddleware::class)
         ->constructor(DI\get(UsersService::class)),
+    ErrorHandlerMiddleware::class => DI\create(ErrorHandlerMiddleware::class)
+        ->constructor(DI\get(ErrorResponseGenerator::class)),
     ApiLegacyFallbackMiddleware::class => DI\create(ApiLegacyFallbackMiddleware::class)
 ]);
 
-// Utilities
+// Utilities, Helpers and Other Classes
 $builder->addDefinitions([
     DateUtility::class => DI\create(DateUtility::class),
     ImageResizeUtility::class => DI\create(ImageResizeUtility::class),
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
-    MiscUtility::class => DI\create(MiscUtility::class)
-]);
-
-// Helpers
-$builder->addDefinitions([
+    MiscUtility::class => DI\create(MiscUtility::class),
+    ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
+        ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
     PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
     ResultsHelper::class => DI\create(ResultsHelper::class),

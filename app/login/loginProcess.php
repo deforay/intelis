@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -172,9 +173,14 @@ try {
                 $resource = 'user-login';
                 $general->activityLog($eventType, $action, $resource);
 
-                $redirect = '/error/401.php';
+                http_response_code(401);
+                $redirect = '/error/error.php';
                 //set role and privileges
-                $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module FROM roles_privileges_map as rp INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id INNER JOIN resources as r ON r.resource_id=p.resource_id  where rp.role_id='" . $userRow['role_id'] . "'";
+                $priQuery = "SELECT p.privilege_name, rp.privilege_id, r.module
+                                FROM roles_privileges_map as rp
+                                INNER JOIN privileges as p ON p.privilege_id=rp.privilege_id
+                                INNER JOIN resources as r ON r.resource_id=p.resource_id
+                                WHERE rp.role_id='" . $userRow['role_id'] . "'";
                 $priInfo = $db->query($priQuery);
                 $module = $priId = [];
                 if ($priInfo) {
@@ -186,8 +192,8 @@ try {
                     if ($userRow['landing_page'] != '') {
                         $redirect = $userRow['landing_page'];
                     } else {
-                        $fileNameList = array('index.php', 'addVlRequest.php', 'vlRequest.php', 'batchcode.php', 'vlRequestMail.php', 'addImportResult.php', 'vlPrintResult.php', 'vlTestResult.php', 'vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php');
-                        $fileName = array('/dashboard/index.php', '/vl/requests/addVlRequest.php', '/vl/requests/vlRequest.php', '/vl/batch/batchcode.php', 'mail/vlRequestMail.php', 'import-result/addImportResult.php', '/vl/results/vlPrintResult.php', '/vl/results/vlTestResult.php', 'program-management/vl-sample-status.php', 'program-management/vl-export-data.php', 'program-management/highViralLoad.php', 'roles/roles.php', 'users/$user.php', 'facilities/facilities.php', 'global-config/globalConfig.php', 'import-configs/importConfig.php');
+                        $fileNameList = ['index.php', 'addVlRequest.php', 'vlRequest.php', 'batchcode.php', 'vlRequestMail.php', 'addImportResult.php', 'vlPrintResult.php', 'vlTestResult.php', 'vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php'];
+                        $fileName = ['/dashboard/index.php', '/vl/requests/addVlRequest.php', '/vl/requests/vlRequest.php', '/vl/batch/batchcode.php', 'mail/vlRequestMail.php', 'import-result/addImportResult.php', '/vl/results/vlPrintResult.php', '/vl/results/vlTestResult.php', 'program-management/vl-sample-status.php', 'program-management/vl-export-data.php', 'program-management/highViralLoad.php', 'roles/roles.php', 'users/$user.php', 'facilities/facilities.php', 'global-config/globalConfig.php', 'import-configs/importConfig.php'];
                         foreach ($fileNameList as $redirectFile) {
                             if (in_array($redirectFile, $priId)) {
                                 $arrIndex = array_search($redirectFile, $fileNameList);
@@ -211,10 +217,10 @@ try {
             } else {
                 $user->userHistoryLog($userName, 'failed');
 
-                throw new Exception(_("Please check your login credentials"));
+                throw new SystemException(_("Please check your login credentials"));
             }
         } else {
-            throw new Exception(_("Please check your login credentials"));
+            throw new SystemException(_("Please check your login credentials"));
         }
     }
 } catch (Exception $exc) {

@@ -4,6 +4,7 @@ require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 
 use App\Middlewares\App\AppAuthMiddleware;
+use App\Middlewares\ErrorHandlerMiddleware;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -22,7 +23,11 @@ $request = ServerRequestFactory::fromGlobals();
 $middlewarePipe = new MiddlewarePipe();
 
 
-// 1. CORS Middleware
+$middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));
+
+
+
+// CORS Middleware
 $middlewarePipe->pipe(new CorsMiddleware([
     "origin" => ["*"], // Allow any origin, or specify a list of allowed origins
     "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
@@ -33,7 +38,7 @@ $middlewarePipe->pipe(new CorsMiddleware([
 ]));
 
 
-// 2. Auth Middleware
+// Auth Middleware
 // Check if the request is for the system admin or not
 $uri = $request->getUri()->getPath();
 if (strpos($uri, '/system-admin') === 0) {
@@ -45,7 +50,7 @@ if (strpos($uri, '/system-admin') === 0) {
 }
 
 
-// 3. ACL Middleware
+// ACL Middleware
 // TODO: Implement ACL Middleware
 
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
