@@ -273,7 +273,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 3) {
      require('forms/edit-drc.php');
 } else if ($arr['vl_form'] == 4) {
-     require('forms/edit-zambia.php');
+     //require('forms/edit-zambia.php');
 } else if ($arr['vl_form'] == 5) {
      require('forms/edit-png.php');
 } else if ($arr['vl_form'] == 6) {

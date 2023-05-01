@@ -5,18 +5,30 @@ use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
+use App\Helpers\ResultsHelper;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\Covid19Service;
 use App\Services\PatientsService;
+use App\Utilities\CaptchaUtility;
 use App\Services\HepatitisService;
+use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
+use App\Helpers\PdfConcatenateHelper;
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Middlewares\Api\ApiAuthMiddleware;
+use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
+use App\Middlewares\App\AppAuthMiddleware;
+use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use Laminas\Config\Factory as ConfigFactory;
+use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
+use Laminas\Config\Factory as ConfigFactory;
 
 try {
     // Load configuration
@@ -26,7 +38,7 @@ try {
     }
 
     $systemConfig = ConfigFactory::fromFile($configFile);
-} catch (\Exception $e) {
+} catch (Exception $e) {
     echo "Error loading configuration file: Please ensure the config file is present";
     exit;
 }
@@ -41,13 +53,18 @@ if (!empty(APPLICATION_ENV) && APPLICATION_ENV === 'production') {
 }
 
 
+// Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
     'db' => DI\factory(
         function (ContainerInterface $c) {
             return new MysqliDb($c->get('applicationConfig')['database']);
         }
-    ),
+    )
+]);
+
+// Services
+$builder->addDefinitions([
     SystemService::class => DI\create(SystemService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig')),
     CommonService::class => DI\create(CommonService::class)
@@ -75,6 +92,33 @@ $builder->addDefinitions([
     ApiService::class => DI\create(ApiService::class)
         ->constructor(DI\get('db')),
 ]);
+
+// Middlewares
+
+$builder->addDefinitions([
+    LegacyRequestHandler::class => DI\create(LegacyRequestHandler::class),
+    AppAuthMiddleware::class => DI\create(AppAuthMiddleware::class),
+    SystemAdminAuthMiddleware::class => DI\create(SystemAdminAuthMiddleware::class),
+    ApiAuthMiddleware::class => DI\create(ApiAuthMiddleware::class)
+        ->constructor(DI\get(UsersService::class)),
+    ApiLegacyFallbackMiddleware::class => DI\create(ApiLegacyFallbackMiddleware::class)
+]);
+
+// Utilities
+$builder->addDefinitions([
+    DateUtility::class => DI\create(DateUtility::class),
+    ImageResizeUtility::class => DI\create(ImageResizeUtility::class),
+    CaptchaUtility::class => DI\create(CaptchaUtility::class),
+    MiscUtility::class => DI\create(MiscUtility::class)
+]);
+
+// Helpers
+$builder->addDefinitions([
+    PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
+    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
+    ResultsHelper::class => DI\create(ResultsHelper::class),
+]);
+
 
 $container = $builder->build();
 

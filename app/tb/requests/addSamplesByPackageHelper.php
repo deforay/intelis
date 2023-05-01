@@ -13,7 +13,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 /** @var TbService $tbService */
-$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
+$tbService = ContainerRegistry::get(TbService::class);
 
 
 $sampleQuery = "SELECT tb_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_tb where tb_id IN (" . $_POST['sampleId'] . ") ORDER BY tb_id";

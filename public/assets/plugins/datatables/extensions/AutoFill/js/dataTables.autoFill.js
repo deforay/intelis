@@ -105,7 +105,7 @@ var AutoFill = function( oDT, oConfig )
 		/**
 		 * @namespace Information stored for each column. An array of objects
 		 */
-		"columns": []
+		"columns": [];
 	};
 
 

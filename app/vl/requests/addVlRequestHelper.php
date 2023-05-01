@@ -5,10 +5,6 @@ use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -51,7 +47,13 @@ try {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
         $provinceInfo = $db->query($provinceQuery);
         if (!isset($provinceInfo) || count($provinceInfo) == 0) {
-            $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
+            $db->insert(
+                'geographical_divisions',
+                [
+                    'geo_name' => $splitProvince[0],
+                    'geo_code' => $splitProvince[1]
+                ]
+            );
         }
     }
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
@@ -122,7 +124,7 @@ try {
     if (trim($_POST['hasChangedRegimen']) == "no") {
         $_POST['reasonForArvRegimenChange'] = null;
         $_POST['dateOfArvRegimenChange'] = null;
-    } else if (trim($_POST['hasChangedRegimen']) == "yes") {
+    } elseif (trim($_POST['hasChangedRegimen']) == "yes") {
         if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
             $_POST['dateOfArvRegimenChange'] = DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']);
         }

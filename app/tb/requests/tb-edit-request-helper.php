@@ -18,7 +18,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $tableName = "form_tb";
 $tableName1 = "activity_log";

@@ -30,7 +30,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
@@ -384,7 +384,7 @@ if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules'][
 if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true) {
 
     /** @var TbService $tbService */
-    $tbService = \App\Registries\ContainerRegistry::get(TbService::class);
+    $tbService = ContainerRegistry::get(TbService::class);
     /* SITE INFORMATION SECTION */
 
     /* Infant and Mother's Health Information Section */

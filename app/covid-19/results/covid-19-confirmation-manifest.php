@@ -1,18 +1,19 @@
 <?php
+
 $title = "Add Samples from Manifest";
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$tsQuery = "SELECT * FROM r_sample_status";
-$tsResult = $db->rawQuery($tsQuery);
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
-$sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
-$sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active'";
-$fResult = $db->rawQuery($fQuery);
-$batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
-$batResult = $db->rawQuery($batQuery);
+// $tsQuery = "SELECT * FROM r_sample_status";
+// $tsResult = $db->rawQuery($tsQuery);
+// $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
+// $configFormResult = $db->rawQuery($configFormQuery);
+// $sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
+// $sResult = $db->rawQuery($sQuery);
+// $fQuery = "SELECT * FROM facility_details where status='active'";
+// $fResult = $db->rawQuery($fQuery);
+// $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
+// $batResult = $db->rawQuery($batQuery);
 ?>
 <style>
 	.select2-selection__choice {
@@ -54,7 +55,7 @@ $batResult = $db->rawQuery($batQuery);
 									<th>Number of samples</th>
 									<th>Added On</th>
 									<?php if (isset($_SESSION['privileges']) && in_array("generate-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
-									<th>Action</th>
+										<th>Action</th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -112,18 +113,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bDestroy": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center",
-          			"bSortable": false
-				}
-			],
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center",
+				"bSortable": false
+			}],
 			"aaSorting": [
 				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 1 : 1 ?>, "desc"]
 			],

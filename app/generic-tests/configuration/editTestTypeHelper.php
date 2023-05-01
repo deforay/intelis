@@ -17,7 +17,7 @@ $tableName = "r_test_types";
 $tableName2="generic_test_sample_type_map";
 $tableName3="generic_test_reason_map";
 $tableName4="generic_test_symptoms_map";
-$testAttribute=[]
+$testAttribute=[];
 /*echo "<pre>";
 print_r($_POST);
 die;*/
@@ -57,7 +57,7 @@ try {
         $db = $db->where('test_type_id', $testTypeId);
         $db->update($tableName, $data);
         
-        if ($testTypeId != 0 && $testTypeId != '') {
+        if ($testTypeId != 0) {
 
             if (isset($_POST['sampleType']) && count($_POST['sampleType'])>0) {
                 $db = $db->where('test_type_id',$testTypeId);

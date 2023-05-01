@@ -27,7 +27,7 @@ $activeTestModules = $systemService->getActiveTestModules();
 // }
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
 ?>
 <style>

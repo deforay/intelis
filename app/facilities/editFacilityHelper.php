@@ -27,7 +27,7 @@ $healthFacilityTable = "health_facilities";
 $signTableName = "lab_report_signatories";
 
 $facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', array($facilityId));
-$facilityAttributes = json_decode($facilityRow['facility_attributes'],true);
+$facilityAttributes = json_decode($facilityRow['facility_attributes'], true);
 
 
 try {
@@ -76,7 +76,7 @@ try {
 		if (!empty($_POST['testingPoints'])) {
 			$_POST['testingPoints'] = explode(",", $_POST['testingPoints']);
 			$_POST['testingPoints'] = array_map('trim', $_POST['testingPoints']);
-            $_POST['testingPoints'] = json_encode($_POST['testingPoints']);
+			$_POST['testingPoints'] = json_encode($_POST['testingPoints']);
 		} else {
 			$_POST['testingPoints'] = null;
 		}
@@ -219,7 +219,8 @@ try {
 			$imageName = "logo-" . $string . $extension;
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName)) {
 
-				$resizeObj = new ImageResizeUtility(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
+				$resizeObj = new ImageResizeUtility();
+				$resizeObj = $resizeObj->setFileName(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName);
 				$resizeObj->resizeToWidth(100);
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
@@ -273,7 +274,8 @@ try {
 						$imageName = $string . $extension;
 						if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
 
-							$resizeObj = new ImageResizeUtility($pathname . $imageName);
+							$resizeObj = new ImageResizeUtility();
+							$resizeObj = $resizeObj->setFileName($pathname . $imageName);
 							$resizeObj->resizeToWidth(100);
 							$resizeObj->save($pathname . $imageName);
 

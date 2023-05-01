@@ -62,7 +62,7 @@ try {
     $post['loginId'] = $post['loginId'] ?: $post['login_id'] ?: null;
     $post['role'] = $post['role'] ?: $post['role_id'] ?: null;
     $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hash_algorithm'] ?: 'phb';
-    
+
     if (!isset($user)) {
         if (!$apiKey) {
             throw new Exception("Invalid API Key. Please check your request parameters.");
@@ -113,13 +113,14 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new ImageResizeUtility($signatureImagePath);
+            $resizeObj = new ImageResizeUtility();
+            $resizeObj = $resizeObj->setFileName($signatureImagePath);
             $resizeObj->resizeToWidth(100);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;
         }
     }
-    
+
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);

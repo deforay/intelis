@@ -376,7 +376,7 @@ $.widget = function( name, base, prototype ) {
 		_proto: $.extend( {}, prototype ),
 		// track widgets that inherit from this widget in case this widget is
 		// redefined after a widget inherits from it
-		_childConstructors: []
+		_childConstructors: [];
 	});
 
 	basePrototype = new base();

@@ -1,6 +1,7 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 
@@ -28,7 +29,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 /** @var TbService $tbService */
-$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
+$tbService = ContainerRegistry::get(TbService::class);
 $tbXPertResults = $tbService->getTbResults('x-pert');
 $tbLamResults = $tbService->getTbResults('lam');
 $specimenTypeResult = $tbService->getTbSampleTypes();
@@ -82,7 +83,7 @@ $attributes = null;
 if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$db->where("f.facility_id", $tbInfo['lab_id']);
 	$db->join("testing_labs as l", "l.facility_id=f.facility_id", "INNER");
-	$results = $db->getOne("facility_details as f", "*");
+	$results = $db->getOne("facility_details as f");
 	if (isset($results['attributes']) && $results['attributes'] != "") {
 		$attributes = json_decode($results['attributes'], true);
 	}

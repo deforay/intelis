@@ -28,7 +28,7 @@ if (!empty(SYSTEM_CONFIG['sftp']['host'])) {
         $password = SYSTEM_CONFIG['sftp']['password'];
     }
 
-    if (!empty($password) && $password !== false) {
+    if (!empty($password)) {
         $sftp = new SFTP(SYSTEM_CONFIG['sftp']['host'], SYSTEM_CONFIG['sftp']['port']);
 
         if (!$sftp->login(SYSTEM_CONFIG['sftp']['username'], $password)) {

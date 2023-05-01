@@ -5,6 +5,7 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\TbService;
 
 
@@ -35,7 +36,7 @@ $pResult = $db->rawQuery($pQuery);
 // Getting the list of Provinces, Districts and Facilities
 
 /** @var TbService $tbService */
-$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
+$tbService = ContainerRegistry::get(TbService::class);
 
 
 $tbXPertResults = $tbService->getTbResults('x-pert');

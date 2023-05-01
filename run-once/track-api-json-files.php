@@ -30,7 +30,7 @@ foreach ($jsonResult as $row) {
         $output = stripslashes($row['request_data']);
         $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
         // Save in json file
-        if (isset($output) && !empty($output)) {
+        if (!empty($output)) {
             $filename = $row['transaction_id'] . '.json';
             $fp = fopen($pathname . $filename, 'w');
             fwrite($fp, $output);
@@ -42,7 +42,7 @@ foreach ($jsonResult as $row) {
         $output = stripslashes($row['response_data']);
         $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR;
         // Save in json file
-        if (isset($output) && !empty($output)) {
+        if (!empty($output)) {
             $filename = $row['transaction_id'] . '.json';
             $fp = fopen($pathname . $filename, 'w');
             fwrite($fp, $output);

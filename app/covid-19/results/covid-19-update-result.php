@@ -128,7 +128,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 3) {
 	require('forms/update-drc-result.php');
 } else if ($arr['vl_form'] == 4) {
-	require('forms/update-zambia-result.php');
+	// require('forms/update-zambia-result.php');
 } else if ($arr['vl_form'] == 5) {
 	require('forms/update-png-result.php');
 } else if ($arr['vl_form'] == 6) {
@@ -136,7 +136,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 7) {
 	require('forms/update-rwanda-result.php');
 } else if ($arr['vl_form'] == 8) {
-	require('forms/update-angola-result.php');
+	// require('forms/update-angola-result.php');
 }
 
 ?>

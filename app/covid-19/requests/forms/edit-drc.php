@@ -27,7 +27,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $patientsModel = new PatientsService();
 

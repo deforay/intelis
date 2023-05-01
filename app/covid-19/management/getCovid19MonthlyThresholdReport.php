@@ -217,8 +217,6 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
 

@@ -20,7 +20,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$_SESSION['module'] = $_SESSION['module'] ?? []
+$_SESSION['module'] = $_SESSION['module'] ?? [];
 
 $syncLatestTime = $general->getLastSyncDateTime();
 

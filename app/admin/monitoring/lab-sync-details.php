@@ -12,7 +12,7 @@ require_once(APPLICATION_PATH . '/header.php');
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $facilityDetails = $facilitiesService->getAllFacilities();
 foreach ($facilityDetails as $row) {

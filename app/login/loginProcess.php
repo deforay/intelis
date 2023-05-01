@@ -200,7 +200,7 @@ try {
                 //check clinic or lab user
                 $_SESSION['userType']   = '';
                 $_SESSION['privileges'] = $priId;
-                $_SESSION['module'] = $module ?: []
+                $_SESSION['module'] = $module ?: [];
 
                 if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                     $redirect = "/users/editProfile.php";

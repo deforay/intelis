@@ -17,8 +17,8 @@ $tableName = "r_test_types";
 $tableName2="generic_test_sample_type_map";
 $tableName3="generic_test_reason_map";
 $tableName4="generic_test_symptoms_map";
-$testAttribute=[]
-$testResultAttribute=[]
+$testAttribute=[];
+$testResultAttribute=[];
 /*echo "<pre>";
 print_r($_POST);
 die;*/
@@ -56,7 +56,7 @@ try {
         
         $id = $db->insert($tableName, $data);
         $lastId = $db->getInsertId();
-        if ($lastId != 0 && $lastId != '') {
+        if ($lastId != 0) {
 
             if (isset($_POST['sampleType']) && count($_POST['sampleType'])>0) {
                 foreach($_POST['sampleType'] as $val){

@@ -9,6 +9,7 @@ use Laminas\Stratigility\MiddlewarePipe;
 use Laminas\Diactoros\ServerRequestFactory;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\HttpHandlers\LegacyRequestHandler;
+use App\Registries\ContainerRegistry;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
@@ -37,17 +38,17 @@ $middlewarePipe->pipe(new CorsMiddleware([
 $uri = $request->getUri()->getPath();
 if (strpos($uri, '/system-admin') === 0) {
     // System Admin Authentication Middleware
-    $middlewarePipe->pipe(new SystemAdminAuthMiddleware());
+    $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
 } else {
     // For the rest of the requests, apply AppAuthMiddleware
-    $middlewarePipe->pipe(new AppAuthMiddleware());
+    $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
 }
 
 
 // 3. ACL Middleware
 // TODO: Implement ACL Middleware
 
-$middlewarePipe->pipe(new RequestHandlerMiddleware(new LegacyRequestHandler()));
+$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
 
 // Handle the request and generate the response

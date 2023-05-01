@@ -96,6 +96,10 @@ class ImageResizeUtility
         }
     }
 
+    public function __construct(){
+
+    }
+
     /**
      * Loads image source and its properties to the instanciated object
      *
@@ -103,7 +107,7 @@ class ImageResizeUtility
      * @return ImageResizeUtility
      * @throws Exception
      */
-    public function __construct($filename)
+    public function setFileName($filename)
     {
         if (!defined('IMAGETYPE_WEBP')) {
             define('IMAGETYPE_WEBP', 18);

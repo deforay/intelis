@@ -10,7 +10,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -31,7 +31,7 @@ $sResult = $db->rawQuery($sQuery);
 
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 // $healthFacilites = $facilitiesService->getHealthFacilities('vl');

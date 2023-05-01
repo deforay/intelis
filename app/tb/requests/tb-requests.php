@@ -39,7 +39,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('tb');
 /* Global config data */

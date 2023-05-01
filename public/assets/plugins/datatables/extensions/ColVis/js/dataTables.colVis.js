@@ -93,9 +93,9 @@ var ColVis = function( oDTSettings, oInit )
 		 * Store the original visibility settings so they could be restored
 		 *  @property abOriginal
 		 *  @type     Array
-		 *  @default  []
+		 *  @default  [];
 		 */
-		"abOriginal": []
+		"abOriginal": [];
 	};
 
 
@@ -147,7 +147,7 @@ var ColVis = function( oDTSettings, oInit )
 		 * List of button elements
 		 *  @property buttons
 		 *  @type     Array
-		 *  @default  []
+		 *  @default  [];
 		 */
 		"buttons": [],
 
@@ -155,7 +155,7 @@ var ColVis = function( oDTSettings, oInit )
 		 * List of group button elements
 		 *  @property groupButtons
 		 *  @type     Array
-		 *  @default  []
+		 *  @default  [];
 		 */
 		"groupButtons": [],
 
@@ -927,7 +927,7 @@ ColVis.defaults = {
 	 * List of columns (integers) which should be excluded from the list
 	 *  @property aiExclude
 	 *  @type     array
-	 *  @default  []
+	 *  @default  [];
 	 */
 	aiExclude: [],
 
@@ -1010,7 +1010,7 @@ ColVis.defaults = {
 	 * Group buttons
 	 *  @property aoGroups
 	 *  @type     array
-	 *  @default  []
+	 *  @default  [];
 	 */
 	aoGroups: [],
 
@@ -1035,7 +1035,7 @@ ColVis.defaults = {
  *  @property ColVis.aInstances
  *  @static
  *  @type     Array
- *  @default  []
+ *  @default  [];
  */
 ColVis.aInstances = [];
 

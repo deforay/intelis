@@ -37,7 +37,7 @@ $sResult = $db->rawQuery($sQuery);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");

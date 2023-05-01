@@ -24,7 +24,6 @@ class CaptchaUtility
 
         // Default values
         $captchaConfig = array(
-            'code' => '',
             'min_length' => 4,
             'max_length' => 5,
             'png_backgrounds' => array(

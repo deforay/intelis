@@ -24,7 +24,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);

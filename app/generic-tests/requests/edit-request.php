@@ -273,7 +273,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 3) {
      require('forms/edit-drc.php');
 } else if ($arr['vl_form'] == 4) {
-     require('forms/edit-zambia.php');
+     //require('forms/edit-zambia.php');
 } else if ($arr['vl_form'] == 5) {
      require('forms/edit-png.php');
 } else if ($arr['vl_form'] == 6) {
@@ -394,7 +394,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 }
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
-$isGeneXpert = (!empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0)) ? true : false;
+$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));

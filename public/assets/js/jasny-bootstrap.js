@@ -521,7 +521,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Jasny Bootstrap\'s JavaScr
     var defs = this.options.definitions
     var len = this.mask.length
 
-    this.tests = [] 
+    this.tests = [];
     this.partialPosition = this.mask.length
     this.firstNonMaskPos = null
 

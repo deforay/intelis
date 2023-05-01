@@ -55,7 +55,8 @@ try {
             $imageName = "usign-" . $userId . "." . $extension;
             $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new ImageResizeUtility($signatureImagePath);
+                $resizeObj = new ImageResizeUtility();
+                $resizeObj = $resizeObj->setFileName($signatureImagePath);
                 $resizeObj->resizeToWidth(100);
                 $resizeObj->save($signatureImagePath);
                 $data['user_signature'] = $imageName;

@@ -6,7 +6,6 @@ require_once(dirname(__DIR__) . '/../bootstrap.php');
 use App\Registries\ContainerRegistry;
 use DI\Container;
 use Slim\Factory\AppFactory;
-use App\Services\UsersService;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
@@ -58,8 +57,7 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 }));
 
 // 3. API Auth Middleware that checks for Bearer token
-$userModel = ContainerRegistry::get(UsersService::class);
-$middlewarePipe->pipe(new ApiAuthMiddleware($userModel));
+$middlewarePipe->pipe(ContainerRegistry::get(ApiAuthMiddleware::class));
 
 //API Routes
 $app->any('/api/v1.1/init', function ($request, $response, $args) {
@@ -78,7 +76,7 @@ $app->any('/api/v1.1/init', function ($request, $response, $args) {
 
 
 // 4. Allow existing PHP includes using LegacyFallbackMiddleware
-$middlewarePipe->pipe(new ApiLegacyFallbackMiddleware());
+$middlewarePipe->pipe(ContainerRegistry::get(ApiLegacyFallbackMiddleware::class));
 
 
 

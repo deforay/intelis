@@ -5482,7 +5482,7 @@
 				api.draw();
 			}
 		
-			return rows.flatten().to[]
+			return rows.flatten().to[];
 		};
 		
 		
@@ -5741,7 +5741,7 @@
 					api.row( src ).data() || null;
 			}
 		
-			return api.data().to[]
+			return api.data().to[];
 		};
 		
 		
@@ -5769,7 +5769,7 @@
 		
 			return iRow !== undefined ?
 				api.row( iRow ).node() :
-				api.rows().nodes().flatten().to[]
+				api.rows().nodes().flatten().to[];
 		};
 		
 		
@@ -6662,7 +6662,7 @@
 			return idx !== -1 ? [ settings[idx] ] : null;
 		}
 		else if ( mixed && typeof mixed.settings === 'function' ) {
-			return mixed.settings().to[]
+			return mixed.settings().to[];
 		}
 		else if ( typeof mixed === 'string' ) {
 			// jQuery selector
@@ -6677,7 +6677,7 @@
 			return jq.map( function(i) {
 				idx = $.inArray( this, tables );
 				return idx !== -1 ? settings[idx] : null;
-			} ).to[]
+			} ).to[];
 		}
 	};
 	
@@ -7130,7 +7130,7 @@
 					name:      key,
 					val:       {},
 					methodExt: [],
-					propExt:   []
+					propExt:   [];
 				};
 				struct.push( src );
 			}
@@ -7201,7 +7201,7 @@
 				var idx = $.inArray( this, nodes );
 				return a[ idx ];
 			} )
-			.to[]
+			.to[];
 	};
 	
 	
@@ -7739,7 +7739,7 @@
 				.map( function () {
 					return this._DT_RowIndex;
 				} )
-				.to[]
+				.to[];
 		};
 	
 		return _selector_run( 'row', selector, run, settings, opts );
@@ -8236,7 +8236,7 @@
 					.map( function () {
 						return $.inArray( this, nodes ); // `nodes` is column index complete and in order
 					} )
-					.to[]
+					.to[];
 			}
 		};
 	
@@ -8465,7 +8465,7 @@
 						column: $.inArray( el, data[ row ].anCells )
 					};
 				} )
-				.to[]
+				.to[];
 		};
 	
 		return _selector_run( 'cell', selector, run, settings, opts );
@@ -9144,7 +9144,7 @@
 	 * manipulated, or `jQuery.fn.dataTable.settings`.
 	 *  @member
 	 *  @type array
-	 *  @default []
+	 *  @default [];
 	 *  @private
 	 */
 	DataTable.settings = [];
@@ -9217,7 +9217,7 @@
 		 * Array of TD elements for each row. This is null until the row has been
 		 * created.
 		 *  @type array nodes
-		 *  @default []
+		 *  @default [];
 		 */
 		"anCells": null,
 	
@@ -9228,7 +9228,7 @@
 		 * data from the data source, or will be an array if using DOM a data
 		 * source.
 		 *  @type array|object
-		 *  @default []
+		 *  @default [];
 		 */
 		"_aData": [],
 	
@@ -9641,7 +9641,7 @@
 		 *    // No initial sorting
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
-		 *        "order": []
+		 *        "order": [];
 		 *      } );
 		 *    } );
 		 */
@@ -9897,7 +9897,7 @@
 		 * `search` and `escapeRegex` (the latter is optional). 'null' is also
 		 * accepted and the default will be used.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 *
 		 *  @dtopt Option
 		 *  @name DataTable.defaults.searchCols
@@ -12844,7 +12844,7 @@
 		 *     <li>'r' - pRocessing</li>
 		 *   </ul>
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aanFeatures": [],
 	
@@ -12852,42 +12852,42 @@
 		 * Store data information - see {@link DataTable.models.oRow} for detailed
 		 * information.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoData": [],
 	
 		/**
 		 * Array of indexes which are in the current display (after filtering etc)
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aiDisplay": [],
 	
 		/**
 		 * Array of indexes for display - no filtering
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aiDisplayMaster": [],
 	
 		/**
 		 * Store information about each column that is in use
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoColumns": [],
 	
 		/**
 		 * Store information about the table's header
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoHeader": [],
 	
 		/**
 		 * Store information about the table's footer
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoFooter": [],
 	
@@ -12906,7 +12906,7 @@
 		 * {@link DataTable.models.oSearch} for the format that is used for the
 		 * filtering information for each column.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoPreSearchCols": [],
 	
@@ -12930,7 +12930,7 @@
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aaSortingFixed": [],
 	
@@ -12939,14 +12939,14 @@
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"asStripeClasses": null,
 	
 		/**
 		 * If restoring a table - we should restore its striping classes as well
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"asDestroyStripes": [],
 	
@@ -12960,35 +12960,35 @@
 		/**
 		 * Callback functions array for every time a row is inserted (i.e. on a draw).
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoRowCallback": [],
 	
 		/**
 		 * Callback functions for the header on each draw.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoHeaderCallback": [],
 	
 		/**
 		 * Callback function for the footer on each draw.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoFooterCallback": [],
 	
 		/**
 		 * Array of callback functions for draw callback functions
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoDrawCallback": [],
 	
 		/**
 		 * Array of callback functions for row created function
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoRowCreatedCallback": [],
 	
@@ -12996,14 +12996,14 @@
 		 * Callback functions for just before the table is redrawn. A return of
 		 * false will be used to cancel the draw.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoPreDrawCallback": [],
 	
 		/**
 		 * Callback functions for when the table has been initialised.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoInitComplete": [],
 	
@@ -13012,7 +13012,7 @@
 		 * Callbacks for modifying the settings to be stored for state saving, prior to
 		 * saving state.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoStateSaveParams": [],
 	
@@ -13020,7 +13020,7 @@
 		 * Callbacks for modifying the settings that have been stored for state saving
 		 * prior to using the stored values to restore the state.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoStateLoadParams": [],
 	
@@ -13028,7 +13028,7 @@
 		 * Callbacks for operating on the settings object once the saved state has been
 		 * loaded
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoStateLoaded": [],
 	
@@ -13095,7 +13095,7 @@
 		 * Information about open rows. Each object in the array has the parameters
 		 * 'nTr' and 'nParent'
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoOpenRows": [],
 	
@@ -13145,7 +13145,7 @@
 		 *     <li>string:sName - name of callback</li>
 		 *   </ul>
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoStateSave": [],
 	
@@ -13158,7 +13158,7 @@
 		 *     <li>string:sName - name of callback</li>
 		 *   </ul>
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoStateLoad": [],
 	
@@ -13237,7 +13237,7 @@
 		 * Functions which are called prior to sending an Ajax request so extra
 		 * parameters can easily be sent to the server
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoServerParams": [],
 	
@@ -13263,7 +13263,7 @@
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aLengthMenu": null,
 	
@@ -13381,7 +13381,7 @@
 		 * Destroy callback functions - for plug-ins to attach themselves to the
 		 * destroy so they can clean up markup and events.
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aoDestroyCallback": [],
 	
@@ -13469,7 +13469,7 @@
 		/**
 		 * Last applied sort
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 */
 		"aLastSort": [],
 	
@@ -13609,7 +13609,7 @@
 		 * naming we call it searching here.
 		 *
 		 *  @type array
-		 *  @default []
+		 *  @default [];
 		 *
 		 *  @example
 		 *    // The following example shows custom search being applied to the
@@ -13667,7 +13667,7 @@
 		selector: {
 			cell: [],
 			column: [],
-			row: []
+			row: [];
 		},
 	
 	

@@ -4,7 +4,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-require APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php';
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

@@ -21,7 +21,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 

@@ -31,7 +31,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $covid19Results = $covid19Service->getCovid19Results();
 $specimenTypeResult = $covid19Service->getCovid19SampleTypes();

@@ -1,10 +1,11 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $list = [];
 
 if(isset($_POST['provinceId']))

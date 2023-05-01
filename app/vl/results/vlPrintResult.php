@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');

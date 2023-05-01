@@ -51,8 +51,7 @@ class DateUtility
                 $dateTime = new DateTimeImmutable($date);
                 $errors = DateTimeImmutable::getLastErrors();
                 if (
-                    empty($dateTime)
-                    || !empty($errors['warning_count'])
+                    !empty($errors['warning_count'])
                     || !empty($errors['error_count'])
                 ) {
                     $response = false;

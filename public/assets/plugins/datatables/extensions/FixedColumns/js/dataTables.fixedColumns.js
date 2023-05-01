@@ -111,7 +111,7 @@ var FixedColumns = function ( dt, init ) {
 		 * Original outer widths of the columns as rendered by DataTables - used to calculate
 		 * the FixedColumns grid bounding box
 		 *  @type     array.<int>
-		 *  @default  []
+		 *  @default  [];
 		 */
 		"aiOuterWidths": [],
 
@@ -119,9 +119,9 @@ var FixedColumns = function ( dt, init ) {
 		 * Original inner widths of the columns as rendered by DataTables - used to apply widths
 		 * to the columns
 		 *  @type     array.<int>
-		 *  @default  []
+		 *  @default  [];
 		 */
-		"aiInnerWidths": []
+		"aiInnerWidths": [];
 	};
 
 

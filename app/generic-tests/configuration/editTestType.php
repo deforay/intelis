@@ -20,19 +20,19 @@ $symptomInfo=$db->query($symQuery);
 
 $testSampleMapQuery = "SELECT * from generic_test_sample_type_map where test_type_id=$id";
 $testSampleMapInfo=$db->query($testSampleMapQuery);
-$testSampleId=[]
+$testSampleId=[];
 foreach($testSampleMapInfo as $val){
 	$testSampleId[]=$val['sample_type_id'];
 }
 $testReasonMapQuery = "SELECT * from generic_test_reason_map where test_type_id=$id";
 $testReasonMapInfo=$db->query($testReasonMapQuery);
-$testReasonId=[]
+$testReasonId=[];
 foreach($testReasonMapInfo as $val){
 	$testReasonId[]=$val['test_reason_id'];
 }
 $testSymptomsMapQuery = "SELECT * from generic_test_symptoms_map where test_type_id=$id";
 $testSymptomsMapInfo=$db->query($testSymptomsMapQuery);
-$testSymptomsId=[]
+$testSymptomsId=[];
 foreach($testSymptomsMapInfo as $val){
 	$testSymptomsId[]=$val['symptom_id'];
 }

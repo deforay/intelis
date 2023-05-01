@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 $title = _("VL | Clinics Report");
@@ -7,7 +8,7 @@ $title = _("VL | Clinics Report");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var GeoLocationsService $geolocationService */
-$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query
