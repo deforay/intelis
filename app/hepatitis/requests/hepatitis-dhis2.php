@@ -11,11 +11,13 @@ $title = _("Hepatitis | View All Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();

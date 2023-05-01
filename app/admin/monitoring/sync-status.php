@@ -10,14 +10,22 @@ $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$labNameList = $facilityDb->getTestingLabs();
+$db = ContainerRegistry::get('db');
 
-$geoLocationDb = new GeoLocationsService();
-$stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = SystemService::getActiveTestModules();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$labNameList = $facilitiesService->getTestingLabs();
+
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+$stateNameList = $geolocationService->getProvinces("yes");
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
 
 ?>
 <style>
@@ -66,7 +74,7 @@ $activeTestModules = SystemService::getActiveTestModules();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
                             <td>

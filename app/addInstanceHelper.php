@@ -6,10 +6,11 @@ use App\Utilities\ImageResizeUtility;
 
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
+
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
 function getMacLinux()
@@ -56,13 +57,13 @@ try {
     }
     $db = $db->where('name', 'instance_type');
     $db->update($globalTable, array('value' => $_POST['fType']));
-    $data = array(
+    $data = [
       'instance_facility_name' => $_POST['fName'],
       'instance_facility_code' => $_POST['fCode'],
       'instance_facility_type' => $_POST['fType'],
       'instance_added_on' => $db->now(),
       'instance_update_on' => $db->now()
-    );
+    ];
     $data['instance_mac_address'] = "not found";
     if (PHP_OS == 'Linux') {
       $data['instance_mac_address'] = getMacLinux();
@@ -79,14 +80,14 @@ try {
           mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-        $string = CommonService::generateRandomString(6) . ".";
+        $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;
         if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName)) {
           $resizeObj = new ImageResizeUtility(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
           $resizeObj->resizeToWidth(100);
           $resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $imageName);
 
-          $image = array('instance_facility_logo' => $imageName);
+          $image = ['instance_facility_logo' => $imageName];
           $db = $db->where('vlsm_instance_id', $instanceId);
           $db->update($tableName, $image);
         }

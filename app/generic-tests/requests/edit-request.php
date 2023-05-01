@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
@@ -17,14 +17,14 @@ $sCode = $labFieldDisabled = '';
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
-$vlDb = ContainerRegistry::get(VlService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
-$reasonForFailure = $vlDb->getReasonForFailure();
+$reasonForFailure = $vlService->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $labFieldDisabled = 'disabled="disabled"';
 }

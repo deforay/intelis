@@ -23,8 +23,10 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $app = new ApiService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');

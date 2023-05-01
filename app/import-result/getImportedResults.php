@@ -13,8 +13,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "temp_sample_import";
 $primaryKey = "temp_sample_id";
@@ -28,14 +30,14 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
-    $eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
+    $eidObj = ContainerRegistry::get(EidService::class);
     $eidResults = $eidObj->getEidResults();
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
     
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
     $covid19Results = $covid19Service->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";

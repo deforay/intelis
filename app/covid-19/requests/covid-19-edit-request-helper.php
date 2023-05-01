@@ -16,9 +16,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $patientsModel = new PatientsService();
 
 // echo "<pre>";print_r($_POST);die;
@@ -242,7 +244,7 @@ try {
 	);
 
 	if (!empty($_POST['labId'])) {
-		$facility = $facilityDb->getFacilityById($_POST['labId']);
+		$facility = $facilitiesService->getFacilityById($_POST['labId']);
 		if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}

@@ -3,21 +3,27 @@
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\ImageResizeUtility;
 
 
 session_unset(); // no need of session in json response
 
-$db = \MysqliDb::getInstance();
-
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
-$app = new ApiService();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
 $jsonResponse = file_get_contents('php://input');
 
 // error_log("------ USER API START-----");

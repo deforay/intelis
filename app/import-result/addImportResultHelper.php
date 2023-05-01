@@ -12,8 +12,10 @@ if (session_status() == PHP_SESSION_NONE) {
 $machineImportScript = ($_POST['fileName']);
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 /* echo "<pre>";
 print_r($machineImportScript);

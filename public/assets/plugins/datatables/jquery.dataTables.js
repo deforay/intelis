@@ -5482,7 +5482,7 @@
 				api.draw();
 			}
 		
-			return rows.flatten().toArray();
+			return rows.flatten().to[]
 		};
 		
 		
@@ -5741,7 +5741,7 @@
 					api.row( src ).data() || null;
 			}
 		
-			return api.data().toArray();
+			return api.data().to[]
 		};
 		
 		
@@ -5769,7 +5769,7 @@
 		
 			return iRow !== undefined ?
 				api.row( iRow ).node() :
-				api.rows().nodes().flatten().toArray();
+				api.rows().nodes().flatten().to[]
 		};
 		
 		
@@ -6662,7 +6662,7 @@
 			return idx !== -1 ? [ settings[idx] ] : null;
 		}
 		else if ( mixed && typeof mixed.settings === 'function' ) {
-			return mixed.settings().toArray();
+			return mixed.settings().to[]
 		}
 		else if ( typeof mixed === 'string' ) {
 			// jQuery selector
@@ -6677,7 +6677,7 @@
 			return jq.map( function(i) {
 				idx = $.inArray( this, tables );
 				return idx !== -1 ? settings[idx] : null;
-			} ).toArray();
+			} ).to[]
 		}
 	};
 	
@@ -7201,7 +7201,7 @@
 				var idx = $.inArray( this, nodes );
 				return a[ idx ];
 			} )
-			.toArray();
+			.to[]
 	};
 	
 	
@@ -7739,7 +7739,7 @@
 				.map( function () {
 					return this._DT_RowIndex;
 				} )
-				.toArray();
+				.to[]
 		};
 	
 		return _selector_run( 'row', selector, run, settings, opts );
@@ -8236,7 +8236,7 @@
 					.map( function () {
 						return $.inArray( this, nodes ); // `nodes` is column index complete and in order
 					} )
-					.toArray();
+					.to[]
 			}
 		};
 	
@@ -8465,7 +8465,7 @@
 						column: $.inArray( el, data[ row ].anCells )
 					};
 				} )
-				.toArray();
+				.to[]
 		};
 	
 		return _selector_run( 'cell', selector, run, settings, opts );

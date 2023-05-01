@@ -14,10 +14,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
 
@@ -61,11 +61,11 @@ try {
         $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
-            $data = array(
+            $data = [
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
                 'rejection_reason_status' => 'active'
-            );
+            ];
             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;
         } else {
@@ -76,7 +76,7 @@ try {
     $isRejected = false;
     $textValue = null;
     $finalResult = null;
-    $resultStatus = 8; // Awaiting Approval    
+    $resultStatus = 8; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = null;

@@ -7,10 +7,10 @@ use App\Services\CommonService;
 
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
 
 $testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = " . base64_decode($_POST['kitId']));

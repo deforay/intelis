@@ -135,7 +135,7 @@ $patienZones["other"] = "Other";
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                 <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                     <tr>
                                         <?php
@@ -214,7 +214,7 @@ $patienZones["other"] = "Other";
                             <div class="box-header with-border sectionHeader">
                                 <h3 class="box-title">INFORMATION PATIENT</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                 <tr>
                                     <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -469,7 +469,7 @@ $patienZones["other"] = "Other";
                                     Signes vitaux du patient
                                 </h3>
                             </div>
-                            <table class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
                                     <th style="width:15% !important">Fever/Temperature (&deg;C) <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
@@ -624,7 +624,7 @@ $patienZones["other"] = "Other";
                                 </tr>
                             </table>
 
-                            <table class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
                                     <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
                                     <td style="width:35% !important;">
@@ -671,7 +671,7 @@ $patienZones["other"] = "Other";
                                     VOYAGE ET CONTACT
                                 </h3>
                             </div>
-                            <table class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
                                     <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                     <td style="width:35% !important;">
@@ -742,7 +742,7 @@ $patienZones["other"] = "Other";
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td>
@@ -796,7 +796,7 @@ $patienZones["other"] = "Other";
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">Test non</th>

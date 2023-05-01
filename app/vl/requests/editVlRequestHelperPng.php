@@ -12,8 +12,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -239,8 +241,8 @@ try {
 
 
 
-     $vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
-     $vldata['vl_result_category'] = $vlDb->getVLResultCategory($vldata['result_status'], $vldata['result']);
+     $vlService = ContainerRegistry::get(VlService::class);
+     $vldata['vl_result_category'] = $vlService->getVLResultCategory($vldata['result_status'], $vldata['result']);
      if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
           $vldata['result_status'] = 5;
      } elseif ($vldata['vl_result_category'] == 'rejected') {
@@ -259,7 +261,7 @@ try {
                $province = $_POST['province'];
                $province = explode("##", $province);
 
-               $vlObj = \App\Registries\ContainerRegistry::get(VlService::class);
+               $vlObj = ContainerRegistry::get(VlService::class);
                $sampleJson = $vlObj->generateVLSampleID($province[1], $_POST['collectionDate'], 'png');
                $sampleData = json_decode($sampleJson, true);
                $vldata['sample_code'] = $sampleData['sampleCode'];

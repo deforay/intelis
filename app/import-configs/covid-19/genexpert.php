@@ -4,13 +4,15 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use League\Csv\Reader;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 try {
 
@@ -37,7 +39,7 @@ try {
         throw new Exception("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \App\Services\CommonService::generateRandomString(12);
+    // $ranNumber = $general->generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
 
@@ -144,8 +146,8 @@ try {
             //get user name
             if (!empty($d['reviewBy'])) {
                 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

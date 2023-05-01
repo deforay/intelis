@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 
 
@@ -16,10 +16,10 @@ $labFieldDisabled = '';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$vlDb = ContainerRegistry::get(VlService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
@@ -29,7 +29,7 @@ $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);
-$reasonForFailure = $vlDb->getReasonForFailure();
+$reasonForFailure = $vlService->getReasonForFailure();
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);

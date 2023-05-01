@@ -5,7 +5,7 @@ use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
 use App\Services\TbService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 
 
@@ -17,8 +17,8 @@ require_once(APPLICATION_PATH . '/header.php');
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $usersList = [];
@@ -48,13 +48,13 @@ $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'vl') ? 'vl' : $module;
-	$vlDb = new VlService($db);
-	$sampleTypes = $vlDb->getVlSampleTypes();
+	$vlService = new VlService($db);
+	$sampleTypes = $vlService->getVlSampleTypes();
 } else if ($module == 'eid') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
 	$m = ($module == 'eid') ? 'eid' : $module;
-	$eidDb = new EidService($db);
-	$sampleTypes = $eidDb->getEidSampleTypes();
+	$eidService = new EidService($db);
+	$sampleTypes = $eidService->getEidSampleTypes();
 } else if ($module == 'hepatitis') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'HEP') ? 'hepatitis' : $module;
@@ -66,8 +66,8 @@ if ($module == 'vl') {
 } else if ($module == 'tb') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'TB') ? 'tb' : $module;
-	$tbDb = new TbService($db);
-	$sampleTypes = $tbDb->getTbSampleTypes();
+	$tbService = new TbService($db);
+	$sampleTypes = $tbService->getTbSampleTypes();
 }
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);

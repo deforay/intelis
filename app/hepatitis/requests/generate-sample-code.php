@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\HepatitisService;
 
 
@@ -7,7 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$hepatitisModel = new HepatitisService();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $sampleCollectionDate = $province = '';
 
@@ -28,4 +31,4 @@ $sampleFrom = $_POST['sampleFrom'] ?? '';
 $prefix = $_POST['prefix'] ?? '';
 
 
-echo $hepatitisModel->generateHepatitisSampleCode($prefix, $province, $sampleCollectionDate, $sampleFrom);
+echo $hepatitisService->generateHepatitisSampleCode($prefix, $province, $sampleCollectionDate, $sampleFrom);

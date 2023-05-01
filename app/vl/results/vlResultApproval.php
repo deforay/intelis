@@ -10,11 +10,13 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -98,7 +100,7 @@ foreach ($rejectionTypeResult as $type) {
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
+          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
             <tr>
               <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
               <td>

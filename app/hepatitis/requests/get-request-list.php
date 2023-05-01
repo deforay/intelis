@@ -11,8 +11,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 
 $gconfig = $general->getGlobalConfig();
@@ -302,8 +304,10 @@ if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_
      $editRequest = true;
      $syncRequest = true;
 }
-$hepatitisDb = new HepatitisService();
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+$hepatitisResults = $hepatitisService->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $vlResult = '';
      $edit = '';

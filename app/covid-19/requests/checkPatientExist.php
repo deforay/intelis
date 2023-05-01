@@ -5,8 +5,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $artNo = $_POST['artPatientNo'];
 //global config
 $cQuery = "SELECT * FROM global_config";

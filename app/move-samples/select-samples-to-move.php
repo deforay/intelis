@@ -8,8 +8,10 @@ $title = "Add Sample List";
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 
 //get lab facility details
@@ -67,7 +69,7 @@ foreach ($fResult as $fDetails) {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 90%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 90%;">
 				<tr>
 					<td>&nbsp;<strong>From Lab Name&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>

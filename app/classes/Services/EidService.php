@@ -2,16 +2,18 @@
 
 namespace App\Services;
 
-use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
-use DateTimeImmutable;
-use Exception;
 use MysqliDb;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use Exception;
+use DateTimeImmutable;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /**
  * General functions
@@ -22,20 +24,21 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 class EidService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $table = 'form_eid';
     protected $shortCode = 'EID';
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
         
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -173,11 +176,11 @@ class EidService
     public function generateExcelExport($params)
     {
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
 
         /** @var EidService $eidService */
-        $eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+        $eidService = ContainerRegistry::get(EidService::class);
         $eidResults = $eidService->getEidResults();
 
         //$sarr = $general->getSystemConfig();
@@ -369,7 +372,7 @@ class EidService
     public function insertSampleCode($params)
     {
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

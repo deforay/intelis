@@ -10,12 +10,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
-$db = MysqliDb::getInstance();
-
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $provinceTable = "province_details";
 try {
 	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {

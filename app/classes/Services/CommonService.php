@@ -8,26 +8,28 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtility;
-use Exception;
 use MysqliDb;
-use Ramsey\Uuid\Uuid;
-use TCPDFBarcode;
+use Exception;
 use ZipArchive;
+use TCPDFBarcode;
+use Ramsey\Uuid\Uuid;
+use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 
 class CommonService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
 
 
     public function __construct($db = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public static function generateRandomString($length = 32)
+    public function generateRandomString($length = 32)
     {
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
@@ -618,9 +620,9 @@ class CommonService
     }
 
     //dump the contents of a variable to the error log in a readable format
-    public static function elog($object = null): void
+    public static function errorLog($object = null): void
     {
-
+        ob_start();
         var_dump($object);
         error_log(ob_get_clean());
     }

@@ -263,6 +263,7 @@ class MysqliDb
      */
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8', $socket = null)
     {
+
         $isSubQuery = false;
 
         // if params were passed as array

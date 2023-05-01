@@ -3,23 +3,27 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$geolocation = new GeoLocationsService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 $userResult = $usersService->getAllUsers();
 
 $userInfo = [];
@@ -46,7 +50,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
 }
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
+$geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 
 ?>
@@ -456,7 +460,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 							<div class="row-item labDiv" style="display:none;">
 								<hr>
 								<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names and signatures in some reports."); ?></h4>
-								<table class="col-lg-12 table table-bordered">
+								<table aria-describedby="table" class="col-lg-12 table table-bordered">
 									<thead>
 										<tr>
 											<th><?php echo _("Name of Signatory"); ?></th>
@@ -680,7 +684,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 			$('.availablePlatforms').hide();
 		}
 		if (facility && (testType.length > 0) && facility == '2') {
-			var div = '<table class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
+			var div = '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 			for (var i = 0; i < testType.length; i++) {
 				var testOrg = '';
 				if (testType[i] == 'vl') {

@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 require APPLICATION_PATH . '/includes/mail/PHPMailerAutoload.php';
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "form_vl";
 $configSyncQuery = "SELECT `value` FROM global_config where name='sync_path'";

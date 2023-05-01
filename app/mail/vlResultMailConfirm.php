@@ -10,7 +10,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $global = $general->getGlobalConfig();
 
@@ -29,7 +29,7 @@ $configResult = $db->query($configQuery);
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode($_POST['selectedSamples'], true) : array();
+$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode($_POST['selectedSamples'], true) : []
 if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selectedSamplesArray) > 0) {
    if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
       //Pdf code start
@@ -282,7 +282,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selected
          <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post" action="vlResultMailHelper.php">
             <div class="row">
                <div class="col-lg-12" style="text-align:center !important;">
-                  <table class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
+                  <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
                      <thead>
                         <tr>
                            <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>

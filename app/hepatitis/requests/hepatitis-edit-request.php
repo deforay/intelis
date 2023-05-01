@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 
@@ -39,11 +39,13 @@ $labFieldDisabled = '';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$usersService = ContainerRegistry::get(UserService::class);
-$hepatitisDb = new HepatitisService();
+$usersService = ContainerRegistry::get(UsersService::class);
 
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
-$testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+$hepatitisResults = $hepatitisService->getHepatitisResults();
+$testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
@@ -54,12 +56,12 @@ foreach ($userResult as $user) {
 }
 
 // Comorbidity
-$comorbidityData = $hepatitisDb->getHepatitisComorbidities();
-$comorbidityInfo = $hepatitisDb->getComorbidityByHepatitisId($id);
+$comorbidityData = $hepatitisService->getHepatitisComorbidities();
+$comorbidityInfo = $hepatitisService->getComorbidityByHepatitisId($id);
 
 // Risk Factors
-$riskFactorsData = $hepatitisDb->getHepatitisRiskFactors();
-$riskFactorsInfo = $hepatitisDb->getRiskFactorsByHepatitisId($id);
+$riskFactorsData = $hepatitisService->getHepatitisRiskFactors();
+$riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 
 
 //$id = ($_GET['id']);
@@ -111,7 +113,7 @@ foreach ($rejectionTypeResult as $type) {
     $rejectionReason .= '</optgroup>';
 }
 // Specimen Type
-$specimenResult = $hepatitisDb->getHepatitisSampleTypes();
+$specimenResult = $hepatitisService->getHepatitisSampleTypes();
 
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');

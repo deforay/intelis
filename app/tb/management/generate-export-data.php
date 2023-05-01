@@ -18,9 +18,13 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$tbService = new TbService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();

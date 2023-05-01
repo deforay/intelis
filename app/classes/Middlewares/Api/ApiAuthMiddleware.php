@@ -2,7 +2,7 @@
 
 namespace App\Middlewares\Api;
 
-use App\Services\UserService;
+use App\Services\UsersService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -11,7 +11,7 @@ use Slim\Psr7\Response;
 
 class ApiAuthMiddleware implements MiddlewareInterface
 {
-    private UserService $userModel;
+    private UsersService $userModel;
 
     public function __construct($userModel)
     {

@@ -3,22 +3,24 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
+
+$applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$_SESSION['module'] = $_SESSION['module'] ?? array();
+$_SESSION['module'] = $_SESSION['module'] ?? []
 
 $syncLatestTime = $general->getLastSyncDateTime();
 
@@ -40,8 +42,8 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortName = _("Sample Tracking");
 }
 
-if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
-	$systemType = SYSTEM_CONFIG['instanceName'];
+if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['instanceName'])) {
+	$systemType = $applicationConfig['instanceName'];
 }
 
 // Check if the user can access the requested page
@@ -254,10 +256,10 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
+						<?php if (!empty($applicationConfig['recency']['crosslogin']) && $applicationConfig['recency']['crosslogin'] === true && !empty($applicationConfig['recency']['url'])) {
 						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
+								<a onclick="setCrossLogin();" href="<?php echo rtrim($applicationConfig['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
 							</li>
 						<?php } ?>
 
@@ -268,7 +270,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<span class="hidden-xs"><?php if (isset($_SESSION['userName'])) {
 															echo $_SESSION['userName'];
 														} ?></span>
-								<?php if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+								<?php if (!empty($applicationConfig['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 									<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
 								<?php } ?>
 							</a>
@@ -464,7 +466,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
+								if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true && isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview vl-reference-manage">
 										<a href="#"><span class="fa-solid fa-flask-vial"></span><?php echo _("VL Config"); ?>
 											<span class="pull-right-container">
@@ -494,7 +496,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true && isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview eid-reference-manage">
 										<a href="#"><span class="fa-solid fa-child"></span><?php echo _("EID Config"); ?>
 											<span class="pull-right-container">
@@ -518,7 +520,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true && isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview covid19-reference-manage">
 										<a href="#"><span class="fa-solid fa-virus-covid"></span>
 											<?php echo _("Covid-19 Config"); ?>
@@ -552,7 +554,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview hepatitis-reference-manage">
 										<a href="#"><span class="fa-solid fa-square-h"></span>
 											<?php echo _("Hepatitis Config"); ?>
@@ -583,7 +585,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</ul>
 									</li>
 								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
+								if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview tb-reference-manage">
 										<a href="#"><span class="fa-solid fa-heart-pulse"></span>
 											<?php echo _("TB Config"); ?>
@@ -616,7 +618,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</ul>
 						</li>
 					<?php }
-					if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) { ?>
+					if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) { ?>
 						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>
 						<?php if ($vlRequestMenuAccess === true) { ?>
 							<li class="treeview request">
@@ -738,7 +740,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						}
 					}
 
-					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
+					if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
 						<li class="header"><?php echo _("EARLY INFANT DIAGNOSIS (EID)"); ?></li>
 						<?php if ($eidTestRequestMenuAccess === true) { ?>
 							<li class="treeview eidRequest">
@@ -778,7 +780,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && $eidTestResultMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true && $eidTestResultMenuAccess === true) { ?>
 							<li class="treeview eidResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
@@ -801,7 +803,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && $eidManagementMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true && $eidManagementMenuAccess === true) { ?>
 							<li class="treeview eidProgramMenu">
 								<a href="#">
 									<span class="fa-solid fa-book"></span>
@@ -835,7 +837,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					} ?>
 
 					<!-- COVID-19 START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
+					<?php if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
 						<li class="header"><?php echo _("COVID-19"); ?></li>
 						<?php if ($covid19TestRequestMenuAccess === true) { ?>
 							<li class="treeview covid19Request">
@@ -875,7 +877,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && $covid19TestResultMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true && $covid19TestResultMenuAccess === true) { ?>
 							<li class="treeview covid19Results">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
@@ -912,7 +914,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && $covid19ManagementMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true && $covid19ManagementMenuAccess === true) { ?>
 							<li class="treeview covid19ProgramMenu">
 								<a href="#">
 									<span class="fa-solid fa-book"></span>
@@ -947,7 +949,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<!-- COVID-19 END -->
 
 					<!-- HEPATITIS START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
+					<?php if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
 						<li class="header"><?php echo _("Hepatitis"); ?></li>
 						<?php if ($hepatitisTestRequestMenuAccess === true) { ?>
 							<li class="treeview hepatitisRequest">
@@ -987,7 +989,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && $hepatitisTestResultMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true && $hepatitisTestResultMenuAccess === true) { ?>
 							<li class="treeview hepatitisResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
@@ -1016,7 +1018,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && $hepatitisManagementMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true && $hepatitisManagementMenuAccess === true) { ?>
 							<li class="treeview hepatitisProgramMenu">
 								<a href="#">
 									<span class="fa-solid fa-book"></span>
@@ -1051,7 +1053,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<!-- HEPATITIS END -->
 
 					<!-- TB START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
+					<?php if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
 						<li class="header"><?php echo _("TB"); ?></li>
 						<?php if ($tbTestRequestMenuAccess === true) { ?>
 							<li class="treeview tbRequest">
@@ -1091,7 +1093,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && $tbTestResultMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true && $tbTestResultMenuAccess === true) { ?>
 							<li class="treeview tbResults">
 								<a href="#">
 									<span class="fa-solid fa-list-check"></span>
@@ -1120,7 +1122,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								</ul>
 							</li>
 						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && $tbManagementMenuAccess === true) { ?>
+						if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true && $tbManagementMenuAccess === true) { ?>
 							<li class="treeview tbProgramMenu">
 								<a href="#">
 									<span class="fa-solid fa-book"></span>

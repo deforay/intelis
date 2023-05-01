@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $id = base64_decode($_GET['id']);
 
 $showPatientName = false;

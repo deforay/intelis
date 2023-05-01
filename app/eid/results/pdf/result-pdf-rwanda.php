@@ -10,12 +10,12 @@ use App\Utilities\DateUtility;
 // this file is included in eid/results/generate-result-pdf.php
 
 /** @var EidService $eidService */
-$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
 $resultFilename = '';
 
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {

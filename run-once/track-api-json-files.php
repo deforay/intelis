@@ -1,7 +1,13 @@
 <?php
+
+use App\Registries\ContainerRegistry;
+
 require_once(__DIR__ . '/../bootstrap.php');
 
-$db = \MysqliDb::getInstance();
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 
 ini_set('memory_limit', -1);
 

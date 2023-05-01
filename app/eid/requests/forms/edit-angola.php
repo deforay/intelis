@@ -52,8 +52,8 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Selecione --');
 
-//$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
-//$eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : array();
+//$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : []
+//$eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : []
 
 
 
@@ -89,7 +89,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Nº de amostra </label></td>
@@ -176,7 +176,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <div class="box-header with-border">
                                     <h3 class="box-title">DADOS DO PACIENTE</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="childName">Nome da Criança </label></th>
@@ -270,7 +270,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 </table>
 
                                 <br><br>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -314,7 +314,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Informações laboratoriais </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>

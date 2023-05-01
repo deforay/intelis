@@ -53,7 +53,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : []
 
 //suggest sample id when lab user add request sample
 $sampleSuggestion = '';
@@ -101,7 +101,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label></td>
@@ -185,7 +185,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Infant ID or Infant Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
@@ -233,7 +233,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 
                                 <br><br>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Infant and Mother's Health Information</h4>
@@ -347,7 +347,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </table>
 
                                 <br><br>
-                                <table class="table" aria-hidden="true">
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th colspan=4 style="border-top:#000 1px solid;">
                                             <h4>Sample Information</h4>
@@ -397,7 +397,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true" style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <td><label for="labId" class="labels">Testing Laboratory <span class="mandatory">*</span></label> </td>
                                             <td>

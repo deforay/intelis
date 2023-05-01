@@ -12,8 +12,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_covid19";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";

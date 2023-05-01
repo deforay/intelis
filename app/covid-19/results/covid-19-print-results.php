@@ -18,18 +18,22 @@ try {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 
 ?>
 <style>
@@ -67,7 +71,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
-                                            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td>
@@ -215,7 +219,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                             <input type="hidden" name="totalSamplesList" id="totalSamplesList" />
                                         </div>
                                         <div class="tab-pane fade" id="printedData">
-                                            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td>

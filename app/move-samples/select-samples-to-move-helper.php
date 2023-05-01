@@ -9,8 +9,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $testType = $_POST['testTypeId'];
 $tableName = "move_samples";
 $tableName2    = "move_samples_map";

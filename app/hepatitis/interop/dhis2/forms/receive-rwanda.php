@@ -15,13 +15,17 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 
 $transactionId = $general->generateUUID();
 
-$hepatitisModel = new HepatitisService();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -288,7 +292,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['unique_id'] = $uniqueID;
 
-        $sampleJson = $hepatitisModel->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, DateUtility::humanReadableDateFormat($formData['sample_collection_date']));
+        $sampleJson = $hepatitisService->generateHepatitisSampleCode($formData['hepatitis_test_type'], null, DateUtility::humanReadableDateFormat($formData['sample_collection_date']));
 
         $sampleData = json_decode($sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

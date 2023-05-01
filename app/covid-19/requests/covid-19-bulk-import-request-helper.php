@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -13,11 +13,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $arr = [];
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';
@@ -28,7 +30,7 @@ try {
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
-    $ranNumber = CommonService::generateRandomString(12);
+    $ranNumber = $general->generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 

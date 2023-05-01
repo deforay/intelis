@@ -5,10 +5,10 @@ use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 /** @var GeoLocationsService $geoDb */
-$geoDb = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geoDb = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $text = '';
 $field = $_GET['fieldName'];

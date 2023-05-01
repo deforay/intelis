@@ -16,10 +16,14 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-$tbService = new TbService();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();

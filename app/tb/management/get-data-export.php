@@ -27,9 +27,13 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$tbService = new TbService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
 
 $tableName = "form_tb";

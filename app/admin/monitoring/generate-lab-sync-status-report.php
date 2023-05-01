@@ -13,10 +13,10 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 ini_set('memory_limit', -1);
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $dateTimeUtil = new DateUtility();
 
 $excel = new Spreadsheet();
@@ -127,6 +127,6 @@ foreach ($output as $rowNo => $rowData) {
 }
 // $sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . CommonService::generateRandomString(6) . '.xlsx';
+$filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

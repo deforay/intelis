@@ -62,8 +62,8 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Sélectionner --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
-$eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : array();
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : []
+$eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : []
 
 ?>
 
@@ -110,7 +110,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<?php } ?>
 
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
@@ -189,7 +189,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 								</table>
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
@@ -276,7 +276,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th colspan=6>
 											<h4>2. Management de la mère</h4>
@@ -335,7 +335,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
 										<th colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
@@ -399,7 +399,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
 										<th colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
@@ -490,7 +490,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<div class="box-header with-border">
 										<h3 class="box-title">B. Réservé au laboratoire d’analyse </h3>
 									</div>
-									<table class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon </label></th>
 											<td>

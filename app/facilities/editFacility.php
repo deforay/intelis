@@ -3,19 +3,21 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $geolocation = new GeoLocationsService();
 
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 $userResult = $usersService->getAllUsers();
 
 $userInfo = [];
@@ -67,7 +69,7 @@ $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=
 $editTestType = '';
 $div = '';
 if (!empty($testTypeInfo)) {
-	$div .= '<table class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
+	$div .= '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 	$tf = 0;
 	foreach ($testTypeInfo as $test) {
 		if ($editTestType) {
@@ -585,7 +587,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
 						<hr>
 						<h4 class="col-lg-12"><?= _("The following information is sometimes used to show names, designations and signatures in some reports."); ?></h4>
-						<table class="col-lg-12 table table-bordered">
+						<table aria-describedby="table" class="col-lg-12 table table-bordered">
 							<thead>
 								<tr>
 									<th><?php echo _("Name of Signatory"); ?></th>
@@ -901,7 +903,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 				$('.availablePlatforms').hide();
 			}
 			if (facility && (testType.length > 0) && facility == '2') {
-				var div = '<table class="table table-bordered table-striped" aria-hidden="true" ><thead><th> <?php echo _("Test Type"); ?></th> <th> <?php echo _("Monthly Target"); ?> <span class="mandatory">*</span></th><th><?php echo _("Suppressed Monthly Target"); ?> <span class="mandatory">*</span></th> </thead><tbody>';
+				var div = '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> <?php echo _("Test Type"); ?></th> <th> <?php echo _("Monthly Target"); ?> <span class="mandatory">*</span></th><th><?php echo _("Suppressed Monthly Target"); ?> <span class="mandatory">*</span></th> </thead><tbody>';
 				for (var i = 0; i < testType.length; i++) {
 					var testOrg = '';
 					if ($('#monTar' + i).val())

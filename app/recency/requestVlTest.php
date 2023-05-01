@@ -27,8 +27,10 @@ try {
     
 
     /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');

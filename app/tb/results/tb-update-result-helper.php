@@ -12,9 +12,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$geoLocationDb = new GeoLocationsService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 $tableName = "form_tb";
 $tableName1 = "activity_log";
@@ -125,7 +129,7 @@ try {
     }
     if (isset($_POST['province']) && $_POST['province'] != "") {
         $province = explode("##", $_POST['province']);
-        $provinceDetails = $geoLocationDb->getByName($province[0]);
+        $provinceDetails = $geolocationService->getByName($province[0]);
         $_POST['provinceId'] = $provinceDetails['geo_id'];
     }
 

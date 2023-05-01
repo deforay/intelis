@@ -52,7 +52,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                   </ul>
                   <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="labReport">
-                      <table class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                         <tr>
                           <td style="width:15%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></td>
                           <td style="width:20% !important;">
@@ -129,7 +129,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                       </table>
                     </div>
                     <div class="tab-pane fade" id="femaleReport">
-                      <table class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                           <td style="width:13%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></td>
                           <td style="width:20% !important;">

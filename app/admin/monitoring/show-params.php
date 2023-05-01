@@ -5,8 +5,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $id = base64_decode($_GET['id']);
 $db = $db->where('api_track_id', $id);

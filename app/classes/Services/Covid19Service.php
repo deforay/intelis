@@ -6,7 +6,6 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use DateTimeImmutable;
 use Exception;
-use MysqliDb;
 
 /**
  * General functions
@@ -17,20 +16,21 @@ use MysqliDb;
 class Covid19Service
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $table = 'form_covid19';
     protected $shortCode = 'C19';
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -412,9 +412,8 @@ class Covid19Service
 
     public function insertSampleCode($params)
     {
-        /** @var MysqliDb $db */
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
         $patientsModel = new PatientsService();
 
         $globalConfig = $general->getGlobalConfig();

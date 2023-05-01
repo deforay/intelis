@@ -1,6 +1,10 @@
 <?php
 
-$db = MysqliDb::getInstance();
+
+use App\Registries\ContainerRegistry;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
 $fType = ($_POST['fType'] == 1) ? 4 : 1;
 $facilityId = $_POST['facilityId'];

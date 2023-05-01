@@ -8,10 +8,16 @@ use App\Services\SystemService;
 
 require_once(APPLICATION_PATH . '/header.php');
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-$activeTestModules = SystemService::getActiveTestModules();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
+
 $activeModules = array('admin', 'common');
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
@@ -242,7 +248,7 @@ $rInfo = $db->query($resourcesQuery);
 										else
 											$tabCls = "";
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
-										echo "<table class='table table-striped responsive-utilities jambo_table'>";
+										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
 										$moduleResources = explode("##", $moduleRow['module_resources']);
 										$i = 1;

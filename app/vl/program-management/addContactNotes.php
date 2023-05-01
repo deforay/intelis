@@ -18,10 +18,10 @@ use App\Utilities\DateUtility;
 
 $id = base64_decode($_GET['id']);
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
 $contact = $db->query($contactInfo);
 //get patient info
@@ -53,7 +53,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
         <!-- form start -->
         <div class="form-horizontal" id="contactNotes">
           <div class="box-body">
-            <table class="table" aria-hidden="true">
+            <table aria-describedby="table" class="table" aria-hidden="true">
               <tr>
                 <td><strong>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
                 <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong></td>

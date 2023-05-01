@@ -27,7 +27,7 @@ try {
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \App\Services\CommonService::generateRandomString(12);
+    // $ranNumber = $general->generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
 
 

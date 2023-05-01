@@ -26,11 +26,15 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$hepatitisDb = new HepatitisService();
+$db = ContainerRegistry::get('db');
 
-//$hepatitisResults = $hepatitisDb->getHepatitisResults();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+//$hepatitisResults = $hepatitisService->getHepatitisResults();
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";

@@ -84,7 +84,7 @@ $aResult = $db->query($aQuery);
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label></td>
@@ -175,7 +175,7 @@ $aResult = $db->query($aQuery);
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Infant ID or Infant Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
@@ -218,7 +218,7 @@ $aResult = $db->query($aQuery);
                                     </tr>
                                 </table>
                                 <br><br>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Infant and Mother's Health Information</h4>
@@ -381,7 +381,7 @@ $aResult = $db->query($aQuery);
                                 </table>
 
                                 <br><br>
-                                <table class="table" aria-hidden="true">
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -430,7 +430,7 @@ $aResult = $db->query($aQuery);
                                     <div class="box-header with-border">
                                         <h3 class="box-title" class="labels">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true" style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row" class="labels">Testing Platform </th>
                                             <td><select name="eidPlatform" id="eidPlatform" class="form-control result-optional" title="Please select the testing platform">

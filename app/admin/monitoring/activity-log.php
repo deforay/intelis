@@ -2,19 +2,19 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 $title = _("User Activity Log");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 $userNameList = $usersService->getAllUsers(null, null, 'drop-down');
 
 $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
@@ -50,7 +50,7 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row"><?php echo _("Date Range"); ?>&nbsp;:</th>
 							<td>

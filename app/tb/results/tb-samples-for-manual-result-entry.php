@@ -11,14 +11,18 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$tbService = new TbService();
+
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
 
 $tableName = "form_tb";

@@ -8,7 +8,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
@@ -17,12 +17,14 @@ ini_set('max_execution_time', -1);
 $tableName1 = "activity_log";
 $tableName2 = "form_covid19";
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$users = \App\Registries\ContainerRegistry::get(UserService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$users = ContainerRegistry::get(UsersService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
@@ -261,9 +263,9 @@ if (!empty($requestResult)) {
 		$expStr = explode(" ", $printedTime);
 		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
-		
-/** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+
+		/** @var Covid19Service $covid19Service */
+		$covid19Service = ContainerRegistry::get(Covid19Service::class);
 		$covid19Results = $covid19Service->getCovid19Results();
 		$countryFormId = $general->getGlobalConfig('vl_form');
 
@@ -312,7 +314,7 @@ $covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 		$resultPdf->setPrintHeader(false);
 		$resultPdf->setPrintFooter(false);
 		$resultPdf->concat();
-		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . CommonService::generateRandomString(6) . '.pdf';
+		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 		$general->removeDirectory($pathFront);
 		unset($_SESSION['rVal']);

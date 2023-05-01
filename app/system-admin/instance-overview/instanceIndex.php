@@ -44,7 +44,7 @@ $data = $db->rawQuery($instanceValues);
 
         <div class="box box-default">
 
-            <table class="table table-striped table-bordered table-hover" id="example">
+            <table aria-describedby="table" class="table table-striped table-bordered table-hover" id="example">
                 <tbody>
                     <?php
                     if (count($data) > 0) {

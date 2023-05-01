@@ -9,11 +9,13 @@ if (session_status() == PHP_SESSION_NONE) {
 }
   
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $results = [];
 if (isset($_POST['id']) && $_POST['id'] > 0) {
     $db->where("f.facility_id", $_POST['id']);

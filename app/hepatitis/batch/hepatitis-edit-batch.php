@@ -13,11 +13,13 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 //$formId = $general->getGlobalConfig('vl_form');
 
@@ -89,7 +91,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 		
 					<th scope="col">Facility</th>

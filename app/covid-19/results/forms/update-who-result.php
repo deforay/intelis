@@ -89,7 +89,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                 <tr>
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <td><label for="sampleCode">Sample ID </label> </td>
@@ -166,7 +166,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             <div class="box-header with-border">
                                 <h3 class="box-title">PATIENT INFORMATION</h3>
                             </div>
-                            <table class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                 <tr>
                                     <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -219,7 +219,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </tr>
                             </table>
                             <br><br>
-                            <table class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
                                     <th colspan=4 style="border-top:#ccc 2px solid;">
                                         <h4>SPECIMEN INFORMATION</h4>
@@ -272,7 +272,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                             </table>
 
                             <br><br>
-                            <table class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
                                     <th colspan=4 style="border-top:#ccc 2px solid;">
                                         <h4>CLINICAL DETAILS</h4>
@@ -328,7 +328,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <div class="box-header with-border">
                                     <h3 class="box-title">B. Reserved for Laboratory Use </h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>
@@ -375,7 +375,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">Test No.</th>

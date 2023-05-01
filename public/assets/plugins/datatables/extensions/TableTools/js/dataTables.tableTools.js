@@ -2211,7 +2211,7 @@ TableTools.prototype = {
 				.rows( oConfig.oSelectorOpts )
 				.indexes()
 				.flatten()
-				.toArray();
+				.to[]
 		}
 		else {
 			// 1.9- style

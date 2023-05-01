@@ -15,10 +15,12 @@ class LegacyRequestHandler implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $db = MysqliDb::getInstance();
+
         /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $db = ContainerRegistry::get('db');
+
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
 
         // Get the requested URI
         $uri = $request->getUri()->getPath();

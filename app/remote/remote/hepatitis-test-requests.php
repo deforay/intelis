@@ -22,14 +22,14 @@ if (empty($labId)) {
 }
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 $transactionId = $general->generateUUID();
 
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
     $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
@@ -59,9 +59,11 @@ if ($db->count > 0) {
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
     $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-    $hepatitisObj = new HepatitisService();
-    $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($sampleIds);
-    $risks = $hepatitisObj->getRiskFactorsByHepatitisId($sampleIds);
+    
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+    $comorbidities = $hepatitisService->getComorbidityByHepatitisId($sampleIds);
+    $risks = $hepatitisService->getRiskFactorsByHepatitisId($sampleIds);
 
 
     $data['result'] = $hepatitisRemoteResult ?? [];

@@ -10,11 +10,11 @@ require_once(__DIR__ . "/../../bootstrap.php");
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$db = \MysqliDb::getInstance();
-
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $primaryKey = array(
     "vl" => "vl_sample_id",

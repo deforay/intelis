@@ -10,11 +10,13 @@ $title = _("Email VL Test Results");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -115,7 +117,7 @@ $batchResult = $db->rawQuery($batchQuery);
                 <br>
                 <br>
                 <h4><?php echo _("Please use the following to filter the samples you wish to email"); ?></h4>
-                <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
                     <td>

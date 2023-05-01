@@ -12,15 +12,23 @@ $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-$activeTestModules = SystemService::getActiveTestModules();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
+
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
 // }
-$geoLocationDb = new GeoLocationsService();
-$state = $geoLocationDb->getProvinces("yes");
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$state = $geolocationService->getProvinces("yes");
 ?>
 <style>
 select { width:400px; !important }
@@ -43,7 +51,7 @@ select { width:400px; !important }
     <div class="row">
     <div class="col-xs-12">
 				<div class="box">
-					<table class="table" id="advanceFilter" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%; display:none;">
+					<table aria-describedby="table" class="table" id="advanceFilter" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%; display:none;">
 						<tbody><tr>
 						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>

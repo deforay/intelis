@@ -8,8 +8,10 @@ use App\Services\CommonService;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "temp_sample_import";
 try {
     $result = 0;

@@ -6,9 +6,11 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$vlObj = \App\Registries\ContainerRegistry::get(VlService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$vlObj = ContainerRegistry::get(VlService::class);
 
 
 $sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'] . ")";

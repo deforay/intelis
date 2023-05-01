@@ -10,8 +10,10 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_testing_reasons";
 
 /*echo "<pre>";

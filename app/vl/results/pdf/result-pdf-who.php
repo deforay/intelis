@@ -6,9 +6,12 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $resultFilename = '';
-if (sizeof($requestResult) > 0) {
-     $_SESSION['rVal'] = CommonService::generateRandomString(6);
+if (!empty($requestResult)) {
+     $_SESSION['rVal'] = $general->generateRandomString(6);
      if (
           !file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']) &&
           !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'])
@@ -441,7 +444,7 @@ if (sizeof($requestResult) > 0) {
                if ($draftTextShow) {
                     //Watermark section
                     $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                    $watermark->setFullPathToFile($filename);
                     $fullPathToFile = $filename;
                     $watermark->Output($filename, "F");
                }

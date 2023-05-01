@@ -12,12 +12,16 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -44,10 +48,10 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 /** @var EidService $eidService */
-$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 
 ?>
 <style>
@@ -72,7 +76,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th><?php echo _("Sample Collection Date"); ?></th>
 							<td>

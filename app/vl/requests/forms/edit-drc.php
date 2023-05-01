@@ -122,7 +122,7 @@ $sampleSuggestionDisplay = 'display:none;';
 								</div>
 
 
-								<table class="table" aria-hidden="true" style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
 
 									<tr>
@@ -240,7 +240,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table class="table" aria-hidden="true" style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
@@ -428,7 +428,7 @@ $sampleSuggestionDisplay = 'display:none;';
 								<div class="box-header with-border">
 									<h3 class="box-title">Informations sur le prélèvement <small>(A remplir par le préleveur)</small> </h3>
 								</div>
-								<table class="table" aria-hidden="true" style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td style="width:25%;"><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td style="width:25%;">
@@ -482,7 +482,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<div class="box-header with-border">
 										<h3 class="box-title">2. Réservé au Laboratoire de biologie moléculaire </h3>
 									</div>
-									<table class="table" aria-hidden="true" style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 											<td><label for="">Date de réception de l'échantillon  </label></td>
 											<td>

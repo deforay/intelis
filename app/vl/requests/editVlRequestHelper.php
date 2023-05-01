@@ -13,10 +13,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -97,7 +97,7 @@ try {
       else
       {
           if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-              $_POST['dateOfArtInitiation'] = \App\Utilities\DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
+              $_POST['dateOfArtInitiation'] = DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
           } else {
               $_POST['dateOfArtInitiation'] = null;
           }
@@ -135,13 +135,13 @@ try {
           $_POST['dateOfArvRegimenChange'] = null;
       } else if (trim($_POST['hasChangedRegimen']) == "yes") {
           if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
-              $_POST['dateOfArvRegimenChange'] = \App\Utilities\DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']);
+              $_POST['dateOfArvRegimenChange'] = DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']);
           }
       }
   
       //Set last VL test date
       if (isset($_POST['lastViralLoadTestDate']) && trim($_POST['lastViralLoadTestDate']) != "") {
-          $_POST['lastViralLoadTestDate'] = \App\Utilities\DateUtility::isoDateFormat($_POST['lastViralLoadTestDate']);
+          $_POST['lastViralLoadTestDate'] = DateUtility::isoDateFormat($_POST['lastViralLoadTestDate']);
       } else {
           $_POST['lastViralLoadTestDate'] = null;
       }
@@ -402,7 +402,7 @@ try {
           'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
           'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
           'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
-          'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? \App\Utilities\DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+          'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
           'result_value_absolute'                 => $absVal ?: null,
           'result_value_absolute_decimal'         => $absDecimalVal ?: null,
           'result_value_text'                     => $txtVal ?: null,
@@ -451,14 +451,14 @@ try {
 
 
      if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
-          $_POST['cdDate'] = \App\Utilities\DateUtility::isoDateFormat($_POST['cdDate']);
+          $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
       } else {
               $_POST['cdDate'] = null;
       }
   
       if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
           $failedtestDate = explode(" ", $_POST['failedTestDate']);
-          $_POST['failedTestDate'] = \App\Utilities\DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+          $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
      } else {
           $_POST['failedTestDate'] = null;
      }
@@ -467,13 +467,13 @@ try {
           $_POST['failedTestingTech'] = $platForm[0];
       }
       if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-          $_POST['qcDate'] = \App\Utilities\DateUtility::isoDateFormat($_POST['qcDate']);
+          $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
      } else {
           $_POST['qcDate'] = null;
      }
   
      if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-          $_POST['reportDate'] = \App\Utilities\DateUtility::isoDateFormat($_POST['reportDate']);
+          $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
      } else {
           $_POST['reportDate'] = null;
      }

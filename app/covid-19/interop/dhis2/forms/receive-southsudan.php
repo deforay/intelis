@@ -51,11 +51,13 @@ $eventsDataElementMapping = [
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 
 $vlsmSystemConfig = $general->getSystemConfig();

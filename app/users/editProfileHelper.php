@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use GuzzleHttp\Client;
 
 
@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$userModel = \App\Registries\ContainerRegistry::get(UserService::class);
+$userModel = ContainerRegistry::get(UsersService::class);
 $tableName = "user_details";
 $upId = 0;
 

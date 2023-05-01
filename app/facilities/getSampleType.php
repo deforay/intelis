@@ -1,17 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\HepatitisService;
 use App\Services\TbService;
 use App\Services\VlService;
 
-$vlDb = new VlService($db);
-$eidDb = new EidService($db);
-$covid19Service = new Covid19Service($db);
-$hepatitisDb = new HepatitisService($db);
-$tbDb = new TbService($db);
+
 /* Selected Sample Types from Facility Edit */
+
 $selectedSamplesTypes = [];
 if (!empty($_POST['facilityId'])) {
     $db = $db->where('facility_id', base64_decode($_POST['facilityId']));
@@ -22,26 +20,36 @@ $sampleType = [];
 if ($_POST['testType'] != "") {
     foreach ($_POST['testType'] as $test) {
         if ($test == 'vl') {
-            $sampleType['vl'] = $vlDb->getVlSampleTypes();
+            /** @var VlService $vlService */
+            $vlService = ContainerRegistry::get(VlService::class);
+            $sampleType['vl'] = $vlService->getVlSampleTypes();
         }
         if ($test == 'eid') {
-            $sampleType['eid'] = $eidDb->getEidSampleTypes();
+            /** @var EidService $eidService */
+            $eidService = ContainerRegistry::get(EidService::class);
+            $sampleType['eid'] = $eidService->getEidSampleTypes();
         }
         if ($test == 'covid19') {
+            /** @var Covid19Service $covid19Service */
+            $covid19Service = ContainerRegistry::get(Covid19Service::class);
             $sampleType['covid19'] = $covid19Service->getCovid19SampleTypes();
         }
         if ($test == 'hepatitis') {
-            $sampleType['hepatitis'] = $hepatitisDb->getHepatitisSampleTypes();
+            /** @var HepatitisService $hepatitisService */
+            $hepatitisService = ContainerRegistry::get(HepatitisService::class);
+            $sampleType['hepatitis'] = $hepatitisService->getHepatitisSampleTypes();
         }
         if ($test == 'tb') {
-            $sampleType['tb'] = $tbDb->getTbSampleTypes();
+            /** @var TbService $tbService */
+            $tbService = ContainerRegistry::get(TbService::class);
+            $sampleType['tb'] = $tbService->getTbSampleTypes();
         }
         $selectedType[$test] = explode(",", $selectedSamplesTypes['sampleType'][$test]);
     }
 }
-if (isset($sampleType) && count($sampleType) > 0) { ?>
+if (!empty($sampleType)) { ?>
     <hr>
-    <table class="col-lg-12 table table-bordered" style=" width: 80%; ">
+    <table aria-describedby="table" class="col-lg-12 table table-bordered" style=" width: 80%;">
         <thead>
             <tr>
                 <th style="text-align:center;"><?php echo _("Test Category"); ?></th>

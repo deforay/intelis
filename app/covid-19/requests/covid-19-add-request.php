@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 
 $title = _("COVID-19 | Add New Request");
@@ -37,8 +37,8 @@ require_once(APPLICATION_PATH . '/header.php');
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);

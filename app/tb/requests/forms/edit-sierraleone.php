@@ -5,10 +5,19 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
+use App\Registries\ContainerRegistry;
 use App\Services\TbService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -30,11 +39,13 @@ foreach ($testPlatformResult as $row) {
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$tbObj = new TbService();
-$tbXPertResults = $tbObj->getTbResults('x-pert');
-$tbLamResults = $tbObj->getTbResults('lam');
-$specimenTypeResult = $tbObj->getTbSampleTypes();
-$tbReasonsForTesting = $tbObj->getTbReasonsForTesting();
+
+/** @var TbService $tbService */
+$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
+$tbXPertResults = $tbService->getTbResults('x-pert');
+$tbLamResults = $tbService->getTbResults('lam');
+$specimenTypeResult = $tbService->getTbSampleTypes();
+$tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 // To get the reason details value
 
 $rKey = '';
@@ -122,7 +133,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border">
 									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<th style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
@@ -145,7 +156,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
 										<td>
@@ -207,7 +218,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -342,7 +353,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table class="table" aria-hidden="true" >
+								<table aria-describedby="table" class="table" aria-hidden="true" >
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
@@ -431,7 +442,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
 									</div>
-									<table class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
 											<td>
@@ -502,7 +513,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</tr>
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
-												<table class="table table-bordered table-striped" aria-hidden="true" >
+												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
 													<thead>
 														<tr>
 															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
@@ -569,7 +580,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></td>
+											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the reviewed on" /></td>
 										</tr>
 										<tr>
@@ -579,7 +590,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></td>
+											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 

@@ -8,7 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 echo $general->generateToken();

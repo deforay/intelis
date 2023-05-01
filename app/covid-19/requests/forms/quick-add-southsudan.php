@@ -91,7 +91,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">QUICK ADD FORM</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <th scope="row"><label for="sampleCode">Sample ID </label></th>

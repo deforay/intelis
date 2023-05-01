@@ -8,17 +8,19 @@
 
 namespace App\Services;
 
+use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use MysqliDb;
 
 class GeoLocationsService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)

@@ -25,8 +25,8 @@ $app = new ApiService();
 
 $transactionId = $general->generateUUID();
 
-$facilityDb = ContainerRegistry::get(FacilitiesService::class);
-$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
     $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";

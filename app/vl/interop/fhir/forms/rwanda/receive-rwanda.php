@@ -23,12 +23,14 @@ use App\Interop\Fhir;
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$vlService = ContainerRegistry::get(VlService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 $vlsmSystemConfig = $general->getSystemConfig();
@@ -68,7 +70,6 @@ $json = $fhir->get('/Task', $data);
 //die;
 
 
-
 $parser = new PHPFHIRResponseParser();
 
 $metaResource = $parser->parse($json);
@@ -77,7 +78,6 @@ $entries = $metaResource->getEntry();
 $formData = [];
 
 $bundleId = (string) $metaResource->getId()->getValue();
-$db = MysqliDb::getInstance();
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 $instanceId = $instanceResult['vlsm_instance_id'];
@@ -133,7 +133,7 @@ foreach ($entries as $entry) {
             // $db->orWhere("facility_name", $facilityName);
             // $fac = $db->get("facility_details");
 
-            $facilityRow = $facilityDb->getFacilityByAttribute('facility_fhir_id', $orgFhirId);
+            $facilityRow = $facilitiesService->getFacilityByAttribute('facility_fhir_id', $orgFhirId);
             $formData[$basedOnServiceRequest]['facility_id'] = $facilityRow['facility_id'];
 
             if (empty($resource->getIdentifier()) || empty($resource->getIdentifier()[0]->getValue())) {

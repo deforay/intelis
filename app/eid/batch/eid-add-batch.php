@@ -10,11 +10,13 @@ $title = "EID | Add Batch";
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -91,7 +93,7 @@ foreach ($testPlatformResult as $machine) {
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
             </div>
-            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
                 <tr>
                     <th scope="col">Testing Platform&nbsp;<span class="mandatory">*</span> </th>
                     <td>

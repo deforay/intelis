@@ -12,7 +12,9 @@ require_once(APPLICATION_PATH . '/header.php');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 
 $healthFacilites = $facilitiesService->getHealthFacilities('eid');
@@ -40,7 +42,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 
 
 foreach ($rejectionTypeResult as $type) {
@@ -91,7 +93,7 @@ foreach ($rejectionTypeResult as $type) {
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date");?>&nbsp;:</strong></td>
 													<td>
@@ -200,7 +202,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date");?>&nbsp;:</strong></td>
 													<td>
@@ -305,7 +307,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date");?>&nbsp;:</strong></td>
 													<td>
@@ -401,7 +403,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date");?>&nbsp;:</strong></td>
 													<td>

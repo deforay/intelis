@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
 use App\Services\TbService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 
 
@@ -17,18 +17,20 @@ $title = "Add New Specimen Referral Manifest";
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesService->getTestingLabs($module);
 
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 $usersList = [];
 $users = $usersService->getActiveUsers();
 foreach ($users as $u) {
@@ -37,11 +39,11 @@ foreach ($users as $u) {
 $facilities = $facilitiesService->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
-	$vlDb = new VlService($db);
-	$sampleTypes = $vlDb->getVlSampleTypes();
+	$vlService = new VlService($db);
+	$sampleTypes = $vlService->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$eidDb = new EidService($db);
-	$sampleTypes = $eidDb->getEidSampleTypes();
+	$eidService = new EidService($db);
+	$sampleTypes = $eidService->getEidSampleTypes();
 } else if ($module == 'covid19') {
 	$shortCode = 'C19';
 	$covid19Service = new Covid19Service($db);
@@ -51,8 +53,8 @@ if ($module == 'vl') {
 	$hepDb = new HepatitisService($db);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
-	$tbDb = new TbService($db);
-	$sampleTypes = $tbDb->getTbSampleTypes();
+	$tbService = new TbService($db);
+	$sampleTypes = $tbService->getTbSampleTypes();
 }
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
 

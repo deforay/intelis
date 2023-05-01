@@ -78,13 +78,13 @@ class SouthSudan_PDF extends MYPDF
 
 
 $dateUtils = new DateUtility();
-$tbLamResults = $tbObj->getTbResults('lam');
-$tbXPertResults = $tbObj->getTbResults('x-pert');
+$tbLamResults = $tbService->getTbResults('lam');
+$tbXPertResults = $tbService->getTbResults('x-pert');
 
 $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
@@ -304,7 +304,7 @@ if (sizeof($requestResult) > 0) {
         }
         $fstate = "";
         if (isset($result['facility_state_id']) && $result['facility_state_id'] != "") {
-            $geoResult = $geoObj->getById($result['facility_state_id']);
+            $geoResult = $geolocationService->getById($result['facility_state_id']);
             $fstate = (isset($geoResult['geo_name']) && $geoResult['geo_name'] != "") ? $geoResult['geo_name'] : null;
         }
         if (isset($result['facility_state']) && $result['facility_state'] != "") {

@@ -11,8 +11,10 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -36,8 +38,8 @@ $transactionId = $general->generateUUID();
 $counter = 0;
 
 
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
   $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";

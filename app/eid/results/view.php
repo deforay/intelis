@@ -1,9 +1,13 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
@@ -17,7 +21,7 @@ if (empty($decryptedString)) {
 
 $uniqueId = $decryptedString;
 
-$db = MysqliDb::getInstance();
+
 $db->where("unique_id", $uniqueId);
 $res = $db->getOne("form_eid", "eid_id");
 
@@ -33,7 +37,7 @@ $id = $res['eid_id'];
         border: 1px solid black;
         direction: ltr;
         margin-left: 15%;
-        margin-top:50px;
+        margin-top: 50px;
     }
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>

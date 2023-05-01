@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 
@@ -16,8 +16,8 @@ require_once(APPLICATION_PATH . '/header.php');
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');

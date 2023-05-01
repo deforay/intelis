@@ -123,7 +123,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -197,7 +197,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">CASE DETAILS/DEMOGRAPHICS</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -270,7 +270,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
 
                                     <tr>
                                         <td colspan=4>
@@ -337,7 +337,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                             <td>
@@ -412,7 +412,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No.</th>

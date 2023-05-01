@@ -100,7 +100,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>
@@ -140,7 +140,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>
@@ -179,7 +179,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>
@@ -219,7 +219,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>
@@ -260,7 +260,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>
@@ -301,7 +301,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 												<td>

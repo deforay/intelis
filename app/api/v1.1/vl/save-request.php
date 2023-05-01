@@ -3,7 +3,7 @@
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
@@ -11,18 +11,23 @@ ini_set('memory_limit', -1);
 session_unset(); // no need of session in json response
 header('Content-Type: application/json');
 
-$db = \MysqliDb::getInstance();
 
 try {
 
     /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-    $usersService = \App\Registries\ContainerRegistry::get(UserService::class);
-    $app = new ApiService();
-    
-/** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+    $db = ContainerRegistry::get('db');
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
+    /** @var ApiService $app */
+    $app = ContainerRegistry::get(ApiService::class);
+
+    /** @var UsersService $usersService */
+    $usersService = ContainerRegistry::get(UsersService::class);
+
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
 
     $transactionId = $general->generateUUID();
 

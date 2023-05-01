@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use MysqliDb;
 
@@ -14,12 +15,13 @@ use MysqliDb;
 class PatientsService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $table = 'patients';
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function generatePatientId($prefix)

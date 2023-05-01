@@ -190,7 +190,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     /* MSH Information */
     if ($msg->hasSegment('MSH')) {
         $msh = $msg->getSegmentByIndex(0);
-        $facilityDetails = $facilityDb->getFacilityByName($msh->getField(4));
+        $facilityDetails = $facilitiesService->getFacilityByName($msh->getField(4));
         if (!empty($facilityDetails[0]) && $facilityDetails[0] != "") {
             $data['fName'] = $facilityDetails[0]['facility_id'];
             $data['provinceCode'] = $facilityDetails[0]['geo_code'];
@@ -226,7 +226,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         }
         $data['sampleCode'] = $spm->getField(2);
         if ($spm->getField(4) != "" && !empty($spm->getField(4))) {
-            $vlSampleDetails = $vlDb->getVlSampleTypesByName($spm->getField(4));
+            $vlSampleDetails = $vlService->getVlSampleTypesByName($spm->getField(4));
             $data['specimenType'] = $vlSampleDetails[0]['sample_id'];
         }
         $data['sampleCollectionDate'] = $spm->getField(17);

@@ -3,17 +3,22 @@
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 session_unset(); // no need of session in json response
 
-$db = \MysqliDb::getInstance();
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$users = \App\Registries\ContainerRegistry::get(UserService::class);
-$app = new ApiService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $transactionId = $general->generateUUID();

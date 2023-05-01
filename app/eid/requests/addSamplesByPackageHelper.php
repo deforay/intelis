@@ -7,9 +7,11 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$eidObj = ContainerRegistry::get(EidService::class);
 
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";

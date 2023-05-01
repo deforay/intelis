@@ -7,13 +7,13 @@ use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $hepatitisInfo['vl_testing_site'], "-- Select --");
@@ -81,7 +81,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                         <div class="box-header with-border">
                             <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                         </div>
-                        <table class="table" aria-hidden="true" style="width:100%">
+                        <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                             <?php if ($hepatitisInfo['remote_sample'] == 'yes') { ?>
                                 <tr>
                                     <?php
@@ -165,7 +165,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                         <div class="box-header with-border">
                             <h3 class="box-title">DEMOGRAPHICS</h3>
                         </div>
-                        <table class="table" aria-hidden="true" style="width:100%">
+                        <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                             <tr>
                                 <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -232,7 +232,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                     <div class="box-header with-border">
                         <h3 class="box-title">TEST RESULTS FOR SCREENING BY RDTs</h3>
                     </div>
-                    <table class="table" aria-hidden="true" style="width:100%">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                         <tr>
                             <td>Specimen Type <span class="mandatory">*</span></td>
                             <td>
@@ -280,7 +280,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                 <div class="box-header with-border">
                                     <h3 class="box-title">TO BE FILLED AT VIRAL LOAD TESTING SITE </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>

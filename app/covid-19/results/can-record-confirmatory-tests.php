@@ -29,7 +29,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$collectionDate = (isset($_COOKIE['collectionDate']) && $_COOKIE['collectionDate'] != '') ? $_COOKIE['collectionDate'] : '';
 	$batchCode = (isset($_COOKIE['batchCode']) && $_COOKIE['batchCode'] != '') ? $_COOKIE['batchCode'] : '';
 
-	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', $_COOKIE['facilityName']) : array();
+	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', $_COOKIE['facilityName']) : []
 
 	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
 }
@@ -54,7 +54,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
 							<td><strong>Sample Collection Date&nbsp;:</strong></td>
 							<td>

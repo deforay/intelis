@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -16,12 +16,14 @@ $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$user = \App\Registries\ContainerRegistry::get(UserService::class);
+$user = ContainerRegistry::get(UsersService::class);
 
 
 try {

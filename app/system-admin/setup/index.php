@@ -13,8 +13,10 @@ if (count($adminCount) != 0) {
 
 $path = '/assets/img/remote-bg.jpg';
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $myfile = fopen(APPLICATION_PATH . "/system-admin/secretKey.txt", "w+") or die("Unable to open file!");
 

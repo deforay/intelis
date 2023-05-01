@@ -8,8 +8,10 @@ $title = "Enter Covid-19 Result";
 
 require_once(APPLICATION_PATH . '/header.php');
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $id = base64_decode($_GET['id']);
 
 $configQuery = "SELECT * from global_config";

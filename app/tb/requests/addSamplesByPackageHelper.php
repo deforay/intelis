@@ -7,9 +7,13 @@ use App\Services\TbService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$tbObj = new TbService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var TbService $tbService */
+$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
 
 
 $sampleQuery = "SELECT tb_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_tb where tb_id IN (" . $_POST['sampleId'] . ") ORDER BY tb_id";
@@ -34,7 +38,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $tbObj->generatetbSampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $tbService->generatetbSampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         $tbData = [];
         $tbData['sample_code'] = $sampleData['sampleCode'];

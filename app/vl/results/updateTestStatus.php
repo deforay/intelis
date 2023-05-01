@@ -6,8 +6,10 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 try {
 
@@ -43,8 +45,8 @@ try {
 
 
 
-        $vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
-        $status['vl_result_category'] = $vlDb->getVLResultCategory($status['result_status'], $vlRow['result']);
+        $vlService = ContainerRegistry::get(VlService::class);
+        $status['vl_result_category'] = $vlService->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
             $status['result_status'] = 5;
         } elseif ($vldata['vl_result_category'] == 'rejected') {

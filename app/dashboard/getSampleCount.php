@@ -6,11 +6,13 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$db = ContainerRegistry::get('db');
 
-$facilityInfo = $facilityDb->getAllFacilities();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+$facilityInfo = $facilitiesService->getAllFacilities();
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configFormResult = $db->rawQuery($configFormQuery);
 $country = $configFormResult[0]['value'];
@@ -181,7 +183,7 @@ $tableResult = $db->rawQuery($sQuery);
     }
 </style>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <table class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
+    <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
             <td style="vertical-align:middle;padding-left: 0px;"><strong><?php echo _("Collection Point"); ?>&nbsp;:</strong>
                 <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">

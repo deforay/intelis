@@ -23,12 +23,14 @@ use App\Interop\Fhir;
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$vlService = ContainerRegistry::get(VlService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 

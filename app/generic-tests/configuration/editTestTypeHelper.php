@@ -9,13 +9,15 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_test_types";
 $tableName2="generic_test_sample_type_map";
 $tableName3="generic_test_reason_map";
 $tableName4="generic_test_symptoms_map";
-$testAttribute=array();
+$testAttribute=[]
 /*echo "<pre>";
 print_r($_POST);
 die;*/

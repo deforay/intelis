@@ -9,7 +9,7 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
@@ -17,15 +17,15 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
     exit;
 }
 
-$db  = MysqliDb::getInstance();
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
-
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -116,7 +116,7 @@ if (count($interfaceInfo) > 0) {
         //Getting Approved By and Reviewed By from Instruments table
         $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", array($result['machine_used']));
 
-        if (empty($instrumentDetails) || $instrumentDetails === false) {
+        if (empty($instrumentDetails)) {
             $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
@@ -153,14 +153,14 @@ if (count($interfaceInfo) > 0) {
                     $absVal = null;
                     $txtVal = null;
                 } elseif (!is_numeric($vlResult)) {
-                    $interpretedResults = $vlDb->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
+                    $interpretedResults = $vlService->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
                     $logVal = $interpretedResults['logVal'];
                     $vlResult = $interpretedResults['result'];
                     $absDecimalVal = $interpretedResults['absDecimalVal'];
                     $absVal = $interpretedResults['absVal'];
                     $txtVal = $interpretedResults['txtVal'];
                 } else {
-                    $interpretedResults = $vlDb->interpretViralLoadNumericResult($vlResult, $unit);
+                    $interpretedResults = $vlService->interpretViralLoadNumericResult($vlResult, $unit);
                     $logVal = $interpretedResults['logVal'];
                     $vlResult = $interpretedResults['result'];
                     $absDecimalVal = $interpretedResults['absDecimalVal'];
@@ -205,7 +205,7 @@ if (count($interfaceInfo) > 0) {
                 $data['result_status'] = 5; // Invalid
             }
 
-            $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+            $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
                 $data['result_status'] = 5;
             } elseif ($data['vl_result_category'] == 'rejected') {
@@ -298,9 +298,9 @@ if (count($interfaceInfo) > 0) {
                 $unit = trim($result['test_unit']);
 
                 if (!is_numeric($hepatitisResult)) {
-                    $interpretedResults = $vlDb->interpretViralLoadTextResult($hepatitisResult, $unit);
+                    $interpretedResults = $vlService->interpretViralLoadTextResult($hepatitisResult, $unit);
                 } else {
-                    $interpretedResults = $vlDb->interpretViralLoadNumericResult($hepatitisResult, $unit);
+                    $interpretedResults = $vlService->interpretViralLoadNumericResult($hepatitisResult, $unit);
                 }
                 $hepatitisResult = $interpretedResults['result'];
             }

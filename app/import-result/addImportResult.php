@@ -6,14 +6,15 @@ use App\Services\CommonService;
 
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
-$db = MysqliDb::getInstance();
 $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 

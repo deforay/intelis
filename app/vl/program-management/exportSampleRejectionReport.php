@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);

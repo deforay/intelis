@@ -8,8 +8,10 @@ use App\Utilities\DateUtility;
 
 try {
     /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;

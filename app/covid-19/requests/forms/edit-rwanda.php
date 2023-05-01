@@ -116,7 +116,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -206,7 +206,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -294,7 +294,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">CLINICAL SIGNS AND SYMPTOMS</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Date of Symptom Onset <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -339,7 +339,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">OTHER CO-MORBIDITIES</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Co-morbidities <span class="mandatory">*</span> </th>
                                         <td colspan="3">
@@ -366,7 +366,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">EPIDEMIOLOGICAL RISK FACTORS AND EXPOSURES</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Close contacts of the Patient <span class="mandatory">*</span></th>
                                         <td colspan="3">
@@ -391,7 +391,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
 
                                     <tr>
                                         <td colspan=4>
@@ -448,7 +448,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -495,7 +495,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No.</th>

@@ -8,8 +8,10 @@ use App\Services\CommonService;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
     if (isset($_POST['manifestCode']) && trim($_POST['manifestCode']) != "" && count($_POST['sampleCode']) > 0) {

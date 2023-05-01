@@ -2,7 +2,7 @@
 
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 class DRC_PDF extends MYPDF
@@ -86,7 +86,7 @@ class DRC_PDF extends MYPDF
     }
 }
 
-$users = ContainerRegistry::get(UserService::class);
+$users = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

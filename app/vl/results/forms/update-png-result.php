@@ -183,7 +183,7 @@ $disable = "disabled = 'disabled'";
 								</div>
 							</div>
 							<br />
-							<table class="table" aria-hidden="true" style="width:100%">
+							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 								<tr>
 									<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 1: Clinic Information</td>
 								</tr>
@@ -445,7 +445,7 @@ $disable = "disabled = 'disabled'";
 								</tr>
 							</table>
 							<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="updateVlRequestHelperPng.php">
-								<table class="table" aria-hidden="true" style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td colspan="6" class="labels" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>

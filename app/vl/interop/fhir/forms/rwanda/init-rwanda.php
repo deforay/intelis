@@ -13,11 +13,13 @@ use App\Interop\Fhir;
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -34,11 +36,8 @@ $parser = new PHPFHIRResponseParser();
 
 $metaResource = $parser->parse($json);
 
-
-$db = MysqliDb::getInstance();
-
 $entries = $metaResource->getEntry();
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 foreach ($entries as $entry) {
     $resource = $entry->getResource();
@@ -69,7 +68,7 @@ foreach ($entries as $entry) {
         $facilityDistrictId = $db->insert('geographical_divisions', array('geo_name' => $facilityDistrict, 'geo_parent' => $facilityStateId, 'geo_status' => 'active'));
     }    
 
-    $facilityRow = $facilityDb->getFacilityByAttribute('facility_fhir_id', $facilityFHIRId);
+    $facilityRow = $facilitiesService->getFacilityByAttribute('facility_fhir_id', $facilityFHIRId);
 
     // looks like this FHIR Facility ID is already in the database. No need to do anything
     if (!empty($facilityRow)) continue;

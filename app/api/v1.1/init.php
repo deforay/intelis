@@ -8,20 +8,29 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\TbService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 
-$db = \MysqliDb::getInstance();
+
+$applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$app = new ApiService();
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
@@ -87,19 +96,19 @@ foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
 $activeModule = [];
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true) {
     $activeModule[] = '"vl"';
 }
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true) {
     $activeModule[] = '"eid"';
 }
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true) {
     $activeModule[] = '"covid19"';
 }
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true) {
     $activeModule[] = '"hepatitis"';
 }
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true) {
     $activeModule[] = '"tb"';
 }
 
@@ -107,7 +116,7 @@ $data = [];
 $data['formId'] = $formId;
 $data['activeModule'] = implode(",", $activeModule);
 $data['facilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
-$data['geoGraphicalDivision'] = $geoLocationDb->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
+$data['geoGraphicalDivision'] = $geolocationService->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
 $data['healthFacilitiesList'] = $app->getAppHealthFacilities(null, $user['user_id'], true, 1, false, implode(",", $activeModule), $updatedDateTime);
 $data['testingLabsList'] = $app->getTestingLabs(null, $user['user_id'], false, false, implode(",", $activeModule), $updatedDateTime);
 /* Province Details */
@@ -120,10 +129,10 @@ $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    
-/** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true) {
+
+    /** @var Covid19Service $covid19Service */
+    $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
     // if (isset($formId) && $formId == 1) {
     /* Source of Alert list */
@@ -226,8 +235,11 @@ $covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 }
 
 // Check if eid module active/inactive
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidObj = \App\Registries\ContainerRegistry::get(EidService::class);
+if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true) {
+
+    /** @var EidService $eidService */
+    $eidService = ContainerRegistry::get(EidService::class);
+
     /* SITE INFORMATION SECTION */
     /* Province Details */
     $data['eid']['provinceList'] = $app->getProvinceDetails($user['user_id'], true, $updatedDateTime);
@@ -250,7 +262,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $motherTreatmentList[$key]['show'] = $treatment;
     }
     $data['eid']['motherTreatment'] = $motherTreatmentList;
-    $data['eid']['rapidTestResult'] = $app->generateSelectOptions($eidObj->getEidResults($updatedDateTime));
+    $data['eid']['rapidTestResult'] = $app->generateSelectOptions($eidService->getEidResults($updatedDateTime));
     $data['eid']['prePcrTestResult'] = $commonResultsList;
 
     $pcrTestReasonList = [];
@@ -260,7 +272,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         $pcrTestReasonList[$key]['show'] = $reason;
     }
     $data['eid']['pcrTestReason'] = $pcrTestReasonList;
-    $data['eid']['specimenTypeList'] = $app->generateSelectOptions($eidObj->getEidSampleTypes($updatedDateTime));
+    $data['eid']['specimenTypeList'] = $app->generateSelectOptions($eidService->getEidSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active' GROUP BY rejection_type";
@@ -291,7 +303,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     }
     $data['eid']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['eid']['resultsList'] = $app->generateSelectOptions($eidObj->getEidResults());
+    $data['eid']['resultsList'] = $app->generateSelectOptions($eidService->getEidResults());
     // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['eid']['statusFilterList'] = array(
@@ -303,10 +315,11 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
 }
 
 // Check if vl module active/inactive
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlObj = \App\Registries\ContainerRegistry::get(VlService::class);
+if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true) {
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
     /* SAMPLE INFORMATION SECTION */
-    $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlObj->getVlSampleTypes($updatedDateTime));
+    $data['vl']['specimenTypeList'] = $app->generateSelectOptions($vlService->getVlSampleTypes($updatedDateTime));
     /* Current regimen */
     $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active' ";
     if ($updatedDateTime) {
@@ -356,7 +369,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
         $testPlatformList[$row['machine_name']] = $row['machine_name'];
     }
     $data['vl']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
-    $data['vl']['reasonForFailure'] = $vlObj->getReasonForFailure(false, $updatedDateTime);
+    $data['vl']['reasonForFailure'] = $vlService->getReasonForFailure(false, $updatedDateTime);
 
     $data['vl']['statusFilterList'] = array(
         array('value' => '7', 'show' => 'Approved'),
@@ -368,8 +381,10 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
 }
 
 // Check if tb module active/inactive
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-    $tbObj = new TbService();
+if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true) {
+
+    /** @var TbService $tbService */
+    $tbService = \App\Registries\ContainerRegistry::get(TbService::class);
     /* SITE INFORMATION SECTION */
 
     /* Infant and Mother's Health Information Section */
@@ -382,7 +397,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     //     $motherTreatmentList[$key]['show'] = $treatment;
     // }
     // $data['eid']['motherTreatment'] = $motherTreatmentList;
-    $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbObj->getTbResults(null, $updatedDateTime));
+    $data['tb']['rapidTestResult'] = $app->generateSelectOptions($tbService->getTbResults(null, $updatedDateTime));
     // $data['eid']['prePcrTestResult'] = $commonResultsList;
 
     // $pcrTestReasonList = [];
@@ -392,7 +407,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     //     $pcrTestReasonList[$key]['show'] = $reason;
     // }
     // $data['eid']['pcrTestReason'] = $pcrTestReasonList;
-    $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbObj->getTbSampleTypes($updatedDateTime));
+    $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbService->getTbSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
     $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active' ";
@@ -424,7 +439,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     }
     $data['tb']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
 
-    $data['tb']['resultsList'] = $app->generateSelectOptions($tbObj->getTbResults(null, $updatedDateTime));
+    $data['tb']['resultsList'] = $app->generateSelectOptions($tbService->getTbResults(null, $updatedDateTime));
     // $data['eid']['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
     $data['tb']['statusFilterList'] = array(

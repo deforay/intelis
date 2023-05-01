@@ -7,12 +7,17 @@ if (php_sapi_name() == 'cli') {
     exit(0);
 }
 
+use App\Registries\ContainerRegistry;
 use phpseclib3\Net\SFTP;
 use phpseclib3\Crypt\PublicKeyLoader;
-use Vlsm\Models\General;
+use App\Services\CommonService;
 
-$db = \MysqliDb::getInstance();
-$general = new General($db);
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $sftp = null;
 if (!empty(SYSTEM_CONFIG['sftp']['host'])) {
@@ -61,7 +66,7 @@ try {
         $password = hash('sha1', SYSTEM_CONFIG['interfacing']['database']['password'] . $randomString);
         exec("cd $backupFolder && " . SYSTEM_CONFIG['mysqlDump'] . ' --create-options --user=' . SYSTEM_CONFIG['interfacing']['database']['username'] . ' --password="' . SYSTEM_CONFIG['interfacing']['database']['password'] . '" --host=' . SYSTEM_CONFIG['interfacing']['database']['host'] . ' --port=' . SYSTEM_CONFIG['interfacing']['database']['port'] . ' --databases ' . SYSTEM_CONFIG['interfacing']['database']['db'] . '  > ' . $baseFileName);
         exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
-        if (!empty($sftp) && $sftp !== false) {
+        if (!empty($sftp)) {
             $sftp->chdir(SYSTEM_CONFIG['sftp']['path']);
             $sftp->put("$baseFileName.zip", file_get_contents($backupFolder . "/" . "$baseFileName.zip"));
         }

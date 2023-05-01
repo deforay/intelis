@@ -57,7 +57,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : array();
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : []
 
 
 ?>
@@ -92,7 +92,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                             </div>
-                            <table class="table" aria-hidden="true" style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                 <tr>
                                     <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td class="labels"><label for="sampleCode">Sample ID </label></td>
@@ -166,7 +166,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 </tr>
                             </table>
                             <br><br>
-                            <table class="table" aria-hidden="true" style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                 <tr>
                                     <th class="labels" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
@@ -209,7 +209,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             </table>
 
                             <br><br>
-                            <table class="table" aria-hidden="true" style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Infant and Mother's Health Information</h4>
@@ -323,7 +323,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             </table>
 
                             <br><br>
-                            <table class="table" aria-hidden="true">
+                            <table aria-describedby="table" class="table" aria-hidden="true">
                                 <tr>
                                     <th colspan=4>
                                         <h4>Sample Information</h4>
@@ -369,7 +369,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <div class="box-header with-border">
                                     <h3 class="box-title">B. Reserved for Laboratory Use </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th class="labels" scope="row">Testing Laboratory <span class="mandatory">*</span></th>
                                         <td>

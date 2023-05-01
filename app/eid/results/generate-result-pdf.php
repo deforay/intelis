@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
@@ -18,9 +18,11 @@ ini_set('max_execution_time', -1);
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$users = \App\Registries\ContainerRegistry::get(UserService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$users = ContainerRegistry::get(UsersService::class);
 
 $arr = $general->getGlobalConfig();
 

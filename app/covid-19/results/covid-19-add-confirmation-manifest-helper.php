@@ -6,10 +6,10 @@ use App\Utilities\DateUtility;
 
 $module = 'C19';
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName1 = "covid19_positive_confirmation_manifest";
 $tableName2 = "form_covid19";

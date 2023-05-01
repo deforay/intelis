@@ -10,12 +10,16 @@ $title = _("Print EID Results");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
@@ -33,7 +37,7 @@ $batResult = $db->rawQuery($batQuery);
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 ?>
 <style>
     .select2-selection__choice {
@@ -66,7 +70,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
-                                            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td>
@@ -224,7 +228,7 @@ $state = $geoLocationDb->getProvinces("yes");
                                             <input type="hidden" name="totalSamplesList" id="totalSamplesList" />
                                         </div>
                                         <div class="tab-pane fade" id="printedData">
-                                            <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td>

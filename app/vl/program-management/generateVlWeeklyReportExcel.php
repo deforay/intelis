@@ -18,7 +18,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $country = $general->getGlobalConfig('vl_form');
 $sarr = $general->getSystemConfig();

@@ -8,8 +8,10 @@ require_once(__DIR__ . "/../../../../bootstrap.php");
 require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 $instanceId = $instanceResult['vlsm_instance_id'];

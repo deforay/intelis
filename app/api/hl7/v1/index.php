@@ -5,7 +5,7 @@ use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\VlService;
 use Aranyasen\HL7\Message;
 use Aranyasen\HL7\Messages\ACK;
@@ -13,19 +13,21 @@ use Aranyasen\HL7\Segments\MSH;
 
 ini_set('memory_limit', -1);
 header('Content-Type: application/json');
-$db = \MySqlidb::getInstance();
+
 $user = null;
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
-$vlDb = \App\Registries\ContainerRegistry::get(VlService::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$vlService = ContainerRegistry::get(VlService::class);
 
 $transactionId = $general->generateUUID();
 

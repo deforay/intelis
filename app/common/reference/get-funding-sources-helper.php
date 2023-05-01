@@ -13,8 +13,10 @@ $primaryKey = "funding_source_id";
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where

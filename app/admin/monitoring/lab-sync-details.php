@@ -8,14 +8,22 @@ use App\Services\SystemService;
 $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
-$facilityDb = ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
-$facilityDetails = $facilityDb->getAllFacilities();
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+
+$facilityDetails = $facilitiesService->getAllFacilities();
 foreach ($facilityDetails as $row) {
     $facilityNameList[$row['facility_id']] = $row['facility_name'];
 }
-$stateNameList = $geoLocationDb->getProvinces("yes");
-$activeTestModules = SystemService::getActiveTestModules();
+$stateNameList = $geolocationService->getProvinces("yes");
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
 
 $sQuery = "SELECT f.facility_id, f.facility_name, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'requests' AND facility_id = f.facility_id GROUP BY facility_id  ORDER BY requested_on DESC) AS request, (SELECT MAX(requested_on) FROM track_api_requests WHERE request_type = 'results' AND facility_id = f.facility_id GROUP BY facility_id ORDER BY requested_on DESC) AS results, tar.test_type, tar.requested_on  FROM facility_details AS f JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id WHERE f.facility_id = " . base64_decode($_GET['labId']) . " GROUP BY f.facility_id ORDER BY tar.requested_on DESC";
 $labInfo = $db->rawQueryOne($sQuery);
@@ -62,7 +70,7 @@ $labInfo = $db->rawQueryOne($sQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
                             <td>
@@ -116,7 +124,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table class="table table-bordered table-striped" style="width: 70%;">
+                        <table aria-describedby="table" class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
                                 <th>Last Request Sent from VLSTS :</th>
                                 <td align="left"><?php echo $labInfo['request']; ?></td>

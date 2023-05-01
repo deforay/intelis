@@ -3,7 +3,7 @@
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -16,10 +16,12 @@ $password = ($_POST['password']);
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$user = \App\Registries\ContainerRegistry::get(UserService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$user = ContainerRegistry::get(UsersService::class);
 
 
 
@@ -154,7 +156,7 @@ try {
                 $_SESSION['accessType'] = $userRow['access_type'];
                 $_SESSION['email'] = $userRow['email'];
                 $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
-                $_SESSION['facilityMap'] = $facilityDb->getUserFacilityMap($userRow['user_id']);
+                $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);
                 $_SESSION['mappedProvinces'] = null;
                 if (!empty($_SESSION['facilityMap'])) {
                     $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id FROM facility_details as f WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
@@ -198,7 +200,7 @@ try {
                 //check clinic or lab user
                 $_SESSION['userType']   = '';
                 $_SESSION['privileges'] = $priId;
-                $_SESSION['module'] = $module ?: array();
+                $_SESSION['module'] = $module ?: []
 
                 if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                     $redirect = "/users/editProfile.php";

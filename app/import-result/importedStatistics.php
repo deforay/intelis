@@ -28,8 +28,10 @@ $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
 $module = $tResult['module'];
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 if ($module == 'vl') {
   require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');

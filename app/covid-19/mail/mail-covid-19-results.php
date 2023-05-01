@@ -8,8 +8,10 @@ $title = "Email Covid-19 Test Results";
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $formId = $general->getGlobalConfig('vl_form');
 
 //main query
@@ -99,7 +101,7 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-12">
-                <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
+                <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
                     <td>&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
                     <td>

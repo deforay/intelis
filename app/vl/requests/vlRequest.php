@@ -33,12 +33,14 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
-$state = $geoLocationDb->getProvinces("yes");
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");

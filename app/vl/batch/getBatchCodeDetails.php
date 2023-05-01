@@ -8,8 +8,10 @@ $tableName = "batch_details";
 $primaryKey = "batch_id";
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {

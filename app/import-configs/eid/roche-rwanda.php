@@ -3,7 +3,7 @@
 // File included in addImportResultHelper.php
 
 use App\Registries\ContainerRegistry;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -28,7 +28,7 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = \App\Services\CommonService::generateRandomString(12);
+    // $ranNumber = $general->generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
@@ -221,8 +221,8 @@ try {
             //get user name
             if (!empty($d['reviewBy'])) {
                 
-/** @var UserService $usersService */
-$usersService = ContainerRegistry::get(UserService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

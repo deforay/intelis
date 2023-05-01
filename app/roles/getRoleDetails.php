@@ -49,7 +49,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 /* Hide API User in data grid */
-$sWhere=array();
+$sWhere=[]
 $sWhere[] = " role_code != 'API'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);

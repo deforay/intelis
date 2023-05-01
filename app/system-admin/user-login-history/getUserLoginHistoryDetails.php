@@ -9,8 +9,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "user_login_history";
 $primaryKey = "history_id";
 

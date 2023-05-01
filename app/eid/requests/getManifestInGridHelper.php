@@ -22,11 +22,13 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var EidService $eidService */
-$eidService = \App\Registries\ContainerRegistry::get(EidService::class);
+$eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 $tableName = "form_eid";
 $primaryKey = "eid_id";

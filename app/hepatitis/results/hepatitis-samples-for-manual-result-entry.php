@@ -26,8 +26,10 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
@@ -241,8 +243,10 @@ $output = array(
      "iTotalDisplayRecords" => $iFilteredTotal,
      "aaData" => array()
 );
-$hepatitisDb = new HepatitisService();
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+$hepatitisResults = $hepatitisService->getHepatitisResults();
 foreach ($rResult as $aRow) {
      $row = [];
      $print = '<a href="hepatitis-update-result.php?id=' . base64_encode($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';

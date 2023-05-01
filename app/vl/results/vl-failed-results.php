@@ -11,13 +11,17 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
-$geoLocationDb = new GeoLocationsService();
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
@@ -27,7 +31,7 @@ $sResult = $db->rawQuery($sQuery);
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 
 ?>
 <style>

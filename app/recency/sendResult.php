@@ -10,8 +10,10 @@ try {
 
 
     /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';

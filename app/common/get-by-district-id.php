@@ -2,13 +2,15 @@
 
 use App\Services\GeoLocationsService;
 
-$geoLocationDb = new GeoLocationsService();
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 $list = [];
 
 if(isset($_POST['districtId']))
 {
     $districtId = $_POST['districtId'];
-    $result = $geoLocationDb->getByDistrictId($districtId, true, true);
+    $result = $geolocationService->getByDistrictId($districtId, true, true);
 
     //Get Facilities by district
     if(isset($_POST['facilities']))

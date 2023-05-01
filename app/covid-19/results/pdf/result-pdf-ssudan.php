@@ -87,14 +87,19 @@ class SouthSudan_PDF extends MYPDF
 $dateUtils = new DateUtility();
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
 $covid19Results = $covid19Service->getCovid19Results();
 
 $countryFormId = $general->getGlobalConfig('vl_form');
 $resultFilename = '';
 
-if (sizeof($requestResult) > 0) {
-    $_SESSION['rVal'] = CommonService::generateRandomString(6);
+if (!empty($requestResult)) {
+    $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);

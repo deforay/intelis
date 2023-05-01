@@ -2,21 +2,25 @@
 
 namespace App\Services;
 
-use App\Registries\ContainerRegistry;
 use MysqliDb;
-use Whoops\Handler\JsonResponseHandler;
-use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\Util\Misc;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Handler\JsonResponseHandler;
 
 class SystemService
 {
 
-    public $db;
+    /** @var MysqliDb $db */
+    protected $db = null;
+    protected $applicationConfig = null;
 
-    public function __construct($db = null)
+    public function __construct($db = null, $applicationConfig = null)
     {
-        $this->db = $db ?? MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->applicationConfig = $applicationConfig;
     }
 
     public function setDb($db)
@@ -33,12 +37,12 @@ class SystemService
         return $this;
     }
 
-    // Setup Locale
+    // Setup Translation
     public function setupTranslation($domain = "messages")
     {
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
-        
+        $general = ContainerRegistry::get(CommonService::class);
+
         $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
             $general->getGlobalConfig('app_locale') ?? 'en_US';
 
@@ -54,8 +58,8 @@ class SystemService
     public function setupDateTimeZone()
     {
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
-        
+        $general = ContainerRegistry::get(CommonService::class);
+
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $general->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);
@@ -93,27 +97,27 @@ class SystemService
         return $this;
     }
 
-    public static function getActiveTestModules(): array
+    public function getActiveTestModules(): array
     {
         $response = [];
 
-        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+        if (isset($this->applicationConfig['modules']['vl']) && $this->applicationConfig['modules']['vl'] === true) {
             $response[] = 'vl';
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+        if (isset($this->applicationConfig['modules']['eid']) && $this->applicationConfig['modules']['eid'] === true) {
             $response[] = 'eid';
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+        if (isset($this->applicationConfig['modules']['covid19']) && $this->applicationConfig['modules']['covid19'] === true) {
             $response[] = 'covid19';
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+        if (isset($this->applicationConfig['modules']['hepatitis']) && $this->applicationConfig['modules']['hepatitis'] === true) {
             $response[] = 'hepatitis';
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+        if (isset($this->applicationConfig['modules']['tb']) && $this->applicationConfig['modules']['tb'] === true) {
             $response[] = 'tb';
         }
 

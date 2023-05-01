@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_SESSION['userId'])) {
 	header("Location:/dashboard/index.php");
 }
-$db = \MysqliDb::getInstance();
+
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
 $count = $db->getValue("user_details", "count(*)");
@@ -18,8 +18,10 @@ if ($count == 0) {
 }
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

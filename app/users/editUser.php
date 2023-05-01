@@ -20,12 +20,12 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
-$facilityDb = ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $activeFacilities = [];
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
-     $facilityMap = $facilityDb->getUserFacilityMap($id);
+     $facilityMap = $facilitiesService->getUserFacilityMap($id);
      $preselectedFacilities = explode(",", $facilityMap);
 
 

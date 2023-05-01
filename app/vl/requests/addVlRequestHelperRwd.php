@@ -12,10 +12,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
-$vlService = \App\Registries\ContainerRegistry::get(VlService::class);
+$vlService = ContainerRegistry::get(VlService::class);
 $dateUtils = new DateUtility();
 
 $tableName = "form_vl";

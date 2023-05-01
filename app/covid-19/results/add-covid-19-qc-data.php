@@ -4,21 +4,21 @@ use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 
 
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 $code = $covid19Service->generateCovid19QcCode();
-$testingLabs = $facilityDb->getTestingLabs("covid19");
+$testingLabs = $facilitiesService->getTestingLabs("covid19");
 $users = $usersService->getAllUsers(null, null, "drop-down");
 
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");

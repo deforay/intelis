@@ -11,8 +11,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $tblName = 's_vlsm_instance';
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 if (isset($_POST['instance_facility_name']) && trim($_POST['instance_facility_name']) != "") {
     $instanceName = $_POST['instance_facility_name'];

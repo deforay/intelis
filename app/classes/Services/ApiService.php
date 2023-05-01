@@ -8,17 +8,19 @@
 
 namespace App\Services;
 
-use App\Utilities\DateUtility;
 use MysqliDb;
+use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 class ApiService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function generateSelectOptions($options)
@@ -36,7 +38,9 @@ class ApiService
 
     public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new FacilitiesService($this->db);
+        /** @var FacilitiesService $facilitiesService */
+        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
         $query = "SELECT hf.test_type,
                         f.facility_id,
                         f.facility_name,
@@ -55,7 +59,7 @@ class ApiService
                     INNER JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getUserFacilityMap($user);
+            $facilityMap = $facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
@@ -117,14 +121,16 @@ class ApiService
 
     public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null)
     {
-        $facilityDb = new FacilitiesService($this->db);
+        /** @var FacilitiesService $facilitiesService */
+        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
         $query = "SELECT tl.test_type, f.facility_id, f.facility_name, f.facility_code, f.other_id, f.facility_state_id, f.facility_state, f.facility_district_id, f.facility_district, f.testing_points, f.status, gd.geo_id, gd.geo_name
                     from testing_labs AS tl
                     INNER JOIN facility_details as f ON tl.facility_id=f.facility_id
                     LEFT JOIN geographical_divisions as gd ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getUserFacilityMap($user);
+            $facilityMap = $facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
@@ -172,13 +178,15 @@ class ApiService
 
     public function getProvinceDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new FacilitiesService($this->db);
+        /** @var FacilitiesService $facilitiesService */
+        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
                     from geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getUserFacilityMap($user);
+            $facilityMap = $facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }
@@ -210,13 +218,15 @@ class ApiService
 
     public function getDistrictDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        $facilityDb = new FacilitiesService($this->db);
+        /** @var FacilitiesService $facilitiesService */
+        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
         $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
                     from geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = [];
         if (!empty($user)) {
-            $facilityMap = $facilityDb->getUserFacilityMap($user);
+            $facilityMap = $facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
                 $where[] = " f.facility_id IN (" . $facilityMap . ")";
             }

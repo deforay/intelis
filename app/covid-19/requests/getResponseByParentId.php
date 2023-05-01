@@ -4,8 +4,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $sampleData = [];
 $sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = "'. $_POST['responseParent'].'"';
 $sampleResult = $db->query($sampleQuery);

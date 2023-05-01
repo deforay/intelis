@@ -8,8 +8,10 @@ use App\Services\InstrumentsService;
 
 require_once(APPLICATION_PATH . '/header.php');
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $instrumentsDb = new InstrumentsService();
 $activeInstruments = $instrumentsDb->getInstruments(null, true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null, "-- Select --");

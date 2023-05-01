@@ -12,8 +12,10 @@ require_once(APPLICATION_PATH . '/header.php');
 $module = 'C19';
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $packageNo = strtoupper($module) . date('ymd') .  $general->generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />

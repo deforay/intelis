@@ -17,11 +17,15 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-$hepatitisObj = new HepatitisService();
-$hepatitisResults = $hepatitisObj->gethepatitisResults();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+$hepatitisResults = $hepatitisService->gethepatitisResults();
 $sarr = $general->getSystemConfig();
 /* Global config data */
 $arr = $general->getGlobalConfig();

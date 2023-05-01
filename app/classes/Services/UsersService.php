@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 use DateTime;
 use MysqliDb;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 /**
  * General functions
@@ -13,26 +14,26 @@ use MysqliDb;
  * @author Amit
  */
 
-class UserService
+class UsersService
 {
 
     /** @var MysqliDb $db */
     protected $db = null;
-    protected $systemConfig = null;
+    protected $applicationConfig = null;
     protected $table = 'user_details';
 
-    public function __construct($db = null, $systemConfig = SYSTEM_CONFIG)
+    public function __construct($db = null, $applicationConfig = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
-        $this->systemConfig = $systemConfig;
+        $this->db = $db ?? ContainerRegistry::get('db');
+        $this->applicationConfig = $applicationConfig;
     }
 
 
-    public function isAllowed($currentFileName, $systemConfig = SYSTEM_CONFIG)
+    public function isAllowed($currentFileName)
     {
 
         $skippedPrivileges = $this->getSkippedPrivileges();
-        $sharedPrivileges = $this->getSharedPrivileges($systemConfig);
+        $sharedPrivileges = $this->getSharedPrivileges();
 
         // Does the current file share privileges with another privilege ?
         $currentFileName = $sharedPrivileges[$currentFileName] ?? $currentFileName;
@@ -47,7 +48,7 @@ class UserService
         return true;
     }
 
-    public function getSharedPrivileges($systemConfig)
+    public function getSharedPrivileges()
     {
 
         // on the left put intermediate/inner file, on the right put the file
@@ -66,7 +67,7 @@ class UserService
             'edit-funding-sources.php'          => 'province-details.php'
         );
 
-        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+        if (isset($this->applicationConfig['modules']['vl']) && $this->applicationConfig['modules']['vl'] === true) {
             $sharedVLPrivileges = array(
                 'updateVlTestResult.php'                => 'vlTestResult.php',
                 'vl-failed-results.php'                 => 'vlTestResult.php',
@@ -91,7 +92,7 @@ class UserService
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+        if (isset($this->applicationConfig['modules']['eid']) && $this->applicationConfig['modules']['eid'] === true) {
             $sharedEIDPrivileges = array(
                 'eid-add-batch-position.php'            => 'eid-add-batch.php',
                 'eid-edit-batch-position.php'           => 'eid-edit-batch.php',
@@ -115,7 +116,7 @@ class UserService
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+        if (isset($this->applicationConfig['modules']['covid19']) && $this->applicationConfig['modules']['covid19'] === true) {
             $sharedCovid19Privileges = array(
                 'covid-19-add-batch-position.php'           => 'covid-19-add-batch.php',
                 'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
@@ -155,7 +156,7 @@ class UserService
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+        if (isset($this->applicationConfig['modules']['hepatitis']) && $this->applicationConfig['modules']['hepatitis'] === true) {
             $sharedHepPrivileges = array(
                 'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
                 'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
@@ -185,7 +186,7 @@ class UserService
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
 
-        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+        if (isset($this->applicationConfig['modules']['tb']) && $this->applicationConfig['modules']['tb'] === true) {
             $sharedHepPrivileges = array(
                 'tb-update-result.php' => 'tb-manual-results.php',
                 'tb-failed-results.php' => 'tb-manual-results.php',
@@ -268,9 +269,8 @@ class UserService
 
         $result = $this->db->rawQueryOne($uQuery);
         if ($result == null) {
-            /** @var MysqliDb $db */
             /** @var CommonService $general */
-            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+            $general = ContainerRegistry::get(CommonService::class);
             $userId = $general->generateUUID();
             $userData = array(
                 'user_id' => $userId,
@@ -347,7 +347,7 @@ class UserService
             }
             if ((empty($result['api_token_generated_datetime']) || $today->diff($lastTokenDate)->days > $tokenExpiration)) {
                 /** @var CommonService $general */
-                $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+                $general = ContainerRegistry::get(CommonService::class);
 
                 $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
                 $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();

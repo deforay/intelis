@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 
 $title = "Hepatitis | Add New Request";
@@ -41,11 +41,13 @@ require_once(APPLICATION_PATH . '/header.php');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$hepatitisDb = new HepatitisService();
-$usersService = ContainerRegistry::get(UserService::class);
 
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
-$testReasonResults = $hepatitisDb->getHepatitisReasonsForTesting();
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
+
+$hepatitisResults = $hepatitisService->getHepatitisResults();
+$testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
@@ -56,10 +58,10 @@ foreach ($userResult as $user) {
 }
 
 // Comorbidity
-$comorbidityData = $hepatitisDb->getHepatitisComorbidities();
+$comorbidityData = $hepatitisService->getHepatitisComorbidities();
 
 // Risk Factors
-$riskFactorsData = $hepatitisDb->getHepatitisRiskFactors();
+$riskFactorsData = $hepatitisService->getHepatitisRiskFactors();
 
 //sample rejection reason
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_hepatitis_sample_rejection_reasons WHERE rejection_reason_status ='active'";
@@ -80,7 +82,7 @@ foreach ($rejectionTypeResult as $type) {
 }
 
 // Specimen Type
-$specimenResult = $hepatitisDb->getHepatitisSampleTypes();
+$specimenResult = $hepatitisService->getHepatitisSampleTypes();
 
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');

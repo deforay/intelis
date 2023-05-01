@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\ImageResizeUtility;
 use GuzzleHttp\Client;
@@ -11,10 +11,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 
 $userId = base64_decode($_POST['userId']);

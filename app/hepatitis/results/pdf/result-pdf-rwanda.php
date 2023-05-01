@@ -8,8 +8,10 @@ use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
 
 // this file is included in hepatitis/results/generate-result-pdf.php
-$hepatitisDb = new HepatitisService();
-//$hepatitisResults = $hepatitisDb->getHepatitisResults();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+//$hepatitisResults = $hepatitisService->getHepatitisResults();
 
 $resultFilename = '';
 
@@ -20,7 +22,7 @@ if (!empty($userRes['user_signature'])) {
     $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
 }
 
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {

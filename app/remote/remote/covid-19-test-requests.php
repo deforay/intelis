@@ -11,8 +11,10 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 header('Content-Type: application/json');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $origData = $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
@@ -32,8 +34,8 @@ $transactionId = $general->generateUUID();
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
 
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$fMapResult = $facilityDb->getTestingLabFacilityMap($labId);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {
   $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
@@ -63,7 +65,7 @@ if ($db->count > 0) {
 
   
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
   $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
   $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
   $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);

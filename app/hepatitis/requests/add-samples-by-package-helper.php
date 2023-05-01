@@ -7,9 +7,13 @@ use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$hepatitisObj = new HepatitisService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 
 $sampleQuery = "SELECT hepatitis_id, hepatitis_test_type, sample_collection_date, sample_package_code, province_id, sample_code FROM form_hepatitis where hepatitis_id IN (" . $_POST['sampleId'] . ") ORDER BY hepatitis_id";
@@ -33,7 +37,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $hepatitisObj->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'], $provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleJson = $hepatitisService->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'], $provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
         $sampleData = json_decode($sampleJson, true);
         $hepatitisData = [];
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];

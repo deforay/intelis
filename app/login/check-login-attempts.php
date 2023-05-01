@@ -7,17 +7,20 @@ use App\Services\CommonService;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-$db = MysqliDb::getInstance();
+
 $loginId = (trim($_POST['loginId']));
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
+
 $ipAddress = $general->getIpAddress();
 $data = 0;
 $ipdata = 0;
 if ($loginId != '') {
 	$attemptCount = $db->rawQueryOne(
-		"SELECT 
+		"SELECT
 			SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS loginCount,
 			SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS ipCount
 			FROM user_login_history

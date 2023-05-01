@@ -21,8 +21,10 @@ $module = $tResult['module'];
 // echo "<pre>";print_r($module);die;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {
@@ -179,7 +181,7 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />

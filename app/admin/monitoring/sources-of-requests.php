@@ -9,10 +9,12 @@ $title = _("Sources of Requests");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$labNameList = $facilityDb->getTestingLabs();
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$labNameList = $facilitiesService->getTestingLabs();
 
 $sources = array(
     'vlsm' => 'VLSM',
@@ -22,7 +24,10 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
-$activeTestModules = SystemService::getActiveTestModules();
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
 
 ?>
 <style>
@@ -50,7 +55,7 @@ $activeTestModules = SystemService::getActiveTestModules();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
                             <td>

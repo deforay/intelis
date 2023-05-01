@@ -8,12 +8,15 @@ $title = _("Audit Trail");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
-$activeTestModules = SystemService::getActiveTestModules();
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
+
+$activeTestModules = $systemService->getActiveTestModules();
 
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
@@ -82,7 +85,7 @@ $resultColumn = getColumns($db, $tableName);
 
 					<form name="form1" action="audit-trail.php" method="post" id="searchForm">
 
-						<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 							<tr>
 								<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 								<td>
@@ -187,7 +190,7 @@ $resultColumn = getColumns($db, $tableName);
 								<p>
 								<h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 								</p>
-								<table class="current table table-striped table-hover table-bordered" aria-hidden="true">
+								<table aria-describedby="table" class="current table table-striped table-hover table-bordered" aria-hidden="true">
 									<thead>
 										<tr>
 											<?php

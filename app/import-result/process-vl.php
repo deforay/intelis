@@ -163,8 +163,8 @@ try {
                     $vlResult = $db->rawQuery($query);
                     $data['result_status'] = $status[$i];
 
-                    $vlDb = ContainerRegistry::get(VlService::class);
-                    $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+                    $vlService = ContainerRegistry::get(VlService::class);
+                    $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
                         $data['result_status'] = 5;
@@ -269,8 +269,8 @@ try {
                 }
             }
 
-            $vlDb = ContainerRegistry::get(VlService::class);
-            $data['vl_result_category'] = $vlDb->getVLResultCategory($data['result_status'], $data['result']);
+            $vlService = ContainerRegistry::get(VlService::class);
+            $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
                 $data['result_status'] = 5;

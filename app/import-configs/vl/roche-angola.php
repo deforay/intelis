@@ -2,11 +2,15 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -26,7 +30,7 @@ try {
     );
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber = CommonService::generateRandomString(12);
+    $ranNumber         = $general->generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $ranNumber . "." . $extension;
 
@@ -234,9 +238,9 @@ try {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+
+                /** @var UsersService $usersService */
+                $usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

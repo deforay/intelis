@@ -61,7 +61,7 @@ class ImageResizeUtility
      * @return ImageResizeUtility
      * @throws Exception
      */
-    public static function createFromString($image_data)
+    public static function createFromString(string $image_data)
     {
         if (empty($image_data) || $image_data === null) {
             throw new Exception('image_data must not be empty');

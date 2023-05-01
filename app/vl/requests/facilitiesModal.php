@@ -46,7 +46,7 @@ $type = $_GET['type'];
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table class="table" aria-hidden="true" style="margin-left:1%;margin-top:10px;">
+          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:10px;">
             <tr>
               <td><strong>Hub&nbsp;:</strong></td>
               <td>

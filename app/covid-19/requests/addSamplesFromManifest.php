@@ -26,7 +26,7 @@ require_once(APPLICATION_PATH . '/header.php');
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:50%;vertical-align:middle;"><strong><?php echo _("Enter Sample Manifest Code"); ?> :</strong></td>
 							<td style="width:50%;vertical-align:middle;">

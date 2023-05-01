@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Registries\ContainerRegistry;
 use MysqliDb;
 
 /**
@@ -13,12 +14,13 @@ use MysqliDb;
 class InstrumentsService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $table = 'instruments';
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
 

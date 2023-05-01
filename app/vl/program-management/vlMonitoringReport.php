@@ -10,8 +10,10 @@ $title = _("VL Quarterly Monitoring Report");
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $startYear = date("Y", strtotime("-2 month"));
 $startMonth = date('m', strtotime('-2 month'));
@@ -32,12 +34,14 @@ $sResult = $db->rawQuery($sQuery);
 
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 ?>
 <style>
 	.bluebox,
@@ -180,7 +184,7 @@ $state = $geoLocationDb->getProvinces("yes");
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>

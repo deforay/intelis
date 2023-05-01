@@ -2,21 +2,23 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 use App\Services\FacilitiesService;
 use App\Services\SystemService;
 
 require_once(APPLICATION_PATH . '/header.php');
 //  
 
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$general = ContainerRegistry::get(CommonService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
-$labNameList = $facilityDb->getTestingLabs();
+$labNameList = $facilitiesService->getTestingLabs();
 $id = base64_decode($_GET['id']);
 $sQuery = "SELECT * from instruments where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, array($id));

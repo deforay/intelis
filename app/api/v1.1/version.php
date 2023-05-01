@@ -1,5 +1,4 @@
 <?php
 
-// return VLSM Version
-$payload = array('version' => VERSION);
-echo json_encode($payload);
+// return application Version
+echo json_encode(['version' => VERSION]);

@@ -8,10 +8,10 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $syncedTypeResults = $db->rawQuery("SELECT DISTINCT request_type FROM track_api_requests ORDER BY request_type ASC");
 foreach ($syncedTypeResults as $synced) {
 	$syncedType[$synced['request_type']] = (str_replace("-", " ", $synced['request_type']));
@@ -42,7 +42,7 @@ foreach ($syncedTypeResults as $synced) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table class="table" aria-hidden="true"  cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true"  cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 							<td>

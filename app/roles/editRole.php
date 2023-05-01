@@ -231,7 +231,7 @@ if ($priInfo) {
 										else
 											$tabCls = "";
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
-										echo "<table class='table table-striped responsive-utilities jambo_table'>";
+										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
 										$moduleResources = explode("##", $moduleRow['module_resources']);
 										$i = 1;

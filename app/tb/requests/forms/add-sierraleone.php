@@ -33,13 +33,15 @@ $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_sta
 $pResult = $db->rawQuery($pQuery);
 
 // Getting the list of Provinces, Districts and Facilities
-$tbObj = new TbService();
+
+/** @var TbService $tbService */
+$tbService = \App\Registries\ContainerRegistry::get(TbService::class);
 
 
-$tbXPertResults = $tbObj->getTbResults('x-pert');
-$tbLamResults = $tbObj->getTbResults('lam');
-$specimenTypeResult = $tbObj->getTbSampleTypes();
-$tbReasonsForTesting = $tbObj->getTbReasonsForTesting();
+$tbXPertResults = $tbService->getTbResults('x-pert');
+$tbLamResults = $tbService->getTbResults('lam');
+$specimenTypeResult = $tbService->getTbSampleTypes();
+$tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 
 
 $rKey = '';
@@ -99,7 +101,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border">
 									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<th style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
@@ -122,7 +124,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
 										<td>
@@ -184,7 +186,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -324,7 +326,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table class="table" aria-hidden="true" >
+								<table aria-describedby="table" class="table" aria-hidden="true" >
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
@@ -412,7 +414,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
 									</div>
-									<table class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
 											<td>
@@ -472,7 +474,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</tr>
 										<tr class="platform microscopy">
 											<td colspan="4">
-												<table class="table table-bordered table-striped" aria-hidden="true" >
+												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
 													<thead>
 														<tr>
 															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>

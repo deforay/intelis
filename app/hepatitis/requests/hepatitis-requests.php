@@ -26,13 +26,17 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$geoLocationDb = new GeoLocationsService();
-$state = $geoLocationDb->getProvinces("yes");
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 /* Global config data */
 $arr = $general->getGlobalConfig();

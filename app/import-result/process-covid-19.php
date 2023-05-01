@@ -16,7 +16,7 @@ $importedBy = $_SESSION['userId'];
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
-$facilityDb = ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 try {
@@ -77,7 +77,7 @@ try {
                     'imported_date_time' => $rResult[0]['result_imported_datetime']
                 );
                 if (!empty($data['lab_id'])) {
-                    $facility = $facilityDb->getFacilityById($data['lab_id']);
+                    $facility = $facilitiesService->getFacilityById($data['lab_id']);
                     if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
@@ -116,7 +116,7 @@ try {
                     'manual_result_entry' => 'no',
                 );
                 if (!empty($data['lab_id'])) {
-                    $facility = $facilityDb->getFacilityById($data['lab_id']);
+                    $facility = $facilitiesService->getFacilityById($data['lab_id']);
                     if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
@@ -252,7 +252,7 @@ try {
             );
 
             if (!empty($data['lab_id'])) {
-                $facility = $facilityDb->getFacilityById($data['lab_id']);
+                $facility = $facilitiesService->getFacilityById($data['lab_id']);
                 if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
                     $data['lab_manager'] = $facility['contact_person'];
                 }

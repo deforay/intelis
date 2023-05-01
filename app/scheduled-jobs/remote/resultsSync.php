@@ -13,8 +13,10 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $app = new ApiService();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
@@ -172,7 +174,7 @@ try {
 
         
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
         $symptoms = $covid19Service->getCovid19SymptomsByFormId($forms);
         $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($forms);
         $testResults = $covid19Service->getCovid19TestsByFormId($forms);
@@ -232,9 +234,9 @@ $covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
 
         // $forms = array_column($hepLabResult, 'hepatitis_id');
 
-        // $hepatitisObj = new \App\Services\Hepatitis();
-        // $risks = $hepatitisObj->getRiskFactorsByHepatitisId($forms);
-        // $comorbidities = $hepatitisObj->getComorbidityByHepatitisId($forms);
+        // $hepatitisService = new \App\Services\Hepatitis();
+        // $risks = $hepatitisService->getRiskFactorsByHepatitisId($forms);
+        // $comorbidities = $hepatitisService->getComorbidityByHepatitisId($forms);
 
         $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
         $data = array(

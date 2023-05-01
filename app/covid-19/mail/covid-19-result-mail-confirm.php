@@ -11,7 +11,7 @@ require_once(APPLICATION_PATH . '/header.php');
 
 /** @var MysqliDb $db */
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_covid19";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";
@@ -275,7 +275,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['s
          <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post" action="covid-19-result-mail-helper.php">
             <div class="row">
                <div class="col-lg-12" style="text-align:center !important;">
-                  <table class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
+                  <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
                      <thead>
                         <tr>
                            <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>

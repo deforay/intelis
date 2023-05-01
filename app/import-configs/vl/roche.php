@@ -4,6 +4,11 @@ use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
+
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+    
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
@@ -25,7 +30,7 @@ try {
     $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    // $ranNumber         = \App\Services\CommonService::generateRandomString(12);
+    // $ranNumber         = $general->generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
     $fileName          = $_POST['fileName'] . "." . $extension;
 
@@ -123,7 +128,7 @@ try {
             $testingDate = null;
             $testingDateObject = DateTimeImmutable::createFromFormat('!'.$dateFormat, $row[$testingDateCol]);
             $errors = DateTimeImmutable::getLastErrors();
-            if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($testingDateObject) && $testingDateObject !== false) {
+            if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($testingDateObject)) {
                 $testingDate = $testingDateObject->format('Y-m-d H:i');
             }
 

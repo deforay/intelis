@@ -14,8 +14,10 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 

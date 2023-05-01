@@ -82,7 +82,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
@@ -158,7 +158,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
@@ -245,7 +245,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 
 
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<th colspan=6>
 											<h4>2. Management de la mère</h4>
@@ -298,7 +298,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
 										<th colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
@@ -367,7 +367,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
 										<th colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
@@ -458,7 +458,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									<div class="box-header with-border">
 										<h3 class="box-title">B. Réservé au laboratoire d’analyse </h3>
 									</div>
-									<table class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon </label></th>
 											<td>

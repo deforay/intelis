@@ -5,10 +5,12 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
+
+$applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 
@@ -24,9 +26,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php
 
-	if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
+	if (!empty($applicationConfig['remoteURL']) && isset($applicationConfig['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
-			<small><a href="javascript:syncRemoteData('<?= SYSTEM_CONFIG['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
+			<small><a href="javascript:syncRemoteData('<?= $applicationConfig['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
 	<?php
 	}
@@ -177,7 +179,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	<?php } ?>
 	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
 	$(document).ready(function() {
-		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
+		<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser' && !empty($applicationConfig['remoteURL'])) { ?>
 
 				(function getLastSyncDateTime() {
 					let currentDateTime = new Date();
@@ -200,11 +202,11 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		<?php
 		// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
-		if (!empty(SYSTEM_CONFIG['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
+		if (!empty($applicationConfig['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
 
 				(function checkNetworkConnection() {
 					$.ajax({
-						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/version.php',
+						url: '<?php echo rtrim($applicationConfig['remoteURL'], "/"); ?>/api/version.php',
 						cache: false,
 						success: function(data) {
 							$('.is-remote-server-reachable').fadeIn(1000);

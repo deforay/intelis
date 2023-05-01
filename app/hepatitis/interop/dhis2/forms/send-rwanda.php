@@ -3,11 +3,14 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-send.php
 
 use App\Interop\Dhis2;
+use App\Registries\ContainerRegistry;
 use App\Services\HepatitisService;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 
-$hepatitisModel = new HepatitisService();
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
 //$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
@@ -98,7 +101,7 @@ foreach ($formResults as $row) {
   $row['sample_code'] = $row['sample_code'] . (!empty($row['remote_sample_code']) ? '/' . $row['remote_sample_code'] : '');
 
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
-    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisService->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
 
@@ -112,7 +115,7 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
     $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Initial HCV VL') {
-    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
 
@@ -126,7 +129,7 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
     $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
-    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisService->suppressedArray)) {
       $row['hbv_vl_count'] = 10;
     }
 
@@ -142,7 +145,7 @@ foreach ($formResults as $row) {
     $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL') {
     $interpretaion = "";
-    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
 
@@ -160,7 +163,7 @@ foreach ($formResults as $row) {
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL - Second Line') {
     $interpretaion = "";
     $programID = 'LQUdgfzYQCt';
-    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisModel->suppressedArray)) {
+    if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)) {
       $row['hcv_vl_count'] = 10;
     }
 

@@ -17,12 +17,16 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$hepatitisDb = new HepatitisService();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
+$hepatitisResults = $hepatitisService->getHepatitisResults();
 //system config
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);

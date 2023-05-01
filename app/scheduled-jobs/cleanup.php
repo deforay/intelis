@@ -17,8 +17,10 @@ $cleanup = array(
 );
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $durationToDelete = 180 * 86400; // 180 days
 

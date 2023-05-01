@@ -7,7 +7,7 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Utilities\DateUtility;
 
 $resultFilename = '';
-if (sizeof($requestResult) > 0) {
+if (!empty($requestResult)) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
      $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
      if (!file_exists($pathFront) && !is_dir($pathFront)) {

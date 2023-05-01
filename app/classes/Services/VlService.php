@@ -3,11 +3,11 @@
 namespace App\Services;
 
 
-use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
-use DateTimeImmutable;
-use Exception;
 use MysqliDb;
+use Exception;
+use DateTimeImmutable;
+use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /**
  * General functions
@@ -18,6 +18,7 @@ use MysqliDb;
 class VlService
 {
 
+    /** @var MysqliDb $db */
     protected $db = null;
     protected $table = 'form_vl';
     protected $shortCode = 'VL';
@@ -47,7 +48,7 @@ class VlService
 
     public function __construct($db = null)
     {
-        $this->db = !empty($db) ? $db : MysqliDb::getInstance();
+        $this->db = $db ?? ContainerRegistry::get('db');
     }
 
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
@@ -59,7 +60,7 @@ class VlService
 
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -178,7 +179,7 @@ class VlService
 
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -391,7 +392,7 @@ class VlService
         }
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
@@ -480,7 +481,7 @@ class VlService
         }
 
         /** @var CommonService $general */
-        $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(CommonService::class);
 
         $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
 
@@ -556,7 +557,7 @@ class VlService
         try {
 
             /** @var CommonService $general */
-            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+            $general = ContainerRegistry::get(CommonService::class);
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
@@ -722,7 +723,7 @@ class VlService
         try {
 
             /** @var CommonService $general */
-            $general = \App\Registries\ContainerRegistry::get(CommonService::class);
+            $general = ContainerRegistry::get(CommonService::class);
 
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();

@@ -7,10 +7,10 @@ use App\Services\GeoLocationsService;
 $geoDb = new GeoLocationsService($db);
 
 /** @var GeoLocationsService $geoDb */
-$geoDb = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+$geoDb = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {

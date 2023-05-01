@@ -5,7 +5,9 @@ use App\Services\GeoLocationsService;
 $title = _("VL | Clinics Report");
 
 require_once(APPLICATION_PATH . '/header.php');
-$geoLocationDb = new GeoLocationsService();
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query
@@ -30,7 +32,7 @@ $rejectionResult = $general->fetchDataFromTable('r_vl_sample_rejection_reasons',
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
-$state = $geoLocationDb->getProvinces("yes");
+$state = $geolocationService->getProvinces("yes");
 
 ?>
 <style>
@@ -70,7 +72,7 @@ $state = $geoLocationDb->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -204,7 +206,7 @@ $state = $geoLocationDb->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -344,7 +346,7 @@ $state = $geoLocationDb->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -462,7 +464,7 @@ $state = $geoLocationDb->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>

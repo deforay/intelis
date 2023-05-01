@@ -6,13 +6,13 @@ use App\Services\Covid19Service;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -139,7 +139,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">EPID</label> </td>
@@ -236,7 +236,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
@@ -411,7 +411,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         TEST REASON
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="reasonForCovid19Test">Reason for Test Request<span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -428,7 +428,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         COMORBIDITIES
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th scope="row"><label for="ifOtherDiseases">Does the patient have another diagnosis/etiology for their illness?</label></th>
                                         <td>
@@ -483,7 +483,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         SAMPLE COLLECTION
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="specimenType"> Type of sample collection <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -502,7 +502,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         HEALTH OUTCOME
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15%;"><label for="healthOutcome"> Health Outcome</label></th>
                                         <td style="width: 35%;">
@@ -528,7 +528,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">RESPIRATORY LABORATORY DIAGNOSTIC RESULTS </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
@@ -565,7 +565,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" aria-hidden="true" >
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test No</th>

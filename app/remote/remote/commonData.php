@@ -11,8 +11,10 @@ ini_set('max_execution_time', -1);
 header('Content-Type: application/json');
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $payload = [];
 

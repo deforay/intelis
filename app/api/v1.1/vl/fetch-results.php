@@ -4,22 +4,28 @@ use App\Services\ApiService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UserService;
+use App\Services\UsersService;
 
 session_unset(); // no need of session in json response
 
 ini_set('memory_limit', -1);
 
-$db = \MysqliDb::getInstance();
 
 /** @var MysqliDb $db */
-/** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$db = ContainerRegistry::get('db');
 
-/** @var UserService $usersService */
-$usersService = \App\Registries\ContainerRegistry::get(UserService::class);
-$facilityDb = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$app = new ApiService();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
 $arr = $general->getGlobalConfig();
 $user = null;
 
@@ -153,7 +159,7 @@ try {
 
     $where = [];
     if (!empty($user)) {
-        $facilityMap = $facilityDb->getUserFacilityMap($user['user_id'], 1);
+        $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {

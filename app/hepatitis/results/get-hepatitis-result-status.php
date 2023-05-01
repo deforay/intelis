@@ -29,10 +29,14 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
-$hepatitisDb = new HepatitisService();
-$hepatitisResults = $hepatitisDb->getHepatitisResults();
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+$hepatitisResults = $hepatitisService->getHepatitisResults();
 
 
 $tableName = "form_hepatitis";

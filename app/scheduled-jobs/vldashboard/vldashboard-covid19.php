@@ -11,8 +11,10 @@ use App\Utilities\DateUtility;
 ini_set('memory_limit', -1);
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 $lastUpdate = null;
 $output = [];
 

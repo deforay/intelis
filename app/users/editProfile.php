@@ -7,10 +7,12 @@ use App\Utilities\DateUtility;
 
 require_once(APPLICATION_PATH . '/header.php');
 
-$db = MysqliDb::getInstance();
+
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
@@ -115,7 +117,7 @@ $data = $db->get("user_login_history", 25);
       </div>
       <div class="box-body">
         <h4 style="font-weight:bold;border-bottom:1px solid #ccc;padding-bottom:10px;">Recent Login Attempts</h4>
-        <table class="table table-striped table-bordered table-hover" id="loginAttempts">
+        <table aria-describedby="table" class="table table-striped table-bordered table-hover" id="loginAttempts">
           <thead>
             <tr>
 

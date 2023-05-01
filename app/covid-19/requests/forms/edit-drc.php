@@ -9,7 +9,7 @@ use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 
 
@@ -24,7 +24,11 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 /** @var Covid19Service $covid19Service */
-$covid19Service = \App\Registries\ContainerRegistry::get(Covid19Service::class);
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = \App\Registries\ContainerRegistry::get(GeoLocationsService::class);
+
 $patientsModel = new PatientsService();
 
 
@@ -98,8 +102,8 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';
 }
-$geolocation = new GeoLocationsService();
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
+
+$geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 // Province
 $pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
@@ -178,7 +182,7 @@ if (!empty($patientData)) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -262,7 +266,7 @@ if (!empty($patientData)) {
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
                                         <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -517,7 +521,7 @@ if (!empty($patientData)) {
                                         Signes vitaux du patient
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important">Fever/Temperature (&deg;C)</th>
                                         <td style="width:35% !important;">
@@ -686,7 +690,7 @@ if (!empty($patientData)) {
                                     </tr>
                                 </table>
 
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
                                         <td style="width:35% !important;">
@@ -733,7 +737,7 @@ if (!empty($patientData)) {
                                         VOYAGE ET CONTACT
                                     </h3>
                                 </div>
-                                <table class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
                                         <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
@@ -803,7 +807,7 @@ if (!empty($patientData)) {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                     </div>
-                                    <table class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
@@ -858,7 +862,7 @@ if (!empty($patientData)) {
 
                                         <tr>
                                             <td colspan="4">
-                                                <table class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">Test non</th>
