@@ -3,14 +3,14 @@
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 
-use App\Middlewares\App\AppAuthMiddleware;
-use App\Middlewares\ErrorHandlerMiddleware;
+use App\Registries\ContainerRegistry;
 use Tuupola\Middleware\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Middlewares\App\AppAuthMiddleware;
+use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use App\Middlewares\SystemAdminAuthMiddleware;
-use App\HttpHandlers\LegacyRequestHandler;
-use App\Registries\ContainerRegistry;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
@@ -23,8 +23,8 @@ $request = ServerRequestFactory::fromGlobals();
 $middlewarePipe = new MiddlewarePipe();
 
 
+// Error Handler Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));
-
 
 
 // CORS Middleware
@@ -41,14 +41,13 @@ $middlewarePipe->pipe(new CorsMiddleware([
 // Auth Middleware
 // Check if the request is for the system admin or not
 $uri = $request->getUri()->getPath();
-if (strpos($uri, '/system-admin') === 0) {
+if (fnmatch('/system-admin*', $uri)) {
     // System Admin Authentication Middleware
     $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
 } else {
     // For the rest of the requests, apply AppAuthMiddleware
     $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
 }
-
 
 // ACL Middleware
 // TODO: Implement ACL Middleware

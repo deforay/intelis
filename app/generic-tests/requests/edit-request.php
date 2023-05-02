@@ -26,7 +26,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 $reasonForFailure = $vlService->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $labFieldDisabled = 'disabled="disabled"';
+	$labFieldDisabled = 'disabled="disabled"';
 }
 
 $id = base64_decode($_GET['id']);
@@ -39,7 +39,7 @@ $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
-     $userInfo[$user['user_id']] = ($user['user_name']);
+	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
@@ -69,199 +69,199 @@ $vlQuery = "SELECT * FROM generic_tests WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
 //echo "<pre>"; print_r($vlQueryInfo); die;
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
-     $vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob']);
+	$vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob']);
 } else {
-     $vlQueryInfo['patient_dob'] = '';
+	$vlQueryInfo['patient_dob'] = '';
 }
 
 if (isset($vlQueryInfo['sample_collection_date']) && trim($vlQueryInfo['sample_collection_date']) != '' && $vlQueryInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
-     $sampleCollectionDate = $vlQueryInfo['sample_collection_date'];
-     $expStr = explode(" ", $vlQueryInfo['sample_collection_date']);
-     $vlQueryInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$sampleCollectionDate = $vlQueryInfo['sample_collection_date'];
+	$expStr = explode(" ", $vlQueryInfo['sample_collection_date']);
+	$vlQueryInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $sampleCollectionDate = '';
-     $vlQueryInfo['sample_collection_date'] = DateUtility::getCurrentDateTime();
+	$sampleCollectionDate = '';
+	$vlQueryInfo['sample_collection_date'] = DateUtility::getCurrentDateTime();
 }
 
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-     $vlQueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
+	$vlQueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['sample_dispatched_datetime'] = '';
+	$vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['result_approved_datetime']) && trim($vlQueryInfo['result_approved_datetime']) != '' && $vlQueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
-     $sampleCollectionDate = $vlQueryInfo['result_approved_datetime'];
-     $expStr = explode(" ", $vlQueryInfo['result_approved_datetime']);
-     $vlQueryInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$sampleCollectionDate = $vlQueryInfo['result_approved_datetime'];
+	$expStr = explode(" ", $vlQueryInfo['result_approved_datetime']);
+	$vlQueryInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $sampleCollectionDate = '';
-     $vlQueryInfo['result_approved_datetime'] = '';
+	$sampleCollectionDate = '';
+	$vlQueryInfo['result_approved_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['treatment_initiated_date']) && trim($vlQueryInfo['treatment_initiated_date']) != '' && $vlQueryInfo['treatment_initiated_date'] != '0000-00-00') {
-     $vlQueryInfo['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['treatment_initiated_date']);
+	$vlQueryInfo['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['treatment_initiated_date']);
 } else {
-     $vlQueryInfo['treatment_initiated_date'] = '';
+	$vlQueryInfo['treatment_initiated_date'] = '';
 }
 
 if (isset($vlQueryInfo['date_of_initiation_of_current_regimen']) && trim($vlQueryInfo['date_of_initiation_of_current_regimen']) != '' && $vlQueryInfo['date_of_initiation_of_current_regimen'] != '0000-00-00') {
-     $vlQueryInfo['date_of_initiation_of_current_regimen'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen']);
+	$vlQueryInfo['date_of_initiation_of_current_regimen'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen']);
 } else {
-     $vlQueryInfo['date_of_initiation_of_current_regimen'] = '';
+	$vlQueryInfo['date_of_initiation_of_current_regimen'] = '';
 }
 
 if (isset($vlQueryInfo['test_requested_on']) && trim($vlQueryInfo['test_requested_on']) != '' && $vlQueryInfo['test_requested_on'] != '0000-00-00') {
-     $vlQueryInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($vlQueryInfo['test_requested_on']);
+	$vlQueryInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($vlQueryInfo['test_requested_on']);
 } else {
-     $vlQueryInfo['test_requested_on'] = '';
+	$vlQueryInfo['test_requested_on'] = '';
 }
 
 
 if (isset($vlQueryInfo['sample_received_at_hub_datetime']) && trim($vlQueryInfo['sample_received_at_hub_datetime']) != '' && $vlQueryInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['sample_received_at_hub_datetime']);
-     $vlQueryInfo['sample_received_at_hub_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['sample_received_at_hub_datetime']);
+	$vlQueryInfo['sample_received_at_hub_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['sample_received_at_hub_datetime'] = '';
+	$vlQueryInfo['sample_received_at_hub_datetime'] = '';
 }
 
 
 if (isset($vlQueryInfo['sample_received_at_vl_lab_datetime']) && trim($vlQueryInfo['sample_received_at_vl_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['sample_received_at_vl_lab_datetime']);
-     $vlQueryInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['sample_received_at_vl_lab_datetime']);
+	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['sample_received_at_vl_lab_datetime'] = '';
+	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = '';
 }
 
 
 if (isset($vlQueryInfo['sample_tested_datetime']) && trim($vlQueryInfo['sample_tested_datetime']) != '' && $vlQueryInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['sample_tested_datetime']);
-     $vlQueryInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['sample_tested_datetime']);
+	$vlQueryInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['sample_tested_datetime'] = '';
+	$vlQueryInfo['sample_tested_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['result_dispatched_datetime']) && trim($vlQueryInfo['result_dispatched_datetime']) != '' && $vlQueryInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['result_dispatched_datetime']);
-     $vlQueryInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['result_dispatched_datetime']);
+	$vlQueryInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['result_dispatched_datetime'] = '';
+	$vlQueryInfo['result_dispatched_datetime'] = '';
 }
 if (isset($vlQueryInfo['last_viral_load_date']) && trim($vlQueryInfo['last_viral_load_date']) != '' && $vlQueryInfo['last_viral_load_date'] != '0000-00-00') {
-     $vlQueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['last_viral_load_date']);
+	$vlQueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['last_viral_load_date']);
 } else {
-     $vlQueryInfo['last_viral_load_date'] = '';
+	$vlQueryInfo['last_viral_load_date'] = '';
 }
 //Set Date of demand
 if (isset($vlQueryInfo['date_test_ordered_by_physician']) && trim($vlQueryInfo['date_test_ordered_by_physician']) != '' && $vlQueryInfo['date_test_ordered_by_physician'] != '0000-00-00') {
-     $vlQueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician']);
+	$vlQueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician']);
 } else {
-     $vlQueryInfo['date_test_ordered_by_physician'] = '';
+	$vlQueryInfo['date_test_ordered_by_physician'] = '';
 }
 //Has patient changed regimen section
 if (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") {
-     if (isset($vlQueryInfo['regimen_change_date']) && trim($vlQueryInfo['regimen_change_date']) != '' && $vlQueryInfo['regimen_change_date'] != '0000-00-00') {
-          $vlQueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['regimen_change_date']);
-     } else {
-          $vlQueryInfo['regimen_change_date'] = '';
-     }
+	if (isset($vlQueryInfo['regimen_change_date']) && trim($vlQueryInfo['regimen_change_date']) != '' && $vlQueryInfo['regimen_change_date'] != '0000-00-00') {
+		$vlQueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['regimen_change_date']);
+	} else {
+		$vlQueryInfo['regimen_change_date'] = '';
+	}
 } else {
-     $vlQueryInfo['reason_for_regimen_change'] = '';
-     $vlQueryInfo['regimen_change_date'] = '';
+	$vlQueryInfo['reason_for_regimen_change'] = '';
+	$vlQueryInfo['regimen_change_date'] = '';
 }
 //Set Dispatched From Clinic To Lab Date
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
-     $vlQueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
+	$vlQueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['sample_dispatched_datetime'] = '';
+	$vlQueryInfo['sample_dispatched_datetime'] = '';
 }
 //Set Date of result printed datetime
 if (isset($vlQueryInfo['result_printed_datetime']) && trim($vlQueryInfo['result_printed_datetime']) != "" && $vlQueryInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['result_printed_datetime']);
-     $vlQueryInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['result_printed_datetime']);
+	$vlQueryInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['result_printed_datetime'] = '';
+	$vlQueryInfo['result_printed_datetime'] = '';
 }
 //reviewed datetime
 if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != null && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-     $expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
-     $vlQueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
+	$vlQueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-     $vlQueryInfo['result_reviewed_datetime'] = '';
+	$vlQueryInfo['result_reviewed_datetime'] = '';
 }
 
 
 if ($vlQueryInfo['patient_first_name'] != '') {
-     $patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
+	$patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
 } else {
-     $patientFirstName = '';
+	$patientFirstName = '';
 }
 if ($vlQueryInfo['patient_middle_name'] != '') {
-     $patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
+	$patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
 } else {
-     $patientMiddleName = '';
+	$patientMiddleName = '';
 }
 if ($vlQueryInfo['patient_last_name'] != '') {
-     $patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
+	$patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
 } else {
-     $patientLastName = '';
+	$patientLastName = '';
 }
 $patientFullName = [];
 if (trim($patientFirstName) != '') {
-     $patientFullName[] = trim($patientFirstName);
+	$patientFullName[] = trim($patientFirstName);
 }
 if (trim($patientMiddleName) != '') {
-     $patientFullName[] = trim($patientMiddleName);
+	$patientFullName[] = trim($patientMiddleName);
 }
 if (trim($patientLastName) != '') {
-     $patientFullName[] = trim($patientLastName);
+	$patientFullName[] = trim($patientLastName);
 }
 
 if (!empty($patientFullName)) {
-     $patientFullName = implode(" ", $patientFullName);
+	$patientFullName = implode(" ", $patientFullName);
 } else {
-     $patientFullName = '';
+	$patientFullName = '';
 }
 
 
 ?>
 <style>
-     .ui_tpicker_second_label {
-          display: none !important;
-     }
+	.ui_tpicker_second_label {
+		display: none !important;
+	}
 
-     .ui_tpicker_second_slider {
-          display: none !important;
-     }
+	.ui_tpicker_second_slider {
+		display: none !important;
+	}
 
-     .ui_tpicker_millisec_label {
-          display: none !important;
-     }
+	.ui_tpicker_millisec_label {
+		display: none !important;
+	}
 
-     .ui_tpicker_millisec_slider {
-          display: none !important;
-     }
+	.ui_tpicker_millisec_slider {
+		display: none !important;
+	}
 
-     .ui_tpicker_microsec_label {
-          display: none !important;
-     }
+	.ui_tpicker_microsec_label {
+		display: none !important;
+	}
 
-     .ui_tpicker_microsec_slider {
-          display: none !important;
-     }
+	.ui_tpicker_microsec_slider {
+		display: none !important;
+	}
 
-     .ui_tpicker_timezone_label {
-          display: none !important;
-     }
+	.ui_tpicker_timezone_label {
+		display: none !important;
+	}
 
-     .ui_tpicker_timezone {
-          display: none !important;
-     }
+	.ui_tpicker_timezone {
+		display: none !important;
+	}
 
-     .ui_tpicker_time_input {
-          width: 100%;
-     }
+	.ui_tpicker_time_input {
+		width: 100%;
+	}
 </style>
 <?php
 
@@ -463,7 +463,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em>  LABORATORY REQUEST FORM </h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Edit Request</li>
@@ -493,7 +493,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="form-group">
 											<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 											<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('generic_tests','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-											<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;">
+											<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" style="width:100%;">
 										</div>
 									</div>
 									<div class="col-xs-4 col-md-4">
@@ -607,25 +607,25 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="dob">Date of Birth </label>
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?php echo $vlQueryInfo['patient_dob']; ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="ageInYears">If DOB unknown, Age in Years </label>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="ageInMonths">If Age
-												< 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
+												< 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -664,40 +664,40 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="patientPhoneNumber">Phone Number</label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
 								<div class="row ">
-											<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-												<div class="form-group">
-													<label for="patientPregnant">Is Patient Pregnant? </label><br>
-													<label class="radio-inline">
-														<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-													</label>
-													<label class="radio-inline">
-														<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
-													</label>
-												</div>
-											</div>
-											<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-												<div class="form-group">
-													<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-													<label class="radio-inline">
-														<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
-													</label>
-													<label class="radio-inline">
-														<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
-													</label>
-												</div>
-											</div>
-											<div class="col-xs-3 col-md-3" style="display:none;">
-												<div class="form-group">
-													<label for="">How long has this patient been on treatment ? </label>
-													<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?php echo $vlQueryInfo['treatment_initiation']; ?>" />
-												</div>
-											</div>
+									<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+										<div class="form-group">
+											<label for="patientPregnant">Is Patient Pregnant? </label><br>
+											<label class="radio-inline">
+												<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+											</label>
+											<label class="radio-inline">
+												<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+											</label>
 										</div>
+									</div>
+									<div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+										<div class="form-group">
+											<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+											<label class="radio-inline">
+												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+											</label>
+											<label class="radio-inline">
+												<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+											</label>
+										</div>
+									</div>
+									<div class="col-xs-3 col-md-3" style="display:none;">
+										<div class="form-group">
+											<label for="">How long has this patient been on treatment ? </label>
+											<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($vlQueryInfo['treatment_initiation']); ?>" />
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="box box-primary">
 								<div class="box-header with-border">
@@ -735,10 +735,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<h3 class="box-title">Treatment Information</h3>
 									</div>
 									<div class="box-body">
-										
+
 									</div>
 									<div class="box box-primary">
-										
+
 									</div>
 									<?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
@@ -761,14 +761,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
 													<div class="col-lg-7">
 														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter VL Focal Person">
-															<option value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" selected='selected'> <?php echo $vlQueryInfo['vl_focal_person']; ?></option>
+															<option value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?>" selected='selected'> <?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?></option>
 														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
 													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
+														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
 											</div>
@@ -860,7 +860,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
 												<div class="col-lg-7 resultInputContainer">
-													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 													<datalist id="possibleVlResults" title="Please enter viral load result">
 
 													</datalist>
@@ -869,12 +869,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-4 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 												</div>
 											</div>
 											<?php if (count($reasonForFailure) > 0) { ?>
 												<div class="col-md-4 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
-													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure  </label>
+													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure </label>
 													<div class="col-lg-7">
 														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
 															<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
@@ -917,7 +917,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == 9) || ($sCode != '')) {
 													$styleStatus = "display:none";
 												?>
-													<input type="hidden" name="status" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+													<input type="hidden" name="status" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 												<?php
 												}
 												?>
@@ -964,10 +964,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 							</div>
 							<div class="box-footer">
 								<input type="hidden" name="revised" id="revised" value="no" />
-								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-								<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
+								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+								<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-								<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+								<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
@@ -985,56 +985,56 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
-     $(document).ready(function() {
-          $('.date').datepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
-          $('.dateTime').datetimepicker({
-               changeMonth: true,
-               changeYear: true,
-               dateFormat: 'dd-M-yy',
-               timeFormat: "HH:mm",
-               maxDate: "Today",
-               onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                         $('.ui-datepicker-calendar').show();
-                    });
-               },
-               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-          }).click(function() {
-               $('.ui-datepicker-calendar').show();
-          });
-          $('.date').mask('99-aaa-9999');
-          $('.dateTime').mask('99-aaa-9999 99:99');
+	$(document).ready(function() {
+		$('.date').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+		$('.dateTime').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+		$('.date').mask('99-aaa-9999');
+		$('.dateTime').mask('99-aaa-9999 99:99');
 
-          $('.result-focus').change(function(e) {
-               var status = false;
-               $(".result-focus").each(function(index) {
-                    if ($(this).val() != "") {
-                         status = true;
-                    }
-               });
-               if (status) {
-                    $('.change-reason').show();
-                    $('#reasonForResultChanges').addClass('isRequired');
-               } else {
-                    $('.change-reason').hide();
-                    $('#reasonForResultChanges').removeClass('isRequired');
-               }
-          });
-
-
+		$('.result-focus').change(function(e) {
+			var status = false;
+			$(".result-focus").each(function(index) {
+				if ($(this).val() != "") {
+					status = true;
+				}
+			});
+			if (status) {
+				$('.change-reason').show();
+				$('#reasonForResultChanges').addClass('isRequired');
+			} else {
+				$('.change-reason').hide();
+				$('#reasonForResultChanges').removeClass('isRequired');
+			}
+		});
 
 
-		  /** Edit south sudan */
-		  hivDetectionChange();
+
+
+		/** Edit south sudan */
+		hivDetectionChange();
 		//getFacilities(document.getElementById("district"));
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -1091,12 +1091,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});*/
 
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -1108,25 +1108,25 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-	
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+
 
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-		if($("#sampleDispatchedDate").val()=="" || (collectDate >= dispatchDate))
+		var dispatchDate = $("#sampleDispatchedDate").toString();
+		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
 			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
+
 		$('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            minDate: minDate,
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			minDate: minDate,
 			startDate: minDate,
-        });
+		});
 
 
 		autoFillFocalDetails();
@@ -1323,184 +1323,184 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 
 
-     });
+	});
 
-     function checkSampleReceviedAtHubDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
+	function checkSampleReceviedAtHubDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
 
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleReceivedAtHubOn);
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleReceivedAtHubOn);
 
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleReceivedAtHubOn").val("");
-               }
-          }
-     }
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleReceivedAtHubOn").val("");
+			}
+		}
+	}
 
-     function checkSampleReceviedDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleReceivedDate = $("#sampleReceivedDate").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+	function checkSampleReceviedDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleReceivedDate = $("#sampleReceivedDate").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
 
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleReceivedDate);
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleReceivedDate);
 
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleReceivedDate").val("");
-               }
-          }
-     }
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleReceivedDate").val("");
+			}
+		}
+	}
 
-     function checkSampleTestingDate() {
-          var sampleCollectionDate = $("#sampleCollectionDate").val();
-          var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
+	function checkSampleTestingDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
 
-               date1 = new Date(sampleCollectionDate);
-               date2 = new Date(sampleTestingDate);
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleTestingDate);
 
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-                    $("#sampleTestingDateAtLab").val("");
-               }
-          }
-     }
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleTestingDateAtLab").val("");
+			}
+		}
+	}
 
-     function checkARTInitiationDate() {
-          var dob = changeFormat($("#dob").val());
-          var artInitiationDate = $("#dateOfArtInitiation").val();
-          if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
+	function checkARTInitiationDate() {
+		var dob = changeFormat($("#dob").val());
+		var artInitiationDate = $("#dateOfArtInitiation").val();
+		if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
 
-               date1 = new Date(dob);
-               date2 = new Date(artInitiationDate);
+			date1 = new Date(dob);
+			date2 = new Date(artInitiationDate);
 
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
-                    $("#dateOfArtInitiation").val("");
-               }
-          }
-     }
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
+				$("#dateOfArtInitiation").val("");
+			}
+		}
+	}
 
-     function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-          if ($.trim($("#" + id).val()) != '') {
-               $.blockUI();
-               $.post("/vl/requests/checkSampleDuplicate.php", {
-                         tableName: tableName,
-                         fieldName: fieldName,
-                         value: $("#" + id).val(),
-                         fnct: fnct,
-                         format: "html"
-                    },
-                    function(data) {
-                         if (data != 0) {
-                              <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-                                   alert(alrt);
-                                   $("#" + id).val('');
-                              <?php } else { ?>
-                                   data = data.split("##");
-                                   document.location.href = "editVlRequest.php?id=" + data[0] + "&c=" + data[1];
-                              <?php } ?>
-                         }
-                    });
-               $.unblockUI();
-          }
-     }
+	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
+		if ($.trim($("#" + id).val()) != '') {
+			$.blockUI();
+			$.post("/vl/requests/checkSampleDuplicate.php", {
+					tableName: tableName,
+					fieldName: fieldName,
+					value: $("#" + id).val(),
+					fnct: fnct,
+					format: "html"
+				},
+				function(data) {
+					if (data != 0) {
+						<?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+							alert(alrt);
+							$("#" + id).val('');
+						<?php } else { ?>
+							data = data.split("##");
+							document.location.href = "editVlRequest.php?id=" + data[0] + "&c=" + data[1];
+						<?php } ?>
+					}
+				});
+			$.unblockUI();
+		}
+	}
 
-     function getAge() {
-          let dob = $("#dob").val();
-          if ($.trim(dob) != '') {
-               let age = getAgeFromDob(dob);
-               $("#ageInYears").val("");
-               $("#ageInMonths").val("");
-               if (age.years >= 1) {
-                    $("#ageInYears").val(age.years);
-               } else {
-                    $("#ageInMonths").val(age.months);
-               }
-          }
-     }
+	function getAge() {
+		let dob = $("#dob").val();
+		if ($.trim(dob) != '') {
+			let age = getAgeFromDob(dob);
+			$("#ageInYears").val("");
+			$("#ageInMonths").val("");
+			if (age.years >= 1) {
+				$("#ageInYears").val(age.years);
+			} else {
+				$("#ageInMonths").val(age.months);
+			}
+		}
+	}
 
-     function clearDOB(val) {
-          if ($.trim(val) != "") {
-               $("#dob").val("");
-          }
-     }
+	function clearDOB(val) {
+		if ($.trim(val) != "") {
+			$("#dob").val("");
+		}
+	}
 
-     function checkARTRegimenValue() {
-          var artRegimen = $("#artRegimen").val();
-          if (artRegimen == 'other') {
-               $(".newArtRegimen").show();
-               $("#newArtRegimen").addClass("isRequired");
-               $("#newArtRegimen").focus();
-          } else {
-               $(".newArtRegimen").hide();
-               $("#newArtRegimen").removeClass("isRequired");
-               $('#newArtRegimen').val("");
-          }
-     }
+	function checkARTRegimenValue() {
+		var artRegimen = $("#artRegimen").val();
+		if (artRegimen == 'other') {
+			$(".newArtRegimen").show();
+			$("#newArtRegimen").addClass("isRequired");
+			$("#newArtRegimen").focus();
+		} else {
+			$(".newArtRegimen").hide();
+			$("#newArtRegimen").removeClass("isRequired");
+			$('#newArtRegimen').val("");
+		}
+	}
 
-     function changeFormat(date) {
-          splitDate = date.split("-");
-          var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
-          var monthDigit = fDate.getMonth();
-          var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
-          fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
-          format = splitDate[2] + '-' + fMonth + '-' + splitDate[0];
-          return format;
-     }
+	function changeFormat(date) {
+		splitDate = date.split("-");
+		var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
+		var monthDigit = fDate.getMonth();
+		var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
+		fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
+		format = splitDate[2] + '-' + fMonth + '-' + splitDate[0];
+		return format;
+	}
 
-     function showPatientList() {
-          $("#showEmptyResult").hide();
-          if ($.trim($("#artPatientNo").val()) != '') {
-               $.post("/vl/requests/search-patients.php", {
-                         artPatientNo: $.trim($("#artPatientNo").val())
-                    },
-                    function(data) {
-                         if (data >= '1') {
-                              showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
-                         } else {
-                              $("#showEmptyResult").show();
-                         }
-                    });
-          }
-     }
+	function showPatientList() {
+		$("#showEmptyResult").hide();
+		if ($.trim($("#artPatientNo").val()) != '') {
+			$.post("/vl/requests/search-patients.php", {
+					artPatientNo: $.trim($("#artPatientNo").val())
+				},
+				function(data) {
+					if (data >= '1') {
+						showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+					} else {
+						$("#showEmptyResult").show();
+					}
+				});
+		}
+	}
 
-     function getfacilityProvinceDetails(obj) {
-          $.blockUI();
-          //check facility name`
-          var cName = $("#fName").val();
-          var pName = $("#province").val();
-          if (cName != '' && provinceName && facilityName) {
-               provinceName = false;
-          }
-          if (cName != '' && facilityName) {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                         cName: cName,
-                         testType: 'vl'
-                    },
-                    function(data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#province").html(details[0]);
-                              $("#district").html(details[1]);
-                         }
-                    });
-          } else if (pName == '' && cName == '') {
-               provinceName = true;
-               facilityName = true;
-               $("#province").html("<?php echo $province; ?>");
-               $("#fName").html("<?php echo $facility; ?>");
-          }
-          $.unblockUI();
-     }
+	function getfacilityProvinceDetails(obj) {
+		$.blockUI();
+		//check facility name`
+		var cName = $("#fName").val();
+		var pName = $("#province").val();
+		if (cName != '' && provinceName && facilityName) {
+			provinceName = false;
+		}
+		if (cName != '' && facilityName) {
+			$.post("/includes/siteInformationDropdownOptions.php", {
+					cName: cName,
+					testType: 'vl'
+				},
+				function(data) {
+					if (data != "") {
+						details = data.split("###");
+						$("#province").html(details[0]);
+						$("#district").html(details[1]);
+					}
+				});
+		} else if (pName == '' && cName == '') {
+			provinceName = true;
+			facilityName = true;
+			$("#province").html("<?php echo $province; ?>");
+			$("#fName").html("<?php echo $facility; ?>");
+		}
+		$.unblockUI();
+	}
 
 
-/** Edit south sudan function */
-function showTesting(chosenClass) {
+	/** Edit south sudan function */
+	function showTesting(chosenClass) {
 		$(".viralTestData").val('');
 		$(".hideTestData").hide();
 		$("." + chosenClass).show();
@@ -1550,7 +1550,7 @@ function showTesting(chosenClass) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					dName: dName,
 					cliName: cName,
-					fType:2,
+					fType: 2,
 					testType: 'vl'
 				},
 				function(data) {
@@ -1728,9 +1728,9 @@ function showTesting(chosenClass) {
 
 		var text = $('#testingPlatform').val();
 		if (!text) {
-               $("#vlResult").attr("disabled", true);
-               return;
-          }
+			$("#vlResult").attr("disabled", true);
+			return;
+		}
 		var str1 = text.split("##");
 		var str = str1[0];
 		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
@@ -1821,6 +1821,5 @@ function showTesting(chosenClass) {
 			}
 		}
 	}
-
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

@@ -84,13 +84,13 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<td><label for="sampleCode">Échantillon ID </label></td>
 										<td>
-											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo['sample_code'] ?></span>
+											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
 
 										</td>
 									<?php } else { ?>
 										<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 										<td>
-											<input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+											<input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 										</td>
 									<?php } ?>
 									<td></td>
@@ -169,7 +169,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row"><label for="mothersId">Code (si applicable) </label></th>
 									<td>
-										<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" onchange="" />
+										<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" />
 									</td>
 									<th scope="row"><label for="mothersName">Nom </label></th>
 									<td>
@@ -204,7 +204,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									</td>
 									<th scope="row"><label for="childName">Nom </label></th>
 									<td>
-										<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" onchange="" />
+										<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
 									</td>
 									<th scope="row"><label for="childDob">Date de naissance </label></th>
 									<td>
@@ -222,7 +222,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								</tr>
 								<tr>
 									<th scope="row">Age</th>
-									<td><input type="number" <?php echo $eidInfo['child_age']; ?> max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" /></td>
+									<td><input type="number" <?= htmlspecialchars($eidInfo['child_age']); ?> max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" /></td>
 									<th scope="row"></th>
 									<td></td>
 									<th scope="row"></th>
@@ -376,7 +376,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row">Tel. du préleveur</th>
 									<td>
-										<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
+										<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -393,7 +393,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row">Nom du demandeur</th>
 									<td>
-										<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
+										<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -543,7 +543,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 				<div class="box-footer">
 					<input type="hidden" name="formId" id="formId" value="3" />
 					<input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
-					<input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo['sample_code'] ?>" />
+					<input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
 					<input type="hidden" name="revised" id="revised" value="no" />
 
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>

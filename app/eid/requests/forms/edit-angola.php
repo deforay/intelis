@@ -94,13 +94,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Nº de amostra </label></td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo['sample_code'] ?></span>
-                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo['sample_code'] ?>" />
+                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
+                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Nº de amostra </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -181,7 +181,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <th style="width:15% !important"><label for="childName">Nome da Criança </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Nome da Criança" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Nome da Criança" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                         <th style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -205,7 +205,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     </tr>
                                     <tr>
                                         <th scope="row">Idade da criança (em meses)</th>
-                                        <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_age']; ?>" /></td>
+                                        <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row">Profilaxia da Criança</th>
                                         <td>
                                             <select class="form-control" name="childTreatment[]" id="childTreatment">
@@ -244,7 +244,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <th scope="row">Nome da Mãe </th>
                                         <td><input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nome da Mãe" title="Nome da Mãe" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" /></td>
                                         <th scope="row">Nº Processo Clínico</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Mãe da Criança Autoriza Contacto</th>
@@ -256,7 +256,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                             </select>
                                         </td>
                                         <th scope="row">Telemóvel</th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Telemóvel" title="Caretaker Phone Number" style="width:100%;" value="<?php echo $eidInfo['caretaker_phone_number'] ?>" /></td>
+                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Telemóvel" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" /></td>
                                     </tr>
 
                                     <tr>
@@ -295,11 +295,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <tr>
                                         <th scope="row">Técnico Responsável pela Colheita </th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Técnico Responsável pela Colheita" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
+                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Técnico Responsável pela Colheita" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
                                         </td>
                                         <th scope="row">Contacto</th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Contacto" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
+                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Contacto" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
                                     </tr>
 
@@ -407,8 +407,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="8" />
                         <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
-                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />
-                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $eidInfo['result_status']; ?>" />
+                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars($eidInfo['result_status']); ?>" />
                         <input type="hidden" name="provinceCode" id="provinceCode" />
                         <input type="hidden" name="provinceId" id="provinceId" />
                         <a href="/eid/requests/eid-requests.php" class="btn btn-default"> Cancel</a>

@@ -3659,10 +3659,9 @@ ALTER TABLE `generic_test_symptoms_map`
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_symptoms` (`symptom_id`),
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
 
-
-
 -- Thana 28-Apr-2023
 ALTER TABLE `instruments` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `status`;
+
 -- Jeyabanu 29-Apr-2023
 
 CREATE TABLE `generic_tests` (
@@ -3913,4 +3912,8 @@ CREATE TABLE `generic_tests` (
  KEY `result_approved_by` (`result_approved_by`),
  KEY `result_reviewed_by` (`result_reviewed_by`),
  KEY `sample_package_id` (`sample_package_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- Amit 1-May-2023 version 5.1.4
+UPDATE `system_config` SET `value` = '5.1.4' WHERE `system_config`.`name` = 'sc_version';

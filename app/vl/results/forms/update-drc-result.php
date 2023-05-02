@@ -94,7 +94,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td><label for="sampleCode">Échantillon id </label></td>
 										<td>
-											<input type="text" class="form-control" id="sampleCode" name="sampleCode" placeholder="Échantillon id" title="Please enter échantillon id" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="sampleCode" name="sampleCode" placeholder="Échantillon id" title="Please enter échantillon id" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -190,15 +190,15 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_dob']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:6%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19%;">
-											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:10%;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:10%;text-align:center;"><label for="sex">Sexe </label></td>
 										<td style="width:15%;">
@@ -215,7 +215,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td><label for="patientArtNo">Code du patient </label></td>
 										<td>
-											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="Please enter code du patient" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="Please enter code du patient" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td colspan="2">
 											<label for="isPatientNew">Si S/ARV </label>
@@ -498,14 +498,14 @@ $disable = "disabled = 'disabled'";
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 										<td class="vlResult"><label for="vlResult">Résultat</label></td>
 										<td class="vlResult resultInputContainer">
-											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" oninput="calculateLogValue(this)">
+											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" oninput="calculateLogValue(this)">
 											<datalist id="possibleVlResults">
 
 											</datalist>
 										</td>
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 										<td class="vlLog">
-											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 										</td>
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>
@@ -561,9 +561,9 @@ $disable = "disabled = 'disabled'";
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" id="rSrc" name="rSrc" value="er" />
-						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
+						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 					</div>

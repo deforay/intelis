@@ -21,7 +21,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$maxLength = '';
 	if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength; 
+		$maxLength = "maxlength=" . $maxLength;
 	}
 } else {
 	$sampleClass = '';
@@ -50,7 +50,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 //sample rejection reason
@@ -73,8 +73,8 @@ $pdResult = $db->query($pdQuery);
 
 
 //facility details
-$facilityQuery = "SELECT * FROM facility_details where facility_id='" . $vlQueryInfo['facility_id'] . "'";
-$facilityResult = $db->query($facilityQuery);
+$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
+$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
 if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility_state'] == '') {
 	$facilityResult[0]['facility_state'] = "";
 }
@@ -210,7 +210,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<?php
 										if ($vlQueryInfo['sample_code'] != '') {
 										?>
-											<label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?php echo $vlQueryInfo['sample_code']; ?></label>
+											<label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?= htmlspecialchars($vlQueryInfo['sample_code']); ?></label>
 										<?php
 										} else {
 										?>
@@ -228,7 +228,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<?php } else { ?>
 												<label class="labels" for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
 												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
-												<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" />
+												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
 											<?php } ?>
 
 										</div>
@@ -327,7 +327,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td class="labels">
 											<label for="gender">Gender &nbsp;&nbsp;</label>
@@ -342,47 +342,47 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
 										</td>
 									</tr>
-<?php if($vlQueryInfo['patient_gender'] == 'female') { ?> 
-									<tr class="femaleFactor">
-										<td class="labels">
-											<label for="patientPregnant">Patient Pregnant ?</label>
-										</td>
-										<td>
-											<select class="form-control" name="patientPregnant" id="patientPregnant" title="Please choose if patient is pregnant" style="width:100%;" onchange="">
-												<option value="">-- Select --</option>
-												<option value="yes" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "selected='selected' " : "" ?>>Yes</option>
-												<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "selected='selected' " : "" ?>>No</option>
-												<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'not_reported') ? "selected='selected' " : "" ?>>Not Reported</option>
-											</select>
-										</td>
-										<td class="labels">
-											<label for="breastfeeding">Patient Breastfeeding ?</label>
-										</td>
-										<td>
-											<select class="form-control" name="breastfeeding" id="breastfeeding" title="Please choose if patient is breastfeeding" onchange="" style="width:100%;">
-												<option value=""> -- Select -- </option>
-												<option value="yes" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "selected='selected' " : "" ?>>Yes</option>
-												<option value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "selected='selected' " : "" ?>>No</option>
-												<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'not_reported') ? "selected='selected' " : "" ?>>Not Reported</option>
-											</select>
-										</td>
-										<td></td>
-										<td></td>
-									</tr>
-<?php } ?>
+									<?php if ($vlQueryInfo['patient_gender'] == 'female') { ?>
+										<tr class="femaleFactor">
+											<td class="labels">
+												<label for="patientPregnant">Patient Pregnant ?</label>
+											</td>
+											<td>
+												<select class="form-control" name="patientPregnant" id="patientPregnant" title="Please choose if patient is pregnant" style="width:100%;" onchange="">
+													<option value="">-- Select --</option>
+													<option value="yes" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "selected='selected' " : "" ?>>Yes</option>
+													<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "selected='selected' " : "" ?>>No</option>
+													<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'not_reported') ? "selected='selected' " : "" ?>>Not Reported</option>
+												</select>
+											</td>
+											<td class="labels">
+												<label for="breastfeeding">Patient Breastfeeding ?</label>
+											</td>
+											<td>
+												<select class="form-control" name="breastfeeding" id="breastfeeding" title="Please choose if patient is breastfeeding" onchange="" style="width:100%;">
+													<option value=""> -- Select -- </option>
+													<option value="yes" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "selected='selected' " : "" ?>>Yes</option>
+													<option value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "selected='selected' " : "" ?>>No</option>
+													<option value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'not_reported') ? "selected='selected' " : "" ?>>Not Reported</option>
+												</select>
+											</td>
+											<td></td>
+											<td></td>
+										</tr>
+									<?php } ?>
 									<tr>
 										<td class="labels"><label for="dob">Date Of Birth</label></td>
 										<td>
-											<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" title="Please choose DOB" value="<?php echo $vlQueryInfo['patient_dob']; ?>" onchange="getAge();" style="width:100%;" />
+											<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" title="Please choose DOB" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();" style="width:100%;" />
 										</td>
 										<td class="labels"><label for="ageInYears">If DOB unknown, Age in Years</label></td>
 										<td>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" />
 										</td>
 										<td class="labels"><label for="ageInMonths">If Age < 1, Age in Months </label>
 										</td>
 										<td>
-											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
+											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" />
 										</td>
 
 									</tr>
@@ -609,7 +609,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
-										
+
 									</tr>
 									<tr>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result</label></td>
@@ -639,7 +639,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 									<tr>
-									<td class="labels"><label for="batchNo">Batch</label></td>
+										<td class="labels"><label for="batchNo">Batch</label></td>
 										<td>
 											<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
@@ -650,7 +650,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												?>
 											</select>
 										</td>
-											</tr>
+									</tr>
 									<tr>
 										<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 									</tr>
@@ -673,9 +673,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<td class="labels"><label for="failedvlResult">VL result</label></td>
 										<td>
 											<input list="failedPossibleVlResults" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
-                                                <datalist id="failedPossibleVlResults">
+											<datalist id="failedPossibleVlResults">
 
-                                                </datalist>
+											</datalist>
 										</td>
 									</tr>
 									<tr>
@@ -712,7 +712,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									<tr>
 										<td class="labels"><label for="finalViralResult">Final Viral Load Result(copies/ml)</label></td>
 										<td>
-											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>">
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 										<td>
@@ -766,10 +766,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-						<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
+						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
-						<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
@@ -788,49 +788,44 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <script>
 	let provinceName = true;
 	let facilityName = true;
-	function getVlResults(testingPlatformId, vlResultId)
-	{
-		testingVal = $('#'+testingPlatformId).val();
-		  var str1 = testingVal.split("##");
-		  var platformId = str1[3];
-		  $("#"+vlResultId).html('');
-          $.post("/vl/requests/getVlResults.php", {
-                    instrumentId: platformId,
-               },
-               function(data) {
-                    // alert(data);
-                    if (data != "") {
-						$("#"+vlResultId).html(data);
-                        // $("#vlResult").attr("disabled", false);
-                    }
-               });
+
+	function getVlResults(testingPlatformId, vlResultId) {
+		testingVal = $('#' + testingPlatformId).val();
+		var str1 = testingVal.split("##");
+		var platformId = str1[3];
+		$("#" + vlResultId).html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				// alert(data);
+				if (data != "") {
+					$("#" + vlResultId).html(data);
+					// $("#vlResult").attr("disabled", false);
+				}
+			});
 	}
-	
+
 	$(document).ready(function() {
-		getVlResults('testingPlatform','possibleVlResults');
-		getVlResults('failedTestingTech','failedPossibleVlResults');
-		$("#gender").change(function(){
-			if($(this).val()=="female")
+		getVlResults('testingPlatform', 'possibleVlResults');
+		getVlResults('failedTestingTech', 'failedPossibleVlResults');
+		$("#gender").change(function() {
+			if ($(this).val() == "female")
 				$(".femaleFactor").show();
 			else
 				$(".femaleFactor").hide();
 		});
-		$("input[name='typeOfSample']").click(function(){
-			if($(this).val()=="DBS")
-			{
+		$("input[name='typeOfSample']").click(function() {
+			if ($(this).val() == "DBS") {
 				$("#plasmaOne,#plasmaTwo").val("");
 				$("#wholeBloodOne,#wholeBloodTwo").val("");
-			}
-			else if($(this).val()=="Whole blood")
-			{
+			} else if ($(this).val() == "Whole blood") {
 				$("#plasmaOne,#plasmaTwo").val("");
-			}
-			else if($(this).val()=="Plasma")
-			{
+			} else if ($(this).val() == "Plasma") {
 				$("#wholeBloodOne,#wholeBloodTwo").val("");
 			}
 		});
-		
+
 		//getfacilityProvinceDetails($("#fName").val());
 		$('.date').datepicker({
 			changeMonth: true,
@@ -883,15 +878,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		$('#labId').select2({
 			placeholder: "Select Testing Lab Name"
 		});
-          $('#fName').select2({
-               placeholder: "Select Clinic/Health Center"
-          });
-          $('#district').select2({
-               placeholder: "District"
-          });
-          $('#province').select2({
-               placeholder: "Province"
-          });
+		$('#fName').select2({
+			placeholder: "Select Clinic/Health Center"
+		});
+		$('#district').select2({
+			placeholder: "District"
+		});
+		$('#province').select2({
+			placeholder: "Province"
+		});
 
 	});
 

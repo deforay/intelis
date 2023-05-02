@@ -1,6 +1,6 @@
 <?php
 
-const VERSION = '5.1.3';
+const VERSION = '5.1.4';
 
 
 /**

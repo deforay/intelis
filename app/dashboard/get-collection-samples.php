@@ -47,7 +47,7 @@ if (sizeof($collectionResult) > 0) {
 <script>
     $('.facilityCounterup').html('0');
     <?php if ($collectionTotal > 0) { ?>
-        $('.facilityCounterup').html('<?php echo $collectionTotal; ?>')
+        $('.facilityCounterup').html('<?= htmlspecialchars($collectionTotal); ?>')
         $('#collection').highcharts({
             chart: {
                 type: 'column',
@@ -65,7 +65,7 @@ if (sizeof($collectionResult) > 0) {
             xAxis: {
                 categories: [<?php
                                 foreach ($collectionResult as $tRow) {
-                                    echo "'" . ($tRow['facility_name']) . "',";
+                                    echo "'" . htmlspecialchars($tRow['facility_name']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -99,7 +99,7 @@ if (sizeof($collectionResult) > 0) {
                 name: 'Samples',
                 data: [<?php
                         foreach ($collectionResult as $tRow) {
-                            echo ($tRow['total']) . ",";
+                            echo htmlspecialchars($tRow['total']) . ",";
                         }
                         ?>]
 

@@ -109,13 +109,13 @@ $aResult = $db->query($aQuery);
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label></td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $eidInfo['sample_code'] ?></span>
-                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo['sample_code'] ?>" />
+                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
+                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo $eidInfo['sample_code'] ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -203,7 +203,7 @@ $aResult = $db->query($aQuery);
                                         </td>
                                         <th style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?php echo $eidInfo['child_name']; ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,16 +223,16 @@ $aResult = $db->query($aQuery);
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
-                                        <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_age']; ?>" /></td>
+                                        <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row" class="labels">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?php echo $eidInfo['mother_id'] ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Caretaker phone number</th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?php echo $eidInfo['caretaker_phone_number'] ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
                                         <th scope="row" class="labels">Infant caretaker address</th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?php echo $eidInfo['caretaker_address'] ?></textarea></td>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
 
@@ -390,7 +390,7 @@ $aResult = $db->query($aQuery);
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
-                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?php echo $eidInfo['reason_for_repeat_pcr_other']; ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?= htmlspecialchars($eidInfo['reason_for_repeat_pcr_other']); ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
 
                                         </td>
                                         <th scope="row"></th>
@@ -424,13 +424,13 @@ $aResult = $db->query($aQuery);
                                         </td>
                                         <th scope="row" class="labels">Requesting Officer</th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?php echo $eidInfo['sample_requestor_name']; ?>" />
+                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Sample Requestor Phone</th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?php echo $eidInfo['sample_requestor_phone']; ?>" />
+                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
                                         <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
@@ -546,7 +546,7 @@ $aResult = $db->query($aQuery);
                                         <tr>
                                             <th scope="row" class="labels">Lab Tech. Comments </th>
                                             <td style="width:25%;">
-                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?php echo $eidInfo['lab_tech_comments']; ?></textarea>
+                                                <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?= htmlspecialchars($eidInfo['lab_tech_comments']); ?></textarea>
                                             </td>
                                             <th style="display: none;" class="labels change-reason">Reason for Changing <span class="mandatory">*</span></td>
                                             <td style="display: none;" class="change-reason"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
@@ -566,10 +566,10 @@ $aResult = $db->query($aQuery);
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="1" />
-                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo $eidInfo['eid_id']; ?>" />
+                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars($eidInfo['eid_id']); ?>" />
                         <input type="hidden" name="oldLabTestingPoint" id="oldLabTestingPoint" value="<?php echo $eidInfo['lab_testing_point']; ?>" />
-                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?php echo $eidInfo['sample_code']; ?>" />
-                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?php echo $eidInfo['result_status']; ?>" />
+                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars($eidInfo['result_status']); ?>" />
                         <input type="hidden" name="provinceCode" id="provinceCode" />
                         <input type="hidden" name="provinceId" id="provinceId" />
                         <a href="/eid/requests/eid-requests.php" class="btn btn-default"> Cancel</a>

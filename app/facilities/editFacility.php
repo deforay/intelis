@@ -163,7 +163,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-4 control-label"><?php echo _("Facility Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _('Facility Name'); ?>" title="<?php echo _('Please enter facility name'); ?>" value="<?php echo $facilityInfo['facility_name']; ?>" onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The facility name that you entered already exists.Enter another name"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _('Facility Name'); ?>" title="<?php echo _('Please enter facility name'); ?>" value="<?= htmlspecialchars($facilityInfo['facility_name'], ENT_QUOTES, 'UTF-8'); ?>" onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . htmlspecialchars($facilityInfo['facility_id'],  ENT_QUOTES, 'UTF-8'); ?>','<?php echo _("The facility name that you entered already exists.Enter another name"); ?>',null)" />
 										<input type="hidden" class="form-control isRequired" id="facilityId" name="facilityId" value="<?php echo base64_encode($facilityInfo['facility_id']); ?>" />
 									</div>
 								</div>
@@ -172,7 +172,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _("Facility Code"); ?><br> <small><?php echo _("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" value="<?php echo $facilityInfo['facility_code']; ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The code that you entered already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _('Facility Code'); ?>" title="<?php echo _('Please enter facility code'); ?>" value="<?= htmlspecialchars($facilityInfo['facility_code']); ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo "facility_id##" . htmlspecialchars($facilityInfo['facility_id'],  ENT_QUOTES, 'UTF-8'); ?>','<?php echo _("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -182,7 +182,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="otherId" class="col-lg-4 control-label"><?php echo _("Other/External Code"); ?> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other/External Code'); ?>" value="<?php echo $facilityInfo['other_id']; ?>" />
+										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _('Other/External Code'); ?>" value="<?= htmlspecialchars($facilityInfo['other_id'],  ENT_QUOTES, 'UTF-8'); ?>" />
 									</div>
 								</div>
 							</div>
@@ -196,7 +196,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											$k = 10;
 											foreach ($fResult as $type) {
 											?>
-												<option data-disable="<?php echo $k; ?>" value="<?php echo $type['facility_type_id']; ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
+												<option data-disable="<?php echo $k; ?>" value="<?= htmlspecialchars($type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
 											<?php
 												$k = $k + 10;
 											}
@@ -211,7 +211,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="email" class="col-lg-4 control-label"><?php echo _("Email(s)"); ?> <br> <small><?php echo _("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?php echo $facilityInfo['facility_emails']; ?>" />
+										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?= htmlspecialchars($facilityInfo['facility_emails']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -227,15 +227,6 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									</div>
 								</div>
 							</div>
-
-							<!--<div class="col-md-6">
-                    <div class="form-group">
-                        <label for="reportEmail" class="col-lg-4 control-label">Report Email(s) </label>
-                        <div class="col-lg-7">
-                        <textarea class="form-control" id="reportEmail" name="reportEmail" placeholder="eg-user1@gmail.com,user2@gmail.com" rows="3">< ?php echo $facilityInfo['report_email']; ?></textarea>
-                        </div>
-                    </div>
-                  </div>-->
 						</div>
 						<br>
 						<div class="row">
@@ -265,7 +256,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" value="<?php echo $facilityInfo['facility_mobile_numbers']; ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
+										<input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" value="<?= htmlspecialchars($facilityInfo['facility_mobile_numbers']); ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -279,10 +270,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value="other">Other</option>
 											</select>
 											<input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?php echo _('Enter Province/State'); ?>" title="<?php echo _('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />
-											<input type="hidden" name="state" id="state" value="<?php echo $facilityInfo['facility_state']; ?>" />
+											<input type="hidden" name="state" id="state" value="<?= htmlspecialchars($facilityInfo['facility_state']); ?>" />
 										<?php }
 										if ((!isset($facilityInfo['facility_state_id']) || $facilityInfo['facility_state_id'] == "") && (isset($facilityInfo['facility_state']) || $facilityInfo['facility_state'] != "")) { ?>
-											<input type="text" value="<?php echo $facilityInfo['facility_state']; ?>" class="form-control isRequired" name="oldState" id="oldState" placeholder="<?php echo _('Enter Province/State'); ?>" title="<?php echo _('Please enter province/state'); ?>" />
+											<input type="text" value="<?= htmlspecialchars($facilityInfo['facility_state']); ?>" class="form-control isRequired" name="oldState" id="oldState" placeholder="<?php echo _('Enter Province/State'); ?>" title="<?php echo _('Please enter province/state'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
@@ -300,9 +291,9 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<option value="other">Other</option>
 										</select>
 										<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="<?php echo _('Enter District/County'); ?>" title="<?php echo _('Please enter District/County'); ?>" style="margin-top:4px;display:none;" />
-										<input type="hidden" id="district" name="district" value="<?php echo $facilityInfo['facility_district']; ?>" />
+										<input type="hidden" id="district" name="district" value="<?= htmlspecialchars($facilityInfo['facility_district']); ?>" />
 										<?php if ((!isset($facilityInfo['facility_district_id']) || $facilityInfo['facility_district_id'] == "") && (isset($facilityInfo['facility_district']) || $facilityInfo['facility_district'] != "")) { ?>
-											<input type="text" value="<?php echo $facilityInfo['facility_district']; ?>" class="form-control isRequired" name="oldDistrict" id="oldDistrict" placeholder="<?php echo _('Enter District/County'); ?>" title="<?php echo _('Please enter district/county'); ?>" />
+											<input type="text" value="<?= htmlspecialchars($facilityInfo['facility_district']); ?>" class="form-control isRequired" name="oldDistrict" id="oldDistrict" placeholder="<?php echo _('Enter District/County'); ?>" title="<?php echo _('Please enter district/county'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
@@ -311,7 +302,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="hubName" class="col-lg-4 control-label"><?php echo _("Linked Hub Name (if applicable)"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _('Hub Name'); ?>" title="<?php echo _('Please enter hub name'); ?>" value="<?php echo $facilityInfo['facility_hub_name']; ?>" />
+										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _('Hub Name'); ?>" title="<?php echo _('Please enter hub name'); ?>" value="<?= htmlspecialchars($facilityInfo['facility_hub_name']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -323,7 +314,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="address" class="col-lg-4 control-label"><?php echo _("Address"); ?></label>
 									<div class="col-lg-7">
-										<textarea class="form-control" name="address" id="address" placeholder="<?php echo _('Address'); ?>"><?php echo $facilityInfo['address']; ?></textarea>
+										<textarea class="form-control" name="address" id="address" placeholder="<?php echo _('Address'); ?>"><?= htmlspecialchars($facilityInfo['address']); ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -331,7 +322,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="country" class="col-lg-4 control-label"><?php echo _("Country"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="country" name="country" placeholder="<?php echo _('Country'); ?>" value="<?php echo $facilityInfo['country']; ?>" />
+										<input type="text" class="form-control" id="country" name="country" placeholder="<?php echo _('Country'); ?>" value="<?= htmlspecialchars($facilityInfo['country']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -342,7 +333,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="latitude" class="col-lg-4 control-label"><?php echo _("Latitude"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?php echo _('Latitude'); ?>" title="<?php echo _('Please enter latitude'); ?>" value="<?php echo $facilityInfo['latitude']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?php echo _('Latitude'); ?>" title="<?php echo _('Please enter latitude'); ?>" value="<?= htmlspecialchars($facilityInfo['latitude']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -351,7 +342,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="longitude" class="col-lg-4 control-label"><?php echo _("Longitude"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?php echo _('Longitude'); ?>" title="<?php echo _('Please enter longitude'); ?>" value="<?php echo $facilityInfo['longitude']; ?>" />
+										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?php echo _('Longitude'); ?>" title="<?php echo _('Please enter longitude'); ?>" value="<?= htmlspecialchars($facilityInfo['longitude']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -400,11 +391,6 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _("Available Platforms"); ?></label>
 									<div class="col-lg-7">
-										<!--<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
-											<option value="microscopy" <?php echo (preg_match("/microscopy/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Microscopy"); ?></option>
-											<option value="xpert" <?php echo (preg_match("/xpert/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
-											<option value="lam" <?php echo (preg_match("/lam/i", $testTypeInfo[0]['attributes']['platforms'])) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
-										</select>-->
 										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
 											<option value="microscopy" <?php echo in_array('microscopy', $availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo in_array('xpert', $availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
@@ -423,7 +409,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _("Report Format For VL"); ?></label>
 									<div class="col-lg-7">
 										<select class="form-control" name='reportFormat[vl]' id='reportFormat' title="<?php echo _('Please select the status'); ?>" onchange="checkIfExist(this);">
-											<?php if (($count > 1)) { ?>
+											<?php if ($count > 1) { ?>
 												<option value=""><?php echo _("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['vl'] as $key => $value) { ?>
@@ -518,19 +504,19 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 
 											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<img src="/uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
+												<img src="/uploads/facility-logo/<?= htmlspecialchars($facilityInfo['facility_id']); ?>/<?= htmlspecialchars($facilityInfo['facility_logo']); ?>" alt="Logo image">
 											<?php } else { ?>
 
 											<?php } ?>
 										</div>
 										<div>
 											<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _("Select image"); ?></span><span class="fileinput-exists"><?php echo _("Change"); ?></span>
-												<input type="file" id="labLogo" name="labLogo" title="<?php echo _('Please select logo image'); ?>" onchange="getNewLabImage('<?php echo $facilityInfo['facility_logo']; ?>');">
+												<input type="file" id="labLogo" name="labLogo" title="<?php echo _('Please select logo image'); ?>" onchange="getNewLabImage('<?= htmlspecialchars($facilityInfo['facility_logo']); ?>');">
 											</span>
 											<?php
 											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
 											?>
-												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?php echo $facilityInfo['facility_logo']; ?>')"><?php echo _("Clear"); ?></a>
+												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?= htmlspecialchars($facilityInfo['facility_logo']); ?>')"><?php echo _("Clear"); ?></a>
 											<?php } ?>
 											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _("Remove"); ?></a>
 										</div>
@@ -541,44 +527,11 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</div>
 							</div>
 						</div>
-						<!-- <div class="col-md-6">
-							<div class="form-group">
-								<label for="stampLogo" class="col-lg-4 control-label">Logo Image </label>
-								<div class="col-lg-8">
-									<div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
-										<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-											<?php
-
-											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
-											?>
-												<img src="/uploads/facility-logo/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $facilityInfo['facility_logo']; ?>" alt="Logo image">
-											<?php } else { ?>
-												
-											<?php } ?>
-										</div>
-										<div>
-											<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-												<input type="file" id="stampLogo" name="stampLogo" title="Please select logo image" onchange="getNewLabImage('<?php echo $facilityInfo['facility_logo']; ?>');">
-											</span>
-											<?php
-											if (isset($facilityInfo['facility_logo']) && trim($facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
-											?>
-												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?php echo $facilityInfo['facility_logo']; ?>')">Clear</a>
-											<?php } ?>
-											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-										</div>
-									</div>
-									<div class="box-body">
-										Please make sure logo image size of: <code>80x80</code>
-									</div>
-								</div>
-							</div>
-						</div> -->
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="" class="col-lg-4 control-label"><?php echo _("Header Text"); ?></label>
 								<div class="col-lg-7">
-									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="<?php echo _('Header Text'); ?>" title="<?php echo _('Please enter header text'); ?>" value="<?php echo $facilityInfo['header_text']; ?>" />
+									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="<?php echo _('Header Text'); ?>" title="<?php echo _('Please enter header text'); ?>" value="<?= htmlspecialchars($facilityInfo['header_text']); ?>" />
 								</div>
 							</div>
 						</div>

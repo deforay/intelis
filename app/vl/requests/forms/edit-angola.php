@@ -243,7 +243,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                       <td style="width:14%;"><label for="patientArtNo">Nº Processo Clínico </label></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+                        <input type="text" class="form-control " id="patientArtNo" name="patientArtNo" placeholder="Nº Processo Clínico" title="Please enter Nº Processo Clínico" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
                       </td>
                       <td><label for="sex">Género </label></td>
                       <td style="width:16%;">
@@ -258,14 +258,14 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                       <td style="width:14%;"><label for="ageInMonths">Data de nascimento </label></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control date" id="dob" name="dob" placeholder="Data de nascimento" title="Please enter Data de nascimento" value="<?php echo $vlQueryInfo['patient_dob']; ?>" onchange="getAge();checkARTInitiationDate();" style="width:100%;" />
+                        <input type="text" class="form-control date" id="dob" name="dob" placeholder="Data de nascimento" title="Please enter Data de nascimento" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" style="width:100%;" />
                       </td>
                     </tr>
                     <tr>
                       <td><label for="ageInMonths"> Idade (em meses se < 1 ano) </label>
                       </td>
                       <td>
-                        <input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" style="width:100%;" />
+                        <input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" style="width:100%;" />
                       </td>
                       <td colspan="3"><label for="responsiblePersonName">Nome da Mãe/ Pai/ Familiar responsáve </label></td>
                       <td>
@@ -283,7 +283,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                       <td><label for="patientPhoneNumber">Contacto </label></td>
                       <td>
-                        <input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Contacto" title="Please enter Contacto" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
+                        <input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Contacto" title="Please enter Contacto" value="<?= htmlspecialchars($vlQueryInfo['patient_mobile_number']); ?>" style="width:100%;" />
                       </td>
                       <td><label for="consentReceiveSms">Autoriza contacto </label></td>
                       <td style="width:16%;">
@@ -520,7 +520,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       <td style="width:14%;"><label for="sampleCode"> Nº de amostra </label><span class="mandatory">*</span></td>
                       <td style="width:14%;">
                         <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Nº de amostra" title="Please enter Nº de amostra" style="width:100%;" value="<?php echo (isset($sCode) && trim($sCode) != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The sample number that you entered already exists. Please try another number',null)" />
-                        <input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" />
+                        <input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
                       </td>
                     </tr>
                     <tr>
@@ -541,7 +541,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                       </td>
                       <td style="width:14%;"><label for="vlFocalPerson"> Responsável da recepção </label></td>
                       <td style="width:14%;">
-                        <input type="text" class="form-control" id="vlFocalPerson" name="vlFocalPerson" placeholder="Responsável da recepção" title="Please enter responsável da recepção" style="width:100%;" value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" />
+                        <input type="text" class="form-control" id="vlFocalPerson" name="vlFocalPerson" placeholder="Responsável da recepção" title="Please enter responsável da recepção" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?>" />
                       </td>
                     </tr>
                     <tr>
@@ -606,7 +606,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                         <label for="vlResult">Resultado da carga viral (cópias / ml) </label>
                       </td>
                       <td class="vlResult" style="visibility:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'hidden' : 'visible'; ?>;">
-                        <input type="text" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter resultado da carga viral" value="<?php echo $vlQueryInfo['result']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                        <input type="text" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter resultado da carga viral" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                         <input type="checkbox" class="labSection" id="tnd" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : '';
                                                                                                   echo ($vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'disabled="disabled"' : '' ?> title="Please check tnd"> Target não detectado<br>
                         <input type="checkbox" class="labSection" id="ldl" name="ldl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level') ? 'checked="checked"' : '';
@@ -618,7 +618,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                         <label for="vlLog">Resultado da Carga Viral (Log) </label>
                       </td>
                       <td class="vlResult" style="visibility:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'hidden' : 'visible'; ?>;">
-                        <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Resultado da Carga Viral" title="Please enter Resultado da Carga Viral" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                        <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Resultado da Carga Viral" title="Please enter Resultado da Carga Viral" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level' || $vlQueryInfo['result'] == 'Low Detection Level' || $vlQueryInfo['result'] == 'High Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                       </td>
                     </tr>
                     <tr>
@@ -681,8 +681,8 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
             <!-- /.box-body -->
             <div class="box-footer">
               <input type="hidden" name="revised" id="revised" value="no" />
-              <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-              <input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
+              <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+              <input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
               <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
               <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
               <a href="vlRequest.php" class="btn btn-default"> Cancel</a>

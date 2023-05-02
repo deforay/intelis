@@ -209,7 +209,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="form-group">
 											<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 											<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-											<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;">
+											<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" style="width:100%;">
 										</div>
 									</div>
 									<div class="col-xs-4 col-md-4">
@@ -323,25 +323,25 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="dob">Date of Birth </label>
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?php echo $vlQueryInfo['patient_dob']; ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="ageInYears">If DOB unknown, Age in Years </label>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="ageInMonths">If Age
-												< 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" />
+												< 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -380,7 +380,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="patientPhoneNumber">Phone Number</label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -493,7 +493,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-xs-3 col-md-3" style="display:none;">
 												<div class="form-group">
 													<label for="">How long has this patient been on treatment ? </label>
-													<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?php echo $vlQueryInfo['treatment_initiation']; ?>" />
+													<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($vlQueryInfo['treatment_initiation']); ?>" />
 												</div>
 											</div>
 										</div>
@@ -674,14 +674,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
 													<div class="col-lg-7">
 														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter VL Focal Person">
-															<option value="<?php echo $vlQueryInfo['vl_focal_person']; ?>" selected='selected'> <?php echo $vlQueryInfo['vl_focal_person']; ?></option>
+															<option value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?>" selected='selected'> <?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?></option>
 														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
 													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?php echo $vlQueryInfo['vl_focal_person_phone_number']; ?>" />
+														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
 											</div>
@@ -773,7 +773,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
 												<div class="col-lg-7 resultInputContainer">
-													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 													<datalist id="possibleVlResults" title="Please enter viral load result">
 
 													</datalist>
@@ -782,7 +782,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-4 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 												<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 												</div>
 											</div>
 											<?php if (count($reasonForFailure) > 0) { ?>
@@ -830,7 +830,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == 9) || ($sCode != '')) {
 													$styleStatus = "display:none";
 												?>
-													<input type="hidden" name="status" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+													<input type="hidden" name="status" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 												<?php
 												}
 												?>
@@ -877,10 +877,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 							</div>
 							<div class="box-footer">
 								<input type="hidden" name="revised" id="revised" value="no" />
-								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-								<input type="hidden" name="isRemoteSample" value="<?php echo $vlQueryInfo['remote_sample']; ?>" />
+								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+								<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-								<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+								<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>

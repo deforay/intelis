@@ -52,8 +52,8 @@ $sResult = $db->query($sQuery);
 $pdResult = $db->query($pdQuery);
 
 //facility details
-$facilityQuery = "SELECT * from facility_details where facility_id='" . $vlQueryInfo['facility_id'] . "'";
-$facilityResult = $db->query($facilityQuery);
+$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
+$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
 if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility_state'] == '') {
 	$facilityResult[0]['facility_state'] = "";
 }
@@ -286,11 +286,11 @@ $disable = "disabled = 'disabled'";
 								<tr>
 									<td class="labels"><label for="dob">Date Of Birth</label></td>
 									<td>
-										<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" <?php echo $disable; ?> title="Please choose DOB" style="width:100%;" value="<?php echo $vlQueryInfo['patient_dob']; ?>" />
+										<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" <?php echo $disable; ?> title="Please choose DOB" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" />
 									</td>
 									<td class="labels"><label for="patientARTNo">Clinic ID </label></td>
 									<td>
-										<input type="text" class="form-control" placeholder="Enter Clinic ID" name="patientARTNo" id="patientARTNo" <?php echo $disable; ?> title="Please enter Clinic ID" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+										<input type="text" class="form-control" placeholder="Enter Clinic ID" name="patientARTNo" id="patientARTNo" <?php echo $disable; ?> title="Please enter Clinic ID" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 									</td>
 									<td></td>
 									<td></td>
@@ -521,7 +521,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result <span class="mandatory">*</span></label></td>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input type="text" class="form-control <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "isRequired"; ?>" name="vlResult" id="vlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<input type="text" class="form-control <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "isRequired"; ?>" name="vlResult" id="vlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>">
 										</td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
@@ -615,7 +615,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td class="labels"><label for="finalViralResult">Final Viral Load Result (copies/ml)</label></td>
 										<td>
-											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>">
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 										<td>
@@ -670,7 +670,7 @@ $disable = "disabled = 'disabled'";
 				<div class="box-footer">
 					<input type="hidden" name="revised" id="revised" value="no" />
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-					<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
+					<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
 					<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 				</div>
 				<!-- /.box-footer -->

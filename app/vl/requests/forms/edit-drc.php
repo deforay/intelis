@@ -112,7 +112,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<?php
 									if ($vlQueryInfo['sample_code'] != '') {
 									?>
-										<label for="sampleSuggest" class="text-danger">Cet exemple a déjà été importé avec l'ID échantillon VLSM <?php echo $vlQueryInfo['sample_code']; ?></label>
+										<label for="sampleSuggest" class="text-danger">Cet exemple a déjà été importé avec l'ID échantillon VLSM <?= htmlspecialchars($vlQueryInfo['sample_code']); ?></label>
 									<?php
 									} else {
 									?>
@@ -244,15 +244,15 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?php echo $vlQueryInfo['patient_dob']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:6%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19%;">
-											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?php echo $vlQueryInfo['patient_age_in_years']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?php echo $vlQueryInfo['patient_age_in_months']; ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;text-align:center;"><label for="sex">Sexe </label></td>
 										<td style="width:15%;">
@@ -269,7 +269,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="artNo">Code du patient <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" value="<?php echo $vlQueryInfo['patient_art_no']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td colspan="2"><label for="isPatientNew">Si S/ARV </label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
@@ -540,7 +540,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 											<td class="vlResult"><label for="vlResult">Résultat</label></td>
 											<td class="vlResult resultInputContainer">
-												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?php echo $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults">
 													<!--<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
 													<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
@@ -550,7 +550,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 											<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td class="vlLog">
-												<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?php echo $vlQueryInfo['result_value_log']; ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+												<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
@@ -605,9 +605,9 @@ $sampleSuggestionDisplay = 'display:none;';
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" />
-						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?php echo $vlQueryInfo['vl_sample_id']; ?>" />
-						<input type="hidden" name="oldStatus" value="<?php echo $vlQueryInfo['result_status']; ?>" />
+						<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
+						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
