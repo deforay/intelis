@@ -108,6 +108,11 @@ foreach ($srcResults as $list) {
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
+					<table class="table" aria-hidden="true">
+						<tr>
+							<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
+						</tr>
+					</table>
 						<table id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>

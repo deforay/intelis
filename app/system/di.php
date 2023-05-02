@@ -7,6 +7,7 @@ use App\Services\ApiService;
 use App\Services\EidService;
 use App\Helpers\ResultsHelper;
 use App\Services\UsersService;
+use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -82,6 +83,8 @@ $builder->addDefinitions([
     TbService::class => DI\create(TbService::class)
         ->constructor(DI\get('db')),
     UsersService::class => DI\create(UsersService::class)
+        ->constructor(DI\get('db'), DI\get('applicationConfig')),
+    GenericTestsService::class => DI\create(GenericTestsService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig')),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
         ->constructor(DI\get('db')),

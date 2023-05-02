@@ -5,6 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
 use App\Services\UsersService;
+use App\Services\GenericTestsService;
 
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
@@ -17,6 +18,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

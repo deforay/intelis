@@ -4,7 +4,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
-use App\Services\VlService;
+use App\Services\GenericTestsService;
 
 
 $title = "VL | Add New Request";
@@ -17,7 +17,7 @@ $labFieldDisabled = '';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$vlService = ContainerRegistry::get(VlService::class);
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -30,7 +30,7 @@ $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);
-$reasonForFailure = $vlService->getReasonForFailure();
+$reasonForFailure = $genericTestsService->getReasonForFailure();
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
