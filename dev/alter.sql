@@ -3917,3 +3917,6 @@ CREATE TABLE `generic_tests` (
 
 -- Amit 1-May-2023 version 5.1.4
 UPDATE `system_config` SET `value` = '5.1.4' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 02-May-2023
+ALTER TABLE `form_vl` CHANGE `result_value_hiv_detection` `result_value_hiv_detection` VARCHAR(256) NULL DEFAULT NULL;
