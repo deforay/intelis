@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
-$tableName = "generic_tests";
+$tableName = "form_generic";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";

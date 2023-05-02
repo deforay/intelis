@@ -272,7 +272,7 @@ class VlService
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         }
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM generic_tests WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM form_generic WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         // if ($checkResult !== null) {
         //     $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
@@ -786,7 +786,7 @@ class VlService
                 $vlData['result_status'] = 6;
             }
 
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM generic_tests ";
+            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_generic ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -831,12 +831,12 @@ class VlService
                 return $this->insertSampleCodeGenericTest($params);
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("generic_tests", $vlData);
+                    $id = $this->db->insert("form_generic", $vlData);
                     $params['vlSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $vlData['unique_id'] = $general->generateUUID();
-                        $id = $this->db->insert("generic_tests", $vlData);
+                        $id = $this->db->insert("form_generic", $vlData);
                         error_log($this->db->getLastError());
                     }
                 }
