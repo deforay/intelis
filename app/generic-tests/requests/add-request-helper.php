@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
-$tableName = "generic_tests";
+$tableName = "form_generic";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
@@ -502,7 +502,7 @@ try {
     } else {
         //check existing sample code
 
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM generic_tests where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
+        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_generic where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
         if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
             if ($existResult[0][$sampleCodeKey] != '') {

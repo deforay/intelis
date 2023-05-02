@@ -17,7 +17,7 @@ $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 
-$tableName = "generic_tests";
+$tableName = "form_generic";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -124,7 +124,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     fs.funding_source_name,
                     i.i_partner_name
                     
-                    FROM generic_tests as vl
+                    FROM form_generic as vl
                     
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id

@@ -615,6 +615,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<a href="/move-samples/move-samples.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Move Samples"); ?></a>
 									</li>
 								<?php } ?>
+								<li class="treeview facility-config-menu">
+										<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Manage Requests"); ?></a>
+									</li>
 							</ul>
 						</li>
 					<?php }

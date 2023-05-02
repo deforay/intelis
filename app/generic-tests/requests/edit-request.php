@@ -62,10 +62,10 @@ $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons WHERE test_reason_status =
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM generic_tests where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
-$vlQuery = "SELECT * FROM generic_tests WHERE vl_sample_id=?";
+$vlQuery = "SELECT * FROM form_generic WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
 //echo "<pre>"; print_r($vlQueryInfo); die;
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
@@ -492,7 +492,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
 											<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-											<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('generic_tests','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
+											<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
 											<input type="hidden" name="sampleCodeCol" value="<?php echo $vlQueryInfo['sample_code']; ?>" style="width:100%;">
 										</div>
 									</div>
@@ -1209,7 +1209,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				data: function(params) {
 					return {
 						fieldName: 'request_clinician_name',
-						tableName: 'generic_tests',
+						tableName: 'form_generic',
 						q: params.term, // search term
 						page: params.page
 					};
@@ -1236,7 +1236,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
 						fieldName: 'request_clinician_name',
-						tableName: 'generic_tests',
+						tableName: 'form_generic',
 						returnField: 'request_clinician_phone_number',
 						limit: 1,
 						q: search,
@@ -1266,7 +1266,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				data: function(params) {
 					return {
 						fieldName: 'vl_focal_person',
-						tableName: 'generic_tests',
+						tableName: 'form_generic',
 						q: params.term, // search term
 						page: params.page
 					};
@@ -1293,7 +1293,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
 						fieldName: 'vl_focal_person',
-						tableName: 'generic_tests',
+						tableName: 'form_generic',
 						returnField: 'vl_focal_person_phone_number',
 						limit: 1,
 						q: search,
