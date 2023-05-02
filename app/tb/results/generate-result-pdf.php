@@ -24,7 +24,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $users */
-$users = ContainerRegistry::get(UsersService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);

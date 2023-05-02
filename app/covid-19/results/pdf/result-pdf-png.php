@@ -150,7 +150,7 @@ if (!empty($requestResult)) {
         $userRes = [];
         if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
             $resultApprovedBy = ($result['approvedBy']);
-            $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
+            $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
         } else {
             $resultApprovedBy  = '';
         }

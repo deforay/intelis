@@ -6,8 +6,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-
-
 require_once(APPLICATION_PATH . '/header.php');
 
 /** @var CommonService $general */
@@ -15,8 +13,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
 $code = $covid19Service->generateCovid19QcCode();
 $testingLabs = $facilitiesService->getTestingLabs("covid19");
 $users = $usersService->getAllUsers(null, null, "drop-down");

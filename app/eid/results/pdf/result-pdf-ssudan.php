@@ -137,7 +137,7 @@ if (!empty($requestResult)) {
         }
         $testedBy = '';
         if (isset($result['tested_by']) && !empty($result['tested_by'])) {
-            $testedByRes = $users->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
+            $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
             }
@@ -165,7 +165,7 @@ if (!empty($requestResult)) {
         $revisedBy = '';
         $revisedByRes = [];
         if (isset($result['revised_by']) && !empty($result['revised_by'])) {
-            $revisedByRes = $users->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+            $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
             if ($revisedByRes) {
                 $revisedBy = $revisedByRes['user_name'];
             }

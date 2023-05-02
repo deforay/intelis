@@ -42,7 +42,7 @@ if (!$sampleCode && !$recencyId && (!$from || !$to)) {
 
 try {
 
-    $sQuery = "SELECT vl.sample_code, 
+    $sQuery = "SELECT vl.sample_code,
                     vl.remote_sample_code,
                     vl.external_sample_code as `recency_id`,
                     vl.sample_collection_date,
@@ -59,12 +59,12 @@ try {
                     testreason.test_reason_name as `reason_for_testing`,
                     rejreason.rejection_reason_name as `rejection_reason`
 
-                    FROM form_vl as vl 
-                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                    LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id 
-                    LEFT JOIN r_vl_sample_type as samptype ON samptype.sample_id=vl.sample_type 
-                    INNER JOIN r_sample_status as sampstatus ON sampstatus.status_id=vl.result_status 
-                    LEFT JOIN r_vl_test_reasons as testreason ON testreason.test_reason_id=vl.reason_for_vl_testing 
+                    FROM form_vl as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id
+                    LEFT JOIN r_vl_sample_type as samptype ON samptype.sample_id=vl.sample_type
+                    INNER JOIN r_sample_status as sampstatus ON sampstatus.status_id=vl.result_status
+                    LEFT JOIN r_vl_test_reasons as testreason ON testreason.test_reason_id=vl.reason_for_vl_testing
                     LEFT JOIN r_vl_sample_rejection_reasons as rejreason ON rejreason.rejection_reason_id=vl.reason_for_sample_rejection
                     
                     WHERE (external_sample_code is not null)";

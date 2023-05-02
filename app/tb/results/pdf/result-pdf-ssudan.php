@@ -5,6 +5,8 @@
 
 use App\Helpers\PdfConcatenateHelper;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 class SouthSudan_PDF extends MYPDF
@@ -76,7 +78,7 @@ class SouthSudan_PDF extends MYPDF
     }
 }
 
-
+$usersService = ContainerRegistry::get(UsersService::class);
 $dateUtils = new DateUtility();
 $tbLamResults = $tbService->getTbResults('lam');
 $tbXPertResults = $tbService->getTbResults('x-pert');
@@ -228,7 +230,7 @@ if (!empty($requestResult)) {
 
         $testedBy = '';
         if (isset($result['tested_by']) && !empty($result['tested_by'])) {
-            $testedByRes = $users->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
+            $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
             }
@@ -252,7 +254,7 @@ if (!empty($requestResult)) {
 
         $userRes = [];
         if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
-            $userRes = $users->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
+            $userRes = $usersService->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
             $resultAuthroizedBy = ($userRes['user_name']);
         } else {
             $resultAuthroizedBy  = '';
@@ -265,7 +267,7 @@ if (!empty($requestResult)) {
 
         $userApprovedRes = [];
         if (isset($result['result_approved_by']) && trim($result['result_approved_by']) != '') {
-            $userApprovedRes = $users->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
+            $userApprovedRes = $usersService->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
             $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
             $resultApprovedBy  = '';

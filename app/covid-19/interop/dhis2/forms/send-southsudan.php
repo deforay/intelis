@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-$users = ContainerRegistry::get(UsersService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -105,9 +105,9 @@ foreach ($formResults as $row) {
     continue;
   }
 
-  $approver = $users->getUserInfo($row['result_approved_by'], 'user_name');
-  $tester = $users->getUserInfo($row['tested_by'], 'user_name');
-  $labTechnician = $users->getUserInfo($row['lab_technician'], 'user_name');
+  $approver = $usersService->getUserInfo($row['result_approved_by'], 'user_name');
+  $tester = $usersService->getUserInfo($row['tested_by'], 'user_name');
+  $labTechnician = $usersService->getUserInfo($row['lab_technician'], 'user_name');
 
 
 

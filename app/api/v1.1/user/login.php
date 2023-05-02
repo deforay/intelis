@@ -50,7 +50,7 @@ try {
                 $password = sha1($input['password'] . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userResult['password']) {
                     $passwordCheck = true;
-                    $newPassword = $users->passwordHash($input['password']);
+                    $newPassword = $usersService->passwordHash($input['password']);
                     $db->where('user_id', $userResult['user_id']);
                     $db->update(
                         'user_details',
@@ -90,7 +90,7 @@ try {
                 // $db = $db->where('user_id', $userResult['user_id']);
                 // $upId = $db->update('user_details', $userData);
 
-                $tokenData = $users->getAuthToken(null, $userResult['user_id']);
+                $tokenData = $usersService->getAuthToken(null, $userResult['user_id']);
 
                 if (!empty($tokenData)) {
                     $data = [];
@@ -104,7 +104,7 @@ try {
                     $data['api_token'] = $tokenData['token'];
                     $data['new_token'] = $tokenData['token_updated'];
                     $data['appMenuName'] = $general->getGlobalConfig('app_menu_name');
-                    $data['access'] = $users->getUserRolePrivileges($userResult['user_id']);
+                    $data['access'] = $usersService->getUserRolePrivileges($userResult['user_id']);
                     // print_r($data);die;
                     $payload = array(
                         'status' => 1,

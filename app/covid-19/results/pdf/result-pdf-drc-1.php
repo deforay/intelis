@@ -112,7 +112,7 @@ if (!class_exists('DRC_PDF')) {
         }
     }
 }
-$users = ContainerRegistry::get(UsersService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 
 // create new PDF document
 $pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -230,7 +230,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
 $userRes = [];
 if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
     $resultApprovedBy = ($result['approvedBy']);
-    $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
+    $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = '';
 }
@@ -370,7 +370,7 @@ if (empty($result['lab_manager'])) {
 }
 $labManager = "";
 if (!empty($result['lab_manager'])) {
-    $labManagerRes = $users->getUserInfo($result['lab_manager'], 'user_name');
+    $labManagerRes = $usersService->getUserInfo($result['lab_manager'], 'user_name');
     if ($labManagerRes) {
         $labManager = $labManagerRes['user_name'];
     }

@@ -5,7 +5,12 @@
 
 use App\Helpers\PdfConcatenateHelper;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $resultFilename = '';
 
@@ -23,14 +28,14 @@ if (!empty($requestResult)) {
 
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
-               $testedByRes = $users->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
+               $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
                if ($testedByRes) {
                     $testedBy = $testedByRes['user_name'];
                }
           }
           $reviewedBy = '';
           if (isset($result['result_reviewed_by']) && !empty($result['result_reviewed_by'])) {
-               $reviewedByRes = $users->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
+               $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
                     $reviewedBy = $reviewedByRes['user_name'];
                }
@@ -39,7 +44,7 @@ if (!empty($requestResult)) {
           $revisedBy = '';
           $revisedByRes = [];
           if (isset($result['revised_by']) && !empty($result['revised_by'])) {
-               $revisedByRes = $users->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+               $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
                if ($revisedByRes) {
                     $revisedBy = $revisedByRes['user_name'];
                }
@@ -59,7 +64,7 @@ if (!empty($requestResult)) {
           $resultApprovedBy = '';
           $userSignaturePath = null;
           if (isset($result['result_approved_by']) && !empty($result['result_approved_by'])) {
-               $resultApprovedByRes = $users->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
+               $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
                if ($resultApprovedByRes) {
                     $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
                }
@@ -70,7 +75,7 @@ if (!empty($requestResult)) {
 
           if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
                $resultApprovedBy = ($result['approvedBy']);
-               $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
+               $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
           } else {
                $resultApprovedBy  = '';
           }

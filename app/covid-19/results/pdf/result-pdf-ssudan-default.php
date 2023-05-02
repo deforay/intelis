@@ -157,7 +157,7 @@ if (isset($result['result_printed_datetime']) && trim($result['result_printed_da
 
 $testedBy = '';
 if (isset($result['tested_by']) && !empty($result['tested_by'])) {
-    $testedByRes = $users->getUserInfo($result['tested_by'], 'user_name');
+    $testedByRes = $usersService->getUserInfo($result['tested_by'], 'user_name');
     if ($testedByRes) {
         $testedBy = $testedByRes['user_name'];
     }
@@ -182,7 +182,7 @@ if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') 
 $userRes = [];
 if (isset($result['authorized_by']) && trim($result['authorized_by']) != '') {
     $resultApprovedBy = ($result['authorized_by']);
-    $userRes = $users->getUserInfo($result['result_approved_by'], 'user_signature');
+    $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = '';
 }

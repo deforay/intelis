@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$users = ContainerRegistry::get(UsersService::class);
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $arr = $general->getGlobalConfig();
 

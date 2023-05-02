@@ -73,7 +73,7 @@ $eidResults = $eidService->getEidResults();
 
 $resultFilename = '';
 
-$userRes = $users->getUserInfo($_SESSION['userId'], 'user_signature');
+$userRes = $usersService->getUserInfo($_SESSION['userId'], 'user_signature');
 $userSignaturePath = null;
 
 if (!empty($userRes['user_signature'])) {
