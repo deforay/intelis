@@ -41,6 +41,7 @@ $userInfo = [];
 foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
 }
+
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -60,20 +61,17 @@ $sResult = $db->query($sQuery);
 //get vl test reason list
 $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons WHERE test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
-
+//echo 'hhh'; die;
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
-//echo "<pre>"; print_r($vlQueryInfo); die;
+
 if (isset($vlQueryInfo['patient_dob']) && trim($vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
 	$vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob']);
 } else {
 	$vlQueryInfo['patient_dob'] = '';
 }
-
 if (isset($vlQueryInfo['sample_collection_date']) && trim($vlQueryInfo['sample_collection_date']) != '' && $vlQueryInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $vlQueryInfo['sample_collection_date'];
 	$expStr = explode(" ", $vlQueryInfo['sample_collection_date']);
@@ -126,11 +124,11 @@ if (isset($vlQueryInfo['sample_received_at_hub_datetime']) && trim($vlQueryInfo[
 }
 
 
-if (isset($vlQueryInfo['sample_received_at_vl_lab_datetime']) && trim($vlQueryInfo['sample_received_at_vl_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $vlQueryInfo['sample_received_at_vl_lab_datetime']);
-	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($vlQueryInfo['sample_received_at_testing_lab_datetime']) && trim($vlQueryInfo['sample_received_at_testing_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['sample_received_at_testing_lab_datetime']);
+	$vlQueryInfo['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = '';
+	$vlQueryInfo['sample_received_at_testing_lab_datetime'] = '';
 }
 
 
@@ -147,28 +145,14 @@ if (isset($vlQueryInfo['result_dispatched_datetime']) && trim($vlQueryInfo['resu
 } else {
 	$vlQueryInfo['result_dispatched_datetime'] = '';
 }
-if (isset($vlQueryInfo['last_viral_load_date']) && trim($vlQueryInfo['last_viral_load_date']) != '' && $vlQueryInfo['last_viral_load_date'] != '0000-00-00') {
-	$vlQueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['last_viral_load_date']);
-} else {
-	$vlQueryInfo['last_viral_load_date'] = '';
-}
+
 //Set Date of demand
 if (isset($vlQueryInfo['date_test_ordered_by_physician']) && trim($vlQueryInfo['date_test_ordered_by_physician']) != '' && $vlQueryInfo['date_test_ordered_by_physician'] != '0000-00-00') {
 	$vlQueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician']);
 } else {
 	$vlQueryInfo['date_test_ordered_by_physician'] = '';
 }
-//Has patient changed regimen section
-if (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") {
-	if (isset($vlQueryInfo['regimen_change_date']) && trim($vlQueryInfo['regimen_change_date']) != '' && $vlQueryInfo['regimen_change_date'] != '0000-00-00') {
-		$vlQueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['regimen_change_date']);
-	} else {
-		$vlQueryInfo['regimen_change_date'] = '';
-	}
-} else {
-	$vlQueryInfo['reason_for_regimen_change'] = '';
-	$vlQueryInfo['regimen_change_date'] = '';
-}
+
 //Set Dispatched From Clinic To Lab Date
 if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
@@ -607,7 +591,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_id']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -619,7 +603,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="ageInYears">If DOB unknown, Age in Years </label>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -758,17 +742,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div> -->
 												<div class="col-md-4">
-													<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
+													<label for="vlFocalPerson" class="col-lg-5 control-label"> Focal Person </label>
 													<div class="col-lg-7">
-														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter VL Focal Person">
-															<option value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?>" selected='selected'> <?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?></option>
+														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter Focal Person">
+															<option value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?>" selected='selected'> <?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?></option>
 														</select>
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
+													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label"> Focal Person Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
 											</div>
@@ -782,7 +766,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
+														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_testing_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -795,12 +779,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory result-span">*</span></label>
+													<label for="testingPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
 														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
-																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
@@ -1265,7 +1249,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				delay: 250,
 				data: function(params) {
 					return {
-						fieldName: 'vl_focal_person',
+						fieldName: 'testing_lab_focal_person',
 						tableName: 'form_generic',
 						q: params.term, // search term
 						page: params.page
@@ -1292,9 +1276,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-						fieldName: 'vl_focal_person',
+						fieldName: 'testing_lab_focal_person',
 						tableName: 'form_generic',
-						returnField: 'vl_focal_person_phone_number',
+						returnField: 'testing_lab_focal_person_phone_number',
 						limit: 1,
 						q: search,
 					},

@@ -53,8 +53,9 @@ $sResult = $general->fetchDataFromTable('r_vl_sample_type', $condition);
 $testReason = $general->fetchDataFromTable('r_vl_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
+/*
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
 ?>
 <style>
     .ui_tpicker_second_label {
@@ -227,7 +228,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-4 col-md-4">
@@ -351,7 +352,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">Patient ID <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_generic','patient_art_no',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -846,7 +847,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     data: function(params) {
                          return {
                               fieldName: 'request_clinician_name',
-                              tableName: 'form_vl',
+                              tableName: 'form_generic',
                               q: params.term, // search term
                               page: params.page
                          };
@@ -873,7 +874,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if ($.trim(search) != '') {
                     $.get("/includes/get-data-list.php", {
                               fieldName: 'request_clinician_name',
-                              tableName: 'form_vl',
+                              tableName: 'form_generic',
                               returnField: 'request_clinician_phone_number',
                               limit: 1,
                               q: search,
@@ -902,8 +903,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     delay: 250,
                     data: function(params) {
                          return {
-                              fieldName: 'vl_focal_person',
-                              tableName: 'form_vl',
+                              fieldName: 'testing_lab_focal_person',
+                              tableName: 'form_generic',
                               q: params.term, // search term
                               page: params.page
                          };
@@ -929,9 +930,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                var search = $(this).val();
                if ($.trim(search) != '') {
                     $.get("/includes/get-data-list.php", {
-                              fieldName: 'vl_focal_person',
-                              tableName: 'form_vl',
-                              returnField: 'vl_focal_person_phone_number',
+                              fieldName: 'testing_lab_focal_person',
+                              tableName: 'form_generic',
+                              returnField: 'testing_lab_focal_person_phone_number',
                               limit: 1,
                               q: search,
                          },
@@ -1028,7 +1029,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $("#sampleCodeInText").html(sCodeKey.sampleCode);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
-                         checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
+                         checkSampleNameValidation('form_generic', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
                     });
           }
      }

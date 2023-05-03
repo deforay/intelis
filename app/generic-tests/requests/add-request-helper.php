@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
-$tableName = "form_generic";
+$tableName = "form_generic"; 
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
