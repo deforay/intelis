@@ -616,8 +616,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									</li>
 								<?php } ?>
 								<li class="treeview facility-config-menu">
-										<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Manage Requests"); ?></a>
-									</li>
+									<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Manage Requests"); ?></a>
+								</li>
 							</ul>
 						</li>
 					<?php }
@@ -1162,5 +1162,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 		<!-- content-wrapper -->
 		<div id="dDiv" class="dialog">
 			<div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-			<iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">some problem</iframe>
+			<iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
+				<?= _("Unable to load this page or resource"); ?>
+			</iframe>
 		</div>

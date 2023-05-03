@@ -350,7 +350,7 @@ class UsersService
                 /** @var CommonService $general */
                 $general = ContainerRegistry::get(CommonService::class);
 
-                $data['api_token'] = base64_encode($result['user_id'] . "-" . $general->generateToken(3));
+                $data['api_token'] = base64_encode($general->generateUUID() . "-" . $general->generateToken(8));
                 $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
 
                 $this->db = $this->db->where('user_id', $result['user_id']);

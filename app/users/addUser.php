@@ -111,17 +111,13 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
                               <div class="row show-token" style="display: none;">
-                                   <div class="col-md-6">
+                                   <div class="col-md-12 col-lg-12">
                                         <div class="form-group">
-                                             <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
-                                             <div class="col-lg-7">
+                                             <label for="authToken" class="col-lg-2 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
+                                             <div class="col-lg-9">
                                                   <input type="text" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token'); ?>" title="<?php echo _('Please Generate the auth token'); ?>" readonly>
+                                                  <a style="display:block; margin-top:1em; width:30%;" href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Another Token"); ?></a>
                                              </div>
-                                        </div>
-                                   </div>
-                                   <div class="col-md-6">
-                                        <div class="form-group">
-                                             <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Another Token"); ?></a>
                                         </div>
                                    </div>
                               </div>
@@ -470,7 +466,7 @@ $ftResult = $db->rawQuery($fQuery);
 
      function generateToken(id) {
           $.post("/includes/generate-auth-token.php", {
-                    size: 32
+                    size: 4
                },
                function(data) {
                     if (data != "") {

@@ -5,8 +5,8 @@ FROM php:7.4-apache AS php-apache
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libonig-dev libpng-dev libicu-dev libcurl3-openssl-dev \
-    git zip unzip rsync vim openssl curl cron acl gettext && \
+    libonig-dev libpng-dev libicu-dev libcurl4-openssl-dev \
+    git zip unzip rsync vim openssl curl acl gettext cron && \
     rm -rf /var/lib/apt/lists/*
 
 # Install required PHP extensions
@@ -25,11 +25,11 @@ COPY ./docker/php-apache/custom-php.ini /usr/local/etc/php/conf.d/custom-php.ini
 # Copy Apache configuration
 COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/000-default.conf
 
+# Second stage: web server
+FROM php-apache AS php-web
+
 # Set working directory
 WORKDIR /var/www/html
-
-# Second stage: Final image
-FROM php-apache
 
 # Copy the application code to the container
 COPY . /var/www/html/
@@ -40,14 +40,24 @@ RUN composer install --no-dev --optimize-autoloader --no-progress
 # Fix permissions
 RUN setfacl -R -m u:www-data:rwx /var/www/html;
 
-# Configure the cron job
-COPY ./docker/php-apache/crontab /etc/cron.d/crontab
-RUN chmod 0644 /etc/cron.d/crontab && \
-    /usr/bin/crontab /etc/cron.d/crontab
-
-# Use custom entrypoint script
+# Use custom entrypoint script for the web server
 COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+
+# Third stage: PHP with CLI for Cron
+FROM php-apache AS php-cron
+
+# Configure the cron job
+COPY ./docker/php-apache/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab && \
+    crontab /etc/cron.d/crontab
+
+# Use custom entrypoint script
+COPY ./docker/cron-entrypoint.sh /usr/local/bin/cron-entrypoint.sh
+RUN chmod +x /usr/local/bin/cron-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/cron-entrypoint.sh"]
+CMD ["cron", "-f"]

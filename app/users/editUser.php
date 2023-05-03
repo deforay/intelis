@@ -9,7 +9,12 @@ $title = _("Edit User");
 require_once(APPLICATION_PATH . '/header.php');
 $id = base64_decode($_GET['id']);
 
-$userInfo = $db->rawQueryOne('SELECT ud.*, r.role_id, r.role_name from user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id where user_id= ?', array($id));
+$userInfo = $db->rawQueryOne(
+     'SELECT ud.*, r.role_id, r.role_name, r.role_code
+FROM user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id
+WHERE user_id= ?',
+     array($id)
+);
 
 
 $interfaceUsers = "";
@@ -20,7 +25,9 @@ if (!empty($userInfo['interface_user_name'])) {
 $query = "SELECT * FROM roles WHERE status='active'";
 $result = $db->rawQuery($query);
 
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
 $activeFacilities = [];
 $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -132,7 +139,6 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <select class="form-control isRequired" name='role' id='role' title="<?php echo _('Please select the role'); ?>">
                                                        <option value=""><?php echo _("--Select--"); ?></option>
                                                        <?php foreach ($result as $row) {
-                                                            $roleCode = (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? $row['role_code'] : ""
                                                        ?>
                                                             <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo (($row['role_name'])); ?></option>
                                                        <?php } ?>
@@ -142,18 +148,15 @@ $ftResult = $db->rawQuery($fQuery);
                                    </div>
                               </div>
 
-                              <div class="row show-token" style="display: <?php echo ($roleCode != "" && $roleCode == "API") ? 'block' : 'none'; ?>;">
-                                   <div class="col-md-6">
+
+                              <div class="row show-token" style="display: <?php echo (!empty($userInfo['api_token']) || 'API' == ($userInfo['role_code'])) ? 'block' : 'none'; ?>;">
+                                   <div class="col-md-12 col-lg-12">
                                         <div class="form-group">
-                                             <label for="authToken" class="col-lg-4 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
-                                             <div class="col-lg-7">
+                                             <label for="authToken" class="col-lg-2 control-label"><?php echo _("AuthToken"); ?> <span class="mandatory">*</span></label>
+                                             <div class="col-lg-9">
                                                   <input type="text" value="<?php echo $userInfo['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _('Auth Token'); ?>" title="<?php echo _('Please Generate the auth token'); ?>" readonly>
+                                                  <a style="display:block; margin-top:1em; width:30%;" href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Another Token"); ?></a>
                                              </div>
-                                        </div>
-                                   </div>
-                                   <div class="col-md-6">
-                                        <div class="form-group">
-                                             <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _("Generate Token"); ?></a>
                                         </div>
                                    </div>
                               </div>
@@ -537,7 +540,8 @@ $ftResult = $db->rawQuery($fQuery);
 
      function generateToken(id) {
           $.post("/includes/generate-auth-token.php", {
-                    size: 32
+                    size: 8,
+                    u: '<?= $id; ?>'
                },
                function(data) {
                     if (data != "") {
@@ -619,4 +623,3 @@ $ftResult = $db->rawQuery($fQuery);
 </script>
 <?php
 include APPLICATION_PATH . '/footer.php';
-?>
