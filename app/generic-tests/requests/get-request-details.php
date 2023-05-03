@@ -18,15 +18,15 @@ $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 
 $tableName = "form_generic";
-$primaryKey = "vl_sample_id";
+$primaryKey = "sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } elseif ($_SESSION['instanceType'] ==  'standalone') {
@@ -177,21 +177,21 @@ foreach ($rResult as $aRow) {
      $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
-     $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
-     $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-     $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+     $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
+     $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
+     $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
 
 
      $row = [];
 
-     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="toggleTest(this);"  />';
+     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = $aRow['patient_art_no'];
+     $row[] = $aRow['patient_id'];
      $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
      $row[] = ($aRow['lab_name']);
      $row[] = ($aRow['facility_name']);
@@ -202,11 +202,11 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
 
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['vl_sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
-     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '\',900,520);"> Result</a>';
+     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
+     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['sample_id']) . '\',900,520);"> Result</a>';
 
      //if ($editRequest) {
-          $edit = '<a href="edit-request.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+          $edit = '<a href="edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
