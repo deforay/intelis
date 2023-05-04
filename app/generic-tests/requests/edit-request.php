@@ -177,17 +177,17 @@ if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result
 
 
 if ($vlQueryInfo['patient_first_name'] != '') {
-	$patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_art_no']);
+	$patientFirstName = $general->crypto('doNothing', $vlQueryInfo['patient_first_name'], $vlQueryInfo['patient_id']);
 } else {
 	$patientFirstName = '';
 }
 if ($vlQueryInfo['patient_middle_name'] != '') {
-	$patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_art_no']);
+	$patientMiddleName = $general->crypto('doNothing', $vlQueryInfo['patient_middle_name'], $vlQueryInfo['patient_id']);
 } else {
 	$patientMiddleName = '';
 }
 if ($vlQueryInfo['patient_last_name'] != '') {
-	$patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_art_no']);
+	$patientLastName = $general->crypto('doNothing', $vlQueryInfo['patient_last_name'], $vlQueryInfo['patient_id']);
 } else {
 	$patientLastName = '';
 }
@@ -488,16 +488,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										</div>
 									</div>
 
-									<div class="col-xs-4 col-md-4">
-										<div class="form-group">
-											<label for="communitySample">Community Sample</label>
-											<select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
-												<option value=""> -- Select -- </option>
-												<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-												<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
-											</select>
-										</div>
-									</div>
+									
 								</div>
 								<div class="row">
 									<div class="col-xs-4 col-md-4">
@@ -755,29 +746,22 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" onchange="checkSampleReceviedAtHubDate()" />
 													</div>
 												</div>
+											</div>
+											<div class="row">
+												
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_testing_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
 													</div>
 												</div>
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
-													</div>
-												</div>
-
-											</div>
-											<div class="row">
+												
 												<div class="col-md-4">
 													<label for="testingPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
@@ -789,6 +773,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</select>
 													</div>
 												</div>
+											</div>
+											<div class="row">
+
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
@@ -797,6 +784,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
 														</select>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
@@ -827,35 +820,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input value="<?php echo DateUtility::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
-												<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
-													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
-													<div class="col-lg-7">
-														<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
-															<option value="">-- Select --</option>
-															<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
-															<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
-														</select>
-													</div>
-												</div>
+											
 												<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 											</div>
 											<div class="row">
 											<?php } ?>
-											<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-												<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
-												<div class="col-lg-7 resultInputContainer">
-													<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
-													<datalist id="possibleVlResults" title="Please enter viral load result">
-
-													</datalist>
-												</div>
-											</div>
-											<div class="col-md-4 vlLog" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-												<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-												</div>
-											</div>
+										
 											<?php if (count($reasonForFailure) > 0) { ?>
 												<div class="col-md-4 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure </label>
@@ -1018,8 +988,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 
 		/** Edit south sudan */
-		hivDetectionChange();
-		//getFacilities(document.getElementById("district"));
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1153,7 +1121,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 		setTimeout(function() {
 			$("#vlResult").trigger('change');
-			$("#hivDetection, #noResult").trigger('change');
+			$("#noResult").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and fName changes will do
 			$("#sampleCollectionDate").trigger('change');
@@ -1297,11 +1265,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 					$('.reasonForFailure').show();
 					$('#reasonForFailure').addClass('isRequired');
 				}
-				$('#vlLog, .hivDetection').attr('readonly', true);
 			} else {
 				$('.reasonForFailure').hide();
 				$('#reasonForFailure').removeClass('isRequired');
-				$('#vlLog, .hivDetection').attr('readonly', false);
 			}
 		});
 
@@ -1615,24 +1581,20 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$('.vlResult').css('display', 'block');
-			$('.vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
-			$("#hivDetection, #noResult").trigger('change');
+			$("#noResult").trigger('change');
 		}
 	});
 	$("#noResult").on("change", function() {
 
-		hivDetectionChange();
-
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
-			$('.vlResult, .hivDetection').css('display', 'none');
-			$('.vlLog').css('display', 'none');
-			$("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
+			$('.vlResult').css('display', 'none');
+			$("#sampleTestingDateAtLab, #vlResult").val("");
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
@@ -1651,7 +1613,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
-			$('.vlResult,.vlLog').css('display', 'block');
+			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
@@ -1660,13 +1622,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOn').addClass('isRequired');
-			//$(".hivDetection").trigger("change");
 		} else {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").removeClass("isRequired");
 			$(".result-optional").removeClass("isRequired");
 			$(".result-span").show();
-			$('.vlResult,.vlLog').css('display', 'block');
+			$('.vlResult').css('display', 'block');
 			$('.rejectionReason').hide();
 			$(".result-span").hide();
 			$(".review-approve-span").hide();
@@ -1677,68 +1638,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
 			$('#approvedOn').removeClass('isRequired');
-			//$(".hivDetection").trigger("change");
 		}
 	});
 
-	$('#hivDetection').on("change", function() {
-		if (this.value == null || this.value == '' || this.value == undefined) {
-			return false;
-		} else if (this.value === 'HIV-1 Not Detected') {
-			$("#noResult").val("no");
-			$('#vlResult').attr('disabled', false);
-			$('#vlLog').attr('disabled', false);
-			$("#vlResult,#vlLog").val('');
-			$(".vlResult, .vlLog").hide();
-			$("#reasonForFailure").removeClass('isRequired');
-			$('#vlResult').removeClass('isRequired');
-		} else if (this.value === 'HIV-1 Detected') {
-			$("#noResult").val("no");
-			$(".vlResult, .vlLog").show();
-			$("#noResult").trigger("change");
-			$('#vlResult').addClass('isRequired');
-		}
-	});
 
 	$('#testingPlatform').on("change", function() {
-		$(".vlResult, .vlLog").show();
+		$(".vlResult").show();
 		//$('#vlResult, #noResult').addClass('isRequired');
 		$("#noResult").val("");
 		//$("#noResult").trigger("change");
-		hivDetectionChange();
 	});
 
-	function hivDetectionChange() {
-
-		var text = $('#testingPlatform').val();
-		if (!text) {
-			$("#vlResult").attr("disabled", true);
-			return;
-		}
-		var str1 = text.split("##");
-		var str = str1[0];
-		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
-			$('.hivDetection').prop('disabled', false);
-			$('.hivDetection').show();
-		} else {
-			$('.hivDetection').hide();
-			$("#hivDetection").val("");
-		}
-
-		//Get VL results by platform id
-		var platformId = str1[3];
-		$("#possibleVlResults").html('');
-		$.post("/vl/requests/getVlResults.php", {
-				instrumentId: platformId,
-			},
-			function(data) {
-				// alert(data);
-				if (data != "") {
-					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
-				}
-			});
-	}
 
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();
@@ -1782,28 +1692,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		// }
 	}
 
-	function calculateLogValue(obj) {
-		if (obj.id == "vlResult") {
-			absValue = $("#vlResult").val();
-			absValue = Number.parseFloat(absValue).toFixed();
-			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-				//$("#vlResult").val(absValue);
-				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
-			} else {
-				$("#vlLog").val('');
-			}
-		}
-		if (obj.id == "vlLog") {
-			logValue = $("#vlLog").val();
-			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
-				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity' && !isNaN(absVal)) {
-					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
-				}
-			} else {
-				$("#vlResult").val('');
-			}
-		}
-	}
+	
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

@@ -292,7 +292,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<li class="user-footer <?php echo $alignRight; ?>">
 									<a href="/login/logout.php"><?php echo _("Sign out"); ?></a>
 								</li>
-
 							</ul>
 						</li>
 					</ul>
@@ -619,12 +618,51 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<a href="/move-samples/move-samples.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Move Samples"); ?></a>
 									</li>
 								<?php } ?>
-								<li class="treeview facility-config-menu">
-										<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Manage Requests"); ?></a>
-									</li>
+								
 							</ul>
 						</li>
 					<?php }
+					if (isset($applicationConfig['modules']['genericTests']) && $applicationConfig['modules']['genericTests'] === true ) { ?>
+					<li class="header"><?php echo _("LAB TESTS"); ?></li>
+					<li class="treeview request">
+								<a href="#">
+									<span class="fa-solid fa-pen-to-square"></span>
+									<span><?php echo _("Request Management"); ?></span>
+									<span class="pull-right-container">
+										<span class="fa-solid fa-angle-left pull-right"></span>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php
+									if (isset($_SESSION['privileges']) && in_array("vlRequest.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu vlRequestMenu">
+											<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu addVlRequestMenu">
+											<a href="/generic-tests/requests/add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
+										<li class="allMenu addSamplesFromManifestMenu">
+											<a href="/generic-tests/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("batchcode.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu batchCodeMenu">
+											<a href="/generic-tests/batch/batchcode.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
+										</li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
+										<li class="allMenu specimenReferralManifestListVLMenu">
+											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span> VL <?php echo _("Specimen Manifest"); ?></a>
+										</li>
+									<?php }
+									?>
+								</ul>
+							</li>
+					<?php } 
 					if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) { ?>
 						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>
 						<?php if ($vlRequestMenuAccess === true) { ?>

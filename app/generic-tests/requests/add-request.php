@@ -7,7 +7,7 @@ use App\Services\UsersService;
 use App\Services\GenericTestsService;
 
 
-$title = "VL | Add New Request";
+$title = " Add New Test";
 
 require_once(APPLICATION_PATH . '/header.php');
 
@@ -239,16 +239,7 @@ $sFormat = '';
                                                   </div>
                                              </div>
 
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="communitySample">Community Sample</label>
-                                                       <select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
-                                                            <option value="yes">Yes</option>
-                                                            <option value="no">No</option>
-                                                       </select>
-                                                  </div>
-                                             </div>
+
                                              <!-- BARCODESTUFF START -->
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-4 col-md-4 pull-right">
@@ -352,7 +343,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">Patient ID <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_generic','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -503,15 +494,15 @@ $sFormat = '';
                                                                       </div>
                                                                  </div> -->
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label labels">VL Focal Person </label>
+                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label labels"> Focal Person </label>
                                                                       <div class="col-lg-7">
-                                                                           <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name"></select>
+                                                                           <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="Focal Person" title="Please enter focal person name"></select>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels">VL Focal Person Phone Number</label>
+                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"> Focal Person Phone Number</label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
+                                                                           <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" />
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -538,9 +529,9 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="mandatory result-span">*</span></label>
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -586,33 +577,10 @@ $sFormat = '';
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 hivDetection" style="display: none;">
-                                                                      <label for="hivDetection" class="col-lg-5 control-label labels">HIV Detection </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
-                                                                                <option value="">-- Select --</option>
-                                                                                <option value="HIV-1 Detected">HIV-1 Detected</option>
-                                                                                <option value="HIV-1 Not Detected">HIV-1 Not Detected</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
+                                                             
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
-                                                                      <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
-                                                                           <datalist id="possibleVlResults">
-
-                                                                           </datalist>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="vlLog col-md-4">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" style="width:100%;" onchange="calculateLogValue(this);" />
-                                                                      </div>
-                                                                 </div>
+                                                                
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-4" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
@@ -747,7 +715,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
-        
+        getSampleTypeList(1);
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1091,7 +1059,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $('.vlResult').css('display', 'block');
-               $('.vlLog').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionDate').removeClass('isRequired');
@@ -1101,13 +1068,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
      $("#noResult").on("change", function() {
 
-          hivDetectionChange();
 
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
-               $('.vlResult, .hivDetection').css('display', 'none');
-               $('.vlLog').css('display', 'none');
-               $("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
+               $('.vlResult').css('display', 'none');
+               $("#sampleTestingDateAtLab, #vlResult").val("");
                $(".result-fields").val("");
                $(".result-fields").attr("disabled", true);
                $(".result-fields").removeClass("isRequired");
@@ -1126,7 +1091,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".result-fields").addClass("isRequired");
                $(".result-span").show();
                $(".review-approve-span").show();
-               $('.vlResult,.vlLog').css('display', 'block');
+               $('.vlResult').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
                $('#rejectionDate').removeClass('isRequired');
@@ -1135,13 +1100,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').addClass('isRequired');
                $('#approvedBy').addClass('isRequired');
                $('#approvedOn').addClass('isRequired');
-               //$(".hivDetection").trigger("change");
           } else {
                $(".result-fields").attr("disabled", false);
                $(".result-fields").removeClass("isRequired");
                $(".result-optional").removeClass("isRequired");
                $(".result-span").show();
-               $('.vlResult,.vlLog').css('display', 'block');
+               $('.vlResult').css('display', 'block');
                $('.rejectionReason').hide();
                $(".result-span").hide();
                $(".review-approve-span").hide();
@@ -1152,28 +1116,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#reviewedOn').removeClass('isRequired');
                $('#approvedBy').removeClass('isRequired');
                $('#approvedOn').removeClass('isRequired');
-               //$(".hivDetection").trigger("change");
           }
      });
 
-     $('#hivDetection').on("change", function() {
-          if (this.value == null || this.value == '' || this.value == undefined) {
-               return false;
-          } else if (this.value === 'HIV-1 Not Detected') {
-               $("#noResult").val("no");
-               $('#vlResult').attr('disabled', false);
-               $('#vlLog').attr('disabled', false);
-               $("#vlResult,#vlLog").val('');
-               $(".vlResult, .vlLog").hide();
-               $("#reasonForFailure").removeClass('isRequired');
-               $('#vlResult').removeClass('isRequired');
-          } else if (this.value === 'HIV-1 Detected') {
-               $("#noResult").val("no");
-               $(".vlResult, .vlLog").show();
-               $('#vlResult').addClass('isRequired');
-               $("#noResult").trigger("change");
-          }
-     });
 
      $('#vlResult').on('change', function() {
           if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
@@ -1181,11 +1126,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $('.reasonForFailure').show();
                     $('#reasonForFailure').addClass('isRequired');
                }
-               $('#vlLog, .hivDetection').attr('readonly', true);
           } else {
                $('.reasonForFailure').hide();
                $('#reasonForFailure').removeClass('isRequired');
-               $('#vlLog, .hivDetection').attr('readonly', false);
           }
      });
 
@@ -1202,46 +1145,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      $('#testingPlatform').on("change", function() {
-          $(".vlResult, .vlLog").show();
+          $(".vlResult").show();
           //$('#vlResult, #noResult').addClass('isRequired');
           $("#noResult").val("");
           //$("#noResult").trigger("change");
-          hivDetectionChange();
      });
 
-     function hivDetectionChange() {
-
-          var text = $('#testingPlatform').val();
-          if (!text) {
-               $("#vlResult").attr("disabled", true);
-               return;
-          }
-
-          var str1 = text.split("##");
-          var str = str1[0];
-          if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
-               $('.hivDetection').prop('disabled', false);
-               $('.hivDetection').show();
-          } else {
-               $('.hivDetection').hide();
-               $("#hivDetection").val("");
-          }
-
-          //Get VL results by platform id
-          var platformId = str1[3];
-          $("#possibleVlResults").html('');
-          $.post("/vl/requests/getVlResults.php", {
-                    instrumentId: platformId,
-               },
-               function(data) {
-                    // alert(data);
-                    if (data != "") {
-                         $("#possibleVlResults").html(data);
-                         $("#vlResult").attr("disabled", false);
-                    }
-               });
-
-     }
+  
 
      function setSampleDispatchDate() {
           if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
@@ -1375,8 +1285,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#receivesmsNo").prop('checked', true);
                }
           }
-          if ($.trim(patientArray['patient_art_no']) != '') {
-               $("#artNo").val($.trim(patientArray['patient_art_no']));
+          if ($.trim(patientArray['patient_id']) != '') {
+               $("#artNo").val($.trim(patientArray['patient_id']));
           }
 
           if ($.trim(patientArray['treatment_initiated_date']) != '') {
@@ -1401,29 +1311,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      }
 
-     function calculateLogValue(obj) {
-          if (obj.id == "vlResult") {
-               absValue = $("#vlResult").val();
-               absValue = Number.parseFloat(absValue).toFixed();
-               if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-                    //$("#vlResult").val(absValue);
-                    $("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
-               } else {
-                    $("#vlLog").val('');
-               }
-          }
-          if (obj.id == "vlLog") {
-               logValue = $("#vlLog").val();
-               if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
-                    var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-                    if (absVal != 'Infinity' && !isNaN(absVal)) {
-                         $("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
-                    }
-               } else {
-                    $("#vlResult").val('');
-               }
-          }
-     }
 
      function vlResultChange(value) {
           if (value != "") {
@@ -1673,6 +1560,19 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             $("#fName").html("<?php echo $facility ?? ""; ?>");
         }
         $.unblockUI();
+    }
+
+    function getSampleTypeList(testTypeId)
+    {
+          $.post("/includes/get-sample-type.php", {
+                    testTypeId: testTypeId,
+                   // sampleTypeId :1
+                },
+                function(data) {
+                    if (data != "") {
+                        $("#specimenType").html(data);
+                    }
+                });
     }
 
 </script>
