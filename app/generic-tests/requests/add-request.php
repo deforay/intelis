@@ -184,6 +184,8 @@ $aResult = $db->query($aQuery);
 $sKey = '';
 $sFormat = '';
 
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <style>
      .table>tbody>tr>td {
@@ -223,7 +225,20 @@ $sFormat = '';
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
                                    </div>
-                                   <div class="box-body">
+                                   <div class="row">
+                                        <div class="col-xs-4 col-md-4">
+                                             <div class="form-group">
+                                                  <label for="testType">Test Type</label>
+                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+                                                       <option value=""> -- Select -- </option>
+                                                       <?php foreach($testTypeResult as $testType){ ?>
+                                                            <option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+                                                       <?php } ?>
+                                                  </select>
+                                             </div>
+                                        </div>
+                                   </div>
+                                   <div class="box-body requestForm" style="display:none;">
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
@@ -330,9 +345,10 @@ $sFormat = '';
                                              </div>
 
                                         </div>
+                                        <div class="row" id="clinicDynamicForm"></div>
                                    </div>
                               </div>
-                              <div class="box box-primary">
+                              <div class="box box-primary requestForm" style="display:none;">
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Patient Information</h3>&nbsp;&nbsp;&nbsp;
                                         <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter ART Number or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
@@ -405,35 +421,36 @@ $sFormat = '';
                                              </div>
                                         </div>
                                         <div class="row ">
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3" style="display:none;">
-                                                            <div class="form-group">
-                                                                 <label for="">How long has this patient been on treatment ? </label>
-                                                                 <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
-                                                            </div>
-                                                       </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                       </label>
                                                   </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3" style="display:none;">
+                                                  <div class="form-group">
+                                                       <label for="">How long has this patient been on treatment ? </label>
+                                                       <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <div class="row" id="patientDynamicForm"></div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -465,14 +482,11 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
+                                             <div class="row" id="specimenDynamicForm"></div>
                                         </div>
                                         <div class="box box-primary">
-                                             <div class="box-header with-border">
-                                                  <h3 class="box-title">Treatment Information</h3>
-                                             </div>
                                              <div class="box-body">
-                                                  
-                                                                           <optgroup label="<?php echo ($heading['headings']); ?>">
+                                                  <div class="row" id="othersDynamicForm"></div>
                                              </div>
                                            
                                              <?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
@@ -644,6 +658,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
+                                                            <div class="row" id="lapDynamicForm"></div>
                                                        </div>
                                                   </div>
                                              <?php } ?>
@@ -676,7 +691,7 @@ $sFormat = '';
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                             <a href="view-request.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                    </div>
                               </div>
@@ -1533,7 +1548,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         return splitDate[2] + '-' + fMonth + '-' + splitDate[0];
     }
 
-    function getfacilityProvinceDetails(obj) {
+     function getfacilityProvinceDetails(obj) {
         $.blockUI();
         //check facility name`
         var cName = $("#fName").val();
@@ -1560,7 +1575,72 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             $("#fName").html("<?php echo $facility ?? ""; ?>");
         }
         $.unblockUI();
-    }
+     }
+
+     function getTestTypeForm(){
+          var testType = $("#testType").val();
+          if(testType!=""){
+               $(".requestForm").show();
+               $.post("/generic-tests/requests/getTestTypeForm.php", {
+                    testType:testType,
+               },
+               function(data) {
+                    //console.log(data);
+                    data=JSON.parse(data);
+                    if(data.facility.length>0){
+                         $("#clinicDynamicForm").html(data.facility);
+                    }
+                    if(data.patient.length>0){
+                         $("#patientDynamicForm").html(data.patient);
+                    }
+                    if(data.lap.length>0){
+                         $("#lapDynamicForm").html(data.lap);
+                    }
+                    if(data.specimen.length>0){
+                         $("#specimenDynamicForm").html(data.specimen);
+                    }
+                    if(data.others.length>0){
+                         $("#othersDynamicForm").html(data.others);
+                    }
+                    checkNum();
+                    $('.date').datepicker({
+                         changeMonth: true,
+                         changeYear: true,
+                         dateFormat: 'dd-M-yy',
+                         timeFormat: "hh:mm",
+                         maxDate: "Today",
+                         yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                    }).click(function() {
+                         $('.ui-datepicker-calendar').show();
+                    });
+               });
+          }else{
+               $("#clinicDynamicForm").html('');
+               $("#patientDynamicForm").html('');
+               $("#lapDynamicForm").html('');
+               $("#specimenDynamicForm").html('');
+               $("#othersDynamicForm").html('');
+               $(".requestForm").hide();
+          }
+     }
+
+     function checkNum(){
+          jQuery(".checkNum,.forceNumeric").keydown(function (e) {
+          // Allow: backspace, delete, tab, escape, enter and .
+          if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+               // Allow: Ctrl+A
+               (e.keyCode == 65 && e.ctrlKey === true) ||
+               // Allow: home, end, left, right
+               (e.keyCode >= 35 && e.keyCode <= 39)) {
+               // let it happen, don't do anything
+               return;
+          }
+          // Ensure that it is a number and stop the keypress
+          if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+               e.preventDefault();
+          }
+          });
+     }
 
     function getSampleTypeList(testTypeId)
     {

@@ -51,8 +51,6 @@ $builder = new ContainerBuilder();
 // Enable compilation for better performance in production
 if (!empty($systemConfig) && isset($systemConfig['cache_di']) && $systemConfig['cache_di']) {
     $builder->enableCompilation(ROOT_PATH . '/cache');
-    // $builder->writeProxiesToFile(true, ROOT_PATH . '/cache');
-
 }
 
 

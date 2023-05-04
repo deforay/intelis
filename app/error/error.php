@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title><?php echo $shortName . " | " . ((isset($title) && $title != null && $title != "") ? $title : "VLSM"); ?></title>
+  <title><?php echo ($shortName ?? '') . " | " . ((isset($title) && $title != null && $title != "") ? $title : "VLSM"); ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="viewport" content="width=1024">
@@ -40,7 +40,7 @@
 
 </head>
 
-<body class="<?php echo $skin; ?>" id="capture">
+<body class="<?php echo $skin ?? ''; ?>" id="capture">
   <div class="wrapper">
     <div class="content-wrapper" style="margin:0;height:700px !important;">
       <section class="">

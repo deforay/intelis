@@ -6,19 +6,17 @@ use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
-
-
 require_once(APPLICATION_PATH . '/header.php');
 
 $sCode = $labFieldDisabled = '';
-
-
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
@@ -62,8 +60,8 @@ $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons WHERE test_reason_status =
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id= ?";
+$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery, [$arr['vl_form']]);
 
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
@@ -268,19 +266,19 @@ if (!empty($patientFullName)) {
 
 if ($arr['vl_form'] == 1) {
      require('forms/edit-southsudan.php');
-} else if ($arr['vl_form'] == 2) {
+} elseif ($arr['vl_form'] == 2) {
      require('forms/edit-sierraleone.php');
-} else if ($arr['vl_form'] == 3) {
+} elseif ($arr['vl_form'] == 3) {
      require('forms/edit-drc.php');
-} else if ($arr['vl_form'] == 4) {
+} elseif ($arr['vl_form'] == 4) {
      //require('forms/edit-zambia.php');
-} else if ($arr['vl_form'] == 5) {
+} elseif ($arr['vl_form'] == 5) {
      require('forms/edit-png.php');
-} else if ($arr['vl_form'] == 6) {
+} elseif ($arr['vl_form'] == 6) {
      require('forms/edit-who.php');
-} else if ($arr['vl_form'] == 7) {
+} elseif ($arr['vl_form'] == 7) {
      require('forms/edit-rwanda.php');
-} else if ($arr['vl_form'] == 8) {
+} elseif ($arr['vl_form'] == 8) {
      require('forms/edit-angola.php');
 }
 ?>

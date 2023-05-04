@@ -1204,5 +1204,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 		<!-- content-wrapper -->
 		<div id="dDiv" class="dialog">
 			<div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-			<iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">some problem</iframe>
+			<iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
+				<?= _("Unable to load this page or resource"); ?>
+			</iframe>
 		</div>

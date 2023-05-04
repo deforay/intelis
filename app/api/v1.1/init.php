@@ -40,7 +40,7 @@ $auth = $general->getHeader('Authorization');
 $authToken = str_replace("Bearer ", "", $auth);
 $user = $usersService->getUserFromToken($authToken);
 
-$updatedDateTime = (isset($input['latestDateTime']) && $input['latestDateTime'] != "") ? $input['latestDateTime'] : null;
+$updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */
 $statusList = [];
 $tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";

@@ -62,10 +62,21 @@ class CommonService
         return $uuid;
     }
 
-    //This will return a hex token that is twice the specified length
-    public function generateToken($length = 16)
+    //This will return a hex token
+    public function generateToken($length = 32)
     {
-        return bin2hex(random_bytes($length));
+        try {
+            // Ensure $length is always even
+            if ($length % 2 != 0) {
+                $length++;
+            }
+
+            return bin2hex(random_bytes($length / 2));
+        } catch (Exception $e) {
+            // Handle the exception, e.g., log the error or throw an exception
+        }
+
+        return false;
     }
 
     public function removeDirectory($dirname)

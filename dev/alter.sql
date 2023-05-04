@@ -3819,3 +3819,6 @@ UPDATE `system_config` SET `value` = '5.1.4' WHERE `system_config`.`name` = 'sc_
 
 ALTER TABLE `form_generic` ADD `vlsm_country_id` INT NULL DEFAULT NULL AFTER `vlsm_instance_id`;
 ALTER TABLE `form_generic` ADD `community_sample` VARCHAR(255) NULL DEFAULT NULL AFTER `implementing_partner`;
+
+-- ilahir 04-May-2023
+ALTER TABLE `form_generic` ADD `test_type_form` TEXT NULL DEFAULT NULL AFTER `test_type`;
