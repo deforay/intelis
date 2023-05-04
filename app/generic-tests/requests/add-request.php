@@ -730,7 +730,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let provinceName = true;
      let facilityName = true;
      $(document).ready(function() {
-        getSampleTypeList(1);
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -742,7 +741,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
 
-          $("#labId").on('change', function() {
+        /*  $("#labId").on('change', function() {
                if ($("#labId").val() != "") {
                     $.post("/includes/get-sample-type.php", {
                               facilityId: $('#labId').val(),
@@ -754,7 +753,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               }
                          });
                }
-          });
+          });*/
 
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
@@ -1579,6 +1578,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function getTestTypeForm(){
           var testType = $("#testType").val();
+          getSampleTypeList(testType);
           if(testType!=""){
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {

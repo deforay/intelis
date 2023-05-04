@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\General;
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new General();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_symptoms";
 
 /*echo "<pre>";

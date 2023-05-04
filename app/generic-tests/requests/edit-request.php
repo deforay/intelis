@@ -1015,7 +1015,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			}
 		});
 
-		$("#labId").on('change', function() {
+		/*$("#labId").on('change', function() {
 			if ($("#labId").val() != "") {
 				$.post("/includes/get-sample-type.php", {
 						facilityId: $('#labId').val(),
@@ -1028,7 +1028,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 						}
 					});
 			}
-		});
+		});*/
 
 
 
@@ -1707,6 +1707,67 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		// 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
 		// }
 	}
+
+	function getTestTypeForm(){
+          var testType = $("#testType").val();
+          getSampleTypeList(testType);
+          if(testType!=""){
+               $(".requestForm").show();
+               $.post("/generic-tests/requests/getTestTypeForm.php", {
+                    testType:testType,
+               },
+               function(data) {
+                    //console.log(data);
+                    data=JSON.parse(data);
+                    if(data.facility.length>0){
+                         $("#clinicDynamicForm").html(data.facility);
+                    }
+                    if(data.patient.length>0){
+                         $("#patientDynamicForm").html(data.patient);
+                    }
+                    if(data.lap.length>0){
+                         $("#lapDynamicForm").html(data.lap);
+                    }
+                    if(data.specimen.length>0){
+                         $("#specimenDynamicForm").html(data.specimen);
+                    }
+                    if(data.others.length>0){
+                         $("#othersDynamicForm").html(data.others);
+                    }
+                    checkNum();
+                    $('.date').datepicker({
+                         changeMonth: true,
+                         changeYear: true,
+                         dateFormat: 'dd-M-yy',
+                         timeFormat: "hh:mm",
+                         maxDate: "Today",
+                         yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                    }).click(function() {
+                         $('.ui-datepicker-calendar').show();
+                    });
+               });
+          }else{
+               $("#clinicDynamicForm").html('');
+               $("#patientDynamicForm").html('');
+               $("#lapDynamicForm").html('');
+               $("#specimenDynamicForm").html('');
+               $("#othersDynamicForm").html('');
+               $(".requestForm").hide();
+          }
+     }
+
+	function getSampleTypeList(testTypeId)
+    {
+          $.post("/includes/get-sample-type.php", {
+                    testTypeId: testTypeId,
+                    sampleTypeId :'<?php echo $vlQueryInfo['sample_type']; ?>'
+                },
+                function(data) {
+                    if (data != "") {
+                        $("#specimenType").html(data);
+                    }
+                });
+    }
 
 	
 </script>
