@@ -424,7 +424,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 }
 
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 
+$testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -471,7 +474,20 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 							<div class="box-header with-border">
 								<h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
 							</div>
-							<div class="box-body">
+							<div class="row">
+								<div class="col-xs-4 col-md-4">
+										<div class="form-group">
+											<label for="testType">Test Type</label>
+											<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+												<option value=""> -- Select -- </option>
+												<?php foreach($testTypeResult as $testType){ ?>
+													<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] ?></option>
+												<?php } ?>
+											</select>
+										</div>
+								</div>
+							</div>
+							<div class="box-body requestForm" style="display:none;">
 								<div class="row">
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
@@ -580,9 +596,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										</select>
 									</div>
 								</div>
+								<div class="row" id="clinicDynamicForm"></div>
 							</div>
 						</div>
-						<div class="box box-primary">
+						<div class="box box-primary requestForm" style="display:none;">
 							<div class="box-header with-border">
 								<h3 class="box-title">Patient Information</h3>
 							</div>
@@ -682,6 +699,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										</div>
 									</div>
 								</div>
+								<div class="row" id="patientDynamicForm"></div>
 							</div>
 							<div class="box box-primary">
 								<div class="box-header with-border">
@@ -713,17 +731,13 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 										</div>
 									</div>
+									<div class="row" id="specimenDynamicForm"></div>
 								</div>
 								<div class="box box-primary">
-									<div class="box-header with-border">
-										<h3 class="box-title">Treatment Information</h3>
-									</div>
 									<div class="box-body">
-
+										<div class="row" id="othersDynamicForm"></div>
 									</div>
-									<div class="box box-primary">
-
-									</div>
+									
 									<?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
@@ -942,6 +956,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-12"><?php echo $rch; ?></div>
 												</div>
 											<?php } ?>
+											<div class="row" id="lapDynamicForm"></div>
 										</div>
 									<?php } ?>
 								</div>
@@ -954,7 +969,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+								<a href="view-request.php" class="btn btn-default"> Cancel</a>
 							</div>
 				</form>
 			</div>
@@ -970,6 +985,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
+		getTestTypeForm()
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1805,5 +1821,80 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			}
 		}
 	}
+
+	function getTestTypeForm(){
+          var testType = $("#testType").val();
+          if(testType!=""){
+               $(".requestForm").show();
+               $.post("/generic-tests/requests/getTestTypeForm.php", {
+                    testType:testType,
+               },
+               function(data) {
+                    //console.log(data);
+                    data=JSON.parse(data);
+                    if(data.facility.length>0){
+                         $("#clinicDynamicForm").html(data.facility);
+                    }
+                    if(data.patient.length>0){
+                         $("#patientDynamicForm").html(data.patient);
+                    }
+                    if(data.lap.length>0){
+                         $("#lapDynamicForm").html(data.lap);
+                    }
+                    if(data.specimen.length>0){
+                         $("#specimenDynamicForm").html(data.specimen);
+                    }
+                    if(data.others.length>0){
+                         $("#othersDynamicForm").html(data.others);
+                    }
+                    checkNum();
+
+                    $('.date').datepicker({
+                         changeMonth: true,
+                         changeYear: true,
+                         dateFormat: 'dd-M-yy',
+                         timeFormat: "hh:mm",
+                         maxDate: "Today",
+                         yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                    }).click(function() {
+                         $('.ui-datepicker-calendar').show();
+                    });
+                    <?php 
+                    $k=count($testTypeForm['form_field_id']);
+                    for($i=0;$i<$k;$i++){
+                    ?>
+                    if($("#<?php echo $testTypeForm['form_field_id'][$i] ?>").length){
+		               //alert("Div1 exists");
+                         $("#<?php echo $testTypeForm['form_field_id'][$i] ?>").val("<?php echo $testTypeForm['form_field_value'][$i] ?>")
+                    }
+                    <?php } ?>
+               });
+          }else{
+               $("#clinicDynamicForm").html('');
+               $("#patientDynamicForm").html('');
+               $("#lapDynamicForm").html('');
+               $("#specimenDynamicForm").html('');
+               $("#othersDynamicForm").html('');
+               $(".requestForm").hide();
+          }
+    }
+
+    function checkNum(){
+          jQuery(".checkNum,.forceNumeric").keydown(function (e) {
+          // Allow: backspace, delete, tab, escape, enter and .
+          if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+               // Allow: Ctrl+A
+               (e.keyCode == 65 && e.ctrlKey === true) ||
+               // Allow: home, end, left, right
+               (e.keyCode >= 35 && e.keyCode <= 39)) {
+               // let it happen, don't do anything
+               return;
+          }
+          // Ensure that it is a number and stop the keypress
+          if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+               e.preventDefault();
+          }
+          });
+    }
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

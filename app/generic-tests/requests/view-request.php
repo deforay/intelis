@@ -93,7 +93,7 @@ foreach ($srcResults as $list) {
 	<?php if (!$hidesrcofreq) { ?>
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
-			<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Viral Load Test Requests"); ?></h1>
+			<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Laboratory Test Requests"); ?></h1>
 			<ol class="breadcrumb">
 				<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 				<li class="active"><?php echo _("Test Request"); ?></li>

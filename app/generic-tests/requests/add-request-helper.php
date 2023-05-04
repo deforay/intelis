@@ -319,7 +319,9 @@ try {
     }
 
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
-
+    $testTypeForm['form_field_id']=$_POST['testTypeId'];
+    $testTypeForm['form_field_value']=$_POST['testTypeForm'];
+    
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId, 
         'vlsm_country_id'                       => 1,
@@ -398,6 +400,8 @@ try {
         'last_modified_datetime'                => $db->now(),
         'manual_result_entry'                   => 'yes',
         //'vl_result_category'                    => $vl_result_category
+        'test_type'                             => $_POST['testType'],
+        'test_type_form'                        => json_encode($testTypeForm),
     );
 
     if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
