@@ -1505,19 +1505,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             });
     }
 
-    function checkARTRegimenValue() {
-        var artRegimen = $("#artRegimen").val();
-        if (artRegimen == 'other') {
-            $(".newArtRegimen").show();
-            $("#newArtRegimen").addClass("isRequired");
-            $("#newArtRegimen").focus();
-        } else {
-            $(".newArtRegimen").hide();
-            $("#newArtRegimen").removeClass("isRequired");
-            $('#newArtRegimen').val("");
-        }
-    }
-
     function getAge() {
         let dob = $("#dob").val();
         if ($.trim(dob) != '') {
@@ -1646,7 +1633,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     {
           $.post("/includes/get-sample-type.php", {
                     testTypeId: testTypeId,
-                   // sampleTypeId :1
                 },
                 function(data) {
                     if (data != "") {
