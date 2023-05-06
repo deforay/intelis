@@ -7,6 +7,7 @@ use App\Registries\ContainerRegistry;
 use DI\Container;
 use Slim\Factory\AppFactory;
 use App\Middlewares\Api\ApiAuthMiddleware;
+use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
@@ -26,7 +27,7 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 
-// 1. CORS Middleware
+// CORS Middleware
 
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     session_destroy();
@@ -50,14 +51,17 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 }));
 
 
-// 2. Middleware to ensure we always return JSON only
+// Middleware to ensure we always return JSON only
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     $response = $handler->handle($request);
     return $response->withHeader('Content-Type', 'application/json');
 }));
 
-// 3. API Auth Middleware that checks for Bearer token
+// API Auth Middleware that checks for Bearer token
 $middlewarePipe->pipe(ContainerRegistry::get(ApiAuthMiddleware::class));
+
+// Add ApiErrorHandlingMiddleware
+$middlewarePipe->pipe(ContainerRegistry::get(ApiErrorHandlingMiddleware::class));
 
 //API Routes
 $app->any('/api/v1.1/init', function ($request, $response, $args) {

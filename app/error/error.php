@@ -29,10 +29,10 @@
   <style>
     .content-wrapper small {
       font-size: 1.4em !important;
-      color:#555;
+      color: #555;
     }
 
-    .content-wrapper a{
+    .content-wrapper a {
       font-size: 0.9em !important;
       text-decoration: underline;
     }
@@ -60,9 +60,12 @@
               <?= _("An error occurred"); ?>
 
             </h2>
-            <h2 style="color:#555;font-weight:bold;font-size:1.7em;">
-              <?= $httpCode; ?><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?>
-            </h2>
+            <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
+              <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?>
+            </h3>
+            <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
+              <?= _("Error Code") . " : " . $httpCode; ?>
+            </h3>
             <small><?= _("Please contact the System Admin for further support."); ?></small>
             <br>
             <br>

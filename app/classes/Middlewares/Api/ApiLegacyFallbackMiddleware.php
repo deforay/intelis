@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\Api;
 
+use App\Exceptions\SystemException;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,17 +28,28 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
             $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
-            ob_start();
-            require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
-            $output = ob_get_clean();
+            try {
+                ob_start();
+                require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
+                $output = ob_get_clean();
 
-            // Create a new response object
-            $response = new Response();
+                // Create a new response object
+                $response = new Response();
 
-            // Set the output of the legacy PHP code as the response body
-            $response->getBody()->write($output);
+                // Set the output of the legacy PHP code as the response body
+                $response->getBody()->write($output);
+            } catch (SystemException $e) {
+                ob_end_clean(); // Clean the buffer in case of an error
+                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
+            } catch (\Exception $e) {
+                ob_end_clean(); // Clean the buffer in case of an error
+                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
+            } catch (\Throwable $e) {
+                ob_end_clean(); // Clean the buffer in case of an error
+                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
+            }
         }
 
-        return $response->withStatus(200);
+        return $response;
     }
 }
