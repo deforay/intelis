@@ -100,7 +100,8 @@ sudo service apache2 restart;
 Ensuring the right version of PHP is configured :
 
 ```bash
-sudo a2dismod php8.*;
+# Disable all PHP versions
+sudo a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
 sudo a2enmod php7.4;
 sudo service apache2 restart;
 
