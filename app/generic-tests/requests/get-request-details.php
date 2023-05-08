@@ -112,29 +112,32 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-                    vl.*,
-                    s.sample_name,
-                    b.batch_code,
-                    ts.status_name,
-                    f.facility_name,
-                    l.facility_name as lab_name,
-                    f.facility_code,
-                    f.facility_state,
-                    f.facility_district,
-                    fs.funding_source_name,
-                    i.i_partner_name
-                    
-                    FROM form_generic as vl
-                    
-                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                    LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
-                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
-                    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-                    LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
-                    LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
+          vl.*,ty.test_standard_name, 
+          s.sample_name,
+          b.batch_code,
+          ts.status_name,
+          f.facility_name,
+          l.facility_name as lab_name,
+          f.facility_code,
+          f.facility_state,
+          f.facility_district,
+          fs.funding_source_name,
+          i.i_partner_name
+          
+          FROM form_generic as vl
+          
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
+          LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+          LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
+          LEFT JOIN r_test_types as ty ON vl.test_type=ty.test_type_id
+          LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
 
-
+if (isset($_POST['testType']) && $_POST['testType'] != "") {
+     $sQuery = $sQuery . " WHERE vl.test_type like " . $_POST['testType'];
+}
 if (isset($sOrder) && $sOrder != "") {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -186,6 +189,7 @@ foreach ($rResult as $aRow) {
 
      //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
+     $row[] = $aRow['test_standard_name'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }

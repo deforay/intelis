@@ -231,9 +231,6 @@ try {
     }
 
    
-     $testTypeForm['form_field_id']=$_POST['testTypeId'];
-     $testTypeForm['form_field_value']=$_POST['testTypeForm'];
-     
      $vldata = array(
           'vlsm_instance_id'                      => $instanceId, 
           'vlsm_country_id'                       => $_POST['countryFormId'] ?? 1,
@@ -285,7 +282,7 @@ try {
           'last_modified_datetime'                => $db->now(),
           'manual_result_entry'                   => 'yes',
           'test_type'                             => $_POST['testType'],
-          'test_type_form'                        => json_encode($testTypeForm),
+          'test_type_form'                        => json_encode($_POST['dynamicFields']),
       );
 
      

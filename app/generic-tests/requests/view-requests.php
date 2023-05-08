@@ -68,6 +68,9 @@ $srcOfReqList = [];
 foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }
+
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <style>
 	.select2-selection__choice {
@@ -106,6 +109,22 @@ foreach ($srcResults as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:50%;margin-bottom: 0px;">
+						<tr>
+							<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
+							<td>
+								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+									<option value=""> -- Select -- </option>
+									<?php foreach ($testTypeResult as $testType) { ?>
+										<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+									<?php } ?>
+								</select>
+							</td>
+							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span><?php echo _("Reset"); ?></span></button>
+							</td>
+						</tr>
+					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
 					<table class="table" aria-hidden="true">
@@ -118,6 +137,7 @@ foreach ($srcResults as $list) {
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th><?php echo _("Sample Code"); ?></th>
+									<th><?php echo _("Test Type"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th><?php echo _("Remote Sample"); ?> <br />Code</th>
 									<?php } ?>
@@ -306,6 +326,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 						"sClass": "center"
 					},
@@ -367,129 +390,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"sAjaxSource": "get-request-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "batchCode",
-					"value": $("#batchCode").val()
-				});
-				aoData.push({
-					"name": "sampleCollectionDate",
-					"value": $("#sampleCollectionDate").val()
-				});
-				aoData.push({
-					"name": "requestCreatedDatetime",
-					"value": $("#requestCreatedDatetime").val()
-				});
-				aoData.push({
-					"name": "facilityName",
-					"value": $("#facilityName").val()
-				});
-				aoData.push({
-					"name": "sampleType",
-					"value": $("#sampleType").val()
-				});
-				aoData.push({
-					"name": "district",
-					"value": $("#district").val()
-				});
-				aoData.push({
-					"name": "printDate",
-					"value": $("#printDate").val()
-				});
-				aoData.push({
-					"name": "vLoad",
-					"value": $("#vLoad").val()
-				});
-
-				aoData.push({
-					"name": "communitySample",
-					"value": $("#communitySample").val()
-				});
-				aoData.push({
-					"name": "vlLab",
-					"value": $("#vlLab").val()
-				});
-				aoData.push({
-					"name": "gender",
-					"value": $("#gender").val()
-				});
-				aoData.push({
-					"name": "status",
-					"value": $("#status").val()
-				});
-				aoData.push({
-					"name": "showReordSample",
-					"value": $("#showReordSample").val()
-				});
-				aoData.push({
-					"name": "patientPregnant",
-					"value": $("#patientPregnant").val()
-				});
-				aoData.push({
-					"name": "breastFeeding",
-					"value": $("#breastFeeding").val()
-				});
-				aoData.push({
-					"name": "fundingSource",
-					"value": $("#fundingSource").val()
-				});
-				aoData.push({
-					"name": "implementingPartner",
-					"value": $("#implementingPartner").val()
-				});
-				aoData.push({
-					"name": "state",
-					"value": $("#state").val()
-				});
-				aoData.push({
-					"name": "reqSampleType",
-					"value": $("#requestSampleType").val()
-				});
-				aoData.push({
-					"name": "sampleReceivedDateAtLab",
-					"value": $("#sampleReceivedDateAtLab").val()
-				});
-				aoData.push({
-					"name": "sampleTestedDate",
-					"value": $("#sampleTestedDate").val()
-				});
-				aoData.push({
-					"name": "srcOfReq",
-					"value": $("#srcOfReq").val()
-				});
-				aoData.push({
-					"name": "dateRangeModel",
-					"value": '<?php echo $dateRange; ?>'
-				});
-				aoData.push({
-					"name": "patientId",
-					"value": $("#patientId").val()
-				});
-				aoData.push({
-					"name": "patientName",
-					"value": $("#patientName").val()
-				});
-				aoData.push({
-					"name": "labIdModel",
-					"value": '<?php echo $labName; ?>'
-				});
-				aoData.push({
-					"name": "srcOfReqModel",
-					"value": '<?php echo $srcOfReq; ?>'
-				});
-				aoData.push({
-					"name": "srcStatus",
-					"value": '<?php echo $srcStatus; ?>'
-				});
-				aoData.push({
-					"name": "hidesrcofreq",
-					"value": '<?php echo $hidesrcofreq; ?>'
-				});
-				aoData.push({
-					"name": "recencySamples",
-					"value": $("#recencySamples").val()
-				});
-				aoData.push({
-					"name": "rejectedSamples",
-					"value": $("#rejectedSamples").val()
+					"name": "testType",
+					"value": $("#testType").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -732,6 +634,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);
 			});
+	}
+
+	function reset() {
+		window.location.reload();
 	}
 </script>
 <?php

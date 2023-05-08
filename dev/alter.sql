@@ -3826,4 +3826,10 @@ ALTER TABLE `form_generic` ADD `test_type_form` TEXT NULL DEFAULT NULL AFTER `te
 ALTER TABLE `form_generic` CHANGE `test_type_form` `test_type_form` JSON NULL DEFAULT NULL;
 ALTER TABLE `form_generic` ADD PRIMARY KEY(`sample_id`);
 ALTER TABLE `form_generic` CHANGE `sample_id` `sample_id` INT NOT NULL AUTO_INCREMENT;
-
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-requests', 'generic-tests', 'Generic Tests Request Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-requests', 'view-requests.php', 'View Generic Tests'),  
+(NULL, 'generic-requests', 'add-request.php', 'Add Generic Tests'), 
+(NULL, 'generic-requests', 'add-samples-from-manifest.php', 'Add Samples From Manifest'), 
+(NULL, 'generic-requests', 'batchcode.php', 'Add Batch Code'),
+(NULL, 'generic-requests', 'specimen-referral-manifest-list.php', 'Specimen Referral Manifest List');
