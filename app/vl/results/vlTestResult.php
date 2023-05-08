@@ -203,12 +203,12 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
 									<th><?php echo _("Patient's Name"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
-									<th><?php echo _("Testing Lab"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Testing Lab"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Modified On"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>

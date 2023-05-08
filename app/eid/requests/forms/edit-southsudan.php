@@ -428,7 +428,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr class="rejected" style="display: none;">
-                                            <th class="rejected labels" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected labels" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the sample rejection reason">
                                                     <option value="">-- Select --</option>
@@ -502,7 +502,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <td style="width:25%;">
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?= htmlspecialchars($eidInfo['lab_tech_comments']); ?></textarea>
                                             </td>
-                                            <th style="display: none;" class="labels change-reason">Reason for Changing <span class="mandatory">*</span></th>
+                                            <th scope="row" style="display: none;" class="labels change-reason">Reason for Changing <span class="mandatory">*</span></th>
                                             <td style="display: none;" class="change-reason"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>

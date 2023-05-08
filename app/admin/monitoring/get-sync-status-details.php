@@ -78,7 +78,7 @@ $_SESSION['labSyncStatusDetails'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>" data-labId="<?php echo ($_POST['labId']); ?>" data-url="<?php echo $url; ?>">
+    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars($_POST['labId']); ?>" data-url="<?php echo $url; ?>">
         <td><?= ($aRow['facility_name']); ?></td>
         <td><?= ($_POST['testType']); ?></td>
         <td><?= ($aRow['province']); ?></td>

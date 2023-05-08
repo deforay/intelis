@@ -217,17 +217,17 @@ $patienZones["other"] = "Other";
                             <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                 <tr>
-                                    <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
+                                    <th scope="row" style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" id="lastName" name="lastName" placeholder="Nom de famille" title="Nom de famille" style="width:100%;" value="<?php echo $covid19Info['patient_surname']; ?>" />
                                     </td>
-                                    <th style="width:15% !important"><label for="firstName">Prénom </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="firstName">Prénom </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom" title="Prénom" style="width:100%;" value="<?php echo $covid19Info['patient_name']; ?>" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="patientId">N&deg; EPID <span class="mandatory">*</span> </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="patientId">N&deg; EPID <span class="mandatory">*</span> </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="N&deg; EPID" title="Code Patient" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                     </td>
@@ -471,11 +471,11 @@ $patienZones["other"] = "Other";
                             </div>
                             <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
-                                    <th style="width:15% !important">Fever/Temperature (&deg;C) <span class="mandatory">*</span> </th>
+                                    <th scope="row" style="width:15% !important">Fever/Temperature (&deg;C) <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
                                         <input class="form-control isRequired" type="number" value="<?php echo $covid19Info['fever_temp']; ?>" name="feverTemp" id="feverTemp" placeholder="Fever/Temperature (in &deg;Celcius)" />
                                     </td>
-                                    <th style="width:15% !important"><label for="temperatureMeasurementMethod">Température</label></th>
+                                    <th scope="row" style="width:15% !important"><label for="temperatureMeasurementMethod">Température</label></th>
                                     <td style="width:35% !important;">
                                         <select name="temperatureMeasurementMethod" id="temperatureMeasurementMethod" class="form-control" title="Température">
                                             <option value="">--Select--</option>
@@ -487,11 +487,11 @@ $patienZones["other"] = "Other";
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="respiratoryRate"> Fréquence Respiratoire</label></th>
+                                    <th scope="row" style="width:15% !important"><label for="respiratoryRate"> Fréquence Respiratoire</label></th>
                                     <td style="width:35% !important;">
                                         <input class="form-control" type="number" value="<?php echo $covid19Info['respiratory_rate']; ?>" name="respiratoryRate" id="respiratoryRate" placeholder="Fréquence Respiratoire" title="Fréquence Respiratoire" />
                                     </td>
-                                    <th style="width:15% !important"><label for="oxygenSaturation"> Saturation en oxygène</label></th>
+                                    <th scope="row" style="width:15% !important"><label for="oxygenSaturation"> Saturation en oxygène</label></th>
                                     <td style="width:35% !important;">
                                         <input class="form-control" type="number" value="<?php echo $covid19Info['oxygen_saturation']; ?>" name="oxygenSaturation" id="oxygenSaturation" placeholder="Saturation en oxygène" title="Saturation en oxygène" />
                                     </td>
@@ -510,21 +510,21 @@ $patienZones["other"] = "Other";
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important">Date d'apparition des symptômes </th>
+                                    <th scope="row" style="width:15% !important">Date d'apparition des symptômes </th>
                                     <td style="width:35% !important;">
                                         <input class="form-control date" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                     </td>
-                                    <th style="width:15% !important">Date de la consultation initiale</th>
+                                    <th scope="row" style="width:15% !important">Date de la consultation initiale</th>
                                     <td style="width:35% !important;">
                                         <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date of Initial Consultation" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_initial_consultation']); ?> " />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
+                                    <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important;">
                                         <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="sampleCodeGeneration();" />
                                     </td>
-                                    <th style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
+                                    <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
                                         <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Échantillon expédié le" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_dispatched_datetime'])); ?>" />
                                     </td>
@@ -590,7 +590,7 @@ $patienZones["other"] = "Other";
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="medicalHistory"></label>Antécédents Médicaux</th>
+                                    <th scope="row" style="width:15% !important"><label for="medicalHistory"></label>Antécédents Médicaux</th>
                                     <td style="width:35% !important;">
                                         <select name="medicalHistory" id="medicalHistory" class="form-control" title="Antécédents Médicaux">
                                             <option value="">--Select--</option>
@@ -626,7 +626,7 @@ $patienZones["other"] = "Other";
 
                             <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
-                                    <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
+                                    <th scope="row" style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
                                     <td style="width:35% !important;">
                                         <select name="recentHospitalization" id="recentHospitalization" class="form-control" title="Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? ">
                                             <option value="">--Select--</option>
@@ -635,7 +635,7 @@ $patienZones["other"] = "Other";
                                             <option value="unknown" <?php echo ($covid19Info['recent_hospitalization'] == 'unknown') ? "selected='selected'" : ""; ?>>Inconnu</option>
                                         </select>
                                     </td>
-                                    <th style="width:15% !important"><label for="patientLivesWithChildren"></label>Habitez-vous avec les enfants ?</th>
+                                    <th scope="row" style="width:15% !important"><label for="patientLivesWithChildren"></label>Habitez-vous avec les enfants ?</th>
                                     <td style="width:35% !important;">
                                         <select name="patientLivesWithChildren" id="patientLivesWithChildren" class="form-control" title="Habitez-vous avec les enfants ?">
                                             <option value="">--Select--</option>
@@ -647,7 +647,7 @@ $patienZones["other"] = "Other";
                                 </tr>
 
                                 <tr>
-                                    <th style="width:15% !important"><label for="patientCaresForChildren"></label>Prenez-vous soins des enfants ?</th>
+                                    <th scope="row" style="width:15% !important"><label for="patientCaresForChildren"></label>Prenez-vous soins des enfants ?</th>
                                     <td style="width:35% !important;">
                                         <select name="patientCaresForChildren" id="patientCaresForChildren" class="form-control" title="prenez-vous soins des enfants ?">
                                             <option value="">--Select--</option>
@@ -656,7 +656,7 @@ $patienZones["other"] = "Other";
                                             <option value="unknown" <?php echo ($covid19Info['patient_cares_for_children'] == 'unknown') ? "selected='selected'" : ""; ?>>Inconnu</option>
                                         </select>
                                     </td>
-                                    <th style="width:15% !important">Avez-vous eu des contacts étroits avec toute personne une maladie similaire a la vôtre durant ces 3 derniers semaines?</th>
+                                    <th scope="row" style="width:15% !important">Avez-vous eu des contacts étroits avec toute personne une maladie similaire a la vôtre durant ces 3 derniers semaines?</th>
                                     <td colspan="3">
                                         <select name="closeContacts" id="closeContacts" class="form-control" title="prenez-vous soins des enfants ?">
                                             <option value="yes" <?php echo ($covid19Info['close_contacts'] == 'yes') ? "selected='selected'" : ""; ?>>Oui</option>
@@ -775,7 +775,7 @@ $patienZones["other"] = "Other";
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th class="show-rejection" style="display:none;">Raison du rejet <span class="mandatory">*</span></th>
+                                        <th scope="row" class="show-rejection" style="display:none;">Raison du rejet <span class="mandatory">*</span></th>
                                         <td class="show-rejection" style="display:none;">
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
                                                 <option value="">-- Sélectionner --</option>
@@ -791,7 +791,7 @@ $patienZones["other"] = "Other";
                                                 <?php }  ?>
                                             </select>
                                         </td>
-                                        <th class="show-rejection" style="display: none;">Date de rejet<span class="mandatory">*</span></th>
+                                        <th scope="row" class="show-rejection" style="display: none;">Date de rejet<span class="mandatory">*</span></th>
                                         <td class="show-rejection" style="display: none;"><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Date de rejet" /></td>
                                     </tr>
                                     <tr>

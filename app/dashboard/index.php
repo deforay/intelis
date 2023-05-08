@@ -103,7 +103,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
@@ -143,7 +143,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
@@ -182,7 +182,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
@@ -222,7 +222,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
@@ -263,7 +263,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
@@ -304,7 +304,7 @@ require_once(APPLICATION_PATH . '/header.php');
 									<form autocomplete="off">
 										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<td style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+												<th style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
 												<td>
 													<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>

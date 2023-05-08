@@ -66,7 +66,7 @@ $batResult = $db->rawQuery($batQuery);
 									<?php } ?>
 									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
 									<th><?php echo _("Batch Code"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Child's ID"); ?></th>
 									<th><?php echo _("Child's Name"); ?></th>
 									<th><?php echo _("Mother's ID"); ?></th>
@@ -75,7 +75,7 @@ $batResult = $db->rawQuery($batQuery);
 									<th><?php echo _("District/County"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>

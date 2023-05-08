@@ -218,17 +218,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="firstName" name="firstName" placeholder="Patient first name" title="Please enter the Patient first name" style="width:100%;" />
                                         </td>
-                                        <th style="width:15% !important"><label for="lastName">Patient last name </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="lastName">Patient last name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Patient last name" title="Please enter the Patient last name" style="width:100%;" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="patientId">Patient ID if admitted in ward <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">Patient ID if admitted in ward <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient ID" title="Please enter the Patient ID" style="width:100%;" />
                                         </td>
@@ -356,7 +356,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr class="historyfield">
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="closeContacts">Close contacts of the Patient</label></th>
+                                        <th scope="row" style="width:15% !important"><label for="closeContacts">Close contacts of the Patient</label></th>
                                         <td colspan="3">
                                             <textarea name="closeContacts" class="form-control" style="width:100%;min-height:100px;" title="Please enter the close contacts of the patient"></textarea>
                                             <span class="text-danger">*A close contact includes living in the same household, having face-to face contact (<1m) for 15 mins or more, or spending ≥2hrs in the same enclosed space, or having direct physical contact with a COVID-19 case</span>
@@ -474,7 +474,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="sampleCodeGeneration();" />
                                         </td>
@@ -497,7 +497,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value='died'> Died </option>
                                             </select>
                                         </td>
-                                        <th style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
+                                        <th scope="row" style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
                                         </td>
@@ -536,14 +536,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th class="show-rejection" style="display:none;"><label for="sampleRejectionReason">Rejection reason<span class="mandatory">*</span></label></th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><label for="sampleRejectionReason">Rejection reason<span class="mandatory">*</span></label></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the rejection reason">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                            <th class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
                                             <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
                                         </tr>
                                         <tr>

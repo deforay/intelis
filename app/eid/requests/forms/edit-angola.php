@@ -179,11 +179,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="childName">Nome da Criança </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childName">Nome da Criança </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Nome da Criança" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
-                                        <th style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Nº Processo Clínico" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
                                         </td>
@@ -277,7 +277,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Data da Colheita <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important">Data da Colheita <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>

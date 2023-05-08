@@ -58,7 +58,7 @@ require_once(APPLICATION_PATH . '/header.php');
                   <th><?php echo _("Login ID"); ?></th>
                   <th><?php echo _("Email"); ?></th>
                   <th><?php echo _("Role"); ?></th>
-                  <th><?php echo _("Status"); ?></th>
+                  <th scope="row"><?php echo _("Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editUser.php", $_SESSION['privileges'])) { ?>
                     <th><?php echo _("Action"); ?></th>
                   <?php } ?>

@@ -308,8 +308,8 @@ foreach ($srcResults as $list) {
                                     <?php } ?>
                                     <th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
                                     <th><?php echo _("Batch Code"); ?></th>
-                                    <th><?php echo _("Testing lab"); ?></th>
-                                    <th><?php echo _("Facility Name"); ?></th>
+                                    <th scope="row"><?php echo _("Testing Lab"); ?></th>
+                                    <th scope="row"><?php echo _("Facility Name"); ?></th>
                                     <?php if ($formId == 1) { ?>
                                         <th><?php echo _("Case ID"); ?></th>
                                     <?php } else { ?>
@@ -320,7 +320,7 @@ foreach ($srcResults as $list) {
                                     <th><?php echo _("District/County"); ?></th>
                                     <th><?php echo _("Result"); ?></th>
                                     <th><?php echo _("Last Modified On"); ?></th>
-                                    <th><?php echo _("Status"); ?></th>
+                                    <th scope="row"><?php echo _("Status"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>

@@ -197,11 +197,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     <tr>
 
-                                        <th style="width:15% !important"><label for="childName">Nome da Criança </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childName">Nome da Criança </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Please enter Infant Name" style="width:100%;" onchange="" />
                                         </td>
-                                        <th style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Código Criança" title="Please enter Exposed Infant Identification" style="width:100%;" onchange="" />
                                         </td>
@@ -297,7 +297,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Data da Colheita <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important">Data da Colheita <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>

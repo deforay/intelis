@@ -244,12 +244,12 @@ $state = $geolocationService->getProvinces("yes");
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
 									<th><?php echo _("Patient's Name"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Province/State/Region"); ?></th>
 									<th><?php echo _("District/County"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
 									<th><?php echo _("Result"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>

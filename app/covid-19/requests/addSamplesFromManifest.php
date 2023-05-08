@@ -56,14 +56,14 @@ require_once(APPLICATION_PATH . '/header.php');
 									<?php } ?>
 									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
 									<th><?php echo _("Batch Code"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Patient ID"); ?></th>
 									<th><?php echo _("Patient Name"); ?></th>
 									<th><?php echo _("Province/State"); ?></th>
 									<th><?php echo _("District/County"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>

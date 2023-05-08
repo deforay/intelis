@@ -64,7 +64,7 @@ $sResult = $db->rawQuery($sQuery);
                   <th><?php echo _("IP Address"); ?></th>
                   <th><?php echo _("Browser"); ?></th>
                   <th><?php echo _("Operating System"); ?></th>
-                  <th><?php echo _("Status"); ?></th>
+                  <th scope="row"><?php echo _("Status"); ?></th>
 
                 </tr>
               </thead>

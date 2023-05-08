@@ -358,13 +358,13 @@ $state = $geolocationService->getProvinces("yes");
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
 									<th><?php echo _("Patient's Name"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Lab Name"); ?></th>
-									<th><?php echo _("Sample Collection Date"); ?></th>
+									<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
 									<th><?php echo _("Sample Tested On"); ?></th>
 									<th><?php echo _("Result"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th><?php echo _("Funding Source"); ?></th>
 									<th><?php echo _("Implementing Partner"); ?></th>
 									<th><?php echo _("Request Created On"); ?></th>

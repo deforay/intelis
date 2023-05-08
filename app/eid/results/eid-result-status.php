@@ -168,16 +168,16 @@ foreach ($rejectionTypeResult as $type) {
                   <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                     <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                   <?php } ?>
-                  <th><?php echo _("Sample Collection Date"); ?></th>
+                  <th scope="row"><?php echo _("Sample Collection Date"); ?></th>
                   <th><?php echo _("Batch Code"); ?></th>
                   <th><?php echo _("Child's ID"); ?></th>
                   <th><?php echo _("Child's Name"); ?></th>
                   <th><?php echo _("Mother's ID"); ?></th>
                   <th><?php echo _("Mother's Name"); ?></th>
-                  <th><?php echo _("Facility Name"); ?></th>
+                  <th scope="row"><?php echo _("Facility Name"); ?></th>
                   <th><?php echo _("Result"); ?></th>
                   <th><?php echo _("Last Modified on") ?></th>
-                  <th><?php echo _("Status"); ?></th>
+                  <th scope="row"><?php echo _("Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
                     <!--<th>Action</th>-->
                   <?php } ?>

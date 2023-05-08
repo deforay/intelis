@@ -186,11 +186,11 @@ foreach ($rejectionTypeResult as $type) {
                   <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                     <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                   <?php } ?>
-                  <th><?php echo _("Sample Collection Date"); ?></th>
+                  <th scope="row"><?php echo _("Sample Collection Date"); ?></th>
                   <th><?php echo _("Batch Code"); ?></th>
                   <th><?php echo _("Unique ART No"); ?></th>
                   <th><?php echo _("Patient's Name"); ?></th>
-                  <th><?php echo _("Facility Name"); ?></th>
+                  <th scope="row"><?php echo _("Facility Name"); ?></th>
                   <th><?php echo _("Sample Type"); ?></th>
                   <th><?php echo _("Result"); ?></th>
                   <th><?php echo _("Last Modified on"); ?></th>

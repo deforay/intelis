@@ -222,7 +222,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
-                  <th><?php echo _("Facility Name"); ?></th>
+                  <th scope="row"><?php echo _("Facility Name"); ?></th>
                   <th><?php echo _("Month"); ?> </th>
                   <th> <?php echo _("Number of Samples Received"); ?> </th>
                   <th> <?php echo _("Number of Samples Rejected"); ?> </th>

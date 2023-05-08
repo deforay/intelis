@@ -171,14 +171,14 @@ $lastUrl2 = '';
 										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Batch Code"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Child's ID"); ?></th>
 									<th><?php echo _("Child's Name"); ?></th>
 									<th><?php echo _("Mother's ID"); ?></th>
 									<th><?php echo _("Mother's Name"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Modified On"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>

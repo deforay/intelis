@@ -86,7 +86,7 @@ $state = $geolocationService->getProvinces("yes");
 				<div class="box" id="filterDiv">
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<th><?php echo _("Sample Collection Date"); ?></th>
+							<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -105,19 +105,19 @@ $state = $geolocationService->getProvinces("yes");
 						
 						</tr>
 						<tr>
-						<th><?php echo _("Facility Name"); ?></th>
+						<th scope="row"><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<th><?php echo _("Testing Lab"); ?></th>
+							<th scope="row"><?php echo _("Testing Lab"); ?></th>
 							<td>
 								<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<th><?php echo _("Sample Test Date"); ?></th>
+							<th scope="row"><?php echo _("Sample Test Date"); ?></th>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -143,7 +143,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("Status"); ?></th>
+							<th scope="row"><?php echo _("Status"); ?></th>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -156,7 +156,7 @@ $state = $geolocationService->getProvinces("yes");
 						</tr>
 
 						<tr>
-						<th><?php echo _("Funding Sources"); ?></th>
+						<th scope="row"><?php echo _("Funding Sources"); ?></th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -167,7 +167,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("Implementing Partners"); ?></th>
+							<th scope="row"><?php echo _("Implementing Partners"); ?></th>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -178,7 +178,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("Last Print Date"); ?></th>
+							<th scope="row"><?php echo _("Last Print Date"); ?></th>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -272,10 +272,10 @@ $state = $geolocationService->getProvinces("yes");
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Patient ID"); ?></th>
 									<th><?php echo _("Patient Name"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("HCV VL Result"); ?></th>
 									<th><?php echo _("HBV VL Result"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th><?php echo _("Funding Source"); ?></th>
 									<th><?php echo _("Implementing Partner"); ?></th>
 									<th><?php echo _("Action"); ?></th>

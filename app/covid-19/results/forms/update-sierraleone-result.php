@@ -200,17 +200,17 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" title="Please enter Case first name" style="width:100%;" value="<?php echo $covid19Info['patient_name']; ?>" />
                                         </td>
-                                        <th style="width:15% !important"><label for="lastName">Last name </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="lastName">Last name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Case last name" style="width:100%;" value="<?php echo $covid19Info['patient_surname']; ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="patientId" name="patientId" placeholder="Identification" title="Please enter ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
@@ -302,7 +302,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_collection_date']); ?>" />
                                         </td>
@@ -384,7 +384,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                 </select>
                                             </td>
 
-                                            <th class="show-rejection" style="display:none;">Reason for Rejection <span class="mandatory">*</span></th>
+                                            <th scope="row" class="show-rejection" style="display:none;">Reason for Rejection <span class="mandatory">*</span></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value="">-- Select --</option>

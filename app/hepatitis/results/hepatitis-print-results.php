@@ -205,14 +205,14 @@ $state = $geolocationService->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
-                                                        <th><?php echo _("Facility Name"); ?></th>
+                                                        <th scope="row"><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Labs"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
                                                         <th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("HCV VL Count"); ?></th>
                                                         <th><?php echo _("HBV VL Count"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
-                                                        <th><?php echo _("Status"); ?></th>
+                                                        <th scope="row"><?php echo _("Status"); ?></th>
                                                         <th><?php echo _("Action"); ?></th>
                                                     </tr>
                                                 </thead>
@@ -356,14 +356,14 @@ $state = $geolocationService->getProvinces("yes");
                                                         <?php } ?>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
-                                                        <th><?php echo _("Facility Name"); ?></th>
+                                                        <th scope="row"><?php echo _("Facility Name"); ?></th>
                                                         <th><?php echo _("Testing Labs"); ?></th>
                                                         <th><?php echo _("Province/State"); ?></th>
                                                         <th><?php echo _("District/County"); ?></th>
                                                         <th><?php echo _("HCV VL Count"); ?></th>
                                                         <th><?php echo _("HBV VL Count"); ?></th>
                                                         <th><?php echo _("Last Modified On"); ?></th>
-                                                        <th><?php echo _("Status"); ?></th>
+                                                        <th scope="row"><?php echo _("Status"); ?></th>
                                                         <th><?php echo _("Action"); ?></th>
                                                     </tr>
                                                 </thead>

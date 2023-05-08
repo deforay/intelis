@@ -172,13 +172,13 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Batch Code"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Patient ID"); ?></th>
 									<th><?php echo _("Patient Name"); ?></th>
 									<th><?php echo _("HCV VL Result"); ?></th>
 									<th><?php echo _("HBV VL Result"); ?></th>
 									<th><?php echo _("Modified On"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th><?php echo _("Action"); ?></th>
 								</tr>
 							</thead>

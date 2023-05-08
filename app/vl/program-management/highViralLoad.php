@@ -188,15 +188,15 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
+														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Patient ART no"); ?>.</th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th><?php echo _("Patient Phone no"); ?>.</th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("Sample Tested Date"); ?></th>
 														<th><?php echo _("Viral Load Lab"); ?></th>
 														<th><?php echo _("Viral Load (cp/ml)"); ?></th>
-														<th><?php echo _("Status"); ?></th>
+														<th scope="row"><?php echo _("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -331,10 +331,10 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
+														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Patient ART no"); ?>.</th>
 														<th><?php echo _("Patient Name"); ?></th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("VL Lab Name"); ?></th>
 														<th><?php echo _("Rejection Reason"); ?></th>
 													</tr>
@@ -449,10 +449,10 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
+														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Patient ART no"); ?>.</th>
 														<th><?php echo _("Patient Name"); ?></th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("VL Lab Name"); ?></th>
 														<th><?php echo _("Sample Status"); ?></th>
 													</tr>
@@ -504,16 +504,16 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Sample Collection Date"); ?></th>
+														<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("Batch Code"); ?></th>
 														<th><?php echo _("Unique ART No"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
-														<th><?php echo _("Facility Name"); ?></th>
+														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th><?php echo _("Province/State"); ?></th>
 														<th><?php echo _("District/County"); ?></th>
 														<th><?php echo _("Sample Type"); ?></th>
 														<th><?php echo _("Result"); ?></th>
-														<th><?php echo _("Status"); ?></th>
+														<th scope="row"><?php echo _("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>

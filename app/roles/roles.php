@@ -34,7 +34,7 @@ require_once(APPLICATION_PATH . '/header.php');
                 <tr>
                   <th><?php echo _("Role Name"); ?></th>
                   <th><?php echo _("Role Code"); ?></th>
-                  <th><?php echo _("Status"); ?></th>
+                  <th scope="row"><?php echo _("Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editRole.php", $_SESSION['privileges'])) { ?>
                     <th><?php echo _("Action"); ?></th>
                   <?php } ?>

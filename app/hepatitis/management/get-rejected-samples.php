@@ -92,7 +92,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
         <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
     </div>
 <?php } ?>
-<table id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
+<table description="table" id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
             <th><?php echo _("Lab Name");?></th>

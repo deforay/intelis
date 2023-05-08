@@ -446,14 +446,14 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
 									<th><?php echo _("Patient's Name"); ?></th>
-									<th><?php echo _("Testing Lab"); ?></th>
-									<th><?php echo _("Facility Name"); ?></th>
+									<th scope="row"><?php echo _("Testing Lab"); ?></th>
+									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Province/State"); ?></th>
 									<th><?php echo _("District/County"); ?></th>
 									<th><?php echo _("Sample Type"); ?></th>
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
-									<th><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>

@@ -206,17 +206,17 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="lastName" name="lastName" placeholder="Nom de famille" title="Nom de famille" style="width:100%;" onchange="" />
                                         </td>
-                                        <th style="width:15% !important"><label for="firstName">Prénom </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="firstName">Prénom </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom" title="Prénom" style="width:100%;" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
@@ -465,11 +465,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width:15% !important">Fièvre / température (&deg;C)</th>
+                                        <th scope="row" style="width:15% !important">Fièvre / température (&deg;C)</th>
                                         <td style="width:35% !important;">
                                             <input class="form-control" type="number" name="feverTemp" id="feverTemp" placeholder="Fièvre / température (en &deg;Celcius)" title="Fièvre / température (en &deg;Celcius)" />
                                         </td>
-                                        <th style="width:15% !important"><label for="temperatureMeasurementMethod">Température</label></th>
+                                        <th scope="row" style="width:15% !important"><label for="temperatureMeasurementMethod">Température</label></th>
                                         <td style="width:35% !important;">
                                             <select name="temperatureMeasurementMethod" id="temperatureMeasurementMethod" class="form-control" title="Température">
                                                 <option value="">--Select--</option>
@@ -481,11 +481,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="respiratoryRate"> Fréquence Respiratoire</label></th>
+                                        <th scope="row" style="width:15% !important"><label for="respiratoryRate"> Fréquence Respiratoire</label></th>
                                         <td style="width:35% !important;">
                                             <input class="form-control" type="number" name="respiratoryRate" id="respiratoryRate" placeholder="Fréquence Respiratoire" title="Fréquence Respiratoire" />
                                         </td>
-                                        <th style="width:15% !important"><label for="oxygenSaturation"> Saturation en oxygène</label></th>
+                                        <th scope="row" style="width:15% !important"><label for="oxygenSaturation"> Saturation en oxygène</label></th>
                                         <td style="width:35% !important;">
                                             <input class="form-control" type="number" name="oxygenSaturation" id="oxygenSaturation" placeholder="Saturation en oxygène" title="Saturation en oxygène" />
                                         </td>
@@ -504,21 +504,21 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important">Date d'apparition des symptômes </th>
+                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
                                         </td>
-                                        <th style="width:15% !important">Date de la consultation initiale</th>
+                                        <th scope="row" style="width:15% !important">Date de la consultation initiale</th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date" type="text" name="dateOfInitialConsultation" id="dateOfInitialConsultation" placeholder="Date de la consultation initiale" title="Date de la consultation initiale" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="sampleCodeGeneration();" />
                                         </td>
-                                        <th style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Échantillon expédié le" />
                                         </td>
@@ -527,7 +527,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
                                             <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
                                                 <option value="">--Select--</option>
@@ -596,7 +596,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important"><label for="medicalHistory"></label>Antécédents Médicaux</th>
+                                        <th scope="row" style="width:15% !important"><label for="medicalHistory"></label>Antécédents Médicaux</th>
                                         <td style="width:35% !important;">
                                             <select name="medicalHistory" id="medicalHistory" class="form-control" title="Antécédents Médicaux">
                                                 <option value="">-- Sélectionner --</option>
@@ -631,7 +631,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 </table>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois? </th>
+                                        <th scope="row" style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois? </th>
                                         <td style="width:35% !important;">
                                             <select name="recentHospitalization" id="recentHospitalization" class="form-control" title="Avez-vous été hospitalisé durant les 12 derniers mois? ">
                                                 <option value="">--Select--</option>
@@ -640,7 +640,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <option value="unknown">Inconnu</option>
                                             </select>
                                         </td>
-                                        <th style="width:15% !important"><label for="patientLivesWithChildren"></label>Habitez-vous avec les enfants ?</th>
+                                        <th scope="row" style="width:15% !important"><label for="patientLivesWithChildren"></label>Habitez-vous avec les enfants ?</th>
                                         <td style="width:35% !important;">
                                             <select name="patientLivesWithChildren" id="patientLivesWithChildren" class="form-control" title="Habitez-vous avec les enfants ?">
                                                 <option value="">--Select--</option>
@@ -652,7 +652,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="patientCaresForChildren"></label>Prenez-vous soins des enfants ?</th>
+                                        <th scope="row" style="width:15% !important"><label for="patientCaresForChildren"></label>Prenez-vous soins des enfants ?</th>
                                         <td style="width:35% !important;">
                                             <select name="patientCaresForChildren" id="patientCaresForChildren" class="form-control" title="prenez-vous soins des enfants ?">
                                                 <option value="">--Select--</option>
@@ -661,7 +661,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <option value="unknown">Inconnu</option>
                                             </select>
                                         </td>
-                                        <th style="width:15% !important">Avez-vous eu des contacts étroits avec toute personne une maladie similaire a la vôtre durant ces 3 derniers semaines?</th>
+                                        <th scope="row" style="width:15% !important">Avez-vous eu des contacts étroits avec toute personne une maladie similaire a la vôtre durant ces 3 derniers semaines?</th>
                                         <td colspan="3">
                                             <select name="closeContacts" id="closeContacts" class="form-control" title="prenez-vous soins des enfants ?">
                                                 <option value="">--Select--</option>
@@ -790,7 +790,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th class="show-rejection" style="display:none;">Raison du rejet</th>
+                                            <th scope="row" class="show-rejection" style="display:none;">Raison du rejet</th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
                                                     <option value=''> -- Sélectionner -- </option>

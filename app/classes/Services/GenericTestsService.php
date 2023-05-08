@@ -627,7 +627,7 @@ class GenericTestsService
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
-            /* Update version in form attributes */
+
             $version = $general->getSystemConfig('sc_version');
             $ipaddress = $general->getClientIpAddress();
             $formAttributes = [
@@ -776,6 +776,7 @@ class GenericTestsService
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
+            $version = $general->getSystemConfig('sc_version');
             $ipaddress = $general->getClientIpAddress();
             $formAttributes = [
                 'applicationVersion'  => $version,

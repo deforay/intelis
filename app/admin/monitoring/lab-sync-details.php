@@ -126,9 +126,9 @@ $labInfo = $db->rawQueryOne($sQuery);
                     <div class="box-body">
                         <table aria-describedby="table" class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
-                                <th>Last Request Sent from VLSTS :</th>
+                                <th scope="row">Last Request Sent from VLSTS :</th>
                                 <td align="left"><?php echo $labInfo['request']; ?></td>
-                                <th>Last Result Received from Lab</th>
+                                <th scope="row">Last Result Received from Lab</th>
                                 <td align="left"><?php echo $labInfo['results']; ?></td>
                             </tr>
                         </table>
@@ -136,12 +136,12 @@ $labInfo = $db->rawQueryOne($sQuery);
                         <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th class="center"><?php echo _("Facility Name"); ?></th>
-                                    <th class="center"><?php echo _("Test Type"); ?></th>
-                                    <th class="center"><?php echo _("Province"); ?></th>
-                                    <th class="center"><?php echo _("District"); ?></th>
-                                    <th class="center"><?php echo _("Last Request Sent from VLSTS"); ?></th>
-                                    <th class="center"><?php echo _("Last Result Received From Lab"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Facility Name"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Test Type"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Province"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("District"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Last Request Sent from VLSTS"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Last Result Received From Lab"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">

@@ -82,7 +82,7 @@ require_once(APPLICATION_PATH . '/header.php');
                                     <th><?php echo _("Test Kit"); ?></th>
                                     <th><?php echo _("Lot No."); ?></th>
                                     <th><?php echo _("Expiry Date"); ?></th>
-                                    <th><?php echo _("Testing Lab"); ?></th>
+                                    <th scope="row"><?php echo _("Testing Lab"); ?></th>
                                     <th><?php echo _("Tester Name"); ?></th>
                                     <th><?php echo _("Tested On"); ?></th>
                                     <th><?php echo _("Last Modified On"); ?></th>

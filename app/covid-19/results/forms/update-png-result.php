@@ -233,17 +233,17 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                             <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 
                                 <tr>
-                                    <th style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" value="<?php echo $covid19Info['patient_name']; ?>" id="firstName" name="firstName" placeholder="Patient first name" title="Please enter the Patient first name" style="width:100%;" />
                                     </td>
-                                    <th style="width:15% !important"><label for="lastName">Patient last name </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="lastName">Patient last name </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control " value="<?php echo $covid19Info['patient_surname']; ?>" id="lastName" name="lastName" placeholder="Patient last name" title="Please enter the Patient last name" style="width:100%;" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="patientId">Patient ID if admitted in ward <span class="mandatory">*</span> </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="patientId">Patient ID if admitted in ward <span class="mandatory">*</span> </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" value="<?php echo $covid19Info['patient_id']; ?>" id="patientId" name="patientId" placeholder="Patient ID" title="Please enter the Patient ID" style="width:100%;" />
                                     </td>
@@ -377,7 +377,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <tr class="historyfield">
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important"><label for="closeContacts">Close contacts of the Patient</label></th>
+                                    <th scope="row" style="width:15% !important"><label for="closeContacts">Close contacts of the Patient</label></th>
                                     <td colspan="3">
                                         <textarea name="closeContacts" class="form-control" style="width:100%;min-height:100px;" title="Please enter the close contacts of the patient"><?php echo $covid19Info['close_contacts']; ?></textarea>
                                         <span class="text-danger">*A close contact includes living in the same household, having face-to face contact (<1m) for 15 mins or more, or spending ≥2hrs in the same enclosed space, or having direct physical contact with a COVID-19 case</span>
@@ -485,7 +485,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <?php echo $general->generateSelectOptions($specimenTypeResult, $covid19Info['specimen_type'], '-- Select --'); ?>
                                         </select>
                                     </td>
-                                    <th style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
+                                    <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important;">
                                         <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="sampleCodeGeneration();" />
                                     </td>
@@ -508,7 +508,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <option value='died' <?php echo (isset($covid19Info['health_outcome']) && $covid19Info['health_outcome'] == 'died') ? "selected='selected'" : ""; ?>> Died </option>
                                         </select>
                                     </td>
-                                    <th style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
+                                    <th scope="row" style="width:15% !important"><label for="outcomeDate">Outcome Date</label></th>
                                     <td style="width:35% !important;">
                                         <input class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['health_outcome_date']); ?>" type="text" name="outcomeDate" id="outcomeDate" placeholder="Outcome Date" title="Please select the outcome date" />
                                     </td>
@@ -548,14 +548,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th class="show-rejection" style="display:none;"><label for="sampleRejectionReason">Rejection reason<span class="mandatory">*</span></label></th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><label for="sampleRejectionReason">Rejection reason<span class="mandatory">*</span></label></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the rejection reason">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                            <th class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><label for="rejectionDate">Date of rejected<span class="mandatory">*</span></label></th>
                                             <td class="show-rejection" style="display:none;"><input class="form-control date rejection-date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" name="rejectionDate" id="rejectionDate" placeholder="Date of rejected" title="Please select when sample rejected" /></td>
                                         </tr>
                                         <tr>

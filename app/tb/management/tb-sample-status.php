@@ -112,9 +112,9 @@ $batResult = $db->rawQuery($batQuery);
 							<thead>
 								<tr>
 									<th><?php echo _("TB Sample ID"); ?></th>
-									<th><?php echo _("Sample Collection Date"); ?></th>
+									<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 									<th><?php echo _("Sample Received Date in Lab"); ?></th>
-									<th><?php echo _("Sample Test Date"); ?></th>
+									<th scope="row"><?php echo _("Sample Test Date"); ?></th>
 									<th><?php echo _("Sample Print Date"); ?></th>
 									<th><?php echo _("Sample Email Date"); ?></th>
 								</tr>

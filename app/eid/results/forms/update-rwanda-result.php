@@ -169,11 +169,11 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                             <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                 <tr>
-                                    <th style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Exposed Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
                                     </td>
-                                    <th style="width:15% !important"><label for="childName">Infant name </label></th>
+                                    <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                     <td style="width:35% !important">
                                         <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
                                     </td>
@@ -221,7 +221,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important">Mother's HIV Status:</th>
+                                    <th scope="row" style="width:15% !important">Mother's HIV Status:</th>
                                     <td style="width:35% !important">
                                         <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
                                             <option value=''> -- Select -- </option>
@@ -231,7 +231,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </select>
                                     </td>
 
-                                    <th style="width:15% !important">ART given to the Mother during:</th>
+                                    <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
                                     <td style="width:35% !important">
                                         <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
                                         <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
@@ -323,7 +323,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                    <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
                                         <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
                                     </td>

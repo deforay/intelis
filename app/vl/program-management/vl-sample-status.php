@@ -128,10 +128,10 @@ $batResult = $db->rawQuery($batQuery);
 									<th><?php echo _("Sample ID"); ?></th>
 									<th><?php echo _("Remote Sample Code"); ?></th>
 									<th><?php echo _("External Sample Code"); ?></th>
-									<th><?php echo _("Sample Collection Date"); ?></th>
+									<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 									<th><?php echo _("Sample Dispatch Date"); ?></th>
 									<th><?php echo _("Sample Received Date in Lab"); ?></th>
-									<th><?php echo _("Sample Test Date"); ?></th>
+									<th scope="row"><?php echo _("Sample Test Date"); ?></th>
 									<th><?php echo _("Sample Print Date"); ?></th>
 								</tr>
 							</thead>

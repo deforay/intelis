@@ -185,13 +185,13 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
-            <td style="vertical-align:middle;padding-left: 0px;"><strong><?php echo _("Collection Point"); ?>&nbsp;:</strong>
+            <th style="vertical-align:middle;padding-left: 0px;"><strong><?php echo _("Collection Point"); ?>&nbsp;:</strong>
                 <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?></option>
                     <?php } ?>
                 </select>
-            </td>
+            </th>
             <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
             </td>
         </tr>
@@ -220,7 +220,7 @@ $tableResult = $db->rawQuery($sQuery);
             <table id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th><?php echo _("Facility Name"); ?></th>
+                        <th scope="row"><?php echo _("Facility Name"); ?></th>
                         <th class="sum"><?php echo _("Total Samples Registered"); ?></th>
                         <th class="sum"><?php echo _("Samples Currently Registered at HC"); ?></th>
                         <!-- <th class="sum">Samples Received/ Sent To Lab</th> -->

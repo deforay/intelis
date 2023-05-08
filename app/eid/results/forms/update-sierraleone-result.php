@@ -404,7 +404,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                     </tr>
                                     <tr class="show-rejection rejected" style="display:none;">
-                                        <th class="rejected labels" style="display: none;">Reason for Rejection</th>
+                                        <th scope="row" class="rejected labels" style="display: none;">Reason for Rejection</th>
                                         <td class="rejected" style="display: none;">
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose the rejection reason">
                                                 <option value="">-- Select --</option>

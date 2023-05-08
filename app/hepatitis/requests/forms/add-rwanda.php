@@ -152,11 +152,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="firstName" name="firstName" placeholder="First Name" title="Please enter patient first name" style="width:100%;" onchange="" />
                                         </td>
-                                        <th style="width:15% !important"><label for="lastName">Last name </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="lastName">Last name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" title="Please enter patient last name" style="width:100%;" onchange="" />
                                         </td>
@@ -320,7 +320,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th class="show-rejection" style="display:none;">Reason for Rejection<span class="mandatory">*</span></th>
+                                            <th scope="row" class="show-rejection" style="display:none;">Reason for Rejection<span class="mandatory">*</span></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value=''> -- Select -- </option>

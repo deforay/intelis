@@ -439,13 +439,13 @@ $aResult = $db->query($aQuery);
                                             </td>
 
 
-                                            <th class="labels">Machine used to test </th>
+                                            <th scope="row" class="labels">Machine used to test </th>
                                             <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name">
                                                     <option value="">-- Select --</option>
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th class="labels">Is Sample Rejected?</th>
+                                            <th scope="row" class="labels">Is Sample Rejected?</th>
                                             <td>
                                                 <select class=" form-control" name="isSampleRejected" id="isSampleRejected" title="Please select if the sample is rejected or not">
                                                     <option value=''> -- Select -- </option>
@@ -453,7 +453,7 @@ $aResult = $db->query($aQuery);
                                                     <option value="no"> No </option>
                                                 </select>
                                             </td>
-                                            <th class="rejected labels" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected labels" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
                                                     <option value=''> -- Select -- </option>
