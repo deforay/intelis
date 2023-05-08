@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -9,15 +10,38 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-$decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
 
-$invalidRequest = _("INVALID REQUEST");
+$uniqueId = null;
+if (!empty($keyFromGlobalConfig)) {
 
-if (empty($data) || empty($data[0])) {
-    die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
+    $decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+    $uniqueId = $decryptedString ?? null;
+
+} else {
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $encryption = $_GET['q'];
+    $options = 0;
+    $decryption_iv = SYSTEM_CONFIG['tryCrypt'];
+    $decryption_key = SYSTEM_CONFIG['tryCrypt'];
+    $decryption = openssl_decrypt(
+        $encryption,
+        $ciphering,
+        $decryption_key,
+        $options,
+        $decryption_iv
+    );
+    $data = explode('&&&', urldecode($decryption));
+
+    $invalidRequest = _("INVALID REQUEST");
+
+    $uniqueId = $data[0] ?? null;
 }
 
-$uniqueId = $decryptedString;
+$invalidRequest = _("INVALID REQUEST");
+if (empty($uniqueId)) {
+    die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
+}
 
 $db->where("unique_id", $uniqueId);
 $res = $db->getOne("form_covid19", "covid19_id");

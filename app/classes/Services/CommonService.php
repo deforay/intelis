@@ -53,11 +53,10 @@ class CommonService
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true)
     {
-        $uuid = Uuid::uuid4();
-        $uuid = $uuid->toString();
+        $uuid = (Uuid::uuid4())->toString();
 
         if ($attachExtraString === true) {
-            $uuid .= "-" . $this->generateRandomString(4);
+            $uuid .= "-" . $this->generateRandomString(6);
         }
         return $uuid;
     }
