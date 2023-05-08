@@ -54,7 +54,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</div>
 					</span>
 
-					<div class="box-header with-border">
+					<div class="box-header with-border batchDiv" style="display:none;">
 						<?php if (isset($_SESSION['privileges']) && in_array("addBatch.php", $_SESSION['privileges'])) { ?>
 							<a href="#" class="btn btn-primary pull-right" onclick="addBatch()"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 						<?php } ?>
