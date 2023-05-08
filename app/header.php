@@ -631,7 +631,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("vlRequest.php", $_SESSION['privileges'])) { ?>
 									<li class="allMenu vlRequestMenu">
-										<a href="/generic-tests/requests/view-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
+										<a href="/generic-tests/requests/view-requests.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>

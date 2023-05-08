@@ -20,7 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $tableName = "form_generic";
-$tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
@@ -289,6 +288,7 @@ try {
           'test_type_form'                        => json_encode($testTypeForm),
       );
 
+     
      // only if result status has changed, let us update
      if (!empty($resultStatus)) {
           $vldata['result_status'] = $resultStatus;
@@ -363,50 +363,27 @@ try {
           $pngSpecificFields['qc_date'] = $_POST['qcDate'];
           $pngSpecificFields['report_date'] = $_POST['reportDate'];
   
-      }
-      $vldata = array_merge($vldata, $pngSpecificFields);
-
-
+     }
+     $vldata = array_merge($vldata, $pngSpecificFields);
 
      $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      error_log($db->getLastError());
-     if (isset($_POST['api']) && $_POST['api'] == "yes") {
-          $payload = array(
-               'status' => 'success',
-               'timestamp' => time(),
-               'message' => 'Successfully updated.'
-          );
+     if ($id > 0) {
+          $_SESSION['alertMsg'] = _("Request updated successfully");
+          //Add event log
 
+          $eventType = 'update-vl-request-sudan';
+          $action = $_SESSION['userName'] . ' updated a request data with the sample code ' . $_POST['sampleCode'];
+          $resource = 'vl-request-ss';
 
-          http_response_code(200);
-          echo json_encode($payload);
-          exit(0);
+          $general->activityLog($eventType, $action, $resource);
      } else {
-          if ($id > 0) {
-               $_SESSION['alertMsg'] = _("Request updated successfully");
-               //Add event log
-
-               $eventType = 'update-vl-request-sudan';
-               $action = $_SESSION['userName'] . ' updated a request data with the sample code ' . $_POST['sampleCode'];
-               $resource = 'vl-request-ss';
-
-               $general->activityLog($eventType, $action, $resource);
-
-               //   $data=array(
-               //        'event_type'=>$eventType,
-               //        'action'=>$action,
-               //        'resource'=>$resource,
-               //        'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
-               //   );
-               //   $db->insert($tableName1,$data);
-
-          } else {
-               $_SESSION['alertMsg'] = _("Please try again later");
-          }
-          header("Location:view-request.php");
+          $_SESSION['alertMsg'] = _("Please try again later");
      }
+     header("Location:view-requests.php");
+
 } catch (Exception $exc) {
      error_log($exc->getMessage());
      error_log($exc->getTraceAsString());

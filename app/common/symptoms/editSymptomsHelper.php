@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\General;
+use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-$general = new General();
+$general = new CommonService();
 $tableName = "r_symptoms";
 
 /*echo "<pre>";

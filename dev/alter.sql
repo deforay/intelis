@@ -3821,3 +3821,6 @@ ALTER TABLE `form_generic` ADD `vlsm_country_id` INT NULL DEFAULT NULL AFTER `vl
 
 -- ilahir 04-May-2023
 ALTER TABLE `form_generic` ADD `test_type_form` TEXT NULL DEFAULT NULL AFTER `test_type`;
+
+-- Thana 08-May-2023
+ALTER TABLE `form_generic` CHANGE `test_type_form` `test_type_form` JSON NULL DEFAULT NULL;
