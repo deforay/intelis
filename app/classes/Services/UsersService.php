@@ -375,7 +375,7 @@ class UsersService
     {
         $query = "SELECT r.*
                     FROM roles as r
-                    INNER JOIN user_details as ud ON ud.role_id=r.role_id 
+                    INNER JOIN user_details as ud ON ud.role_id=r.role_id
                     WHERE ud.user_id = ?";
         return $this->db->rawQueryOne($query, array($userId));
     }
@@ -407,19 +407,12 @@ class UsersService
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
+
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;
-        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
+        $ipaddress = $general->getClientIpAddress();
 
         $data = array(
             'login_id' => $loginId,

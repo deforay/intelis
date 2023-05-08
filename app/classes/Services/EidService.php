@@ -39,7 +39,7 @@ class EidService
 
         /** @var CommonService $general */
         $general = ContainerRegistry::get(CommonService::class);
-        
+
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -460,25 +460,12 @@ class EidService
 
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
-            if (isset($version) && !empty($version)) {
-                $ipaddress = '';
-                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
-                $formAttributes = array(
-                    'applicationVersion'  => $version,
-                    'ip_address'    => $ipaddress
-                );
-                $eidData['form_attributes'] = json_encode($formAttributes);
-            }
+            $ipaddress = $general->getClientIpAddress();
+            $formAttributes = [
+                'applicationVersion'  => $version,
+                'ip_address'    => $ipaddress
+            ];
+            $eidData['form_attributes'] = json_encode($formAttributes);
             $id = 0;
 
             if ($rowData) {

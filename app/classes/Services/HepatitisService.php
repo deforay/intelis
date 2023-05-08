@@ -342,24 +342,12 @@ class HepatitisService
 
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
-            if (isset($version) && !empty($version)) {
-                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-                } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-                } else if (isset($_SERVER['HTTP_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
-                $formAttributes = array(
-                    'applicationVersion'  => $version,
-                    'ip_address'    => $ipaddress
-                );
-                $hepatitisData['form_attributes'] = json_encode($formAttributes);
-            }
+            $ipaddress = $general->getClientIpAddress();
+            $formAttributes = [
+                'applicationVersion'  => $version,
+                'ip_address'    => $ipaddress
+            ];
+            $hepatitisData['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
             if ($rowData) {

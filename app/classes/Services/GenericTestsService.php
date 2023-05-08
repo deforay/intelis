@@ -629,28 +629,12 @@ class GenericTestsService
             $rowData = $this->db->rawQueryOne($sQuery);
             /* Update version in form attributes */
             $version = $general->getSystemConfig('sc_version');
-            if (isset($version) && !empty($version)) {
-                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-                } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-                } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-                } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
-                $formAttributes = array(
-                    'applicationVersion'  => $version,
-                    'ip_address'    => $ipaddress
-                );
-                $vlData['form_attributes'] = json_encode($formAttributes);
-            }
+            $ipaddress = $general->getClientIpAddress();
+            $formAttributes = [
+                'applicationVersion'  => $version,
+                'ip_address'    => $ipaddress
+            ];
+            $vlData['form_attributes'] = json_encode($formAttributes);
 
 
             $id = 0;
@@ -792,30 +776,12 @@ class GenericTestsService
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
-            /* Update version in form attributes */
-            $version = $general->getSystemConfig('sc_version');
-            if (isset($version) && !empty($version)) {
-                if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-                } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-                } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-                } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-                    $ipaddress = $_SERVER['HTTP_FORWARDED'];
-                } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                    $ipaddress = $_SERVER['REMOTE_ADDR'];
-                } else {
-                    $ipaddress = 'UNKNOWN';
-                }
-                $formAttributes = array(
-                    'applicationVersion'  => $version,
-                    'ip_address'    => $ipaddress
-                );
-                $vlData['form_attributes'] = json_encode($formAttributes);
-            }
+            $ipaddress = $general->getClientIpAddress();
+            $formAttributes = [
+                'applicationVersion'  => $version,
+                'ip_address'    => $ipaddress
+            ];
+            $vlData['form_attributes'] = json_encode($formAttributes);
 
 
             $id = 0;

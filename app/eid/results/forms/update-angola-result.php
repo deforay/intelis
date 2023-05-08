@@ -399,7 +399,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Revisado Em" title="Please enter the Revisado Em" /></td>
                                     </tr>
                                     <tr class="change-reason">
-                                        <th class="change-reason" style="display: none;">Razão para mudar <span class="mandatory">*</span></th>
+                                        <th scope="row" class="change-reason" style="display: none;">Razão para mudar <span class="mandatory">*</span></th>
                                         <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Insira o motivo da mudança" title="Por favor, indique o motivo da mudança"></textarea></td>
                                         <th scope="row"></th>
                                         <td></td>

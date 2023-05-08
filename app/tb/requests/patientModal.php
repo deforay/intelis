@@ -121,7 +121,7 @@ $pResult = $db->rawQuery($pQuery);
 </div>
 <div id="dDiv" class="dialog">
 	<div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-	<iframe id="dFrame" src="" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?= _("Unable to load this page or resource"); ?></iframe>
+	<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?= _("Unable to load this page or resource"); ?></iframe>
 </div>
 <!-- Bootstrap 3.3.6 -->
 <script src="/assets/js/bootstrap.min.js"></script>

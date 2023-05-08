@@ -2,13 +2,15 @@
 
 namespace App\Middlewares\Api;
 
-use App\Exceptions\SystemException;
+use Exception;
+use Throwable;
 use Laminas\Diactoros\Response;
+use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpNotFoundException;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 
 class ApiLegacyFallbackMiddleware implements MiddlewareInterface
@@ -38,10 +40,10 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
                 // Set the output of the legacy PHP code as the response body
                 $response->getBody()->write($output);
-            } catch (SystemException|\Exception $e) {
+            } catch (SystemException|Exception $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
                 throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
                 throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500);
             }
