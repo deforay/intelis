@@ -161,6 +161,12 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 }
 // TB Menu end
 
+
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("view-requests.php", "add-request.php", "add-samples-from-manifest.php", "batch-code.php", "specimen-referral-manifest-list.php"))) {
+	$genericTestManagementMenuAccess = true;
+} else {
+	$genericTestManagementMenuAccess = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -622,7 +628,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</ul>
 						</li>
 					<?php }
-					if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+					if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true && $genericTestManagementMenuAccess) { ?>
 						<li class="header"><?php echo _("LAB TESTS"); ?></li>
 						<li class="treeview allMenu request generic-test-menu">
 							<a href="#">
