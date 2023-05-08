@@ -649,9 +649,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<a href="/generic-tests/requests/add-samples-from-manifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
 									</li>
 								<?php }
-								if (isset($_SESSION['privileges']) && in_array("batchcode.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("batch-code.php", $_SESSION['privileges'])) { ?>
 									<li class="allMenu batchGenericCodeMenu">
-										<a href="/generic-tests/requests/batch/batchcode.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
+										<a href="/generic-tests/requests/batch/batch-code.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("specimen-referral-manifest-list.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>

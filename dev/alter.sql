@@ -3831,5 +3831,8 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-requests', 'view-requests.php', 'View Generic Tests'),  
 (NULL, 'generic-requests', 'add-request.php', 'Add Generic Tests'), 
 (NULL, 'generic-requests', 'add-samples-from-manifest.php', 'Add Samples From Manifest'), 
-(NULL, 'generic-requests', 'batchcode.php', 'Add Batch Code'),
+(NULL, 'generic-requests', 'batch-code.php', 'Add Batch Code'),
 (NULL, 'generic-requests', 'specimen-referral-manifest-list.php', 'Specimen Referral Manifest List');
+
+UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`privilege_id` = 291;
+
