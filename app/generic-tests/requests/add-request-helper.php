@@ -391,13 +391,6 @@ try {
         $vldata['last_modified_by'] =  $_SESSION['userId'];
     }
 
-   /* $vldata['vl_result_category'] = $genericTestsService->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
-        $vldata['result_status'] = 5;
-    } elseif ($vldata['vl_result_category'] == 'rejected') {
-        $vldata['result_status'] = 4;
-    }*/
-
     if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
         $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
     } else {

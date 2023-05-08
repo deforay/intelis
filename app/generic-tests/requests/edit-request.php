@@ -954,6 +954,10 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
+
+		var testType = $("#testType").val();
+          getSampleTypeList(testType);
+
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1706,7 +1710,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 
 	function getTestTypeForm(){
           var testType = $("#testType").val();
-        //   getSampleTypeList(testType);
+           getSampleTypeList(testType);
           if(testType!=""){
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1750,5 +1754,18 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
                $(".requestForm").hide();
           }
      }
+
+	 function getSampleTypeList(testTypeId)
+    {
+          $.post("/includes/get-sample-type.php", {
+                    testTypeId: testTypeId,
+					sampleTypeId:'<?php echo $vlQueryInfo['sample_type'] ?>',
+                },
+                function(data) {
+                    if (data != "") {
+                        $("#specimenType").html(data);
+                    }
+                });
+    }
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');
