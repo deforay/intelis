@@ -7,6 +7,8 @@ use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $id = base64_decode($_GET['id']);

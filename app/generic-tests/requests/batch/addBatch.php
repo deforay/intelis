@@ -12,6 +12,8 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 /** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 

@@ -32,6 +32,8 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -40,6 +42,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
@@ -60,7 +63,7 @@ $sResult = $db->rawQuery($sQuery);
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 // Src of alert req
-$srcQuery = "SELECT DISTINCT source_of_request from form_vl where source_of_request is not null AND source_of_request not like ''";
+$srcQuery = "SELECT DISTINCT source_of_request FROM form_vl WHERE source_of_request is not null AND source_of_request not like ''";
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = [];
 foreach ($srcResults as $list) {

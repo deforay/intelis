@@ -13,6 +13,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 //echo "<pre>";var_dump($_POST);die;
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

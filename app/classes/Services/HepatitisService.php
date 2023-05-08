@@ -56,7 +56,7 @@ class HepatitisService
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
-        if(DateUtility::verifyIfDateValid($sampleCollectionDate) === false){
+        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -269,8 +269,7 @@ class HepatitisService
 
     public function insertSampleCode($params)
     {
-        /** @var MysqliDb $db */
-/** @var CommonService $general */
+        /** @var CommonService $general */
         $general = ContainerRegistry::get(CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
@@ -289,8 +288,8 @@ class HepatitisService
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                    echo 0;
-                    exit();
+                echo 0;
+                exit();
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;

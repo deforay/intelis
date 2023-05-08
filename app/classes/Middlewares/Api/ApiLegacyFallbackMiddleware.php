@@ -38,10 +38,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
                 // Set the output of the legacy PHP code as the response body
                 $response->getBody()->write($output);
-            } catch (SystemException $e) {
-                ob_end_clean(); // Clean the buffer in case of an error
-                throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
-            } catch (\Exception $e) {
+            } catch (SystemException|\Exception $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
                 throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
             } catch (\Throwable $e) {

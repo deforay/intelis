@@ -2,14 +2,14 @@
 
 namespace App\HttpHandlers;
 
+use MysqliDb;
+use App\Services\CommonService;
+use Laminas\Diactoros\Response;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use MysqliDb;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 
 class LegacyRequestHandler implements RequestHandlerInterface
@@ -79,10 +79,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
 
                 return $response;
             }
-        } catch (SystemException $e) {
-            ob_end_clean(); // Clean the buffer in case of an error
-            throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
-        } catch (\Exception $e) {
+        } catch (SystemException|\Exception $e) {
             ob_end_clean(); // Clean the buffer in case of an error
             throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
         } catch (\Throwable $e) {

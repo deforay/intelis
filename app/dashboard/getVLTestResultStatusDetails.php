@@ -11,6 +11,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 /** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $configQuery = "SELECT `value` FROM global_config where name ='vl_form'";
