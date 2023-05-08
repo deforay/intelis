@@ -776,7 +776,6 @@ class CommonService
     public function getSampleType($testTypeId)
     {
         $sampleTypeQry = "SELECT * FROM r_sample_types as st INNER JOIN generic_test_sample_type_map as map ON map.sample_type_id=st.sample_type_id WHERE map.test_type_id=$testTypeId AND st.sample_type_status='active'";
-        $sampleTypeResult = $this->db->query($sampleTypeQry);
-        return $sampleTypeResult;
+        return $this->db->query($sampleTypeQry);
     }
 }

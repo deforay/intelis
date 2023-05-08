@@ -524,11 +524,11 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 													<?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row">Date de Revu</td>
+											<th scope="row">Date de Revu</th>
 											<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
 										</tr>
 										<tr class="change-reason">
-											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
+											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></th>
 											<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
 											<th scope="row"></th>
 											<td></td>

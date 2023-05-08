@@ -585,7 +585,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">Reviewed on</td>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
@@ -595,7 +595,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                         <tr>
@@ -608,18 +608,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <?php
-                                            $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <th scope="row">Authorized By</th>
                                             <td>
-                                                <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Authorized on</td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
+                                            <th scope="row">Authorized on</th>
+                                            <td><input type="text" <?php echo $disabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>

@@ -555,7 +555,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Revu le</td>
+											<th scope="row">Revu le</th>
 											<td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Revu le" title="Please enter the Revu le" /></td>
 											<th scope="row">Revu par</th>
 											<td>
@@ -577,7 +577,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 										</tr>
 										<tr class="change-reason">
-											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></td>
+											<th class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></th>
 											<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
 											<th scope="row"></th>
 											<td></td>

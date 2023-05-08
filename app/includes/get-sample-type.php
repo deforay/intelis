@@ -29,7 +29,7 @@ else
     if (!empty($_POST['testType'])) {
         $table = 'r_' . $_POST['testType'] . '_sample_type';
     }
-    if (isset($facilityAttributes) && isset($facilityAttributes['sampleType']) && !empty($facilityAttributes['sampleType'])) {
+    if (isset($facilityAttributes['sampleType']) && !empty($facilityAttributes['sampleType'])) {
         $db->where("sample_id IN(" . $facilityAttributes['sampleType'][$_POST['testType']] . ")");
     }
     $db->where("status = 'active'");

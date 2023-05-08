@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Throwable;
 
 class LegacyRequestHandler implements RequestHandlerInterface
 {
@@ -82,7 +83,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
         } catch (SystemException|\Exception $e) {
             ob_end_clean(); // Clean the buffer in case of an error
             throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
             throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500);
         }

@@ -486,7 +486,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on <span class="mandatory">*</span></label></td>
+											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on <span class="mandatory">*</span></label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="date-time disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the reviewed on" /></td>
 										</tr>
 										<tr>
@@ -496,7 +496,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="approvedOn">Approved on <span class="mandatory">*</span></label></td>
+											<th scope="row"><label class="label-control" for="approvedOn">Approved on <span class="mandatory">*</span></label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control isRequired" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
 										<tr>

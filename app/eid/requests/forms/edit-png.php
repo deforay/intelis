@@ -469,7 +469,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Reviewed On</td>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th scope="row">Reviewed By</th>
                                             <td>
@@ -479,7 +479,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Approved On</td>
+                                            <th scope="row">Approved On</th>
                                             <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th scope="row">Approved By</th>
                                             <td>
@@ -489,7 +489,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                             <th scope="row"></th>
                                             <td></td>

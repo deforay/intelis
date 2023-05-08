@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
 class ApiErrorHandlingMiddleware implements MiddlewareInterface
 {
@@ -21,7 +22,7 @@ class ApiErrorHandlingMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return ($this->errorResponseGenerator)($exception, $request);
         }
     }

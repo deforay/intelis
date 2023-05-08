@@ -666,7 +666,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th scope="row">Reviewed On</td>
+                                        <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th scope="row">Reviewed By</th>
                                             <td>
@@ -676,7 +676,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th scope="row">Approved On</td>
+                                        <th scope="row">Approved On</th>
                                             <td><input type="text" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th scope="row">Approved By</th>
                                             <td>
@@ -696,15 +696,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 </select>
                                             </td>
                                             <?php
-                                            $disapled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <th scope="row"><label for="isResultAuthorized">Referred By</label></th>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Referred By" title="Please enter who referred result" /></td>
+                                            <td><input type="text" <?php echo $disabled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control" placeholder="Referred By" title="Please enter who referred result" /></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row"><label for="isResultAuthorized">Referred On</label></td>
-                                            <td><input type="text" <?php echo $disapled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <th scope="row"><label for="isResultAuthorized">Referred On</label></th>
+                                            <td><input type="text" <?php echo $disabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
+                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>

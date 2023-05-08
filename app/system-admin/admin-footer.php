@@ -10,7 +10,7 @@
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 
-<script src="/assets/js/select2.js"></script>
+<script src="/assets/js/select2.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->

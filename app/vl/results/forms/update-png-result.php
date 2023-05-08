@@ -657,7 +657,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr class="change-reason">
-										<th class="change-reason labels" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+										<th class="change-reason labels" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
 										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
 										<th scope="row"></th>
 										<td></td>

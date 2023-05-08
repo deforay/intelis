@@ -52,11 +52,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 </footer>
 </div>
 
-<!--<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>-->
-
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
-<script type="text/javascript" src="/assets/js/select2.js"></script>
+<script type="text/javascript" src="/assets/js/select2.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->

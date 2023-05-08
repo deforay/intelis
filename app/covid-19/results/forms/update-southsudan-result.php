@@ -515,7 +515,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">Reviewed on</td>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
@@ -525,7 +525,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                         <tr>
@@ -541,7 +541,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                             <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Authorized By" title="Please enter te Authorized By" /></td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Authorized on</td>
+                                            <th scope="row">Authorized on</th>
                                             <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Authorized on" title="Please enter the Authorized on" /></td>
                                             <th scope="row"></th>
                                             <td></td>

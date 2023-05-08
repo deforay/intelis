@@ -66,8 +66,7 @@ class ImageResizeUtility
         if (empty($image_data) || $image_data === null) {
             throw new Exception('image_data must not be empty');
         }
-        $resize = new self('data://application/octet-stream;base64,' . base64_encode($image_data));
-        return $resize;
+        return new self('data://application/octet-stream;base64,' . base64_encode($image_data));
     }
 
 

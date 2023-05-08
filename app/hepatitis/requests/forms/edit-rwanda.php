@@ -411,19 +411,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <?php
-                                            $disapled = (isset($hepatitisInfo['is_result_authorised']) && $hepatitisInfo['is_result_authorised'] == 'no') ? "disabled" : "";
+                                            $disabled = (isset($hepatitisInfo['is_result_authorised']) && $hepatitisInfo['is_result_authorised'] == 'no') ? "disabled" : "";
                                             ?>
                                             <td>Authorized By</td>
                                             <td>
-                                                <select name="authorizedBy" <?php echo $disapled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $hepatitisInfo['authorized_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Authorized on</td>
-                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disapled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on" /></td>
-                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></td>
+                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['authorized_on']) ?>" type="text" <?php echo $disabled; ?> name="authorizedOn" id="authorizedOn" class="labSecInput disabled-field rejected-input form-control date" placeholder="Authorized on" title="Please select the authorized on" /></td>
+                                            <th class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>
