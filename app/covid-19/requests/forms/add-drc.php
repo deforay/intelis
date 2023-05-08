@@ -491,14 +491,14 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width: 15%;"><label for="specimenType"> Type(s) d' échantillon(s) dans le tube (cochez au moins une des cases suivants) <span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width: 15%;"><label for="specimenType"> Type(s) d' échantillon(s) dans le tube (cochez au moins une des cases suivants) <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
                                             <select class="form-control isRequired" id="specimenType" name="specimenType" title="Type(s) d' échantillon(s) dans le tube">
                                                 <option value="">--Select--</option>
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult); ?>
                                             </select>
                                         </td>
-                                        <th style="width: 15% !important;"><label for="numberOfDaysSick">Depuis combien de jours êtes-vous malade?</label></th>
+                                        <th scope="row" style="width: 15% !important;"><label for="numberOfDaysSick">Depuis combien de jours êtes-vous malade?</label></th>
                                         <td style="width:35% !important;">
                                             <input type="text" class="form-control" id="numberOfDaysSick" name="numberOfDaysSick" placeholder="Depuis combien de jours êtes-vous malade?" title="Date de Result PCR" />
                                         </td>
@@ -679,7 +679,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
+                                        <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" id="hasRecentTravelHistory" name="hasRecentTravelHistory" title="Avez-vous voyagé au cours des 14 derniers jours ?">
                                                 <option value="">--Select--</option>
@@ -688,14 +688,14 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <option value="unknown">Inconnu</option>
                                             </select>
                                         </td>
-                                        <th style="width: 15% !important;"><label for="countryName">Si oui, dans quels pays?</label></th>
+                                        <th scope="row" style="width: 15% !important;"><label for="countryName">Si oui, dans quels pays?</label></th>
                                         <td style="width:35% !important;">
                                             <input type="text" class="form-control" id="countryName" name="countryName" placeholder="Si oui, dans quels pays ?" title="Si oui, dans quels pays?" />
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <th style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
+                                        <th scope="row" style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                         <td style="width:35% !important;">
                                             <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
                                         </td>
@@ -736,7 +736,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width: 15% !important;"><label for="hasRecentTravelHistory">Patiend fume-t-il? </label></th>
+                                        <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Patiend fume-t-il? </label></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" id="doesPatientSmoke" name="doesPatientSmoke" title="Patiend fume-t-il?">
                                                 <option value="">--Select--</option>
@@ -805,10 +805,10 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
                                                     <thead>
                                                         <tr>
-                                                            <th class="text-center">Test non</th>
-                                                            <th class="text-center">Nom du Testkit (ou) Méthode de test utilisée</th>
-                                                            <th class="text-center">Date de l'analyse</th>
-                                                            <th class="text-center">Résultat du test</th>
+                                                            <th scope="row" class="text-center">Test non</th>
+                                                            <th scope="row" class="text-center">Nom du Testkit (ou) Méthode de test utilisée</th>
+                                                            <th scope="row" class="text-center">Date de l'analyse</th>
+                                                            <th scope="row" class="text-center">Résultat du test</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">

@@ -396,13 +396,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width: 15%;"><label for="reasonForCovid19Test">Reason for Test Request<span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width: 15%;"><label for="reasonForCovid19Test">Reason for Test Request<span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
                                             <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="Please choose reason for testing" style="width:100%">
                                                 <?= $general->generateSelectOptions($covid19ReasonsForTesting, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th style="width: 15%;"></th>
+                                        <th scope="row" style="width: 15%;"></th>
                                         <td style="width: 35%;"></td>
                                     </tr>
                                 </table>
@@ -468,7 +468,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width: 15%;"><label for="specimenType"> Type of sample collection <span class="mandatory">*</span></label></th>
+                                        <th scope="row" style="width: 15%;"><label for="specimenType"> Type of sample collection <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
                                             <select class="form-control isRequired" id="specimenType" name="specimenType" title="Please choose the sample type">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
@@ -487,7 +487,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th style="width: 15%;"><label for="healthOutcome"> Health Outcome</label></th>
+                                        <th scope="row" style="width: 15%;"><label for="healthOutcome"> Health Outcome</label></th>
                                         <td style="width: 35%;">
                                             <select class="form-control" id="healthOutcome" name="healthOutcome" title="Please select the health outcome">
                                                 <option value="">-- Select --</option>
@@ -551,11 +551,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
                                                     <thead>
                                                         <tr>
-                                                            <th class="text-center">Test No</th>
-                                                            <th class="text-center">Test Method</th>
-                                                            <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center">Test Platform</th>
-                                                            <th class="text-center">Test Result</th>
+                                                            <th scope="row" class="text-center">Test No</th>
+                                                            <th scope="row" class="text-center">Test Method</th>
+                                                            <th scope="row" class="text-center">Date of Testing</th>
+                                                            <th scope="row" class="text-center">Test Platform</th>
+                                                            <th scope="row" class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">

@@ -498,10 +498,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
-                                                            <th class="text-center">Test No.</th>
-                                                            <th class="text-center">Name of the Testkit (or) Test Method used</th>
-                                                            <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center">Test Result</th>
+                                                            <th scope="row" class="text-center">Test No.</th>
+                                                            <th scope="row" class="text-center">Name of the Testkit (or) Test Method used</th>
+                                                            <th scope="row" class="text-center">Date of Testing</th>
+                                                            <th scope="row" class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">

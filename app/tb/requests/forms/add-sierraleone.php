@@ -105,7 +105,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<th style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
+											<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
 											<td style="width: 16.6%;">
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
 												<input type="hidden" id="sampleCode" name="sampleCode" />

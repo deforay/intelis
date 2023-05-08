@@ -136,7 +136,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<th style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
+											<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
 											<td style="width: 16.6%;">
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo (isset($tbInfo['remote_sample_code']) && $tbInfo['remote_sample_code'] != "") ? $tbInfo['remote_sample_code'] : $tbInfo['sample_code']; ?></span>
 												<input type="hidden" id="sampleCode" name="sampleCode" />

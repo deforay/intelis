@@ -468,7 +468,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 													</tr>
 										<tr>
-											<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
+											<th scope="row" colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 										</tr>
 										<tr>
 											<td class="labels"><label for="failedTestDate">Repeat Test date</label></td>

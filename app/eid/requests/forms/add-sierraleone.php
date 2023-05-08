@@ -178,11 +178,11 @@ $aResult = $db->query($aQuery);
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" oninput="showPatientList($(this).val(), 1500);" />
                                         </td>
-                                        <th style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" onchange="" />
                                         </td>
@@ -225,7 +225,7 @@ $aResult = $db->query($aQuery);
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Mother's HIV Status:</th>
+                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV Status:</th>
                                         <td style="width:35% !important">
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
@@ -235,7 +235,7 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important" class="labels">Is Mother on ART? </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
                                         <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
                                                 <option value=''> -- Select -- </option>
@@ -388,17 +388,17 @@ $aResult = $db->query($aQuery);
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
                                         </td>
-                                        <th style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>

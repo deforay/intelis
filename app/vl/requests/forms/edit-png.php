@@ -652,7 +652,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 									<tr>
-										<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
+										<th scope="row" colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 									</tr>
 									<tr>
 										<td class="labels"><label for="testDate">Repeat Test date</label></td>

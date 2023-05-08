@@ -188,11 +188,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" oninput="showPatientList($(this).val(),1500);" />
                                         </td>
-                                        <th style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
@@ -240,7 +240,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Mother's HIV Status:</th>
+                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV Status:</th>
                                         <td style="width:35% !important">
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
@@ -250,7 +250,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </select>
                                         </td>
 
-                                        <th style="width:15% !important" class="labels">ART given to the Mother during:</th>
+                                        <th scope="row" style="width:15% !important" class="labels">ART given to the Mother during:</th>
                                         <td style="width:35% !important">
                                             <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> No ART given <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Pregnancy <br>
@@ -354,17 +354,17 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>
-                                        <th style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime($eidInfo['sample_dispatched_datetime'])); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>

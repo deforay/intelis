@@ -558,7 +558,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<th colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
+										<th scope="row" colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 									</tr>
 									<tr>
 										<td class="labels"><label for="testDate">Repeat Test date</label></td>
@@ -657,7 +657,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr class="change-reason">
-										<th class="change-reason labels" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
+										<th scope="row" class="change-reason labels" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
 										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
 										<th scope="row"></th>
 										<td></td>

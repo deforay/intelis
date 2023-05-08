@@ -368,7 +368,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="testingPointField" style="display:none;"><label for="">Testing Point </label></th>
+                                            <th scope="row" class="testingPointField" style="display:none;"><label for="">Testing Point </label></th>
                                             <td class="testingPointField" style="display:none;">
                                                 <select name="testingPoint" id="testingPoint" class="form-control" title="Please select a Testing Point" style="width:100%;">
                                                 </select>
@@ -415,13 +415,13 @@ $sampleSuggestionDisplay = 'display:none;';
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
                                                     <thead>
                                                         <tr>
-                                                            <th class="text-center">Test No.</th>
-                                                            <th class="text-center">Test Method</th>
-                                                            <th class="text-center">Date of Testing</th>
-                                                            <th class="text-center">Test Platform/Test Kit</th>
+                                                            <th scope="row" class="text-center">Test No.</th>
+                                                            <th scope="row" class="text-center">Test Method</th>
+                                                            <th scope="row" class="text-center">Date of Testing</th>
+                                                            <th scope="row" class="text-center">Test Platform/Test Kit</th>
                                                             <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
                                                             <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
-                                                            <th class="text-center">Test Result</th>
+                                                            <th scope="row" class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">

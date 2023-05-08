@@ -38,7 +38,7 @@ require_once(APPLICATION_PATH . '/header.php');
 							</td>
 						</tr>
 						<tr class="activateSample" style="display:none;">
-							<th style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
+							<th scope="row" style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
 							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 							<td style="width:20%;" colspan="3">
 								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> <?php echo _("Activate Samples"); ?></a>

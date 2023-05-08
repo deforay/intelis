@@ -183,7 +183,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
 
-                                        <th class="testingPointField" style="display:none;"><label for="">Testing Point </label></th>
+                                        <th scope="row" class="testingPointField" style="display:none;"><label for="">Testing Point </label></th>
                                         <td class="testingPointField" style="display:none;">
                                             <select name="testingPoint" id="testingPoint" class="form-control" title="Please select a Testing Point" style="width:100%;">
                                             </select>
