@@ -226,6 +226,8 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
                                                        <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <span class="artNoGroup" id="artNoGroup"></span>
+
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -894,6 +896,45 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
      $(document).ready(function() {
 
+          $("#artNo").on('input', function() {
+
+let artNo = $.trim($(this).val());
+
+if (artNo.length < 10) {
+	 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+}
+if (artNo.length > 3) {
+
+	 $.post("/common/patient-last-request-details.php", {
+			   testType: 'vl',
+			   patientId: artNo,
+		  },
+		  function(data) {
+			   if (data != "0") {
+					obj = $.parseJSON(data);
+					if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+						 $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+					}
+					if (obj.request_created_datetime != null) {
+						 $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+					}
+					if (obj.sample_collection_date != null) {
+						 $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+					}
+					if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+					}
+			   } else {
+					if (artNo.length < 10) {
+						 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+					} else {
+						 $("#artNoGroup").html('');
+					}
+			   }
+		  });
+}
+
+});
          $('#activeTB').on('change',function(){
           if($(this).val()=='yes')
                $('.tbPhaseBox').show();

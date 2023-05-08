@@ -7,6 +7,9 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Services\GenericTestsService;
 
+
+$applicationConfig = ContainerRegistry::get('applicationConfig');
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -23,6 +26,8 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $_SESSION['module'] = $_SESSION['module'] ?? [];
+
+$syncLatestTime = $general->getLastSyncDateTime();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -41,8 +46,8 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortName = _("Sample Tracking");
 }
 
-if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
-	$systemType = SYSTEM_CONFIG['instanceName'];
+if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['instanceName'])) {
+	$systemType = $applicationConfig['instanceName'];
 }
 
 // Check if the user can access the requested page

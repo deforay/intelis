@@ -954,6 +954,10 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
+
+		var testType = $("#testType").val();
+          getSampleTypeList(testType);
+
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,

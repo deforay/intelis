@@ -1426,12 +1426,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function showPatientList() {
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("search-patients.php", {
-                    artPatientNo: $.trim($("#artPatientNo").val())
+            $.post("/generic-tests/requests/search-patients.php", {
+                    artPatientNo: $.trim($("#artPatientNo").val()),
+                    testType: $.trim($("#testType").val())
                 },
                 function(data) {
                     if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val())+'&testType='+$.trim($("#testType").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
                     }

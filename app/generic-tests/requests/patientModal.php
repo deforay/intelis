@@ -9,8 +9,9 @@ use App\Utilities\DateUtility;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $artNo = $_GET['artNo'];
+$testType = $_GET['testType'];
 
-$pQuery = "SELECT * FROM form_generic as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id where (patient_id like '%" . $artNo . "%' OR province_id like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
+$pQuery = "SELECT * FROM form_generic as g inner join facility_details as fd ON fd.facility_id=g.facility_id where g.test_type=$testType AND(patient_id like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
 $pResult = $db->rawQuery($pQuery);
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
@@ -81,6 +82,7 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
+										//$patientDetails = $patient['patient_first_name'] . "##" . $patient['patient_last_name'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age_in_years'] . "##" . $patient['patient_age_in_months'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_mobile_number'] . "##" . $patient['consent_to_receive_sms'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']) . "##" . $patient['current_regimen'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['last_viral_load_date']) . "##" . $patient['last_viral_load_result'] . "##" . $patient['number_of_enhanced_sessions'] . "##" . $patient['patient_id'] . "##" . $patient['is_patient_new'] . "##" .$patient['sample_tested_datetime']; 
 										$patientDetails = json_encode(array(
 											"name"=>$patient['patient_first_name'] . " " . $patient['patient_last_name'],
 											"gender" => $patient['patient_gender'],
@@ -92,7 +94,12 @@ $pResult = $db->rawQuery($pQuery);
 											"mobile" => $patient['patient_mobile_number'],
 											"consent_to_receive_sms" =>$patient['consent_to_receive_sms'],
 											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
+											"current_regimen" => $patient['current_regimen'],
+											"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
+											"last_viral_load_result" => $patient['last_viral_load_result'],
+											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
 											"patient_id" => $patient['patient_id'],
+											"is_patient_new" => $patient['is_patient_new'],
 											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
 											"result" => $patient['result'],
 										)); ?>
