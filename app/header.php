@@ -467,7 +467,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/common/symptoms/symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
 												</li>
 											<?php } ?>
-											<?php if (isset($_SESSION['privileges']) && in_array("testType.php", $_SESSION['privileges'])) { ?>
+											<?php if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu testTypeConfigurationMenu">
 													<a href="/generic-tests/configuration/testType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
 												</li>
@@ -662,7 +662,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("specimen-referral-manifest-list.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 									<li class="allMenu specimenGenericReferralManifestListMenu">
-										<a href="/specimen-referral-manifest/specimen-referral-manifest-list.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span> VL <?php echo _("Specimen Manifest"); ?></a>
+										<a href="/specimen-referral-manifest/specimen-referral-manifest-list.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Specimen Manifest"); ?></a>
 									</li>
 								<?php }
 								?>
