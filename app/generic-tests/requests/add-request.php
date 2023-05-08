@@ -113,7 +113,7 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 //     require('forms/add-angola.php');
 // }
 
-
+/* 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',
@@ -124,7 +124,7 @@ $fileArray = array(
     7 => 'forms/add-rwanda.php',
     8 => 'forms/add-angola.php',
 );
-
+ */
 //Form Starts.....
 
 //Funding source list
@@ -691,7 +691,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="view-request.php" class="btn btn-default"> Cancel</a>
+                                             <a href="view-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                    </div>
                               </div>

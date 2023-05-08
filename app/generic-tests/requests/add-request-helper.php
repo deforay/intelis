@@ -536,7 +536,7 @@ try {
             }
         } else {
             $_SESSION['alertMsg'] = _("Please try again later");
-            header("Location:view-request.php");
+            header("Location:view-requests.php");
         }
     }
 } catch (Exception $exc) {

@@ -461,7 +461,6 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 	?>
 	<!-- Main content -->
 	<section class="content">
-
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -939,7 +938,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 								<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-								<a href="view-request.php" class="btn btn-default"> Cancel</a>
+								<a href="view-requests.php" class="btn btn-default"> Cancel</a>
 							</div>
 				</form>
 			</div>
@@ -955,7 +954,6 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
-		getTestTypeForm()
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -983,7 +981,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		});
 		$('.date').mask('99-aaa-9999');
 		$('.dateTime').mask('99-aaa-9999 99:99');
-
+		
 		$('.result-focus').change(function(e) {
 			var status = false;
 			$(".result-focus").each(function(index) {
@@ -1001,7 +999,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		});
 
 
-
+		
 
 		/** Edit south sudan */
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
@@ -1018,21 +1016,21 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		/*$("#labId").on('change', function() {
 			if ($("#labId").val() != "") {
 				$.post("/includes/get-sample-type.php", {
-						facilityId: $('#labId').val(),
-						testType: 'vl',
-						sampleId: '<?php echo $vlQueryInfo['sample_type']; ?>'
-					},
-					function(data) {
-						if (data != "") {
-							$("#specimenType").html(data);
-						}
-					});
+					facilityId: $('#labId').val(),
+					testType: 'vl',
+					sampleId: '<?php echo $vlQueryInfo['sample_type']; ?>'
+				},
+				function(data) {
+					if (data != "") {
+						$("#specimenType").html(data);
+					}
+				});
 			}
 		});*/
-
-
-
-
+		
+		
+		
+		
 		/*$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1057,7 +1055,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			timeFormat: "HH:mm",
 			yearRange: "-100:+100",
 		});*/
-
+		
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1079,14 +1077,14 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-
-
+		
+		
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
 		var dispatchDate = $("#sampleDispatchedDate").toString();
 		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
+		$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+		
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1095,8 +1093,8 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			minDate: minDate,
 			startDate: minDate,
 		});
-
-
+		
+		
 		autoFillFocalDetails();
 		$('#fName').select2({
 			width: '100%',
@@ -1114,7 +1112,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			width: '100%',
 			placeholder: "Select Tested By"
 		});
-
+		
 		$('#approvedBy').select2({
 			width: '100%',
 			placeholder: "Select Approved By"
@@ -1129,11 +1127,9 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			placeholder: "Province"
 		});
 		//getAge();
+		getTestTypeForm();
 
 		getfacilityProvinceDetails($("#fName").val());
-
-
-
 
 		setTimeout(function() {
 			$("#vlResult").trigger('change');
@@ -1710,7 +1706,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 
 	function getTestTypeForm(){
           var testType = $("#testType").val();
-          getSampleTypeList(testType);
+        //   getSampleTypeList(testType);
           if(testType!=""){
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1734,7 +1730,6 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
                     if(data.others.length>0){
                          $("#othersDynamicForm").html(data.others);
                     }
-                    checkNum();
                     $('.date').datepicker({
                          changeMonth: true,
                          changeYear: true,
@@ -1755,20 +1750,5 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
                $(".requestForm").hide();
           }
      }
-
-	function getSampleTypeList(testTypeId)
-    {
-          $.post("/includes/get-sample-type.php", {
-                    testTypeId: testTypeId,
-                    sampleTypeId :'<?php echo $vlQueryInfo['sample_type']; ?>'
-                },
-                function(data) {
-                    if (data != "") {
-                        $("#specimenType").html(data);
-                    }
-                });
-    }
-
-	
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

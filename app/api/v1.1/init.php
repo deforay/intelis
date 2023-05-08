@@ -36,14 +36,13 @@ $transactionId = $general->generateUUID();
 $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
 
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */
 $statusList = [];
-$tsQuery = "SELECT status_id, status_name FROM r_sample_status where status = 'active'";
+$tsQuery = "SELECT status_id, status_name FROM r_sample_status WHERE status = 'active'";
 $tsResult = $db->rawQuery($tsQuery);
 foreach ($tsResult as $row) {
     $statusList[$row['status_id']] = $row['status_name'];

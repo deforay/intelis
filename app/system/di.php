@@ -29,6 +29,7 @@ use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
 use Laminas\Config\Factory as ConfigFactory;
 use App\ErrorHandlers\ErrorResponseGenerator;
+use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
@@ -104,6 +105,8 @@ $builder->addDefinitions([
     ApiAuthMiddleware::class => DI\create(ApiAuthMiddleware::class)
         ->constructor(DI\get(UsersService::class)),
     ErrorHandlerMiddleware::class => DI\create(ErrorHandlerMiddleware::class)
+        ->constructor(DI\get(ErrorResponseGenerator::class)),
+    ApiErrorHandlingMiddleware::class => DI\create(ApiErrorHandlingMiddleware::class)
         ->constructor(DI\get(ErrorResponseGenerator::class)),
     ApiLegacyFallbackMiddleware::class => DI\create(ApiLegacyFallbackMiddleware::class)
 ]);

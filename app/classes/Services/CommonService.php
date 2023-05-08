@@ -348,15 +348,46 @@ class CommonService
 
     public function getHeader($key)
     {
-        $headers = apache_request_headers();
+        $headers = null;
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+        } else {
+            $headers = getallheaders();
+        }
         foreach ($headers as $header => $value) {
-            if (strtolower($key) == strtolower($header)) {
+            if (strtolower($key) === strtolower($header)) {
                 return $value;
             }
         }
 
         return null;
     }
+
+    public function getAuthorizationBearerToken()
+    {
+        $headers = null;
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+        } else {
+            $headers = getallheaders();
+        }
+
+        if (isset($headers['Authorization'])) {
+            $authorizationHeader = $headers['Authorization'];
+        } elseif (isset($headers['authorization'])) {
+            // Fallback for case-insensitive header check
+            $authorizationHeader = $headers['authorization'];
+        } else {
+            return null;
+        }
+
+        if (preg_match('/Bearer\s(\S+)/', $authorizationHeader, $matches)) {
+            return $matches[1];
+        } else {
+            return null;
+        }
+    }
+
 
     public function getTestingPlatforms($testType = null)
     {
