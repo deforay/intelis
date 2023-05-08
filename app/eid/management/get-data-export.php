@@ -122,6 +122,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     u_d.user_name as reviewedBy,
                     a_u_d.user_name as approvedBy,
                     rs.rejection_reason_name,
+                    tr.test_reason_name,
                     r_f_s.funding_source_name,
                     r_i_p.i_partner_name,
                     rs.rejection_reason_name as rejection_reason
@@ -136,6 +137,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
                     LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
                     LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+                    LEFT JOIN r_eid_test_reasons as tr ON tr.test_reason_id=vl.reason_for_eid_test 
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
                     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 /* Sample collection date filter */
