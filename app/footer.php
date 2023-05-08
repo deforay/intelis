@@ -243,7 +243,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	});
 	str = $(location).attr('pathname');
 	splitsUrl = str.substr(str.lastIndexOf('/') + 1);
-	splitsUrlCheck = str.split("/", 4);
+	splitsUrlCheck = str.split("/", 5);
 	// console.log(splitsUrl);
 	if (splitsUrl == 'users.php' || splitsUrl == 'addUser.php' || splitsUrl == 'editUser.php') {
 		$(".access-control-menu,.manage").addClass('active');
@@ -315,7 +315,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".request").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addVlRequestZmMenu").addClass('active');
-	} else if (splitsUrl == 'batchcode.php' || splitsUrl == 'addBatch.php' || splitsUrl == 'editBatch.php' || splitsUrl == 'addBatchControlsPosition.php' || splitsUrl == 'editBatchControlsPosition.php') {
+	} else if (splitsUrlCheck[1] != 'generic-tests' && splitsUrl == 'batchcode.php' || splitsUrl == 'addBatch.php' || splitsUrl == 'editBatch.php' || splitsUrl == 'addBatchControlsPosition.php' || splitsUrl == 'editBatchControlsPosition.php') {
 		$(".request").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".batchCodeMenu").addClass('active');
@@ -837,11 +837,25 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".system-config-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".symptomsMenu").addClass('active');
+		
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'view-requests.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-menu, .genericRequestMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'add-request.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-menu, .addGenericRequestMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'addSamplesFromManifest.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-menu, .addGenericSamplesFromManifestMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batchcode.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-menu, .batchGenericCodeMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'specimenReferralManifestList.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-menu, .specimenGenericReferralManifestListMenu").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
-		$(".dashboardMenu").addClass('active');
 	}
-
 	function screenshot(supportId, attached) {
 		if (supportId != "" && attached == 'yes') {
 			closeModal();

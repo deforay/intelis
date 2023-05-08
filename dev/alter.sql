@@ -3824,3 +3824,6 @@ ALTER TABLE `form_generic` ADD `test_type_form` TEXT NULL DEFAULT NULL AFTER `te
 
 -- Thana 08-May-2023
 ALTER TABLE `form_generic` CHANGE `test_type_form` `test_type_form` JSON NULL DEFAULT NULL;
+ALTER TABLE `form_generic` ADD PRIMARY KEY(`sample_id`);
+ALTER TABLE `form_generic` CHANGE `sample_id` `sample_id` INT NOT NULL AUTO_INCREMENT;
+

@@ -351,7 +351,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                               <div class="box box-primary requestForm" style="display:none;">
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Patient Information</h3>&nbsp;&nbsp;&nbsp;
-                                        <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter ART Number or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
+                                        <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID" title="Please enter the Enter patient id" />&nbsp;&nbsp;
                                         <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                    </div>
                                    <div class="box-body">
@@ -1426,7 +1426,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function showPatientList() {
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/vl/requests/search-patients.php", {
+            $.post("search-patients.php", {
                     artPatientNo: $.trim($("#artPatientNo").val())
                 },
                 function(data) {

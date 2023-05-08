@@ -321,6 +321,8 @@ try {
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
     $testTypeForm['form_field_id']=$_POST['testTypeId'];
     $testTypeForm['form_field_value']=$_POST['testTypeForm'];
+    /* echo "<pre>";
+    print_r($_POST['dynamicFields']);die; */
     
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId, 
@@ -375,7 +377,7 @@ try {
         'manual_result_entry'                   => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type'                             => $_POST['testType'],
-        'test_type_form'                        => json_encode($testTypeForm),
+        'test_type_form'                        => json_encode($_POST['dynamicFields']),
     );
 
     if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
@@ -463,7 +465,7 @@ try {
 
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
-   //echo '<pre>'; print_r($vldata); die;
+//    echo '<pre>'; print_r($vldata); die;
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
@@ -500,44 +502,34 @@ try {
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null;
         $id = $db->insert($tableName, $vldata);
     }
-    if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'message' => 'Successfully added.'
-        );
-        http_response_code(200);
-        echo json_encode($payload);
-        exit(0);
-    } else {
-        if ($id > 0) {
-            $_SESSION['alertMsg'] = _("VL request added successfully");
-            //Add event log
+    
+    if ($id > 0) {
+        $_SESSION['alertMsg'] = _("VL request added successfully");
+        //Add event log
 
-            $eventType = 'add-vl-request-sudan';
-            $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
-            $resource = 'vl-request-ss';
+        $eventType = 'add-vl-request-sudan';
+        $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
+        $resource = 'vl-request-ss';
 
-            $general->activityLog($eventType, $action, $resource);
+        $general->activityLog($eventType, $action, $resource);
 
-            $barcode = "";
-            if (isset($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
-                $s = $_POST['sampleCode'];
-                $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['fName'];
-                $facResult = $db->rawQuery($facQuery);
-                $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
-                $barcode = "?barcode=true&s=$s&f=$f";
-            }
+        $barcode = "";
+        if (isset($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
+            $s = $_POST['sampleCode'];
+            $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['fName'];
+            $facResult = $db->rawQuery($facQuery);
+            $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
+            $barcode = "?barcode=true&s=$s&f=$f";
+        }
 
-            if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-                header("Location:add-request.php");
-            } else {
-                header("Location:add-request.php");
-            }
+        if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
+            header("Location:add-request.php");
         } else {
-            $_SESSION['alertMsg'] = _("Please try again later");
             header("Location:view-requests.php");
         }
+    } else {
+        $_SESSION['alertMsg'] = _("Please try again later");
+        header("Location:view-requests.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

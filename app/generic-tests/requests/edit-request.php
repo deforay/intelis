@@ -427,7 +427,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
-$testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
+$testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 ?>
 <style>
 	.table>tbody>tr>td {
@@ -475,15 +475,15 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 							</div>
 							<div class="row">
 								<div class="col-xs-4 col-md-4">
-										<div class="form-group">
-											<label for="testType">Test Type</label>
-											<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
-												<option value=""> -- Select -- </option>
-												<?php foreach($testTypeResult as $testType){ ?>
-													<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] ?></option>
-												<?php } ?>
-											</select>
-										</div>
+									<div class="form-group">
+										<label for="testType">Test Type</label>
+										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+											<option value=""> -- Select -- </option>
+											<?php foreach ($testTypeResult as $testType) { ?>
+												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] ?></option>
+											<?php } ?>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div class="box-body requestForm" style="display:none;">
@@ -503,7 +503,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 										</div>
 									</div>
 
-									
+
 								</div>
 								<div class="row">
 									<div class="col-xs-4 col-md-4">
@@ -727,7 +727,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 									<div class="box-body">
 										<div class="row" id="othersDynamicForm"></div>
 									</div>
-									
+
 									<?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
@@ -767,14 +767,14 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 												</div>
 											</div>
 											<div class="row">
-												
+
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_testing_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
 													</div>
 												</div>
-												
+
 												<div class="col-md-4">
 													<label for="testingPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
@@ -833,12 +833,12 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 														<input value="<?php echo DateUtility::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
-											
+
 												<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 											</div>
 											<div class="row">
 											<?php } ?>
-										
+
 											<?php if (count($reasonForFailure) > 0) { ?>
 												<div class="col-md-4 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure </label>
@@ -981,7 +981,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		});
 		$('.date').mask('99-aaa-9999');
 		$('.dateTime').mask('99-aaa-9999 99:99');
-		
+
 		$('.result-focus').change(function(e) {
 			var status = false;
 			$(".result-focus").each(function(index) {
@@ -999,7 +999,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		});
 
 
-		
+
 
 		/** Edit south sudan */
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
@@ -1027,10 +1027,10 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 				});
 			}
 		});*/
-		
-		
-		
-		
+
+
+
+
 		/*$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1055,7 +1055,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			timeFormat: "HH:mm",
 			yearRange: "-100:+100",
 		});*/
-		
+
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1077,14 +1077,14 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		
-		
+
+
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
 		var dispatchDate = $("#sampleDispatchedDate").toString();
 		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
-		$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
+			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1093,8 +1093,8 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			minDate: minDate,
 			startDate: minDate,
 		});
-		
-		
+
+
 		autoFillFocalDetails();
 		$('#fName').select2({
 			width: '100%',
@@ -1112,7 +1112,7 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 			width: '100%',
 			placeholder: "Select Tested By"
 		});
-		
+
 		$('#approvedBy').select2({
 			width: '100%',
 			placeholder: "Select Approved By"
@@ -1704,51 +1704,51 @@ $testTypeForm=json_decode($vlQueryInfo['test_type_form'],true);
 		// }
 	}
 
-	function getTestTypeForm(){
-          var testType = $("#testType").val();
-        //   getSampleTypeList(testType);
-          if(testType!=""){
-               $(".requestForm").show();
-               $.post("/generic-tests/requests/getTestTypeForm.php", {
-                    testType:testType,
-               },
-               function(data) {
-                    //console.log(data);
-                    data=JSON.parse(data);
-                    if(data.facility.length>0){
-                         $("#clinicDynamicForm").html(data.facility);
-                    }
-                    if(data.patient.length>0){
-                         $("#patientDynamicForm").html(data.patient);
-                    }
-                    if(data.lap.length>0){
-                         $("#lapDynamicForm").html(data.lap);
-                    }
-                    if(data.specimen.length>0){
-                         $("#specimenDynamicForm").html(data.specimen);
-                    }
-                    if(data.others.length>0){
-                         $("#othersDynamicForm").html(data.others);
-                    }
-                    $('.date').datepicker({
-                         changeMonth: true,
-                         changeYear: true,
-                         dateFormat: 'dd-M-yy',
-                         timeFormat: "hh:mm",
-                         maxDate: "Today",
-                         yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-                    }).click(function() {
-                         $('.ui-datepicker-calendar').show();
-                    });
-               });
-          }else{
-               $("#clinicDynamicForm").html('');
-               $("#patientDynamicForm").html('');
-               $("#lapDynamicForm").html('');
-               $("#specimenDynamicForm").html('');
-               $("#othersDynamicForm").html('');
-               $(".requestForm").hide();
-          }
-     }
+	function getTestTypeForm() {
+		var testType = $("#testType").val();
+		if (testType != "") {
+			$(".requestForm").show();
+			$.post("/generic-tests/requests/getTestTypeForm.php", {
+					testType: testType,
+					testTypeForm: '<?php echo base64_encode($vlQueryInfo['test_type_form']); ?>',
+				},
+				function(data) {
+					//console.log(data);
+					data = JSON.parse(data);
+					if (data.facility.length > 0) {
+						$("#clinicDynamicForm").html(data.facility);
+					}
+					if (data.patient.length > 0) {
+						$("#patientDynamicForm").html(data.patient);
+					}
+					if (data.lap.length > 0) {
+						$("#lapDynamicForm").html(data.lap);
+					}
+					if (data.specimen.length > 0) {
+						$("#specimenDynamicForm").html(data.specimen);
+					}
+					if (data.others.length > 0) {
+						$("#othersDynamicForm").html(data.others);
+					}
+					$('.date').datepicker({
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: 'dd-M-yy',
+						timeFormat: "hh:mm",
+						maxDate: "Today",
+						yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+					}).click(function() {
+						$('.ui-datepicker-calendar').show();
+					});
+				});
+		} else {
+			$("#clinicDynamicForm").html('');
+			$("#patientDynamicForm").html('');
+			$("#lapDynamicForm").html('');
+			$("#specimenDynamicForm").html('');
+			$("#othersDynamicForm").html('');
+			$(".requestForm").hide();
+		}
+	}
 </script>
 <?php require_once(APPLICATION_PATH . '/footer.php');

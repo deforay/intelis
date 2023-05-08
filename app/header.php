@@ -619,7 +619,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
 						<li class="header"><?php echo _("LAB TESTS"); ?></li>
-						<li class="treeview request">
+						<li class="treeview allMenu request generic-test-menu">
 							<a href="#">
 								<span class="fa-solid fa-pen-to-square"></span>
 								<span><?php echo _("Request Management"); ?></span>
@@ -630,27 +630,27 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							<ul class="treeview-menu">
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("vlRequest.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu vlRequestMenu">
+									<li class="allMenu genericRequestMenu">
 										<a href="/generic-tests/requests/view-requests.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu addVlRequestMenu">
+									<li class="allMenu addGenericRequestMenu">
 										<a href="/generic-tests/requests/add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-									<li class="allMenu addSamplesFromManifestMenu">
+									<li class="allMenu addGenericSamplesFromManifestMenu">
 										<a href="/generic-tests/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("batchcode.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu batchCodeMenu">
+									<li class="allMenu batchGenericCodeMenu">
 										<a href="/generic-tests/requests/batch/batchcode.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 									</li>
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-									<li class="allMenu specimenReferralManifestListVLMenu">
+									<li class="allMenu specimenGenericReferralManifestListMenu">
 										<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span> VL <?php echo _("Specimen Manifest"); ?></a>
 									</li>
 								<?php }
