@@ -3835,6 +3835,8 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-test-reference', 'test-type.php', 'Test Type Configuration'),
 (NULL, 'generic-test-reference', 'addTestType.php', 'Add New Test Type'),
 (NULL, 'generic-test-reference', 'editTestType.php', 'Edit New Test Type');
-
 UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`privilege_id` = 291;
+
+-- Thana 09-May-2023
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-requests', 'edit-request.php', 'Edit Generic Tests');
 
