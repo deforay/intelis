@@ -22,8 +22,8 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$healthFacilities = $facilitiesService->getHealthFacilities('vl');
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 //get import config
 $condition = "status = 'active'";
@@ -38,19 +38,19 @@ foreach ($userResult as $user) {
 
 //sample rejection reason
 $condition = "rejection_reason_status ='active'";
-$rejectionResult = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
+$rejectionResult = $general->fetchDataFromTable('r_generic_sample_rejection_reasons', $condition);
 
 //rejection type
-$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //get active sample types
 $condition = "status = 'active'";
-$sResult = $general->fetchDataFromTable('r_vl_sample_type', $condition);
+$sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition);
 
 
 //get vltest reason details
-$testReason = $general->fetchDataFromTable('r_vl_test_reasons');
+$testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
 //get suspected treatment failure at
 /*
