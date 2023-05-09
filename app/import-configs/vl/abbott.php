@@ -41,7 +41,7 @@ try {
 if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
+        $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $bquery = "SELECT MAX(batch_code_key) FROM batch_details";
         $bvlResult = $db->rawQuery($bquery);

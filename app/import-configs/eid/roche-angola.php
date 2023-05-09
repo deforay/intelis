@@ -36,7 +36,7 @@ try {
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
 if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        //$mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
+        //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $objPHPExcel->getActiveSheet();
