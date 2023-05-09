@@ -1,6 +1,6 @@
 <?php
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $facilityQuery = "SELECT * FROM facility_details where facility_type = 2 AND status='active'";
 
@@ -509,5 +509,5 @@ $facilityResult = $db->rawQuery($facilityQuery);
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';
 ?>

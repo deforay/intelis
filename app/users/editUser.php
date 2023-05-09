@@ -6,7 +6,7 @@ use App\Services\FacilitiesService;
 
 $title = _("Edit User");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 
 $userInfo = $db->rawQueryOne(

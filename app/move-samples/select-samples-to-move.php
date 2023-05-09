@@ -5,7 +5,7 @@ use App\Services\CommonService;
 
 $title = "Add Sample List";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -428,4 +428,4 @@ foreach ($fResult as $fDetails) {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

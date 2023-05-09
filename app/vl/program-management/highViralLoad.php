@@ -5,7 +5,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("VL | Clinics Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
@@ -1164,4 +1164,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

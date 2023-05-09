@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
 $title = _("Sources of Requests");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -231,4 +231,4 @@ $activeTestModules = $systemService->getActiveTestModules();
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

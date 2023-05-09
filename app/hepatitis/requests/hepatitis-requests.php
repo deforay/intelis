@@ -23,7 +23,7 @@ if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId
 	$facilityId = base64_decode($_GET['facilityId']);
 	$labId = base64_decode($_GET['labId']);
 }
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

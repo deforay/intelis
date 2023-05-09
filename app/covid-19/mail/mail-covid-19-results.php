@@ -5,7 +5,7 @@ use App\Services\CommonService;
 
 $title = "Email Covid-19 Test Results";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -478,4 +478,4 @@ $batchResult = $db->rawQuery($batchQuery);
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

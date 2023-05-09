@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("Enter EID Result");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -399,4 +399,4 @@ $lastUrl2 = '';
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

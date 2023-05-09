@@ -7,7 +7,7 @@ use App\Services\CommonService;
 
 $title = _("Hepatitis | Add Batch");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -357,4 +357,4 @@ startDate: moment().subtract(28, 'days'),
 
 <?php
 
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 $tQuery = "SELECT * from r_test_types where test_type_id=$id";
@@ -506,4 +506,4 @@ foreach($testSymptomsMapInfo as $val){
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

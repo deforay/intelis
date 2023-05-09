@@ -8,7 +8,7 @@ use App\Services\UsersService;
 
 $title = "Hepatitis | Add New Request";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -308,4 +308,4 @@ require($fileArray[$arr['vl_form']]);
             });
     }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php');
+<?php require_once APPLICATION_PATH . '/footer.php';

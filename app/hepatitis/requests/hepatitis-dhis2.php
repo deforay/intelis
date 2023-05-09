@@ -8,7 +8,7 @@ $title = _("Hepatitis | View All Requests");
 // echo "<pre>";
 // var_dump($_SESSION['privileges']);die;
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

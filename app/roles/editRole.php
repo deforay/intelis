@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 $roleQuery = "SELECT * from roles where role_id=$id";
@@ -362,4 +362,4 @@ if ($priInfo) {
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

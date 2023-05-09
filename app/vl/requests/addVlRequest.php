@@ -8,7 +8,7 @@ use App\Services\VlService;
 
 $title = "VL | Add New Request";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 

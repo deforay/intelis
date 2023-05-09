@@ -2,7 +2,7 @@
 
 $title = "VL Test Reasons";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
@@ -133,4 +133,4 @@ $tstInfo = $db->query($tstQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

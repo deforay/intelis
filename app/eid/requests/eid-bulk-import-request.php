@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = "Bulk Import Test Requests";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -104,4 +104,4 @@ $fileName = WEB_ROOT. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'cov
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

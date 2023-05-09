@@ -1,7 +1,7 @@
 <?php
 
 $title = _("COVID-19 | Add New Request");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -25,4 +25,4 @@ require_once(APPLICATION_PATH . '/header.php');
     </section>
 </div>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -6,7 +6,7 @@ use App\Services\InstrumentsService;
 
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -155,4 +155,4 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

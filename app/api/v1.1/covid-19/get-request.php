@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
@@ -244,7 +245,7 @@ try {
         );
     }
     
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
     $payload = array(
         'status' => 'failed',
         'timestamp' => time(),

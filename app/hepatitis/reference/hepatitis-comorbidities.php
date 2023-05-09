@@ -1,7 +1,7 @@
 <?php
 $title = _("Hepatitis Co-morbidities");
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 // if($sarr['sc_user_type']=='vluser'){
 //   include('../remote/pullDataFromRemote.php');
@@ -121,4 +121,4 @@ require_once(APPLICATION_PATH . '/header.php');
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

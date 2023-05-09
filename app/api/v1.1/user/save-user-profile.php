@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -45,13 +46,13 @@ try {
         $decode['post'] = json_decode($decode['post'], true);
     } else {
         //$general->elog($decode);
-        throw new Exception("2 Invalid request. Please check your request parameters.");
+        throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
     $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
 
     if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
         //$general->elog($decode);
-        throw new Exception("3 Invalid request. Please check your request parameters.");
+        throw new SystemException("3 Invalid request. Please check your request parameters.");
     } else {
         if (isset($user)) {
             $post = $decode;
@@ -65,7 +66,7 @@ try {
 
     if (!isset($user)) {
         if (!$apiKey) {
-            throw new Exception("Invalid API Key. Please check your request parameters.");
+            throw new SystemException("Invalid API Key. Please check your request parameters.");
         }
         $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
     } else {
@@ -161,7 +162,7 @@ try {
     }
 
     echo json_encode($payload);
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
     $payload = array(
         'status' => 'failed',
         'error' => $exc->getMessage(),

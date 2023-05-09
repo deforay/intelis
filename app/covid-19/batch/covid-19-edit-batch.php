@@ -9,7 +9,7 @@ use App\Services\CommonService;
 $title = "Edit Batch";
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -401,4 +401,4 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

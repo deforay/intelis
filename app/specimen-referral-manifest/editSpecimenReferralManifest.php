@@ -11,7 +11,7 @@ use App\Services\VlService;
 
 $title = "Edit Specimen Referral Manifest";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -454,4 +454,4 @@ $global = $general->getGlobalConfig();
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

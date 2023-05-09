@@ -2,7 +2,7 @@
 ob_start();
 $title = _("Sample Type");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 $tQuery = "SELECT * from r_sample_types where sample_type_id=$id";
@@ -116,4 +116,4 @@ $sampleTypeInfo = $db->query($tQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

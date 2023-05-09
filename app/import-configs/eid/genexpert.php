@@ -2,6 +2,7 @@
 
 // File included in addImportResultHelper.php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
@@ -37,7 +38,7 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {
-        throw new Exception("Invalid file format.");
+        throw new SystemException("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
     // $ranNumber = $general->generateRandomString(12);

@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
@@ -1768,4 +1768,4 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
                 });
     }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php');
+<?php require_once APPLICATION_PATH . '/footer.php';

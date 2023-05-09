@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("Enter VL Result");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -444,4 +444,4 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

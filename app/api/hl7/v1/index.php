@@ -1,6 +1,7 @@
 <?php
 session_unset(); // no need of session in json response
 
+use App\Exceptions\SystemException;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -119,7 +120,7 @@ try {
             }
         }
     }
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     // http_response_code(500);
     $payload = array(

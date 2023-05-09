@@ -6,7 +6,7 @@ use App\Services\SystemService;
 use App\Services\UsersService;
 use App\Services\FacilitiesService;
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $usersService = ContainerRegistry::get(UsersService::class);
 /** @var MysqliDb $db */
@@ -526,4 +526,4 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

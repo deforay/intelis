@@ -1,7 +1,7 @@
 <?php
 $title = _("Add Samples from Manifest");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 ?>
@@ -278,4 +278,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	});
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

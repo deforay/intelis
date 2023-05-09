@@ -47,15 +47,15 @@ if (isset($testType) && $testType == 'tb') {
     $testName = 'TB';
 }
 
-$sQuery = "SELECT f.facility_id, 
-              f.facility_name, GREATEST(
-                    COALESCE(facility_attributes->>'$." . $testType . "RemoteResultsSync', 0), 
+$sQuery = "SELECT f.facility_id,
+            f.facility_name, GREATEST(
+                    COALESCE(facility_attributes->>'$." . $testType . "RemoteResultsSync', 0),
                     COALESCE(facility_attributes->>'$." . $testType . "RemoteRequestsSync', 0)
                 ) as latestSync,
-                (f.facility_attributes->>'$." . $testType . "RemoteResultsSync') as lastResultsSync, 
-                (f.facility_attributes->>'$." . $testType . "RemoteRequestsSync') as lastRequestsSync, g_d_s.geo_name as province, g_d_d.geo_name as district  
-               FROM facility_details AS f 
-                LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id 
+                (f.facility_attributes->>'$." . $testType . "RemoteResultsSync') as lastResultsSync,
+                (f.facility_attributes->>'$." . $testType . "RemoteRequestsSync') as lastRequestsSync, g_d_s.geo_name as province, g_d_d.geo_name as district
+            FROM facility_details AS f
+                LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id
                 LEFT JOIN geographical_divisions as g_d_d ON g_d_d.geo_id = f.facility_district_id ";
 if (isset($_POST['testType']) && trim($_POST['testType']) != '' && isset($_POST['labId']) && trim($_POST['labId']) != '') {
     $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from ' . $table . ' WHERE lab_id = ' . base64_decode($_POST['labId']) . ') ';
@@ -78,12 +78,12 @@ $_SESSION['labSyncStatusDetails'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars($_POST['labId']); ?>" data-url="<?php echo $url; ?>">
-        <td><?= ($aRow['facility_name']); ?></td>
-        <td><?= ($_POST['testType']); ?></td>
-        <td><?= ($aRow['province']); ?></td>
-        <td><?= ($aRow['district']); ?></td>
+    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars($_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
+        <td><?= htmlspecialchars($aRow['facility_name']); ?></td>
+        <td><?= htmlspecialchars($_POST['testType']); ?></td>
+        <td><?= htmlspecialchars($aRow['province']); ?></td>
+        <td><?= htmlspecialchars($aRow['district']); ?></td>
         <td><?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
         <td><?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
     </tr>
-<?php } ?>
+<?php }

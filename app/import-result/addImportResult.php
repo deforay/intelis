@@ -8,7 +8,7 @@ $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
 $title = _("Import ") . strtoupper($type) . _(" Test Results From File");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -205,4 +205,4 @@ $lastResult = $db->rawQueryOne($lastQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

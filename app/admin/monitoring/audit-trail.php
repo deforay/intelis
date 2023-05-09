@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 
 $title = _("Audit Trail");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -358,4 +358,4 @@ $resultColumn = getColumns($db, $tableName);
 	});
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

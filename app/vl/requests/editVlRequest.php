@@ -6,7 +6,7 @@ use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
@@ -502,4 +502,4 @@ if ($arr['vl_form'] == 1) {
           $.unblockUI();
      }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php');
+<?php require_once APPLICATION_PATH . '/footer.php';

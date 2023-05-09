@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 $resultQuery = "SELECT * from r_covid19_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
@@ -112,4 +112,4 @@ $resultInfo = $db->query($resultQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

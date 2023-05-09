@@ -1,7 +1,7 @@
 <?php
 
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.vl_lab_id SEPARATOR ',') as vlLabId FROM testing_lab_health_facilities_map as vlfm";
 $vlfmResult = $db->rawQuery($vlfmQuery);
@@ -149,4 +149,4 @@ $hcResult = $db->rawQuery($hcQuery);
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

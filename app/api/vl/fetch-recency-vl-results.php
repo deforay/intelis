@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
@@ -37,7 +38,7 @@ $orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['ord
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     http_response_code(400);
-    throw new Exception("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
+    throw new SystemException("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
 }
 
 try {
@@ -95,7 +96,7 @@ try {
     // No data found
     if (!$rowData) {
         http_response_code(200);
-        throw new Exception("No Matching Data");
+        throw new SystemException("No Matching Data");
     }
 
     $payload = array(
@@ -105,7 +106,7 @@ try {
     );
 
     http_response_code(200);
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     // http_response_code(500);
     $payload = array(

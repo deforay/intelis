@@ -1,6 +1,6 @@
 <?php
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <script type="text/javascript">
     $(document).ready(function() {

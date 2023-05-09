@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Registries\ContainerRegistry;
@@ -26,7 +27,7 @@ try {
 
     /** @var EidService $eidService */
     $eidService = ContainerRegistry::get(EidService::class);
-    
+
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -36,7 +37,7 @@ try {
     $input = json_decode($origJson, true);
 
     if (empty($input) || empty($input['data'])) {
-        throw new Exception("Invalid request");
+        throw new SystemException("Invalid request");
     }
 
     /* For API Tracking params */
@@ -422,7 +423,7 @@ try {
     } else {
         $msg = 'Successfully added.';
     }
-    if (isset($responseData) && count($responseData) > 0) {
+    if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),
@@ -438,7 +439,7 @@ try {
     }
 
     http_response_code(200);
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     http_response_code(400);
     $payload = array(

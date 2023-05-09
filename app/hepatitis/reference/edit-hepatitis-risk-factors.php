@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 $riskfactorQuery = "SELECT * from r_hepatitis_risk_factors where riskfactor_id=$id";
 $riskfactorInfo = $db->query($riskfactorQuery);
@@ -112,4 +112,4 @@ $riskfactorInfo = $db->query($riskfactorQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

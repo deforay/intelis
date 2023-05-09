@@ -14,7 +14,7 @@ use App\Services\VlService;
 
 $title = "Add New Specimen Referral Manifest";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -398,4 +398,4 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

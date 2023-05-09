@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("EID | Clinics Report");
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -1051,4 +1051,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

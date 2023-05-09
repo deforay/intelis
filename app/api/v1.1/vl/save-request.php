@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -43,7 +44,7 @@ try {
     $input = json_decode($origJson, true);
 
     if (empty($input) || empty($input['data'])) {
-        throw new Exception("Invalid request");
+        throw new SystemException("Invalid request");
     }
 
     /* For API Tracking params */
@@ -88,7 +89,7 @@ try {
 
         if (empty($sampleCollectionDate)) {
             continue;
-            //throw new Exception(_("Sample Collection Date is required"));
+            //throw new SystemException(_("Sample Collection Date is required"));
         }
 
         $update = "no";
@@ -522,7 +523,7 @@ try {
     }
 
     http_response_code(200);
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     http_response_code(400);
     $payload = array(

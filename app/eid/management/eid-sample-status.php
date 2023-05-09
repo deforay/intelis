@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $title = _("EID | Sample Status Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -315,4 +315,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

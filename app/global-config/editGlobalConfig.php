@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("Edit General Configuration");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -1708,4 +1708,4 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$("#" + id2).attr("disabled", false).addClass('isRequired');
 	}
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php'); ?>
+<?php require_once APPLICATION_PATH . '/footer.php'; ?>

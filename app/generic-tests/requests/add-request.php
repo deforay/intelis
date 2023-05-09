@@ -9,7 +9,7 @@ use App\Services\GenericTestsService;
 
 $title = " Add New Test";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 

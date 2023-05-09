@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
 $title = _("Sources of Requests");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -236,4 +236,4 @@ $labInfo = $db->rawQueryOne($sQuery);
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -2,7 +2,7 @@
 
 $title = "Implementation Partners";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 if (!isset($id) || $id == "") {
@@ -113,4 +113,4 @@ $partnerInfo = $db->rawQuery($query, array($id));
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

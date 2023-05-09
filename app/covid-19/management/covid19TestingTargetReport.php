@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("Covid-19 Quarterly Monitoring Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -98,7 +98,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     font-size: 18px
   }
 
-  .mpr-selected {}
+  
 
   .mpr-month:hover {
     border-radius: 5px;
@@ -704,4 +704,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -204,4 +204,4 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

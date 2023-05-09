@@ -1,6 +1,6 @@
 	<?php
 
-	require_once(APPLICATION_PATH . '/header.php');
+	require_once APPLICATION_PATH . '/header.php';
 	$id = base64_decode($_GET['id']);
 	$date = base64_decode($_GET['d']);
 	$tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
@@ -312,5 +312,5 @@
 		}
 	</script>
 	<?php
-	require_once(APPLICATION_PATH . '/footer.php');
+	require_once APPLICATION_PATH . '/footer.php';
 	?>

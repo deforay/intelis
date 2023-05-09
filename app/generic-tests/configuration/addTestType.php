@@ -1,5 +1,5 @@
 <?php
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $stQuery = "SELECT * from r_sample_types where sample_type_status='active'";
 $sampleTypeInfo=$db->query($stQuery);
@@ -448,4 +448,4 @@ $symptomInfo=$db->query($symQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

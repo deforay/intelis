@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("Print TB Results");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -972,4 +972,4 @@ $state = $geolocationService->getProvinces("yes");
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

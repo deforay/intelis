@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 
 $title = _("User Activity Log");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -199,4 +199,4 @@ foreach ($actions as $list) {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

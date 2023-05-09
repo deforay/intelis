@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -304,4 +304,4 @@ responsive: true
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

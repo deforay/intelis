@@ -3,7 +3,7 @@
 $title = _("Manage Batch");
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
@@ -199,4 +199,4 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

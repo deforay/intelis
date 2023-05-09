@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $title = _("VL | Sample Status Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -329,4 +329,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';
