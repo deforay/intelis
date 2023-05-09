@@ -25,19 +25,11 @@ $primaryKey = "sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
-$sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     $sampleCode = 'remote_sample_code';
-} elseif ($_SESSION['instanceType'] ==  'standalone') {
-     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
-          unset($aColumns[$key]);
-     }
-     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
-          unset($orderColumns[$key]);
-     }
+$aColumns = array('vl.sample_code', 'ty.test_standard_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'ty.test_standard_name', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+if ($_SESSION['instanceType'] !=  'standalone') {
+     array_splice($aColumns, 1,0, array('vl.remote_sample_code'));
+     array_splice($orderColumns, 1,0, array('vl.remote_sample_code'));
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -67,7 +59,6 @@ if (isset($_POST['iSortCol_0'])) {
      }
      $sOrder = substr_replace($sOrder, "", -2);
 }
-//echo '<pre>'; print_r($sOrder); die;
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -109,9 +100,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+* SQL queries
+* Get data to display
+*/
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS 
           vl.*,ty.test_standard_name, 
@@ -148,12 +139,11 @@ $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $iTotal = $aResultFilterTotal['totalCount'];
 
 /*
@@ -165,19 +155,13 @@ $output = array(
      "iTotalDisplayRecords" => $iTotal,
      "aaData" => array()
 );
-//$editRequest = false;
-//$syncRequest = false;
-/*if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) {
+
+$editRequest = false;
+if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
-     $syncRequest = true;
-}*/
-
+}
 foreach ($rResult as $aRow) {
-
-     $vlResult = '';
      $edit = '';
-     $sync = '';
-     $barcode = '';
 
      $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
@@ -189,12 +173,11 @@ foreach ($rResult as $aRow) {
 
      $row = [];
 
-     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
-     $row[] = $aRow['test_standard_name'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
+     $row[] = $aRow['test_standard_name'];
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_id'];
@@ -208,40 +191,10 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
 
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
-     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['sample_id']) . '\',900,520);"> Result</a>';
-
-     //if ($editRequest) {
-          $edit = '<a href="edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
-               }
-          }
-    // }
-
-     if (isset($barCodePrinting) && $barCodePrinting != "off") {
-          $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-          $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _("Barcode") . ' </a>';
-     }
-
-     if ($syncRequest && $_SESSION['instanceType'] == 'vluser' && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
-          if ($aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Sync this sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _("Sync") . '</a>';
-          }
-     } else {
-          $sync = "";
-     }
-
-     $actions = "";
-   //  if ($editRequest) {
-          $actions .= $edit;
-    // }
-    // if ($syncRequest) {
-          $actions .= $sync;
-    // }
-     if (!$_POST['hidesrcofreq']) {
-          $row[] = $actions . $barcode;
+     if ($editRequest) {
+          $row[] = '<a href="edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+     }else{
+          $row[] = "";
      }
 
      $output['aaData'][] = $row;

@@ -137,10 +137,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th><?php echo _("Sample Code"); ?></th>
-									<th><?php echo _("Test Type"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th><?php echo _("Remote Sample"); ?> <br />Code</th>
 									<?php } ?>
+									<th><?php echo _("Test Type"); ?></th>
 									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Unique ART No"); ?></th>
@@ -277,37 +277,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		<?php } else { ?>
 			$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 		<?php } ?>
-		$(".showhideCheckBox").change(function() {
-			if ($(this).attr('checked')) {
-				idpart = $(this).attr('data-showhide');
-				$("#" + idpart + "-sort").show();
-			} else {
-				idpart = $(this).attr('data-showhide');
-				$("#" + idpart + "-sort").hide();
-			}
-		});
-
-		$("#showhide").hover(function() {}, function() {
-			$(this).fadeOut('slow')
-		});
-		var i = '<?php echo $i; ?>';
-		for (colNo = 0; colNo <= i; colNo++) {
-			$("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-			if (oTable.fnSettings().aoColumns[colNo].bVisible) {
-				$("#iCol" + colNo + "-sort").show();
-			} else {
-				$("#iCol" + colNo + "-sort").hide();
-			}
-		}
-		$("#advanceFilter input, #advanceFilter select").on("change", function() {
-			searchExecuted = false;
-		});
 	});
-
-	function fnShowHide(iCol) {
-		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-		oTable.fnSetColumnVis(iCol, bVis ? false : true);
-	}
 
 	function loadRequestData() {
 		$.blockUI();
@@ -322,10 +292,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [
-				//{"sClass":"center","bSortable":false},
-				{
-					"sClass": "center"
-				},
 				{
 					"sClass": "center"
 				},
@@ -334,8 +300,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					},
 				<?php } ?> {
 					"sClass": "center"
-				},
-				{
+				},{
 					"sClass": "center"
 				},
 				{
@@ -369,12 +334,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					"sClass": "center"
 				},
 				{
-						"sClass": "center",
-						"bSortable": false
-					},
+					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bSortable": false
+				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] ==  'remoteuser' || $_SESSION['instanceType'] ==  'vluser') ? 12 : 11 ?>, "desc"]
+				[<?php echo ($_SESSION['instanceType'] ==  'remoteuser' || $_SESSION['instanceType'] ==  'vluser') ? 14 : 13 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
