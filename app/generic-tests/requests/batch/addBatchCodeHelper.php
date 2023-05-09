@@ -50,7 +50,7 @@ try {
                 header("Location:/generic-tests/requests/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']."&code=".$_POST['testTypeCode']);
             }
         } else {
-            header("Location:/generic-tests/requests/batch/batchcode.php");
+            header("Location:/generic-tests/requests/batch/batch-code.php");
         }
     }
 } catch (Exception $exc) {

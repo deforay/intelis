@@ -19,22 +19,16 @@ $general = \App\Registries\ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$testPlatformResult = $general->getTestingPlatforms('vl');
+$testPlatformResult = $general->getTestingPlatforms('generic-tests');
 
-//global config
-// $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-// $configResult = $db->query($configQuery);
-// $showUrgency = ($configResult[0]['value'] == 1 || $configResult[0]['value'] == 2) ? true : false;
-//Get active machines
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 
-//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-//$result = $db->rawQuery($query);
-
-$sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
+$sQuery = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $start_date = date('Y-m-d');
@@ -104,18 +98,18 @@ foreach ($testPlatformResult as $machine) {
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<div class="row">
-                                        <div class="col-xs-4 col-md-4">
-                                             <div class="form-group" style="margin-left:30px;">
-                                                  <label for="testType">Test Type</label>
-                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
-                                                       <option value=""> -- Select -- </option>
-                                                       <?php foreach($testTypeResult as $testType){ ?>
-                                                            <option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
-                                                       <?php } ?>
-                                                  </select>
-                                             </div>
-                                        </div>
-                                   </div>
+				<div class="col-xs-4 col-md-4">
+					<div class="form-group" style="margin-left:30px;">
+						<label for="testType">Test Type</label>
+						<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+							<option value=""> -- Select -- </option>
+							<?php foreach ($testTypeResult as $testType) { ?>
+								<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
+			</div>
 			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 					<th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
@@ -137,7 +131,7 @@ foreach ($testPlatformResult as $machine) {
 							<?php
 							foreach ($sResult as $type) {
 							?>
-								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+								<option value="<?php echo $type['sample_type_id']; ?>"><?php echo ($type['sample_type_name']); ?></option>
 							<?php
 							}
 							?>
@@ -249,7 +243,7 @@ foreach ($testPlatformResult as $machine) {
 						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="testTypeCode" id="testTypeCode" value="<?php echo $_GET['code']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
-						<a href="batchcode.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a href="batch-code.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -439,7 +433,7 @@ foreach ($testPlatformResult as $machine) {
 			$('#alertText').html('');
 		}
 	});
-	
+
 	$(document.body).on("change", "#search, #search_to", function() {
 		countOff().then(function(count) {
 			// use the result here

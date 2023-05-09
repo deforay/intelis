@@ -256,7 +256,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
+						<a href="batch-code.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

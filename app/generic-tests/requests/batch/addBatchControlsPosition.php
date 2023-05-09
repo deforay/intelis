@@ -24,7 +24,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 if (!isset($batchInfo) || count($batchInfo) == 0) {
-	header("Location:batchcode.php");
+	header("Location:batch-code.php");
 }
 //Get batch controls order
 $newJsonToArray = [];
@@ -196,7 +196,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 						<input type="hidden" name="testTypeCode" id="testTypeCode" value="<?php echo htmlspecialchars($_GET['code']); ?>" />
 
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
+						<a href="batch-code.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

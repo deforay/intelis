@@ -38,10 +38,8 @@ try {
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch Position saved successfully";
-        header("Location:batchcode.php");
-    } else {
-        header("Location:batchcode.php");
     }
+    header("Location:batch-code.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

@@ -848,7 +848,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'addSamplesFromManifest.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-menu, .addGenericSamplesFromManifestMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batchcode.php') {
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batch-code.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-menu, .batchGenericCodeMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'specimenReferralManifestList.php') {
