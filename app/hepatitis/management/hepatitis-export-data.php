@@ -125,7 +125,7 @@ $state = $geolocationService->getProvinces("yes");
 							
 						</tr>
 						<tr>
-						<th><?php echo _("HCV VL Result"); ?> </th>
+						<th scope="row"><?php echo _("HCV VL Result"); ?> </th>
 							<td>
 								<select class="form-control" id="hcvVLoad" name="hcvVLoad" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -134,7 +134,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							<th><?php echo _("HBV VL Result"); ?> </th>
+							<th scope="row"><?php echo _("HBV VL Result"); ?> </th>
 							<td>
 								<select class="form-control" id="hbvVLoad" name="hbvVLoad" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>

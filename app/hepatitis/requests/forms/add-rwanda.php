@@ -92,7 +92,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
                                             </td>
                                         <?php } ?>
-                                        <th><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />
                                             <span class="artNoGroup"></span>
@@ -377,9 +377,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <td>Authorized By</td>
-                                            <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                            <td>
+                                                <select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
-                                                </select></td>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Authorized on</td>
@@ -621,11 +623,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 function(data) {
                     if (data != "0") {
                         obj = $.parseJSON(data);
-                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + 
-                        '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + 
-                        '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + 
-                        '<br>Total No. of times Patient tested for Hepatitis : ' + obj.no_of_tested_time +
-                        '</small>');
+                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
+                            '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
+                            '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
+                            '<br>Total No. of times Patient tested for Hepatitis : ' + obj.no_of_tested_time +
+                            '</small>');
                     } else {
                         $(".artNoGroup").html('');
                     }

@@ -468,7 +468,7 @@ $aResult = $db->query($aQuery);
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;" class="labels">Sample Test Date </th>
+                                            <th scope="row" style="width:25%;" class="labels">Sample Test Date </th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>

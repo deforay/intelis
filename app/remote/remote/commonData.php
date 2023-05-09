@@ -63,7 +63,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
         
         // $condition = null;
-        $response['vlResults'] = [];
+        //$response['vlResults'] = [];
         if (isset($data['vlResultsLastModified']) && !empty($data['vlResultsLastModified'])) {
             $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
         }

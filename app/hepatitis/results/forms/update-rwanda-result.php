@@ -382,7 +382,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                             </select>
                                         </td>
                                         <td>Authorized By <span class="mandatory">*</span></td>
-                                        <td><input value="<?php echo $hepatitisInfo['authorized_by']; ?>" type="text" name="authorizedBy" id="authorizedBy" class="disabled-field form-control rejected-input" placeholder="Authorized By" /></td>
+                                        <td>
+                                            <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <?= $general->generateSelectOptions($labTechniciansResults, $hepatitisInfo['authorized_by'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Authorized on <span class="mandatory">*</span></td>

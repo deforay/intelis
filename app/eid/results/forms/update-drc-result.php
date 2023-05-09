@@ -240,7 +240,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 							<br><br>
 							<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 								<tr>
-									<th colspan=6>
+									<th scope="row" colspan=6>
 										<h4>2. Management de la mère</h4>
 									</th>
 								</tr>
@@ -259,14 +259,14 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									</td>
 								</tr>
 								<tr>
-									<th style="vertical-align:middle;">CD4</th>
+									<th scope="row" style="vertical-align:middle;">CD4</th>
 									<td style="vertical-align:middle;">
 										<div class="input-group">
 											<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" value="<?php echo $eidInfo['mother_cd4']; ?>" />
 											<div class="input-group-addon">/mm3</div>
 										</div>
 									</td>
-									<th style="vertical-align:middle;">Viral Load</th>
+									<th scope="row" style="vertical-align:middle;">Viral Load</th>
 									<td style="vertical-align:middle;">
 										<div class="input-group">
 											<input type="number" class="form-control " id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" onchange="" />
@@ -477,7 +477,7 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 												</select>
 											</td>
 
-											<th class="rejected" style="display: none;">Raison du rejet</th>
+											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
 													<option value="">-- Sélectionner --</option>
