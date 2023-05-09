@@ -21,8 +21,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-$healthFacilities = $facilitiesService->getHealthFacilities('vl');
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $reasonForFailure = $genericTestsService->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -43,10 +43,10 @@ foreach ($userResult as $user) {
 }
 
 //sample rejection reason
-$rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
+$rejectionQuery = "SELECT * FROM r_generic_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 //rejection type
-$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 //sample status
 $statusQuery = "SELECT * FROM r_sample_status WHERE `status` = 'active' AND status_id NOT IN(9,8)";
@@ -55,11 +55,11 @@ $statusResult = $db->rawQuery($statusQuery);
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE status='active'";
+$sQuery = "SELECT * FROM r_generic_sample_types WHERE status='active'";
 $sResult = $db->query($sQuery);
 
 //get vl test reason list
-$vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons WHERE test_reason_status = 'active'";
+$vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 //echo 'hhh'; die;
 //get suspected treatment failure at
