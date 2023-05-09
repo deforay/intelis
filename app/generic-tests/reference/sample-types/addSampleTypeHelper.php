@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_sample_types";
+$tableName = "r_generic_sample_types";
 
 /*echo "<pre>";
 print_r($_POST);

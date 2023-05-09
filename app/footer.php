@@ -251,7 +251,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".access-control-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".roleMenu").addClass('active');
-	} else if (splitsUrl == 'facilities.php' || splitsUrl == 'addFacility.php' || splitsUrl == 'editFacility.php' || splitsUrl == 'mapTestType.php') {
+	} else if (splitsUrl == 'facilities.php' || splitsUrl == 'addFacility.php' || splitsUrl == 'editFacility.php' || splitsUrl == 'maptest-type.php') {
 		$(".facility-config-menu,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".facilityMenu").addClass('active');
@@ -819,23 +819,26 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".tb-reference-manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".tb-results").addClass('active');
-	} else if (splitsUrl == 'testType.php' || splitsUrl == 'addTestType.php' || splitsUrl == 'editTestType.php') {
-		$(".system-config-menu,.manage").addClass('active');
+	} else if (splitsUrl == 'test-type.php' || splitsUrl == 'add-test-type.php' || splitsUrl == 'edit-test-type.php') {
+		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".testTypeConfigurationMenu").addClass('active');
-	} else if (splitsUrl == 'sampleType.php' || splitsUrl == 'addSampleType.php' || splitsUrl == 'editSampleType.php') {
-		$(".system-config-menu,.manage").addClass('active');
+	} else if (splitsUrl == 'generic-sample-type.php' || splitsUrl == 'generic-add-sample-type.php' || splitsUrl == 'generic-edit-sample-type.php') {
+		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
-		$(".sampleTypeMenu").addClass('active');
-	} else if (splitsUrl == 'testingReason.php' || splitsUrl == 'addTestingReason.php' || splitsUrl == 'editTestingReason.php') {
-		$(".system-config-menu,.manage").addClass('active');
+		$(".genericSampleTypeMenu").addClass('active');
+	} else if (splitsUrl == 'generic-testing-reason.php' || splitsUrl == 'generic-add-testing-reason.php' || splitsUrl == 'generic-edit-testing-reason.php') {
+		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
-		$(".testingReasonMenu").addClass('active');
-	} else if (splitsUrl == 'symptoms.php' || splitsUrl == 'addSymptoms.php' || splitsUrl == 'editSymptoms.php') {
-		$(".system-config-menu,.manage").addClass('active');
+		$(".genericTestingReasonMenu").addClass('active');
+	} else if (splitsUrl == 'generic-symptoms.php' || splitsUrl == 'generic-add-symptoms.php' || splitsUrl == 'generic-edit-symptoms.php') {
+		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
-		$(".symptomsMenu").addClass('active');
-		
+		$(".genericSymptomsMenu").addClass('active');
+	} else if (splitsUrl == 'generic-sample-rejection-reasons.php' || splitsUrl == 'generic-add-rejection-reasons.php' || splitsUrl == 'generic-edit-rejection-reasons.php') {
+		$(".generic-reference-manage,.manage").addClass('active');
+		$(".allMenu").removeClass('active');
+		$(".genericSampleRejectionReasonsMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'view-requests.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-menu, .genericRequestMenu").addClass('active');

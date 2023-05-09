@@ -20,8 +20,8 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (isset($_SESSION['privileges']) && in_array("addTestType.php", $_SESSION['privileges'])) { ?>
-            <a href="addTestType.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Type");?></a>
+            <?php if (isset($_SESSION['privileges']) && in_array("add-test-type.php", $_SESSION['privileges'])) { ?>
+            <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Type");?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->
@@ -34,7 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _("Short Code");?></th>
                   <th><?php echo _("LOINC Code");?></th>
                   <th><?php echo _("Status");?></th>
-                  <?php if (isset($_SESSION['privileges']) && in_array("editTestType.php", $_SESSION['privileges'])) { ?>
+                  <?php if (isset($_SESSION['privileges']) && in_array("edit-test-type.php", $_SESSION['privileges'])) { ?>
                   <th><?php echo _("Action");?></th>
                   <?php } ?>
                 </tr>

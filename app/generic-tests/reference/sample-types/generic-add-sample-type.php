@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$title = _("Symptoms");
+$title = _("Sample Type");
 
 require_once APPLICATION_PATH . '/header.php';
 ?>
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Add Symptoms");?></h1>
+        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Add Sample Type");?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Symptoms");?></li>
+            <li class="active"><?php echo _("Sample Type");?></li>
         </ol>
     </section>
 
@@ -25,32 +25,30 @@ require_once APPLICATION_PATH . '/header.php';
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='addSymptomsInfo' id='addSymptomsInfo' autocomplete="off" action="addSymptomsHelper.php">
+                <form class="form-horizontal" method='post' name='addSampleTypeForm' id='addSampleTypeForm' autocomplete="off" action="addSampleTypeHelper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="symptomName" class="col-lg-4 control-label"><?php echo _("Symptom Name");?><span class="mandatory">*</span></label>
+                                    <label for="sampleTypeName" class="col-lg-4 control-label"><?php echo _("Sample Type Name");?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="symptomName" name="symptomName" placeholder="<?php echo _('Symptom Name');?>" title="<?php echo _('Please enter symptom name');?>" onblur='checkNameValidation("r_symptoms","symptom_name",this,null,"<?php echo _("The symptom name that you entered already exists.Enter another name");?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="sampleTypeName" name="sampleTypeName" placeholder="<?php echo _('Sample Type Name');?>" title="<?php echo _('Please enter sample type name');?>" onblur='checkNameValidation("r_generic_sample_types","sample_type_name",this,null,"<?php echo _("The sample type name that you entered already exists.Enter another name");?>",null)' />
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="symptomCode" class="col-lg-4 control-label"><?php echo _("Symptom Code");?><span class="mandatory">*</span></label>
+                                    <label for="sampleTypeCode" class="col-lg-4 control-label"><?php echo _("Sample Type Code");?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="symptomCode" name="symptomCode" placeholder="<?php echo _('Symptom Code');?>" title="<?php echo _('Please enter symptom code');?>" onblur='checkNameValidation("r_symptoms","symptom_code",this,null,"<?php echo _("The symptom code that you entered already exists.Enter another code");?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="sampleTypeCode" name="sampleTypeCode" placeholder="<?php echo _('Sample Type Code');?>" title="<?php echo _('Please enter sample type code');?>" onblur='checkNameValidation("r_generic_sample_types","sample_type_code",this,null,"<?php echo _("The sample type code that you entered already exists.Enter another code");?>",null)' />
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="status" class="col-lg-4 control-label"><?php echo _("Status");?><span class="mandatory">*</span></label>
+                                    <label for="sampleTypeStatus" class="col-lg-4 control-label"><?php echo _("Status");?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="status" name="status" title="<?php echo _('Please select status');?>">
+                                        <select class="form-control isRequired" id="sampleTypeStatus" name="sampleTypeStatus" title="<?php echo _('Please select sample type status');?>">
 											<option value=""><?php echo _("--Select--");?></option>
 											<option value="active"><?php echo _("Active");?></option>
 											<option value="inactive"><?php echo _("Inactive");?></option>
@@ -64,7 +62,7 @@ require_once APPLICATION_PATH . '/header.php';
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-                        <a href="symptoms.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                        <a href="sampleType.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -81,12 +79,12 @@ require_once APPLICATION_PATH . '/header.php';
     function validateNow() {
 
         flag = deforayValidator.init({
-            formId: 'addSymptomsInfo'
+            formId: 'addSampleTypeForm'
         });
 
         if (flag) {
             $.blockUI();
-            document.getElementById('addSymptomsInfo').submit();
+            document.getElementById('addSampleTypeForm').submit();
         }
     }
 

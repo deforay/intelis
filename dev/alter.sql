@@ -3840,46 +3840,36 @@ UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`
 -- Thana 09-May-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-requests', 'edit-request.php', 'Edit Generic Tests');
 
-CREATE TABLE `r_generic_sample_types` (
-  `sample_type_id` int NOT NULL AUTO_INCREMENT,
-  `sample_type_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sample_type_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`sample_type_id`),
-  UNIQUE KEY `sample_type_code` (`sample_type_code`),
-  UNIQUE KEY `sample_type_name` (`sample_type_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE `r_generic_symptoms` (
-  `symptom_id` int NOT NULL AUTO_INCREMENT,
-  `symptom_name` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `symptom_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `symptom_status` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`symptom_id`),
-  UNIQUE KEY `symptom_code` (`symptom_code`),
-  UNIQUE KEY `symptom_name` (`symptom_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE `r_generic_test_reasons` (
-  `test_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_reason_code` varchar(256) DEFAULT NULL,
-  `test_reason` varchar(256) DEFAULT NULL,
-  `test_reason_status` varchar(256) DEFAULT NULL,
-  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`test_reason_id`),
-  UNIQUE KEY `test_reason_code` (`test_reason_code`),
-  UNIQUE KEY `test_reason` (`test_reason`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+RENAME TABLE `vlsm`.`r_sample_types` TO `vlsm`.`r_generic_sample_types`;
+RENAME TABLE `vlsm`.`r_symptoms` TO `vlsm`.`r_generic_symptoms`;
+RENAME TABLE `vlsm`.`r_testing_reasons` TO `vlsm`.`r_generic_test_reasons`;
 
 CREATE TABLE `r_generic_sample_rejection_reasons` (
   `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
-  `rejection_reason_name` varchar(255) CHARACTER SET latin1 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_type` varchar(255) CHARACTER SET latin1 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
-  `rejection_reason_status` varchar(255) CHARACTER SET latin1 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rejection_reason_code` varchar(255) CHARACTER SET latin1 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
+  `rejection_reason_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rejection_reason_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+UPDATE `privileges` SET `privilege_name` = 'add-test-type.php' WHERE `privileges`.`privilege_name` = 'addTestType.php';
+UPDATE `privileges` SET `privilege_name` = 'edit-test-type.php' WHERE `privileges`.`privilege_name` = 'editTestType.php';
+UPDATE `privileges` SET `display_name` = 'Edit Test Type' WHERE `privileges`.`privilege_name` = 'edit-test-type.php';
+UPDATE `privileges` SET `display_name` = 'Add New Sample Type' WHERE `privileges`.`privilege_name` = 'generic-add-sample-type.php';
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-test-reference', 'generic-sample-type.php', 'Manage Sample Type'), 
+(NULL, 'generic-test-reference', 'generic-add-sample-type.php', 'Add New Sample Type'),
+(NULL, 'generic-test-reference', 'generic-edit-sample-type.php', 'Edit Sample Type'),
+(NULL, 'generic-test-reference', 'generic-testing-reason.php', 'Manage Testing Reason'),
+(NULL, 'generic-test-reference', 'generic-add-testing-reason.php', 'Add New Test Reason'),
+(NULL, 'generic-test-reference', 'generic-edit-testing-reason.php', 'Edit Test Reason'),
+(NULL, 'generic-test-reference', 'generic-symptoms.php', 'Manage Symptoms'),
+(NULL, 'generic-test-reference', 'generic-add-symptoms.php', 'Add New Symptom'),
+(NULL, 'generic-test-reference', 'generic-edit-symptoms.php', 'Edit Symptom'),
+(NULL, 'generic-test-reference', 'generic-sample-rejection-reasons.php', 'Manage Sample Rejection Reasons'),
+(NULL, 'generic-test-reference', 'generic-add-rejection-reasons.php', 'Add New Rejection Reasons'),
+(NULL, 'generic-test-reference', 'generic-edit-rejection-reasons.php', 'Edit Rejection Reasons');

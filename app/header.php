@@ -451,26 +451,43 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<li class="allMenu common-reference-funding-sources">
 												<a href="/common/reference/funding-sources.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Funding Sources"); ?></a>
 											</li>
-											<?php if (isset($_SESSION['privileges']) && in_array("sampleType.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu sampleTypeMenu">
-													<a href="/common/sample-types/sampleType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
-												</li>
-											<?php } ?>
-											<?php if (isset($_SESSION['privileges']) && in_array("testingReason.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu testingReasonMenu">
-													<a href="/common/testing-reasons/testingReason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
-												</li>
-											<?php } ?>
-											<?php if (isset($_SESSION['privileges']) && in_array("symptoms.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu symptomsMenu">
-													<a href="/common/symptoms/symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
-												</li>
-											<?php } ?>
-											<?php if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu testTypeConfigurationMenu">
-													<a href="/generic-tests/configuration/testType.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
-												</li>
-											<?php } ?>
+										</ul>
+									</li>
+								<?php }
+								if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true && isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
+									<li class="treeview generic-reference-manage">
+										<a href="#"><i class="fa-solid fa-vial-circle-check"></i><?php echo _("Lab Tests Config"); ?>
+											<span class="pull-right-container">
+												<span class="fa-solid fa-angle-left pull-right"></span>
+											</span>
+										</a>
+
+										<ul class="treeview-menu">
+										<?php 
+										if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu testTypeConfigurationMenu">
+												<a href="/generic-tests/configuration/test-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
+											</li>
+										<?php } if (isset($_SESSION['privileges']) && in_array("generic-sample-type.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu genericSampleTypeMenu">
+												<a href="/generic-tests/reference/sample-types/generic-sample-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
+											</li>
+										<?php } 
+										if (isset($_SESSION['privileges']) && in_array("generic-testing-reason.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu genericTestingReasonMenu">
+												<a href="/generic-tests/reference/testing-reasons/generic-testing-reason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
+											</li>
+										<?php }
+										if (isset($_SESSION['privileges']) && in_array("generic-symptoms.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu genericSymptomsMenu">
+												<a href="/generic-tests/reference/symptoms/generic-symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
+											</li>
+										<?php }
+										if (isset($_SESSION['privileges']) && in_array("generic-sample-rejection-reasons.php", $_SESSION['privileges'])) { ?>
+											<li class="allMenu genericSampleRejectionReasonsMenu">
+												<a href="/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Rejection Reasons"); ?></a>
+											</li>
+										<?php } ?>
 										</ul>
 									</li>
 								<?php }

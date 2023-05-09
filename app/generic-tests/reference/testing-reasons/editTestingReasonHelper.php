@@ -14,29 +14,29 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_sample_types";
+$tableName = "r_generic_test_reasons";
 
 /*echo "<pre>";
 print_r($_POST);
 die;*/
-$sampleTypeId = (int) base64_decode($_POST['sampleTypeId']);
-$_POST['sampleTypeName'] = trim($_POST['sampleTypeName']);
+$testReasonId = (int) base64_decode($_POST['testReasonId']);
+$_POST['testReason'] = trim($_POST['testReason']);
 try {
-    if (!empty($_POST['sampleTypeName'])) {
+    if (!empty($_POST['testReason'])) {
        
         $data = array(
-            'sample_type_name' => $_POST['sampleTypeName'],
-            'sample_type_code' => $_POST['sampleTypeCode'],
-            'sample_type_status' => $_POST['sampleTypeStatus'],
+            'test_reason' => $_POST['testReason'],
+            'test_reason_code' => trim($_POST['testReasonCode']),
+            'test_reason_status' => $_POST['testReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         
-        $db = $db->where('sample_type_id', $sampleTypeId);
+        $db = $db->where('test_reason_id', $testReasonId);
         $db->update($tableName, $data);
-        $_SESSION['alertMsg'] = _("Sample type updated successfully");
+        $_SESSION['alertMsg'] = _("Testing reason updated successfully");
     }
-    error_log($db->getLastError());
-    header("location:sampleType.php");
+    //error_log($db->getLastError());
+    header("location:testingReason.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

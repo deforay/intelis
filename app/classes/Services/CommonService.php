@@ -450,6 +450,9 @@ class CommonService
         if ($testType == "tb") {
             $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
         }
+        if ($testType == "generic-tests") {
+            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
+        }
         foreach ($rejArray as $rej) {
             $rejReaons[$rej] = ($rej);
         }
@@ -798,7 +801,7 @@ class CommonService
 
     public function getSampleType($testTypeId)
     {
-        $sampleTypeQry = "SELECT * FROM r_sample_types as st INNER JOIN generic_test_sample_type_map as map ON map.sample_type_id=st.sample_type_id WHERE map.test_type_id=$testTypeId AND st.sample_type_status='active'";
+        $sampleTypeQry = "SELECT * FROM r_generic_sample_types as st INNER JOIN generic_test_sample_type_map as map ON map.sample_type_id=st.sample_type_id WHERE map.test_type_id=$testTypeId AND st.sample_type_status='active'";
         return $this->db->query($sampleTypeQry);
     }
 }

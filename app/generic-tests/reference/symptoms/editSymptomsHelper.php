@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 ob_start();
 
 $general = new CommonService();
-$tableName = "r_symptoms";
+$tableName = "r_generic_symptoms";
 
 /*echo "<pre>";
 print_r($_POST);

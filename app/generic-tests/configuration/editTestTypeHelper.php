@@ -89,7 +89,7 @@ try {
         $_SESSION['alertMsg'] = _("Test type updated successfully");
     }
     //error_log($db->getLastError());
-    header("Location:testType.php");
+    header("Location:test-type.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

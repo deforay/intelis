@@ -9,37 +9,34 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ob_start();
 
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_testing_reasons";
+$tableName = "r_generic_symptoms";
 
 /*echo "<pre>";
 print_r($_POST);
 die;*/
-$_POST['testReason'] = trim($_POST['testReason']);
+$_POST['symptomName'] = trim($_POST['symptomName']);
 try {
-    if (!empty($_POST['testReason'])) {
+    if (!empty($_POST['symptomName'])) {
        
         $data = array(
-            'test_reason' => $_POST['testReason'],
-            'test_reason_code' => $_POST['testReasonCode'],
-            'test_reason_status' => $_POST['testReasonStatus'],
+            'symptom_name' => $_POST['symptomName'],
+            'symptom_code' => $_POST['symptomCode'],
+            'symptom_status' => $_POST['status'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
         
         $id = $db->insert($tableName, $data);
         $lastId = $db->getInsertId();
         if($lastId > 0){
-            $_SESSION['alertMsg'] = _("Testing reason added successfully");
-            $general->activityLog('Testing Reason', $_SESSION['userName'] . ' added new testing reason for ' . $_POST['testReason'], 'common-testing-reason');
+            $_SESSION['alertMsg'] = _("Symptoms details added successfully");
+            $general->activityLog('Symptoms', $_SESSION['userName'] . ' added new symptom for ' . $_POST['symptomName'], 'common-symptoms');
         }
         
     }
     //error_log($db->getLastError());
-    header("location:testingReason.php");
+    header("location:symptoms.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
