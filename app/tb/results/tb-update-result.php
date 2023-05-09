@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 
 $title = "TB | Edit Request";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .disabledForm {
@@ -360,4 +360,4 @@ require($fileArray[$arr['vl_form']]);
         $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
-<?php require_once(APPLICATION_PATH . '/footer.php');
+<?php require_once APPLICATION_PATH . '/footer.php';

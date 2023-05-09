@@ -1,7 +1,7 @@
 <?php
 $title = _("Manage Result Status");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -155,7 +155,7 @@ foreach ($rejectionTypeResult as $type) {
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
@@ -508,4 +508,4 @@ foreach ($rejectionTypeResult as $type) {
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

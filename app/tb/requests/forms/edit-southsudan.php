@@ -128,7 +128,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<input type="hidden" id="sampleCode" name="sampleCode" />
 											</td>
 										<?php } else { ?>
-											<th style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
+											<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
 											<td style="width: 18%;">
 												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
@@ -255,7 +255,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 									</tr>
 									<tr>
-										<th colspan="4">Reason for Examination</th>
+										<th scope="row" colspan="4">Reason for Examination</th>
 									</tr>
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
@@ -433,7 +433,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
 														</tr>
 														<tr>
-															<th style="width: 10%;" class="text-center">Test #</th>
+															<th scope="row" style="width: 10%;" class="text-center">Test #</th>
 															<th style="width: 40%;" class="text-center">Result</th>
 															<th style="width: 40%;" class="text-center">Actual Number</th>
 														</tr>
@@ -474,13 +474,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 										</tr>
 										<tr>
-											<th class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
+											<th scope="row" class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
 											<td class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 													<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="result">TB LAM Result</label></th>
+											<th scope="row" class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="result">TB LAM Result</label></th>
 											<td class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
 													<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>

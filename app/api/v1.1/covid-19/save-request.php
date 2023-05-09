@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
@@ -37,7 +38,7 @@ try {
     $input = json_decode($origJson, true);
 
     if (empty($input) || empty($input['data'])) {
-        throw new Exception("Invalid request");
+        throw new SystemException("Invalid request");
     }
 
     /* For API Tracking params */
@@ -515,7 +516,7 @@ try {
     }
 
     http_response_code(200);
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     http_response_code(400);
     $payload = array(

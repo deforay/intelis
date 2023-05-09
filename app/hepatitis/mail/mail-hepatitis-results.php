@@ -2,7 +2,7 @@
 
 $title = "Email Hepatitis Test Results";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configResult = $db->rawQuery($configQuery);
 $formId = 0;
@@ -473,4 +473,4 @@ startDate: moment().subtract(28, 'days'),
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

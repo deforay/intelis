@@ -2,6 +2,7 @@
 
 namespace App\Registries;
 
+use App\Exceptions\SystemException;
 use Exception;
 use ArrayObject;
 
@@ -17,7 +18,7 @@ class AppRegistry extends ArrayObject
     public static function setInstance(AppRegistry $registry)
     {
         if (self::$appRegistry !== null) {
-            throw new Exception('Registry is already initialized');
+            throw new SystemException('Registry is already initialized');
         }
         self::$appRegistry = $registry;
     }
@@ -46,7 +47,7 @@ class AppRegistry extends ArrayObject
         $instance = self::getInstance();
 
         if (!$instance->offsetExists($index)) {
-            throw new Exception("No entry is registered for key '$index'");
+            throw new SystemException("No entry is registered for key '$index'");
         }
 
         return $instance->offsetGet($index);

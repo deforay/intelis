@@ -288,7 +288,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         PATIENT HISTORY
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <th scope="row"><label for="suspectedCase">Is the suspected case</label></th>
                                     <td>
                                         <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
@@ -303,11 +303,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <input class="form-control date" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                     </td>
                                     <tr>
-                                        <th colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
+                                        <th scope="row" colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) { ?>
                                                     <tr class="row<?php echo $index; ?>">
@@ -329,7 +329,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
+                                        <th scope="row" colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
                                         <td style="width:25% !important;">
                                             <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -344,11 +344,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="historyfield form-control" type="text" name="overseas" id="overseas" placeholder="Overseas" title="Please enter the overseas" />
                                         </td> -->
-                                        <th style="display: none;"><label for="countryName">If Yes, Country Name(s)</label></th>
+                                        <th scope="row" style="display: none;"><label for="countryName">If Yes, Country Name(s)</label></th>
                                         <td style="display: none;">
                                             <input class="historyfield form-control" type="text" name="countryName" id="countryName" placeholder="Country Name(s)" title="Please enter the country name(s)" />
                                         </td>
-                                        <th style="display: none;"><label for="returnDate">Return Date</label></th>
+                                        <th scope="row" style="display: none;"><label for="returnDate">Return Date</label></th>
                                         <td style="display: none;">
                                             <input class="historyfield form-control date" type="text" name="returnDate" id="returnDate" placeholder="Return Date" title="Please enter the return date" />
                                         </td>
@@ -440,7 +440,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -592,7 +592,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="4" class="text-right"><label for="result">Final result</label></th>
+                                                            <th scope="row" colspan="4" class="text-right"><label for="result">Final result</label></th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result" title="Please select the Final result">
                                                                     <option value=''> -- Select -- </option>

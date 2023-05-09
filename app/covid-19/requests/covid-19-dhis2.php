@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = "Covid-19 | DHIS2 Requests";
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -46,7 +46,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 
-					<table id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
@@ -64,7 +64,7 @@ $batResult = $db->rawQuery($batQuery);
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -385,4 +385,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

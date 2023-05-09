@@ -304,7 +304,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     PATIENT HISTORY
                                 </h3>
                             </div>
-                            <table id="responseTable" class="table table-bordered" aria-hidden="true" >
+                            <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
                                 <th scope="row"><label for="suspectedCase">Is the suspected case</label></th>
                                 <td>
                                     <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
@@ -319,11 +319,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <input class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                 </td>
                                 <tr>
-                                    <th colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
+                                    <th scope="row" colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
-                                        <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                        <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                             <?php $index = 0;
                                             foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                 $diarrhée = "";
@@ -350,7 +350,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
+                                    <th scope="row" colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
                                     <td style="width:25% !important;">
                                         <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                             <option value="">-- Select --</option>
@@ -451,7 +451,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 </tr>
                                 <tr class="comorbidities-row" style="<?php echo ($covid19Info['medical_history'] != 'yes') ? 'display:none' : ''; ?>">
                                     <td colspan="4">
-                                        <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                        <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                             <?php $index = 0;
                                             foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                 <tr>
@@ -646,7 +646,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="4" class="text-right"><label for="result">Final result</label></th>
+                                                            <th scope="row" colspan="4" class="text-right"><label for="result">Final result</label></th>
                                                             <td>
                                                                 <select class="result-focus form-control isRequired" name="result" id="result" title="Please select the Final result">
                                                                     <option value=''> -- Select -- </option>

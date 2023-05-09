@@ -210,7 +210,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Infant and Mother's Health Information</h4>
                                         </th>
                                     </tr>
@@ -325,7 +325,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
                                         </th>
                                     </tr>

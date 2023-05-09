@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = "Enter Covid-19 Result";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -241,4 +241,4 @@ if ($arr['vl_form'] == 1) {
 
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

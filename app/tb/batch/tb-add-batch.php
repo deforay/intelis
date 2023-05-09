@@ -7,7 +7,7 @@ use App\Services\CommonService;
 
 $title = _("TB | Add Batch");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -344,4 +344,4 @@ foreach ($testPlatformResult as $machine) {
 
 <?php
 
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

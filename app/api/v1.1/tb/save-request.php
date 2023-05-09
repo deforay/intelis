@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -428,7 +429,7 @@ try {
     http_response_code(200);
     echo json_encode($payload);
     // exit(0); 
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
 
     // http_response_code(500);
     $payload = array(

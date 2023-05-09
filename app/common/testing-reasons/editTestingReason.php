@@ -2,7 +2,7 @@
 ob_start();
 $title = _("Testing Reason");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 $tQuery = "SELECT * from r_testing_reasons where test_reason_id=$id";
@@ -116,4 +116,4 @@ $testingReasonInfo = $db->query($tQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("Covid-19 | Clinics Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -175,7 +175,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 											</table>
 
-											<table id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -279,7 +279,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -377,7 +377,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -432,7 +432,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -1048,4 +1048,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 
 $title = _("User Activity Log");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -78,7 +78,7 @@ foreach ($actions as $list) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Audit Log"); ?></th>
@@ -199,4 +199,4 @@ foreach ($actions as $list) {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

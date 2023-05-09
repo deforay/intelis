@@ -5,7 +5,7 @@ use App\Services\CommonService;
 
 
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 //global config
 $cSampleQuery = "SELECT * FROM global_config";
@@ -43,4 +43,4 @@ if ($module == 'vl') {
   require_once(APPLICATION_PATH . '/import-result/import-stats-hepatitis.php');
 }
 
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

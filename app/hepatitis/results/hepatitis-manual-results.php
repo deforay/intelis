@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = _("Enter Hepatitis Result");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -164,7 +164,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 						<br>
 
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -325,10 +325,12 @@ startDate: moment().subtract(28, 'days'),
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
+			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> 
+				"aaSorting": [
 					[8, "desc"]
 				],
-			<?php } else { ?> "aaSorting": [
+			<?php } else { ?> 
+				"aaSorting": [
 					[7, "desc"]
 				],
 			<?php } ?> "bProcessing": true,
@@ -397,4 +399,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -117,8 +117,8 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
             if (!file_exists($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email") && !is_dir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email")) {
                mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email");
             }
-            copy($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1'], $configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile1']);
-            copy($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'], $configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile2']);
+            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile1']));
+            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile2']));
          }
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:/covid-19/mail/mail-covid-19-results.php');

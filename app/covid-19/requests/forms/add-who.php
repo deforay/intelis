@@ -231,7 +231,7 @@ foreach ($fResult as $fDetails) {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>SPECIMEN INFORMATION</h4>
                                         </th>
                                     </tr>
@@ -284,7 +284,7 @@ foreach ($fResult as $fDetails) {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>CLINICAL DETAILS</h4>
                                         </th>
                                     </tr>
@@ -305,7 +305,7 @@ foreach ($fResult as $fDetails) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan=2>Has the patient had a recent history of travelling to an affected area? <span class="mandatory">*</span></th>
+                                        <th scope="row" colspan=2>Has the patient had a recent history of travelling to an affected area? <span class="mandatory">*</span></th>
                                         <td style="width:25% !important;">
                                             <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -407,7 +407,7 @@ foreach ($fResult as $fDetails) {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="3" class="text-right">Final Result</th>
+                                                            <th scope="row" colspan="3" class="text-right">Final Result</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

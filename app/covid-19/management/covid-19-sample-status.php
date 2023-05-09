@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $title = _("Covid-19 | Sample Status Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -106,7 +106,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
-						<table id="covid19RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="covid19RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Covid-19 Sample ID"); ?></th>
@@ -297,4 +297,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

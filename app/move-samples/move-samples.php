@@ -1,7 +1,7 @@
 <?php
 $title = "Move Samples";
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -27,7 +27,7 @@ require_once(APPLICATION_PATH . '/header.php');
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="sampleDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="sampleDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th>From Lab</th>
@@ -109,4 +109,4 @@ require_once(APPLICATION_PATH . '/header.php');
 	});
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

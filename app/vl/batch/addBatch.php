@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 
 $title = _("VL | Add New Batch");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -448,4 +448,4 @@ foreach ($testPlatformResult as $machine) {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

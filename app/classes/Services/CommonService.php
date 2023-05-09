@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\SystemException;
 use MysqliDb;
 use Exception;
 use ZipArchive;
@@ -241,10 +242,10 @@ class CommonService
     {
         $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
         if ($decoded === false) {
-            throw new Exception('The message encoding failed');
+            throw new SystemException('The message encoding failed');
         }
         if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
-            throw new Exception('The message was truncated');
+            throw new SystemException('The message was truncated');
         }
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
         $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
@@ -255,7 +256,7 @@ class CommonService
             $key
         );
         if ($plain === false) {
-            throw new Exception('The message was tampered with in transit');
+            throw new SystemException('The message was tampered with in transit');
         }
         sodium_memzero($ciphertext);
         sodium_memzero($key);

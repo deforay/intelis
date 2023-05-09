@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $rejReaons = $general->getRejectionReasons('eid');
 $id = base64_decode($_GET['id']);
 $rsnQuery = "SELECT * from r_eid_sample_rejection_reasons where rejection_reason_id=$id";
@@ -148,4 +148,4 @@ $rsnInfo = $db->query($rsnQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -275,7 +275,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                             <br><br>
                             <table aria-describedby="table" class="table" aria-hidden="true" >
                                 <tr>
-                                    <th colspan=4 style="border-top:#ccc 2px solid;">
+                                    <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                         <h4>Sample Information</h4>
                                     </th>
                                 </tr>

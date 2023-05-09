@@ -12,6 +12,7 @@ function prettyJson($json)
     }
 }
 
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -106,7 +107,7 @@ foreach ($entries as $entry) {
             if (empty($resource->getBasedOn()))
 
                 if (empty($resource->getBasedOn())) {
-                    throw new Exception("ServiceRequest is missing for Task/$taskId");
+                    throw new SystemException("ServiceRequest is missing for Task/$taskId");
                 }
 
             $basedOnServiceRequest = basename((string) $resource->getBasedOn()[0]->getReference());
@@ -137,7 +138,7 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['facility_id'] = $facilityRow['facility_id'];
 
             if (empty($resource->getIdentifier()) || empty($resource->getIdentifier()[0]->getValue())) {
-                throw new Exception("Order ID is missing for Task/$taskId");
+                throw new SystemException("Order ID is missing for Task/$taskId");
             }
 
 
@@ -190,7 +191,7 @@ foreach ($entries as $entry) {
             $patientFhirId = (string) $patientParsed->getId();
 
             if (empty($resource->getSpecimen())) {
-                throw new Exception("Specimen is missing for ServiceRequest/$basedOnServiceRequest");
+                throw new SystemException("Specimen is missing for ServiceRequest/$basedOnServiceRequest");
             }
             
             $specimen = $fhir->getFHIRReference($resource->getSpecimen()[0]->getReference());
@@ -198,7 +199,7 @@ foreach ($entries as $entry) {
             $specimenFhirId = (string) $specimenParsed->getId();
 
             if (empty($resource->getRequester())) {
-                throw new Exception("Requester is missing for ServiceRequest/$basedOnServiceRequest");
+                throw new SystemException("Requester is missing for ServiceRequest/$basedOnServiceRequest");
             }
             $requestor = $fhir->getFHIRReference($resource->getRequester()->getReference());
             $requestorParsed = $parser->parse($requestor);
@@ -280,7 +281,7 @@ foreach ($entries as $entry) {
 
             //echo ("Service Status:" . $status) . "<br>";
         }
-    } catch (Exception $e) {
+    } catch (SystemException $e) {
         error_log($e->getMessage());
         $errors[] = $e->getMessage();
         if (isset($basedOnServiceRequest)) {

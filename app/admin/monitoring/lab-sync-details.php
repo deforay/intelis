@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
 $title = _("Sources of Requests");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -133,7 +133,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                             </tr>
                         </table>
                         <hr>
-                        <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center" scope="col"><?php echo _("Facility Name"); ?></th>
@@ -236,4 +236,4 @@ $labInfo = $db->rawQueryOne($sQuery);
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

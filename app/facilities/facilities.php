@@ -7,7 +7,7 @@ use App\Services\SystemService;
 
 $title = _("Facilities");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
@@ -155,7 +155,7 @@ $state = $geolocationService->getProvinces("yes");
           <!-- /.box-header -->
           <div class="box-body">
             <button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
-            <table id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _("Facility Code"); ?></th>
@@ -328,4 +328,4 @@ $state = $geolocationService->getProvinces("yes");
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

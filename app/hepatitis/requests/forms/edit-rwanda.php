@@ -122,14 +122,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $hepatitisInfo[$sampleCode]; ?></span>
-                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : $hepatitisInfo[$sampleCode]; ?>" />
+                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : htmlspecialchars($hepatitisInfo[$sampleCode]); ?></span>
+                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($hepatitisInfo[$sampleCode]); ?>" />
                                             </td>
 
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span> </td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : $hepatitisInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($hepatitisInfo[$sampleCode]); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
@@ -271,7 +271,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="hbvFields"><label for="HBsAg">HBsAg Result</label></th>
+                                    <th scope="row" class="hbvFields"><label for="HBsAg">HBsAg Result</label></th>
                                     <td class="hbvFields">
                                         <select class="hbvFields form-control" name="HBsAg" id="HBsAg" title="Please choose HBsAg result">
                                             <option value=''> -- Select -- </option>
@@ -280,7 +280,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <option value='intermediate' <?php echo ($hepatitisInfo['hbsag_result'] == 'intermediate') ? "selected='selected'" : ""; ?>>Intermediate</option>
                                         </select>
                                     </td>
-                                    <th class="hcvFields"><label for="antiHcv">Anti-HCV Result</label></th>
+                                    <th scope="row" class="hcvFields"><label for="antiHcv">Anti-HCV Result</label></th>
                                     <td class="hcvFields">
                                         <select class="hcvFields form-control" name="antiHcv" id="antiHcv" title="Please choose Anti-HCV result">
                                             <option value=''> -- Select -- </option>
@@ -366,13 +366,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <!-- <tr>
-                                            <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
+                                            <th scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields">
                                                 <select class="hcvFields result-focus labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
                                                     <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hcv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th class="hbvFields"><label for="hbv">HBV VL Result</label></th>
+                                            <th scope="row" class="hbvFields"><label for="hbv">HBV VL Result</label></th>
                                             <td class="hbvFields">
                                                 <select class="hbvFields result-focus labSecInput form-control rejected-input" name="hbv" id="hbv" title="Please select the HBV VL Result">
                                                     <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
@@ -380,11 +380,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr> -->
                                         <tr>
-                                            <th class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
+                                            <th scope="row" class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td class="hcvFields">
                                                 <input value="<?php echo $hepatitisInfo['hcv_vl_count']; ?>" data-val="" type="text" class="hcvFields  result-focus labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
                                             </td>
-                                            <th class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
+                                            <th scope="row" class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
                                             <td class="hbvFields">
                                                 <input value="<?php echo $hepatitisInfo['hbv_vl_count']; ?>" data-val="" type="text" class="hbvFields result-focus labSecInput form-control rejected-input" placeholder="Enter HBV Count" title="Please enter HBV Count" name="hbvCount" id="hbvCount">
                                             </td>

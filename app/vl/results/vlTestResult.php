@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("Enter VL Result");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
@@ -193,7 +193,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>><?php echo _("Rejected Samples"); ?></option>
 							</select>
 						</div>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -444,4 +444,4 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

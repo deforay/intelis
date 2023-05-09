@@ -1,7 +1,7 @@
 <?php
 $title = _("Dashboard");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -807,4 +807,4 @@ require_once(APPLICATION_PATH . '/header.php');
 <?php
 
 
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

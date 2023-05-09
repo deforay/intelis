@@ -12,7 +12,7 @@ if (count($adminCount) == 0) {
 $path = '/assets/img/remote-bg.jpg';
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
 
 <head>
     <meta charset="utf-8">

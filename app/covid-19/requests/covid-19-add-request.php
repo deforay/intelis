@@ -6,7 +6,7 @@ use App\Services\UsersService;
 
 
 $title = _("COVID-19 | Add New Request");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -319,4 +319,4 @@ require($fileArray[$arr['vl_form']]);
 </script>
 <?php
 
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

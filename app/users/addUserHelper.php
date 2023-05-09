@@ -47,7 +47,7 @@ try {
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
             $imageName = "usign-" . $data['user_id'] . "." . $extension;
-            $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
+            $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName);
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new ImageResizeUtility();
                 $resizeObj = $resizeObj->setFileName($signatureImagePath);
@@ -66,17 +66,15 @@ try {
 
 
         if ($id > 0 && trim($_POST['selectedFacility']) != '') {
-            if ($id > 0 && trim($_POST['selectedFacility']) != '') {
-                $selectedFacility = explode(",", $_POST['selectedFacility']);
-                $uniqueFacilityId = array_unique($selectedFacility);
-                for ($j = 0; $j <= count($selectedFacility); $j++) {
-                    if (isset($uniqueFacilityId[$j])) {
-                        $data = array(
-                            'facility_id' => $selectedFacility[$j],
-                            'user_id' => $data['user_id'],
-                        );
-                        $db->insert($tableName2, $data);
-                    }
+            $selectedFacility = explode(",", $_POST['selectedFacility']);
+            $uniqueFacilityId = array_unique($selectedFacility);
+            for ($j = 0; $j <= count($selectedFacility); $j++) {
+                if (isset($uniqueFacilityId[$j])) {
+                    $data = array(
+                        'facility_id' => $selectedFacility[$j],
+                        'user_id' => $data['user_id'],
+                    );
+                    $db->insert($tableName2, $data);
                 }
             }
         }

@@ -23,7 +23,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
 	$labId = base64_decode($_GET['labId']);
 }
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
@@ -132,7 +132,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
 						</tr>
 					</table>
-						<table id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -609,4 +609,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

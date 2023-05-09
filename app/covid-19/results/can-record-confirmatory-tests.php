@@ -1,7 +1,7 @@
 <?php
 $title = "Enter Covid-19 Result";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -147,7 +147,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>>Rejected Samples</option>
 							</select>
 						</div><br>
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th>Sample Code</th>
@@ -371,4 +371,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -176,7 +176,7 @@ foreach ($pdResult as $provinceName) {
                         </div>
                         <br>
                     </div>
-                    <table id="qcTestTableRoot" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;display:none;">
+                    <table aria-describedby="table" id="qcTestTableRoot" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;display:none;">
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?></th>
@@ -392,4 +392,4 @@ foreach ($pdResult as $provinceName) {
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

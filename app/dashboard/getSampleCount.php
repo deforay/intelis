@@ -34,37 +34,31 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $unique = "Test1";
     $requestCountDataTable = "vlRequestCountDataTable";
     $samplesCollectionChart = "vlSamplesCollectionChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
     $samplesCollectionChart = "covid19SamplesCollectionChart";
     $table = "form_covid19";
     $primaryKey = "covid19_id";
     $unique = "Test3";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $samplesCollectionChart = "hepatitisSamplesCollectionChart";
     $table = "form_hepatitis";
     $primaryKey = "hepatitis_id";
     $unique = "Test4";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $samplesCollectionChart = "recencySamplesCollectionChart";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
     $unique = "Test5";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+
+    // For VL Tab we do not want to show Recency Counts
+    $recencyWhere = " AND reason_for_vl_testing = 9999";
+    $requestCountDataTable = "recencyRequestCountDataTable";
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
     $table = "form_tb";
     $primaryKey = "tb_id";
     $unique = "Test6";
     $samplesCollectionChart = "tbSamplesCollectionChart";
 }
-
-// For VL Tab we do not want to show Recency Counts
-
-else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
-    $recencyWhere = " AND reason_for_vl_testing = 9999";
-    $table = "form_vl";
-    $primaryKey = "vl_sample_id";
-    $requestCountDataTable = "recencyRequestCountDataTable";
-}
-
 
 
 if ($systemType != 'remoteuser') {
@@ -168,7 +162,7 @@ if ($table == "form_eid") {
 			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
-		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id" ;
+		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
     $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
     $sQuery = $sQuery . ' GROUP BY vl.facility_id';
@@ -200,7 +194,7 @@ $tableResult = $db->rawQuery($sQuery);
         <div class="display">
             <div class="number">
                 <h3 class="font-purple-soft">
-                    
+
                 </h3>
                 <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?></small><br>
                 <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
@@ -217,7 +211,7 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-xs-12">
     <div class="box">
         <div class="box-body">
-            <table id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover">
+            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
                         <th scope="row"><?php echo _("Facility Name"); ?></th>

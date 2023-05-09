@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("EID | Clinics Report");
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -176,7 +176,7 @@ foreach ($rejectionTypeResult as $type) {
 												</tr>
 											</table>
 
-											<table id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code");?></th>
@@ -284,7 +284,7 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 											</table>
-											<table id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code");?></th>
@@ -380,7 +380,7 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 											</table>
-											<table id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code");?></th>
@@ -435,7 +435,7 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 											</table>
-											<table id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code");?></th>
@@ -1051,4 +1051,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

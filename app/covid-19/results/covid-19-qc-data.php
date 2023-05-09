@@ -2,7 +2,7 @@
 
 $title = _("Enter Covid-19 Result");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .disabledForm {
@@ -75,7 +75,7 @@ require_once(APPLICATION_PATH . '/header.php');
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><?php echo _("QC Code"); ?></th>
@@ -194,4 +194,4 @@ require_once(APPLICATION_PATH . '/header.php');
 
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

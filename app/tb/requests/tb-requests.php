@@ -24,7 +24,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
     $facilityId = base64_decode($_GET['facilityId']);
     $labId = base64_decode($_GET['labId']);
 }
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -107,7 +107,7 @@ foreach ($srcResults as $list) {
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+                    <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
                         <tr>
                             <td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
                             <td>
@@ -280,7 +280,7 @@ foreach ($srcResults as $list) {
                             </td>
                         </tr>
                     </table>
-                    <table id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
 
@@ -298,7 +298,7 @@ foreach ($srcResults as $list) {
 
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -757,4 +757,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

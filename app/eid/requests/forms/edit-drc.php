@@ -122,7 +122,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
 											<td>
-												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
+												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($eidInfo[$sampleCode]); ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
 												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
 											</td>
 										<?php } ?>
@@ -191,7 +191,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
 											<h4 class="box-title">Information sur le patient &nbsp;&nbsp;&nbsp;
 												<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
@@ -200,7 +200,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</th>
 									</tr>
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère</h5>
 										</th>
 									</tr>
@@ -231,7 +231,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant </h5>
 										</th>
 									</tr>
@@ -283,7 +283,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</th>
 									</tr>
 									<tr>
-										<th colspan=2>ARV donnés à la maman pendant la grossesse:</th>
+										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:</th>
 										<td colspan=4>
 											<input type="checkbox" name="motherTreatment[]" value="Nothing" <?php echo in_array('Nothing', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Rien <br>
 											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated during Pregnancy" <?php echo in_array('ARV Initiated during Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV débutés durant la grossesse <br>
@@ -337,7 +337,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
-										<th colspan=2>
+										<th scope="row" colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
 										</th>
 									</tr>
@@ -401,7 +401,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
-										<th colspan=2>
+										<th scope="row" colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
 										</th>
 									</tr>
@@ -450,7 +450,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 									</tr>
 									<tr>
-										<th colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
+										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
 										<th scope="row">Test rapide effectué?</th>

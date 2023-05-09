@@ -455,8 +455,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             <th scope="row" class="text-center">Test Method</th>
                                                             <th scope="row" class="text-center">Date of Testing</th>
                                                             <th scope="row" class="text-center">Test Platform/Test Kit</th>
-                                                            <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
-                                                            <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;">Kit Lot No</th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;">Expiry Date</th>
                                                             <th scope="row" class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>
@@ -496,7 +496,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="4" class="text-right final-result-row">Final Result</th>
+                                                            <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

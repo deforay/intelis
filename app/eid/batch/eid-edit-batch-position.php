@@ -8,7 +8,7 @@ use App\Services\CommonService;
 $title = "Edit Batch Position";
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -183,4 +183,4 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

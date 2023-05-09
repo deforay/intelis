@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("Export Data");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -348,7 +348,7 @@ $state = $geolocationService->getProvinces("yes");
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -767,5 +767,5 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';
 ?>

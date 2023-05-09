@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 $db = $db->where('failure_id', $id);
 $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
@@ -112,4 +112,4 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

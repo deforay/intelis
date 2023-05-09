@@ -34,7 +34,7 @@ try {
 
 		$data = $_POST['image'];
 		$fileName = 'screenshot-' . uniqid() . '.png';
-		$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $fileName;
+		$uploadPath = realpath($uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $fileName);
 
 		// remove "data:image/png;base64,"
 		$uri =  substr($data, strpos($data, ",", 1));

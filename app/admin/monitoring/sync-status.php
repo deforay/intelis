@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
 $title = _("Sources of Requests");
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -130,7 +130,7 @@ $activeTestModules = $systemService->getActiveTestModules();
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center"><?php echo _("Lab Name"); ?></th>
@@ -231,4 +231,4 @@ $activeTestModules = $systemService->getActiveTestModules();
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

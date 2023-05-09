@@ -492,7 +492,7 @@ $disable = "disabled = 'disabled'";
 											</select>
 											<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 										</td>
-										<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
+										<th scope="row" class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?></th>
 										<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
@@ -510,7 +510,7 @@ $disable = "disabled = 'disabled'";
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>
 										<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
-											<th class="reasonForFailure"><?php echo _("Reason for Failure"); ?></th>
+											<th scope="row" class="reasonForFailure"><?php echo _("Reason for Failure"); ?></th>
 											<td class="reasonForFailure">
 												<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
 													<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>

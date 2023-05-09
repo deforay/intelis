@@ -4,7 +4,7 @@
 $title = "Covid-19 | Edit Batch Position";
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
 	header("Location:covid-19-batches.php");
@@ -175,4 +175,4 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

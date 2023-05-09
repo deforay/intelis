@@ -1,7 +1,7 @@
 <?php
 $title = _("Add Samples from Manifest");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -57,7 +57,7 @@ $batResult = $db->rawQuery($batQuery);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -298,4 +298,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	});
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

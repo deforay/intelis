@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $query = "SELECT * FROM roles where status='active' GROUP BY role_code";
 $result = $db->rawQuery($query);
 
@@ -184,7 +184,7 @@ $ftResult = $db->rawQuery($fQuery);
                                              <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" maxlength="16" /><br>
-                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><b>Generate Random Password</b></button><br>
+                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong>Generate Random Password</strong></button><br>
                                                   <code><?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>
@@ -466,7 +466,7 @@ $ftResult = $db->rawQuery($fQuery);
 
      function generateToken(id) {
           $.post("/includes/generate-auth-token.php", {
-                    size: 4
+                    size: 6
                },
                function(data) {
                     if (data != "") {
@@ -547,4 +547,4 @@ $ftResult = $db->rawQuery($fQuery);
      }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

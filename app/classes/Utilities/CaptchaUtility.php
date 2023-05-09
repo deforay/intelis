@@ -8,6 +8,7 @@
 
 namespace App\Utilities;
 
+use App\Exceptions\SystemException;
 use Exception;
 
 class CaptchaUtility
@@ -19,7 +20,7 @@ class CaptchaUtility
             session_start();
         }
         if (!function_exists('gd_info')) {
-            throw new Exception('Required GD library is missing');
+            throw new SystemException('Required GD library is missing');
         }
 
         // Default values
@@ -141,7 +142,7 @@ class CaptchaUtility
 
         // Verify font file exists
         if (!file_exists($font)) {
-            throw new Exception('Font file not found: ' . $font);
+            throw new SystemException('Font file not found: ' . $font);
         }
 
 

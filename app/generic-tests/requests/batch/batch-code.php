@@ -3,7 +3,7 @@
 $title = _("Manage Batch");
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
@@ -62,7 +62,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body batchDiv" style="display:none;">
-						<table id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="col"><?php echo _("Batch Code"); ?></th>
@@ -199,4 +199,4 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -1,6 +1,6 @@
 	<?php
 
-	require_once(APPLICATION_PATH . '/header.php');
+	require_once APPLICATION_PATH . '/header.php';
 	$id = base64_decode($_GET['id']);
 	$date = base64_decode($_GET['d']);
 	$tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
@@ -128,7 +128,7 @@
 						</span>
 						<!-- /.box-header -->
 						<div class="box-body">
-							<table id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<th>Sample Code</th>
@@ -312,5 +312,5 @@
 		}
 	</script>
 	<?php
-	require_once(APPLICATION_PATH . '/footer.php');
+	require_once APPLICATION_PATH . '/footer.php';
 	?>

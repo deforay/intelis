@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 $title = "Enter EID Result";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 
@@ -258,4 +258,4 @@ require($fileArray[$arr['vl_form']]);
 
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

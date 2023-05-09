@@ -42,7 +42,7 @@ try {
     }
     //  else {
     //     if (!SYSTEM_CONFIG['recency']['crosslogin'] && !isset($_POST['username']) && !empty($_POST['username'])) {
-    //         throw new Exception(_("Please check your login credentials"));
+    //         throw new SystemException(_("Please check your login credentials"));
     //     }
     // }
 
@@ -52,7 +52,7 @@ try {
         $_SESSION['csrf_token'] = null;
         unset($_SESSION['csrf_token']);
         //unset($_SESSION);
-        throw new Exception(_("Request expired. Please try to login again."));
+        throw new SystemException(_("Request expired. Please try to login again."));
     }
 
     /* Crosss Login Block End */
@@ -112,13 +112,13 @@ try {
                         )
                     );
                 } else {
-                    throw new Exception(_("Please checkss your login credentials"));
+                    throw new SystemException(_("Please checkss your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
                     $user->userHistoryLog($userName, 'failed', $userRow['user_id']);
 
-                    throw new Exception(_("Please check your login credentials"));
+                    throw new SystemException(_("Please check your login credentials"));
                 }
             }
 

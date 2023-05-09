@@ -93,7 +93,7 @@ $type = $_GET['type'];
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="facilityModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="facilityModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th style="width:10%;">Select</th>
@@ -181,7 +181,7 @@ $type = $_GET['type'];
         });
         aoData.push({
           "name": "type",
-          "value": '<?php echo $type; ?>'
+          "value": '<?php echo htmlspecialchars($type); ?>'
         });
         $.ajax({
           "dataType": 'json',

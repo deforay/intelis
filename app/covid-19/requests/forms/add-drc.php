@@ -297,7 +297,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Definition de cas
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
@@ -524,7 +524,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
+                                        <th scope="row" colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
@@ -541,7 +541,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="symptoms">
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -608,7 +608,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -843,7 +843,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="3" class="text-right">Résultat final</th>
+                                                            <th scope="row" colspan="3" class="text-right">Résultat final</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result" title="Résultat final">
                                                                     <option value=''> -- Sélectionner -- </option>
@@ -858,7 +858,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="other-diseases" style="display: none;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
+                                            <th scope="row" class="other-diseases" style="display: none;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
                                             <td colspan="3" class="other-diseases" style="display: none;">
                                                 <select name="otherDiseases" id="otherDiseases" class="form-control" title="Autres maladies">
                                                     <option value="">--Select--</option>

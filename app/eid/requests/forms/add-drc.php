@@ -160,7 +160,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
 											<h4 class="box-title">Information sur le patient &nbsp;&nbsp;&nbsp;
 												<input style="width:30%;font-size: smaller;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
@@ -169,7 +169,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</th>
 									</tr>
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère </h5>
 										</th>
 									</tr>
@@ -200,7 +200,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 
 									<tr>
-										<th colspan=8>
+										<th scope="row" colspan=8>
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant</h5>
 										</th>
 									</tr>
@@ -252,7 +252,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</th>
 									</tr>
 									<tr>
-										<th colspan=2>ARV donnés à la maman pendant la grossesse:</th>
+										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:</th>
 										<td colspan=4>
 											<input type="checkbox" name="motherTreatment[]" value="Nothing" /> Rien <br>
 											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated during Pregnancy" /> ARV débutés durant la grossesse <br>
@@ -300,7 +300,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
-										<th colspan=2>
+										<th scope="row" colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
 										</th>
 									</tr>
@@ -369,7 +369,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
 									<tr>
-										<th colspan=2>
+										<th scope="row" colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
 										</th>
 									</tr>
@@ -417,7 +417,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</td>
 									</tr>
 									<tr>
-										<th colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
+										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
 										<th scope="row">Test rapide effectué?</th>

@@ -2,7 +2,7 @@
 
 $title = "Covid-19 | Add Batch";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
@@ -101,7 +101,7 @@ $result = $db->rawQuery($query);
               <!-- /.box-body -->
               <div class="box-footer">
               <input type="hidden" name="manifestId" value="<?php echo $pResult['manifest_id'];?>"/>
-              <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?php echo $module; ?>"/>
+              <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>"/>
                 <a id="manifestSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
                 <a href="/covid-19/results/covid-19-confirmation-manifest.php" class="btn btn-default"> Cancel</a>
               </div>

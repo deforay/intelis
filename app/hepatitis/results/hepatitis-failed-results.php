@@ -9,7 +9,7 @@ use App\Services\UsersService;
 $title = _("Hepatitis | View All Requests");
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -60,7 +60,7 @@ $sResult = $db->rawQuery($sQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                <table id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr>
                             <td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
                             <td>
@@ -134,7 +134,7 @@ $sResult = $db->rawQuery($sQuery);
                             </td>
                         </tr>
                     </table>
-                    <table id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
                                 &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples");?></span></button>
@@ -145,7 +145,7 @@ $sResult = $db->rawQuery($sQuery);
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
-                        <table id="hepatitisFailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="hepatitisFailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
@@ -541,4 +541,4 @@ startDate: moment().subtract(28, 'days'),
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

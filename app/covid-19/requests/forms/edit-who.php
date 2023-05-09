@@ -129,13 +129,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
                                             <td colspan="5">
-                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $covid19Info[$sampleCode]; ?></span>
-                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : $covid19Info[$sampleCode]; ?>" />
+                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?></span>
+                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span> </td>
                                             <td colspan="5">
-                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : $covid19Info[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:30%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:30%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                     </tr>
@@ -258,7 +258,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>SPECIMEN INFORMATION</h4>
                                         </th>
                                     </tr>
@@ -311,7 +311,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>CLINICAL DETAILS</h4>
                                         </th>
                                     </tr>
@@ -332,7 +332,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan=2>Has the patient had a recent history of travelling to an affected area? <span class="mandatory">*</span></th>
+                                        <th scope="row" colspan=2>Has the patient had a recent history of travelling to an affected area? <span class="mandatory">*</span></th>
                                         <td style="width:25% !important;">
                                             <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -461,7 +461,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="3" class="text-right">Final Result</th>
+                                                            <th scope="row" colspan="3" class="text-right">Final Result</th>
                                                             <td>
                                                                 <select class="form-control result-focus" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

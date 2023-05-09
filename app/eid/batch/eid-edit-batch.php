@@ -9,7 +9,7 @@ use App\Services\CommonService;
 $title = "Edit Batch";
 
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 //global config
 
@@ -504,4 +504,4 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-use Exception;
+use App\Exceptions\SystemException;
 
 /**
  *
@@ -59,12 +59,12 @@ class ImageResizeUtility
      *
      * @param string $image_data
      * @return ImageResizeUtility
-     * @throws Exception
+     * @throws SystemException
      */
     public static function createFromString(string $image_data)
     {
         if (empty($image_data) || $image_data === null) {
-            throw new Exception('image_data must not be empty');
+            throw new SystemException('image_data must not be empty');
         }
         return new self('data://application/octet-stream;base64,' . base64_encode($image_data));
     }
@@ -104,15 +104,16 @@ class ImageResizeUtility
      *
      * @param string $filename
      * @return ImageResizeUtility
-     * @throws Exception
+     * @throws SystemException
      */
     public function setFileName($filename)
     {
         if (!defined('IMAGETYPE_WEBP')) {
             define('IMAGETYPE_WEBP', 18);
         }
+        $filename = realpath($filename);
         if ($filename === null || empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
-            throw new Exception('File does not exist');
+            throw new SystemException('File does not exist');
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -122,7 +123,7 @@ class ImageResizeUtility
                 $checkWebp = true;
                 $this->source_type = IMAGETYPE_WEBP;
             } else {
-                throw new Exception('Unsupported file type');
+                throw new SystemException('Unsupported file type');
             }
         } elseif (strstr(finfo_file($finfo, $filename), 'image/webp') !== false) {
             $checkWebp = true;
@@ -135,7 +136,7 @@ class ImageResizeUtility
 
         if (!$checkWebp) {
             if (!$image_info) {
-                throw new Exception('Could not read file');
+                throw new SystemException('Could not read file');
             }
 
             $this->original_w = $image_info[0];
@@ -169,11 +170,11 @@ class ImageResizeUtility
                 break;
 
             default:
-                throw new Exception('Unsupported image type');
+                throw new SystemException('Unsupported image type');
         }
 
         if (!$this->source_image) {
-            throw new Exception('Could not load image');
+            throw new SystemException('Could not load image');
         }
 
         return $this->resize($this->getSourceWidth(), $this->getSourceHeight());
@@ -190,7 +191,7 @@ class ImageResizeUtility
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (Exception $e) {
+        } catch (SystemException $e) {
             $exif = null;
         }
 
@@ -201,11 +202,11 @@ class ImageResizeUtility
         $orientation = $exif['Orientation'];
 
         if ($orientation === 6 || $orientation === 5) {
-            $img = imagerotate($img, 270, null);
+            $img = imagerotate($img, 270, 0);
         } elseif ($orientation === 3 || $orientation === 4) {
-            $img = imagerotate($img, 180, null);
+            $img = imagerotate($img, 180, 0);
         } elseif ($orientation === 8 || $orientation === 7) {
-            $img = imagerotate($img, 90, null);
+            $img = imagerotate($img, 90, 0);
         }
 
         if ($orientation === 5 || $orientation === 4 || $orientation === 7) {
@@ -262,7 +263,7 @@ class ImageResizeUtility
 
             case IMAGETYPE_WEBP:
                 if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-                    throw new Exception('For WebP support PHP >= 5.5.0 is required');
+                    throw new SystemException('For WebP support PHP >= 5.5.0 is required');
                 }
                 if (!empty($exact_size) && is_array($exact_size)) {
                     $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
@@ -355,7 +356,7 @@ class ImageResizeUtility
 
             case IMAGETYPE_WEBP:
                 if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-                    throw new Exception('For WebP support PHP >= 5.5.0 is required');
+                    throw new SystemException('For WebP support PHP >= 5.5.0 is required');
                 }
                 if ($quality === null) {
                     $quality = $this->quality_webp;
@@ -374,7 +375,7 @@ class ImageResizeUtility
         }
 
         if ($permissions) {
-            chmod($filename, $permissions);
+            chmod(realpath($filename), $permissions);
         }
 
         imagedestroy($dest_image);
@@ -495,15 +496,15 @@ class ImageResizeUtility
      * Resizes image according to the given width (height proportional)
      *
      * @param integer $width
-     * @param boolean $allow_enlarge
+     * @param boolean $allowEnlarge
      * @return static
      */
-    public function resizeToWidth($width, $allow_enlarge = false)
+    public function resizeToWidth($width, $allowEnlarge = false)
     {
         $ratio  = $width / $this->getSourceWidth();
         $height = $this->getSourceHeight() * $ratio;
 
-        $this->resize($width, $height, $allow_enlarge);
+        $this->resize($width, $height, $allowEnlarge);
 
         return $this;
     }
@@ -736,7 +737,7 @@ class ImageResizeUtility
     /**
      *  Flips an image using a given mode if PHP version is lower than 5.5
      *
-     * @param  resource $image
+     * @param  \GdImage $image
      * @param  integer  $mode
      * @return null
      */

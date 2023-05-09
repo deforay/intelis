@@ -2,6 +2,7 @@
 
 // File included in addImportResultHelper.php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
@@ -37,7 +38,7 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {
-        throw new Exception("Invalid file format.");
+        throw new SystemException("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
     // $ranNumber = $general->generateRandomString(12);
@@ -47,10 +48,11 @@ try {
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
-    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)) {
+    $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
+if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
+        $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $bquery = "SELECT MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);

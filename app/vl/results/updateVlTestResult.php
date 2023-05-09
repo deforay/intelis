@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 $title = "Enter VL Result";
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -319,4 +319,4 @@ if ($arr['vl_form'] == 1) {
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

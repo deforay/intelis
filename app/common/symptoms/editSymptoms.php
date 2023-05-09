@@ -2,7 +2,7 @@
 ob_start();
 $title = _("Symptoms");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 $tQuery = "SELECT * from r_symptoms where symptom_id=$id";
@@ -116,4 +116,4 @@ $symptomInfo = $db->query($tQuery);
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

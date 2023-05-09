@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("Print Covid-19 Results");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
@@ -188,7 +188,7 @@ $state = $geolocationService->getProvinces("yes");
                                                 </div>
                                             </span>
 
-                                            <table id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
+                                            <table aria-describedby="table" id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -340,7 +340,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     </div>
                                                 </div>
                                             </span>
-                                            <table id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
+                                            <table aria-describedby="table" id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
@@ -995,4 +995,4 @@ $state = $geolocationService->getProvinces("yes");
     }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

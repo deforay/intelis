@@ -1,7 +1,7 @@
 <?php
 
  
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $otherConfigQuery = "SELECT * from other_config WHERE type='result'";
 $otherConfigResult = $db->query($otherConfigQuery);
 $arr = [];
@@ -209,4 +209,4 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _("EID Quarterly Monitoring Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -96,7 +96,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     font-size: 18px
   }
 
-  .mpr-selected {}
+  
 
   .mpr-month:hover {
     border-radius: 5px;
@@ -219,7 +219,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th scope="row"><?php echo _("Facility Name"); ?></th>
@@ -704,4 +704,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

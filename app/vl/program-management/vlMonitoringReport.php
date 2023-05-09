@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 
 $title = _("VL Quarterly Monitoring Report");
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -97,7 +97,7 @@ $state = $geolocationService->getProvinces("yes");
 		font-size: 18px
 	}
 
-	.mpr-selected {}
+	
 
 	.mpr-month:hover {
 		border-radius: 5px;
@@ -237,7 +237,7 @@ $state = $geolocationService->getProvinces("yes");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -797,4 +797,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

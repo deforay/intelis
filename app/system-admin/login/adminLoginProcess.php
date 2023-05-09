@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 
@@ -26,13 +27,13 @@ try {
                 $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
                 header("Location:/system-admin/edit-config/index.php");
             } else {
-                throw new Exception("Invalid username or password");
+                throw new SystemException("Invalid username or password");
             }
         } else {
-            throw new Exception("Invalid username or password");
+            throw new SystemException("Invalid username or password");
         }
     }
-} catch (Exception $exc) {
+} catch (SystemException $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     $_SESSION['alertMsg'] = _("Please check your login credentials");

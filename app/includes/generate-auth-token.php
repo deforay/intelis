@@ -14,7 +14,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$size = $_POST['size'] ?? 8;
-//$u = $_POST['u'] ?? $general->generateUUID();
+$size = $_POST['size'] ?? 6;
 
 echo base64_encode($general->generateUUID() . "-" . $general->generateToken($size));

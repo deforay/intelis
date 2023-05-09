@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
@@ -157,7 +157,7 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
 							</div>
-							<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -233,7 +233,7 @@ foreach ($rejectionTypeResult as $type) {
 								<td style=" width: 10%; ">
 									<br>
 									<input type="hidden" name="print" id="print" />
-									<input type="hidden" name="module" id="module" value="<?php echo $module; ?>" />
+									<input type="hidden" name="module" id="module" value="<?= htmlspecialchars($module); ?>" />
 									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
 								</td>
 							</tr>
@@ -685,4 +685,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';

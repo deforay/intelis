@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 
 
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -64,7 +64,7 @@ $covid19Results = $covid19Service->getCovid19Results();
                         </div>
                         <br>
                     </div>
-                    <table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+                    <table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?> <span class="mandatory">*</span></th>
@@ -179,4 +179,4 @@ $covid19Results = $covid19Service->getCovid19Results();
 </script>
 
 <?php
-require_once(APPLICATION_PATH . '/footer.php');
+require_once APPLICATION_PATH . '/footer.php';
