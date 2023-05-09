@@ -100,7 +100,7 @@ $activeTestModules = $systemService->getActiveTestModules();
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><?php echo _("Lab Name"); ?></th>

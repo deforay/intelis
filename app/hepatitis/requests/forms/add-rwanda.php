@@ -331,7 +331,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><input class="form-control date rejection-show" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <tr>
-                                            <th class="hcvFields"><label for="hcv">HCV VL Result</label></th>
+                                            <th scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields">
                                                 <select class="hcvFields labSecInput form-control rejected-input" name="hcv" id="hcv">
                                                     <?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
@@ -345,7 +345,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
+                                            <th scope="row" class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td class="hcvFields">
                                                 <input type="text" class="hcvFields labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
                                             </td>

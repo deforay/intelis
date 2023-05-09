@@ -103,22 +103,22 @@ try {
         $_POST['vlResult'] = 'Below Detection Level';
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Below Detection Level';
         $_POST['vlLog'] = null;
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
+    } elseif ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
+    } elseif ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Error';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
+    } elseif ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
         $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'No Result';
         $_POST['vlLog'] = null;
         $_POST['hivDetection'] = null;
         $resultStatus = 11; // No Result
-    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+    } elseif (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
 
         $resultStatus = 8; // Awaiting Approval
 

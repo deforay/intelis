@@ -132,7 +132,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
 						</tr>
 					</table>
-						<table id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->

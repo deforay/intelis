@@ -47,7 +47,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="covid19ManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="covid19ManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>Manifest Code</th>

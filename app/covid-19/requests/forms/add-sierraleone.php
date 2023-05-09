@@ -496,7 +496,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="4" class="text-right final-result-row">Final Result</th>
+                                                            <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

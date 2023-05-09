@@ -19,7 +19,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
 
 <head>
   <meta charset="utf-8">

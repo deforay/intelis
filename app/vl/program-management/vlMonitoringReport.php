@@ -237,7 +237,7 @@ $state = $geolocationService->getProvinces("yes");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

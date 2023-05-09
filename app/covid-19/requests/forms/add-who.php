@@ -231,7 +231,7 @@ foreach ($fResult as $fDetails) {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>SPECIMEN INFORMATION</h4>
                                         </th>
                                     </tr>
@@ -284,7 +284,7 @@ foreach ($fResult as $fDetails) {
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" >
                                     <tr>
-                                        <th colspan=4 style="border-top:#ccc 2px solid;">
+                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>CLINICAL DETAILS</h4>
                                         </th>
                                     </tr>

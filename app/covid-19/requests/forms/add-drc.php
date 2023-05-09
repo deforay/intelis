@@ -297,7 +297,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Definition de cas
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
@@ -541,7 +541,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="symptoms">
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -608,7 +608,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>

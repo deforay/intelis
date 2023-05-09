@@ -62,7 +62,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body batchDiv" style="display:none;">
-						<table id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="col"><?php echo _("Batch Code"); ?></th>

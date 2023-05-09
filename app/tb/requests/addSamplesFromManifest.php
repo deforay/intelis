@@ -48,7 +48,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="tbManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="tbManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

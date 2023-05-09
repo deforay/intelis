@@ -31,7 +31,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="samRejReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="samRejReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th scope="row"><?php echo _("Rejection Reason"); ?></th>

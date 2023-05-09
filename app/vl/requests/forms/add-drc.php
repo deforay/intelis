@@ -485,7 +485,7 @@ $sFormat = '';
 										<tr class="rejectionReason" style="display:none;">
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
-											<th class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?> <span class="mandatory">*</span></th>
+											<th scope="row" class="rejectionReason" style="display:none;"><?php echo _("Rejection Date"); ?> <span class="mandatory">*</span></th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr>
@@ -534,7 +534,7 @@ $sFormat = '';
 											<td>
 												<input type="text" name="approvedOn" id="approvedOn" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
-											<th>Approuvé par</th>
+											<th scope="row">Approuvé par</th>
 											<td>
 												<select name="approvedBy" id="approvedBy" class="select2 authorisation form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>

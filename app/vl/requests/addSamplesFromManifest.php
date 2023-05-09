@@ -57,7 +57,7 @@ $batResult = $db->rawQuery($batQuery);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

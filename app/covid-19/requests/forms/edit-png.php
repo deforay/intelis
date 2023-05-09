@@ -310,7 +310,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         PATIENT HISTORY
                                     </h3>
                                 </div>
-                                <table id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
                                     <th scope="row"><label for="suspectedCase">Is the suspected case</label></th>
                                     <td>
                                         <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
@@ -329,7 +329,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -457,7 +457,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </tr>
                                     <tr class="comorbidities-row" style="<?php echo ($covid19Info['medical_history'] != 'yes') ? 'display:none' : ''; ?>">
                                         <td colspan="4">
-                                            <table id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>

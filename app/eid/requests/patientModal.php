@@ -54,7 +54,7 @@ $pResult = $db->rawQuery($pQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search - <?php echo $artNo; ?></h4>
+		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search - <?= htmlspecialchars($artNo); ?></h4>
 	</section>
 	<!-- Main content -->
 	<section class="content">
@@ -63,7 +63,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>

@@ -111,7 +111,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<input type="hidden" id="sampleCode" name="sampleCode" />
 											</td>
 										<?php } else { ?>
-											<th style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
+											<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
 											<td style="width: 18%;">
 												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
@@ -481,7 +481,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
 														</tr>
 														<tr>
-															<th style="width: 10%;" class="text-center">Test #</th>
+															<th scope="row" style="width: 10%;" class="text-center">Test #</th>
 															<th style="width: 40%;" class="text-center">Result</th>
 															<th style="width: 40%;" class="text-center">Actual Number</th>
 														</tr>

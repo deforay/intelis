@@ -29,7 +29,7 @@ require_once APPLICATION_PATH . '/header.php';
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="roleDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="roleDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _("Role Name"); ?></th>

@@ -521,7 +521,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 										</tr>
 										<tr>
-											<th class="labels" colspan="6" style="font-size: 18px; font-weight: bold;">Final Result</th>
+											<th scope="row" class="labels" colspan="6" style="font-size: 18px; font-weight: bold;">Final Result</th>
 										</tr>
 										<tr>
 											<td class="labels"><label for="finalViralResult">Final Viral Load Result(copies/ml)</label></td>

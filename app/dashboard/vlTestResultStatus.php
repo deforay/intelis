@@ -128,7 +128,7 @@
 						</span>
 						<!-- /.box-header -->
 						<div class="box-body">
-							<table id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<th>Sample Code</th>

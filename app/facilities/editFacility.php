@@ -812,7 +812,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
 					fType: $("#facilityType").val(),
-					facilityId: <?= $id; ?>,
+					facilityId: <?= htmlspecialchars($id); ?>,
 				},
 				function(data) {
 					$("#userDetails").html(data);

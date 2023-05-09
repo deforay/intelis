@@ -42,7 +42,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-list-check"></em> <?php echo _("Import"); ?> <?= strtoupper($type); ?> <?php echo _("Test Results From File"); ?></h1>
+		<h1><em class="fa-solid fa-list-check"></em> <?php echo _("Import"); ?> <?= strtoupper(htmlspecialchars($type)); ?> <?php echo _("Test Results From File"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Import Result"); ?></li>
@@ -74,98 +74,98 @@ $lastResult = $db->rawQueryOne($lastQuery);
 					</p>
 
 
-				<form class="form-horizontal" method='post' name='addImportResultForm' id='addImportResultForm' enctype="multipart/form-data" autocomplete="off" action="addImportResultHelper.php">
-					<div class="box-body">
-						<div class="wizard_content">
-							<div class="row setup-content step" id="step-1" style="display:block;">
-								<div class="col-xs-12">
-									<div class="col-md-12" id="stepOneForm">
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?> <span class="mandatory">*</span></label>
-													<div class="col-lg-7">
-														<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php foreach ($iResult as $val) { ?>
-																<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
-															<?php } ?>
-														</select>
+					<form class="form-horizontal" method='post' name='addImportResultForm' id='addImportResultForm' enctype="multipart/form-data" autocomplete="off" action="addImportResultHelper.php">
+						<div class="box-body">
+							<div class="wizard_content">
+								<div class="row setup-content step" id="step-1" style="display:block;">
+									<div class="col-xs-12">
+										<div class="col-md-12" id="stepOneForm">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label for="machineName" class="col-lg-4 control-label"><?php echo _("Instrument Name"); ?> <span class="mandatory">*</span></label>
+														<div class="col-lg-7">
+															<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
+																<option value=""> <?php echo _("-- Select --"); ?> </option>
+																<?php foreach ($iResult as $val) { ?>
+																	<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
+																<?php } ?>
+															</select>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Machine Name"); ?></label>
-													<div class="col-lg-7">
-														<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _('Please select the import config machine name'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-														</select>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label for="machineName" class="col-lg-4 control-label"><?php echo _("Configuration Machine Name"); ?></label>
+														<div class="col-lg-7">
+															<select name="configMachineName" id="configMachineName" class="form-control" title="<?php echo _('Please select the import config machine name'); ?>">
+																<option value=""> <?php echo _("-- Select --"); ?> </option>
+															</select>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="col-lg-4 control-label"><?php echo _("Upload"); ?> <?= strtoupper($type); ?> <?php echo _("File"); ?> <span class="mandatory">*</span></label>
-													<div class="col-lg-7">
-														<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _('Please choose result file'); ?>">
-														<?php echo _("(Upload xls, xlsx, csv, txt format)"); ?>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label class="col-lg-4 control-label"><?php echo _("Upload"); ?> <?= strtoupper(htmlspecialchars($type)); ?> <?php echo _("File"); ?> <span class="mandatory">*</span></label>
+														<div class="col-lg-7">
+															<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _('Please choose result file'); ?>">
+															<?php echo _("(Upload xls, xlsx, csv, txt format)"); ?>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
 
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row setup-content step" id="step-2">
-								<div class="col-xs-12">
-									<div class="col-md-12" id="stepTwoForm">
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="labId" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?> <span class="mandatory">*</span></label>
-													<div class="col-lg-7">
-														<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _('Please select the lab name'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php
-															foreach ($fResult as $val) {
-															?>
-																<option value="<?php echo base64_encode($val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
-															<?php } ?>
-														</select>
+								<div class="row setup-content step" id="step-2">
+									<div class="col-xs-12">
+										<div class="col-md-12" id="stepTwoForm">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label for="labId" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?> <span class="mandatory">*</span></label>
+														<div class="col-lg-7">
+															<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _('Please select the lab name'); ?>">
+																<option value=""> <?php echo _("-- Select --"); ?> </option>
+																<?php
+																foreach ($fResult as $val) {
+																?>
+																	<option value="<?php echo base64_encode($val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
+																<?php } ?>
+															</select>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-										<div class="row form-group">
-											<div class="box-footer">
-												<input type="hidden" id="vltestPlatform" name="vltestPlatform" value="" />
-												<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
-												<input type="hidden" id="dateFormat" name="dateFormat" value="" />
-												<input type="hidden" id="fileName" name="fileName" value="" />
-												<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-												<a href="/dashboard/index.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+											<div class="row form-group">
+												<div class="box-footer">
+													<input type="hidden" id="vltestPlatform" name="vltestPlatform" value="" />
+													<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
+													<input type="hidden" id="dateFormat" name="dateFormat" value="" />
+													<input type="hidden" id="fileName" name="fileName" value="" />
+													<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+													<a href="/dashboard/index.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<!-- /.box-body -->
+						<!-- /.box-body -->
 
-					<!-- /.box-footer -->
-				</form>
-				<!-- /.row -->
+						<!-- /.box-footer -->
+					</form>
+					<!-- /.row -->
+				</div>
+
 			</div>
-
-		</div>
-		<!-- /.box -->
+			<!-- /.box -->
 
 	</section>
 	<!-- /.content -->

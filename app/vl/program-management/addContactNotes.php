@@ -67,7 +67,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
                   <label for="address" class="col-lg-4 control-label">Contact Notes<span class="mandatory">*</span></label>
                   <div class="col-lg-7">
                     <textarea class="form-control isRequired" name="notes" id="notes" title="Please enter contact notes" placeholder="Enter Contact Notes"></textarea>
-                    <input type="hidden" name="treamentId" id="treamentId" value="<?php echo $id; ?>" />
+                    <input type="hidden" name="treamentId" id="treamentId" value="<?= htmlspecialchars($id); ?>" />
                   </div>
                 </div>
               </div>
@@ -98,7 +98,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
               <!-- /.box-header -->
               <div class="box-body">
                 <h3>Contact Notes History</h3>
-                <table id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true">
+                <table aria-describedby="table" id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true">
                   <thead>
                     <tr>
                       <th>Contact Notes</th>

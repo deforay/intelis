@@ -57,7 +57,7 @@ $batResult = $db->rawQuery($batQuery);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table id="eidManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="eidManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>

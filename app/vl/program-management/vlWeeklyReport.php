@@ -84,7 +84,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                      <table aria-describedby="table" id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                         <thead>
                           <tr>
                             <th rowspan="2"><?php echo _("Province/State"); ?></th>
@@ -92,11 +92,11 @@ $facilityResult = $db->rawQuery($facilityQuery);
                             <th rowspan="2"><?php echo _("Site Name"); ?></th>
                             <!-- <th rowspan="2">IPSL</th> -->
                             <th rowspan="2"><?php echo _("No. of Rejections"); ?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Peds"); ?></th>
+                            <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Peds"); ?></th>
                             <th colspan="4" style="text-align:center;"><?php echo _("Viral Load Results - Adults"); ?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Pregnant/Breastfeeding Female"); ?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Age/Sex Unknown"); ?></th>
-                            <th colspan="2" style="text-align:center;"><?php echo _("Totals"); ?></th>
+                            <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Pregnant/Breastfeeding Female"); ?></th>
+                            <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Age/Sex Unknown"); ?></th>
+                            <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Totals"); ?></th>
                             <th rowspan="2"><?php echo _("Total Test per Clinic"); ?></th>
                           </tr>
                           <tr>
@@ -161,7 +161,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                      <table aria-describedby="table" id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
                         <thead>
                           <tr>
                             <th><?php echo _("Province/State"); ?></th>

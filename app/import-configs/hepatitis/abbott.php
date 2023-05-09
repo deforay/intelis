@@ -74,7 +74,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             $skip = 23;
 
             $row = 1;
-            if (($handle = fopen(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName, "r")) !== false) {
+            if (($handle = fopen(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName), "r")) !== false) {
 
                 while (($sheetData = fgetcsv($handle, 10000)) !== FALSE) {
                     $num = count($sheetData);
@@ -252,10 +252,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            echo "<pre>";
-            print_r($data);
-            echo "</pre>";
-            continue;
+            // echo "<pre>";
+            // print_r($data);
+            // echo "</pre>";
+            // continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];

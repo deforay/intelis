@@ -133,7 +133,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                             </tr>
                         </table>
                         <hr>
-                        <table id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center" scope="col"><?php echo _("Facility Name"); ?></th>

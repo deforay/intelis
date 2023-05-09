@@ -24,7 +24,7 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
         <div class="box">
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="apiStatsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="apiStatsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Requested On"); ?></th>

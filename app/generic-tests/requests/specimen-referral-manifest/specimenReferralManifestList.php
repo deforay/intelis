@@ -33,7 +33,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table id="specimenReferralManifestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="specimenReferralManifestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkPackageData" onclick="checkAllPackageRows(this);"/></th> -->

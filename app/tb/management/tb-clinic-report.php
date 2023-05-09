@@ -175,7 +175,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 											</table>
 
-											<table id="highTbReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="highTbReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -279,7 +279,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -374,7 +374,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -427,7 +427,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>

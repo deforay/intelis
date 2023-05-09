@@ -188,7 +188,7 @@ $state = $geolocationService->getProvinces("yes");
                                                 </div>
                                             </span>
 
-                                            <table id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
+                                            <table aria-describedby="table" id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -340,7 +340,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     </div>
                                                 </div>
                                             </span>
-                                            <table id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
+                                            <table aria-describedby="table" id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>

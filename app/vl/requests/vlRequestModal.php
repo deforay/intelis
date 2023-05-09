@@ -97,7 +97,7 @@ $batResult = $db->rawQuery($batQuery);
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th>Select</th>

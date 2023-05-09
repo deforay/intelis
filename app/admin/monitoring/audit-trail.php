@@ -146,7 +146,7 @@ $resultColumn = getColumns($db, $tableName);
 									?>
 								</select>
 
-								<table id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
+								<table aria-describedby="table" id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 									<thead>
 										<tr>
 											<?php

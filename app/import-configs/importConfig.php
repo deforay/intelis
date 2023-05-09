@@ -24,7 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table id="importConfigDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="importConfigDataTable" class="table table-bordered table-striped" aria-hidden="true" >
               <thead>
                 <tr>
                   <th><?php echo _("Instrument Name");?></th>

@@ -157,7 +157,7 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
 							</div>
-							<table id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
