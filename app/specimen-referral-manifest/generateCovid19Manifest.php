@@ -155,7 +155,7 @@ if (trim($id) != '') {
 
         if ($arr['vl_form'] == 2) {
             //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
-            $pdf->WriteHTML('<b>FACILITY RELEASER INFORMATION</b>');
+            $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
 
             $tbl1 = '<br>';
             $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
@@ -174,7 +174,7 @@ if (trim($id) != '') {
             $tbl1 .= '</table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C');
 
-            $pdf->WriteHTML('<p></p><b>SPECIMEN PACKAGING</b>');
+            $pdf->WriteHTML('<p></p><strong>SPECIMEN PACKAGING</strong>');
 
             $tbl2 = '<br>';
             $tbl2 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
@@ -190,8 +190,8 @@ if (trim($id) != '') {
 
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C');
 
-            $pdf->WriteHTML('<p></p><b>CHAIN OF CUSTODY : </b>(persons relinquishing and receiving specimen fill their respective sections)');
-            $pdf->WriteHTML('<p></p><b>To be completed at facility in the presence of specimen courier</b>');
+            $pdf->WriteHTML('<p></p><strong>CHAIN OF CUSTODY : </strong>(persons relinquishing and receiving specimen fill their respective sections)');
+            $pdf->WriteHTML('<p></p><strong>To be completed at facility in the presence of specimen courier</strong>');
             $tbl3 = '<br>';
             $tbl3 .= '<table border="1">
             <tr>
@@ -207,7 +207,7 @@ if (trim($id) != '') {
             </table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C');
 
-            $pdf->WriteHTML('<p></p><b>To be completed at testing laboratory by specimen reception personnel</b>');
+            $pdf->WriteHTML('<p></p><strong>To be completed at testing laboratory by specimen reception personnel</strong>');
             $tbl4 = '<br>';
             $tbl4 .= '<table border="1">
                 <tr>

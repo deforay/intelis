@@ -181,7 +181,7 @@ foreach($testSymptomsMapInfo as $val){
 						</div>
 						
 						<div class="box-body">
-							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>

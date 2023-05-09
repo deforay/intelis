@@ -198,7 +198,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								if (in_array('vl', $sInfo['supported_tests']) || in_array('eid', $sInfo['supported_tests']) && in_array('covid19', $sInfo['supported_tests']) || in_array('hepatitis', $sInfo['supported_tests']) || in_array('tb', $sInfo['supported_tests'])) {
 									$ua = "";
 								} ?>
-								<table border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;<?php echo $ua; ?>;">
+								<table aria-describedby="table" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;<?php echo $ua; ?>;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -286,7 +286,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								</table>
 								<br>
 								<hr>
-								<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+								<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 									<thead>
 										<tr>
 											<th style="text-align:center;"><?php echo _("Test Type"); ?></th>
@@ -344,7 +344,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							<h3 class="box-title "><?php echo _("Machine Names"); ?></h3>
 						</div>
 						<div class="box-body">
-							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;"><?php echo _("Machine Name"); ?> <span class="mandatory">*</span></th>

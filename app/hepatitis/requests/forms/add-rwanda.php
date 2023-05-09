@@ -238,7 +238,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <?= $general->generateSelectOptions($specimenResult, null, '-- Select --'); ?>
                                         </select>
                                     </td>
-                                    <th class="hbvFields"><label for="HBsAg">HBsAg Result</label></th>
+                                    <th scope="row" class="hbvFields"><label for="HBsAg">HBsAg Result</label></th>
                                     <td class="hbvFields">
                                         <select class="hbvFields form-control" name="HBsAg" id="HBsAg" title="Please choose HBsAg result">
                                             <option value=''> -- Select -- </option>
@@ -337,7 +337,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th class="hbvFields"><label for="hbv">HBV VL Result</label></th>
+                                            <th scope="row" class="hbvFields"><label for="hbv">HBV VL Result</label></th>
                                             <td class="hbvFields">
                                                 <select class="hbvFields labSecInput form-control rejected-input" name="hbv" id="hbv">
                                                     <?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
@@ -349,7 +349,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td class="hcvFields">
                                                 <input type="text" class="hcvFields labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
                                             </td>
-                                            <th class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
+                                            <th scope="row" class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
                                             <td class="hbvFields">
                                                 <input type="text" class="hbvFields labSecInput form-control rejected-input" placeholder="Enter HBV Count" title="Please enter HBV Count" name="hbvCount" id="hbvCount">
                                             </td>

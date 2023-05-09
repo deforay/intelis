@@ -69,7 +69,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                         </div>
                         <br>
                     </div>
-                    <table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+                    <table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="text-align:center;"><?php echo _("QC Test Label"); ?> <span class="mandatory">*</span></th>

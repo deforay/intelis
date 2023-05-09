@@ -123,7 +123,6 @@ try {
                 }
                 if ($status[$i] == '1') {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
-                    $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult[0]['facility_id'];
                     $data['sample_code'] = $rResult[0]['sample_code'];
                     $data['batch_code'] = $rResult[0]['batch_code'];

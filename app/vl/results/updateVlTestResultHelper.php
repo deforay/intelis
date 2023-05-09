@@ -142,7 +142,7 @@ try {
     }
     if (trim($allChange) != '' && trim($reasonForChanges) != '') {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
-    } else if (trim($reasonForChanges) != '') {
+    } elseif (trim($reasonForChanges) != '') {
         $allChange =  $reasonForChanges;
     }
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {

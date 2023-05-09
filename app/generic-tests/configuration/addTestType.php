@@ -153,7 +153,7 @@ $symptomInfo=$db->query($symQuery);
 							<h3 class="box-title "><?php echo _("Form Configuration"); ?></h3>
 						</div>
 						<div class="box-body">
-							<table border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;width:30%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
