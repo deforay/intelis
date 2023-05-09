@@ -418,7 +418,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 									</tr>
 									<tr>
-										<th style="width:14%;"> Type d'échantillon</th>
+										<th scope="row" style="width:14%;"> Type d'échantillon</th>
 										<td style="width:35%;">
 											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
 												<option value="">-- Selecione --</option>

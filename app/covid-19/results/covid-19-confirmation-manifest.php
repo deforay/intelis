@@ -125,7 +125,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				"bSortable": false
 			}],
 			"aaSorting": [
-				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 1 : 1 ?>, "desc"]
+				[1, "desc"]
 			],
 			"fnDrawCallback": function() {},
 			"bProcessing": true,

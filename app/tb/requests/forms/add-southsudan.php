@@ -403,12 +403,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
 													<thead>
 														<tr>
-															<th colspan="3" style="text-align: center;">Microscopy Test Results</th>
+															<th scope="row" colspan="3" style="text-align: center;">Microscopy Test Results</th>
 														</tr>
 														<tr>
 															<th scope="row" style="width: 10%;" class="text-center">Test #</th>
-															<th style="width: 40%;" class="text-center">Result</th>
-															<th style="width: 40%;" class="text-center">Actual Number</th>
+															<th scope="row" style="width: 40%;" class="text-center">Result</th>
+															<th scope="row" style="width: 40%;" class="text-center">Actual Number</th>
 														</tr>
 													</thead>
 													<tbody id="testKitNameTable">

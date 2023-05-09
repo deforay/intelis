@@ -564,7 +564,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="<?php echo $span; ?>" class="text-right final-result-row">Final Result</th>
+                                                            <th scope="row" colspan="<?php echo $span; ?>" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control result-focus" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

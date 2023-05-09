@@ -285,7 +285,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
                                     </td>
 
-                                    <th style="width:14%;"> Tipo de amostra <span class="mandatory">*</span> </th>
+                                    <th scope="row" style="width:14%;"> Tipo de amostra <span class="mandatory">*</span> </th>
                                     <td style="width:35%;">
                                         <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose Tipo de amostra" style="width:100%">
                                             <option value="">-- Selecione --</option>
