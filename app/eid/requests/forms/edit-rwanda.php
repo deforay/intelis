@@ -262,7 +262,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th style="width:16% !important">Mother's HIV Status: <span class="mandatory">*</span></th>
+                                        <th scope="row" style="width:16% !important">Mother's HIV Status: <span class="mandatory">*</span></th>
                                         <td style="width:30% !important">
                                             <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
@@ -414,7 +414,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                                 </select>
                                             </td>
 
-                                            <th class="rejected" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value="">-- Select --</option>

@@ -365,7 +365,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
 
-                                            <th class="rejected" style="display: none;">Razão de rejeição</th>
+                                            <th scope="row" class="rejected" style="display: none;">Razão de rejeição</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Selecione -- </option>

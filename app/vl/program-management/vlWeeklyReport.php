@@ -54,15 +54,11 @@ $facilityResult = $db->rawQuery($facilityQuery);
                     <div class="tab-pane fade in active" id="labReport">
                       <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                         <tr>
-                          <td style="width:15%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></td>
+                          <th scope="row" style="width:15%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></th>
                           <td style="width:20% !important;">
                             <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
-                          <!-- <td ><strong>Sample Collection<br>Date Range&nbsp;:</strong></td>
-											<td style="width:20% !important;">
-											  <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Sample Collection Date Range" readonly style="background:#eee;font-size:0.9em"/>
-											</td> -->
-                          <td style="width:8%"><strong><?php echo _("VL Lab(s)"); ?>&nbsp;:</strong></td>
+                          <th scope="row" style="width:8%"><strong><?php echo _("VL Lab(s)"); ?>&nbsp;:</strong></th>
                           <td style="width:28%;">
                             <select id="lab" name="lab" class="form-control" title="<?php echo _('Please select lab'); ?>" multiple>
                               <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -84,41 +80,38 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table aria-describedby="table" id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                      <table aria-describedby="table" id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true">
                         <thead>
                           <tr>
-                            <th rowspan="2"><?php echo _("Province/State"); ?></th>
-                            <th rowspan="2"><?php echo _("District/County"); ?></th>
-                            <th rowspan="2"><?php echo _("Site Name"); ?></th>
-                            <!-- <th rowspan="2">IPSL</th> -->
-                            <th rowspan="2"><?php echo _("No. of Rejections"); ?></th>
+                            <th scope="col" rowspan="2"><?php echo _("Province/State"); ?></th>
+                            <th scope="col" rowspan="2"><?php echo _("District/County"); ?></th>
+                            <th scope="col" rowspan="2"><?php echo _("Site Name"); ?></th>
+                            <!-- <th scope="row" rowspan="2">IPSL</th> -->
+                            <th scope="col" rowspan="2"><?php echo _("No. of Rejections"); ?></th>
                             <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Peds"); ?></th>
-                            <th colspan="4" style="text-align:center;"><?php echo _("Viral Load Results - Adults"); ?></th>
+                            <th scope="col" colspan="4" style="text-align:center;"><?php echo _("Viral Load Results - Adults"); ?></th>
                             <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Viral Load Results - Pregnant/Breastfeeding Female"); ?></th>
                             <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Age/Sex Unknown"); ?></th>
                             <th scope="col" colspan="2" style="text-align:center;"><?php echo _("Totals"); ?></th>
-                            <th rowspan="2"><?php echo _("Total Test per Clinic"); ?></th>
+                            <th scope="col" rowspan="2"><?php echo _("Total Test per Clinic"); ?></th>
                           </tr>
                           <tr>
-                            <th>
-                              <?php echo _("<= 15 y"); ?> &amp; <?php echo _("<=1000 cp/ml"); ?> </th>
-                            <th>
+                            <th scope="row">
+                              <?php echo _("<= 15 y"); ?> &amp; <?php echo _("<=1000 cp/ml"); ?>
+                            </th>
+                            <th scope="row">
                               <?php echo _("<= 15 y"); ?> &amp;<?php echo _(">1000 cp/ml"); ?>
                             </th>
-                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male >1000 cp/ml"); ?></th>
-                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female >1000 cp/ml"); ?></th>
-                            <th>
-                              <?php echo _("<=1000 cp/ml"); ?> </th>
-                            <th><?php echo _(">1000 cp/ml"); ?>
-                            </th>
-                            <th><?php echo _("Unknown Age/Sex <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Unknown Age/Sex >1000 cp/ml"); ?></th>
-                            <th>
-                              <?php echo _("<=1000 cp/ml"); ?> </th>
-                            <th><?php echo _(">1000 cp/ml"); ?>
-                            </th>
+                            <th scope="row"><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male <=1000 cp/ml"); ?> </th>
+                            <th scope="row"><?php echo _("> 15 y"); ?> &amp; <?php echo _("Male >1000 cp/ml"); ?></th>
+                            <th scope="row"><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female <=1000 cp/ml"); ?> </th>
+                            <th scope="row"><?php echo _("> 15 y"); ?> &amp; <?php echo _("Female >1000 cp/ml"); ?></th>
+                            <th scope="row"><?php echo _("<=1000 cp/ml"); ?> </th>
+                            <th scope="row"><?php echo _(">1000 cp/ml"); ?></th>
+                            <th scope="row"><?php echo _("Unknown Age/Sex <=1000 cp/ml"); ?> </th>
+                            <th scope="row"><?php echo _("Unknown Age/Sex >1000 cp/ml"); ?></th>
+                            <th scope="row"><?php echo _("<=1000 cp/ml"); ?> </th>
+                            <th scope="row"><?php echo _(">1000 cp/ml"); ?></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -131,15 +124,11 @@ $facilityResult = $db->rawQuery($facilityQuery);
                     <div class="tab-pane fade" id="femaleReport">
                       <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                          <td style="width:13%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></td>
+                          <th scope="row" style="width:13%"><strong><?php echo _("Sample Test Date Range"); ?>&nbsp;:</strong></th>
                           <td style="width:20% !important;">
                             <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control daterange" placeholder="<?php echo _('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
-                          <!-- <td><strong>Sample Collection<br>Date Range&nbsp;:</strong></td>
-											<td style="width:20% !important;">
-											  <input type="text" id="femaleSampleCollectionDate" name="femaleSampleCollectionDate" class="form-control" placeholder="Sample Collection Date Range" readonly style="background:#eee;font-size:0.9em"/>
-											</td> -->
-                          <td style="width:8%"><strong><?php echo _("VL Lab(s)"); ?>&nbsp;:</strong></td>
+                          <th scope="row" style="width:8%"><strong><?php echo _("VL Lab(s)"); ?>&nbsp;:</strong></th>
                           <td style="width:28%;">
                             <select id="femaleLab" name="femaleLab" class="form-control" title="<?php echo _('Please select lab'); ?>" multiple>
                               <option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -161,23 +150,23 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           </td>
                         </tr>
                       </table>
-                      <table aria-describedby="table" id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                      <table aria-describedby="table" id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true">
                         <thead>
                           <tr>
-                            <th><?php echo _("Province/State"); ?></th>
-                            <th><?php echo _("District/County"); ?></th>
-                            <th><?php echo _("Site Name"); ?></th>
-                            <th><?php echo _("Total Female"); ?></th>
-                            <th><?php echo _("Pregnant <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Pregnant >1000 cp/ml"); ?></th>
-                            <th><?php echo _("Breastfeeding <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Breastfeeding >1000 cp/ml"); ?></th>
-                            <th><?php echo _("Age > 15 <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Age > 15 >1000 cp/ml"); ?></th>
-                            <th><?php echo _("Age Unknown <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Age Unknown >1000 cp/ml"); ?></th>
-                            <th><?php echo _("Age <=15 <=1000 cp/ml"); ?> </th>
-                            <th><?php echo _("Age <=15>1000 cp/ml"); ?></th>
+                            <th scope="col"><?php echo _("Province/State"); ?></th>
+                            <th scope="col"><?php echo _("District/County"); ?></th>
+                            <th scope="col"><?php echo _("Site Name"); ?></th>
+                            <th scope="col"><?php echo _("Total Female"); ?></th>
+                            <th scope="col"><?php echo _("Pregnant <=1000 cp/ml"); ?> </th>
+                            <th scope="col"><?php echo _("Pregnant >1000 cp/ml"); ?></th>
+                            <th scope="col"><?php echo _("Breastfeeding <=1000 cp/ml"); ?> </th>
+                            <th scope="col"><?php echo _("Breastfeeding >1000 cp/ml"); ?></th>
+                            <th scope="col"><?php echo _("Age > 15 <=1000 cp/ml"); ?> </th>
+                            <th scope="col"><?php echo _("Age > 15 >1000 cp/ml"); ?></th>
+                            <th scope="col"><?php echo _("Age Unknown <=1000 cp/ml"); ?> </th>
+                            <th scope="col"><?php echo _("Age Unknown >1000 cp/ml"); ?></th>
+                            <th scope="col"><?php echo _("Age <=15 <=1000 cp/ml"); ?> </th>
+                            <th scope="col"><?php echo _("Age <=15>1000 cp/ml"); ?></th>
                           </tr>
                         </thead>
                         <tbody>

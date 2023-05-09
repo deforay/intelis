@@ -530,7 +530,7 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<th>Approuvé le</th>
+											<th scope="row">Approuvé le</th>
 											<td>
 												<input type="text" name="approvedOn" id="approvedOn" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>

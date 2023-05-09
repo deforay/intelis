@@ -31,6 +31,11 @@ $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 
+$userResult = $usersService->getActiveUsers($facilityMap);
+$labTechniciansResults = [];
+foreach ($userResult as $user) {
+    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
+}
 
 $id = base64_decode($_GET['id']);
 
