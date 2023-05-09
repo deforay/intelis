@@ -4,14 +4,14 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-    $tableName="r_generic_symptoms";
-    $primaryKey="symptom_id";
+    $tableName="r_generic_test_reasons";
+    $primaryKey="test_reason_id";
 
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
         
-        $aColumns = array('symptom_name','symptom_code','symptom_status','updated_datetime');
+        $aColumns = array('test_reason','test_reason_code','test_reason_status','updated_datetime');
         
         /* Indexed column (used for fast and accurate table cardinality) */
         //$sIndexColumn = $primaryKey;
@@ -89,7 +89,7 @@ if (session_status() == PHP_SESSION_NONE) {
          * Get data to display
         */
         
-       $sQuery="SELECT * FROM r_generic_symptoms";
+       $sQuery="SELECT * FROM r_generic_test_reasons";
         
         if (isset($sWhere) && $sWhere != "") {
             $sWhere=' where '.$sWhere;
@@ -110,11 +110,11 @@ if (session_status() == PHP_SESSION_NONE) {
        // print_r($rResult);
         /* Data set length after filtering */
         
-        $aResultFilterTotal =$db->rawQuery("SELECT * FROM r_generic_symptoms $sWhere order by $sOrder");
+        $aResultFilterTotal =$db->rawQuery("SELECT * FROM r_generic_test_reasons $sWhere order by $sOrder");
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_symptoms");
+        $aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_test_reasons");
        // $aResultTotal = $countResult->fetch_row();
        //print_r($aResultTotal);
         $iTotal = count($aResultTotal);
@@ -131,12 +131,12 @@ if (session_status() == PHP_SESSION_NONE) {
         foreach ($rResult as $aRow) {
             $row = [];
             //$expDateTime=explode(" ",$aRow['updated_datetime']);
-            $row[] = ($aRow['symptom_name']);
-            $row[] = ($aRow['symptom_code']);
-            $row[] = ($aRow['symptom_status']);
+            $row[] = ($aRow['test_reason']);
+            $row[] = ($aRow['test_reason_code']);
+            $row[] = ucwords($aRow['test_reason_status']);
             $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-            if (isset($_SESSION['privileges']) && in_array("editSymptoms.php", $_SESSION['privileges'])) {
-	            $row[] = '<a href="editSymptoms.php?id=' . base64_encode($aRow['symptom_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
+            if (isset($_SESSION['privileges']) && in_array("generic-edit-testing-reason.php", $_SESSION['privileges'])) {
+	            $row[] = '<a href="generic-edit-testing-reason.php?id=' . base64_encode($aRow['test_reason_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
             }
             $output['aaData'][] = $row;
         }

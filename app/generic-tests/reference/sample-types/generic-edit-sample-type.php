@@ -29,7 +29,7 @@ $sampleTypeInfo = $db->query($tQuery);
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='addSampleTypeForm' id='addSampleTypeForm' autocomplete="off" action="editSampleTypeHelper.php">
+                <form class="form-horizontal" method='post' name='addSampleTypeForm' id='addSampleTypeForm' autocomplete="off" action="save-sample-type-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -67,7 +67,7 @@ $sampleTypeInfo = $db->query($tQuery);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-                        <a href="sampleType.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                        <a href="generic-sample-type.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>

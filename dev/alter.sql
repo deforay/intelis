@@ -3873,3 +3873,5 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-test-reference', 'generic-sample-rejection-reasons.php', 'Manage Sample Rejection Reasons'),
 (NULL, 'generic-test-reference', 'generic-add-rejection-reasons.php', 'Add New Rejection Reasons'),
 (NULL, 'generic-test-reference', 'generic-edit-rejection-reasons.php', 'Edit Rejection Reasons');
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','generic-tests') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL;
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','generic-tests') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL;

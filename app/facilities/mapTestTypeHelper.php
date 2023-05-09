@@ -16,7 +16,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
-//print_r($_POST); die;
+// print_r($_POST); die;
 if ($params == "testing-labs") {
     $tableName = "testing_labs";
 } else {

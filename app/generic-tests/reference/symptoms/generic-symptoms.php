@@ -21,8 +21,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("addSymptoms.php", $_SESSION['privileges'])) { ?>
-							<a href="addSymptoms.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Symptoms"); ?></a>
+						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-symptoms.php", $_SESSION['privileges'])) { ?>
+							<a href="generic-add-symptoms.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Symptoms"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -34,7 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _("Symptom Code"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
 									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("editSymptoms.php", $_SESSION['privileges'])) { ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-symptoms.php", $_SESSION['privileges'])) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -92,11 +92,11 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 			],
 			"aaSorting": [
-				[0, "asc"]
+				[3, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getSymptomsHelper.php",
+			"sAjaxSource": "get-symptoms-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

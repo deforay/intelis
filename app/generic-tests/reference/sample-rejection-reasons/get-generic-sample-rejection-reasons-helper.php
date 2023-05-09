@@ -150,7 +150,7 @@ foreach ($rResult as $aRow) {
         // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     else {
-        $row[] = ($aRow['rejection_reason_status']);
+        $row[] = ucwords($aRow['rejection_reason_status']);
     }
     $output['aaData'][] = $row;
 }

@@ -29,7 +29,7 @@ $symptomInfo = $db->query($tQuery);
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='addSymptomsInfo' id='addSymptomsInfo' autocomplete="off" action="editSymptomsHelper.php">
+                <form class="form-horizontal" method='post' name='editSymptomsInfo' id='editSymptomsInfo' autocomplete="off" action="save-symptoms-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -67,7 +67,7 @@ $symptomInfo = $db->query($tQuery);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-                        <a href="symptoms.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                        <a href="generic-symptoms.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -84,12 +84,12 @@ $symptomInfo = $db->query($tQuery);
     function validateNow() {
 
         flag = deforayValidator.init({
-            formId: 'addSymptomsInfo'
+            formId: 'editSymptomsInfo'
         });
 
         if (flag) {
             $.blockUI();
-            document.getElementById('addSymptomsInfo').submit();
+            document.getElementById('editSymptomsInfo').submit();
         }
     }
 

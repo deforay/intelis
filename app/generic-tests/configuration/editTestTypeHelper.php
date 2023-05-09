@@ -18,9 +18,6 @@ $tableName2="generic_test_sample_type_map";
 $tableName3="generic_test_reason_map";
 $tableName4="generic_test_symptoms_map";
 $testAttribute=[];
-/*echo "<pre>";
-print_r($_POST);
-die;*/
 $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
 $_POST['testStandardName'] = trim($_POST['testStandardName']);

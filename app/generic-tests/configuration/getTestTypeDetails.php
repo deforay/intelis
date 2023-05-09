@@ -131,7 +131,7 @@ $primaryKey="test_type_id";
             $row[] = ($aRow['test_generic_name']);
             $row[] = ($aRow['test_short_code']);
             $row[] = ($aRow['test_loinc_code']);
-	        $row[] = ($aRow['test_status']);
+	        $row[] = ucwords($aRow['test_status']);
             if (isset($_SESSION['privileges']) && in_array("edit-test-type.php", $_SESSION['privileges'])) {
 	        $row[] = '<a href="edit-test-type.php?id=' . base64_encode($aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
             }

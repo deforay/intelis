@@ -50,6 +50,9 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
 }
+if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
+	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests', $countryShortCode);
+}
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 
@@ -294,6 +297,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 												<?php }
 												if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 													<option value='tb'><?php echo _("TB"); ?></option>
+												<?php } 
+												if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+													<option value='generic-tests'><?php echo _("Lab Tests");?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -479,11 +485,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 											<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>"></td>
 											<td style="width:14%;">
 												<select type="text" class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _('Choose one test type'); ?>" multiple>
-													<option value="vl"><?php echo _("Viral Load"); ?></option>
-													<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
-													<option value="covid19"><?php echo _("Covid-19"); ?></option>
-													<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
-													<option value='tb'><?php echo _("TB"); ?></option>
+													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+														<option value="vl"><?php echo _("Viral Load");?></option>
+													<?php }
+													if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+														<option value="eid"><?php echo _("Early Infant Diagnosis");?></option>
+													<?php }
+													if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+														<option value="covid19"><?php echo _("Covid-19");?></option>
+													<?php }
+													if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+														<option value='hepatitis'><?php echo _("Hepatitis");?></option>
+													<?php }
+													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+														<option value='tb'><?php echo _("TB");?></option>
+													<?php } 
+													if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+														<option value='generic-tests'><?php echo _("Lab Tests");?></option>
+													<?php } ?>
 												</select>
 											</td>
 											<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="<?php echo _('Display Order'); ?>" title="<?php echo _('Please enter the Display Order'); ?>"></td>
@@ -701,6 +720,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 					var extraDiv = '<td></td>';
 				} else if (testType[i] == 'tb') {
 					testOrg = 'TB';
+					var extraDiv = '<td></td>';
+				} else if (testType[i] == 'genericTests') {
+					testOrg = 'Lab Tests';
 					var extraDiv = '<td></td>';
 				}
 				div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';

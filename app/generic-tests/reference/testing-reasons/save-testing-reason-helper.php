@@ -16,9 +16,6 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_reasons";
 
-/*echo "<pre>";
-print_r($_POST);
-die;*/
 $testReasonId = (int) base64_decode($_POST['testReasonId']);
 $_POST['testReason'] = trim($_POST['testReason']);
 try {
@@ -30,13 +27,24 @@ try {
             'test_reason_status' => $_POST['testReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        
-        $db = $db->where('test_reason_id', $testReasonId);
-        $db->update($tableName, $data);
-        $_SESSION['alertMsg'] = _("Testing reason updated successfully");
+        if(isset($testReasonId) && !empty($testReasonId)){
+            $db = $db->where('test_reason_id', $testReasonId);
+            $lastId = $db->update($tableName, $data);
+            if($lastId > 0){
+                $_SESSION['alertMsg'] = _("Testing reason updated successfully");
+                $general->activityLog('Testing Reason', $_SESSION['userName'] . ' updated new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
+            }
+        }else{
+            $id = $db->insert($tableName, $data);
+            $lastId = $db->getInsertId();
+            if($lastId > 0){
+                $_SESSION['alertMsg'] = _("Testing reason added successfully");
+                $general->activityLog('Testing Reason', $_SESSION['userName'] . ' added new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
+            }
+        }
     }
     //error_log($db->getLastError());
-    header("location:testingReason.php");
+    header("location:generic-testing-reason.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

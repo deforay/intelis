@@ -19,9 +19,6 @@ $tableName3="generic_test_reason_map";
 $tableName4="generic_test_symptoms_map";
 $testAttribute=[];
 $testResultAttribute=[];
-/*echo "<pre>";
-print_r($_POST);
-die;*/
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 try {
     if (!empty($_POST['testStandardName'])) {
