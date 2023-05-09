@@ -493,8 +493,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             <th scope="row" class="text-center">Test Method</th>
                                                             <th scope="row" class="text-center">Date of Testing</th>
                                                             <th scope="row" class="text-center">Test Platform/Test Kit</th>
-                                                            <th class="text-center kitlabels" style="display: none;">Kit Lot No</th>
-                                                            <th class="text-center kitlabels" style="display: none;">Expiry Date</th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;">Kit Lot No</th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;">Expiry Date</th>
                                                             <th scope="row" class="text-center">Test Result</th>
                                                         </tr>
                                                     </thead>

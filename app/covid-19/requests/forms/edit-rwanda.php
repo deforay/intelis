@@ -547,7 +547,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="3" class="text-right">Final Result</th>
+                                                            <th scope="row" colspan="3" class="text-right">Final Result</th>
                                                             <td>
                                                                 <select class="form-control result-focus" name="result" id="result">
                                                                     <option value=''> -- Select -- </option>

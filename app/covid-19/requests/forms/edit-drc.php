@@ -582,7 +582,7 @@ if (!empty($patientData)) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
+                                        <th scope="row" colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
@@ -943,7 +943,7 @@ if (!empty($patientData)) {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="3" class="text-right">Résultat final</th>
+                                                            <th scope="row" colspan="3" class="text-right">Résultat final</th>
                                                             <td>
                                                                 <select class="form-control result-focus" name="result" id="result" title="Résultat final">
                                                                     <option value=''> -- Sélectionner -- </option>

@@ -233,7 +233,7 @@ foreach ($rejectionTypeResult as $type) {
 								<td style=" width: 10%; ">
 									<br>
 									<input type="hidden" name="print" id="print" />
-									<input type="hidden" name="module" id="module" value="<?php echo $module; ?>" />
+									<input type="hidden" name="module" id="module" value="<?= htmlspecialchars($module); ?>" />
 									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
 								</td>
 							</tr>

@@ -111,6 +111,7 @@ class ImageResizeUtility
         if (!defined('IMAGETYPE_WEBP')) {
             define('IMAGETYPE_WEBP', 18);
         }
+        $filename = realpath($filename);
         if ($filename === null || empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
             throw new Exception('File does not exist');
         }
@@ -201,11 +202,11 @@ class ImageResizeUtility
         $orientation = $exif['Orientation'];
 
         if ($orientation === 6 || $orientation === 5) {
-            $img = imagerotate($img, 270, null);
+            $img = imagerotate($img, 270, 0);
         } elseif ($orientation === 3 || $orientation === 4) {
-            $img = imagerotate($img, 180, null);
+            $img = imagerotate($img, 180, 0);
         } elseif ($orientation === 8 || $orientation === 7) {
-            $img = imagerotate($img, 90, null);
+            $img = imagerotate($img, 90, 0);
         }
 
         if ($orientation === 5 || $orientation === 4 || $orientation === 7) {
@@ -374,7 +375,7 @@ class ImageResizeUtility
         }
 
         if ($permissions) {
-            chmod($filename, $permissions);
+            chmod(realpath($filename), $permissions);
         }
 
         imagedestroy($dest_image);
@@ -736,7 +737,7 @@ class ImageResizeUtility
     /**
      *  Flips an image using a given mode if PHP version is lower than 5.5
      *
-     * @param  resource $image
+     * @param  \GdImage $image
      * @param  integer  $mode
      * @return null
      */

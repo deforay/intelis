@@ -264,7 +264,7 @@ $global = $general->getGlobalConfig();
 			<!-- /.box-body -->
 			<div class="box-footer">
 				<input type="hidden" name="packageId" value="<?php echo $pResult[0]['package_id']; ?>" />
-				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?php echo $module; ?>" />
+				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 				<a href="javascript:history.go(-1);" class="btn btn-default"> Cancel</a>
 			</div>

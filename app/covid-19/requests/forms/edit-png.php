@@ -325,7 +325,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <input class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?>" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date of symptom onset" title="Please choose Date of symptom onset" />
                                     </td>
                                     <tr>
-                                        <th colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
+                                        <th scope="row" colspan="4" style="width:15% !important">Symptoms <span class="mandatory">*</span> </th>
                                     </tr>
                                     <tr>
                                         <td colspan="4">
@@ -356,7 +356,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
+                                        <th scope="row" colspan=2><label for="hasRecentTravelHistory">Has the patient had a recent history of travelling to an affected area?</label><span class="mandatory">*</span></th>
                                         <td style="width:25% !important;">
                                             <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
                                                 <option value="">-- Select --</option>
@@ -651,7 +651,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <th colspan="4" class="text-right"><label for="result">Final result</label></th>
+                                                            <th scope="row" colspan="4" class="text-right"><label for="result">Final result</label></th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result" title="Please select the Final result">
                                                                     <option value=''> -- Select -- </option>

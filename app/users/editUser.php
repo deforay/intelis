@@ -540,8 +540,7 @@ $ftResult = $db->rawQuery($fQuery);
 
      function generateToken(id) {
           $.post("/includes/generate-auth-token.php", {
-                    size: 8,
-                    u: '<?= $id; ?>'
+                    size: 6,
                },
                function(data) {
                     if (data != "") {

@@ -262,7 +262,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <th colspan=4>
+                                        <th scope="row" colspan=4>
                                             <h4>Infant and Mother's Health Information</h4>
                                         </th>
                                     </tr>
@@ -364,7 +364,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
-                                        <th colspan=4>
+                                        <th scope="row" colspan=4>
                                             <h4>Sample Information</h4>
                                         </th>
                                     </tr>

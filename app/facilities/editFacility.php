@@ -564,7 +564,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												if (isset($row['signature']) && $row['signature'] != "") {
 													$show = "style='display:none'";
 												?>
-													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 5px;border-radius: 50%;margin-top: 0px;float: right;">X</span></a><img src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
+													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 5px;border-radius: 50%;margin-top: 0px;float: right;">X</span></a><img alt="Facility" src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
 												<?php }
 												?>
 												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>">

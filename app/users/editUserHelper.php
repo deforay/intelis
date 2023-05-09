@@ -40,8 +40,8 @@ try {
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
-            $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
-            if (file_exists($signatureImagePath)) {
+            $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage']);
+            if (!empty($signatureImagePath) && file_exists($signatureImagePath)) {
                 unlink($signatureImagePath);
             }
             $data['user_signature'] = null;

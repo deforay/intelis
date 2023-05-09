@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "http-sirius-deforay-in-9000-",
+        "projectKey": "vlsm"
+    }
+}

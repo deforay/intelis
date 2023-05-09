@@ -530,7 +530,7 @@ $patienZones["other"] = "Other";
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
+                                    <th scope="row" colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
                                 </tr>
                                 <tr>
                                     <td colspan="4">
@@ -875,7 +875,7 @@ $patienZones["other"] = "Other";
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <th colspan="3" class="text-right">Résultat final</th>
+                                                        <th scope="row" colspan="3" class="text-right">Résultat final</th>
                                                         <td>
                                                             <select class="form-control result-focus isRequired" name="result" id="result" title="Résultat final">
                                                                 <option value=''> -- Sélectionner -- </option>

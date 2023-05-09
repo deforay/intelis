@@ -34,8 +34,9 @@ try {
         $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
         $db->update($instanceTableName, $data);
     }
-    if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])) {
-        unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
+    $removedImage = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
+    if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && !empty($removedImage) && file_exists($removedImage)) {
+        unlink($removedImage);
         $data = array('value' => null);
         $db = $db->where('name', 'logo');
         $id = $db->update($tableName, $data);
