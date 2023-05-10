@@ -55,6 +55,9 @@ try {
                 } else if ($_POST['module'] == 'tb') {
                     $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
                     $db->update('form_tb', $value);
+                } else if ($_POST['module'] == 'generic-tests') {
+                    $db = $db->where('sample_id', $_POST['sampleCode'][$j]);
+                    $db->update('form_generic', $value);
                 }
             }
             $_SESSION['alertMsg'] = "Manifest added successfully";

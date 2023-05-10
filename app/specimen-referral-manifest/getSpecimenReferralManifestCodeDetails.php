@@ -50,6 +50,10 @@ if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
     $module = 'tb';
     $tableName = "form_tb";
     $primaryKey = "tb_id";
+} else if ($_POST['module'] == 'generic-tests') {
+    $module = 'generic-tests';
+    $tableName = "form_generic";
+    $primaryKey = "sample_id";
 }
 
 
@@ -192,6 +196,9 @@ foreach ($rResult as $aRow) {
     if ($aRow['package_status'] == 'dispatch') {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
+    }
+    if($module == 'generic-tests'){
+        $aRow['module'] = "LAB TESTS ";
     }
     $row = [];
     //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['package_id'] . '"  value="' . $aRow['package_id'] . '" onclick="checkPackage(this);"  />';

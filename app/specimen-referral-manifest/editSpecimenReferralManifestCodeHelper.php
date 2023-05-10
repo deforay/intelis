@@ -48,6 +48,9 @@ try {
             } else if ($_POST['module'] == 'tb') {
                 $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
                 $db->update('form_tb', $value);
+            } else if ($_POST['module'] == 'generic-tests') {
+                $db = $db->where('sample_id', $_POST['sampleCode'][$j]);
+                $db->update('form_generic', $value);
             }
 
             for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
@@ -73,6 +76,9 @@ try {
                 } else if ($_POST['module'] == 'tb') {
                     $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
                     $db->update('form_tb', $value);
+                } else if ($_POST['module'] == 'generic-tests') {
+                    $db = $db->where('sample_id', $_POST['sampleCode'][$j]);
+                    $db->update('form_generic', $value);
                 }
             }
             $_SESSION['alertMsg'] = "Manifest details updated successfully";

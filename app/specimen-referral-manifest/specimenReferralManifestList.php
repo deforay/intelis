@@ -148,6 +148,8 @@ require_once APPLICATION_PATH . '/header.php';
 			manifestFileName = "generateHepatitisManifest.php";
 		}else if (module == 'tb') {
 			manifestFileName = "generateTBManifest.php";
+		}else if (module == 'generic-tests') {
+			manifestFileName = "generateGenericManifest.php";
 		}
 		//alert(manifestFileName);
 		$.post(manifestFileName, {

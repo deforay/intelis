@@ -339,6 +339,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			$(".allMenu").removeClass('active');
 			$(".hepatitisRequest").addClass('active');
 			$(".specimenReferralManifestListHepMenu").addClass('active');
+		} else if (searchStr == '?t=' + btoa('generic-tests')) {
+			$(".allMenu").removeClass('active');
+			$(".generic-test-menu, .specimenGenericReferralManifestListMenu").addClass('active');
 		}
 	} else if (splitsUrl == 'vlResultMail.php' || splitsUrl == 'vlResultMailConfirm.php') {
 		$(".test").addClass('active');
@@ -851,9 +854,6 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batch-code.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-menu, .batchGenericCodeMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'specimenReferralManifestList.php') {
-		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .specimenGenericReferralManifestListMenu").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 	}

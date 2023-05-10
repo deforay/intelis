@@ -460,7 +460,6 @@ try {
 
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
-//    echo '<pre>'; print_r($vldata); die;
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
@@ -483,7 +482,6 @@ try {
                 header("Location:add-request.php");
             }
         }
-        // print_r($_POST['sampleCode']);die;
 
         if ($_SESSION['instanceType'] == 'remoteuser') {
             $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
@@ -491,7 +489,6 @@ try {
             $vldata['remote_sample'] = 'yes';
         } else {
             $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
-            //$vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
             $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  null;
         }
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null;

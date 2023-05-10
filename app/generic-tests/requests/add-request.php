@@ -212,7 +212,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
      </section>
      <!-- Main content -->
      <section class="content">
-
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -232,7 +231,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach($testTypeResult as $testType){ ?>
-                                                            <option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code'];?>"><?php echo $testType['test_standard_name'] ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -998,12 +997,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function sampleCodeGeneration() {
+          var testType = $("#testType").val();
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
-               $.post("/vl/requests/sampleCodeGeneration.php", {
-                         sDate: sDate
+          if (pName != '' && sDate != '' && testType != '') {
+               $.post("sampleCodeGeneration.php", {
+                         sDate: sDate,
+                         testType: $('#testType').find(':selected').data('short')
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -1476,7 +1477,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                         sampleCodeGeneration();
                     }
                 });
-            //$.unblockUI();
+            $.unblockUI();
         }
     }
 
@@ -1489,7 +1490,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 countryId: countryId,
                 sampleCollectionDate: $("#" + sampleCollectionDate).val(),
                 provinceCode: provinceCode,
-                provinceId: provinceId
+                provinceId: provinceId,
+                testType: $('#testType').find(':selected').data('short')
             },
             function(data) {
                 console.log(data);
@@ -1499,7 +1501,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     document.getElementById(formId).submit();
                 } else {
                     $.unblockUI();
-                    //$("#sampleCollectionDate").val('');
+                    $("#sampleCollectionDate").val('');
                     sampleCodeGeneration();
                     alert("<?= _("Could not save this form. Please try again."); ?>");
                 }

@@ -55,7 +55,7 @@ $statusResult = $db->rawQuery($statusQuery);
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
-$sQuery = "SELECT * FROM r_generic_sample_types WHERE status='active'";
+$sQuery = "SELECT * FROM r_generic_sample_types WHERE sample_type_status='active'";
 $sResult = $db->query($sQuery);
 
 //get vl test reason list
@@ -598,7 +598,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_id']); ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter Patient ID" title="Enter patient id" value="<?= htmlspecialchars($vlQueryInfo['patient_id']); ?>" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">

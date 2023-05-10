@@ -162,7 +162,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 // TB Menu end
 
 
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("view-requests.php", "add-request.php", "add-samples-from-manifest.php", "batch-code.php", "specimen-referral-manifest-list.php"))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("view-requests.php", "add-request.php", "add-samples-from-manifest.php", "batch-code.php", "specimenReferralManifestList.php"))) {
 	$genericTestManagementMenuAccess = true;
 } else {
 	$genericTestManagementMenuAccess = false;
@@ -678,7 +678,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset($_SESSION['privileges']) && in_array("specimen-referral-manifest-list.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 									<li class="allMenu specimenGenericReferralManifestListMenu">
-										<a href="/specimen-referral-manifest/specimen-referral-manifest-list.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Specimen Manifest"); ?></a>
+										<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Specimen Manifest"); ?></a>
 									</li>
 								<?php }
 								?>

@@ -51,7 +51,7 @@ class GenericTestsService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType= null)
     {
 
         if (!empty($maxCodeKeyVal)) {
@@ -93,7 +93,9 @@ class GenericTestsService
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
         $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
-
+        if(isset($testType) && !empty($testType)){
+            $prefixFromConfig = $testType;
+        }
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
         } elseif ($sampleCodeFormat == 'YY') {
@@ -136,13 +138,18 @@ class GenericTestsService
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
         }
-
         if ($sampleCodeFormat == 'auto') {
+            if(isset($testType) && !empty($testType)){
+                $remotePrefix = $remotePrefix . $testType;
+            }
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
+            if(isset($testType) && !empty($testType)){
+                $remotePrefix = $remotePrefix . $testType;
+            }
             $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
@@ -155,22 +162,16 @@ class GenericTestsService
         }
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        // if ($checkResult !== null) {
-        //     $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-        //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
-        // }
         if ($checkResult !== null) {
             error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            return $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sCodeKey);
     }
 
-    public function generateVLSampleIDGenericTest($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType = null)
     {
 
         if (!empty($maxCodeKeyVal)) {
@@ -212,7 +213,9 @@ class GenericTestsService
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
         $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
-
+        if(isset($testType) && !empty($testType)){
+            $prefixFromConfig = $testType;
+        }
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
         } elseif ($sampleCodeFormat == 'YY') {
@@ -257,11 +260,17 @@ class GenericTestsService
         }
 
         if ($sampleCodeFormat == 'auto') {
+            if(isset($testType) && !empty($testType)){
+                $remotePrefix = $remotePrefix . $testType;
+            }
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
+            if(isset($testType) && !empty($testType)){
+                $remotePrefix = $remotePrefix . $testType;
+            }
             $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
@@ -284,24 +293,24 @@ class GenericTestsService
             error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            return $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sCodeKey);
     }
 
-    public function getVlSampleTypesByName($name = "")
+    public function getGenericSampleTypesByName($name = "")
     {
         $where = "";
         if (!empty($name)) {
             $where = " AND sample_name LIKE '$name%'";
         }
-        $query = "SELECT * FROM r_vl_sample_type where status='active'$where";
+        $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active '$where";
         return $this->db->rawQuery($query);
     }
 
-    public function getVlSampleTypes($updatedDateTime = null)
+    public function getGenericSampleTypes($updatedDateTime = null)
     {
-        $query = "SELECT * FROM r_vl_sample_type where status='active'";
+        $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
         if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";
         }
@@ -580,7 +589,7 @@ class GenericTestsService
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
 
-            $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleJson = $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
             $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
@@ -641,7 +650,7 @@ class GenericTestsService
             if ($rowData) {
                 // $this->db = $this->db->where('sample_id', $rowData['sample_id']);
                 // $id = $this->db->update("form_vl", $vlData);
-                // $params['vlSampleId'] = $rowData['sample_id'];
+                // $params['GenericSampleId'] = $rowData['sample_id'];
 
 
                 //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
@@ -651,7 +660,7 @@ class GenericTestsService
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
                     $id = $this->db->insert("form_vl", $vlData);
-                    $params['vlSampleId'] = $id;
+                    $params['GenericSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $vlData['unique_id'] = $general->generateUUID();
@@ -715,7 +724,7 @@ class GenericTestsService
             $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
             $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-
+            $testType = (isset($params['testType']) && !empty($params['testType']))?$params['testType']:null;
 
             if (empty($sampleCollectionDate)) {
                 echo 0;
@@ -730,7 +739,7 @@ class GenericTestsService
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
 
-            $sampleJson = $this->generateVLSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleJson = $this->generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
             $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
@@ -749,9 +758,8 @@ class GenericTestsService
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => $this->db->now()
             );
-
+            
             $oldSampleCodeKey = null;
-
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $vlData['remote_sample_code'] = $sampleData['sampleCode'];
                 $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
@@ -769,7 +777,6 @@ class GenericTestsService
                 $vlData['remote_sample'] = 'no';
                 $vlData['result_status'] = 6;
             }
-
             $sQuery = "SELECT sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_generic ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
@@ -789,7 +796,7 @@ class GenericTestsService
             if ($rowData) {
                 // $this->db = $this->db->where('sample_id', $rowData['sample_id']);
                 // $id = $this->db->update("form_vl", $vlData);
-                // $params['vlSampleId'] = $rowData['sample_id'];
+                // $params['GenericSampleId'] = $rowData['sample_id'];
 
 
                 //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
@@ -799,7 +806,7 @@ class GenericTestsService
             } else {
                 if (isset($params['api']) && $params['api'] = "yes") {
                     $id = $this->db->insert("form_generic", $vlData);
-                    $params['vlSampleId'] = $id;
+                    $params['GenericSampleId'] = $id;
                 } else {
                     if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
                         $vlData['unique_id'] = $general->generateUUID();

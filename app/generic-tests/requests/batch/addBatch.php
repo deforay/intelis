@@ -101,10 +101,10 @@ foreach ($testPlatformResult as $machine) {
 				<div class="col-xs-4 col-md-4">
 					<div class="form-group" style="margin-left:30px;">
 						<label for="testType">Test Type</label>
-						<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+						<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchCodeForm(this);">
 							<option value=""> -- Select -- </option>
 							<?php foreach ($testTypeResult as $testType) { ?>
-								<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+								<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code'];?>"><?php echo $testType['test_standard_name'] ?></option>
 							<?php } ?>
 						</select>
 					</div>
@@ -454,6 +454,14 @@ foreach ($testPlatformResult as $machine) {
 			var count = $("#search_to option").length;
 			return count;
 		});
+	}
+
+	function getBatchCodeForm(obj) {
+		var shortCode = $(obj).find(':selected').data('short');
+		if(shortCode != ""){
+			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $maxId);?>';
+			$('#batchCode').val(code);
+		}
 	}
 </script>
 <?php

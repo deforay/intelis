@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
         $this->SetFont('helvetica', '', 13);
-        $this->writeHTMLCell(0, 0, 0, 10, 'TB Sample Referral Manifest ', 0, 0, 0, true, 'C');
+        $this->writeHTMLCell(0, 0, 0, 10, 'Lab Tests Sample Referral Manifest ', 0, 0, 0, true, 'C');
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
@@ -81,7 +81,7 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_tb as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) as `patient_fullname`,patient_dob,patient_age_in_years,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_generic as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
     $result = $db->query($sQuery);
 
 
@@ -97,7 +97,7 @@ if (trim($id) != '') {
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
     }
-    $showPatientName = $arr['tb_show_participant_name_in_manifest'];
+    $showPatientName = (isset($arr['generic_show_participant_name_in_manifest']) && !empty($arr['generic_show_participant_name_in_manifest']))?$arr['generic_show_participant_name_in_manifest']: 'no';
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);

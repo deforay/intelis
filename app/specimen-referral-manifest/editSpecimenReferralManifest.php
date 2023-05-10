@@ -5,6 +5,7 @@ use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
 use App\Services\TbService;
+use App\Services\GenericTestsService;
 use App\Services\UsersService;
 use App\Services\VlService;
 
@@ -68,6 +69,11 @@ if ($module == 'vl') {
 	$m = ($module == 'TB') ? 'tb' : $module;
 	$tbService = new TbService($db);
 	$sampleTypes = $tbService->getTbSampleTypes();
+} else if ($module == 'generic-tests') {
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.sample_package_id FROM form_generic as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
+	$m = ($module == 'GEN') ? 'generic-tests' : $module;
+	$genService = new GenericTestsService($db);
+	$sampleTypes = $genService->getGenericSampleTypes();
 }
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);

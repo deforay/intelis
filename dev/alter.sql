@@ -3840,9 +3840,9 @@ UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`
 -- Thana 09-May-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-requests', 'edit-request.php', 'Edit Generic Tests');
 
-RENAME TABLE `vlsm`.`r_sample_types` TO `vlsm`.`r_generic_sample_types`;
-RENAME TABLE `vlsm`.`r_symptoms` TO `vlsm`.`r_generic_symptoms`;
-RENAME TABLE `vlsm`.`r_testing_reasons` TO `vlsm`.`r_generic_test_reasons`;
+RENAME TABLE `r_sample_types` TO `r_generic_sample_types`;
+RENAME TABLE `r_symptoms` TO `r_generic_symptoms`;
+RENAME TABLE `r_testing_reasons` TO `r_generic_test_reasons`;
 
 CREATE TABLE `r_generic_sample_rejection_reasons` (
   `rejection_reason_id` int NOT NULL AUTO_INCREMENT,

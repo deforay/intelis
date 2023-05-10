@@ -22,19 +22,19 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-				<div class="row">
-                                        <div class="col-xs-4 col-md-4">
-                                             <div class="form-group" style="margin-left:30px; margin-top:30px;">
-                                                  <label for="testType">Test Type</label>
-                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm()">
-                                                       <option value=""> -- Select -- </option>
-                                                       <?php foreach($testTypeResult as $testType){ ?>
-                                                            <option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
-                                                       <?php } ?>
-                                                  </select>
-                                             </div>
-                                        </div>
-                                   </div>
+					<div class="row">
+						<div class="col-xs-4 col-md-4">
+							<div class="form-group" style="margin-left:30px; margin-top:30px;">
+								<label for="testType">Test Type</label>
+								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm()">
+									<option value=""> -- Select -- </option>
+									<?php foreach ($testTypeResult as $testType) { ?>
+										<option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</div>
 					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 325px;" id="showhide" class="">
 						<div class="row" style="background:#e0e0e0;padding: 15px;">
 							<div class="col-md-12">
@@ -187,15 +187,13 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		}
 	}
 
-	function getBatchForm()
-	{
+	function getBatchForm() {
 		$(".batchDiv").show();
 		oTable.fnDraw();
 	}
 
-	function addBatch()
-	{
-		window.location.href="addBatch.php?code="+$("#testType").val();
+	function addBatch() {
+		window.location.href = "addBatch.php?code=" + $("#testType").val();
 	}
 </script>
 <?php
