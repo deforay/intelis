@@ -28,8 +28,11 @@ $transactionId = $general->generateUUID();
 $sampleCodes = $facilityIds = [];
 $labId = null;
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_hepatitis'";
-    $allColResult = $db->rawQuery($allColumns);
+
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = ? AND table_name='form_hepatitis'";
+    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
+
     $oneDimensionalArray = array_map('current', $allColResult);
     $counter = 0;
 

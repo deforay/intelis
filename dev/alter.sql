@@ -769,7 +769,7 @@ ALTER TABLE `r_covid19_sample_rejection_reasons`
 
 
 ALTER TABLE `r_covid19_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 
 CREATE TABLE `covid19_imported_controls` (
@@ -1180,7 +1180,7 @@ CREATE TABLE `countries` (
  `numeric_code` smallint(6) NOT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO `countries` (`id`, `iso_name`, `iso2`, `iso3`, `numeric_code`) VALUES
 (1, 'Afghanistan', 'AF', 'AFG', 4),
@@ -1659,7 +1659,7 @@ ALTER TABLE `resources`
   ADD PRIMARY KEY (`resource_id`);
 
 ALTER TABLE `privileges`
-  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
+  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 ALTER TABLE roles_privileges_map
 ADD FOREIGN KEY (privilege_id) REFERENCES privileges(privilege_id);
@@ -1962,7 +1962,7 @@ CREATE TABLE `r_hepatitis_sample_rejection_reasons` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_sample_type` (
  `sample_id` int NOT NULL AUTO_INCREMENT,
@@ -1971,7 +1971,7 @@ CREATE TABLE `r_hepatitis_sample_type` (
  `updated_datetime` datetime DEFAULT NULL,
  `data_sync` int NOT NULL DEFAULT '0',
  PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_test_reasons` (
  `test_reason_id` int NOT NULL AUTO_INCREMENT,
@@ -1980,7 +1980,7 @@ CREATE TABLE `r_hepatitis_test_reasons` (
  `test_reason_status` varchar(45) DEFAULT NULL,
  `updated_datetime` datetime DEFAULT NULL,
  PRIMARY KEY (`test_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `r_hepatitis_results` (
  `result_id` varchar(255) NOT NULL,
@@ -3495,6 +3495,7 @@ UPDATE `form_covid19` SET locked = 'no' WHERE locked is null or locked not like 
 UPDATE `form_hepatitis` SET locked = 'no' WHERE locked is null or locked not like 'yes';
 UPDATE `form_tb` SET locked = 'no' WHERE locked is null or locked not like 'yes';
 
+
 -- ilahir 13-Apr-2023
 
 CREATE TABLE `r_test_types` (
@@ -3533,7 +3534,7 @@ INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('commo
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-sample-type', 'addSampleType.php', 'Add'), (NULL, 'common-sample-type', 'sampleType.php', 'Access');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-sample-type', 'editSampleType.php', 'Edit');
 
-CREATE TABLE `r_sample_types` (
+CREATE TABLE `r_generic_sample_types` (
   `sample_type_id` int NOT NULL,
   `sample_type_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `sample_type_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -3541,13 +3542,13 @@ CREATE TABLE `r_sample_types` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `r_sample_types`
+ALTER TABLE `r_generic_sample_types`
   ADD PRIMARY KEY (`sample_type_id`),
   ADD UNIQUE KEY `sample_type_code` (`sample_type_code`),
   ADD UNIQUE KEY `sample_type_name` (`sample_type_name`);
 
 
-ALTER TABLE `r_sample_types`
+ALTER TABLE `r_generic_sample_types`
   MODIFY `sample_type_id` int NOT NULL AUTO_INCREMENT;
 
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('common-testing-reason', 'admin', 'Common Testing Reason Table');
@@ -3556,7 +3557,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-testing-reason', 'addTestingReason.php', 'Add');
 
 
-CREATE TABLE `r_testing_reasons` (
+CREATE TABLE `r_generic_test_reasons` (
   `test_reason_id` int NOT NULL,
   `test_reason_code` varchar(256) DEFAULT NULL,
   `test_reason` varchar(256) DEFAULT NULL,
@@ -3564,12 +3565,12 @@ CREATE TABLE `r_testing_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `r_testing_reasons`
+ALTER TABLE `r_generic_test_reasons`
   ADD PRIMARY KEY (`test_reason_id`),
   ADD UNIQUE KEY `test_reason_code` (`test_reason_code`),
   ADD UNIQUE KEY `test_reason` (`test_reason`);
 
-ALTER TABLE `r_testing_reasons`
+ALTER TABLE `r_generic_test_reasons`
   MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
 
 
@@ -3583,7 +3584,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-symptoms', 'addSymptoms.php', 'Add');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-symptoms', 'editSymptoms.php', 'Edit');
 
-CREATE TABLE `r_symptoms` (
+CREATE TABLE `r_generic_symptoms` (
   `symptom_id` int NOT NULL,
   `symptom_name` varchar(256) DEFAULT NULL,
   `symptom_code` varchar(256) DEFAULT NULL,
@@ -3591,12 +3592,12 @@ CREATE TABLE `r_symptoms` (
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `r_symptoms`
+ALTER TABLE `r_generic_symptoms`
   ADD PRIMARY KEY (`symptom_id`),
   ADD UNIQUE KEY `symptom_code` (`symptom_code`),
   ADD UNIQUE KEY `symptom_name` (`symptom_name`);
 
-ALTER TABLE `r_symptoms`
+ALTER TABLE `r_generic_symptoms`
   MODIFY `symptom_id` int NOT NULL AUTO_INCREMENT;
 
 
@@ -3618,7 +3619,7 @@ ALTER TABLE `generic_test_sample_type_map`
 
 
 ALTER TABLE `generic_test_sample_type_map`
-  ADD CONSTRAINT `generic_test_sample_type_map_ibfk_1` FOREIGN KEY (`sample_type_id`) REFERENCES `r_sample_types` (`sample_type_id`),
+  ADD CONSTRAINT `generic_test_sample_type_map_ibfk_1` FOREIGN KEY (`sample_type_id`) REFERENCES `r_generic_sample_types` (`sample_type_id`),
   ADD CONSTRAINT `generic_test_sample_type_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
 
 
@@ -3638,7 +3639,7 @@ ALTER TABLE `generic_test_reason_map`
 
 ALTER TABLE `generic_test_reason_map`
   ADD CONSTRAINT `generic_test_reason_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
-  ADD CONSTRAINT `generic_test_reason_map_ibfk_2` FOREIGN KEY (`test_reason_id`) REFERENCES `r_testing_reasons` (`test_reason_id`);
+  ADD CONSTRAINT `generic_test_reason_map_ibfk_2` FOREIGN KEY (`test_reason_id`) REFERENCES `r_generic_test_reasons` (`test_reason_id`);
 
 
 CREATE TABLE `generic_test_symptoms_map` (
@@ -3656,7 +3657,7 @@ ALTER TABLE `generic_test_symptoms_map`
   MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `generic_test_symptoms_map`
-  ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_symptoms` (`symptom_id`),
+  ADD CONSTRAINT `generic_test_symptoms_map_ibfk_1` FOREIGN KEY (`symptom_id`) REFERENCES `r_generic_symptoms` (`symptom_id`),
   ADD CONSTRAINT `generic_test_symptoms_map_ibfk_2` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`);
 
 -- Thana 28-Apr-2023
@@ -3853,7 +3854,7 @@ CREATE TABLE `r_generic_sample_rejection_reasons` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`rejection_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 UPDATE `privileges` SET `privilege_name` = 'add-test-type.php' WHERE `privileges`.`privilege_name` = 'addTestType.php';
 UPDATE `privileges` SET `privilege_name` = 'edit-test-type.php' WHERE `privileges`.`privilege_name` = 'editTestType.php';

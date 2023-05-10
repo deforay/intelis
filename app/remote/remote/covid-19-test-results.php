@@ -30,8 +30,10 @@ $sampleCodes = $facilityIds = [];
 
 if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_covid19'";
-    $allColResult = $db->rawQuery($allColumns);
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = ? AND table_name='form_covid19'";
+    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
+
     $oneDimensionalArray = array_map('current', $allColResult);
 
 
