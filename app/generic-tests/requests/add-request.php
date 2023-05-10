@@ -547,9 +547,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
+                                                                      <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
+                                                                           <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
