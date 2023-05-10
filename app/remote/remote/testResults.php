@@ -18,16 +18,18 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$app = new ApiService();
+
+/** @var ApiService $app */
+//$app = ContainerRegistry::get(ApiService::class);
 
 try {
     //this file receives the lab results and updates in the remote db
     $jsonResponse = file_get_contents('php://input');
 
 
-    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-    WHERE TABLE_SCHEMA = '" . SYSTEM_CONFIG['database']['db'] . "' AND table_name='form_vl'";
-    $allColResult = $db->rawQuery($allColumns);
+    $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = ? AND table_name='form_vl'";
+    $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
     $oneDimensionalArray = array_map('current', $allColResult);
 
     $transactionId = $general->generateUUID();
