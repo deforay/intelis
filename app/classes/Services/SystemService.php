@@ -120,6 +120,10 @@ class SystemService
         if (isset($this->applicationConfig['modules']['tb']) && $this->applicationConfig['modules']['tb'] === true) {
             $response[] = 'tb';
         }
+        
+        if (isset($this->applicationConfig['modules']['genericTests']) && $this->applicationConfig['modules']['genericTests'] === true) {
+            $response[] = 'genericTests';
+        }
 
         return $response;
     }

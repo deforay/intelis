@@ -13,8 +13,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
@@ -31,6 +29,12 @@ $importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);
 $reasonForFailure = $genericTestsService->getReasonForFailure();
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('generic-tests');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+}
+
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);
@@ -592,8 +596,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </div>
                                                              
                                                             </div>
+                                                            
                                                             <div class="row">
-                                                                
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-4" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
@@ -609,6 +613,70 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-12">
+                                                                      <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+                                                                           <thead>
+                                                                                <tr>
+                                                                                     <th scope="row" class="text-center">Test No</th>
+                                                                                     <th scope="row" class="text-center">Test Method</th>
+                                                                                     <th scope="row" class="text-center">Date of Testing</th>
+                                                                                     <th scope="row" class="text-center">Test Platform/Test Kit</th>
+                                                                                     <th scope="row" class="text-center kitlabels" style="display: none;">Kit Lot No</th>
+                                                                                     <th scope="row" class="text-center kitlabels" style="display: none;">Expiry Date</th>
+                                                                                     <th scope="row" class="text-center">Test Result</th>
+                                                                                </tr>
+                                                                           </thead>
+                                                                           <tbody id="testKitNameTable">
+                                                                                <tr>
+                                                                                     <td class="text-center">1</td>
+                                                                                     <td>
+                                                                                     <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                                          <option value="">-- Select --</option>
+                                                                                          <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                                                                                          <option value="RDT-Antibody">RDT-Antibody</option>
+                                                                                          <option value="RDT-Antigen">RDT-Antigen</option>
+                                                                                          <option value="GeneXpert">GeneXpert</option>
+                                                                                          <option value="ELISA">ELISA</option>
+                                                                                          <option value="other">Others</option>
+                                                                                     </select>
+                                                                                     <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                                                                     </td>
+                                                                                     <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+                                                                                     <td>
+                                                                                     <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                                          <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                                                     </select>
+                                                                                     </td>
+                                                                                     <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo1" class="form-control kit-fields1" placeholder="Kit lot no" title="Please enter the kit lot no. for row 1" style="display:none;" /></td>
+                                                                                     <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate1" class="form-control expDate kit-fields1" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="display:none;" /></td>
+                                                                                     <td>
+                                                                                     <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+                                                                                          <?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?>
+                                                                                     </select>
+                                                                                     </td>
+                                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
+                                                                                     <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                                                                                     </td>
+                                                                                </tr>
+                                                                           </tbody>
+                                                                           <tfoot>
+                                                                                <tr>
+                                                                                     <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                                                     <td>
+                                                                                     <select class="form-control" name="result" id="result">
+                                                                                          <option value=''> -- Select -- </option>
+                                                                                          <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
+                                                                                               <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option>
+                                                                                          <?php } ?>
+                                                                                     </select>
+                                                                                     </td>
+                                                                                </tr>
+                                                                           </tfoot>
+                                                                      </table>
                                                                  </div>
                                                             </div>
                                                             <div class="row">
@@ -728,6 +796,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      let provinceName = true;
      let facilityName = true;
+     let testCounter = 1;
+
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -739,20 +809,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
           });
-
-        /*  $("#labId").on('change', function() {
-               if ($("#labId").val() != "") {
-                    $.post("/includes/get-sample-type.php", {
-                              facilityId: $('#labId').val(),
-                              testType: 'vl'
-                         },
-                         function(data) {
-                              if (data != "") {
-                                   $("#specimenType").html(data);
-                              }
-                         });
-               }
-          });*/
 
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
@@ -926,17 +982,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $.unblockUI();
           });
      });
-
-     // $(document).on('select2:open', (e) => {
-     //      const selectId = e.target.id
-
-     //      $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-     //           key,
-     //           value,
-     //      ) {
-     //           value.focus();
-     //      })
-     // });
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
@@ -1644,6 +1689,95 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 });
     }
 
+    function addTestRow() {
+        testCounter++;
+        let rowString = `<tr>
+                    <td class="text-center">${testCounter}</td>
+                    <td>
+                    <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <option value="">-- Select --</option>
+                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                    <option value="RDT-Antibody">RDT-Antibody</option>
+                    <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
+                    <option value="ELISA">ELISA</option>
+                    <option value="other">Others</option>
+                </select>
+                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+            </td>
+            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+            <td>
+                <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
+            </td>
+            <td style="vertical-align:middle;text-align: center;width:100px;">
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
+        $("#testKitNameTable").append(rowString);
+
+        $('.date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        $('.expDate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            onSelect: function() {
+                $(this).change();
+            },
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            // minDate: "Today",
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        $('.dateTime').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
+                    $('.ui-datepicker-calendar').show();
+                });
+            }
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
+        if ($('.kitlabels').is(':visible') == true) {
+            $('.kitlabels').show();
+        }
+
+    }
+
+    function removeTestRow(el) {
+        $(el).fadeOut("slow", function() {
+            el.parentNode.removeChild(el);
+            rl = document.getElementById("testKitNameTable").rows.length;
+            if (rl == 0) {
+                testCounter = 0;
+                addTestRow();
+            }
+        });
+    }
 </script>
 
 <?php include APPLICATION_PATH . '/footer.php';
