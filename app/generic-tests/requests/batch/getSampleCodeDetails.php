@@ -44,9 +44,9 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
 
 $query = "SELECT vl.sample_code,vl.sample_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_generic as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
 if (isset($_POST['batchId'])) {
-	$query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
+	$query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id like '')";
 } else {
-	$query = $query . " AND (sample_batch_id IS NULL OR sample_batch_id='')";
+	$query = $query . " AND (sample_batch_id IS NULL OR sample_batch_id like '')";
 }
 if (trim($urgent) != '') {
 	$query = $query . " AND vl.test_urgency='" . $urgent . "'";
