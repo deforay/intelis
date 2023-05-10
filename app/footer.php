@@ -842,7 +842,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".genericSampleRejectionReasonsMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'view-requests.php') {
+	} else if (splitsUrlCheck[1] == 'generic-tests' && (splitsUrl == 'view-requests.php' || splitsUrl == 'edit-request.php')) {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-menu, .genericRequestMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'add-request.php') {

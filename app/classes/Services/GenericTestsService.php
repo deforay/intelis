@@ -701,14 +701,13 @@ class GenericTestsService
         }
     }
 
-    public function getVlResults($instrumentId = null)
+    public function getGenericResults()
     {
-
-        if (!empty($instrumentId)) {
-            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
-        }
-        $this->db->where('status', 'active');
-        return $this->db->get('r_vl_results');
+        return array(
+            'positive' => 'Positive',
+            'negative' => 'Negative',
+            'invalid'  => 'Invalid'
+        );
     }
 
     public function insertSampleCodeGenericTest($params)

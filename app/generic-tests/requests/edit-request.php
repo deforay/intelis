@@ -25,6 +25,7 @@ $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $reasonForFailure = $genericTestsService->getReasonForFailure();
+$genericResults = $genericTestsService->getGenericResults();
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$labFieldDisabled = 'disabled="disabled"';
 }
@@ -40,6 +41,11 @@ $userResult = $usersService->getActiveUsers($facilityMap);
 $userInfo = [];
 foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
+}
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('generic-tests');
+foreach ($testPlatformResult as $row) {
+     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
 //sample rejection reason
@@ -61,9 +67,11 @@ $sResult = $db->query($sQuery);
 //get vl test reason list
 $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
-//echo 'hhh'; die;
-//get suspected treatment failure at
 
+$genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
+$genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
+
+//get suspected treatment failure at
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
 
@@ -776,9 +784,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												</div>
 
 												<div class="col-md-4">
-													<label for="testingPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
+													<label for="testPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
+														<select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -855,6 +863,83 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 												</div>
 											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+														<thead>
+															<tr>
+																<th scope="row" class="text-center">Test No.</th>
+																<th scope="row" class="text-center">Test Method</th>
+																<th scope="row" class="text-center">Date of Testing</th>
+																<th scope="row" class="text-center">Test Platform/Test Kit</th>
+																<th scope="row" class="text-center">Test Result</th>
+															</tr>
+														</thead>
+														<tbody id="testKitNameTable">
+															<?php
+															if (isset($genericTestInfo) && count($genericTestInfo) > 0) {
+																$kitShow = false;
+																foreach ($genericTestInfo as $indexKey => $rows) { ?>
+																	<tr>
+																		<td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+																		<td>
+																			<?php
+																			$value = '';
+																			if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+																				$value = 'value="' . $rows['test_name'] . '"';
+																				$show =  "block";
+																			} else {
+																				$show =  "none";
+																			} ?>
+																			<select class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+																				<option value="">--Select--</option>
+																				<option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
+																				<option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
+																				<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
+																				<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
+																				<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+																			</select>
+																			<input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
+																		</td>
+																		<td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime'], true); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
+																		<td>
+																			<select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+																				<?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --');?>
+																			</select>
+																		</td>
+																		<td>
+																			<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result'];?>" name="testResult[]" class="form-control" value="<?php echo $vlQueryInfo['result'];?>" placeholder="Enter result" title="Please enter final results">
+																			<!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
+																				<option value=''> -- Select -- </option>
+																				<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
+																					<option value="<?php echo $genResultKey; ?>" <?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
+																				<?php } ?>
+																			</select> -->
+																		</td>
+																		<td style="vertical-align:middle;text-align: center;width:100px;">
+																			<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+																			<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+																		</td>
+																	</tr>
+															<?php }
+															} ?>
+														</tbody>
+														<tfoot>
+															<tr>
+																<th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+																<td>
+																	<input type="text" id="result" name="result" class="form-control" value="<?php echo $vlQueryInfo['result'];?>" placeholder="Enter final result" title="Please enter final results">
+																	<!-- <select class="form-control result-focus" name="result" id="result">
+																		<option value=''> -- Select -- </option>
+																		<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
+																			<option value="<?php echo $genResultKey; ?>" <?php echo ($vlQueryInfo['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
+																		<?php } ?>
+																	</select> -->
+																</td>
+															</tr>
+														</tfoot>
+													</table>
+												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-4" style="margin-top: 10px;">
@@ -949,14 +1034,14 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 <script>
 	let provinceName = true;
 	let facilityName = true;
-
+	let testCounter = <?php echo (isset($genericTestInfo) && count($genericTestInfo) > 0) ? (count($genericTestInfo)) : 0; ?>;
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
 
 		var testType = $("#testType").val();
-          getSampleTypeList(testType);
+		getSampleTypeList(testType);
 
 		$('.date').datepicker({
 			changeMonth: true,
@@ -1755,17 +1840,105 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		}
 	}
 
-	function getSampleTypeList(testTypeId)
-    {
-          $.post("/includes/get-sample-type.php", {
-                    testTypeId: testTypeId,
-					sampleTypeId:'<?php echo $vlQueryInfo['sample_type']; ?>'
-                },
-                function(data) {
-                    if (data != "") {
-                        $("#specimenType").html(data);
-                    }
-                });
-    }
+	function getSampleTypeList(testTypeId) {
+		$.post("/includes/get-sample-type.php", {
+				testTypeId: testTypeId,
+				sampleTypeId: '<?php echo $vlQueryInfo['sample_type']; ?>'
+			},
+			function(data) {
+				if (data != "") {
+					$("#specimenType").html(data);
+				}
+			});
+	}
+
+	function addTestRow() {
+          let rowString = `<tr>
+                    <td class="text-center">${testCounter}</td>
+                    <td>
+                    <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <option value="">-- Select --</option>
+                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                    <option value="RDT-Antibody">RDT-Antibody</option>
+                    <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
+                    <option value="ELISA">ELISA</option>
+                    <option value="other">Others</option>
+                </select>
+                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+            </td>
+            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+            <td>
+               <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+            </td>
+            <td style="vertical-align:middle;text-align: center;width:100px;">
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
+          $("#testKitNameTable").append(rowString);
+
+          $('.date').datepicker({
+               changeMonth: true,
+               changeYear: true,
+               onSelect: function() {
+                    $(this).change();
+               },
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          $('.expDate').datepicker({
+               changeMonth: true,
+               changeYear: true,
+               onSelect: function() {
+                    $(this).change();
+               },
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               // minDate: "Today",
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          $('.dateTime').datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
+                         $('.ui-datepicker-calendar').show();
+                    });
+               }
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          if ($('.kitlabels').is(':visible') == true) {
+               $('.kitlabels').show();
+          }
+
+     }
+
+     function removeTestRow(el) {
+          $(el).fadeOut("slow", function() {
+               el.parentNode.removeChild(el);
+               rl = document.getElementById("testKitNameTable").rows.length;
+               if (rl == 0) {
+                    testCounter = 0;
+                    addTestRow();
+               }
+          });
+     }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

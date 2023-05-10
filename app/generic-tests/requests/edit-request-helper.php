@@ -28,7 +28,6 @@ $logVal = null;
 $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
-$finalResult = null;
 $resultStatus = null;
 
 try {
@@ -50,14 +49,7 @@ try {
      for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
           $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
      }
-     // if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') && $_POST['oldStatus'] == 9) {
-     //      $_POST['status'] = 9;
-     // } else if ($_POST['oldStatus'] == 9) {
-     //      $_POST['status'] = 6;
-     // }
-     // if ($_POST['status'] == '') {
-     //      $_POST['status']  = $_POST['oldStatus'];
-     // }
+
      //add province
      $splitProvince = explode("##", $_POST['province']);
      if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
@@ -80,17 +72,17 @@ try {
           $_POST['dob'] = null;
      }
 
-       //Sample type section
-       if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
+     //Sample type section
+     if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
           if (trim($_POST['specimenType']) != 2) {
-              $_POST['conservationTemperature'] = null;
-              $_POST['durationOfConservation'] = null;
+               $_POST['conservationTemperature'] = null;
+               $_POST['durationOfConservation'] = null;
           }
-      } else {
+     } else {
           $_POST['specimenType'] = null;
           $_POST['conservationTemperature'] = null;
           $_POST['durationOfConservation'] = null;
-      }
+     }
 
      //update facility code
      if (trim($_POST['fCode']) != '') {
@@ -98,12 +90,7 @@ try {
           $db = $db->where('facility_id', $_POST['fName']);
           $id = $db->update($fDetails, $fData);
      }
-     //update facility emails
-     //if(trim($_POST['emailHf'])!=''){
-     //   $fData = array('facility_emails'=>$_POST['emailHf']);
-     //   $db=$db->where('facility_id',$_POST['fName']);
-     //   $id=$db->update($fDetails,$fData);
-     //}
+
      if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
           $_POST['patientPregnant'] = '';
           $_POST['breastfeeding'] = '';
@@ -113,8 +100,8 @@ try {
           $instanceId = $_SESSION['instanceId'];
      }
      $testingPlatform = '';
-     if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
-          $platForm = explode("##", $_POST['testingPlatform']);
+     if (isset($_POST['testPlatform']) && trim($_POST['testPlatform']) != '') {
+          $platForm = explode("##", $_POST['testPlatform']);
           $testingPlatform = $platForm[0];
      }
      if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -177,14 +164,11 @@ try {
 
      $isRejected = false;
      if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-         $vl_result_category = 'rejected';
-         $isRejected = true;
-         $vldata['result_status'] = 4;
-    }
+          $vl_result_category = 'rejected';
+          $isRejected = true;
+          $vldata['result_status'] = 4;
+     }
 
-
-     $_POST['result'] = '';
-  
      $reasonForChanges = '';
      $allChange = [];
      if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
@@ -200,24 +184,23 @@ try {
      if (!empty($allChange)) {
           $reasonForChanges = json_encode($allChange);
      }
-      //set vl test reason
-    if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
-     if(!is_numeric($_POST['reasonForVLTesting']))
-     {
-         $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
-         $reasonResult = $db->rawQuery($reasonQuery);
-         if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-             $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
-         } else {
-             $data = array(
-                 'test_reason_name' => $_POST['reasonForVLTesting'],
-                 'test_reason_status' => 'active'
-             );
-             $id = $db->insert('r_vl_test_reasons', $data);
-             $_POST['reasonForVLTesting'] = $id;
-         }
+     //set vl test reason
+     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
+          if (!is_numeric($_POST['reasonForVLTesting'])) {
+               $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
+               $reasonResult = $db->rawQuery($reasonQuery);
+               if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
+                    $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
+               } else {
+                    $data = array(
+                         'test_reason_name' => $_POST['reasonForVLTesting'],
+                         'test_reason_status' => 'active'
+                    );
+                    $id = $db->insert('r_vl_test_reasons', $data);
+                    $_POST['reasonForVLTesting'] = $id;
+               }
+          }
      }
- }
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
           $reviewedOn = explode(" ", $_POST['reviewedOn']);
           $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
@@ -225,17 +208,13 @@ try {
           $_POST['reviewedOn'] = null;
      }
 
-     if(isset($_POST['treatmentIndication']) && $_POST['treatmentIndication']=="Other")
-    {
-        $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'].'_Other';
-    }
+     if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
+          $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
+     }
 
-   
-     $testTypeForm['form_field_id']=$_POST['testTypeId'];
-     $testTypeForm['form_field_value']=$_POST['testTypeForm'];
-     
+
      $vldata = array(
-          'vlsm_instance_id'                      => $instanceId, 
+          'vlsm_instance_id'                      => $instanceId,
           'vlsm_country_id'                       => $_POST['countryFormId'] ?? 1,
           'sample_reordered'                      => (isset($_POST['sampleReordered']) && $_POST['sampleReordered'] != '') ? $_POST['sampleReordered'] :  'no',
           'sample_code_format'                    => (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null,
@@ -264,13 +243,13 @@ try {
           'lab_id'                                => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  null,
           'test_platform'                         => $testingPlatform,
           'sample_received_at_hub_datetime'       => $_POST['sampleReceivedAtHubOn'],
-          'sample_received_at_testing_lab_datetime'=> $_POST['sampleReceivedDate'],
+          'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
           'sample_tested_datetime'                 => $_POST['sampleTestingDateAtLab'],
           'result_dispatched_datetime'             => $_POST['resultDispatchedOn'],
           'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
           'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
           'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-          'result'                                => $finalResult ?: null,
+          'result'                                => $_POST['result'] ?: null,
           'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
           'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
           'tested_by'                             => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
@@ -285,10 +264,9 @@ try {
           'last_modified_datetime'                => $db->now(),
           'manual_result_entry'                   => 'yes',
           'test_type'                             => $_POST['testType'],
-          'test_type_form'                        => json_encode($testTypeForm),
-      );
+          'test_type_form'                        => json_encode($_POST['dynamicFields'])
+     );
 
-     
      // only if result status has changed, let us update
      if (!empty($resultStatus)) {
           $vldata['result_status'] = $resultStatus;
@@ -305,36 +283,35 @@ try {
 
      if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
           $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
-      } else {
-              $_POST['cdDate'] = null;
-      }
-  
-      if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
+     } else {
+          $_POST['cdDate'] = null;
+     }
+
+     if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
           $failedtestDate = explode(" ", $_POST['failedTestDate']);
           $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
      } else {
           $_POST['failedTestDate'] = null;
      }
-      if(isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
+     if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
           $platForm = explode("##", $_POST['failedTestingTech']);
           $_POST['failedTestingTech'] = $platForm[0];
-      }
-      if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
+     }
+     if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
           $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
      } else {
           $_POST['qcDate'] = null;
      }
-  
+
      if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
           $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
      } else {
           $_POST['reportDate'] = null;
      }
-  
-      //For PNG form
-      $pngSpecificFields = [];
-      if(isset($_POST['countryFormId']) && $_POST['countryFormId']=='5')
-      {
+
+     //For PNG form
+     $pngSpecificFields = [];
+     if (isset($_POST['countryFormId']) && $_POST['countryFormId'] == '5') {
           $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
           $pngSpecificFields['art_cd_date'] = $_POST['cdDate'];
           $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
@@ -362,7 +339,6 @@ try {
           $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
           $pngSpecificFields['qc_date'] = $_POST['qcDate'];
           $pngSpecificFields['report_date'] = $_POST['reportDate'];
-  
      }
      $vldata = array_merge($vldata, $pngSpecificFields);
 
@@ -383,7 +359,6 @@ try {
           $_SESSION['alertMsg'] = _("Please try again later");
      }
      header("Location:view-requests.php");
-
 } catch (Exception $exc) {
      error_log($exc->getMessage());
      error_log($exc->getTraceAsString());
