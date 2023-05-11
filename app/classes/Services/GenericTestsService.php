@@ -302,7 +302,7 @@ class GenericTestsService
     {
         $where = "";
         if (!empty($name)) {
-            $where = " AND sample_name LIKE '$name%'";
+            $where = " AND sample_type_name LIKE '$name%'";
         }
         $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active '$where";
         return $this->db->rawQuery($query);
@@ -317,7 +317,7 @@ class GenericTestsService
         $results = $this->db->rawQuery($query);
         $response = [];
         foreach ($results as $row) {
-            $response[$row['sample_id']] = $row['sample_name'];
+            $response[$row['sample_type_id']] = $row['sample_type_name'];
         }
         return $response;
     }

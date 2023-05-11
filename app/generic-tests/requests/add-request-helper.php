@@ -427,7 +427,7 @@ try {
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
 
-    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
 		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
 			foreach ($_POST['testName'] as $testKey => $testKitName) {
 				if (isset($testKitName) && !empty($testKitName)) {

@@ -480,7 +480,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php foreach ($sResult as $name) { ?>
-                                                                      <option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                      <option value="<?php echo $name['sample_type_id']; ?>"><?= $name['sample_type_name']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>

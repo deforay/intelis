@@ -8,6 +8,10 @@ $testTypeForm = array();
 if(isset($_POST['testTypeForm']) && !empty($_POST['testTypeForm'])){
     $testTypeForm = (array)json_decode(base64_decode($_POST['testTypeForm']));
 }
+$disabled = "";
+if(isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form'){
+    $disabled = ' disabled ';
+}
 $testTypeQuery = "SELECT * FROM r_test_types where test_type_id=".$_POST['testType'];
 $testTypeResult = $db->rawQuery($testTypeQuery);
 $testAttribute=json_decode($testTypeResult[0]['test_form_config'],true);
@@ -39,20 +43,23 @@ if ($n > 0) {
         }
         
 
+        if(isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form' && $testAttribute['section'][$i] != 'lap'){
+            $isRequired = "";
+        }
         if($testAttribute['section'][$i] == 'facility'){
-            $facilityForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
+            $facilityForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.$disabled.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'" '.$disabled.'><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
         }
         else if($testAttribute['section'][$i] == 'patient'){
 
-            $patientForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
+            $patientForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.$disabled.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'" '.$disabled.'><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
         }
         else if($testAttribute['section'][$i] == 'specimen'){
-            $specimenForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
+            $specimenForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.$disabled.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'" '.$disabled.'><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
         }
         else if($testAttribute['section'][$i] == 'lap'){
-            $lapForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
+            $lapForm[]='<div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.$disabled.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
         }else if($testAttribute['section'][$i] == 'other'){
-            $otherForm[]='<div class="box-header with-border"><h3 class="box-title">'.$testAttribute['section_other'][$i].'</h3></div><div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'"><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
+            $otherForm[]='<div class="box-header with-border"><h3 class="box-title">'.$testAttribute['section_other'][$i].'</h3></div><div class="col-xs-4 col-md-4"><div class="form-group"><label>'.$testAttribute['field_name'][$i].$mandatory.'</label><input type="text" class="form-control '.$isRequired.$fieldType.$disabled.'" placeholder="'.$testAttribute['field_name'][$i].'" id="'.$testAttribute['field_id'][$i].'" name="dynamicFields['.$testAttribute['field_id'][$i].']" value="'.$value.'" '.$disabled.'><input type="hidden" class="form-control" name="testTypeId[]" value="'.$testAttribute['field_id'][$i].'"></div></div>';
         }
     }
 }

@@ -723,7 +723,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_name']); ?></option>
+														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_type_name']); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -1087,9 +1087,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 			}
 		});
 
-
-
-
 		/** Edit south sudan */
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -1101,49 +1098,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
 		});
-
-		/*$("#labId").on('change', function() {
-			if ($("#labId").val() != "") {
-				$.post("/includes/get-sample-type.php", {
-					facilityId: $('#labId').val(),
-					testType: 'vl',
-					sampleId: '<?php echo $vlQueryInfo['sample_type']; ?>'
-				},
-				function(data) {
-					if (data != "") {
-						$("#specimenType").html(data);
-					}
-				});
-			}
-		});*/
-
-
-
-
-		/*$("#sampleCollectionDate").datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: 'dd-M-yy',
-			timeFormat: "HH:mm",
-			maxDate: "Today",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				//dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-			}
-		});
-		$('#sampleDispatchedDate').datetimepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: 'dd-M-yy',
-			timeFormat: "HH:mm",
-			yearRange: "-100:+100",
-		});*/
 
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
@@ -1371,9 +1325,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 				$('#reasonForFailure').removeClass('isRequired');
 			}
 		});
-
-
-
 	});
 
 	function checkSampleReceviedAtHubDate() {

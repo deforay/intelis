@@ -67,6 +67,14 @@ class UsersService
             'edit-funding-sources.php'          => 'province-details.php'
         );
 
+        if (isset($this->applicationConfig['modules']['genericTests']) && $this->applicationConfig['modules']['genericTests'] === true) {
+            $sharedGenericPrivileges = array(
+                'update-generic-test-result.php'=> 'generic-test-results.php'
+            );
+
+            $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
+        }
+
         if (isset($this->applicationConfig['modules']['vl']) && $this->applicationConfig['modules']['vl'] === true) {
             $sharedVLPrivileges = array(
                 'updateVlTestResult.php'                => 'vlTestResult.php',

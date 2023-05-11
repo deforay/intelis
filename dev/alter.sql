@@ -3894,3 +3894,10 @@ CREATE TABLE `generic_test_results` (
   KEY `generic_id` (`generic_id`),
   CONSTRAINT `generic_test_results_ibfk_1` FOREIGN KEY (`generic_id`) REFERENCES `form_generic` (`sample_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Thana 11-May-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-results', 'generic-tests', 'Generic Tests Result Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-results', 'generic-test-results.php', 'Manage Test Results'), 
+(NULL, 'generic-results', 'generic-failed-results.php', 'Manage Failed Results'),
+(NULL, 'generic-results', 'generic-result-approval.php', 'Approve Test Results');

@@ -20,6 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $tableName = "form_generic";
+$testTableName = "generic_test_results";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
@@ -244,8 +245,8 @@ try {
           'test_platform'                         => $testingPlatform,
           'sample_received_at_hub_datetime'       => $_POST['sampleReceivedAtHubOn'],
           'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
-          'sample_tested_datetime'                 => $_POST['sampleTestingDateAtLab'],
-          'result_dispatched_datetime'             => $_POST['resultDispatchedOn'],
+          'sample_tested_datetime'                => $_POST['sampleTestingDateAtLab'],
+          'result_dispatched_datetime'            => $_POST['resultDispatchedOn'],
           'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
           'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
           'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
@@ -341,6 +342,38 @@ try {
           $pngSpecificFields['report_date'] = $_POST['reportDate'];
      }
      $vldata = array_merge($vldata, $pngSpecificFields);
+
+     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
+          if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+               $db = $db->where('generic_id', $_POST['vlSampleId']);
+               $db->delete($testTableName);
+			foreach ($_POST['testName'] as $testKey => $testKitName) {
+				if (isset($testKitName) && !empty($testKitName)) {
+					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
+						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
+						$_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+					} else {
+						$_POST['testDate'][$testKey] = null;
+					}
+					$covid19TestData = array(
+						'generic_id'				=> $_POST['vlSampleId'],
+						'test_name'					=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+						'facility_id'           	=> $_POST['labId'] ?? null,
+						'sample_tested_datetime' 	=> date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+						'testing_platform'      	=> $_POST['testingPlatform'][$testKey] ?? null,
+						'kit_lot_no'      			=> (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date'      		=> (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+						'result'					=> $_POST['testResult'][$testKey]
+					);
+					$db->insert($testTableName, $covid19TestData);
+				}
+			}
+		}
+	} else {
+		$db = $db->where('generic_id', $_POST['vlSampleId']);
+		$db->delete($testTableName);
+		$covid19Data['sample_tested_datetime'] = null;
+	}
 
      $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('sample_id', $_POST['vlSampleId']);
