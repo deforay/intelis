@@ -854,7 +854,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batch-code.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-request-menu, .batchGenericCodeMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-test-results.php') {
+	} else if (splitsUrlCheck[1] == 'generic-tests' && (splitsUrl == 'generic-test-results.php' || splitsUrl == 'update-generic-test-result.php')) {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-results-menu, .genericTestResultMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-failed-results.php') {
