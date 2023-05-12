@@ -5,7 +5,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
-	header("Location:batchcode.php");
+	header("Location:batch-code.php");
 }
 $content = '';
 $newContent = '';
@@ -167,8 +167,6 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 
 	<!-- Main content -->
 	<section class="content">
-		<!-- <pre><?php print_r($configControl); ?></pre> -->
-
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>

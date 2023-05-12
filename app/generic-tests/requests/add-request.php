@@ -13,8 +13,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
@@ -31,9 +29,16 @@ $importResult = $general->fetchDataFromTable('instruments', $condition);
 $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $userResult = $usersService->getActiveUsers($facilityMap);
 $reasonForFailure = $genericTestsService->getReasonForFailure();
+$genericResults = $genericTestsService->getGenericResults();
+/* To get testing platform names */
+$testPlatformResult = $general->getTestingPlatforms('generic-tests');
+foreach ($testPlatformResult as $row) {
+     $testPlatformList[$row['machine_name']] = $row['machine_name'];
+}
+
 $userInfo = [];
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
+     $userInfo[$user['user_id']] = ($user['user_name']);
 }
 
 //sample rejection reason
@@ -58,41 +63,41 @@ $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatme
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
 ?>
 <style>
-    .ui_tpicker_second_label {
-        display: none !important;
-    }
+     .ui_tpicker_second_label {
+          display: none !important;
+     }
 
-    .ui_tpicker_second_slider {
-        display: none !important;
-    }
+     .ui_tpicker_second_slider {
+          display: none !important;
+     }
 
-    .ui_tpicker_millisec_label {
-        display: none !important;
-    }
+     .ui_tpicker_millisec_label {
+          display: none !important;
+     }
 
-    .ui_tpicker_millisec_slider {
-        display: none !important;
-    }
+     .ui_tpicker_millisec_slider {
+          display: none !important;
+     }
 
-    .ui_tpicker_microsec_label {
-        display: none !important;
-    }
+     .ui_tpicker_microsec_label {
+          display: none !important;
+     }
 
-    .ui_tpicker_microsec_slider {
-        display: none !important;
-    }
+     .ui_tpicker_microsec_slider {
+          display: none !important;
+     }
 
-    .ui_tpicker_timezone_label {
-        display: none !important;
-    }
+     .ui_tpicker_timezone_label {
+          display: none !important;
+     }
 
-    .ui_tpicker_timezone {
-        display: none !important;
-    }
+     .ui_tpicker_timezone {
+          display: none !important;
+     }
 
-    .ui_tpicker_time_input {
-        width: 100%;
-    }
+     .ui_tpicker_time_input {
+          width: 100%;
+     }
 </style>
 <?php
 // if ($arr['vl_form'] == 1) {
@@ -212,7 +217,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
      </section>
      <!-- Main content -->
      <section class="content">
-
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -231,8 +235,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <label for="testType">Test Type</label>
                                                   <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
                                                        <option value=""> -- Select -- </option>
-                                                       <?php foreach($testTypeResult as $testType){ ?>
-                                                            <option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+                                                       <?php foreach ($testTypeResult as $testType) { ?>
+                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -359,7 +363,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">Patient ID <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter patient ID" title="Enter patient ID" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -476,7 +480,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php foreach ($sResult as $name) { ?>
-                                                                      <option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                      <option value="<?php echo $name['sample_type_id']; ?>"><?= $name['sample_type_name']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -488,7 +492,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <div class="box-body">
                                                   <div class="row" id="othersDynamicForm"></div>
                                              </div>
-                                           
+
                                              <?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
@@ -543,9 +547,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
+                                                                      <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
+                                                                           <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -591,10 +595,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-                                                             
+
                                                             </div>
+
                                                             <div class="row">
-                                                                
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-4" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
@@ -610,6 +614,65 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                                       </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-12">
+                                                                      <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+                                                                           <thead>
+                                                                                <tr>
+                                                                                     <th scope="row" class="text-center">Test No</th>
+                                                                                     <th scope="row" class="text-center">Test Method</th>
+                                                                                     <th scope="row" class="text-center">Date of Testing</th>
+                                                                                     <th scope="row" class="text-center">Test Platform/Test Kit</th>
+                                                                                     <th scope="row" class="text-center">Test Result</th>
+                                                                                </tr>
+                                                                           </thead>
+                                                                           <tbody id="testKitNameTable">
+                                                                                <tr>
+                                                                                     <td class="text-center">1</td>
+                                                                                     <td>
+                                                                                          <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                                               <option value="">-- Select --</option>
+                                                                                               <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                                                                                               <option value="RDT-Antibody">RDT-Antibody</option>
+                                                                                               <option value="RDT-Antigen">RDT-Antigen</option>
+                                                                                               <option value="GeneXpert">GeneXpert</option>
+                                                                                               <option value="ELISA">ELISA</option>
+                                                                                               <option value="other">Others</option>
+                                                                                          </select>
+                                                                                          <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                                                                     </td>
+                                                                                     <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+                                                                                     <td>
+                                                                                          <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                                               <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                                                          </select>
+                                                                                     </td>
+                                                                                     <td>
+                                                                                          <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                                                                                          <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+                                                                                          </select> -->
+                                                                                     </td>
+                                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
+                                                                                          <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                                                                                          <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                                                                                     </td>
+                                                                                </tr>
+                                                                           </tbody>
+                                                                           <tfoot>
+                                                                                <tr>
+                                                                                     <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                                                     <td>
+                                                                                          <input type="text" id="result" name="result" class="form-control" placeholder="Enter final result" title="Please enter final results">
+                                                                                          <!-- <select class="form-control" name="result" id="result">
+                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+                                                                                          </select> -->
+                                                                                     </td>
+                                                                                </tr>
+                                                                           </tfoot>
+                                                                      </table>
                                                                  </div>
                                                             </div>
                                                             <div class="row">
@@ -696,7 +759,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                    </div>
                               </div>
                          </div>
-                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                          <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
                     </form>
@@ -729,6 +792,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      let provinceName = true;
      let facilityName = true;
+     let testCounter = 1;
+
      $(document).ready(function() {
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -740,20 +805,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
           });
-
-        /*  $("#labId").on('change', function() {
-               if ($("#labId").val() != "") {
-                    $.post("/includes/get-sample-type.php", {
-                              facilityId: $('#labId').val(),
-                              testType: 'vl'
-                         },
-                         function(data) {
-                              if (data != "") {
-                                   $("#specimenType").html(data);
-                              }
-                         });
-               }
-          });*/
 
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
@@ -928,35 +979,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
      });
 
-     // $(document).on('select2:open', (e) => {
-     //      const selectId = e.target.id
-
-     //      $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-     //           key,
-     //           value,
-     //      ) {
-     //           value.focus();
-     //      })
-     // });
-
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-         
-          if($("#selectedSample").val()!="")
-          {
+
+          if ($("#selectedSample").val() != "") {
                patientInfo = JSON.parse($("#selectedSample").val());
                if ($.trim(patientInfo['sample_tested_datetime']) != '') {
                     $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    
+
                }
                if ($.trim(patientInfo['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+                    $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
                }
           }
      }
@@ -998,12 +1037,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function sampleCodeGeneration() {
+          var testType = $("#testType").val();
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
-               $.post("/vl/requests/sampleCodeGeneration.php", {
-                         sDate: sDate
+          if (pName != '' && sDate != '' && testType != '') {
+               $.post("sampleCodeGeneration.php", {
+                         sDate: sDate,
+                         testType: $('#testType').find(':selected').data('short')
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -1030,7 +1071,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data != "") {
                               details = data.split("###");
                               $("#fName").html(details[0]);
-                             // $("#labId").html(details[1]);
+                              // $("#labId").html(details[1]);
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');
@@ -1165,7 +1206,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           //$("#noResult").trigger("change");
      });
 
-  
+
 
      function setSampleDispatchDate() {
           if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
@@ -1247,7 +1288,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function setPatientDetails(pDetails) {
           $("#selectedSample").val(pDetails);
           var patientArray = JSON.parse(pDetails);
-       //  alert(pDetails);
+          //  alert(pDetails);
           $("#patientFirstName").val(patientArray['name']);
           $("#patientPhoneNumber").val(patientArray['mobile']);
           if ($.trim(patientArray['dob']) != '') {
@@ -1312,16 +1353,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
 
           if ($.trim(patientArray['sample_tested_datetime']) != '') {
-                    $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    
-               }
-               if ($.trim(patientArray['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientArray['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientArray['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
-               }
+               $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+
+          }
+          if ($.trim(patientArray['result']) != '') {
+               $("#rmTestingVlValue").val($.trim(patientArray['result']));
+               $("#repeatTestingVlValue").val($.trim(patientArray['result']));
+               $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
+          }
 
      }
 
@@ -1335,274 +1376,272 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
      $(document).ready(function() {
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "hh:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-        $('.date').mask('99-aaa-9999');
-        $('.dateTime').mask('99-aaa-9999 99:99');
-    });
-
-    function checkSampleReceviedDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedDate = $("#sampleReceivedDate").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedDate").val("");
-            }
-        }
-    }
-
-    function checkSampleReceviedAtHubDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedAtHubOn);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedAtHubOn").val("");
-            }
-        }
-    }
-
-    function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleTestingDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleTestingDateAtLab").val("");
-            }
-        }
-    }
-
-    function checkARTInitiationDate() {
-        var dob = changeFormat($("#dob").val());
-        var artInitiationDate = $("#dateOfArtInitiation").val();
-        if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
-
-            date1 = new Date(dob);
-            date2 = new Date(artInitiationDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
-                $("#dateOfArtInitiation").val("");
-            }
-        }
-    }
-
-    function showPatientList() {
-        $("#showEmptyResult").hide();
-        if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/generic-tests/requests/search-patients.php", {
-                    artPatientNo: $.trim($("#artPatientNo").val()),
-                    testType: $.trim($("#testType").val())
-                },
-                function(data) {
-                    if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val())+'&testType='+$.trim($("#testType").val()), 900, 520);
-                    } else {
-                        $("#showEmptyResult").show();
-                    }
-                });
-        }
-    }
-
-    function checkPatientDetails(tableName, fieldName, obj, fnct) {
-        //if ($.trim(obj.value).length == 10) {
-        if ($.trim(obj.value) != '') {
-            $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: obj.value,
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data === '1') {
-                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
-                    }
-                });
-        }
-        //} else {
-        //alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
-        //}
-    }
-
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            //$.blockUI();
-            $.post("/vl/requests/checkSampleDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data != 0) {
-                        sampleCodeGeneration();
-                    }
-                });
-            //$.unblockUI();
-        }
-    }
-
-    function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
-        $.blockUI();
-        $.post("/generic-tests/requests/insertNewSample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                provinceId: provinceId
-            },
-            function(data) {
-                console.log(data);
-                if (data > 0) {
-                    $.unblockUI();
-                    document.getElementById("vlSampleId").value = data;
-                    document.getElementById(formId).submit();
-                } else {
-                    $.unblockUI();
-                    //$("#sampleCollectionDate").val('');
-                    sampleCodeGeneration();
-                    alert("<?= _("Could not save this form. Please try again."); ?>");
-                }
-            });
-    }
-
-    function getAge() {
-        let dob = $("#dob").val();
-        if ($.trim(dob) != '') {
-            let age = getAgeFromDob(dob);
-            $("#ageInYears").val("");
-            $("#ageInMonths").val("");
-            if (age.years >= 1) {
-                $("#ageInYears").val(age.years);
-            } else {
-                $("#ageInMonths").val(age.months);
-            }
-        }
-    }
-
-    function clearDOB(val) {
-        if ($.trim(val) != "") {
-            $("#dob").val("");
-        }
-    }
-
-    function changeFormat(date) {
-        splitDate = date.split("-");
-        var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
-        var monthDigit = fDate.getMonth();
-        var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
-        fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
-        return splitDate[2] + '-' + fMonth + '-' + splitDate[0];
-    }
-
-     function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name`
-        var cName = $("#fName").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'vl'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#fName").html("<?php echo $facility ?? ""; ?>");
-        }
-        $.unblockUI();
-     }
-
-     function getTestTypeForm(){
-          var testType = $("#testType").val();
-          getSampleTypeList(testType);
-          if(testType!=""){
-               $(".requestForm").show();
-               $.post("/generic-tests/requests/getTestTypeForm.php", {
-                    testType:testType,
-               },
-               function(data) {
-                    //console.log(data);
-                    data=JSON.parse(data);
-                    if(data.facility.length>0){
-                         $("#clinicDynamicForm").html(data.facility);
-                    }
-                    if(data.patient.length>0){
-                         $("#patientDynamicForm").html(data.patient);
-                    }
-                    if(data.lap.length>0){
-                         $("#lapDynamicForm").html(data.lap);
-                    }
-                    if(data.specimen.length>0){
-                         $("#specimenDynamicForm").html(data.specimen);
-                    }
-                    if(data.others.length>0){
-                         $("#othersDynamicForm").html(data.others);
-                    }
-                    checkNum();
-                    $('.date').datepicker({
-                         changeMonth: true,
-                         changeYear: true,
-                         dateFormat: 'dd-M-yy',
-                         timeFormat: "hh:mm",
-                         maxDate: "Today",
-                         yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-                    }).click(function() {
+          $('.date').datepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "hh:mm",
+               maxDate: "Today",
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+          $('.dateTime').datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
                          $('.ui-datepicker-calendar').show();
                     });
+               }
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+          $('.date').mask('99-aaa-9999');
+          $('.dateTime').mask('99-aaa-9999 99:99');
+     });
+
+     function checkSampleReceviedDate() {
+          var sampleCollectionDate = $("#sampleCollectionDate").val();
+          var sampleReceivedDate = $("#sampleReceivedDate").val();
+          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleReceivedDate);
+
+               if (date2.getTime() < date1.getTime()) {
+                    alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+                    $("#sampleReceivedDate").val("");
+               }
+          }
+     }
+
+     function checkSampleReceviedAtHubDate() {
+          var sampleCollectionDate = $("#sampleCollectionDate").val();
+          var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
+          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleReceivedAtHubOn);
+
+               if (date2.getTime() < date1.getTime()) {
+                    alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+                    $("#sampleReceivedAtHubOn").val("");
+               }
+          }
+     }
+
+     function checkSampleTestingDate() {
+          var sampleCollectionDate = $("#sampleCollectionDate").val();
+          var sampleTestingDate = $("#sampleTestingDateAtLab").val();
+          if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
+
+               date1 = new Date(sampleCollectionDate);
+               date2 = new Date(sampleTestingDate);
+
+               if (date2.getTime() < date1.getTime()) {
+                    alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+                    $("#sampleTestingDateAtLab").val("");
+               }
+          }
+     }
+
+     function checkARTInitiationDate() {
+          var dob = changeFormat($("#dob").val());
+          var artInitiationDate = $("#dateOfArtInitiation").val();
+          if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
+
+               date1 = new Date(dob);
+               date2 = new Date(artInitiationDate);
+
+               if (date2.getTime() < date1.getTime()) {
+                    alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
+                    $("#dateOfArtInitiation").val("");
+               }
+          }
+     }
+
+     function showPatientList() {
+          $("#showEmptyResult").hide();
+          if ($.trim($("#artPatientNo").val()) != '') {
+               $.post("/generic-tests/requests/search-patients.php", {
+                         artPatientNo: $.trim($("#artPatientNo").val()),
+                         testType: $.trim($("#testType").val())
+                    },
+                    function(data) {
+                         if (data >= '1') {
+                              showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()) + '&testType=' + $.trim($("#testType").val()), 900, 520);
+                         } else {
+                              $("#showEmptyResult").show();
+                         }
+                    });
+          }
+     }
+
+     function checkPatientDetails(tableName, fieldName, obj, fnct) {
+          //if ($.trim(obj.value).length == 10) {
+          if ($.trim(obj.value) != '') {
+               $.post("/includes/checkDuplicate.php", {
+                         tableName: tableName,
+                         fieldName: fieldName,
+                         value: obj.value,
+                         fnct: fnct,
+                         format: "html"
+                    },
+                    function(data) {
+                         if (data === '1') {
+                              showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                         }
+                    });
+          }
+     }
+
+     function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
+          if ($.trim($("#" + id).val()) != '') {
+               //$.blockUI();
+               $.post("/vl/requests/checkSampleDuplicate.php", {
+                         tableName: tableName,
+                         fieldName: fieldName,
+                         value: $("#" + id).val(),
+                         fnct: fnct,
+                         format: "html"
+                    },
+                    function(data) {
+                         if (data != 0) {
+                              sampleCodeGeneration();
+                         }
+                    });
+               $.unblockUI();
+          }
+     }
+
+     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+          $.blockUI();
+          $.post("/generic-tests/requests/insertNewSample.php", {
+                    sampleCode: $("#" + sampleCode).val(),
+                    sampleCodeKey: $("#" + sampleCodeKey).val(),
+                    sampleCodeFormat: $("#" + sampleCodeFormat).val(),
+                    countryId: countryId,
+                    sampleCollectionDate: $("#" + sampleCollectionDate).val(),
+                    provinceCode: provinceCode,
+                    provinceId: provinceId,
+                    testType: $('#testType').find(':selected').data('short')
+               },
+               function(data) {
+                    console.log(data);
+                    if (data > 0) {
+                         $.unblockUI();
+                         document.getElementById("vlSampleId").value = data;
+                         document.getElementById(formId).submit();
+                    } else {
+                         $.unblockUI();
+                         $("#sampleCollectionDate").val('');
+                         sampleCodeGeneration();
+                         alert("<?= _("Could not save this form. Please try again."); ?>");
+                    }
                });
-          }else{
+     }
+
+     function getAge() {
+          let dob = $("#dob").val();
+          if ($.trim(dob) != '') {
+               let age = getAgeFromDob(dob);
+               $("#ageInYears").val("");
+               $("#ageInMonths").val("");
+               if (age.years >= 1) {
+                    $("#ageInYears").val(age.years);
+               } else {
+                    $("#ageInMonths").val(age.months);
+               }
+          }
+     }
+
+     function clearDOB(val) {
+          if ($.trim(val) != "") {
+               $("#dob").val("");
+          }
+     }
+
+     function changeFormat(date) {
+          splitDate = date.split("-");
+          var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
+          var monthDigit = fDate.getMonth();
+          var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
+          fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
+          return splitDate[2] + '-' + fMonth + '-' + splitDate[0];
+     }
+
+     function getfacilityProvinceDetails(obj) {
+          $.blockUI();
+          //check facility name`
+          var cName = $("#fName").val();
+          var pName = $("#province").val();
+          if (cName != '' && provinceName && facilityName) {
+               provinceName = false;
+          }
+          if (cName != '' && facilityName) {
+               $.post("/includes/siteInformationDropdownOptions.php", {
+                         cName: cName,
+                         testType: 'vl'
+                    },
+                    function(data) {
+                         if (data != "") {
+                              details = data.split("###");
+                              $("#province").html(details[0]);
+                              $("#district").html(details[1]);
+                         }
+                    });
+          } else if (pName == '' && cName == '') {
+               provinceName = true;
+               facilityName = true;
+               $("#province").html("<?php echo $province ?? ""; ?>");
+               $("#fName").html("<?php echo $facility ?? ""; ?>");
+          }
+          $.unblockUI();
+     }
+
+     function getTestTypeForm() {
+          var testType = $("#testType").val();
+          getSampleTypeList(testType);
+          if (testType != "") {
+               $(".requestForm").show();
+               $.post("/generic-tests/requests/getTestTypeForm.php", {
+                         testType: testType,
+                    },
+                    function(data) {
+                         //console.log(data);
+                         data = JSON.parse(data);
+                         if (data.facility.length > 0) {
+                              $("#clinicDynamicForm").html(data.facility);
+                         }
+                         if (data.patient.length > 0) {
+                              $("#patientDynamicForm").html(data.patient);
+                         }
+                         if (data.lap.length > 0) {
+                              $("#lapDynamicForm").html(data.lap);
+                         }
+                         if (data.specimen.length > 0) {
+                              $("#specimenDynamicForm").html(data.specimen);
+                         }
+                         if (data.others.length > 0) {
+                              $("#othersDynamicForm").html(data.others);
+                         }
+                         checkNum();
+                         $('.date').datepicker({
+                              changeMonth: true,
+                              changeYear: true,
+                              dateFormat: 'dd-M-yy',
+                              timeFormat: "hh:mm",
+                              maxDate: "Today",
+                              yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                         }).click(function() {
+                              $('.ui-datepicker-calendar').show();
+                         });
+                    });
+          } else {
                $("#clinicDynamicForm").html('');
                $("#patientDynamicForm").html('');
                $("#lapDynamicForm").html('');
@@ -1612,36 +1651,124 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function checkNum(){
-          jQuery(".checkNum,.forceNumeric").keydown(function (e) {
-          // Allow: backspace, delete, tab, escape, enter and .
-          if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-               // Allow: Ctrl+A
-               (e.keyCode == 65 && e.ctrlKey === true) ||
-               // Allow: home, end, left, right
-               (e.keyCode >= 35 && e.keyCode <= 39)) {
-               // let it happen, don't do anything
-               return;
-          }
-          // Ensure that it is a number and stop the keypress
-          if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-               e.preventDefault();
-          }
+     function checkNum() {
+          jQuery(".checkNum,.forceNumeric").keydown(function(e) {
+               // Allow: backspace, delete, tab, escape, enter and .
+               if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+               }
+               // Ensure that it is a number and stop the keypress
+               if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+               }
           });
      }
 
-    function getSampleTypeList(testTypeId)
-    {
+     function getSampleTypeList(testTypeId) {
           $.post("/includes/get-sample-type.php", {
                     testTypeId: testTypeId,
-                },
-                function(data) {
+               },
+               function(data) {
                     if (data != "") {
-                        $("#specimenType").html(data);
+                         $("#specimenType").html(data);
                     }
-                });
-    }
+               });
+     }
 
+     function addTestRow() {
+          testCounter++;
+          let rowString = `<tr>
+                    <td class="text-center">${testCounter}</td>
+                    <td>
+                    <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <option value="">-- Select --</option>
+                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                    <option value="RDT-Antibody">RDT-Antibody</option>
+                    <option value="RDT-Antigen">RDT-Antigen</option>
+                    <option value="GeneXpert">GeneXpert</option>
+                    <option value="ELISA">ELISA</option>
+                    <option value="other">Others</option>
+                </select>
+                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+            </td>
+            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+            <td>
+               <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+            </td>
+            <td style="vertical-align:middle;text-align: center;width:100px;">
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
+          $("#testKitNameTable").append(rowString);
+
+          $('.date').datepicker({
+               changeMonth: true,
+               changeYear: true,
+               onSelect: function() {
+                    $(this).change();
+               },
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          $('.expDate').datepicker({
+               changeMonth: true,
+               changeYear: true,
+               onSelect: function() {
+                    $(this).change();
+               },
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               // minDate: "Today",
+               yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          $('.dateTime').datetimepicker({
+               changeMonth: true,
+               changeYear: true,
+               dateFormat: 'dd-M-yy',
+               timeFormat: "HH:mm",
+               maxDate: "Today",
+               onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
+                         $('.ui-datepicker-calendar').show();
+                    });
+               }
+          }).click(function() {
+               $('.ui-datepicker-calendar').show();
+          });
+
+          if ($('.kitlabels').is(':visible') == true) {
+               $('.kitlabels').show();
+          }
+
+     }
+
+     function removeTestRow(el) {
+          $(el).fadeOut("slow", function() {
+               el.parentNode.removeChild(el);
+               rl = document.getElementById("testKitNameTable").rows.length;
+               if (rl == 0) {
+                    testCounter = 0;
+                    addTestRow();
+               }
+          });
+     }
 </script>
 
 <?php include APPLICATION_PATH . '/footer.php';

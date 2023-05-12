@@ -47,6 +47,8 @@ if ($module == 'vl') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl ";
 } else if ($module == 'tb') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl ";
+} else if ($module == 'generic-tests') {
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id FROM form_generic as vl ";
 }
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
@@ -88,7 +90,7 @@ if(isset($where) && count($where) > 0){
 	$query .= " where ". implode(" AND ", $where);	
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
-// die($query);
+// die($query);	
 $result = $db->rawQuery($query);
 
 ?>
@@ -114,7 +116,9 @@ $result = $db->rawQuery($query);
 								$sampleId  = $sample['hepatitis_id'];
 							} else if ($module == 'tb') {
 								$sampleId  = $sample['tb_id'];
-							}
+							} else if ($module == 'generic-tests') {
+								$sampleId  = $sample['sample_id'];
+							} 
 					?>
 							<option value="<?php echo $sampleId; ?>"><?php echo ($sample[$sCode]); ?></option>
 					<?php

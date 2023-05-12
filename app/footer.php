@@ -339,6 +339,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			$(".allMenu").removeClass('active');
 			$(".hepatitisRequest").addClass('active');
 			$(".specimenReferralManifestListHepMenu").addClass('active');
+		} else if (searchStr == '?t=' + btoa('generic-tests')) {
+			$(".allMenu").removeClass('active');
+			$(".generic-test-request-menu, .specimenGenericReferralManifestListMenu").addClass('active');
 		}
 	} else if (splitsUrl == 'vlResultMail.php' || splitsUrl == 'vlResultMailConfirm.php') {
 		$(".test").addClass('active');
@@ -839,21 +842,27 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".generic-reference-manage,.manage").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".genericSampleRejectionReasonsMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'view-requests.php') {
+	} else if (splitsUrlCheck[1] == 'generic-tests' && (splitsUrl == 'view-requests.php' || splitsUrl == 'edit-request.php')) {
 		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .genericRequestMenu").addClass('active');
+		$(".generic-test-request-menu, .genericRequestMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'add-request.php') {
 		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .addGenericRequestMenu").addClass('active');
+		$(".generic-test-request-menu, .addGenericRequestMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'addSamplesFromManifest.php') {
 		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .addGenericSamplesFromManifestMenu").addClass('active');
+		$(".generic-test-request-menu, .addGenericSamplesFromManifestMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batch-code.php') {
 		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .batchGenericCodeMenu").addClass('active');
-	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'specimenReferralManifestList.php') {
+		$(".generic-test-request-menu, .batchGenericCodeMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && (splitsUrl == 'generic-test-results.php' || splitsUrl == 'update-generic-test-result.php')) {
 		$(".allMenu").removeClass('active');
-		$(".generic-test-menu, .specimenGenericReferralManifestListMenu").addClass('active');
+		$(".generic-test-results-menu, .genericTestResultMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-failed-results.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-results-menu, .genericFailedResultMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-result-approval.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-results-menu, .genericResultApprovalMenu").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 	}

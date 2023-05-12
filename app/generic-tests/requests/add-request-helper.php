@@ -19,6 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $tableName = "form_generic"; 
+$testTableName = "generic_test_results";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
@@ -175,8 +176,8 @@ try {
         $instanceId = $_POST['instanceId'];
     }
     $testingPlatform = '';
-    if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
-        $platForm = explode("##", $_POST['testingPlatform']);
+    if (isset($_POST['testPlatform']) && trim($_POST['testPlatform']) != '') {
+        $platForm = explode("##", $_POST['testPlatform']);
         $testingPlatform = $platForm[0];
     }
     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
@@ -235,50 +236,21 @@ try {
         $vl_result_category = 'rejected';
         $isRejected = true;
         $resultStatus = 4;
-        $_POST['vlResult'] = '';
+        $_POST['result'] = '';
         $_POST['vlLog'] = '';
 
     }
 
-    if (isset($_POST['vlResult']) && $_POST['vlResult'] == 'Below Detection Level' && $isRejected === false) {
-        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Below Detection Level';
-        $_POST['vlResult'] = 'Below Detection Level';
-        $_POST['vlLog'] = null;
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Failed') || in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
-        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Failed';
-        $_POST['vlLog'] = null;
-        $_POST['hivDetection'] = null;
-        $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'Error') || in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
-        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'Error';
-        $_POST['vlLog'] = null;
-        $_POST['hivDetection'] = null;
-        $resultStatus = 5; // Invalid/Failed
-    } else if ((isset($_POST['vlResult']) && $_POST['vlResult'] == 'No Result') || in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
-        $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?: 'No Result';
-        $_POST['vlLog'] = null;
-        $_POST['hivDetection'] = null;
-        $resultStatus = 11; // No Result
-    } else if (isset($_POST['vlResult']) && trim(!empty($_POST['vlResult']))) {
+    if (isset($_POST['result']) && trim(!empty($_POST['result']))) {
 
         $resultStatus = 8; // Awaiting Approval
 
-        $interpretedResults = $genericTestsService->interpretViralLoadResult($_POST['vlResult']);
-
-        //Result is saved as entered
-        $finalResult  = $_POST['vlResult'];
+        $interpretedResults = $genericTestsService->interpretViralLoadResult($_POST['result']);
 
         $logVal = $interpretedResults['logVal'];
         $absDecimalVal = $interpretedResults['absDecimalVal'];
         $absVal = $interpretedResults['absVal'];
         $txtVal = $interpretedResults['txtVal'];
-    }
-
-    $_POST['result'] = '';
-    if (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') {
-        $_POST['result'] = $_POST['vlResult'];
-    } else if ($_POST['vlLog'] != '') {
-        $_POST['result'] = $_POST['vlLog'];
     }
 
     if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -320,12 +292,6 @@ try {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
 
-    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
-    $testTypeForm['form_field_id']=$_POST['testTypeId'];
-    $testTypeForm['form_field_value']=$_POST['testTypeForm'];
-    /* echo "<pre>";
-    print_r($_POST['dynamicFields']);die; */
-    
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId, 
         'vlsm_country_id'                       => $_POST['countryFormId'],
@@ -362,7 +328,7 @@ try {
         'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
         'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
         'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-        'result'                                => $finalResult ?: null,
+        'result'                                => $_POST['result'] ?: null,
         'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
         'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by'                             => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
@@ -379,7 +345,7 @@ try {
         'manual_result_entry'                   => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type'                             => $_POST['testType'],
-        'test_type_form'                        => json_encode($_POST['dynamicFields']),
+        'test_type_form'                        => json_encode($_POST['dynamicFields'])
     );
 
     if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
@@ -439,13 +405,13 @@ try {
         $pngSpecificFields['plasma_process_tech'] = (isset($_POST['processTech']) && $_POST['processTech'] != '' ? $_POST['processTech'] : null);
         $pngSpecificFields['sample_collected_by'] = (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null);
         $pngSpecificFields['tech_name_png'] = (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null;
-        $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlvlResult']) && $_POST['cphlvlResult'] != '' ? $_POST['cphlvlResult'] : null);
+        $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlresult']) && $_POST['cphlresult'] != '' ? $_POST['cphlresult'] : null);
         $pngSpecificFields['batch_quality'] = (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null);
         $pngSpecificFields['sample_test_quality'] = (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null);
         $pngSpecificFields['sample_batch_id'] = (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null);
         $pngSpecificFields['failed_test_date'] = $_POST['failedTestDate'];
         $pngSpecificFields['failed_test_tech'] = (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') ? $_POST['failedTestingTech'] : null;
-        $pngSpecificFields['failed_vl_result'] = (isset($_POST['failedvlResult']) && $_POST['failedvlResult'] != '' ? $_POST['failedvlResult'] : null);
+        $pngSpecificFields['failed_vl_result'] = (isset($_POST['failedresult']) && $_POST['failedresult'] != '' ? $_POST['failedresult'] : null);
         $pngSpecificFields['failed_batch_quality'] = (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null);
         $pngSpecificFields['failed_sample_test_quality'] = (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null);
         $pngSpecificFields['failed_batch_id'] = (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null);
@@ -460,7 +426,36 @@ try {
 
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
-//    echo '<pre>'; print_r($vldata); die;
+
+    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
+		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+			foreach ($_POST['testName'] as $testKey => $testKitName) {
+				if (isset($testKitName) && !empty($testKitName)) {
+					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
+						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
+						$_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+					} else {
+						$_POST['testDate'][$testKey] = null;
+					}
+					$covid19TestData = array(
+						'generic_id'				=> $_POST['vlSampleId'],
+						'test_name'					=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+						'facility_id'           	=> $_POST['labId'] ?? null,
+						'sample_tested_datetime' 	=> date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+						'testing_platform'      	=> $_POST['testingPlatform'][$testKey] ?? null,
+						'kit_lot_no'      			=> (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date'      		=> (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+						'result'					=> $_POST['testResult'][$testKey]
+					);
+					$db->insert($testTableName, $covid19TestData);
+				}
+			}
+		}
+	} else {
+		$db = $db->where('generic_id', $_POST['vlSampleId']);
+		$db->delete($testTableName);
+		$covid19Data['sample_tested_datetime'] = null;
+	}
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
@@ -483,7 +478,6 @@ try {
                 header("Location:add-request.php");
             }
         }
-        // print_r($_POST['sampleCode']);die;
 
         if ($_SESSION['instanceType'] == 'remoteuser') {
             $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
@@ -491,7 +485,6 @@ try {
             $vldata['remote_sample'] = 'yes';
         } else {
             $vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
-            //$vldata['sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
             $vldata['sample_code_key'] = (isset($_POST['sampleCodeKey']) && $_POST['sampleCodeKey'] != '') ? $_POST['sampleCodeKey'] :  null;
         }
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] :  null;

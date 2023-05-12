@@ -219,8 +219,7 @@ if ($priInfo) {
 										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleRow['module']); ?> </a></li>
 									<?php
 										$a++;
-									}
-									?>
+									} ?>
 								</ul>
 
 								<div id="myTabContent" class="tab-content">

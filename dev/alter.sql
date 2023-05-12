@@ -3841,6 +3841,10 @@ UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`
 -- Thana 09-May-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-requests', 'edit-request.php', 'Edit Generic Tests');
 
+RENAME TABLE `r_sample_types` TO `r_generic_sample_types`;
+RENAME TABLE `r_symptoms` TO `r_generic_symptoms`;
+RENAME TABLE `r_testing_reasons` TO `r_generic_test_reasons`;
+
 CREATE TABLE `r_generic_sample_rejection_reasons` (
   `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
   `rejection_reason_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -3872,3 +3876,28 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-test-reference', 'generic-edit-rejection-reasons.php', 'Edit Rejection Reasons');
 ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','generic-tests') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL;
 ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','generic-tests') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL;
+
+-- Thana 10-May-2023
+CREATE TABLE `generic_test_results` (
+  `test_id` int NOT NULL AUTO_INCREMENT,
+  `generic_id` int NOT NULL,
+  `facility_id` int DEFAULT NULL,
+  `test_name` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tested_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sample_tested_datetime` datetime NOT NULL,
+  `testing_platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `kit_lot_no` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `kit_expiry_date` date DEFAULT NULL,
+  `result` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`test_id`),
+  KEY `generic_id` (`generic_id`),
+  CONSTRAINT `generic_test_results_ibfk_1` FOREIGN KEY (`generic_id`) REFERENCES `form_generic` (`sample_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Thana 11-May-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-results', 'generic-tests', 'Generic Tests Result Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-results', 'generic-test-results.php', 'Manage Test Results'), 
+(NULL, 'generic-results', 'generic-failed-results.php', 'Manage Failed Results'),
+(NULL, 'generic-results', 'generic-result-approval.php', 'Approve Test Results');

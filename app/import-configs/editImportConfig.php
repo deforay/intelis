@@ -33,7 +33,7 @@ if (!empty($sInfo['reviewed_by'])) {
 	$sInfo['reviewed_by'] = json_decode($sInfo['reviewed_by'], true);
 }
 
-if (!empty($sInfo['supported_tests'])) {
+if (!empty($sInfo['approved_by'])) {
 	$sInfo['approved_by'] = json_decode($sInfo['approved_by'], true);
 }
 
@@ -52,6 +52,7 @@ $eid = in_array('eid', $sInfo['supported_tests']) ? "" : "style='display:none;'"
 $covid19 = in_array('covid19', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $hepatitis = in_array('hapatitis', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $tb = in_array('tb', $sInfo['supported_tests']) ? "" : "style='display:none;'";
+$genericTests = in_array('generic-tests', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $lowerText = "";
 if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['supported_tests'])) {
 	$lowerText = "style='display:none;'";
@@ -123,6 +124,12 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis"); ?></option>
+											<?php } 
+											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+												<option value='tb' <?php echo (in_array('tb', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("TB"); ?></option>
+											<?php } 
+											if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Lab Tests"); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -283,6 +290,21 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 													</select>
 												</td>
 											</tr>
+										<?php } 
+										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
+											<tr class="generic-access user-access-form" style="<?php echo in_array('generic', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
+												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="userTestType[]" id="testType1" value="generic-tests" /></td>
+												<td>
+													<select name="reviewedBy[]" id="reviewedByGeneric" class="form-control user-generic select2" title='<?php echo _("Please enter Reviewed By for Lab Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['generic-tests'], '--Select--'); ?>
+													</select>
+												</td>
+												<td>
+													<select name="approvedBy[]" id="approvedByGeneric" class="form-control user-generic select2" title='<?php echo _("Please enter Approved By for Lab Test"); ?>'>
+														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['generic-tests'], '--Select--'); ?>
+													</select>
+												</td>
+											</tr>
 										<?php } ?>
 									</tbody>
 								</table>
@@ -336,6 +358,14 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" value="<?php echo $configControl['tb']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _('No of In-House Controls in TB'); ?>" title="<?php echo _('Please enter No of In-House Controls in TB'); ?>" /></td>
 												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in TB'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in TB'); ?>" /></td>
 												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in TB'); ?>" title="<?php echo _('Please enter No of Calibrators in TB'); ?>" /></td>
+											</tr>
+										<?php } 
+										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
+											<tr id="genericTable" class="ctlCalibrator" <?php echo $genericTests;?>>
+												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" /></td>
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' /></td>
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' /></td>
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in Lab Tests"); ?>' title='<?php echo _("Please enter No of Calibrators in Lab Tests"); ?>' /></td>
 											</tr>
 										<?php } ?>
 									</tbody>

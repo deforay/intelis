@@ -165,7 +165,6 @@ class FacilitiesService
     // $onlyActive = true/false
     public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = null, $onlyActive = true, $userId = null)
     {
-
         return once(function () use ($testType, $byPassFacilityMap, $allColumns, $condition, $onlyActive, $userId) {
             $userId = $userId ?: $_SESSION['userId'] ?: null;
             if (!$byPassFacilityMap && !empty($userId)) {

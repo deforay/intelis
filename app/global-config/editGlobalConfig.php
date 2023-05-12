@@ -1139,6 +1139,125 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 								</div>
 							</div>
+						<?php }
+						if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><?php echo _("Lab Tests Settings"); ?></h3>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_sample_code" class="col-lg-2 control-label"><?php echo _("Sample Code"); ?><br><?php echo _("Format"); ?> <span class="mandatory">*</span> </label>
+												<div class="col-lg-10">
+													<?php
+													$sPrefixMMYY = 'LAB';
+													$sPrefixYY = '';
+													$sPrefixMMYYDisplay = 'disabled="disabled"';
+													$sPrefixYYDisplay = 'disabled="disabled"';
+													if ($arr['generic_sample_code'] == 'MMYY') {
+														$sPrefixMMYY = $arr['generic_sample_code_prefix'];
+														$sPrefixMMYYDisplay = '';
+													} else if ($arr['generic_sample_code'] == 'YY') {
+														$sPrefixYY = $arr['generic_sample_code_prefix'];
+														$sPrefixYYDisplay = '';
+													}
+													?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate_yy" name="generic_sample_code" value="YY" <?php echo ($arr['generic_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixYY readPage" id="generic_prefixYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate_mmyy" name="generic_sample_code" value="MMYY" <?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixMMYY readPage" id="generic_prefixMMYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate" name="generic_sample_code" value="auto" <?php echo ($arr['generic_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="generic_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate2" name="generic_sample_code" value="auto2" <?php echo ($arr['generic_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="generic_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_numeric" name="generic_sample_code" value="numeric" <?php echo ($arr['generic_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_alpha_numeric" name="generic_sample_code" value="alphanumeric" <?php echo ($arr['generic_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div id="generic_auto-sample-eg" class="row" style="display:<?php echo ($arr['generic_sample_code'] == 'auto' || $arr['generic_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+										<div class="col-md-12" style="text-align:center;">
+											<code id="generic_auto-sample-code" class="generic_autoSample" style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
+												<?php echo _("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+											</code>
+											<code id="generic_auto-sample-code2" class="generic_autoSample" style="display:<?php echo ($arr['generic_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
+												<?php echo _("eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"); ?>
+											</code>
+											<code id="generic_auto-sample-code-MMYY" class="generic_autoSample" style="display:<?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
+												<?php echo _("eg. Prefix+Month+Year+Increment Counter (LAB0517999)"); ?>
+											</code>
+											<code id="generic_auto-sample-code-YY" class="generic_autoSample" style="display:<?php echo ($arr['generic_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
+												<?php echo _("eg. Prefix+Year+Increment Counter (LAB17999)"); ?>
+											</code>
+										</div>
+									</div><br />
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_min_length" class="col-lg-2 control-label"><?php echo _("Minimum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="generic_min_length" name="generic_min_length" <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Min'); ?>" title="<?php echo _('Please enter sample code min length'); ?>" value="<?php echo ($arr['generic_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
+												</div>
+												<label for="generic_max_length" class="col-lg-2 control-label"><?php echo _("Maximum Sample Code Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<div class="col-lg-4">
+													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="generic_max_length" name="generic_max_length" <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _('Max'); ?>" title="<?php echo _('Please enter sample code max length'); ?>" value="<?php echo ($arr['generic_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<?php if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="generic_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _("Sample Expiry Days"); ?></label>
+													<div class="col-lg-4">
+														<input value="<?php echo $arr['generic_sample_expiry_after_days']; ?>" type="text" id="generic_sample_expiry_after_days" name="generic_sample_expiry_after_days" placeholder="<?php echo _('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample expiry days'); ?>">
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _("Sample Lock Expiry Days"); ?></label>
+												<div class="col-lg-4">
+													<input value="<?php echo $arr['generic_sample_lock_after_days']; ?>" type="text" id="generic_sample_lock_after_days" name="generic_sample_lock_after_days" placeholder="<?php echo _('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _('Please enter the sample lock expiry days'); ?>">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("TB Auto Approve API Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="generic_auto_approve_api_results" name="generic_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select Lab Tests Auto Approve API Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("Lab Tests Show Participant Name in Manifest"); ?></label>
+												<div class="col-lg-4">
+													<select id="generic_show_participant_name_in_manifest" name="generic_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select Lab Tests Participant Name in Manifest'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['generic_show_participant_name_in_manifest']) && $arr['generic_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['generic_show_participant_name_in_manifest']) && $arr['generic_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						<?php } ?>
 						<div class="panel panel-default">
 							<div class="panel-heading">
@@ -1699,6 +1818,61 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 			$('#tb_max_length').addClass('isRequired');
 			$('#tb_max_length').prop('readonly', false);
 			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		}
+	});
+
+	$("input:radio[name=generic_sample_code]").click(function() {
+		if (this.value == 'MMYY' || this.value == 'YY') {
+			$('#generic_auto-sample-eg').show();
+			$('.generic_autoSample').hide();
+			if (this.value == 'MMYY') {
+				$('#generic_auto-sample-code-MMYY').show();
+			} else {
+				$('#generic_auto-sample-code-YY').show();
+			}
+			$('#generic_min_length').val('');
+			$('.generic_minlth').hide();
+			$('#generic_min_length').removeClass('isRequired');
+			$('#generic_min_length').prop('readonly', true);
+			$('#generic_max_length').val('');
+			$('.generic_maxlth').hide();
+			$('#generic_max_length').removeClass('isRequired');
+			$('#generic_max_length').prop('readonly', true);
+		} else if (this.value == 'auto') {
+			$('.generic_autoSample').hide();
+			$('#generic_auto-sample-eg').show();
+			$('#generic_auto-sample-code').show();
+			$('#generic_min_length').val('');
+			$('.generic_minlth').hide();
+			$('#generic_min_length').removeClass('isRequired');
+			$('#min_length').prop('readonly', true);
+			$('#generic_max_length').val('');
+			$('.generic_maxlth').hide();
+			$('#generic_max_length').removeClass('isRequired');
+			$('#generic_max_length').prop('readonly', true);
+			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		} else if (this.value == 'auto2') {
+			$('.generic_autoSample').hide();
+			$('#generic_auto-sample-eg').show();
+			$('#generic_auto-sample-code2').show();
+			$('#generic_min_length').val('');
+			$('.generic_minlth').hide();
+			$('#generic_min_length').removeClass('isRequired');
+			$('#generic_min_length').prop('readonly', true);
+			$('#generic_max_length').val('');
+			$('.generic_maxlth').hide();
+			$('#generic_max_length').removeClass('isRequired');
+			$('#generic_max_length').prop('readonly', true);
+			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
+		} else {
+			$('#generic_auto-sample-eg').hide();
+			$('.generic_minlth').show();
+			$('#generic_min_length').addClass('isRequired');
+			$('#generic_min_length').prop('readonly', false);
+			$('.generic_maxlth').show();
+			$('#generic_max_length').addClass('isRequired');
+			$('#generic_max_length').prop('readonly', false);
+			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
 

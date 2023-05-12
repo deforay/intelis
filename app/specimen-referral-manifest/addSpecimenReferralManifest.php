@@ -7,6 +7,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
 use App\Services\TbService;
+use App\Services\GenericTestsService;
 use App\Services\UsersService;
 use App\Services\VlService;
 
@@ -55,9 +56,14 @@ if ($module == 'vl') {
 } else if ($module == 'tb') {
 	$tbService = new TbService($db);
 	$sampleTypes = $tbService->getTbSampleTypes();
+} else if ($module == 'generic-tests') {
+	$genService = new GenericTestsService($db);
+	$sampleTypes = $genService->getGenericSampleTypes();
 }
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
 
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -108,11 +114,25 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<br><br><br><br>
 			<!-- /.box-header -->
 			<div class="box-body">
+				<?php $hide=""; if($module == 'generic-tests'){ $hide = "hide "?>
+					<div class="row">
+						<div class="col-xs-4 col-md-4">
+							<div class="form-group" style="margin-left:30px; margin-top:30px;">
+								<label for="testType">Test Type</label>
+								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+									<option value=""> -- Select -- </option>
+									<?php foreach ($testTypeResult as $testType) { ?>
+										<option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</div>
+				<?php } ?>
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="addSpecimenReferralManifestCodeHelper.php">
+				<form class="<?php echo $hide;?>form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="addSpecimenReferralManifestCodeHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -395,6 +415,14 @@ $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomStri
 	function clearSelection() {
 		$('#testingLab').val('').trigger('change');
 		getSampleCodeDetails();
+	}
+
+	function getManifestCodeForm(value) {
+		if(value != ""){
+			var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6));?>';
+			$('#packageCode').val(code);
+			$("#addSpecimenReferralManifestForm").removeClass("hide");
+		}
 	}
 </script>
 <?php

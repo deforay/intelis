@@ -7,7 +7,7 @@ $title = "Edit Batch Position";
 require_once APPLICATION_PATH . '/header.php';
 $id = base64_decode($_GET['id']);
 if (!isset($id) || trim($id) == '') {
-	header("Location:batchcode.php");
+	header("Location:batch-code.php");
 }
 $content = '';
 $displayOrder = [];
@@ -18,14 +18,14 @@ $configControlQuery = "SELECT * from instrument_controls where config_id=" . $ba
 $configControlInfo = $db->query($configControlQuery);
 $configControl = [];
 foreach ($configControlInfo as $info) {
-	if ($info['test_type'] == 'vl') {
+	if ($info['test_type'] == 'generic-tests') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 		$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 	}
 }
 if (!isset($batchInfo) || count($batchInfo) == 0) {
-	header("Location:batchcode.php");
+	header("Location:batch-code.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
@@ -39,7 +39,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
 			$xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
 			if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-				$sampleQuery = "SELECT sample_code from form_generic where vl_sample_id=$xplodJsonToArray[1]";
+				$sampleQuery = "SELECT sample_code from form_generic where sample_id=$xplodJsonToArray[1]";
 				$sampleResult = $db->query($sampleQuery);
 				$label = $sampleResult[0]['sample_code'];
 			} else {
@@ -54,7 +54,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$displayOrder[] = $jsonToArray[$j];
 			$xplodJsonToArray = explode("_", $jsonToArray[$j]);
 			if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-				$sampleQuery = "SELECT sample_code from form_generic where vl_sample_id=$xplodJsonToArray[1]";
+				$sampleQuery = "SELECT sample_code from form_generic where sample_id=$xplodJsonToArray[1]";
 				$sampleResult = $db->query($sampleQuery);
 				$label = $sampleResult[0]['sample_code'];
 			} else {
@@ -66,29 +66,29 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		}
 	}
 } else {
-	if (isset($configControl['vl']['noHouseCtrl']) && trim($configControl['vl']['noHouseCtrl']) != '' && $configControl['vl']['noHouseCtrl'] > 0) {
-		foreach (range(1, $configControl['vl']['noHouseCtrl']) as $h) {
+	if (isset($configControl['generic-tests']['noHouseCtrl']) && trim($configControl['generic-tests']['noHouseCtrl']) != '' && $configControl['generic-tests']['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl['generic-tests']['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
 	}
-	if (isset($configControl['vl']['noManufacturerCtrl']) && trim($configControl['vl']['noManufacturerCtrl']) != '' && $configControl['vl']['noManufacturerCtrl'] > 0) {
-		foreach (range(1, $configControl['vl']['noManufacturerCtrl']) as $m) {
+	if (isset($configControl['generic-tests']['noManufacturerCtrl']) && trim($configControl['generic-tests']['noManufacturerCtrl']) != '' && $configControl['generic-tests']['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl['generic-tests']['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
 	}
-	if (isset($configControl['vl']['noCalibrators']) && trim($configControl['vl']['noCalibrators']) != '' && $configControl['vl']['noCalibrators'] > 0) {
-		foreach (range(1, $configControl['vl']['noCalibrators']) as $c) {
+	if (isset($configControl['generic-tests']['noCalibrators']) && trim($configControl['generic-tests']['noCalibrators']) != '' && $configControl['generic-tests']['noCalibrators'] > 0) {
+		foreach (range(1, $configControl['generic-tests']['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT vl_sample_id,sample_code from form_generic where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT sample_id,sample_code from form_generic where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
-		$displayOrder[] = "s_" . $sample['vl_sample_id'];
-		$content .= '<li class="ui-state-default" id="s_' . $sample['vl_sample_id'] . '">' . $sample['sample_code'] . '</li>';
+		$displayOrder[] = "s_" . $sample['sample_id'];
+		$content .= '<li class="ui-state-default" id="s_' . $sample['sample_id'] . '">' . $sample['sample_code'] . '</li>';
 	}
 }
 ?>
@@ -146,7 +146,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-						<a href="batchcode.php" class="btn btn-default"> Cancel</a>
+						<a href="batch-code.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

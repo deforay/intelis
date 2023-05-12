@@ -22,7 +22,7 @@ if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
-    public function setHeading($logo, $text, $labname) 
+    public function setHeading($logo, $text, $labname)
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -48,7 +48,7 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
         $this->SetFont('helvetica', '', 13);
-        $this->writeHTMLCell(0, 0, 0, 10, 'Hepatitis Sample Referral Manifest ', 0, 0, 0, true, 'C');
+        $this->writeHTMLCell(0, 0, 0, 10, 'Lab Tests Sample Referral Manifest ', 0, 0, 0, true, 'C');
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
@@ -81,7 +81,7 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) as `patient_fullname`,patient_dob,patient_age_in_years,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_generic as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
     $result = $db->query($sQuery);
 
 
@@ -97,10 +97,9 @@ if (trim($id) != '') {
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
     }
-    $showPatientName = $arr['hepatitis_show_participant_name_in_manifest'];
+    $showPatientName = (isset($arr['generic_show_participant_name_in_manifest']) && !empty($arr['generic_show_participant_name_in_manifest']))?$arr['generic_show_participant_name_in_manifest']: 'no';
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
     //echo $bQuery;die;
-   // echo $showPatientName; die;
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
@@ -149,35 +148,35 @@ if (trim($id) != '') {
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($result[0]['package_code']).'">';
         $tbl .=  '</span><br>';
 
-        if(isset($result) && !empty($result)){
+        if(isset($result) && !empty($result) && sizeof($result) > 0){
             $tbl .= '<table style="width:100%;border:1px solid #333;">
+                
                     <tr nobr="true">';
                     if($showPatientName=="yes")
-                    {
-                        $tbl .='<td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
-                        <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
-                        <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
-                        <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Patient Name</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
-                        <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
-                        <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
-                        <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
-                        <td align="center" style="font-size:11px;width:22%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
-                    }
-                    else
-                    {
-                        $tbl .='<td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
-                        <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
-                        <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
-                        <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
-                        <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
-                        <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
-                        <!-- <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
-                        <td align="center" style="font-size:11px;width:25%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
-                    }
-                    $tbl .= '</tr>';
+                        {
+                                $tbl .='<td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
+                            <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
+                            <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
+                            <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Patient Name</em></strong></td>
+                            <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
+                            <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
+                            <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
+                            <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
+                            <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
+                            <td align="center" style="font-size:11px;width:22%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
+                        }
+                        else{
+                            $tbl .='<td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
+                            <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
+                            <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
+                            <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
+                            <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
+                            <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
+                            <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
+                            <!-- <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
+                            <td align="center" style="font-size:11px;width:25%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>';
+                        }
+                    $tbl.='</tr>';
 
             $sampleCounter = 1;
 
@@ -197,15 +196,15 @@ if (trim($id) != '') {
                 $tbl .= '<tr style="border:1px solid #333;">';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
-                // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['facility_district']) . '</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
+                // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['facility_district']) . '</td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
                 if($showPatientName=="yes")
                 {
                     $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
                 }
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords(str_replace("_", " ", $sample['patient_gender'])) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
                 // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';

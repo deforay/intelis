@@ -20,7 +20,7 @@ try {
     $exist = $general->existBatchCode($_POST['batchCode']);
     if ($exist) {
         $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
-        header("Location:/generic-tests/requests/batch/batchcode.php");
+        header("Location:/generic-tests/requests/batch/batch-code.php");
     } else {
         if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
             $data = array(
