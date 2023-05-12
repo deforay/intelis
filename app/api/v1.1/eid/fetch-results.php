@@ -20,8 +20,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$app = new ApiService();
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);

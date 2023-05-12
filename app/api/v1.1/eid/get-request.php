@@ -19,9 +19,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$app = new ApiService();
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 

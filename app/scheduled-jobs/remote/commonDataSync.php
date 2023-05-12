@@ -27,7 +27,11 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$app = new ApiService();
+
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -74,7 +78,7 @@ $commonDataToSync = array(
     'province'  => array(
         'primaryKey' => 'geo_id',
         'tableName' => 'geographical_divisions',
-    ), 
+    ),
     'users'  => array(
         'primaryKey' => 'user_id',
         'tableName' => 'user_details',

@@ -31,7 +31,10 @@ if (empty($labId)) {
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
-$app = new ApiService();
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 
 $transactionId = $general->generateUUID();
 

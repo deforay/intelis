@@ -20,11 +20,16 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
-$app = new ApiService();
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 $transactionId = $general->generateUUID();
 $arr = $general->getGlobalConfig();
 $user = null;

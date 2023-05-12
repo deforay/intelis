@@ -17,8 +17,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$app = new ApiService();
 
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 

@@ -31,9 +31,13 @@ $transactionId = $general->generateUUID();
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-$app = new ApiService();
 
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
 $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 if (!empty($fMapResult)) {

@@ -12,7 +12,9 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName = "system_admin";
 $adminUsername = trim($_POST['username']);
 $adminPassword = trim($_POST['password']);
-$user = ContainerRegistry::get(UsersService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 
 try {

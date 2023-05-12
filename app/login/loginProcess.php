@@ -21,8 +21,12 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$user = ContainerRegistry::get(UsersService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 
 
@@ -64,22 +68,11 @@ try {
             $userName = ($_POST['username']);
             $password = ($_POST['password']);
 
-            $ipaddress = '';
-            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
-                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-            } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-            } else if (isset($_SERVER['HTTP_FORWARDED'])) {
-                $ipaddress = $_SERVER['HTTP_FORWARDED'];
-            } else $ipaddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
+            $ipaddress = $general->getClientIpAddress();
             $queryParams = array($userName, 'active');
             $userRow = $db->rawQueryOne(
-                "SELECT * FROM user_details as ud 
-                                        INNER JOIN roles as r ON ud.role_id=r.role_id 
+                "SELECT * FROM user_details as ud
+                                        INNER JOIN roles as r ON ud.role_id=r.role_id
                                         WHERE ud.login_id = ? AND ud.status = ?",
                 $queryParams
             );
@@ -87,13 +80,13 @@ try {
                 "SELECT SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
                     SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
                     FROM user_login_history
-                    WHERE login_status='failed' 
+                    WHERE login_status='failed'
                     AND login_attempted_datetime >= DATE_SUB(NOW(), INTERVAL 15 minute)",
                 array($userName, $ipaddress)
             );
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
-                    $user->userHistoryLog($userName, 'failed');
+                    $usersService->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
                     header("Location:/login/login.php");
                 }
@@ -102,7 +95,7 @@ try {
             if ($userRow['hash_algorithm'] == 'sha1') {
                 $password = sha1($password . SYSTEM_CONFIG['passwordSalt']);
                 if ($password == $userRow['password']) {
-                    $newPassword = $user->passwordHash($_POST['password']);
+                    $newPassword = $usersService->passwordHash($_POST['password']);
                     $db->where('user_id', $userRow['user_id']);
                     $db->update(
                         'user_details',
@@ -116,7 +109,7 @@ try {
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
-                    $user->userHistoryLog($userName, 'failed', $userRow['user_id']);
+                    $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
 
                     throw new SystemException(_("Please check your login credentials"));
                 }
@@ -128,7 +121,7 @@ try {
                 session_regenerate_id(true);
 
 
-                $user->userHistoryLog($userName, 'successful', $userRow['user_id']);
+                $usersService->userHistoryLog($userName, 'successful', $userRow['user_id']);
                 //add random key
                 $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
@@ -215,7 +208,7 @@ try {
 
                 header("Location:" . $redirect);
             } else {
-                $user->userHistoryLog($userName, 'failed');
+                $usersService->userHistoryLog($userName, 'failed');
 
                 throw new SystemException(_("Please check your login credentials"));
             }
