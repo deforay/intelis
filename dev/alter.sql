@@ -3945,3 +3945,18 @@ ALTER TABLE `form_covid19` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_tb` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_hepatitis` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_generic` ADD UNIQUE( `lab_id`, `app_sample_code`);
+
+-- Thana 12-May-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-management', 'generic-tests', 'Lab Test Management');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-management', 'generic-sample-status.php', 'Sample Status Report'), 
+(NULL, 'generic-management', 'generic-export-data.php', 'Export Report in Excel'),
+(NULL, 'generic-management', 'generic-print-result.php', 'Export Report in PDF'),
+(NULL, 'generic-management', 'generic-weekly-report.php', 'Weekly Report'),
+(NULL, 'generic-management', 'sample-rejection-report.php', 'Sample Rejection Report'),
+(NULL, 'generic-management', 'generic-monitoring-report.php', 'Monitoring Report'),
+(NULL, 'generic-management', 'generic-monthly-threshold-report.php', 'Monthly Threshold Report');
+UPDATE `resources` SET `display_name` = 'Lab Tests Request Management' WHERE `resources`.`resource_id` = 'generic-requests';
+UPDATE `resources` SET `display_name` = 'Lab Tests Result Management' WHERE `resources`.`resource_id` = 'generic-results';
+UPDATE `resources` SET `display_name` = 'Lab Tests Reference Management' WHERE `resources`.`resource_id` = 'generic-test-reference';
+UPDATE `resources` SET `display_name` = 'Lab Tests Report Management' WHERE `resources`.`resource_id` = 'generic-management';

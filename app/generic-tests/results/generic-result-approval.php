@@ -14,6 +14,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$sarr = $general->getSystemConfig();
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -122,7 +123,7 @@ foreach ($rejectionTypeResult as $type) {
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php foreach ($sResult as $type) { ?>
-										<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+										<option value="<?php echo $type['sample_type_id']; ?>"><?php echo ($type['sample_type_name']); ?></option>
 									<?php } ?>
 								</select>
 							</td>
@@ -307,7 +308,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-                [<?php echo ($sarr['instanceType'] != 'standalone') ? 9 : 8 ?>, "desc"]
+                [<?php echo ($sarr['sc_user_type'] != 'standalone') ? 9 : 8 ?>, "desc"]
             ],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
