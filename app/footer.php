@@ -71,7 +71,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 <!-- HTML2CANVAS -->
 
-<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<!-- <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> -->
 
 <script type="text/javascript">
 	window.additionalXHRParams = {
@@ -863,6 +863,30 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-result-approval.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-results-menu, .genericResultApprovalMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-sample-status.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericStatusReportMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-control-report.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericControlReport").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-export-data.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericExportMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-print-result.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericPrintResultMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-weekly-report.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericWeeklyReport").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'sample-rejection-report.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericSampleRejectionReport").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-monitoring-report.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericMonitoringReport").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'generic-monthly-threshold-report.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-program-menu, .genericMonthlyThresholdReport").addClass('active');
 	} else {
 		$(".allMenu").removeClass('active');
 	}

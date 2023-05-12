@@ -21,7 +21,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $tableName = "form_generic"; 
 $testTableName = "generic_test_results";
 $tableName1 = "activity_log";
-$vlTestReasonTable = "r_vl_test_reasons";
+$vlTestReasonTable = "r_generic_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
 
@@ -265,7 +265,7 @@ try {
     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
         if(!is_numeric($_POST['reasonForVLTesting']))
         {
-        $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons
+        $reasonQuery = "SELECT test_reason_id FROM r_generic_test_reasons
                         WHERE test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
             $reasonResult = $db->rawQuery($reasonQuery);
             if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
@@ -275,7 +275,7 @@ try {
                     'test_reason_name' => $_POST['reasonForVLTesting'],
                     'test_reason_status' => 'active'
                 );
-                $id = $db->insert('r_vl_test_reasons', $data);
+                $id = $db->insert('r_generic_test_reasons', $data);
                 $_POST['reasonForVLTesting'] = $id;
             }
         }

@@ -229,12 +229,13 @@ $rInfo = $db->query($resourcesQuery);
 									$a = 0;
 
 									foreach ($rInfo as $moduleRow) {
+										$moduleName = ($moduleRow['module'] == 'generic-tests')?"Lab Tests":$moduleRow['module'];
 										if ($a == 0)
 											$cls = "active";
 										else
 											$cls = "";
 									?>
-										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleRow['module']); ?> </a></li>
+										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
 									<?php
 										$a++;
 									}
