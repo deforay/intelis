@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -79,8 +79,8 @@ if (isset($_POST['iSortCol_0'])) {
 * word by word on any field. It's possible to do here, but concerned about efficiency
 * on very large tables, and MySQL's regex functionality is very limited
 */
-$sWhere= [];
-$sWhere[] = " WHERE reason_for_vl_testing != 9999 ";
+$sWhere = [];
+$sWhere[] = " WHERE IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -107,7 +107,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -145,13 +145,13 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
+     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
+     }
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
+     }
 }
 $sTestDate = '';
 $eTestDate = '';
@@ -202,9 +202,8 @@ if (!empty($facilityMap)) {
      $sWhere[] = " vl.facility_id IN ($facilityMap) ";
 }
 
-if(isset($sWhere) && count($sWhere)>0)
-{
-     $sWhere = implode(' AND ',$sWhere);
+if (isset($sWhere) && count($sWhere) > 0) {
+     $sWhere = implode(' AND ', $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 

@@ -62,7 +62,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientBreastFeeding1000,
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
 		FROM form_vl as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
-        WHERE reason_for_vl_testing != 9999";
+        WHERE IFNULL(reason_for_vl_testing, 0)  != 9999";
     $start_date = '';
     $end_date = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -76,7 +76,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     }
     $sTestDate = '';
     $eTestDate = '';
-   /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+    /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         $s_t_date = explode("to", $_POST['sampleTestDate']);
         if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
             $sTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[0]));
@@ -94,7 +94,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-   /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+    /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         if (trim($sTestDate) == trim($eTestDate)) {
             $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
         } else {
@@ -111,7 +111,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
     $sQuery = $sQuery . ' ' . $sWhere . ' AND vl.result!=""';
-  
+
     $sResult = $db->rawQuery($sQuery);
 
     //question two query
@@ -141,7 +141,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND reason_for_vl_testing != 9999';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
@@ -161,7 +161,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                                 WHERE vl.sample_tested_datetime IS NULL 
                                                 AND vl.sample_type="' . $sample['sample_id'] . '" 
                                                 AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH
-                                                AND reason_for_vl_testing != 9999';
+                                                AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
             if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
                 if (trim($start_date) == trim($end_date)) {
@@ -186,7 +186,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     }
 
     //question three
-   
+
     $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
     $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));

@@ -132,7 +132,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.facility_name, b.batch_code,fd.faci
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id 
     INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id  
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-    WHERE vl_result_category like 'not suppressed' AND reason_for_vl_testing != 9999 AND vl.lab_id is NOT NULL ";
+    WHERE vl_result_category like 'not suppressed' AND IFNULL(reason_for_vl_testing, 0)  != 9999 AND vl.lab_id is NOT NULL ";
 $start_date = '';
 $end_date = '';
 

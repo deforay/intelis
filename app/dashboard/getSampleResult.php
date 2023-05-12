@@ -54,7 +54,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesOverviewChart   = "hepatitisSamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
 
-    $recencyWhere = " reason_for_vl_testing != 9999 ";
+    $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
     $samplesReceivedChart   = "vlSamplesReceivedChart";

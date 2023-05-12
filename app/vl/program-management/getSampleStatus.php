@@ -38,7 +38,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $samplesVlOverview              = "recencySmplesVlOverview";
     $labAverageTat                  = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " reason_for_vl_testing != 9999 ";
+    $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $sampleStatusOverviewContainer  = "vlSampleStatusOverviewContainer";
     $samplesVlOverview              = "vlSmplesVlOverview";
     $labAverageTat                  = "vlLabAverageTat";

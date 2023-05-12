@@ -781,6 +781,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'symfony/var-dumper' => array(
+            'pretty_version' => 'v5.4.23',
+            'version' => '5.4.23.0',
+            'reference' => '9a8a5b6d6508928174ded2109e29328a55342a42',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/var-dumper',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'symfony/yaml' => array(
             'pretty_version' => 'v5.4.23',
             'version' => '5.4.23.0',

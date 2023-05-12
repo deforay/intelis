@@ -71,7 +71,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 $sWhere = [];
-$sWhere[] = " vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
+$sWhere[] = " vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
   $sWhereSub = "";

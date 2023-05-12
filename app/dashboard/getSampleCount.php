@@ -30,7 +30,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $requestCountDataTable = "eidRequestCountDataTable";
     $samplesCollectionChart = "eidSamplesCollectionChart";
 } elseif (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
-    $recencyWhere = " AND reason_for_vl_testing != 9999";
+    $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
     $unique = "Test1";

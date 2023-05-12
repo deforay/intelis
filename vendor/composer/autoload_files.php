@@ -52,6 +52,7 @@ return array(
     'decc78cc4436b1292c6c0d151b19445c' => $vendorDir . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     'e39a8b23c42d4e1452234d762b03835a' => $vendorDir . '/ramsey/uuid/src/functions.php',
     'ed33d19cba977f2a7e321f120d94a872' => $vendorDir . '/spatie/once/src/functions.php',
+    '667aeda72477189d0494fecd327c3641' => $vendorDir . '/symfony/var-dumper/Resources/functions/dump.php',
     '71ecd0286a4e74fd8732297fb587023c' => $vendorDir . '/thingengineer/mysqli-database-class/MysqliDb.php',
     'd383f1ec7b1e54a09cb53eb6fcf751e0' => $vendorDir . '/thingengineer/mysqli-database-class/dbObject.php',
 );

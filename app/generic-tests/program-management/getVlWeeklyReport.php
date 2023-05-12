@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-  
+
 
 
 /** @var MysqliDb $db */
@@ -71,7 +71,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 $sWhere = [];
-$sWhere[] = " vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
+$sWhere[] = " vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", $_POST['sSearch']);
   $sWhereSub = "";
@@ -98,7 +98,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-      $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+    $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
   }
 }
 
