@@ -3960,3 +3960,7 @@ UPDATE `resources` SET `display_name` = 'Lab Tests Request Management' WHERE `re
 UPDATE `resources` SET `display_name` = 'Lab Tests Result Management' WHERE `resources`.`resource_id` = 'generic-results';
 UPDATE `resources` SET `display_name` = 'Lab Tests Reference Management' WHERE `resources`.`resource_id` = 'generic-test-reference';
 UPDATE `resources` SET `display_name` = 'Lab Tests Report Management' WHERE `resources`.`resource_id` = 'generic-management';
+
+
+-- Amit 1-May-2023 version 5.1.5
+UPDATE `system_config` SET `value` = '5.1.5' WHERE `system_config`.`name` = 'sc_version';
