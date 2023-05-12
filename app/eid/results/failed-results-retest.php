@@ -7,10 +7,10 @@ use App\Utilities\DateUtility;
 
 try {
     /** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+    $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
@@ -38,7 +38,7 @@ $general = ContainerRegistry::get(CommonService::class);
         "result_status"     => $status
     ));
 
-    if ($id > 0 && count($response) > 0) {
+    if ($id > 0 && !empty($response)) {
         foreach ($response as $result) {
             if (isset($result['eid_id']) && $result['eid_id'] != "") {
                 $db->insert('failed_result_retest_tracker', array(

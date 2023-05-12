@@ -23,13 +23,14 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $userType = $general->getSystemConfig('sc_user_type');
 
-$user = ContainerRegistry::get(UsersService::class);
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 
 try {
     if (isset($userName) && !empty($userName) && isset($password) && !empty($password)) {
 
-        $userPassword = $user->passwordHash($password);
+        $userPassword = $usersService->passwordHash($password);
         $userId = $general->generateUUID();
 
 
@@ -48,7 +49,7 @@ try {
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $insertData['userId'] = $userId;
             $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            $insertData['password'] = $user->passwordHash($general->generateRandomString()); // We don't want to unintentionally end up creating admin users on VLSTS
+            $insertData['password'] = $usersService->passwordHash($general->generateRandomString()); // We don't want to unintentionally end up creating admin users on VLSTS
             $insertData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
             $insertData['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $insertData['status'] = 'inactive'; // so that we can retain whatever status is on server

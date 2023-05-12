@@ -114,7 +114,7 @@ $sWhere = [];
 if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $recencyWhere;
-if($_SESSION['instanceType'] != 'remoteuser'){
+if ($_SESSION['instanceType'] != 'remoteuser') {
     $sWhere[] = ' result_status != 9 ';
 }
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -281,19 +281,19 @@ foreach ($tatResult as $sRow) {
 </div>
 <script>
     <?php
-    if (isset($tResult) && count($tResult) > 0) {
+    if (isset($tResult) && !empty($tResult)) {
         $total = 0;
     ?>
-    var _value = [
-                    <?php foreach ($tResult as $tRow) { 
-                        $total += $tRow['total'];?> {
-                            name: '<?php echo ($tRow['status_name']); ?>',
-                            y: <?php echo ($tRow['total']); ?>,
-                            color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                            url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']);?>'
-                        },
-                    <?php } ?>
-                ];
+        var _value = [
+            <?php foreach ($tResult as $tRow) {
+                $total += $tRow['total']; ?> {
+                    name: '<?php echo ($tRow['status_name']); ?>',
+                    y: <?php echo ($tRow['total']); ?>,
+                    color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
+                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
+                },
+            <?php } ?>
+        ];
         $('#<?php echo $sampleStatusOverviewContainer; ?>').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -302,7 +302,7 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Samples Status Overview (N = ".$total.")"); ?>"
+                text: "<?php echo _("Samples Status Overview (N = " . $total . ")"); ?>"
             },
             credits: {
                 enabled: false
@@ -363,7 +363,7 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("VL Suppression (N = ".($vlSuppressionResult['highVL'] + $vlSuppressionResult['lowVL']).")"); ?>"
+                text: "<?php echo _("VL Suppression (N = " . ($vlSuppressionResult['highVL'] + $vlSuppressionResult['lowVL']) . ")"); ?>"
             },
             credits: {
                 enabled: false
@@ -403,7 +403,7 @@ foreach ($tatResult as $sRow) {
         });
     <?php
     }
-    if (isset($result) && count($result) > 0) {
+    if (isset($result) && !empty($result)) {
     ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
             chart: {

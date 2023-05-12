@@ -44,8 +44,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $auth = $general->getHeader('Authorization');
-    $authToken = str_replace("Bearer ", "", $auth);
+    $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserFromToken($authToken);
 
     $roleUser = $usersService->getUserRole($user['user_id']);
@@ -77,13 +76,13 @@ try {
         }
         if (isset($data['patientNationality']) && !is_numeric($data['patientNationality'])) {
             $iso = explode("(", $data['patientNationality']);
-            if (isset($iso) && count($iso) > 0) {
+            if (isset($iso) && !empty($iso)) {
                 $data['patientNationality'] = trim($iso[0]);
             }
             $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
         }
         $pprovince = explode("##", $data['patientProvince']);
-        if (isset($pprovince) && count($pprovince) > 0) {
+        if (isset($pprovince) && !empty($pprovince)) {
             $data['patientProvince'] = $pprovince[0];
         }
 
@@ -187,6 +186,8 @@ try {
                 $db = $db->where('covid19_id', $rowData['covid19_id']);
                 $id = $db->update("form_covid19", $covid19Data);
                 // error_log($db->getLastError());
+            } else {
+                continue;
             }
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
@@ -223,14 +224,14 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
-        } else if (
+        } elseif (
             isset($globalConfig['covid19_auto_approve_api_results']) &&
             $globalConfig['covid19_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (isset($data['result']) && !empty($data['result']))
         ) {
             $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
+        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
             $status = 8;
         }
 
@@ -500,7 +501,7 @@ try {
     } else {
         $msg = 'Successfully added.';
     }
-    if (isset($responseData) && count($responseData) > 0) {
+    if (isset($responseData) && !empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),
@@ -534,4 +535,3 @@ $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;
-// exit(0); 

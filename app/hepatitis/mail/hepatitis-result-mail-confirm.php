@@ -29,7 +29,7 @@ $configResult = $db->query($configQuery);
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($_POST['sample']) > 0) {
+if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['sample'])) {
    if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document

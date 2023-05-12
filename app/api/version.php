@@ -10,10 +10,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-session_unset(); // no need of session in json response
-//header('Content-Type: application/json; charset=utf-8');
-header('Content-Type: application/json');
-
 if (!empty($_GET['labId']) && !empty($_GET['version'])) {
     $labId = (int) $_GET['labId'];
     $version = $_GET['version'];

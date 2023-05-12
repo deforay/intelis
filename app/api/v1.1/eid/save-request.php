@@ -43,8 +43,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $auth = $general->getHeader('Authorization');
-    $authToken = str_replace("Bearer ", "", $auth);
+    $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserFromToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
 
@@ -183,6 +182,8 @@ try {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('eid_id', $rowData['eid_id']);
                 $id = $db->update("form_eid", $eidData);
+            } else {
+                continue;
             }
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
@@ -455,4 +456,3 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-// exit(0); 

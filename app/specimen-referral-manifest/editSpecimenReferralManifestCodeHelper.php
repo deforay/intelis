@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $packageTable = "package_details";
 try {
-    if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && count($_POST['sampleCode']) > 0) {
+    if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && !empty($_POST['sampleCode'])) {
         $lastId = $_POST['packageId'];
         $db->where('package_id', $lastId);
         $db->update($packageTable, array(

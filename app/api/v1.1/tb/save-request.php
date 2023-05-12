@@ -14,7 +14,7 @@ session_unset(); // no need of session in json response
 try {
     ini_set('memory_limit', -1);
     header('Content-Type: application/json');
-    
+
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
 
@@ -39,8 +39,7 @@ try {
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
-    $auth = $general->getHeader('Authorization');
-    $authToken = str_replace("Bearer ", "", $auth);
+    $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserFromToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -173,6 +172,8 @@ try {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('tb_id', $rowData['tb_id']);
                 $id = $db->update("form_tb", $tbData);
+            } else {
+                continue;
             }
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
@@ -203,14 +204,14 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
-        } else if (
+        } elseif (
             isset($globalConfig['tb_auto_approve_api_results']) &&
             $globalConfig['tb_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (isset($data['result']) && !empty($data['result']))
         ) {
             $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
+        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
             $status = 8;
         }
 
@@ -409,7 +410,7 @@ try {
     } else {
         $msg = 'Successfully added.';
     }
-    if (isset($responseData) && count($responseData) > 0) {
+    if (isset($responseData) && !empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),
@@ -424,11 +425,9 @@ try {
         );
     }
 
-    $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 
     http_response_code(200);
-    echo json_encode($payload);
-    // exit(0); 
+    $payload =  json_encode($payload);
 } catch (SystemException $exc) {
 
     // http_response_code(500);
@@ -440,9 +439,11 @@ try {
     );
 
 
-    echo json_encode($payload);
+    $payload = json_encode($payload);
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    // exit(0); 
 }
+
+$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
+echo $payload;

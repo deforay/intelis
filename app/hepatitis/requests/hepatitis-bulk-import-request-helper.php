@@ -45,7 +45,7 @@ try {
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
-        $resultArray = array_slice($sheetData,1);
+        $resultArray = array_slice($sheetData, 1);
 
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
@@ -77,13 +77,13 @@ try {
                 $data = array(
                     'sample_code'                           => $rowData['A'],
                     'vlsm_country_id'                       => $arr['vl_form'],
-                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "")?strtolower(str_replace(" ","-",$rowData['B'])):null,
+                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", $rowData['B'])) : null,
                     'source_of_alert_other'                 => $rowData['C'],
                     'facility_id'                           => $facility['facility_id'] ?? null,
                     'patient_name'                          => $rowData['E'],
                     'patient_id'                            => $rowData['F'],
                     'external_sample_code'                  => $rowData['G'],
-                    'patient_dob'                           => date('Y-m-d',strtotime($rowData['H'])),
+                    'patient_dob'                           => date('Y-m-d', strtotime($rowData['H'])),
                     'patient_age'                           => $rowData['I'],
                     'patient_gender'                        => strtolower($rowData['J']),
                     'patient_phone_number'                  => $rowData['K'],
@@ -100,12 +100,12 @@ try {
                     'sample_received_at_vl_lab_datetime'    => $sampleReceivedDate,
                     'lab_id'                                => $labName['facility_id'] ?? null,
                     'is_sample_rejected'                    => strtolower($rowData['X']),
-                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "")?$rejectionReason['rejection_reason_id']:9999,
-                    'rejection_on'                          => date('Y-m-d',strtotime($rowData['Z'])),
+                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,
+                    'rejection_on'                          => date('Y-m-d', strtotime($rowData['Z'])),
                     'result'                                => $result['result_id'],
                     'is_result_authorised'                  => strtolower($rowData['AJ']),
                     'authorized_by'                         => ($rowData['AK']),
-                    'authorized_on'                         => date('Y-m-d',strtotime($rowData['AL'])),
+                    'authorized_on'                         => date('Y-m-d', strtotime($rowData['AL'])),
                     'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => $resultStatus['status_id'] ?? null,
@@ -131,11 +131,11 @@ try {
                 $testData[1]['testDate']        = $rowData['AF'];
                 $testData[1]['testingPlatform'] = $rowData['AG'];
                 $testData[1]['testResult']      = $rowData['AH'];
-                if(count($testData) > 0){
+                if (!empty($testData)) {
                     /* Delete if already exist */
                     $db = $db->where('covid19_id', $lastId);
                     $db->delete($testTableName);
-                    
+
                     foreach ($testData as $testKitName) {
                         if (trim($testKitName['testDate']) != '') {
                             $testDate = date('Y-m-d H:i', strtotime($testKitName['testDate']));
@@ -148,7 +148,7 @@ try {
                             'test_name'             => $testKitName['testRequest'],
                             'facility_id'           => $labName['facility_id'] ?? null,
                             'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime'=> date('Y-m-d H:i:s', strtotime($testDate)),
+                            'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($testDate)),
                             'result'                => strtolower($testKitName['testResult']),
                         );
                         $db->insert($testTableName, $covid19TestData);

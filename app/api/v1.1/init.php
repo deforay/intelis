@@ -464,9 +464,9 @@ if ($status) {
         'data' => array()
     );
     http_response_code(401);
-    // // exit(0); 
+    // 
 }
-
+$payload = json_encode($payload);
 $trackId = $general->addApiTracking(
     $transactionId,
     $user['user_id'],
@@ -478,4 +478,4 @@ $trackId = $general->addApiTracking(
     $payload,
     'json'
 );
-echo json_encode($payload);
+echo $payload;

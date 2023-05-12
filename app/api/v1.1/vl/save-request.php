@@ -50,8 +50,7 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $auth = $general->getHeader('Authorization');
-    $authToken = str_replace("Bearer ", "", $auth);
+    $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserFromToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -190,6 +189,8 @@ try {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
                 $id = $db->update("form_vl", $vlData);
+            } else {
+                continue;
             }
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
@@ -299,7 +300,7 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $finalResult = null;
             $status = 4;
-        } else if (isset($data['vlResult']) && trim($data['vlResult']) != '') {
+        } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
             if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
                 //Result is saved as entered
                 $finalResult  = $data['vlResult'];
@@ -464,15 +465,15 @@ try {
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = 4;
         }
-        //  echo " SAmple Id update :".$data['vlSampleId']; exit;
-        //  echo '<pre>'; print_r($vlFulldata); 
+        //  echo " Sample Id update :".$data['vlSampleId']; exit;
+        //  echo '<pre>'; print_r($vlFulldata);
         $id = 0;
         if (!empty($data['vlSampleId'])) {
-            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
-                $db = $db->where('vl_sample_id', $data['vlSampleId']);
-                $id = $db->update($tableName, $vlFulldata);
-                // error_log($db->getLastError());
-            }
+
+            $db = $db->where('vl_sample_id', $data['vlSampleId']);
+            $id = $db->update($tableName, $vlFulldata);
+            // error_log($db->getLastError());
+
             // echo "ID=>" . $id;
         }
         if ($id > 0) {
@@ -539,4 +540,3 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
-// exit(0); 

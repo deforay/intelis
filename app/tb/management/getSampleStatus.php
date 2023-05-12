@@ -283,7 +283,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 </div>
 <script>
     <?php
-    if (isset($tResult) && count($tResult) > 0) {
+    if (isset($tResult) && !empty($tResult)) {
     ?>
         $('#tbSampleStatusOverviewContainer').highcharts({
             chart: {
@@ -410,7 +410,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         });
     <?php
     }
-    if (isset($result) && count($result) > 0) {
+    if (isset($result) && !empty($result)) {
     ?>
         $('#tbLabAverageTat').highcharts({
             chart: {

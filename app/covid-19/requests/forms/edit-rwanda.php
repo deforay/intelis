@@ -44,11 +44,11 @@ $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_st
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
-    if(!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes'){
-		$sampleCode = 'remote_sample_code';
-	}else{
-		$sampleCode = 'sample_code';
-	}
+    if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
+        $sampleCode = 'remote_sample_code';
+    } else {
+        $sampleCode = 'sample_code';
+    }
     //check user exist in user_facility_map table
     $chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
@@ -90,7 +90,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM");?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
             <li class="active">Edit Request</li>
@@ -116,7 +116,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -206,7 +206,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -294,7 +294,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">CLINICAL SIGNS AND SYMPTOMS</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width:15% !important">Date of Symptom Onset <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -316,7 +316,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <tr>
                                         <th scope="row" style="width:15% !important">Symptoms Presented in last 14 days <span class="mandatory">*</span> </th>
                                         <td colspan="3">
-                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true" >
+                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true">
                                                 <?php foreach ($covid19Symptoms as $symptomId => $symptomName) { ?>
                                                     <tr>
                                                         <th style="width:50%;"><?php echo $symptomName; ?></th>
@@ -339,11 +339,11 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">OTHER CO-MORBIDITIES</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width:15% !important">Co-morbidities <span class="mandatory">*</span> </th>
                                         <td colspan="3">
-                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true" >
+                                            <table style="width:60%;" class="table table-bordered" aria-hidden="true">
                                                 <?php foreach ($covid19Comorbidities as $comId => $comName) { ?>
                                                     <tr>
                                                         <th style="width:50%;"><?php echo $comName; ?></th>
@@ -366,7 +366,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">EPIDEMIOLOGICAL RISK FACTORS AND EXPOSURES</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width:15% !important">Close contacts of the Patient <span class="mandatory">*</span></th>
                                         <td colspan="3">
@@ -391,7 +391,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
 
                                     <tr>
                                         <td colspan=4>
@@ -448,7 +448,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -489,13 +489,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
                                             <th scope="row">Rejection Date<span class="mandatory">*</span></th>
-                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date"/></td>
+                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test No.</th>
@@ -505,7 +505,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">
-                                                        <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                        <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
@@ -562,7 +562,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th scope="row">Reviewed On</th>
+                                            <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th scope="row">Reviewed By</th>
                                             <td>
@@ -572,7 +572,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th scope="row">Approved On</th>
+                                            <th scope="row">Approved On</th>
                                             <td><input type="text" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th scope="row">Approved By</th>
                                             <td>
@@ -599,14 +599,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             ?>
                                             <th scope="row">Authorized By</th>
                                             <td>
-                                            <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
+                                                <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
                                                 </select>
-                                                </td>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Authorized on</th>
-                                            <td><input type="text" <?php echo $disabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On"/></td>
+                                            <td><input type="text" <?php echo $disabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>
@@ -667,7 +667,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && count($covid19TestInfo) > 0) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {
@@ -808,10 +808,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         $('#labId').select2({
             placeholder: "Select Lab Name"
         });
-		$('#reviewedBy').select2({
+        $('#reviewedBy').select2({
             placeholder: "Select Reviewed By"
         });
-		$('#approvedBy').select2({
+        $('#approvedBy').select2({
             placeholder: "Select Approved By"
         });
         $('#authorizedBy').select2({

@@ -309,7 +309,7 @@ $html .= '<tr>';
 $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;"><span style="font-weight:bold;">TEST METHOD :</span> ' . $testMethod . '</td>';
 $html .= '</tr>';
 
-// if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
+// if (isset($covid19TestInfo) && !empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
 //     /* Test Result Section */
 //     $html .= '<tr>';
 //     $html .= '<td colspan="4"  >';
@@ -460,7 +460,7 @@ if (($result['result'] != '') || ($result['result'] == '' && $result['result_sta
     if ($draftTextShow) {
         //Watermark section
         $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+        $watermark->setFullPathToFile($filename);
         $fullPathToFile = $filename;
         $watermark->Output($filename, "F");
     }

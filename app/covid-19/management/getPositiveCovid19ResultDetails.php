@@ -188,7 +188,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 //$sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' AND ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }

@@ -154,7 +154,7 @@ if (!empty($facilityMap)) {
      $sWhere[] = " vl.facility_id IN ($facilityMap) ";
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
      $sWhere = "";

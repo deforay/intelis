@@ -20,7 +20,15 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+
 $patientsModel = new PatientsService();
 
 // echo "<pre>";print_r($_POST);die;
@@ -389,7 +397,6 @@ try {
 				'timestamp' => time(),
 				'message' => 'Successfully updated.'
 			);
-			$app = new ApiService();
 			$trackId = $app->addApiTracking($user['user_id'], 1, 'update-record', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {

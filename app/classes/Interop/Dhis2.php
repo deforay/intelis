@@ -6,9 +6,9 @@ namespace App\Interop;
 class Dhis2
 {
 	private string $dhis2url;
-    private string $username;
-    private string $password;
-    private string $contentType;
+	private string $username;
+	private string $password;
+	private string $contentType;
 	private bool $authenticated;
 
 
@@ -36,7 +36,7 @@ class Dhis2
 	}
 
 	public function isAuthenticated(): bool
-    {
+	{
 		return $this->authenticated;
 	}
 
@@ -204,7 +204,7 @@ class Dhis2
 			$urlParams = "";
 		}
 
-		$url = $this->dhis2url . "{$path}{$urlParams}";
+		$url = $this->dhis2url . $path . $urlParams;
 		//echo $url. "<br>";
 
 
@@ -221,11 +221,11 @@ class Dhis2
 
 		return $return;
 
-//		if ($httpStatus === 200) {
-//			return $return;
-//		} else {
-//			return false;
-//		}
+		//		if ($httpStatus === 200) {
+		//			return $return;
+		//		} else {
+		//			return false;
+		//		}
 	}
 
 	// Send POST request to DHIS2
@@ -240,7 +240,7 @@ class Dhis2
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . "{$path}{$urlParams}");
+		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -254,12 +254,12 @@ class Dhis2
 
 		return $return;
 
-		
-//		if ($httpStatus === 200 && !empty($return)) {
-//			return $return;
-//		} else {
-//			return false;
-//		}
+
+		//		if ($httpStatus === 200 && !empty($return)) {
+		//			return $return;
+		//		} else {
+		//			return false;
+		//		}
 	}
 
 	// Send PUT request to DHIS2
@@ -275,7 +275,7 @@ class Dhis2
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . "{$path}{$urlParams}");
+		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -308,8 +308,8 @@ class Dhis2
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . "{$path}{$urlParams}");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: ". $this->getContentType()));
+		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: " . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -342,12 +342,12 @@ class Dhis2
 			);
 		}
 
-		if(!empty($eventPayload['dataValues'])){
+		if (!empty($eventPayload['dataValues'])) {
 			$eventPayload['dataValues'] = array_merge($eventPayload['dataValues'], $dataValues);
-		}else{
+		} else {
 			$eventPayload['dataValues'] = $dataValues;
 		}
-		
+
 		return $eventPayload;
 	}
 }

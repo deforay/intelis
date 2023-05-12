@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -98,7 +98,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-               $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+          $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
 }
 
@@ -157,8 +157,8 @@ if (isset($sWhere) && !empty($sWhere)) {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-         
-               $sWhere[] = ' vl.lab_id IN ' . $out;
+
+          $sWhere[] = ' vl.lab_id IN ' . $out;
      }
 } else {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
@@ -171,29 +171,26 @@ if (isset($sWhere) && !empty($sWhere)) {
                     $out = '("' . $fac[$s] . '"';
           }
           $out = $out . ')';
-               $sWhere[] = '  vl.lab_id IN ' . $out;
+          $sWhere[] = '  vl.lab_id IN ' . $out;
      }
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
 $sWhere[] = ' vl.result!="" AND vl.result_status!=9';
 
-$sWhere[]= " tl.test_type = 'covid19'";
+$sWhere[] = " tl.test_type = 'covid19'";
 
-if(isset($swhere) && count($sWhere) > 0)
-{
-     $sWhere = ' where '. implode(' AND ',$sWhere);
-}
-else
-{
+if (isset($swhere) && !empty($sWhere)) {
+     $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
      $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-} else if ($_POST['targetType'] == 2) {
+} elseif ($_POST['targetType'] == 2) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 $_SESSION['covid19MonitoringThresholdReportQuery'] = $sQuery;

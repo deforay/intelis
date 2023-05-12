@@ -20,8 +20,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$app = new ApiService();
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 $arr = $general->getGlobalConfig();
 $user = null;
 $input = json_decode(file_get_contents("php://input"), true);
@@ -32,12 +37,11 @@ die; */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 try {
     $transactionId = $general->generateUUID();
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
         vl.app_sample_code                                   as appSampleCode,
         vl.unique_id                                         as uniqueId,
         vl.eid_id                                            as eidId,
@@ -228,4 +232,3 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-// exit(0); 

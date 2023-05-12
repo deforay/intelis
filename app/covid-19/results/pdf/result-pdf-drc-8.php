@@ -20,7 +20,7 @@ if (!class_exists('DRC_PDF')) {
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
-                if (isset($this->facilityInfo) && count($this->facilityInfo) > 0 && !empty($this->facilityInfo['facility_logo']) &&   $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if (isset($this->facilityInfo) && !empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) &&   $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } else {
@@ -412,7 +412,7 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     if ($draftTextShow) {
         //Watermark section
         $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+        $watermark->setFullPathToFile($filename);
         $fullPathToFile = $filename;
         $watermark->Output($filename, "F");
     }

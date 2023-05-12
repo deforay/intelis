@@ -59,11 +59,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $sWhere[] = " vl.facility_id IN ($facilityMap)";
     }
 
-    if(isset($sWhere) && count($sWhere)>0)
-    {
-        $sWhere = implode(' AND ',$sWhere);
+    if (isset($sWhere) && count($sWhere) > 0) {
+        $sWhere = implode(' AND ', $sWhere);
     }
-    $vlQuery = $vlQuery . ' where '.$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
@@ -75,32 +74,32 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     }
 }
 
-if (isset($tResult) && count($tResult) > 0) {
+if (isset($tResult) && !empty($tResult)) {
 ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
-if (isset($tableResult) && count($tableResult) > 0) { ?>
+if (isset($tableResult) && !empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></button>
     </div>
 <?php } ?>
 <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th><?php echo _("Lab Name");?></th>
-            <th><?php echo _("Facility Name");?></th>
-            <th><?php echo _("Rejection Reason");?></th>
-            <th><?php echo _("Reason Category");?></th>
-            <th><?php echo _("No. of Samples");?></th>
+            <th><?php echo _("Lab Name"); ?></th>
+            <th><?php echo _("Facility Name"); ?></th>
+            <th><?php echo _("Rejection Reason"); ?></th>
+            <th><?php echo _("Reason Category"); ?></th>
+            <th><?php echo _("No. of Samples"); ?></th>
         </tr>
     </thead>
-    <tbody> 
+    <tbody>
         <?php
-        if (isset($tableResult) && count($tableResult) > 0) {
+        if (isset($tableResult) && !empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
         ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']);?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName']));?>" data-daterange="<?php echo $_POST['sampleCollectionDate'];?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?php echo $_POST['sampleCollectionDate']; ?>" data-type="rejection">
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
@@ -129,7 +128,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     });
 
     <?php
-    if (isset($tResult) && count($tResult) > 0) { ?>
+    if (isset($tResult) && !empty($tResult)) { ?>
         $('#container').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -138,7 +137,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons");?>"
+                text: "<?php echo _("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -193,7 +192,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories");?>"
+                text: "<?php echo _("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false

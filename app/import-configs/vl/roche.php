@@ -8,8 +8,8 @@ try {
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
-    
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
+
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -39,7 +39,7 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
@@ -109,25 +109,10 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
 
 
-            /*
-            $d=explode(" ",$row[$testingDateCol]);
-            $testingDate=str_replace("/","-",$d[0],$checked);
-            $testingDate = date("Y-m-d H:i:s", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($testingDate));
-            $dt=explode("/",$d[0]);
-            if(count($dt) > 1){
-                // Date time in the provided Roche Sample file is in this format : 2016/09/20 12:22:03
-                $testingDate = DateTime::createFromFormat($dateFormat, $row[$testingDateCol])->format('Y-m-d H:i');
-            }else{
-                // Date time in the provided Roche Sample file is in this format : 20-09-16 12:22
-                $testingDate = DateTime::createFromFormat($dateFormat, $row[$testingDateCol])->format('Y-m-d H:i');
-            }  
-            */
-
-
             // $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
 
             $testingDate = null;
-            $testingDateObject = DateTimeImmutable::createFromFormat('!'.$dateFormat, $row[$testingDateCol]);
+            $testingDateObject = DateTimeImmutable::createFromFormat('!' . $dateFormat, $row[$testingDateCol]);
             $errors = DateTimeImmutable::getLastErrors();
             if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($testingDateObject)) {
                 $testingDate = $testingDateObject->format('Y-m-d H:i');

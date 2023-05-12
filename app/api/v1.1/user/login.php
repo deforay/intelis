@@ -43,7 +43,7 @@ try {
         } else {
             $remoteUser = "no";
         }
-        if (count($userResult) > 0) {
+        if (!empty($userResult)) {
             /* Update Phb hash password */
 
 
@@ -63,7 +63,7 @@ try {
                 } else {
                     $passwordCheck = false;
                 }
-            } else if ($userResult['hash_algorithm'] == 'phb') {
+            } elseif ($userResult['hash_algorithm'] == 'phb') {
                 if (!password_verify($input['password'], $userResult['password'])) {
                     $passwordCheck = false;
                 } else {
@@ -77,7 +77,7 @@ try {
                     'message' => 'Login failed. Please contact system administrator.',
                     'timestamp' => time(),
                 );
-            } else if (isset($userResult['app_access']) && $userResult['app_access'] == "no") {
+            } elseif (isset($userResult['app_access']) && $userResult['app_access'] == "no") {
                 $payload = array(
                     'status' => 2,
                     'message' => 'Login failed. Please contact system administrator.',
@@ -129,9 +129,9 @@ try {
             'timestamp' => time(),
         );
     }
+    $payload = json_encode($payload);
     $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], count($userResult), 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
-
-    echo json_encode($payload);
+    echo $payload;
 } catch (SystemException $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

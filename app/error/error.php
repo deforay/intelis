@@ -42,7 +42,7 @@
 
 <body class="<?php echo $skin ?? ''; ?>" id="capture">
   <div class="wrapper">
-    <div class="content-wrapper" style="margin:0;height:700px !important;">
+    <div class="content-wrapper" style="margin:0;height:700px !important;padding:0 100px;">
       <section class="">
         <div class="row">
           <div class="col-xs-12" style="text-align: center;">

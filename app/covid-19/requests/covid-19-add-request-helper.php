@@ -20,7 +20,13 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
 
 /* echo "<pre>";
 print_r($_POST);
@@ -334,7 +340,6 @@ try {
 				'timestamp' => time(),
 				'message' => 'Successfully added.'
 			);
-			$app = new ApiService();
 			$trackId = $app->addApiTracking($user['user_id'], 1, 'add-request', 'covid19', $requestUrl, $params, 'json');
 			http_response_code(200);
 		} else {

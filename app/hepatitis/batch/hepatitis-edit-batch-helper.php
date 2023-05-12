@@ -1,7 +1,7 @@
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 
 
@@ -27,7 +27,7 @@ try {
 			}
 			$sample = [];
 			//Mergeing disabled samples into existing samples
-			if (isset($_POST['sampleCode']) && count($_POST['sampleCode']) > 0) {
+			if (isset($_POST['sampleCode']) && !empty($_POST['sampleCode'])) {
 				if (count($xplodResultSample) > 0) {
 					$sample = array_unique(array_merge($_POST['sampleCode'], $xplodResultSample));
 				} else {

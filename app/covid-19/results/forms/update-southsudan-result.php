@@ -13,6 +13,7 @@ use App\Utilities\DateUtility;
 // $fundingSourceList = $db->query($fundingSourceQry);
 
 /* To get testing platform names */
+
 $testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -123,7 +124,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -197,7 +198,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">CASE DETAILS/DEMOGRAPHICS</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
@@ -270,7 +271,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
 
                                     <tr>
                                         <td colspan=4>
@@ -337,7 +338,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                             <td>
@@ -412,7 +413,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test No.</th>
@@ -426,7 +427,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php $span = 4;
-                                                        if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                        if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
                                                             $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
@@ -583,7 +584,7 @@ $sampleSuggestionDisplay = 'display:none;';
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (isset($covid19TestInfo) && count($covid19TestInfo) > 0) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
 
     function getTestingPoints() {
@@ -700,7 +701,7 @@ $sampleSuggestionDisplay = 'display:none;';
             placeholder: "Select Nationality"
         });
 
-        <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) { ?>
+        <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) { ?>
             $('.result-focus').change(function(e) {
                 var status = false;
                 $(".result-focus").each(function(index) {

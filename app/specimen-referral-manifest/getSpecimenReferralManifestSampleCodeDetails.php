@@ -35,7 +35,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-$module = (isset($_POST['testType']) && !empty($_POST['testType']))?$_POST['testType']:$_POST['module'];
+$module = (isset($_POST['testType']) && !empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
 $query = "";
 if ($module == 'vl') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl ";
@@ -86,8 +86,8 @@ if (isset($_POST['sampleType']) && !empty($_POST['sampleType']) && $module == 'v
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
 	$where[] = " (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";
 }
-if(isset($where) && count($where) > 0){
-	$query .= " where ". implode(" AND ", $where);	
+if (isset($where) && !empty($where)) {
+	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
 // die($query);	
@@ -118,7 +118,7 @@ $result = $db->rawQuery($query);
 								$sampleId  = $sample['tb_id'];
 							} else if ($module == 'generic-tests') {
 								$sampleId  = $sample['sample_id'];
-							} 
+							}
 					?>
 							<option value="<?php echo $sampleId; ?>"><?php echo ($sample[$sCode]); ?></option>
 					<?php

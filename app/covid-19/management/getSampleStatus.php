@@ -339,7 +339,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         });
     <?php
     }
-    if (isset($result) && count($result) > 0) {
+    if (isset($result) && !empty($result)) {
     ?>
         $('#covid19LabAverageTat').highcharts({
             chart: {

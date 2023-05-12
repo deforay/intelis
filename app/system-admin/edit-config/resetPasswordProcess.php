@@ -9,12 +9,14 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "system_admin";
-$user = ContainerRegistry::get(UsersService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 try {
     $userId = base64_decode($_POST['userId']);
     if (isset($_POST['password']) && trim($_POST['password']) != "") {
-        $data['system_admin_password'] = $user->passwordHash($_POST['password']);
+        $data['system_admin_password'] = $usersService->passwordHash($_POST['password']);
         $db = $db->where('system_admin_id', $userId);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _("Password updated successfully");

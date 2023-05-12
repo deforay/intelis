@@ -25,7 +25,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
-$app = new ApiService();
+
+// /** @var ApiService $app */
+// $app = ContainerRegistry::get(ApiService::class);
+
 $arr = $general->getGlobalConfig();
 
 $transactionId = $general->generateUUID();
@@ -35,8 +38,7 @@ $input = json_decode(file_get_contents("php://input"), true);
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 
 

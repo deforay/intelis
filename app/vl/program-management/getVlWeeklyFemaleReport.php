@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-  
+
 
 
 /** @var MysqliDb $db */
@@ -93,7 +93,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-      $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+    $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
   }
 }
 
@@ -163,15 +163,14 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-  if($start_date!='0000-00-00' && $end_date!='0000-00-00')
-  {
-    if (trim($start_date) == trim($end_date) ) {
+  if ($start_date != '0000-00-00' && $end_date != '0000-00-00') {
+    if (trim($start_date) == trim($end_date)) {
       $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
       $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
-    }
   }
+}
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
   $s_t_date = explode("to", $_POST['sampleCollectionDate']);
   if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
@@ -180,8 +179,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
   if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
     $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
   }
-  if($start_date!='0000-00-00' && $end_date!='0000-00-00')
-  {
+  if ($start_date != '0000-00-00' && $end_date != '0000-00-00') {
     if (trim($start_date) == trim($end_date)) {
       $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
@@ -201,9 +199,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   }
 }
 
-if(isset($sWhere) && count($sWhere)>0)
-{
-  $sWhere = implode(' AND ',$sWhere);
+if (isset($sWhere) && !empty($sWhere)) {
+  $sWhere = implode(' AND ', $sWhere);
 }
 
 $sQuery = $sQuery . ' AND ' . $sWhere;

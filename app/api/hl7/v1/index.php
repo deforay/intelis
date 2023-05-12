@@ -35,12 +35,10 @@ $transactionId = $general->generateUUID();
 $user = null;
 try {
     $requestUrl = $_SERVER['REQUEST_URI'];
-    // The request has to send an Authorization Bearer token 
-    $auth = $general->getHeader('Authorization');
-    if (!empty($auth)) {
-        $authToken = str_replace("Bearer ", "", $auth);
-        // Check if API token exists
-        $user = $usersService->getAuthToken($authToken);
+    // The request has to send an Authorization Bearer token
+    $authToken = $general->getAuthorizationBearerToken();
+    if (!empty($authToken)) {
+        $user = $usersService->getUserFromToken($authToken);
     }
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
@@ -51,7 +49,7 @@ try {
             'data' => array()
         );
         http_response_code(401);
-        echo json_encode($response);
+        $payload = json_encode($response);
         //exit(0);
     }
 
@@ -68,8 +66,8 @@ try {
     // print_r(explode("MSH", $hl7Msg));die;
     foreach (explode("MSH", $hl7Msg) as $hl7) {
         if (isset($hl7) && !empty($hl7) && trim($hl7) != "") {
-            
-            
+
+
             $hl7 = 'MSH' . $hl7;
             $msg = new Message($hl7);
             // To get the type of test
@@ -101,13 +99,13 @@ try {
             if (isset($type) && count($type) > 0 && in_array($type[0], array("COVID-19", "VL", "EID"))) {
 
                 if ($type[0] == "COVID-19") {
-                    include("covid-19.php");
+                    include_once("covid-19.php");
                 }
                 if ($type[0] == "VL") {
-                    include("vl.php");
+                    include_once("vl.php");
                 }
                 if ($type[0] == "EID") {
-                    include("eid.php");
+                    include_once("eid.php");
                 }
             } else {
                 $msh = new MSH();
@@ -115,7 +113,6 @@ try {
                 $ack->setAckCode('AR', "Message Type not found");
                 $returnString = $ack->toString(true);
                 echo $returnString;
-                // http_response_code(204);
                 unset($ack);
             }
         }
@@ -133,9 +130,11 @@ try {
         $payload['token'] = $user['new_token'];
     }
 
-    echo json_encode($payload);
+    $payload =  json_encode($payload);
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
     //exit(0);
 }
+
+echo $payload;

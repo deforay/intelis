@@ -135,7 +135,7 @@ $patienZones["other"] = "Other";
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                             </div>
-                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                 <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                     <tr>
                                         <?php
@@ -214,7 +214,7 @@ $patienZones["other"] = "Other";
                             <div class="box-header with-border sectionHeader">
                                 <h3 class="box-title">INFORMATION PATIENT</h3>
                             </div>
-                            <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                 <tr>
                                     <th scope="row" style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -304,7 +304,7 @@ $patienZones["other"] = "Other";
                                     Definition de cas
                                 </h3>
                             </div>
-                            <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
+                            <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true">
                                 <tr>
                                     <td colspan="2">
                                         <label class="radio-inline" style="margin-left:0;">
@@ -469,7 +469,7 @@ $patienZones["other"] = "Other";
                                     Signes vitaux du patient
                                 </h3>
                             </div>
-                            <table aria-describedby="table" class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true">
                                 <tr>
                                     <th scope="row" style="width:15% !important">Fever/Temperature (&deg;C) <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
@@ -534,7 +534,7 @@ $patienZones["other"] = "Other";
                                 </tr>
                                 <tr>
                                     <td colspan="4">
-                                        <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                        <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                             <?php $index = 0;
                                             foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                 $diarrhée = "";
@@ -602,7 +602,7 @@ $patienZones["other"] = "Other";
                                 </tr>
                                 <tr class="comorbidities-row" style="<?php echo ($covid19Info['medical_history'] != 'yes') ? 'display:none' : ''; ?>">
                                     <td colspan="4">
-                                        <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                        <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true">
                                             <?php $index = 0;
                                             foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                 <tr>
@@ -624,7 +624,7 @@ $patienZones["other"] = "Other";
                                 </tr>
                             </table>
 
-                            <table aria-describedby="table" class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true">
                                 <tr>
                                     <th scope="row" style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois ? Have you been hospitalized in the past 12 months ? </th>
                                     <td style="width:35% !important;">
@@ -671,7 +671,7 @@ $patienZones["other"] = "Other";
                                     VOYAGE ET CONTACT
                                 </h3>
                             </div>
-                            <table aria-describedby="table" class="table" aria-hidden="true" >
+                            <table aria-describedby="table" class="table" aria-hidden="true">
                                 <tr>
                                     <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                     <td style="width:35% !important;">
@@ -742,7 +742,7 @@ $patienZones["other"] = "Other";
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td>
@@ -796,7 +796,7 @@ $patienZones["other"] = "Other";
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">
                                                 <thead>
                                                     <tr>
                                                         <th scope="row" class="text-center">Test non</th>
@@ -806,7 +806,7 @@ $patienZones["other"] = "Other";
                                                     </tr>
                                                 </thead>
                                                 <tbody id="testKitNameTable">
-                                                    <?php if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                    <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
                                                         $testMethod = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other");
                                                         foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                             <tr>
@@ -889,7 +889,7 @@ $patienZones["other"] = "Other";
                                             </table>
                                         </td>
                                     </tr>
-                                    <?php $otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive' && count($covid19TestInfo) > 0) ? 'display' : 'none'; ?>
+                                    <?php $otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive' && !empty($covid19TestInfo)) ? 'display' : 'none'; ?>
                                     <tr>
                                         <th scope="row" class="other-diseases" style="display: <?php echo $otherDiseases; ?>;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
                                         <td class="other-diseases" style="display: <?php echo $otherDiseases; ?>;">
@@ -983,7 +983,7 @@ $patienZones["other"] = "Other";
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && count($covid19TestInfo) > 0) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

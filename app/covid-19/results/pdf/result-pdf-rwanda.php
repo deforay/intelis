@@ -301,7 +301,7 @@ if (!empty($requestResult)) {
         // $html .= '<tr style="background-color:#dbdbdb;">
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:40px;font-size:12px;font-weight:normal;">';
-        if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
+        if (isset($covid19TestInfo) && !empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
             /* Test Result Section */
             $html .= '<table border="1">
                                         <tr>
@@ -429,19 +429,19 @@ if (!empty($requestResult)) {
             $pdf->writeHTML($html);
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-                if(!empty($keyFromGlobalConfig)){
-                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
-                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
-                     $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, $style, 'N');
+                if (!empty($keyFromGlobalConfig)) {
+                    $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                    $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $encryptedString, 'QRCODE,H', 170, 175, 30, 30, $style, 'N');
                 }
-           }
+            }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");
             if ($draftTextShow) {
                 //Watermark section
                 $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }
