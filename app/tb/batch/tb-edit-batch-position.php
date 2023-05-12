@@ -25,7 +25,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 
-if (!isset($batchInfo) || count($batchInfo) == 0) {
+if (!isset($batchInfo) || empty($batchInfo)) {
 	header("Location:tb-batches.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {

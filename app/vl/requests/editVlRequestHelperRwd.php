@@ -70,7 +70,7 @@ try {
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
         $provinceInfo = $db->query($provinceQuery);
-        if (!isset($provinceInfo) || count($provinceInfo) == 0) {
+        if (!isset($provinceInfo) || empty($provinceInfo)) {
             $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
         }
     }
@@ -287,20 +287,15 @@ try {
         $_POST['reviewedOn'] = null;
     }
 
-    if(isset($_POST['dob']) && $_POST['dob'] != '')
-    {
+    if (isset($_POST['dob']) && $_POST['dob'] != '') {
         $ageInfo = $dateUtils->ageInYearMonthDays($_POST['dob']);
         $ageInYears = $ageInfo['year'];
-        if($ageInYears < 1){
+        if ($ageInYears < 1) {
             $ageInMonths = ($ageInYears * 12) + $ageInfo['months'];
-        }
-        else
-        {
+        } else {
             $ageInMonths = 0;
         }
-    }
-    else
-    {
+    } else {
         $ageInYears = $_POST['ageInYears'];
         $ageInMonths = $_POST['ageInMonths'];
     }

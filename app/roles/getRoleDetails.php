@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "roles";
 $primaryKey = "role_id";
@@ -49,7 +49,7 @@ if (isset($_POST['iSortCol_0'])) {
          * on very large tables, and MySQL's regex functionality is very limited
         */
 /* Hide API User in data grid */
-$sWhere=[];
+$sWhere = [];
 $sWhere[] = " role_code != 'API'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
@@ -71,13 +71,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere[]= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -89,10 +89,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $sQuery = "SELECT * FROM roles";
 
 if (isset($sWhere) && !empty($sWhere)) {
-    $sWhere = ' where ' . implode(' AND ',$sWhere);
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -131,7 +131,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['role_code']);
     $row[] = ucwords($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("editRole.php", $_SESSION['privileges'])) {
-        $row[] = '<a href="editRole.php?id=' . base64_encode($aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
+        $row[] = '<a href="editRole.php?id=' . base64_encode($aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

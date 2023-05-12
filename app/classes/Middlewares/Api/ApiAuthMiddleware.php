@@ -67,7 +67,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
 
     private function validateToken(string $token): bool
     {
-        if ($token === false) {
+        if (empty($token)) {
             return false;
         }
 

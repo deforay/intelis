@@ -862,7 +862,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												</thead>
 												<tbody id="testKitNameTable">
 													<?php
-													if (isset($genericTestInfo) && count($genericTestInfo) > 0) {
+													if (isset($genericTestInfo) && !empty($genericTestInfo)) {
 														$kitShow = false;
 														foreach ($genericTestInfo as $indexKey => $rows) { ?>
 															<tr>
@@ -996,32 +996,32 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										</div>
 									<?php } ?>
 									<div class="row" id="lapDynamicForm"></div>
-									</div>
-								<?php } ?>
 								</div>
-							</div>
+							<?php } ?>
 						</div>
 					</div>
-					<div class="box-footer">
-						<input type="hidden" name="revised" id="revised" value="no" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['sample_id']); ?>" />
-						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
-						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-						<a href="view-requests.php" class="btn btn-default"> Cancel</a>
-					</div>
-				</form>
 			</div>
-	</section>
+		</div>
+		<div class="box-footer">
+			<input type="hidden" name="revised" id="revised" value="no" />
+			<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['sample_id']); ?>" />
+			<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
+			<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+			<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
+			<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+			<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
+			<a href="view-requests.php" class="btn btn-default"> Cancel</a>
+		</div>
+		</form>
+</div>
+</section>
 </div>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 
 <script>
 	let provinceName = true;
 	let facilityName = true;
-	let testCounter = <?php echo (isset($genericTestInfo) && count($genericTestInfo) > 0) ? (count($genericTestInfo)) : 0; ?>;
+	let testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 0; ?>;
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;

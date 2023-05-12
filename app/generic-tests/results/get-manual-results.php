@@ -266,7 +266,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 }
 $_SESSION['vlResultQuery'] = $sQuery;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

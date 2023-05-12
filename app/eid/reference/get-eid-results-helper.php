@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "r_eid_results";
 $primaryKey = "result_id";
@@ -98,12 +98,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM r_eid_results";
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -137,16 +137,15 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
-               <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
-               <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
+               <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['result']);
-    if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+    if (isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
-    }
-    else {
+    } else {
         $row[] = ($aRow['status']);
     }
     $output['aaData'][] = $row;

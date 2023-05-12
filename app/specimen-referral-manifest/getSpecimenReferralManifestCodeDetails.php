@@ -154,7 +154,7 @@ if (!empty($sWhere)) {
 
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.package_id';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
@@ -197,7 +197,7 @@ foreach ($rResult as $aRow) {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }
-    if($module == 'generic-tests'){
+    if ($module == 'generic-tests') {
         $aRow['module'] = "LAB TESTS ";
     }
     $row = [];

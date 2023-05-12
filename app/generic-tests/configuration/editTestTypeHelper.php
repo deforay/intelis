@@ -14,33 +14,33 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_test_types";
-$tableName2="generic_test_sample_type_map";
-$tableName3="generic_test_reason_map";
-$tableName4="generic_test_symptoms_map";
-$testAttribute=[];
+$tableName2 = "generic_test_sample_type_map";
+$tableName3 = "generic_test_reason_map";
+$tableName4 = "generic_test_symptoms_map";
+$testAttribute = [];
 $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 try {
-    if (!empty($_POST['testStandardName']) && $testTypeId>0) {
-        $testAttribute['field_id']=$_POST['fieldId'];
-        $testAttribute['field_name']=$_POST['fieldName'];
-        $testAttribute['field_type']=$_POST['fieldType'];
-        $testAttribute['mandatory_field']=$_POST['mandatoryField'];
-        $testAttribute['section']=$_POST['section'];
-        $testAttribute['section_other']=$_POST['sectionOther'];
-        
+    if (!empty($_POST['testStandardName']) && $testTypeId > 0) {
+        $testAttribute['field_id'] = $_POST['fieldId'];
+        $testAttribute['field_name'] = $_POST['fieldName'];
+        $testAttribute['field_type'] = $_POST['fieldType'];
+        $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
+        $testAttribute['section'] = $_POST['section'];
+        $testAttribute['section_other'] = $_POST['sectionOther'];
+
         //Result Type
-        $testResultAttribute['result_type']=$_POST['resultType'];
-        if(isset($_POST['resultType']) && $_POST['resultType']=='quantitative'){
-            $testResultAttribute['high_value_name']=$_POST['highValueName'];
-            $testResultAttribute['high_value']=$_POST['highValue'];
-            $testResultAttribute['low_value_name']=$_POST['lowValueName'];
-            $testResultAttribute['low_value']=$_POST['lowValue'];
-            $testResultAttribute['threshold_value_name']=$_POST['thresholdValueName'];
-            $testResultAttribute['threshold_value']=$_POST['thresholdValue'];
-        }else{
-            $testResultAttribute['qualitative_result']=explode(",", $_POST['qualitativeResult']);
+        $testResultAttribute['result_type'] = $_POST['resultType'];
+        if (isset($_POST['resultType']) && $_POST['resultType'] == 'quantitative') {
+            $testResultAttribute['high_value_name'] = $_POST['highValueName'];
+            $testResultAttribute['high_value'] = $_POST['highValue'];
+            $testResultAttribute['low_value_name'] = $_POST['lowValueName'];
+            $testResultAttribute['low_value'] = $_POST['lowValue'];
+            $testResultAttribute['threshold_value_name'] = $_POST['thresholdValueName'];
+            $testResultAttribute['threshold_value'] = $_POST['thresholdValue'];
+        } else {
+            $testResultAttribute['qualitative_result'] = explode(",", $_POST['qualitativeResult']);
         }
         $data = array(
             'test_standard_name' => $_POST['testStandardName'],
@@ -53,33 +53,33 @@ try {
         );
         $db = $db->where('test_type_id', $testTypeId);
         $db->update($tableName, $data);
-        
+
         if ($testTypeId != 0) {
 
-            if (isset($_POST['sampleType']) && count($_POST['sampleType'])>0) {
-                $db = $db->where('test_type_id',$testTypeId);
+            if (isset($_POST['sampleType']) && !empty($_POST['sampleType'])) {
+                $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName2);
-                foreach($_POST['sampleType'] as $val){
+                foreach ($_POST['sampleType'] as $val) {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $testTypeId);
-                    $db->insert($tableName2,$value);
+                    $db->insert($tableName2, $value);
                 }
             }
 
-            if (isset($_POST['testingReason']) && count($_POST['testingReason'])>0) {
-                $db = $db->where('test_type_id',$testTypeId);
+            if (isset($_POST['testingReason']) && !empty($_POST['testingReason'])) {
+                $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName3);
-                foreach($_POST['testingReason'] as $val){
+                foreach ($_POST['testingReason'] as $val) {
                     $value = array('test_reason_id' => $val, 'test_type_id' => $testTypeId);
-                    $db->insert($tableName3,$value);
+                    $db->insert($tableName3, $value);
                 }
             }
 
-            if (isset($_POST['symptoms']) && count($_POST['symptoms'])>0) {
-                $db = $db->where('test_type_id',$testTypeId);
+            if (isset($_POST['symptoms']) && !empty($_POST['symptoms'])) {
+                $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName4);
-                foreach($_POST['symptoms'] as $val){
+                foreach ($_POST['symptoms'] as $val) {
                     $value = array('symptom_id' => $val, 'test_type_id' => $testTypeId);
-                    $db->insert($tableName4,$value);
+                    $db->insert($tableName4, $value);
                 }
             }
         }

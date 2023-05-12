@@ -200,7 +200,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND ' . implode(" AND ", $sWhere);
 	$sQuery = $sQuery . $sWhere;
 }
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
 	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

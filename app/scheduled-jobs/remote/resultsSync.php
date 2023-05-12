@@ -96,7 +96,7 @@ try {
         //close connection
         $result = json_decode($curl_response, true);
 
-        if (!empty($result) && count($result) > 0) {
+        if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_vl', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
         }
@@ -146,7 +146,7 @@ try {
         curl_close($ch);
         $result = json_decode($curl_response, true);
 
-        if (!empty($result) && count($result) > 0) {
+        if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_eid', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
         }
@@ -174,9 +174,9 @@ try {
 
         $forms = array_column($c19LabResult, 'covid19_id');
 
-        
-/** @var Covid19Service $covid19Service */
-$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+        /** @var Covid19Service $covid19Service */
+        $covid19Service = ContainerRegistry::get(Covid19Service::class);
         $symptoms = $covid19Service->getCovid19SymptomsByFormId($forms);
         $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($forms);
         $testResults = $covid19Service->getCovid19TestsByFormId($forms);
@@ -210,7 +210,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
         curl_close($ch);
         $result = json_decode($curl_response, true);
 
-        if (!empty($result) && count($result) > 0) {
+        if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_covid19',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
         }
@@ -267,7 +267,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
         curl_close($ch);
         $result = json_decode($curl_response, true);
 
-        if (!empty($result) && count($result) > 0) {
+        if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
             $id = $db->update('form_hepatitis',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
         }

@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "r_covid19_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code','rejection_reason_status');
+$aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -98,12 +98,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM r_covid19_sample_rejection_reasons";
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -137,18 +137,17 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
-               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
-               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
+               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['rejection_reason_name']);
     $row[] = ($aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
-    if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+    if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
-    }
-    else {
+    } else {
         $row[] = ($aRow['rejection_reason_status']);
     }
     $output['aaData'][] = $row;

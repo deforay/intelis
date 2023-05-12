@@ -1,6 +1,14 @@
 <style>
-	.followUp { display: inline-flex; list-style: none; padding: 0px; margin:5px; }
-	.followUp li { margin-right:5px;}
+	.followUp {
+		display: inline-flex;
+		list-style: none;
+		padding: 0px;
+		margin: 5px;
+	}
+
+	.followUp li {
+		margin-right: 5px;
+	}
 </style>
 <?php
 // imported in tb-add-request.php based on country in global config
@@ -70,14 +78,14 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+	$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$selected = "";
 	if ($tbInfo['geo_id'] == $provinceName['geo_id']) {
-		$selected = "selected='selected'"; 
+		$selected = "selected='selected'";
 	}
 	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
 }
@@ -133,7 +141,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border">
 									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
@@ -156,7 +164,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
 										<td>
@@ -218,7 +226,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -304,27 +312,27 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($followup) && count(array_filter($followup)) > 0 ) ? "checked" : ""; ?>>
+												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($followup) && !empty(array_filter($followup))) ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>
 										<td style="float: left;text-align: center;">
-										
-											<div class="follow-up hide-reasons" style="display: <?php echo (isset($followup) && count(array_filter($followup)) > 0) ? "block" : "none"; ?>;">
-											<ul class="followUp">
-												<li>
-													<label>Month Of Treatment</label>
-													<input type="text" value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim($followup['month-of-treatment']) != "") ? $followup['month-of-treatment'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
-												</li>
-												<li>
-												<label>Patient's District TB No.</label>
-													<input type="text" value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim($followup['patient-district-tb-no']) != "") ? $followup['patient-district-tb-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
-												</li>
-												<li>
-												<label>Patient's MDR No.</label>
-													<input type="text" value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim($followup['patient-mdr-no']) != "") ? $followup['patient-mdr-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
-												</li>
-											</ul>												
+
+											<div class="follow-up hide-reasons" style="display: <?php echo (isset($followup) && !empty(array_filter($followup))) ? "block" : "none"; ?>;">
+												<ul class="followUp">
+													<li>
+														<label>Month Of Treatment</label>
+														<input type="text" value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim($followup['month-of-treatment']) != "") ? $followup['month-of-treatment'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+													</li>
+													<li>
+														<label>Patient's District TB No.</label>
+														<input type="text" value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim($followup['patient-district-tb-no']) != "") ? $followup['patient-district-tb-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+													</li>
+													<li>
+														<label>Patient's MDR No.</label>
+														<input type="text" value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim($followup['patient-mdr-no']) != "") ? $followup['patient-mdr-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+													</li>
+												</ul>
 											</div>
 										</td>
 									</tr>
@@ -341,7 +349,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
 										<td>
 											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
-											<option value=''> -- Select -- </option>
+												<option value=''> -- Select -- </option>
 												<option value='yes' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
 												<option value='no' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
 												<option value='unknown' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
@@ -353,7 +361,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true" >
+								<table aria-describedby="table" class="table" aria-hidden="true">
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
@@ -406,29 +414,29 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-											Number of sputum samples sent with this form 
+												Number of sputum samples sent with this form
 											</label>
 										</th>
 										<td>
-										<input type="text" value="<?php echo $tbInfo['number_of_sputum_samples']; ?>" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+											<input type="text" value="<?php echo $tbInfo['number_of_sputum_samples']; ?>" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
 										</td>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-											Date of collection of first sputum samples
+												Date of collection of first sputum samples
 											</label>
 										</th>
 										<td>
-										<input type="text" class="form-control" value="<?php echo $tbInfo['first_sputum_samples_collection_date']; ?>" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
-									</td>
+											<input type="text" class="form-control" value="<?php echo $tbInfo['first_sputum_samples_collection_date']; ?>" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+										</td>
 									</tr>
 									<tr>
-									<th scope="row">
+										<th scope="row">
 											<label class="label-control">
-											Name of signature of person requesting examination 
+												Name of signature of person requesting examination
 											</label>
 										</th>
 										<td>
-										<input type="text" class="form-control" value="<?php echo $tbInfo['sample_requestor_name']; ?>" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+											<input type="text" class="form-control" value="<?php echo $tbInfo['sample_requestor_name']; ?>" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
 										</td>
 									</tr>
 								</table>
@@ -442,7 +450,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
 									</div>
-									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
 											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
 											<td>
@@ -474,12 +482,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 											<th scope="row"><label class="label-control" for="testedBy">Date Of Result</label></th>
 											<td>
-											<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
-											
+
 										</tr>
 										<tr>
-										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -487,7 +495,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
-							</tr>
+										</tr>
 										<tr class="show-rejection" style="display:none;">
 											<th scope="row" class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
@@ -513,7 +521,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</tr>
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
-												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
 														<tr>
 															<th scope="row" colspan="3" style="text-align: center;">Microscopy Test Results</th>
@@ -720,12 +728,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 
 	function setPatientDetails(pDetails) {
 		patientArray = JSON.parse(pDetails);
-        $("#firstName").val(patientArray['firstname']);
-        $("#lastName").val(patientArray['lastname']);
-        $("#patientGender").val(patientArray['gender']);
-        $("#patientAge").val(patientArray['age']);
-        $("#patientDob").val(patientArray['dob']);
-        $("#patientId").val(patientArray['patient_id']);
+		$("#firstName").val(patientArray['firstname']);
+		$("#lastName").val(patientArray['lastname']);
+		$("#patientGender").val(patientArray['gender']);
+		$("#patientAge").val(patientArray['age']);
+		$("#patientDob").val(patientArray['dob']);
+		$("#patientId").val(patientArray['patient_id']);
 	}
 
 	function sampleCodeGeneration() {
@@ -814,12 +822,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$(document).ready(function() {
 
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -831,39 +839,39 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-	
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+
 
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-		if($("#sampleDispatchedDate").val()=="" || (collectDate >= dispatchDate))
+		var collectDate = $("#sampleCollectionDate").toString();
+		var dispatchDate = $("#sampleDispatchedDate").toString();
+		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
 			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
+
 		$('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            minDate: minDate,
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			minDate: minDate,
 			startDate: minDate,
-        });
+		});
 
 		$("#firstSputumSamplesCollectionDate").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(dateText, inst) {
-                //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
-                $(this).change();
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			maxDate: "Today",
+			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
+			onSelect: function(dateText, inst) {
+				//$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+				$(this).change();
+			}
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {

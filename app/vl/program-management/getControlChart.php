@@ -60,22 +60,22 @@ $sQuery = "SELECT SUM(CASE WHEN (result_value_absolute != '' AND result_value_ab
 $sQuery = $sQuery . ' where ' . $sWhere . "  group by control_id";
 $controlResult = $db->rawQuery($sQuery);
 $array = array_map('current', $controlResult);
-$mean = (isset($array) && count($array) > 0) ?  (array_sum($array) / count($array)) : 0;
+$mean = (isset($array) && !empty($array)) ?  (array_sum($array) / count($array)) : 0;
 function sd_square($x, $mean)
 {
     return pow($x - $mean, 2);
 }
-$sd = (isset($array) && count($array) > 0) ?  (sqrt(array_sum(array_map("sd_square", $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1))) : 0;
+$sd = (isset($array) && !empty($array)) ?  (sqrt(array_sum(array_map("sd_square", $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1))) : 0;
 ?>
 <div id="container" style="height: 400px"></div>
 <script>
     $(function() {
         Highcharts.chart('container', {
             title: {
-                text: "<?php echo _("Control Result");?>"
+                text: "<?php echo _("Control Result"); ?>"
             },
             subtitle: {
-                text: "<?php echo _("Mean");?>:<?php echo round($mean, 2); ?>   <?php echo _("SD");?>:<?php echo round($sd, 2); ?>"
+                text: "<?php echo _("Mean"); ?>:<?php echo round($mean, 2); ?>   <?php echo _("SD"); ?>:<?php echo round($sd, 2); ?>"
             },
             xAxis: {
                 categories: [<?php
@@ -89,7 +89,7 @@ $sd = (isset($array) && count($array) > 0) ?  (sqrt(array_sum(array_map("sd_squa
                 min: <?php echo round($mean - ($sd * 3), 2); ?>,
                 max: <?php echo round($mean + ($sd * 3), 2); ?>,
                 title: {
-                    text: "<?php echo _("Control Result");?>"
+                    text: "<?php echo _("Control Result"); ?>"
                 },
 
                 plotLines: [{

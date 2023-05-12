@@ -173,7 +173,7 @@ try {
     /* To check the sample code filter */
 
     if (!empty($input['sampleCode'])) {
-        $sampleCode = $input['sampleCode'] ?? [];
+        $sampleCode = $input['sampleCode'];
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }

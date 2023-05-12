@@ -194,7 +194,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 }
 $sQuery = $sQuery  . $sWhere;
 $sQuery = $sQuery . ' group by vl.tb_id';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

@@ -361,7 +361,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             xAxis: {
                 //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
-                                if (isset($result['date']) && count($result['date']) > 0) {
+                                if (isset($result['date']) && !empty($result['date'])) {
                                     foreach ($result['date'] as $date) {
                                         echo "'" . $date . "',";
                                     }
@@ -480,7 +480,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             ],
         });
     <?php }
-    if (isset($testReasonResult) && count($testReasonResult) > 0) { ?>
+    if (isset($testReasonResult) && !empty($testReasonResult)) { ?>
         $('#covid19TestReasonContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,

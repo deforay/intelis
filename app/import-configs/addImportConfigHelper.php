@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -63,7 +63,7 @@ try {
             'status' => 'active'
         );
         $id = $db->insert($tableName, $data);
-        if ($id > 0 && count($_POST['configMachineName']) > 0) {
+        if ($id > 0 && !empty($_POST['configMachineName'])) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
                 $pocDev = 'no';
                 if (trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != '') {
@@ -76,7 +76,7 @@ try {
             }
         }
 
-        if ($id > 0 && isset($_POST['testType']) && count($_POST['testType']) > 0) {
+        if ($id > 0 && isset($_POST['testType']) && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim($val) != '') {
                     $configControlData = array('test_type' => $val, 'config_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);

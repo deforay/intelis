@@ -100,7 +100,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 }
 $sQuery = $sQuery . ' GROUP BY comorbidity_name';
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

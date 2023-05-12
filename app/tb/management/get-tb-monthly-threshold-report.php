@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -132,7 +132,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' where ' . $sWhere;
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

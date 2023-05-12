@@ -51,7 +51,7 @@ if (isset($_POST['batchId'])) {
 if (trim($urgent) != '') {
 	$query = $query . " AND vl.test_urgency='" . $urgent . "'";
 }
-if (!empty($_POST['fName']) && is_array($_POST['fName']) && count($_POST['fName']) > 0) {
+if (!empty($_POST['fName']) && is_array($_POST['fName']) && !empty($_POST['fName'])) {
 	$query = $query . " AND vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 if (trim($sample) != '') {

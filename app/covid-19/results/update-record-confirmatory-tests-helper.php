@@ -69,7 +69,7 @@ try {
 		}
 	}
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+		if (isset($_POST['testName']) && !empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testerName) {
 				if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
 					$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);

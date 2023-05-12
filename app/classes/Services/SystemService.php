@@ -13,8 +13,7 @@ use Whoops\Handler\JsonResponseHandler;
 class SystemService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
     protected $applicationConfig = null;
 
     public function __construct($db = null, $applicationConfig = null)
@@ -120,7 +119,7 @@ class SystemService
         if (isset($this->applicationConfig['modules']['tb']) && $this->applicationConfig['modules']['tb'] === true) {
             $response[] = 'tb';
         }
-        
+
         if (isset($this->applicationConfig['modules']['genericTests']) && $this->applicationConfig['modules']['genericTests'] === true) {
             $response[] = 'genericTests';
         }

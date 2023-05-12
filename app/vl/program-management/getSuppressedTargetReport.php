@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -46,43 +46,38 @@ SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'sup
  FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
 $sWhere = ' WHERE vl.result_status!=9';
-if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {
+if (isset($_POST['facilityName']) && !empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];
     $out = '';
     for ($s = 0; $s < count($fac); $s++) {
-        if ($out)
+        if ($out) {
             $out = $out . ',"' . $fac[$s] . '"';
-        else
+        } else {
             $out = '("' . $fac[$s] . '"';
+        }
     }
     $out = $out . ')';
     if (isset($sWhere)) {
         $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
-    } //  else {
-    //      $setWhr = 'where';
-    //      $sWhere = ' where ' . $sWhere;
-    //      $sWhere = $sWhere . ' vl.lab_id IN ' . $out . '';
-    // }
-
-
+    }
 }
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
+    $s_t_date = explode("to", $_POST['sampleTestDate']);
+    if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+        $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
+    }
+    if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+        $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
+    }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     if (isset($sWhere)) {
-         $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     } else {
-         $sWhere = ' where ' . $sWhere;
-         $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+        $sWhere = ' where ' . $sWhere;
+        $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     }
 }
 if (!empty($facilityMap)) {
@@ -199,12 +194,12 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
             type: 'column'
         },
         title: {
-            text: "<?php echo _("VL Suppressed Testing Target");?>"
+            text: "<?php echo _("VL Suppressed Testing Target"); ?>"
         },
         exporting: {
             chartOptions: {
                 subtitle: {
-                    text: "<?php echo _("VL Suppressed Testing Target");?>",
+                    text: "<?php echo _("VL Suppressed Testing Target"); ?>",
                 }
             }
         },
@@ -219,7 +214,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         },
         yAxis: {
             title: {
-                text: "<?php echo _("No of target in month %");?>"
+                text: "<?php echo _("No of target in month %"); ?>"
             },
             labels: {
                 formatter: function() {

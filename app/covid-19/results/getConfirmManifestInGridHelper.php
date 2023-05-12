@@ -97,12 +97,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 $facilityQuery = '';
 
-    $tableName = "form_covid19";
-    $primaryKey = "covid19_id";
-    $sQuery = "select p.request_created_datetime, p.manifest_code, p.manifest_status, p.module, p.manifest_id,count(vl." . $sCode . ") as sample_code from form_covid19 vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id";
+$tableName = "form_covid19";
+$primaryKey = "covid19_id";
+$sQuery = "select p.request_created_datetime, p.manifest_code, p.manifest_status, p.module, p.manifest_id,count(vl." . $sCode . ") as sample_code from form_covid19 vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id";
 
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
 }
 if (isset($vlfmResult[0]['facilityId'])) {
@@ -111,7 +111,7 @@ if (isset($vlfmResult[0]['facilityId'])) {
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.manifest_code';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
@@ -138,7 +138,8 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-$package = false;$edit = false;
+$package = false;
+$edit = false;
 if (isset($_SESSION['privileges']) && (in_array("generate-confirmation-manifest.php", $_SESSION['privileges']))) {
     $package = true;
 }
@@ -148,7 +149,7 @@ if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-confirmation-mani
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="generate-confirmation-manifest.php?id='. base64_encode($aRow['manifest_code']).'" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
+    $printBarcode = '<a href="generate-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_code']) . '" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
         $humanDate =  date("d-M-Y H:i:s", strtotime($date));

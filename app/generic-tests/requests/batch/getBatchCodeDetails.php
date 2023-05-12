@@ -122,9 +122,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
     }
 }
 
-if(isset($_POST['type']) && ($_POST['type'] != ""))
-{
-    $sWhere[] = "b.test_type = '".$_POST['type']."'";
+if (isset($_POST['type']) && ($_POST['type'] != "")) {
+    $sWhere[] = "b.test_type = '" . $_POST['type'] . "'";
 }
 
 /*
@@ -145,7 +144,7 @@ if (!empty($sWhere)) {
 }
 
 $sQuery = $sQuery . ' GROUP BY b.batch_id';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -212,7 +211,7 @@ foreach ($rResult as $aRow) {
     //	    </select>';
 
     if ($batch) {
-        $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '&code='.$_POST['type'].'" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+        $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '&code=' . $_POST['type'] . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
     }
 
     $output['aaData'][] = $row;

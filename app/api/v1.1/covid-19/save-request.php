@@ -393,7 +393,7 @@ try {
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
                     $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
-                    $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && count($data['symptomDetails'][$data['symptomId'][$i]]) > 0) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
+                    $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && !empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     //var_dump($symptomData);
                     $db->insert("covid19_patient_symptoms", $symptomData);
                     error_log($db->getLastError());
@@ -426,7 +426,7 @@ try {
             }
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (isset($data['c19Tests']) && count($data['c19Tests']) > 0) {
+            if (isset($data['c19Tests']) && !empty($data['c19Tests'])) {
                 $db = $db->where('covid19_id', $data['covid19SampleId']);
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {

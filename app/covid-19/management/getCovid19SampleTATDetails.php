@@ -91,7 +91,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
 	if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-			$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+		$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
 	}
 }
 
@@ -152,8 +152,7 @@ if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$seWhere[] =  ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	if($start_date!='0000-00-00')
-	{
+	if ($start_date != '0000-00-00') {
 		if (trim($start_date) == trim($end_date)) {
 			$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
 		} else {
@@ -170,8 +169,7 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
 }
 
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-	if($testedStartDate!='0000-00-00')
-	{
+	if ($testedStartDate != '0000-00-00') {
 		if (trim($testedStartDate) == trim($testedEndDate)) {
 			$seWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
 		} else {
@@ -188,13 +186,13 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 
 
 if (isset($sWhere) && !empty($sWhere)) {
-	$sQuery = $sQuery . ' AND ' . implode(' AND ',$sWhere) ;
-} 
-if (isset($seWhere) && count($seWhere) > 0) {
-	$sQuery = $sQuery . ' AND ' . implode(' AND ',$seWhere) ;
+	$sQuery = $sQuery . ' AND ' . implode(' AND ', $sWhere);
+}
+if (isset($seWhere) && !empty($seWhere)) {
+	$sQuery = $sQuery . ' AND ' . implode(' AND ', $seWhere);
 }
 $_SESSION['covid19TATQuery'] = $sQuery;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " order by " . $sOrder;
 }

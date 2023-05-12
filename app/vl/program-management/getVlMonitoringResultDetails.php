@@ -192,7 +192,7 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] =  " f.facility_state_id LIKE " . $_POST['state'];
 }
 
-if (count($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
 } else {
      $sWhere[] = ' WHERE vl.result!="" AND vl.result_status!=9';
@@ -209,7 +209,7 @@ $sQuery = $sQuery . ' ' . $sWhere;
 
 $_SESSION['vlMonitoringResultQuery'] = $sQuery;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

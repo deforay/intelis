@@ -3901,3 +3901,47 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-results', 'generic-test-results.php', 'Manage Test Results'), 
 (NULL, 'generic-results', 'generic-failed-results.php', 'Manage Failed Results'),
 (NULL, 'generic-results', 'generic-result-approval.php', 'Approve Test Results');
+
+-- Amit 12-May-2023
+CREATE TEMPORARY TABLE temp_table_form_vl AS (
+    SELECT lab_id, app_sample_code
+    FROM form_vl
+    GROUP BY lab_id, app_sample_code
+    HAVING COUNT(*) > 1
+);
+
+DELETE FROM form_vl WHERE (lab_id, app_sample_code) IN (
+    SELECT lab_id, app_sample_code
+    FROM temp_table_form_vl
+);
+
+CREATE TEMPORARY TABLE temp_table_form_eid AS (
+    SELECT lab_id, app_sample_code
+    FROM form_eid
+    GROUP BY lab_id, app_sample_code
+    HAVING COUNT(*) > 1
+);
+
+DELETE FROM form_eid WHERE (lab_id, app_sample_code) IN (
+    SELECT lab_id, app_sample_code
+    FROM temp_table_form_eid
+);
+
+CREATE TEMPORARY TABLE temp_table_form_covid19 AS (
+    SELECT lab_id, app_sample_code
+    FROM form_covid19
+    GROUP BY lab_id, app_sample_code
+    HAVING COUNT(*) > 1
+);
+
+DELETE FROM form_covid19 WHERE (lab_id, app_sample_code) IN (
+    SELECT lab_id, app_sample_code
+    FROM temp_table_form_covid19
+);
+
+ALTER TABLE `form_vl` ADD UNIQUE( `lab_id`, `app_sample_code`);
+ALTER TABLE `form_eid` ADD UNIQUE( `lab_id`, `app_sample_code`);
+ALTER TABLE `form_covid19` ADD UNIQUE( `lab_id`, `app_sample_code`);
+ALTER TABLE `form_tb` ADD UNIQUE( `lab_id`, `app_sample_code`);
+ALTER TABLE `form_hepatitis` ADD UNIQUE( `lab_id`, `app_sample_code`);
+ALTER TABLE `form_generic` ADD UNIQUE( `lab_id`, `app_sample_code`);

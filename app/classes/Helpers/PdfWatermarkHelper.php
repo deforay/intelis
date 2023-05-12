@@ -9,9 +9,9 @@ class PdfWatermarkHelper extends Fpdi
 {
 
     public $tplIdx;
-    public $angle = 0;
+    public int $angle = 0;
     public $fullPathToFile;
-    public $watermarkText = 'DRAFT';
+    public string $watermarkText = 'DRAFT';
 
     public function setFullPathToFile($fullPathToFile)
     {

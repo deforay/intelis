@@ -19,10 +19,9 @@ use App\Services\GeoLocationsService;
 class TbService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_tb';
-    protected $shortCode = 'TB';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_tb';
+    protected string $shortCode = 'TB';
 
     public function __construct($db = null)
     {
@@ -188,7 +187,7 @@ class TbService
         return false;
     }
 
-    
+
 
     public function getTbResults($type = null, $updatedDateTime = null)
     {
@@ -237,7 +236,7 @@ class TbService
         $response = [];
 
         // Using this in sync requests/results
-        if (isset($tbId) && is_array($tbId) && count($tbId) > 0) {
+        if (isset($tbId) && is_array($tbId) && !empty($tbId)) {
             $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
 
             foreach ($results as $row) {

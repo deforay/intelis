@@ -95,7 +95,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         $colSize = count($aColumns);
 
         for ($i = 0; $i < $colSize; $i++) {
-            if(isset($aColumns[$i]) && !empty($aColumns[$i])){
+            if (isset($aColumns[$i]) && !empty($aColumns[$i])) {
                 if ($i < $colSize - 1) {
                     $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                 } else {
@@ -186,7 +186,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 $sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery;die;
 //echo $sQuery;die;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

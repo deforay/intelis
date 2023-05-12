@@ -204,7 +204,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 
 //echo $sQuery; die;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

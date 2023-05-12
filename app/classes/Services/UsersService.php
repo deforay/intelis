@@ -17,10 +17,9 @@ use App\Registries\ContainerRegistry;
 class UsersService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
     protected $applicationConfig = null;
-    protected $table = 'user_details';
+    protected string $table = 'user_details';
 
     public function __construct($db = null, $applicationConfig = null)
     {

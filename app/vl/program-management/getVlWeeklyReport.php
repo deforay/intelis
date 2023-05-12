@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-  
+
 
 
 /** @var MysqliDb $db */
@@ -98,7 +98,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
   if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-      $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+    $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
   }
 }
 
@@ -207,7 +207,7 @@ $sQuery = $sQuery . ' WHERE ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
   $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
   $sQuery = $sQuery . ' order by ' . $sOrder;
 }

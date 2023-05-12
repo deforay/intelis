@@ -7,7 +7,7 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 class PdfConcatenateHelper extends FPDI
 {
-	public $files = [];
+	public array $files = [];
 	public function setFiles($files)
 	{
 		$this->files = $files;

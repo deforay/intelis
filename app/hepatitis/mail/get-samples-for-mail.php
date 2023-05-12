@@ -15,10 +15,10 @@ $formId = 0;
 if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
   $formId = intval($configResult[0]['value']);
 }
-if (!is_array($_POST['facility']) || count($_POST['facility']) == 0) {
+if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];
 }
-if (empty($_POST['batch']) || !is_array($_POST['batch']) || count($_POST['batch']) == 0) {
+if (empty($_POST['batch']) || !is_array($_POST['batch']) || empty($_POST['batch'])) {
   $_POST['batch'] = [];
 }
 $facility = $_POST['facility'];
@@ -43,7 +43,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_result is NOT NULL AND hepatitis.hcv_vl_result !='') OR (hepatitis.hbv_vl_result is NOT NULL AND hepatitis.hbv_vl_result !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_result is NULL AND hepatitis.hcv_vl_result ='') OR (hepatitis.hbv_vl_result is NULL AND hepatitis.hbv_vl_result =''))))";
-if (isset($facility) && count(array_filter($facility)) > 0) {
+if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
 }
 if (trim($sampleType) != '') {
@@ -58,7 +58,7 @@ if (trim($state) != '') {
 if (trim($district) != '') {
   $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
 }
-if (isset($batch) && count(array_filter($batch)) > 0) {
+if (isset($batch) && !empty(array_filter($batch))) {
   $query = $query . " AND hepatitis.sample_batch_id IN (" . implode(',', $batch) . ")";
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {

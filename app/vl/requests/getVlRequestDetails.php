@@ -89,10 +89,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                } else {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
           }
@@ -338,7 +338,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
      }
 } else if (!$_POST['hidesrcofreq']) {
-     $sWhere[] = ' vl.result_status!=9'; 
+     $sWhere[] = ' vl.result_status!=9';
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
@@ -346,7 +346,7 @@ if (isset($sWhere) && !empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "user_details";
 $primaryKey = "user_id";
@@ -11,7 +11,7 @@ $primaryKey = "user_id";
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('ud.user_name','ud.login_id', 'ud.email', 'r.role_name', 'ud.status');
+$aColumns = array('ud.user_name', 'ud.login_id', 'ud.email', 'r.role_name', 'ud.status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -70,13 +70,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere[]= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -95,14 +95,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS ud.user_id,
                             LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
 if (isset($sWhere) && !empty($sWhere)) {
-    $sWhere = ' where ' . implode(' AND ',$sWhere);
-}
-else
-{
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
+} else {
     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -135,7 +133,7 @@ foreach ($rResult as $aRow) {
 
     if (!empty($aRow['interface_user_name'])) {
         $interfaceUsers = implode(", ", json_decode($aRow['interface_user_name'], true));
-        $aRow['user_name'] = $aRow['user_name'] . "<br><small>[". $interfaceUsers ."]</small>";
+        $aRow['user_name'] = $aRow['user_name'] . "<br><small>[" . $interfaceUsers . "]</small>";
     }
     $row = [];
     $row[] = ($aRow['user_name']);
@@ -144,7 +142,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['role_name']);
     $row[] = ($aRow['status']);
     if (isset($_SESSION['privileges']) && in_array("editUser.php", $_SESSION['privileges'])) {
-        $row[] = '<a href="editUser.php?id=' . base64_encode($aRow['user_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="'. _("Edit").'"><em class="fa-solid fa-pen-to-square"></em> '. _("Edit").'</em></a>';
+        $row[] = '<a href="editUser.php?id=' . base64_encode($aRow['user_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

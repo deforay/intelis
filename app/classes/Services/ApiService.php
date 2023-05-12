@@ -15,8 +15,7 @@ use App\Registries\ContainerRegistry;
 class ApiService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
 
     public function __construct($db = null)
     {
@@ -288,7 +287,7 @@ class ApiService
             'data_format' => $format ?: null
         );
         if ($format == 'sync-api') {
-            $data['facility_id'] = (isset($params['data'][0]['facilityId']) && count($params['data'][0]['facilityId']) > 0) ? $params['data'][0]['facilityId'] : null;
+            $data['facility_id'] = (isset($params['data'][0]['facilityId']) && !empty($params['data'][0]['facilityId'])) ? $params['data'][0]['facilityId'] : null;
         }
         return $this->db->insert("track_api_requests", $data);
     }

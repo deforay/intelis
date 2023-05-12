@@ -32,7 +32,7 @@ $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
 $selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode($_POST['selectedSamples'], true) : [];
-if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && count($selectedSamplesArray) > 0) {
+if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
    if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document

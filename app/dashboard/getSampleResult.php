@@ -368,7 +368,6 @@ if ($table == "form_covid19") {
 </div>
 <script>
     <?php
-    //if(isset($tResult) && count($tResult)>0){
     if ($receivedTotal > 0) { ?>
         $('#<?php echo $samplesReceivedChart; ?>').highcharts({
             chart: {

@@ -148,7 +148,7 @@ try {
         $_POST['provinceId'] = $provinceDetails['geo_id'];
     }
     $reason = $_POST['reasonForTbTest'];
-    $reason['reason'] = array($reason['reason']=>'yes');
+    $reason['reason'] = array($reason['reason'] => 'yes');
     $tbData = array(
         'vlsm_instance_id'                    => $instanceId,
         'vlsm_country_id'                     => $_POST['formId'],
@@ -171,7 +171,7 @@ try {
         'previously_treated_for_tb'           => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'number_of_sputum_samples'            => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
-        'first_sputum_samples_collection_date'=> !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
+        'first_sputum_samples_collection_date' => !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
         'sample_requestor_name'               => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
@@ -206,7 +206,7 @@ try {
     $id = 0;
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-        if (isset($_POST['testResult']) && count($_POST['testResult']) > 0) {
+        if (isset($_POST['testResult']) && !empty($_POST['testResult'])) {
             $db = $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
 

@@ -94,10 +94,10 @@ $sWhere = [];
 if (!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 
-$tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name 
-                FROM form_eid as vl 
-                JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                JOIN facility_details as f ON vl.lab_id=f.facility_id 
+$tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name
+                FROM form_eid as vl
+                JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                JOIN facility_details as f ON vl.lab_id=f.facility_id
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
@@ -176,9 +176,11 @@ if ($start_date == '' && $end_date == '') {
 	$end_date = date('Y-m-d');
 }
 $sWhere = [];
-if (!empty($whereCondition))
+if (!empty($whereCondition)) {
 	$sWhere[] = $whereCondition;
-$tatSampleQuery = "SELECT 
+}
+
+$tatSampleQuery = "SELECT
         count(*) as 'totalSamples',
 		DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
@@ -186,13 +188,11 @@ $tatSampleQuery = "SELECT
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
 		CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
-
-		FROM form_eid as vl 
-		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-		JOIN facility_details as f ON vl.lab_id=f.facility_id 
-		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-		WHERE 
-		vl.result is not null
+		FROM form_eid as vl
+		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+		JOIN facility_details as f ON vl.lab_id=f.facility_id
+		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+		WHERE vl.result is not null
 		AND vl.result != ''
 		AND DATE(vl.sample_tested_datetime) >= '$start_date'
 		AND DATE(vl.sample_tested_datetime) <= '$end_date' ";
@@ -397,7 +397,7 @@ foreach ($tatResult as $sRow) {
 			xAxis: {
 				//categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
 				categories: [<?php
-								if (isset($result['date']) && count($result['date']) > 0) {
+								if (isset($result['date']) && !empty($result['date'])) {
 									foreach ($result['date'] as $date) {
 										echo "'" . $date . "',";
 									}

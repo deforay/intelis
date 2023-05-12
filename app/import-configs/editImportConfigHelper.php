@@ -87,7 +87,7 @@ try {
             }
         }
 
-        if ($configId > 0 && isset($_POST['testType']) && count($_POST['testType']) > 0) {
+        if ($configId > 0 && isset($_POST['testType']) && !empty($_POST['testType'])) {
             if (count($configControlInfo) > 0) {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";

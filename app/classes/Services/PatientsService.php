@@ -15,9 +15,8 @@ use MysqliDb;
 class PatientsService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'patients';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'patients';
 
     public function __construct($db = null)
     {

@@ -12,7 +12,7 @@ $configMachine = '';
 if (!empty($configMachineInfo)) {
     $configMachine .= '<option value"">-- Select --</option>';
     $selected = '';
-    if (count($configMachineInfo) === 1) {
+    if (count($configMachineInfo) == 1) {
         $selected = "selected";
     }
     foreach ($configMachineInfo as $machine) {

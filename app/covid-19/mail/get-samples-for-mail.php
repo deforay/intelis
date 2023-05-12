@@ -3,10 +3,10 @@
 use App\Utilities\DateUtility;
 
 
-if (!is_array($_POST['facility']) || count($_POST['facility']) == 0) {
+if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];
 }
-if (empty($_POST['batch']) || !is_array($_POST['batch']) || count($_POST['batch']) == 0) {
+if (empty($_POST['batch']) || !is_array($_POST['batch']) || empty($_POST['batch'])) {
   $_POST['batch'] = [];
 }
 $facility = $_POST['facility'];
@@ -31,7 +31,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 $query = "SELECT vl.sample_code,vl.covid19_id,vl.facility_id,f.facility_name,f.facility_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
-if (isset($facility) && count(array_filter($facility)) > 0) {
+if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND vl.facility_id IN (" . implode(',', $facility) . ")";
 }
 if (trim($sampleType) != '') {
@@ -46,7 +46,7 @@ if (trim($state) != '') {
 if (trim($district) != '') {
   $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
 }
-if (isset($batch) && count(array_filter($batch)) > 0) {
+if (isset($batch) && !empty(array_filter($batch))) {
   $query = $query . " AND vl.sample_batch_id IN (" . implode(',', $batch) . ")";
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {

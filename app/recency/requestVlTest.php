@@ -22,15 +22,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     exit(0);
 }
 try {
-    
-    
-    
+
+
+
 
     /** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+    $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');
@@ -63,8 +63,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
     $data = [];
     $vlReqFromTable = "form_vl";
-    
-    if (isset($result) && count($result) > 0 && $result[0] != "") {
+
+    if (isset($result) && !empty($result) && $result[0] != "") {
 
         /* To get province and district from facility id */
         $facilityQuery = "SELECT facility_id, facility_state, facility_district from facility_details WHERE other_id =" . $result[2];
@@ -91,7 +91,7 @@ $general = ContainerRegistry::get(CommonService::class);
         $data['reason_for_vl_testing'] = 9999; // 9999 is Recency Test in r_vl_test_reasons table
         $data['vlsm_country_id'] = $general->getGlobalConfig('vl_form');
         $data['result_status'] = 9;
-        $data['patient_dob'] = date('Y-m-d',strtotime($result[9]));
+        $data['patient_dob'] = date('Y-m-d', strtotime($result[9]));
         $data['patient_age_in_years'] = $result[10];
         $data['patient_gender'] = $result[11];
 
@@ -101,7 +101,7 @@ $general = ContainerRegistry::get(CommonService::class);
         $vlFormReqResult = $db->query($vlFormReqQuery);
 
         /* If request data not requested then process otherwise send msg */
-        if (isset($vlFormReqResult) && count($vlFormReqResult) == 0) {
+        if (empty($vlFormReqResult)) {
             $db->insert($vlReqFromTable, $data);
             $lastId = $db->getInsertId();
             if (isset($lastId) && $lastId > 0) {

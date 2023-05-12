@@ -53,7 +53,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
-    if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
+    if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($facilityMap)) {
@@ -175,7 +175,7 @@ if (isset($tableResult) && !empty($tableResult)) { ?>
         });
     <?php }
 
-    if (isset($rjResult) && count($rjResult) > 0) { ?>
+    if (isset($rjResult) && !empty($rjResult)) { ?>
         $('#rejectedType').highcharts({
             chart: {
                 plotBackgroundColor: null,

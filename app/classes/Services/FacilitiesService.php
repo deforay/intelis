@@ -9,8 +9,7 @@ use MysqliDb;
 class FacilitiesService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
     protected $table = 'facility_details';
 
     public function __construct($db = null)

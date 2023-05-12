@@ -14,9 +14,8 @@ use MysqliDb;
 class InstrumentsService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'instruments';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'instruments';
 
     public function __construct($db = null)
     {
@@ -24,7 +23,7 @@ class InstrumentsService
     }
 
 
-    public function getInstruments($testType = null,$dropDown = false)
+    public function getInstruments($testType = null, $dropDown = false)
     {
         $db = $this->db;
         $db->where('status', 'active');
@@ -33,15 +32,12 @@ class InstrumentsService
         }
         $db->orderBy('machine_name', 'ASC');
         $result = $db->get($this->table);
-        if($dropDown)
-        {
+        if ($dropDown) {
             foreach ($result as $row) {
                 $response[$row['config_id']] = $row['machine_name'];
             }
             return $response;
-        }
-        else
-        {
+        } else {
             return $result;
         }
     }

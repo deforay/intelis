@@ -425,7 +425,7 @@ foreach ($tatResult as $sRow) {
             xAxis: {
                 //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
-                                if (isset($result['date']) && count($result['date']) > 0) {
+                                if (isset($result['date']) && !empty($result['date'])) {
                                     foreach ($result['date'] as $date) {
                                         echo "'" . $date . "',";
                                     }

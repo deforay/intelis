@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "r_tb_test_reasons";
 $primaryKey = "test_reason_id";
@@ -77,13 +77,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         }
         $sWhereSub .= ")";
     }
-    $sWhere[]= $sWhereSub;
+    $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[]= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 
@@ -99,7 +99,7 @@ if (isset($sWhere) && !empty($sWhere)) {
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -127,16 +127,15 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['test_reason_id'] . '" title="'. _("Please select status").'" onchange="updateStatus(this,\'' . $aRow['test_reason_status'] . '\')">
-               <option value="active" ' . ($aRow['test_reason_status'] == "active" ? "selected=selected" : "") . '>'. _("Active").'</option>
-               <option value="inactive" ' . ($aRow['test_reason_status'] == "inactive"  ? "selected=selected" : "") . '>'. _("Inactive").'</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['test_reason_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['test_reason_status'] . '\')">
+               <option value="active" ' . ($aRow['test_reason_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['test_reason_status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['test_reason_name']);
-    if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] !='vluser') {
+    if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
-    }
-    else {
+    } else {
         $row[] = ($aRow['test_reason_status']);
     }
     $output['aaData'][] = $row;
