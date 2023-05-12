@@ -38,8 +38,7 @@ $input = json_decode(file_get_contents("php://input"), true);
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 
 

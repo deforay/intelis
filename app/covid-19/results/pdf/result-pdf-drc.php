@@ -302,7 +302,7 @@ if (!empty($requestResult)) {
         // $html .= '<tr style="background-color:#dbdbdb;">
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:40px;font-size:12px;font-weight:normal;">';
-        if (isset($covid19TestInfo) && count($covid19TestInfo) > 0 && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
+        if (isset($covid19TestInfo) && !empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
             /* Test Result Section */
             $html .= '<table border="1">
                                         <tr>
@@ -478,7 +478,7 @@ if (!empty($requestResult)) {
             if ($draftTextShow) {
                 //Watermark section
                 $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }

@@ -59,15 +59,15 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-          if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-               if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
-                    $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+    $sOrder = "";
+    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
+        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
+            if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
+                $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
+        }
+    }
+    $sOrder = substr_replace($sOrder, "", -2);
 }
 /*
 * Filtering
@@ -184,7 +184,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] = "  vl.facility_id IN (" . $facilityMap . ")  ";
     }
 }
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }

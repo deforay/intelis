@@ -17,7 +17,7 @@ $systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
 if ($systemType == 'remoteuser' && (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap']))) {
-        $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
@@ -284,7 +284,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 </div>
 <script>
     <?php
-    if (isset($tResult) && count($tResult) > 0) {
+    if (isset($tResult) && !empty($tResult)) {
     ?>
         $('#hepatitisSampleStatusOverviewContainer').highcharts({
             chart: {
@@ -462,7 +462,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         });
     <?php
     }
-    if (isset($result) && count($result) > 0) {
+    if (isset($result) && !empty($result)) {
     ?>
         $('#hepatitisLabAverageTat').highcharts({
             chart: {

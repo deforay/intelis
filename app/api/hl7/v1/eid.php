@@ -382,7 +382,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $_POST['eidSampleId'] = $id;
         }
     }
-    if (isset($eidData) && count($eidData) > 0) {
+    if (isset($eidData) && !empty($eidData)) {
         $tableName = "form_eid";
         $tableName1 = "activity_log";
         $instanceId = $_POST['instanceId'];
@@ -458,7 +458,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $sQuery = "SELECT eid_id, sample_code, remote_sample_code FROM form_eid where eid_id = " . $_POST['eidSampleId'];
         $savedSamples = $db->rawQueryOne($sQuery);
     }
-    if ($id > 0 && isset($eidData) && count($eidData) > 0) {
+    if ($id > 0 && isset($eidData) && !empty($eidData)) {
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {

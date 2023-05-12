@@ -34,14 +34,12 @@ $transactionId = $general->generateUUID();
 
 try {
     ini_set('memory_limit', -1);
-    $auth = $general->getHeader('Authorization');
-    $authToken = str_replace("Bearer ", "", $auth);
+    $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserFromToken($authToken);
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
         //http_response_code(501);
-        //// exit(0); 
-    } else if (!empty($_REQUEST)) {
+    } elseif (!empty($_REQUEST)) {
         $decode = $_REQUEST;
         $decode['post'] = json_decode($decode['post'], true);
     } else {
@@ -161,7 +159,7 @@ try {
         );
     }
 
-    echo json_encode($payload);
+    $payload = json_encode($payload);
 } catch (SystemException $exc) {
     $payload = array(
         'status' => 'failed',
@@ -169,11 +167,13 @@ try {
         'timestamp' => time(),
     );
 
-    echo json_encode($payload);
+    $payload = json_encode($payload);
     error_log(print_r($data['post'], true));
 
     error_log("Save User Profile API : " . $exc->getMessage());
     error_log($exc->getTraceAsString());
 }
+
 $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $decode, $payload, 'json');
-// exit(0); 
+
+echo $payload;

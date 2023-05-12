@@ -230,7 +230,7 @@ $tableResult = $db->rawQuery($sQuery);
                 </thead>
                 <tbody>
                     <?php
-                    if (isset($tableResult) && count($tableResult) > 0) {
+                    if (isset($tableResult) && !empty($tableResult)) {
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
                                 <td><?php echo ($tableRow['facility_name']); ?></td>

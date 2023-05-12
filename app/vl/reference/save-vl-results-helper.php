@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -19,17 +19,15 @@ $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;
 try {
 	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
-        if(count($_POST['instruments']) > 0){
-            $jsonInstruments = json_encode($_POST['instruments'],true);
-        }
-        else
-        {
-            $jsonInstruments = NULL;
-        }
+		if (!empty($_POST['instruments'])) {
+			$jsonInstruments = json_encode($_POST['instruments'], true);
+		} else {
+			$jsonInstruments = null;
+		}
 		$data = array(
 			'result' 		=> ($_POST['resultName']),
-            'available_for_instruments' => $jsonInstruments,
-            'interpretation' => $_POST['interpretation'],
+			'available_for_instruments' => $jsonInstruments,
+			'interpretation' => $_POST['interpretation'],
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);

@@ -39,12 +39,11 @@ $input = json_decode(file_get_contents("php://input"), true);
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 try {
     $transactionId = $general->generateUUID();
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
         vl.app_sample_code                      as appSampleCode,
         vl.unique_id                            as uniqueId,
         vl.tb_id                                as tbId,
@@ -106,21 +105,21 @@ try {
         vl.revised_on                           as revisedOn,
         vl.reason_for_changing                  as reasonFortbResultChanges
         
-        FROM form_tb as vl 
-        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
+        FROM form_tb as vl
+        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
         LEFT JOIN geographical_divisions as gdd ON f.facility_district_id=gdd.geo_id
         LEFT JOIN geographical_divisions as gdp ON vl.province_id=gdp.geo_id
-        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-        LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by 
-        LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
-        LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by 
-        LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=vl.specimen_type 
-        LEFT JOIN r_tb_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
+        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+        LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
+        LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician
+        LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by
+        LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=vl.specimen_type
+        LEFT JOIN r_tb_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
@@ -219,4 +218,3 @@ try {
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'tb', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 echo $payload;
-// exit(0); 

@@ -91,7 +91,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 	}
 }
 $sWhere = [];
-if(!empty($whereCondition))
+if (!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 
 $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name 
@@ -128,7 +128,7 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = [];
-if(!empty($whereCondition))
+if (!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 		SUM(CASE
@@ -176,7 +176,7 @@ if ($start_date == '' && $end_date == '') {
 	$end_date = date('Y-m-d');
 }
 $sWhere = [];
-if(!empty($whereCondition))
+if (!empty($whereCondition))
 	$sWhere[] = $whereCondition;
 $tatSampleQuery = "SELECT 
         count(*) as 'totalSamples',
@@ -253,7 +253,7 @@ foreach ($tatResult as $sRow) {
 </div>
 <script>
 	<?php
-	if (isset($tResult) && count($tResult) > 0) {
+	if (isset($tResult) && !empty($tResult)) {
 	?>
 		$('#eidSampleStatusOverviewContainer').highcharts({
 			chart: {
@@ -308,7 +308,7 @@ foreach ($tatResult as $sRow) {
 							name: '<?php echo ($tRow['status_name']); ?>',
 							y: <?php echo ($tRow['total']); ?>,
 							color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-							url: '../dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']);?>'
+							url: '../dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
 						},
 					<?php
 					}
@@ -375,7 +375,7 @@ foreach ($tatResult as $sRow) {
 		});
 	<?php
 	}
-	if (isset($result) && count($result) > 0) {
+	if (isset($result) && !empty($result)) {
 	?>
 		$('#eidLabAverageTat').highcharts({
 			chart: {

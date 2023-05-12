@@ -196,8 +196,8 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($sWhere) && count($sWhere)>0) {
-	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND '.implode(" AND ", $sWhere);
+if (isset($sWhere) && !empty($sWhere)) {
+	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND ' . implode(" AND ", $sWhere);
 	$sQuery = $sQuery . $sWhere;
 }
 if (isset($sOrder) && $sOrder != "") {
@@ -270,7 +270,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['sample_received_at_vl_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
-	
+
 	$output['aaData'][] = $row;
 }
 

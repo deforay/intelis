@@ -6,7 +6,7 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -27,7 +27,7 @@ $tResult = [];
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $start_date = '';
     $end_date = '';
-    
+
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -43,7 +43,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
                 ";
-                
+
     $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -58,15 +58,12 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     if (!empty($facilityMap)) {
         $sWhere[] = " vl.facility_id IN ($facilityMap)";
     }
-if(isset($sWhere) && count($sWhere) > 0)
-{
-    $sWhere = implode(' AND ',$sWhere);
-}
-else
-{
-    $sWhere ="";
-}
-    $vlQuery = $vlQuery . ' where ' .$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    if (isset($swhere) && !empty($sWhere)) {
+        $sWhere = implode(' AND ', $sWhere);
+    } else {
+        $sWhere = "";
+    }
+    $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
     // print_r($vlQuery);die;
@@ -82,29 +79,29 @@ else
     }
 }
 
-if (isset($tResult) && count($tResult) > 0) {
+if (isset($tResult) && !empty($tResult)) {
 ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
-if (isset($tableResult) && count($tableResult) > 0) { ?>
+if (isset($tableResult) && !empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></button>
     </div>
 <?php } ?>
 <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th><?php echo _("Lab Name");?></th>
-            <th><?php echo _("Facility Name");?></th>
-            <th><?php echo _("Rejection Reason");?></th>
-            <th><?php echo _("Reason Category");?></th>
-            <th><?php echo _("No. of Samples");?></th>
+            <th><?php echo _("Lab Name"); ?></th>
+            <th><?php echo _("Facility Name"); ?></th>
+            <th><?php echo _("Rejection Reason"); ?></th>
+            <th><?php echo _("Reason Category"); ?></th>
+            <th><?php echo _("No. of Samples"); ?></th>
         </tr>
     </thead>
     <tbody>
         <?php
-        if (isset($tableResult) && count($tableResult) > 0) {
+        if (isset($tableResult) && !empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
         ?>
                 <tr>
@@ -125,7 +122,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
         $("#vlRequestDataTable").DataTable();
     });
     <?php
-    if (isset($tResult) && count($tResult) > 0) { ?>
+    if (isset($tResult) && !empty($tResult)) { ?>
         $('#container').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -134,7 +131,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons");?>"
+                text: "<?php echo _("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -189,7 +186,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories");?>"
+                text: "<?php echo _("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false

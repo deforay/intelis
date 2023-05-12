@@ -273,7 +273,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 $sWhere[] = " result_status is NOT NULL";
 
-if (isset($sWhere) && count($sWhere) > 0) {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' where ' . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;

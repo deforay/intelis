@@ -14,6 +14,7 @@ use App\Utilities\DateUtility;
 // $fundingSourceList = $db->query($fundingSourceQry);
 
 /* To get testing platform names */
+
 $testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -121,7 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <!-- <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
                                         <tr>
                                             <?php
@@ -218,7 +219,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Case ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -306,7 +307,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr class="vaccinationInfo" style="display:none;">
                                         <th scope="row"><label for="vaccinationDosage">Vaccination Dosage</label></th>
                                         <td>
-                                             <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
+                                            <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
                                                 <option value=''> -- Select -- </option>
                                                 <option value='first' <?php echo ($covid19Info['vaccination_dosage'] == 'first') ? "selected='selected'" : ""; ?>> First </option>
                                                 <option value='second' <?php echo ($covid19Info['vaccination_dosage'] == 'second') ? "selected='selected'" : ""; ?>> Second </option>
@@ -329,7 +330,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
 
                                     <tr>
                                         <td colspan=4>
@@ -379,17 +380,17 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
                                         <td>
-                                             <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
+                                            <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
                                                 <option value=''> -- Select -- </option>
                                                 <option value='yes' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value='no' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 <option value='unknown' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
-                                    <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -398,7 +399,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 } ?>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                 </table>
                             </div>
@@ -411,7 +412,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -486,7 +487,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"  id="testNameTable">
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test No.</th>
@@ -500,7 +501,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php $span = 4;
-                                                        if (isset($covid19TestInfo) && count($covid19TestInfo) > 0) {
+                                                        if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
                                                             $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
@@ -662,7 +663,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (isset($covid19TestInfo) && count($covid19TestInfo) > 0) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {
@@ -701,7 +702,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
     function setPatientDetails(pDetails) {
         patientArray = JSON.parse(pDetails);
-        
+
         $("#patientProvince").val(patientArray['geo_name']).trigger('change');
         $("#firstName").val(patientArray['firstname']);
         $("#lastName").val(patientArray['lastname']);
@@ -852,8 +853,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
-    function addNewVaccinationType()
-    {
+    function addNewVaccinationType() {
         var vaccinationType = $("#vaccinationType").val();
         if (vaccinationType == 'other') {
             $(".vaccinationTypeOther").show();
@@ -866,14 +866,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         }
     }
 
-    function vaccinationInfoShow()
-    {
+    function vaccinationInfoShow() {
         status = $("#vaccinationStatus").val();
-        if(status=="yes"){
+        if (status == "yes") {
             $('.vaccinationInfo').show();
-        }
-        else
-        {
+        } else {
             $('.vaccinationInfo').hide();
             $("#vaccinationTypeOther").val("");
             $("#vaccinationType").val("");
@@ -914,36 +911,36 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "Today");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-	
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+
+        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
         var collectDate = $("#sampleCollectionDate").toString();
         var dispatchDate = $("#sampleDispatchedDate").toString();
-		if($("#sampleDispatchedDate").val()=="" || (collectDate >= dispatchDate))
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
-		$('#sampleDispatchedDate').datetimepicker({
+        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+
+        $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             minDate: minDate,
-			startDate: minDate,
+            startDate: minDate,
         });
 
         $('.expDate').datepicker({

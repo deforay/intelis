@@ -436,7 +436,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             $_POST['covid19SampleId'] = $id;
         }
     }
-    if (isset($covid19Data) && count($covid19Data) > 0) {
+    if (isset($covid19Data) && !empty($covid19Data)) {
         $tableName = "form_covid19";
         $tableName1 = "activity_log";
         $testTableName = 'covid19_tests';
@@ -539,7 +539,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     }
     $returnString = "";
     // print_r($savedSamples);die;
-    if ($id > 0 && isset($covid19Data) && count($covid19Data) > 0) {
+    if ($id > 0 && isset($covid19Data) && !empty($covid19Data)) {
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {

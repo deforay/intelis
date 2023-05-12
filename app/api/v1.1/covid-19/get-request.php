@@ -39,13 +39,12 @@ $input = json_decode(file_get_contents("php://input"), true);
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
-$auth = $general->getHeader('Authorization');
-$authToken = str_replace("Bearer ", "", $auth);
+$authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserFromToken($authToken);
 
 
 try {
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
         vl.app_sample_code                as appSampleCode,
         vl.unique_id                            as uniqueId,
         vl.covid19_id                           as covid19Id,
@@ -164,7 +163,7 @@ try {
         CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName,
         vl.reason_for_changing                  as reasonForCovid19ResultChanges
         
-        FROM form_covid19 as vl 
+        FROM form_covid19 as vl
         
         LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -247,7 +246,6 @@ try {
             'data' => $rowData
         );
     }
-    
 } catch (SystemException $exc) {
     $payload = array(
         'status' => 'failed',
@@ -262,4 +260,3 @@ $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'get-request', 'covid19', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
 http_response_code(200);
 echo $payload;
-

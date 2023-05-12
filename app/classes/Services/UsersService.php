@@ -69,7 +69,7 @@ class UsersService
 
         if (isset($this->applicationConfig['modules']['genericTests']) && $this->applicationConfig['modules']['genericTests'] === true) {
             $sharedGenericPrivileges = array(
-                'update-generic-test-result.php'=> 'generic-test-results.php'
+                'update-generic-test-result.php' => 'generic-test-results.php'
             );
 
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
@@ -391,12 +391,20 @@ class UsersService
     public function getUserRolePrivileges($userId)
     {
         $response = [];
-        $query = "SELECT r.role_id, r.role_code,r.role_name, r.access_type, res.module,p.privilege_id,p.resource_id, p.privilege_name, p.display_name
+        $query = "SELECT r.role_id,
+                    r.role_code,
+                    r.role_name,
+                    r.access_type,
+                    res.module,
+                    p.privilege_id,
+                    p.resource_id,
+                    p.privilege_name,
+                    p.display_name
                     FROM roles as r
-                    INNER JOIN roles_privileges_map as rpm ON rpm.role_id=r.role_id 
-                    INNER JOIN privileges as p ON rpm.privilege_id=p.privilege_id 
-                    INNER JOIN resources as res ON res.resource_id=p.resource_id 
-                    INNER JOIN user_details as ud ON ud.role_id=r.role_id 
+                    INNER JOIN roles_privileges_map as rpm ON rpm.role_id=r.role_id
+                    INNER JOIN privileges as p ON rpm.privilege_id=p.privilege_id
+                    INNER JOIN resources as res ON res.resource_id=p.resource_id
+                    INNER JOIN user_details as ud ON ud.role_id=r.role_id
                     WHERE ud.user_id = ?
                     ORDER by res.module, p.resource_id, p.display_name";
         $resultSet = $this->db->rawQuery($query, array($userId));
