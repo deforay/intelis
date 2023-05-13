@@ -17,7 +17,6 @@ error_log
 \.DS_Store$
 [Tt]humbs\.db$
 
-
 syntax: glob
 error.log
 errors.log
@@ -32,15 +31,12 @@ Thumbs.db.orig
 .git/*
 .gitattributes
 .gitignore
-configs/config.production.php
-configs/config.interop.php
-configs/config.testing.php
-configs/config.staging.php
-configs/config.development.php
-configs/config.development.php.dist
+configs/config.*.php
+!configs/config.*.dist.php
 configs/bg.png
 configs/bg.jpg
 secretKey.txt
 vendor
 .user.ini
 rector.php
+**/node_modules/
