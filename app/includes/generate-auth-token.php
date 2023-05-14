@@ -1,19 +1,11 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\UsersService;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+/** @var UsersService $general */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $size = $_POST['size'] ?? 6;
 
-echo base64_encode($general->generateUUID() . "-" . $general->generateToken($size));
+echo $usersService->generateAuthToken($size);

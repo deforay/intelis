@@ -3,6 +3,7 @@
 ///  if you change anyting in this file make sure Api file for covid 19 update also 
 // Path   /vlsm/api/covid-19/v1/update-request.php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -434,6 +435,5 @@ try {
 		header("Location:/covid-19/requests/covid-19-requests.php");
 	}
 } catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+	throw new SystemException($exc->getMessage(), $exc->getCode(), $exc);
 }

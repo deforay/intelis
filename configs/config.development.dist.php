@@ -17,6 +17,7 @@ $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = true;
 $systemConfig['modules']['hepatitis'] = false;
 $systemConfig['modules']['tb'] = false;
+$systemConfig['modules']['genericTests'] = false;
 
 $systemConfig['instanceName'] = '';
 
@@ -85,7 +86,7 @@ $systemConfig['recency']['crossloginSalt'] = "PUT-A-RANDOM-STRING-HERE";
 
 
 
-$systemConfig['system'] =[
+$systemConfig['system'] = [
     'debug_mode' => true, // set to true to enable debug mode
     'cache_di' => false, // set to true to enable DI Container caching
 ];

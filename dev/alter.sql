@@ -3962,5 +3962,12 @@ UPDATE `resources` SET `display_name` = 'Lab Tests Reference Management' WHERE `
 UPDATE `resources` SET `display_name` = 'Lab Tests Report Management' WHERE `resources`.`resource_id` = 'generic-management';
 
 
--- Amit 1-May-2023 version 5.1.5
+-- Amit 12-May-2023 version 5.1.5
 UPDATE `system_config` SET `value` = '5.1.5' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 13-May-2023
+ALTER TABLE `form_covid19` ADD `vaccination_status` TEXT NULL DEFAULT NULL AFTER `patient_passport_number`;
+ALTER TABLE `form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL AFTER `vaccination_status`;
+ALTER TABLE `form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
+ALTER TABLE `form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
+ALTER TABLE `form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL AFTER `patient_city`;

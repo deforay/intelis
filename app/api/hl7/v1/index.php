@@ -38,7 +38,7 @@ try {
     // The request has to send an Authorization Bearer token
     $authToken = $general->getAuthorizationBearerToken();
     if (!empty($authToken)) {
-        $user = $usersService->getUserFromToken($authToken);
+        $user = $usersService->getUserByToken($authToken);
     }
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {

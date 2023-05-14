@@ -10,7 +10,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
-$rKey = ''; 
+$rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
@@ -19,7 +19,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 	$rKey = 'R';
 } else {
@@ -434,7 +434,7 @@ $sFormat = '';
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="">Date de réception de l'échantillon  </label></td>
+											<td style="width: 25%;"><label for="">Date de réception de l'échantillon </label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
@@ -450,7 +450,7 @@ $sFormat = '';
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée  </label></td>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
 											<td style="width: 25%;">
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value="">-- Sélectionner --</option>
@@ -461,7 +461,7 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<td style="width: 25%;"><label for="">Décision prise  </label></td>
+											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="noResult" name="noResult" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
@@ -747,9 +747,9 @@ $sFormat = '';
 	}
 
 	$('#vlResult').on('change', function() {
-		if($(this).val() != ""){
+		if ($(this).val() != "") {
 			$('.authorisation').addClass("isRequired");
-		}else{
+		} else {
 			$('.authorisation').removeClass("isRequired");
 		}
 		//if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
@@ -867,51 +867,51 @@ $sFormat = '';
 
 		$("#artNo").on('input', function() {
 
-let artNo = $.trim($(this).val());
+			let artNo = $.trim($(this).val());
 
-if (artNo.length < 10) {
-	 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-}
-if (artNo.length > 3) {
+			if (artNo.length < 10) {
+				$("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+			}
+			if (artNo.length > 3) {
 
-	 $.post("/common/patient-last-request-details.php", {
-			   testType: 'vl',
-			   patientId: artNo,
-		  },
-		  function(data) {
-			   if (data != "0") {
-					obj = $.parseJSON(data);
-					if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-						 $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
-					}
-					if (obj.request_created_datetime != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
-					}
-					if (obj.sample_collection_date != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
-					}
-					if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
-					}
-			   } else {
-					if (artNo.length < 10) {
-						 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-					} else {
-						 $("#artNoGroup").html('');
-					}
-			   }
-		  });
-}
+				$.post("/common/patient-last-request-details.php", {
+						testType: 'vl',
+						patientId: artNo,
+					},
+					function(data) {
+						if (data != "0") {
+							obj = $.parseJSON(data);
+							if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+								$("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+							}
+							if (obj.request_created_datetime != null) {
+								$("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+							}
+							if (obj.sample_collection_date != null) {
+								$("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+							}
+							if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+								$("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+							}
+						} else {
+							if (artNo.length < 10) {
+								$("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+							} else {
+								$("#artNoGroup").html('');
+							}
+						}
+					});
+			}
 
-});
+		});
 
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "+1Y",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -923,9 +923,9 @@ if (artNo.length > 3) {
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
 		$('#fName').select2({
 			placeholder: "Select Clinic/Health Center"

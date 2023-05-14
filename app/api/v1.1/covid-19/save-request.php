@@ -45,7 +45,7 @@ try {
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $authToken = $general->getAuthorizationBearerToken();
-    $user = $usersService->getUserFromToken($authToken);
+    $user = $usersService->getUserByToken($authToken);
 
     $roleUser = $usersService->getUserRole($user['user_id']);
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";

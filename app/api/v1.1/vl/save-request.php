@@ -9,8 +9,6 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
-session_unset(); // no need of session in json response
-header('Content-Type: application/json');
 
 
 try {
@@ -51,7 +49,7 @@ try {
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $authToken = $general->getAuthorizationBearerToken();
-    $user = $usersService->getUserFromToken($authToken);
+    $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";

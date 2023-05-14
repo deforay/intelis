@@ -36,7 +36,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $input = json_decode($params, true);
 $authToken = $general->getAuthorizationBearerToken();
-$user = $usersService->getUserFromToken($authToken);
+$user = $usersService->getUserByToken($authToken);
 try {
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT
