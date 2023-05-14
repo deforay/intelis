@@ -14,8 +14,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 

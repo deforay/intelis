@@ -19,7 +19,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -332,8 +331,8 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 }
 
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($facilityMap)) {
-     $sWhere[] =  "  vl.facility_id IN (" . $facilityMap . ")   ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);

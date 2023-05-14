@@ -18,7 +18,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -80,8 +79,8 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     }
 }
-if (!empty($facilityMap)) {
-    $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere .= " AND tl.test_type = 'vl' ";
 
@@ -89,60 +88,6 @@ $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tes
 
 $_SESSION['vlSuppressedTargetReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
-// print_r($sQuery);die;
-
-/* $res = [];
-$totCnt = 0;
-foreach ($rResult as $aRow) {
-     $row = [];
-     if(isset($res[$aRow['monthrange']]))
-    {
-        if( isset($res[$aRow['monthrange']][$aRow['facility_id']]))
-        {
-          
-            $row['totalTested'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalTested'] + 1; 
-            if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                $row['totalSuppressed'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalSuppressed'] + 1;
-            $row['facility_name'] = ($aRow['facility_name']);
-            $row['monthrange'] = $aRow['monthrange'];
-            $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-            $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-            // $row['totalCollected'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalCollected']  + 1;
-            $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-          // print_r(($row['totalTested']) * 100);die;
-        }
-        else
-        {
-            $row['totalTested'] = 1; 
-            if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                $row['totalSuppressed'] =  1;
-            else
-                $row['totalSuppressed'] =  0;
-        $row['facility_name'] = ($aRow['facility_name']);
-        $row['monthrange'] = $aRow['monthrange'];
-        $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-            $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-                $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-        }
-    }
-    else
-          {
-                $row['totalTested'] = 1; 
-                if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                    $row['totalSuppressed'] =  1;
-                else
-                    $row['totalSuppressed'] =  0;
-               $row['facility_name'] = ($aRow['facility_name']);
-               $row['monthrange'] = $aRow['monthrange'];
-               $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-                $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-               // $row['totalCollected'] = $res[$aRow['monthrange']]['totalCollected']  + 1;
-               $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-          }
-   
-} */
-// $_SESSION['vlSuppressedTargetReportResult'] = json_encode($res);
-// echo json_encode($res);die;
 
 foreach ($rResult as $subRow) {
     $res[$subRow['monthrange']][$subRow['facility_id']]['totalSuppressed']   = $subRow['totalSuppressed'];
@@ -247,9 +192,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
                         <?php
                         echo  $tRow['supp_percent'];
                         ?>
-                    ],
-                    //    color:' <?php // echo  $color; 
-                                    ?>'
+                    ]
                 },
 
             <?php  } ?>

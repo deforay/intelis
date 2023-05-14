@@ -23,7 +23,6 @@ $country = $general->getGlobalConfig('vl_form');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $sarr = $general->getSystemConfig();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -192,10 +191,8 @@ if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
   $sWhere[] =  " vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
-  if (!empty($facilityMap)) {
-    $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ")";
-  }
+if (!empty($_SESSION['facilityMap'])) {
+  $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
 if (isset($sWhere) && !empty($sWhere)) {

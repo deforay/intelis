@@ -15,7 +15,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -178,12 +177,11 @@ if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
     $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
-//$sFilter = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-    if (!empty($facilityMap)) {
-        $sWhere[] = "  vl.facility_id IN (" . $facilityMap . ")  ";
-    }
+
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere[] = "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
+
 if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' WHERE ' . $sWhere;

@@ -14,7 +14,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -334,8 +333,8 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     if (!empty($facilityMap)) {
-          $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
+     if (!empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      }
 } else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = ' vl.result_status!=9';

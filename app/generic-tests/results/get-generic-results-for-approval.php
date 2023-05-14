@@ -156,12 +156,10 @@ if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      }
 }
 
-if ($systemType == 'remoteuser') {
-     $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-     if (!empty($facilityMap)) {
-          $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ")  ";
-     }
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
+
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 
 if (isset($sWhere) && !empty($sWhere)) {

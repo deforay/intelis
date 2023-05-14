@@ -20,7 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 
 $tableName = "form_eid";
@@ -175,8 +174,8 @@ if (isset($_POST['sampleRejectionReason']) && $_POST['sampleRejectionReason'] !=
 }
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-    if (!empty($facilityMap)) {
-        $sWhere[] =  " vl.facility_id IN (" . $facilityMap . ") ";
+    if (!empty($_SESSION['facilityMap'])) {
+        $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 }
 

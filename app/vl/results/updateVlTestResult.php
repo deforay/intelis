@@ -31,8 +31,7 @@ $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
 foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);

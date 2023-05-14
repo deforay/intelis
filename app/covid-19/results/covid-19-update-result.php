@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 $title = _("Enter Covid-19 Result");
@@ -22,8 +22,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
 	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -34,10 +33,6 @@ $id = base64_decode($_GET['id']);
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
-
-
-$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-$userResult = $db->rawQuery($userQuery);
 
 
 //sample rejection reason

@@ -35,8 +35,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 $testingLabs = $facilitiesService->getTestingLabs('eid');
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);

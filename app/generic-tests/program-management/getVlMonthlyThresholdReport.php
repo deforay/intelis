@@ -18,7 +18,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 $formId = $general->getGlobalConfig('vl_form');
 
 //system config
@@ -194,9 +193,7 @@ if ($sWhere != '') {
 }
 
 // HAVING COUNT(c2.sid) >= 2)
-// if (!empty($facilityMap)) {
-//      $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
-// }
+
 $sWhere .= " AND tl.test_type = 'vl'";
 
 

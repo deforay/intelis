@@ -287,24 +287,11 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-// if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-//      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sSampleReceivedDate . '"';
-//      } else {
-//           $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-//      }
-// }
-//$cWhere = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-     //$cWhere = " AND request_created_by='".$_SESSION['userId']."'";
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-          // $cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-     }
+
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
+
 if (isset($sWhere) && !empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
 } else {

@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -18,42 +18,41 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
 //system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+$sarr = $general->getSystemConfig();
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 
-$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as monthrange, f.facility_id, f.facility_name, vl.is_sample_rejected,vl.sample_tested_datetime,vl.sample_collection_date, vl.vl_result_category, tl.suppressed_monthly_target,
-SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected,
-SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppressed%') THEN 1 ELSE 0 END) as totalSuppressed,
-SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
- FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as monthrange,
+            f.facility_id,
+            f.facility_name,
+            vl.is_sample_rejected,
+            vl.sample_tested_datetime,
+            vl.sample_collection_date,
+            vl.vl_result_category,
+            tl.suppressed_monthly_target,
+            SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected,
+            SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppressed%') THEN 1 ELSE 0 END) as totalSuppressed,
+            SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
+            FROM testing_labs as tl
+            INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
 
 $sWhere = ' WHERE vl.result_status!=9';
-if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {
+if (isset($_POST['facilityName']) && !empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];
     $out = '';
     for ($s = 0; $s < count($fac); $s++) {
-        if ($out)
+        if ($out) {
             $out = $out . ',"' . $fac[$s] . '"';
-        else
+        } else {
             $out = '("' . $fac[$s] . '"';
+        }
     }
     $out = $out . ')';
     if (isset($sWhere)) {
@@ -69,24 +68,24 @@ if (isset($_POST['facilityName']) && count($_POST['facilityName']) > 0) {
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
+    $s_t_date = explode("to", $_POST['sampleTestDate']);
+    if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+        $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
+    }
+    if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+        $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
+    }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     if (isset($sWhere)) {
-         $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+        $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     } else {
-         $sWhere = ' where ' . $sWhere;
-         $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+        $sWhere = ' where ' . $sWhere;
+        $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     }
 }
-if (!empty($facilityMap)) {
-    $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere .= " AND tl.test_type = 'vl' ";
 
@@ -94,60 +93,7 @@ $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tes
 
 $_SESSION['vlSuppressedTargetReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
-// print_r($sQuery);die;
 
-/* $res = [];
-$totCnt = 0;
-foreach ($rResult as $aRow) {
-     $row = [];
-     if(isset($res[$aRow['monthrange']]))
-    {
-        if( isset($res[$aRow['monthrange']][$aRow['facility_id']]))
-        {
-          
-            $row['totalTested'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalTested'] + 1; 
-            if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                $row['totalSuppressed'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalSuppressed'] + 1;
-            $row['facility_name'] = ($aRow['facility_name']);
-            $row['monthrange'] = $aRow['monthrange'];
-            $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-            $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-            // $row['totalCollected'] = $res[$aRow['monthrange']][$aRow['facility_id']]['totalCollected']  + 1;
-            $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-          // print_r(($row['totalTested']) * 100);die;
-        }
-        else
-        {
-            $row['totalTested'] = 1; 
-            if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                $row['totalSuppressed'] =  1;
-            else
-                $row['totalSuppressed'] =  0;
-        $row['facility_name'] = ($aRow['facility_name']);
-        $row['monthrange'] = $aRow['monthrange'];
-        $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-            $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-                $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-        }
-    }
-    else
-          {
-                $row['totalTested'] = 1; 
-                if(trim($aRow['vl_result_category'])  != null  && trim($aRow['vl_result_category']) == 'suppressed')
-                    $row['totalSuppressed'] =  1;
-                else
-                    $row['totalSuppressed'] =  0;
-               $row['facility_name'] = ($aRow['facility_name']);
-               $row['monthrange'] = $aRow['monthrange'];
-               $row['supp_percent'] = ($row['totalSuppressed']/$aRow['suppressed_monthly_target']) * 100;
-                $row['suppressed_monthly_target'] = $aRow['suppressed_monthly_target'];
-               // $row['totalCollected'] = $res[$aRow['monthrange']]['totalCollected']  + 1;
-               $res[$aRow['monthrange']][$aRow['facility_id']] = $row;
-          }
-   
-} */
-// $_SESSION['vlSuppressedTargetReportResult'] = json_encode($res);
-// echo json_encode($res);die;
 
 foreach ($rResult as $subRow) {
     $res[$subRow['monthrange']][$subRow['facility_id']]['totalSuppressed']   = $subRow['totalSuppressed'];
@@ -199,12 +145,12 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
             type: 'column'
         },
         title: {
-            text: "<?php echo _("VL Suppressed Testing Target");?>"
+            text: "<?php echo _("VL Suppressed Testing Target"); ?>"
         },
         exporting: {
             chartOptions: {
                 subtitle: {
-                    text: "<?php echo _("VL Suppressed Testing Target");?>",
+                    text: "<?php echo _("VL Suppressed Testing Target"); ?>",
                 }
             }
         },
@@ -219,7 +165,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         },
         yAxis: {
             title: {
-                text: "<?php echo _("No of target in month %");?>"
+                text: "<?php echo _("No of target in month %"); ?>"
             },
             labels: {
                 formatter: function() {
@@ -253,8 +199,6 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
                         echo  $tRow['supp_percent'];
                         ?>
                     ],
-                    //    color:' <?php // echo  $color; 
-                                    ?>'
                 },
 
             <?php  } ?>

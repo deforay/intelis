@@ -18,7 +18,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -150,8 +149,8 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 $sWhere[] = '  vl.result_status!=9';
 
 
-if (!empty($facilityMap)) {
-     $sWhere[] = " vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
 if (isset($sWhere) && !empty($sWhere)) {

@@ -1,17 +1,22 @@
 <?php
 
+use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+
 $title = _("Edit Configuration");
+
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
-$globalConfigQuery = "SELECT * from system_config";
-$configResult = $db->query($globalConfigQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-  $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//get lab details
-$fDetails = "SELECT * from facility_details where facility_type='2'";
-$fResult = $db->query($fDetails);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+$arr = $general->getGlobalConfig();
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+//get labs
+$fResult = $facilitiesService->getAllFacilities(2);
 ?>
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -71,10 +76,10 @@ $fResult = $db->query($fDetails);
             </div>
 
             <div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("SMTP Settings"); ?></h3>
-							</div>
-							<div class="panel-body">
+              <div class="panel-heading">
+                <h3 class="panel-title"><?php echo _("SMTP Settings"); ?></h3>
+              </div>
+              <div class="panel-body">
                 <div class="row">
                   <div class="col-md-7">
                     <div class="form-group">
@@ -95,8 +100,8 @@ $fResult = $db->query($fDetails);
                     </div>
                   </div>
                 </div>
-							</div>
-						</div>
+              </div>
+            </div>
 
           </div>
           <div class="box-footer">

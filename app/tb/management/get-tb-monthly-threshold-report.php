@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -199,8 +199,8 @@ if ($sWhere != '') {
      $sWhere = $sWhere . ' where vl.result_status!=9';
 }
 
-if (!empty($facilityMap)) {
-     $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere .= " AND hf.test_type = 'tb'";
 $sQuery = $sQuery . ' ' . $sWhere;

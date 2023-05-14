@@ -37,8 +37,7 @@ class ErrorResponseGenerator
 
             $logger->pushHandler($handler);
 
-            $httpCode = http_response_code() == 200 ? '' : http_response_code() . " - ";
-            $httpCode = ($httpCode == '') ? 500 : intval($httpCode);
+            $httpCode = (http_response_code() == 200) ? 500 : http_response_code();
 
             $errorMessage = $exception->getMessage() ??
                 _('Sorry, something went wrong. Please try again later.');
@@ -53,6 +52,7 @@ class ErrorResponseGenerator
                 $responseBody = json_encode([
                     'error' => [
                         'code' => $httpCode,
+                        'timestamp' => time(),
                         'message' => $errorMessage,
                     ],
                 ]);

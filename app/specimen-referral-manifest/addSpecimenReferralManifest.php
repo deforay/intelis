@@ -33,7 +33,7 @@ $testingLabs = $facilitiesService->getTestingLabs($module);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $usersList = [];
-$users = $usersService->getActiveUsers();
+$users = $usersService->getActiveUsers($_SESSION['facilityMap']);
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
@@ -116,7 +116,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-				<?php $hide=""; if($module == 'generic-tests'){ $hide = "hide "?>
+				<?php $hide = "";
+				if ($module == 'generic-tests') {
+					$hide = "hide " ?>
 					<div class="row">
 						<div class="col-xs-4 col-md-4">
 							<div class="form-group" style="margin-left:30px; margin-top:30px;">
@@ -132,7 +134,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					</div>
 				<?php } ?>
 				<!-- form start -->
-				<form class="<?php echo $hide;?>form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="addSpecimenReferralManifestCodeHelper.php">
+				<form class="<?php echo $hide; ?>form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="addSpecimenReferralManifestCodeHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -418,8 +420,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	}
 
 	function getManifestCodeForm(value) {
-		if(value != ""){
-			var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6));?>';
+		if (value != "") {
+			var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
 			$('#packageCode').val(code);
 			$("#addSpecimenReferralManifestForm").removeClass("hide");
 		}
