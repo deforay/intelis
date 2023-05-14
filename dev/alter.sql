@@ -3971,3 +3971,9 @@ ALTER TABLE `form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL AFTER
 ALTER TABLE `form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
 ALTER TABLE `form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
 ALTER TABLE `form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL AFTER `patient_city`;
+
+ALTER TABLE `audit_form_covid19` ADD `vaccination_status` TEXT NULL DEFAULT NULL AFTER `patient_passport_number`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL AFTER `vaccination_status`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
+ALTER TABLE `audit_form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
+ALTER TABLE `audit_form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL AFTER `patient_city`;
