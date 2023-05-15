@@ -109,13 +109,13 @@ $aResult = $db->query($aQuery);
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label></td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
-                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
+                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
+                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -167,18 +167,18 @@ $aResult = $db->query($aQuery);
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                            <td class="labels"><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
+                                        <td class="labels"><label for="labId">Testing Laboratory <span class="mandatory">*</span></label> </td>
+                                        <td>
+                                            <select name="labId" id="labId" class="select2 form-control isRequired" title="Please select the Testing Laboratory" style="width:100%;">
+                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr class="testingPoint" style="display:none;">
                                         <td class="labels"><label for="labTestingPoint">Lab Testing Points</label> </td>
                                         <td>
                                             <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control" title="Please select the Lab Testing Points" style="width:100%;">
-                                               
+
                                             </select>
                                         </td>
                                     </tr>
@@ -203,7 +203,7 @@ $aResult = $db->query($aQuery);
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -225,7 +225,7 @@ $aResult = $db->query($aQuery);
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row" class="labels">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Caretaker phone number</th>
@@ -261,35 +261,35 @@ $aResult = $db->query($aQuery);
 
                                         <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
-                                        <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                            <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                        </select>
+                                            </select>
                                     </tr>
                                     <tr class="motherRegimen" style="display:none;">
-                                    <th scope="row" class="labels">Mother's Regimen</th>
+                                        <th scope="row" class="labels">Mother's Regimen</th>
                                         <td>
-                                        <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
-                                                                      <option value="">-- Select --</option>
-                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?= $heading['headings']; ?>">
-                                                                                <?php
-                                                                                foreach ($aResult as $regimen) {
-                                                                                     if ($heading['headings'] == $regimen['headings']) {
-                                                                                ?>
-                                                                                          <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
-                                                                                <?php
-                                                                                     }
-                                                                                }
-                                                                                ?>
-                                                                           </optgroup>
-                                                                      <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
-                                                                           <option value="other">Other</option>
-                                                                      <?php } ?>
-                                                                 </select>
-                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+                                            <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                <option value="">-- Select --</option>
+                                                <?php foreach ($artRegimenResult as $heading) { ?>
+                                                    <optgroup label="<?= $heading['headings']; ?>">
+                                                        <?php
+                                                        foreach ($aResult as $regimen) {
+                                                            if ($heading['headings'] == $regimen['headings']) {
+                                                        ?>
+                                                                <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </optgroup>
+                                                <?php }
+                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                    <option value="other">Other</option>
+                                                <?php } ?>
+                                            </select>
+                                            <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                         </td>
                                     </tr>
                                     <tr>
@@ -390,7 +390,7 @@ $aResult = $db->query($aQuery);
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
-                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?= htmlspecialchars($eidInfo['reason_for_repeat_pcr_other']); ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" value="<?= htmlspecialchars($eidInfo['reason_for_repeat_pcr_other']); ?>" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;" />
 
                                         </td>
                                         <th scope="row"></th>
@@ -451,7 +451,7 @@ $aResult = $db->query($aQuery);
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                           
+
                                             <td><label for="" class="labels">Testing Platform </label></td>
                                             <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
@@ -489,7 +489,7 @@ $aResult = $db->query($aQuery);
                                             </td>
                                         </tr>
                                         <tr class="rejected" style="display: none;">
-                                            
+
                                             <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
                                             <td class="rejected" style="display: none;"><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
@@ -549,7 +549,7 @@ $aResult = $db->query($aQuery);
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?= htmlspecialchars($eidInfo['lab_tech_comments']); ?></textarea>
                                             </td>
                                             <th scope="row" style="display: none;" class="labels change-reason">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td style="display: none;" class="change-reason"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td style="display: none;" class="change-reason"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -592,15 +592,14 @@ $aResult = $db->query($aQuery);
     provinceName = true;
     facilityName = true;
     machineName = true;
-    function showRegimen()
-    {
-        if($("#motherTreatment").val()=="yes")
+
+    function showRegimen() {
+        if ($("#motherTreatment").val() == "yes")
             $(".motherRegimen").show();
-                else
-                {
+        else {
             $(".motherRegimen").hide();
             $('#motherRegimen').val("");
-                }
+        }
     }
 
     function checkMotherARTRegimenValue() {
@@ -615,8 +614,8 @@ $aResult = $db->query($aQuery);
             $('#newArtRegimen').val("");
         }
     }
-    function checkPCRTestReason()
-    {
+
+    function checkPCRTestReason() {
         var otherReason = $("#pcrTestReason").val();
         if (otherReason == 'Other') {
             $(".reasonForRepeatPcrOther").show();
@@ -628,6 +627,7 @@ $aResult = $db->query($aQuery);
             $('#reasonForRepeatPcrOther').val("");
         }
     }
+
     function getfacilityDetails(obj) {
         $.blockUI();
         var cName = $("#facilityId").val();
@@ -747,56 +747,46 @@ $aResult = $db->query($aQuery);
         }
     }
 
-function getTestingPoint()
-{
-    $.post("/includes/get-testing-points.php", {
-                        facilityId: $("#labId").val(),
-                        testType: 'eid',
-                        oldTestingPoint :$("#oldLabTestingPoint").val()
-                    },
-                    function(data) {
-                        if(data!=0)
-                        {
-                            $('.testingPoint').show();
-                            $("#labTestingPoint").addClass("isRequired");
-                            $("#labTestingPoint").html(data);
-                        }
-                        else
-                        {
-                            $('.testingPoint').hide();
-                            $("#labTestingPoint").removeClass("isRequired");
-                            $("#labTestingPoint").html("");
-                        }
-                    });
-}
+    function getTestingPoint() {
+        $.post("/includes/get-testing-points.php", {
+                facilityId: $("#labId").val(),
+                testType: 'eid',
+                oldTestingPoint: $("#oldLabTestingPoint").val()
+            },
+            function(data) {
+                if (data != 0) {
+                    $('.testingPoint').show();
+                    $("#labTestingPoint").addClass("isRequired");
+                    $("#labTestingPoint").html(data);
+                } else {
+                    $('.testingPoint').hide();
+                    $("#labTestingPoint").removeClass("isRequired");
+                    $("#labTestingPoint").html("");
+                }
+            });
+    }
 
 
     $(document).ready(function() {
         getTestingPoint();
         checkPCRTestReason();
         showRegimen();
-        if($("#pcrTestNumber").val()==1)
-        {
+        if ($("#pcrTestNumber").val() == 1) {
             $("#prePcrTestResult").val("");
             $("#previousPCRTestDate").val("");
             $("#pcrTestReason").val("");
             $('.pcrBox').hide();
+        } else {
+            $('.pcrBox').show();
         }
-            else
-            {
-                $('.pcrBox').show();
-            }
 
-        $("#pcrTestNumber").on("change",function(){
-            if($("#pcrTestNumber").val()==1)
-        {
-            $("#prePcrTestResult").val("");
-            $("#previousPCRTestDate").val("");
-            $("#pcrTestReason").val("");
-            $('.pcrBox').hide();
-        }
-            else
-            {
+        $("#pcrTestNumber").on("change", function() {
+            if ($("#pcrTestNumber").val() == 1) {
+                $("#prePcrTestResult").val("");
+                $("#previousPCRTestDate").val("");
+                $("#pcrTestReason").val("");
+                $('.pcrBox').hide();
+            } else {
                 $('.pcrBox').show();
             }
         });
@@ -808,7 +798,7 @@ function getTestingPoint()
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
-            $("#labId").on('change', function() {
+        $("#labId").on('change', function() {
             if ($("#labId").val() != "") {
                 $.post("/includes/get-sample-type.php", {
                         facilityId: $('#labId').val(),
@@ -842,36 +832,36 @@ function getTestingPoint()
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "Today");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-	
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+
+        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
         var collectDate = $("#sampleCollectionDate").toString();
         var dispatchDate = $("#sampleDispatchedDate").toString();
-		if($("#sampleDispatchedDate").val()=="" || (collectDate >= dispatchDate))
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
-		$('#sampleDispatchedDate').datetimepicker({
+        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+
+        $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             minDate: minDate,
-			startDate: minDate,
+            startDate: minDate,
         });
         $('#labId').select2({
             width: '100%',

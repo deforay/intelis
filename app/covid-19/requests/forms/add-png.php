@@ -101,7 +101,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">EPID</label></td>
@@ -215,7 +215,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
@@ -288,7 +288,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         PATIENT HISTORY
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true">
                                     <th scope="row"><label for="suspectedCase">Is the suspected case</label></th>
                                     <td>
                                         <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
@@ -307,7 +307,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) { ?>
                                                     <tr class="row<?php echo $index; ?>">
@@ -394,7 +394,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         TEST REASON
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width: 15%;"><label for="reasonForCovid19Test">Reason for Test Request<span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -411,7 +411,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         COMORBIDITIES
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row"><label for="ifOtherDiseases">Does the patient have another diagnosis/etiology for their illness?</label></th>
                                         <td>
@@ -440,7 +440,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -466,7 +466,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         SAMPLE COLLECTION
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width: 15%;"><label for="specimenType"> Type of sample collection <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
@@ -485,7 +485,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         HEALTH OUTCOME
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width: 15%;"><label for="healthOutcome"> Health Outcome</label></th>
                                         <td style="width: 35%;">
@@ -511,7 +511,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">RESPIRATORY LABORATORY DIAGNOSTIC RESULTS </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
@@ -548,7 +548,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test No</th>
@@ -575,7 +575,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select type="text" name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
+                                                                <select name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
@@ -1001,7 +1001,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>

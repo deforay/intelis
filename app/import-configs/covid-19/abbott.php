@@ -9,7 +9,7 @@ use League\Csv\Statement;
 
 
 try {
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -36,10 +36,10 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
 
-        $bquery = "select MAX(batch_code_key) from batch_details";
+        $bquery = "SELECT MAX(batch_code_key) FROM `batch_details`";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -107,7 +107,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
 
             $lotNumberVal = $record['REAGENT LOT NUMBER'];
-            
+
             if (trim($record["REAGENT LOT EXPIRATION DATE"]) != '') {
                 $lotExpirationDateVal = (date('Y-m-d', strtotime($record["REAGENT LOT EXPIRATION DATE"])));
             }
@@ -183,9 +183,9 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
+
+                /** @var UsersService $usersService */
+                $usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

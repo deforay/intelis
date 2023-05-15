@@ -216,7 +216,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -238,7 +238,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         <th scope="row">Infant Age (months)</th>
                                         <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Caretaker phone number</th>
@@ -392,7 +392,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -476,7 +476,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
                                         </tr>
                                         <tr class="change-reason">
                                             <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>
@@ -625,16 +625,13 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
         }
     }
 
-    function setRelatedField(pcrVal)
-    {
-        if(pcrVal=='yes')
-        {
+    function setRelatedField(pcrVal) {
+        if (pcrVal == 'yes') {
             $('#previousPCRTestDate').addClass('isRequired');
             $('#pcrTestReason').addClass('isRequired');
             $('#previousPCRTestDate').prop('disabled', false);
             $('#pcrTestReason').prop('disabled', false);
-        }
-        else{
+        } else {
             $('#previousPCRTestDate').prop('disabled', true);
             $('#pcrTestReason').prop('disabled', true);
             $('#previousPCRTestDate').removeClass('isRequired');

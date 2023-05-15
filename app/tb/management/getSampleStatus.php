@@ -273,7 +273,6 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         </div>
     </div>
 </div>
-</div>
 <div class="col-xs-12 labAverageTatDiv">
     <div class="box">
         <div class="box-body">

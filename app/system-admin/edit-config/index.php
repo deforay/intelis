@@ -50,7 +50,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
                     <div class="form-group">
                       <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _("Instance Type"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                        <select type="text" class="form-control" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _('Instance Type'); ?>" title="<?php echo _('Please choose instance type'); ?>" onchange="enableLab();">
+                        <select class="form-control" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _('Instance Type'); ?>" title="<?php echo _('Please choose instance type'); ?>" onchange="enableLab();">
                           <option value="standalone" <?php echo ('standalone' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Standalone"); ?></option>
                           <option value="vluser" <?php echo ('vluser' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Lab Instance"); ?></option>
                           <option value="remoteuser" <?php echo ('remoteuser' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Remote Instance"); ?></option>

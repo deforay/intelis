@@ -40,7 +40,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 	$rKey = 'R';
 } else {
@@ -110,7 +110,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<?php } ?>
 
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
@@ -189,7 +189,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 								</table>
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row" colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
@@ -207,7 +207,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<tr>
 										<th scope="row"><label for="mothersId">Code (si applicable) </label></th>
 										<td>
-											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" />
+											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" />
 										</td>
 										<th scope="row"><label for="mothersName">Nom </label></th>
 										<td>
@@ -242,7 +242,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 										<th scope="row"><label for="childName">Nom </label></th>
 										<td>
-											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" />
+											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" />
 										</td>
 										<th scope="row"><label for="childDob">Date de naissance </label></th>
 										<td>
@@ -276,7 +276,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row" colspan=6>
 											<h4>2. Management de la mère</h4>
@@ -335,7 +335,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:70%">
 									<tr>
 										<th scope="row" colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
@@ -399,7 +399,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:70%">
 									<tr>
 										<th scope="row" colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
@@ -490,7 +490,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<div class="box-header with-border">
 										<h3 class="box-title">B. Réservé au laboratoire d’analyse </h3>
 									</div>
-									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon </label></th>
 											<td>
@@ -578,7 +578,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</tr>
 										<tr class="change-reason">
 											<th scope="row" class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></th>
-											<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
+											<td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Entrez la raison du changement" title="Veuillez saisir la raison du changement"></textarea></td>
 											<th scope="row"></th>
 											<td></td>
 										</tr>

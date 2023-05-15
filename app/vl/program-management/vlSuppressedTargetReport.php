@@ -211,7 +211,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
               <td style="width: 30%;">
                 <!-- <select class="form-control" id="month" name="month" title="Please select month" > -->
                 <input type="text" class="form-control" name="month" id="month" />
-                </select>
               </td>
             </tr>
 

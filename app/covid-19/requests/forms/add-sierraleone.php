@@ -11,7 +11,7 @@ use App\Services\Covid19Service;
 // $fundingSourceList = $db->query($fundingSourceQry);
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
-$nationalityResult = $db->query($nationalityQry); 
+$nationalityResult = $db->query($nationalityQry);
 
 foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
@@ -103,7 +103,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="sampleCode">Sample ID </label></td>
@@ -190,7 +190,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Case ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
@@ -280,7 +280,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr class="vaccinationInfo" style="display:none;">
                                         <th scope="row"><label for="vaccinationDosage">Vaccination Dosage</label></th>
                                         <td>
-                                             <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
+                                            <select class="form-control" name="vaccinationDosage" id="vaccinationDosage" title="Please select the Dosage of Vaccination">
                                                 <option value=''> -- Select -- </option>
                                                 <option value='first'> First </option>
                                                 <option value='second'> Second </option>
@@ -298,13 +298,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                             <input type="text" class="form-control vaccinationTypeOther" name="vaccinationTypeOther" id="vaccinationTypeOther" placeholder="Enter Type of Vaccination" title="Please enter Type of Vaccination" style="margin-top:4px;display:none;" />
                                         </td>
-                                        </tr>
+                                    </tr>
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">SPECIMEN INFORMATION</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <td colspan=4>
                                             <ul>
@@ -353,17 +353,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
                                         <td>
-                                             <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
+                                            <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
                                                 <option value=''> -- Select -- </option>
                                                 <option value='yes'> Yes </option>
                                                 <option value='no'> No </option>
                                                 <option value='unknown'> Unknown </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
-                                    <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Test Number</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -372,7 +372,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 } ?>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                 </table>
                             </div>
@@ -385,7 +385,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Reserved for Laboratory Use </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
@@ -448,7 +448,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test No</th>
@@ -477,7 +477,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
@@ -1015,8 +1015,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function addNewVaccinationType()
-    {
+    function addNewVaccinationType() {
         var vaccinationType = $("#vaccinationType").val();
         if (vaccinationType == 'other') {
             $(".vaccinationTypeOther").show();
@@ -1029,10 +1028,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function vaccinationInfoShow()
-    {
+    function vaccinationInfoShow() {
         status = $("#vaccinationStatus").val();
-        if(status=="yes")
+        if (status == "yes")
             $('.vaccinationInfo').show();
         else
             $('.vaccinationInfo').hide();
@@ -1066,18 +1064,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "Today");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -1166,7 +1164,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
             <td>

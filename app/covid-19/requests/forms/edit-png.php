@@ -601,7 +601,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                     </td>
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
-                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                        <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
@@ -633,7 +633,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                                 </td>
                                                                 <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                                 <td>
-                                                                    <select type="text" name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
+                                                                    <select name="testingPlatform[]" id="testingPlatform1" class="form-control test-name-table-input" title="Please select the Testing Platform for 1">
                                                                         <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                     </select>
                                                                 </td>
@@ -705,7 +705,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                             <th scope="row"><label for="isResultAuthorized">Referred On</label></th>
                                             <td><input type="text" <?php echo $disabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Referred On" title="Please enter when referred result" /></td>
                                             <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -1053,7 +1053,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>

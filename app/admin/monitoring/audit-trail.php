@@ -89,7 +89,7 @@ $resultColumn = getColumns($db, $tableName);
 							<tr>
 								<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 								<td>
-									<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+									<select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
 										<option value="">-- Choose Test Type--</option>
 										<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
 											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_vl') ? "selected='selected'" : ""; ?> value="audit_form_vl"><?php echo _("Viral Load"); ?></option>

@@ -34,12 +34,12 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
-        $bquery = "select MAX(batch_code_key) from batch_details";
+        $bquery = "SELECT MAX(batch_code_key) FROM `batch_details`";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -75,7 +75,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             $row = 0;
             if (($handle = fopen(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName), "r")) !== false) {
                 while (($sheetData = fgetcsv($handle, 10000, "\t")) !== false) {
-                    
+
                     $row++;
                     //var_dump($row . "<br>");continue;
 
@@ -158,7 +158,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                         $errors = DateTimeImmutable::getLastErrors();
                         if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($lotExpirationDateObject)) {
                             $lotExpirationDateVal = $lotExpirationDateObject->format('Y-m-d H:i');
-                        }                        
+                        }
                     }
 
 
@@ -255,9 +255,9 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
+
+                /** @var UsersService $usersService */
+                $usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

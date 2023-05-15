@@ -203,7 +203,7 @@ $sFormat = '';
 											</td>
 											<td style="width:14%;"><label for="artRegimen"> Esquema de TARV actual </label></td>
 											<td style="width:14%;">
-												<select class="form-control " id="artRegimen" name="artRegimen" placeholder="Esquema de TARV actual" title="Please enter Esquema de TARV actual" style="width:100%;" onchange="checkARTRegimenValue();">
+												<select class="form-control " id="artRegimen" name="artRegimen" title="Please enter Esquema de TARV actual" style="width:100%;" onchange="checkARTRegimenValue();">
 													<option value="">-- Select --</option>
 													<?php foreach ($artRegimenResult as $heading) { ?>
 														<optgroup label="<?= $heading['headings']; ?>">

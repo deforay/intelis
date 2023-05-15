@@ -95,7 +95,7 @@ $labInfo = $db->rawQueryOne($sQuery);
                                 <strong><?php echo _("Test Type"); ?>&nbsp;:</strong>
                             </td>
                             <td>
-                                <select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
                                     <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }

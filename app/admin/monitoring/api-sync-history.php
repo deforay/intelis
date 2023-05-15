@@ -42,7 +42,7 @@ foreach ($syncedTypeResults as $synced) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true"  cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
 							<td>
@@ -50,7 +50,7 @@ foreach ($syncedTypeResults as $synced) {
 							</td>
 							<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 							<td>
-								<select type="text" id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+								<select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
 									<option value=""><?php echo _("-- Select --"); ?></option>
 									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 										<option value="vl"><?php echo _("Viral Load"); ?></option>
@@ -82,7 +82,7 @@ foreach ($syncedTypeResults as $synced) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Transaction ID"); ?></th>

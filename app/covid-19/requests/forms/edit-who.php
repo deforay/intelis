@@ -487,7 +487,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </tr>
                                         <tr class="change-reason" style="display: none;">
                                             <th scope="row">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td colspan="3"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td colspan="3"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Is Result Authorized ?</th>

@@ -11,9 +11,6 @@ use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
 
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 

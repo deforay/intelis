@@ -445,7 +445,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 										</div>
 									</div>
-									<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+									<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female' || $vlQueryInfo['patient_gender'] == '' || $vlQueryInfo['patient_gender'] == null) ? "" : "none" ?>">
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="patientPregnant">Is Patient Pregnant? </label><br>

@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__DIR__) . '/../bootstrap.php');
+require_once dirname(__DIR__) . '/../bootstrap.php';
 
 // api/index.php
 use App\Registries\ContainerRegistry;
@@ -69,7 +69,7 @@ $middlewarePipe->pipe(ContainerRegistry::get(ApiErrorHandlingMiddleware::class))
 $app->any('/api/v1.1/init', function ($request, $response, $args) {
     // Start output buffering
     ob_start();
-    require APPLICATION_PATH . '/api/v1.1/init.php';
+    require_once APPLICATION_PATH . '/api/v1.1/init.php';
     $output = ob_get_clean();
 
     // Set the output as the response body and set the Content-Type header

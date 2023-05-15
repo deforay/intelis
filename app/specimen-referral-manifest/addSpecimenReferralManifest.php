@@ -151,7 +151,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span class="mandatory">*</span> :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+										<select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
 											<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 										</select>
 									</div>
@@ -163,7 +163,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?> </label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
+										<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
 											<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
 										</select>
 									</div>
@@ -174,7 +174,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="facility" class="col-lg-4 control-label"><?php echo _("Sample Collection Point"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
+										<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
 											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
 										</select>
 									</div>
@@ -186,7 +186,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select type="text" class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
+										<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
 											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
 										</select>
 									</div>

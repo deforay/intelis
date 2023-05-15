@@ -365,7 +365,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
 									<div class="col-lg-7">
-										<select type="text" class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
+										<select class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 												<option value='vl' <?php echo (preg_match("/vl/i", $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _("Viral Load"); ?></option>
 											<?php }
@@ -391,7 +391,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _("Available Platforms"); ?></label>
 									<div class="col-lg-7">
-										<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
+										<select id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
 											<option value="microscopy" <?php echo in_array('microscopy', $availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _("Microscopy"); ?></option>
 											<option value="xpert" <?php echo in_array('xpert', $availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Xpert"); ?></option>
 											<option value="lam" <?php echo in_array('lam', $availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _("Lam"); ?></option>
@@ -570,7 +570,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>">
 											</td>
 											<td style="width:14%;">
-												<select type="text" class="select2" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _('Choose one test type'); ?>" multiple>
+												<select class="select2" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _('Choose one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Early Infant Diagnosis"); ?></option>
 													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _("Covid-19"); ?></option>
@@ -597,7 +597,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 										<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _('Designation'); ?>" title="<?php echo _('Please enter the Designation'); ?>"></td>
 										<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>"></td>
 										<td style="width:14%;">
-											<select type="text" class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _('Choose one test type'); ?>" multiple>
+											<select class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _('Choose one test type'); ?>" multiple>
 												<option value="vl"><?php echo _("Viral Load"); ?></option>
 												<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
 												<option value="covid19"><?php echo _("Covid-19"); ?></option>
@@ -912,7 +912,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _('Designation'); ?>" title="<?php echo _('Please enter the Designation'); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>"></td>
 			<td style="width:14%;">
-				<select type="text" class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _('Choose one test type'); ?>" multiple>
+				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _('Choose one test type'); ?>" multiple>
 					<option value="vl"><?php echo _("Viral Load"); ?></option>
 					<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
 					<option value="covid19"><?php echo _("Covid-19"); ?></option>

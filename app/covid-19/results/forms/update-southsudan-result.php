@@ -130,8 +130,8 @@ $sampleSuggestionDisplay = 'display:none;';
                                             <?php
                                             if ($covid19Info['sample_code'] != '') {
                                             ?>
-                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID </td>
-                                                <td colspan="2" align="left"> <?php echo $covid19Info['sample_code']; ?></label> </td>
+                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbspPlease note that this Remote Sample has already been imported with VLSM Sample ID</label> </td>
+                                                <td colspan="2" align="left"> <?php echo $covid19Info['sample_code']; ?> </td>
                                             <?php
                                             } else {
                                             ?>
@@ -291,7 +291,6 @@ $sampleSuggestionDisplay = 'display:none;';
                                                 <option value="RDT-Antibody" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
                                                 <option value="RDT-Antigen" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
                                                 <option value="ELISA" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
-                                            </select>
                                             </select>
                                         </td>
                                         <th scope="row">Reason for Test Request <span class="mandatory">*</span></th>
@@ -453,7 +452,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                                     </td>
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
-                                                                        <select type="text" name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input isRequired" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                        <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input isRequired" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
                                                                             if ((strpos($rows['test_name'], 'RDT') !== false)) {
                                                                                 $display = "";
@@ -527,7 +526,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                 </select>
                                             </td>
                                             <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Is Result Authorized ?</th>
@@ -808,7 +807,7 @@ $sampleSuggestionDisplay = 'display:none;';
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select type="text" name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display: none;"/></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display: none;"/></td>
             <td>

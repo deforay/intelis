@@ -89,18 +89,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Nº de amostra </label></td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
-                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
+                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
+                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Nº de amostra </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -176,12 +176,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 <div class="box-header with-border">
                                     <h3 class="box-title">DADOS DO PACIENTE</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childName">Nome da Criança </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Nome da Criança" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Nome da Criança" title="Nome da Criança" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childId">Nº Processo Clínico <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -244,7 +244,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         <th scope="row">Nome da Mãe </th>
                                         <td><input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nome da Mãe" title="Nome da Mãe" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" /></td>
                                         <th scope="row">Nº Processo Clínico</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Mãe da Criança Autoriza Contacto</th>
@@ -270,7 +270,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                 </table>
 
                                 <br><br>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -314,7 +314,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Informações laboratoriais </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -390,7 +390,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
                                         </tr>
                                         <tr class="change-reason">
                                             <th scope="row" class="change-reason" style="display: none;">Razão para mudar <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Insira o motivo da mudança" title="Por favor, indique o motivo da mudança"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Insira o motivo da mudança" title="Por favor, indique o motivo da mudança"></textarea></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>

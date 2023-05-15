@@ -222,7 +222,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -244,7 +244,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <th scope="row">Infant Age (months)</th>
                                         <td><input type="number" max=9 maxlength="1" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="$('#childDob').val('')" /></td>
                                         <th scope="row">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control " value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Caretaker phone number</th>
@@ -490,7 +490,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </tr>
                                         <tr class="change-reason">
                                             <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>

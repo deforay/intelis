@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <div class="form-group">
                   <label for="comorbidityStatus" class="col-lg-4 control-label"><?php echo _("Comorbidity Status"); ?></label>
                   <div class="col-lg-7">
-                    <select class="form-control isRequired" id="comorbidityStatus" name="comorbidityStatus" placeholder="<?php echo _('Comorbidity Status'); ?>" title="<?php echo _('Please enter Comorbidity Status'); ?>">
+                    <select class="form-control isRequired" id="comorbidityStatus" name="comorbidityStatus" title="<?php echo _('Please enter Comorbidity Status'); ?>">
                       <option value="active"><?php echo _("Active"); ?></option>
                       <option value="inactive"><?php echo _("Inactive"); ?></option>
                     </select>

@@ -106,13 +106,13 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label></td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
-                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
+                                                <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
+                                                <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td class="labels"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -194,7 +194,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -216,7 +216,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row" class="labels">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="labels">Caretaker phone number</th>
@@ -501,7 +501,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                 <textarea class="form-control" id="labTechCmt" name="labTechCmt" <?php echo $labFieldDisabled; ?> style="width:100%;" placeholder="Comments from the Lab Technician " title="Please Comments from the Lab Technician "><?= htmlspecialchars($eidInfo['lab_tech_comments']); ?></textarea>
                                             </td>
                                             <th scope="row" style="display: none;" class="labels change-reason">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td style="display: none;" class="change-reason"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <td style="display: none;" class="change-reason"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -708,36 +708,36 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "+1Y");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "+1Y");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-	
 
-		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+
+        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
         var collectDate = $("#sampleCollectionDate").toString();
         var dispatchDate = $("#sampleDispatchedDate").toString();
-		if($("#sampleDispatchedDate").val()=="" || (collectDate >= dispatchDate))
-			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
-		$('#sampleDispatchedDate').datetimepicker({
+        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+
+        $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             minDate: minDate,
-			startDate: minDate,
+            startDate: minDate,
         });
         $('#labId').select2({
             width: '100%',

@@ -28,7 +28,7 @@ $sResult = $db->rawQuery($sQuery);
             <tr>
               <td><strong><?php echo _("Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
 
               <td><strong><?php echo _("Login ID"); ?>&nbsp;:</strong></td>

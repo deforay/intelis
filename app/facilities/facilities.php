@@ -86,7 +86,7 @@ $state = $geolocationService->getProvinces("yes");
                 </td>
                 <td>&nbsp;<strong>Test Type &nbsp;:</strong></td>
                 <td>
-                  <select type="text" id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _('Please select the Test types'); ?>">
+                  <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _('Please select the Test types'); ?>">
                     <option value="">-- Choose Test Type--</option>
                     <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _("Viral Load"); ?></option>

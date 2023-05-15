@@ -282,7 +282,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									<div class="form-group">
 										<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
 										<div class="col-lg-7">
-											<select type="text" class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
+											<select class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
 												<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 													<option value="vl"><?php echo _("Viral Load"); ?></option>
 												<?php }
@@ -297,9 +297,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 												<?php }
 												if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 													<option value='tb'><?php echo _("TB"); ?></option>
-												<?php } 
+												<?php }
 												if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
-													<option value='generic-tests'><?php echo _("Lab Tests");?></option>
+													<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -309,7 +309,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									<div class="form-group">
 										<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _("Available Platforms"); ?></label>
 										<div class="col-lg-7">
-											<select type="text" id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
+											<select id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _('Choose one Available Platforms'); ?>" multiple>
 												<option value="microscopy"><?php echo _("Microscopy"); ?></option>
 												<option value="xpert"><?php echo _("Xpert"); ?></option>
 												<option value="lam"><?php echo _("Lam"); ?></option>
@@ -484,24 +484,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 											<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _('Designation'); ?>" title="<?php echo _('Please enter the Designation'); ?>"></td>
 											<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _('Signature'); ?>" title="<?php echo _('Please enter the Signature'); ?>"></td>
 											<td style="width:14%;">
-												<select type="text" class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _('Choose one test type'); ?>" multiple>
+												<select class="select2" id="testSignType1" name="testSignType[1][]" title="<?php echo _('Choose one test type'); ?>" multiple>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
-														<option value="vl"><?php echo _("Viral Load");?></option>
+														<option value="vl"><?php echo _("Viral Load"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
-														<option value="eid"><?php echo _("Early Infant Diagnosis");?></option>
+														<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-														<option value="covid19"><?php echo _("Covid-19");?></option>
+														<option value="covid19"><?php echo _("Covid-19"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-														<option value='hepatitis'><?php echo _("Hepatitis");?></option>
+														<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
-														<option value='tb'><?php echo _("TB");?></option>
-													<?php } 
+														<option value='tb'><?php echo _("TB"); ?></option>
+													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
-														<option value='generic-tests'><?php echo _("Lab Tests");?></option>
+														<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -756,7 +756,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _("Designation"); ?>" title="<?php echo _("Please enter the Designation"); ?>"></td>
 			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _("Please enter the Signature"); ?>"></td>
 			<td style="width:14%;">
-				<select type="text" class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _("Choose one test type"); ?>" multiple>
+				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _("Choose one test type"); ?>" multiple>
 					<option value="vl"><?php echo _("Viral Load"); ?></option>
 					<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
 					<option value="covid19"><?php echo _("Covid-19"); ?></option>

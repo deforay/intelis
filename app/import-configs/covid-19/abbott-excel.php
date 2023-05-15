@@ -7,6 +7,8 @@ use App\Utilities\DateUtility;
 use League\Csv\Reader;
 use League\Csv\Statement;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
 try {
 
@@ -39,7 +41,7 @@ try {
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
 
-        $bquery = "select MAX(batch_code_key) from batch_details";
+        $bquery = "SELECT MAX(batch_code_key) FROM `batch_details`";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -50,7 +52,6 @@ try {
 
         $newBatchCode = date('Ymd') . $maxBatchCodeKey;
 
-
         //load the CSV document from a file path
         $csv = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $csv->setDelimiter("\t");
@@ -60,7 +61,9 @@ try {
 
         $metaRecords = [];
         foreach ($topRecords as $topRecord) {
-            if (empty($topRecord[0])) continue;
+            if (empty($topRecord[0])) {
+                continue;
+            }
             $metaRecords[$topRecord[0]] = $topRecord[1];
         }
 

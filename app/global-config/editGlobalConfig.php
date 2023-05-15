@@ -1376,7 +1376,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="form-group">
 											<label for="patient_name_pdf" class="col-lg-4 control-label"><?php echo _("Patient Name Format"); ?></label>
 											<div class="col-lg-8">
-												<select type="text" class="form-control readPage" id="patient_name_pdf" name="patient_name_pdf" title="<?php echo _('Choose one option'); ?>" value="<?php echo $arr['patient_name_pdf']; ?>">
+												<select class="form-control readPage" id="patient_name_pdf" name="patient_name_pdf" title="<?php echo _('Choose one option'); ?>" value="<?php echo $arr['patient_name_pdf']; ?>">
 													<option value="flname" <?php echo ('flname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("First Name"); ?> + <?php echo _("Last Name"); ?></option>
 													<option value="fullname" <?php echo ('fullname' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Full Name"); ?></option>
 													<option value="hidename" <?php echo ('hidename' == $arr['patient_name_pdf']) ? "selected='selected'" : "" ?>><?php echo _("Hide Patient Name"); ?></option>

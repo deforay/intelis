@@ -911,7 +911,7 @@ $patienZones["other"] = "Other";
                                             </select>
                                         </td>
                                         <th scope="row" class="change-reason" style="display: none;">Raison du changement<span class="mandatory">*</span></th>
-                                        <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
+                                        <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Revu par</th>

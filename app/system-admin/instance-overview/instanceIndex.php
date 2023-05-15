@@ -83,37 +83,37 @@ $data = $db->rawQuery($instanceValues);
                                 <tr>
                                     <th><?php echo _("Vl Last Sync"); ?></th>
                                     <td><span class="editSpan vlLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?></span>
-                                        <input class="editInput vlLastSync form-control input-sm date-time" type="" name="vl_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput vlLastSync form-control input-sm date-time" type="text" name="vl_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php echo _("EID Last Sync"); ?></th>
                                     <td><span class="editSpan eidLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?></span>
-                                        <input class="editInput eidLastSync form-control input-sm date-time" type="" name="eid_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput eidLastSync form-control input-sm date-time" type="text" name="eid_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php echo _("Covid-19 Last Sync"); ?></th>
                                     <td><span class="editSpan covid19LastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?></span>
-                                        <input class="editInput covid19LastSync form-control input-sm date-time" type="" name="covid19_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput covid19LastSync form-control input-sm date-time" type="text" name="covid19_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php echo _("Remote Request Last Sync"); ?></th>
                                     <td><span class="editSpan remoteRequestLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?></span>
-                                        <input class="editInput remoteRequestLastSync form-control input-sm date-time" type="" name="last_remote_requests_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput remoteRequestLastSync form-control input-sm date-time" type="text" name="last_remote_requests_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php echo _("Remote Results Last Sync"); ?></th>
                                     <td><span class="editSpan remoteResultsLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?></span>
-                                        <input class="editInput remoteResultsLastSync form-control input-sm date-time" type="" name="last_remote_results_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput remoteResultsLastSync form-control input-sm date-time" type="text" name="last_remote_results_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php echo _("Remote Reference Last Sync"); ?></th>
                                     <td><span class="editSpan remoteReferenceLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?></span>
-                                        <input class="editInput remoteReferenceLastSync form-control input-sm date-time" type="" name="last_remote_reference_data_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?>" readonly style="display: none;background:#fff;">
+                                        <input class="editInput remoteReferenceLastSync form-control input-sm date-time" type="text" name="last_remote_reference_data_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>

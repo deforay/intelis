@@ -106,7 +106,7 @@ $batchResult = $db->rawQuery($batchQuery);
                 <div class="form-group">
                   <label for="message" class="col-lg-3 control-label"><?php echo _("Message"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-9">
-                    <textarea id="message" name="message" class="form-control isRequired" row="6" placeholder="<?php echo _('Message'); ?>" title="<?php echo _('Please enter message'); ?>"></textarea>
+                    <textarea id="message" name="message" class="form-control isRequired" rows="6" placeholder="<?php echo _('Message'); ?>" title="<?php echo _('Please enter message'); ?>"></textarea>
                   </div>
                 </div>
               </div>

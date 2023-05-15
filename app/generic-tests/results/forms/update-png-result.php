@@ -658,7 +658,7 @@ $disable = "disabled = 'disabled'";
 									</tr>
 									<tr class="change-reason">
 										<th scope="row" class="change-reason labels" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-										<td class="change-reason" style="display: none;"><textarea type="text" name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+										<td class="change-reason" style="display: none;"><textarea name="reasonForResultChanges" id="reasonForResultChanges" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
 										<th scope="row"></th>
 										<td></td>
 									</tr>
@@ -668,9 +668,9 @@ $disable = "disabled = 'disabled'";
 				</div>
 				<!-- /.box-body -->
 				<div class="box-footer">
-					<input type="hidden" name="revised" id="revised" value="no" />
+					<input type="hidden" name="revised" id="revised" value="no">
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-					<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+					<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>">
 					<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 				</div>
 				<!-- /.box-footer -->

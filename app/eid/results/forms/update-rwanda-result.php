@@ -95,13 +95,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <td><label for="sampleCode">Sample ID </label></td>
                                         <td>
-                                            <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars ($eidInfo['sample_code']); ?></span>
+                                            <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
 
                                         </td>
                                     <?php } else { ?>
                                         <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <input type="text" readonly value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
+                                            <input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="" />
                                         </td>
                                     <?php } ?>
                                     <td></td>
@@ -175,7 +175,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </td>
                                     <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                     <td style="width:35% !important">
-                                        <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['child_name']); ?>" onchange="" />
+                                        <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -197,7 +197,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <th scope="row">Infant Age (months)</th>
                                     <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                     <th scope="row">Mother ART Number</th>
-                                    <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars ($eidInfo['mother_id']); ?>" onchange="" /></td>
+                                    <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Caretaker phone number</th>
@@ -353,7 +353,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <div class="box-header with-border">
                                     <h3 class="box-title">B. Reserved for Laboratory Use </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>
@@ -427,7 +427,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </tr>
                                     <tr class="change-reason">
                                         <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                        <td class="change-reason" style="display: none;"><textarea type="text" name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                        <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
                                         <th scope="row"></th>
                                         <td></td>
                                     </tr>
@@ -448,7 +448,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                     <input type="hidden" name="formId" id="formId" value="7" />
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars ($eidInfo['sample_code']); ?>" />
+                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
                     <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
                 </div>
                 <!-- /.box-footer -->

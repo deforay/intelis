@@ -98,11 +98,9 @@ foreach ($categoryInfo as $category) {
 		</div>
 </div>
 <!-- /.box -->
-</section>
-<!-- /.content -->
-</div>
+	<!-- /.content -->
 
-<script type="text/javascript">
+	<script type="text/javascript">
 	$(document).ready(function() {
 		$(".select2").select2();
 		$(".select2").select2({
