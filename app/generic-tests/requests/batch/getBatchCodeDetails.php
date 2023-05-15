@@ -13,34 +13,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/*
-if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-    $refTable = "form_generic";
-    $refPrimaryColumn = "vl_sample_id";
-    $editFileName = 'editBatch.php';
-    $editPositionFileName = 'editBatchControlsPosition.php';
-} else if (isset($_POST['type']) && $_POST['type'] == 'eid') {
-    $refTable = "form_eid";
-    $refPrimaryColumn = "eid_id";
-    $editFileName = 'eid-edit-batch.php';
-    $editPositionFileName = 'eid-edit-batch-position.php';
-} else if (isset($_POST['type']) && $_POST['type'] == 'covid19') {
-    $refTable = "form_covid19";
-    $refPrimaryColumn = "covid19_id";
-    $editFileName = 'covid-19-edit-batch.php';
-    $editPositionFileName = 'covid-19-edit-batch-position.php';
-} else if (isset($_POST['type']) && $_POST['type'] == 'hepatitis') {
-    $refTable = "form_hepatitis";
-    $refPrimaryColumn = "hepatitis_id";
-    $editFileName = 'hepatitis-edit-batch.php';
-    $editPositionFileName = 'hepatitis-edit-batch-position.php';
-} else if (isset($_POST['type']) && $_POST['type'] == 'tb') {
-    $refTable = "form_tb";
-    $refPrimaryColumn = "tb_id";
-    $editFileName = 'tb-edit-batch.php';
-    $editPositionFileName = 'tb-edit-batch-position.php';
-}
-*/
 $refTable = "form_generic";
 $refPrimaryColumn = "sample_id";
 $editFileName = 'editBatch.php';
