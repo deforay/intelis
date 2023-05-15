@@ -75,10 +75,10 @@ if ($id > 0) {
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
 
         $dateQuery = "SELECT ct.*,covid19.sample_tested_datetime, result_reviewed_datetime, lot_number, lot_expiration_date, result_printed_datetime from $refTable as covid19
-        left join covid19_tests as ct on covid19.covid19_id = ct.covid19_id where sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime!= '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
+        left join covid19_tests as ct on covid19.covid19_id = ct.covid19_id where sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime  not like '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
     } else {
 
-        $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime!= '0000-00-00 00:00:00') LIMIT 1";
+        $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime  not like '0000-00-00 00:00:00') LIMIT 1";
     }
     $dateResult = $db->query($dateQuery);
     $resulted = '';

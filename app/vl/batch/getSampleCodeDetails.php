@@ -159,21 +159,21 @@ $result = $db->rawQuery($query);
 			afterSelect: function() {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
+					alert("< ?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("<?php echo _('You have already selected Maximum no. of sample'); ?> " + noOfSamples);
+					alert("< ?php echo _('You have already selected Maximum no. of sample'); ?> " + noOfSamples);
 					$("#batchSubmit").attr("disabled", true);
 					$("#batchSubmit").css("pointer-events", "none");
 				}
 				this.qs1.cache();
 				this.qs2.cache();
-				$("#unselectableCount").html("<?php echo _("Available samples"); ?>(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("<?php echo _("Selected samples"); ?>(" + this.qs2.cache().matchedResultsCount + ")");
+				$("#unselectableCount").html("< ?php echo _("Available samples"); ?>(" + this.qs1.cache().matchedResultsCount + ")");
+				$("#selectableCount").html("< ?php echo _("Selected samples"); ?>(" + this.qs2.cache().matchedResultsCount + ")");
 			},
 			afterDeselect: function() {
 				//button disabled/enabled
@@ -181,7 +181,7 @@ $result = $db->rawQuery($query);
 					$("#batchSubmit").attr("disabled", true);
 					$("#batchSubmit").css("pointer-events", "none");
 				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
+					alert("< ?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
 					$("#batchSubmit").attr("disabled", false);
 					$("#batchSubmit").css("pointer-events", "auto");
 				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
@@ -193,8 +193,8 @@ $result = $db->rawQuery($query);
 				}
 				this.qs1.cache();
 				this.qs2.cache();
-				$("#unselectableCount").html("<?php echo _('Available samples'); ?>(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("<?php echo _('Selected samples'); ?>(" + this.qs2.cache().matchedResultsCount + ")");
+				$("#unselectableCount").html("< ?php echo _('Available samples'); ?>(" + this.qs1.cache().matchedResultsCount + ")");
+				$("#selectableCount").html("< ?php echo _('Selected samples'); ?>(" + this.qs2.cache().matchedResultsCount + ")");
 			}
 		});
 		$('#select-all-samplecode').click(function() {
