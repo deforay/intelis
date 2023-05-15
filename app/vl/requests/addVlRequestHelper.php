@@ -71,6 +71,13 @@ try {
     } else {
         $_POST['dob'] = null;
     }
+
+    if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
+        $_POST['dateOfArtInitiation'] = DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
+    } else {
+        $_POST['dateOfArtInitiation'] = null;
+    }
+
     if (isset($formId) && $formId == '3') {
         if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
             $_POST['isPatientNew'] = null;
@@ -85,13 +92,7 @@ try {
         } else if ($_POST['isPatientNew'] == "no") {
             $_POST['dateOfArtInitiation'] = null;
         }
-    } else {
-        if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-            $_POST['dateOfArtInitiation'] = DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
-        } else {
-            $_POST['dateOfArtInitiation'] = null;
-        }
-    }
+    } 
 
     if (isset($_POST['regimenInitiatedOn']) && trim($_POST['regimenInitiatedOn']) != "") {
         $_POST['regimenInitiatedOn'] = DateUtility::isoDateFormat($_POST['regimenInitiatedOn']);
