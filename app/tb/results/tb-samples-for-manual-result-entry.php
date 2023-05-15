@@ -127,8 +127,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
     f.facility_state,
     f.facility_district,
     u_d.user_name as reviewedBy,
-    a_u_d.user_name as approvedBy,
-    rs.rejection_reason_name as rejection_reason
+    a_u_d.user_name as approvedBy
 
     FROM form_tb as vl 
     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
