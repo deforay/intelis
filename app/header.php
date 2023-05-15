@@ -172,7 +172,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$genericTestResultMenuAccess = false;
 }
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("view-requests.php", "add-request.php", "add-samples-from-manifest.php", "batch-code.php", "specimenReferralManifestList.php"))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("generic-sample-status.php", "generic-export-data.php", "generic-print-result.php", "generic-weekly-report.php", "sample-rejection-report.php", "generic-monitoring-report.php", "generic-monthly-threshold-report.php"))) {
 	$genericManagementMenuAccess = true;
 } else {
 	$genericManagementMenuAccess = false;
