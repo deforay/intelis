@@ -742,17 +742,8 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("generic-print-result.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu genericPrintResultMenu"><a href="/generic-tests/results/generic-print-result.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-weekly-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericWeeklyReport"><a href="/generic-tests/program-management/generic-weekly-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("VL Lab Weekly Report"); ?></a></li>
-									<?php }
 									if (isset($_SESSION['privileges']) && in_array("sample-rejection-report.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu genericSampleRejectionReport"><a href="/generic-tests/program-management/sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> Sample Rejection <?php echo _("Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-monitoring-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericMonitoringReport"><a href="/generic-tests/program-management/generic-monitoring-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Monitoring Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("generic-monthly-threshold-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericMonthlyThresholdReport"><a href="/generic-tests/program-management/generic-monthly-threshold-report.php"><span class="fa-solid fa-caret-right"></span><?php echo _("VL Testing Target Report"); ?></a></li>
 									<?php } ?>
 								</ul>
 							</li>
