@@ -33,7 +33,7 @@ foreach ($configControlInfo as $info) {
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 	}
 }
-if (!isset($batchInfo) || count($batchInfo) == 0) {
+if (!isset($batchInfo) || empty($batchInfo)) {
 	header("Location:eid-batches.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {

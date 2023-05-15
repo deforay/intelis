@@ -32,7 +32,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
             try {
                 ob_start();
-                require(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
+                require_once APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri;
                 $output = ob_get_clean();
 
                 // Create a new response object
@@ -40,7 +40,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
                 // Set the output of the legacy PHP code as the response body
                 $response->getBody()->write($output);
-            } catch (SystemException|Exception $e) {
+            } catch (SystemException | Exception $e) {
                 ob_end_clean(); // Clean the buffer in case of an error
                 throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
             } catch (Throwable $e) {

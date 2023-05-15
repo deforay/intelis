@@ -261,7 +261,7 @@ try {
 				$symptomData["covid19_id"] = $_POST['covid19SampleId'];
 				$symptomData["symptom_id"] = $_POST['symptomId'][$i];
 				$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
-				$symptomData["symptom_details"] 	= (isset($_POST['symptomDetails'][$_POST['symptomId'][$i]]) && count($_POST['symptomDetails'][$_POST['symptomId'][$i]]) > 0) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
+				$symptomData["symptom_details"] 	= (isset($_POST['symptomDetails'][$_POST['symptomId'][$i]]) && !empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
 				//var_dump($symptomData);
 				$db->insert("covid19_patient_symptoms", $symptomData);
 			}
@@ -296,7 +296,7 @@ try {
 
 	// echo "<pre>";print_r($_POST);die;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+		if (isset($_POST['testName']) && !empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testKitName) {
 				if (isset($testKitName) && !empty($testKitName)) {
 					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
@@ -349,7 +349,6 @@ try {
 				'error' => 'Unable to add this Covid-19 sample. Please try again later',
 				'data' => array()
 			);
-			http_response_code(301);
 		}
 
 		echo json_encode($payload);

@@ -46,19 +46,19 @@ $facilityTypeRequested = !empty($_POST['fType']) ? $_POST['fType'] : 1;   // 1 =
 
 $GLOBALS['facilityTypeTable'] = $facilityTypeTableList[$facilityTypeRequested];
 
-$GLOBALS['facilityMap'] = null;
-if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
-	$GLOBALS['facilityMap'] = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-}
+$GLOBALS['facilityMap'] = $_SESSION['facilityMap'];
+// if (empty($_POST['comingFromUser']) || $_POST['comingFromUser'] != 'yes') {
+// 	$GLOBALS['facilityMap'] = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+// }
 
 
 function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null)
 {
-	$db=$GLOBALS['db'];
-	$option=$GLOBALS['option'];
-	$testType=$GLOBALS['testType'];
-	$facilityMap=$GLOBALS['facilityMap'];
-	$facilityTypeTable=$GLOBALS['facilityTypeTable'];
+	$db = $GLOBALS['db'];
+	$option = $GLOBALS['option'];
+	$testType = $GLOBALS['testType'];
+	$facilityMap = $GLOBALS['facilityMap'];
+	$facilityTypeTable = $GLOBALS['facilityTypeTable'];
 
 	$db->where("f.status", 'active');
 
@@ -104,10 +104,10 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 
 function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 {
-	$db=$GLOBALS['db'];
-	$option=$GLOBALS['option'];
-	$facilityMap=$GLOBALS['facilityMap'];
-	
+	$db = $GLOBALS['db'];
+	$option = $GLOBALS['option'];
+	$facilityMap = $GLOBALS['facilityMap'];
+
 	if (!empty($selectedProvince)) {
 		if (is_numeric($selectedProvince)) {
 			$db->where("geo_parent", $selectedProvince);
@@ -185,9 +185,9 @@ if (!empty($facilityIdRequested)) {
 
 function getProvinceDropdown($selectedProvince = null)
 {
-	$db=$GLOBALS['db'];
-	$option=$GLOBALS['option'];
-	$facilityMap=$GLOBALS['facilityMap'];
+	$db = $GLOBALS['db'];
+	$option = $GLOBALS['option'];
+	$facilityMap = $GLOBALS['facilityMap'];
 
 	if (!empty($facilityMap)) {
 		$db->join("facility_details f", "f.facility_state=p.geo_name", "INNER");
@@ -208,8 +208,3 @@ function getProvinceDropdown($selectedProvince = null)
 	}
 	return $state;
 }
-
-
-
-
-

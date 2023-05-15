@@ -1,22 +1,23 @@
+syntax: glob
+!configs/config.*.dist.php
+
 syntax: regexp
-^public/uploads/(?!.htaccess)
-^public/temporary/(?!.htaccess)
-^vendor/*
-^cache/(?!.htaccess)
-^vendor/dcarbone/(?!.htaccess)
-^docker/mysql/data/(?!.htaccess)
-^interop/dhis2/examples/(?!index.php)
-^backups/(?!index.php)
-^backup/(?!index.php)
-^.*\.idea$
-^.*\.pid$
-^.*\.log$
-^.*\.vendor$
-^vendor
+public/uploads/(?!.htaccess)
+public/temporary/(?!.htaccess)
+vendor/*
+cache/(?!.htaccess)
+vendor/dcarbone/(?!.htaccess)
+docker/mysql/data/(?!.htaccess)
+interop/dhis2/examples/(?!index.php)
+backups/(?!index.php)
+backup/(?!index.php)
+.*\.idea$
+.*\.pid$
+.*\.log$
+.*\.vendor$
 error_log
 \.DS_Store$
 [Tt]humbs\.db$
-
 
 syntax: glob
 error.log
@@ -28,19 +29,13 @@ Thumbs.db.orig
 .DS_Store.orig
 .env
 .git
-.idea
 .git/*
 .gitattributes
 .gitignore
-configs/config.production.php
-configs/config.interop.php
-configs/config.testing.php
-configs/config.staging.php
-configs/config.development.php
-configs/config.development.php.dist
+configs/config.*.php
 configs/bg.png
 configs/bg.jpg
 secretKey.txt
-vendor
 .user.ini
 rector.php
+**/node_modules/

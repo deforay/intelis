@@ -2,7 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 $tableName = "track_api_requests";
 $primaryKey = "api_track_id";
@@ -93,12 +93,12 @@ $sQuery = "SELECT tar.*, l.facility_name as labName FROM $tableName AS tar
             LEFT JOIN facility_details as l ON l.facility_id=tar.api_params
             WHERE request_type IN('results', 'requests')";
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

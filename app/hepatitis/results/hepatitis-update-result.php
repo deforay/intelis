@@ -21,6 +21,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var HepatitisService $hepatitisService */
@@ -31,10 +33,10 @@ $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
-    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
+	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 
 $id = base64_decode($_GET['id']);
@@ -43,8 +45,8 @@ $id = base64_decode($_GET['id']);
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
 
-$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-$userResult = $db->rawQuery($userQuery);
+// $userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
+// $userResult = $db->rawQuery($userQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);

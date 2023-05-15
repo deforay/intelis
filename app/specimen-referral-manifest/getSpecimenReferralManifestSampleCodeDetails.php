@@ -30,7 +30,6 @@ $country = $configResult[0]['value'];
 // $rpResult = $db->rawQuery($rpQuery);
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
-	$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
 	$sCode = 'sample_code';
 }
@@ -65,8 +64,8 @@ if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$where[] = "DATE(vl.sample_collection_date) >= '" . $startDate . "' AND DATE(vl.sample_collection_date) <= '" . $endDate . "'";
 }
 
-if (!empty($facilityMap)) {
-	$where[] = " facility_id IN(" . $facilityMap . ")";
+if (!empty($_SESSION['facilityMap'])) {
+	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
 if (isset($_POST['testingLab']) && !empty($_POST['testingLab'])) {

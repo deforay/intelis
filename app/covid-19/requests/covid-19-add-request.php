@@ -40,8 +40,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -118,12 +117,12 @@ require($fileArray[$arr['vl_form']]);
                     $('.ui-datepicker-calendar').show();
                 });
             },
-          //  onSelect: function(e) {},
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+            //  onSelect: function(e) {},
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-      
+
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
@@ -145,38 +144,38 @@ require($fileArray[$arr['vl_form']]);
                 changeYear: true,
                 dateFormat: 'dd-M-yy',
                 timeFormat: "HH:mm",
-              //  maxDate: "Today",
+                //  maxDate: "Today",
                 onChangeMonthYear: function(year, month, widget) {
                     setTimeout(function() {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
-               // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y'); ?>"
+                // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y'); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
-     
 
-       /* $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect: function(e) {
-                $('#sampleReceivedDate').val('');
-                $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });*/
+
+        /* $('#sampleCollectionDate').datetimepicker({
+             changeMonth: true,
+             changeYear: true,
+             dateFormat: 'dd-M-yy',
+             timeFormat: "HH:mm",
+             maxDate: "Today",
+             onChangeMonthYear: function(year, month, widget) {
+                 setTimeout(function() {
+                     $('.ui-datepicker-calendar').show();
+                 });
+             },
+             onSelect: function(e) {
+                 $('#sampleReceivedDate').val('');
+                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
+             },
+             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+         }).click(function() {
+             $('.ui-datepicker-calendar').show();
+         });*/
 
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,

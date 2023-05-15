@@ -29,8 +29,8 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $unique = "Test2";
     $requestCountDataTable = "eidRequestCountDataTable";
     $samplesCollectionChart = "eidSamplesCollectionChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
-    $recencyWhere = " AND reason_for_vl_testing != 9999";
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
+    $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
     $unique = "Test1";
@@ -133,38 +133,42 @@ if ($table == "form_eid") {
     $sQuery = $sQuery . ' GROUP BY eid.facility_id';
 } else {
     $sQuery = "SELECT
-		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
-		COUNT(*) AS totalCount,
-		NULL AS reorderCount,
-		SUM(CASE
-			WHEN (result_status=9) THEN 1
-				ELSE 0
-			END) AS registerCount,
-		SUM(CASE
-			WHEN (result_status=8) THEN 1
-				ELSE 0
-			END) AS sentToLabCount,
-		SUM(CASE
-			WHEN (result_status=4) THEN 1
-				ELSE 0
-			END) AS rejectCount,
-		SUM(CASE
-			WHEN (result_status=6) THEN 1
-				ELSE 0
-			END) AS pendingCount,
-		SUM(CASE
-			WHEN (result_status=5) THEN 1
-				ELSE 0
-			END) AS invalidCount,
-		SUM(CASE
-			WHEN (result_status=7) THEN 1
-				ELSE 0
-			END) AS acceptCount,
-		SUM(CASE
-			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
-				ELSE 0
-			END) AS printCount
-		FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
+                vl.facility_id,
+                f.facility_code,
+                f.facility_state,
+                f.facility_district,
+                f.facility_name,
+                COUNT(*) AS totalCount,
+                NULL AS reorderCount,
+                SUM(CASE
+                    WHEN (result_status=9) THEN 1
+                        ELSE 0
+                    END) AS registerCount,
+                SUM(CASE
+                    WHEN (result_status=8) THEN 1
+                        ELSE 0
+                    END) AS sentToLabCount,
+                SUM(CASE
+                    WHEN (result_status=4) THEN 1
+                        ELSE 0
+                    END) AS rejectCount,
+                SUM(CASE
+                    WHEN (result_status=6) THEN 1
+                        ELSE 0
+                    END) AS pendingCount,
+                SUM(CASE
+                    WHEN (result_status=5) THEN 1
+                        ELSE 0
+                    END) AS invalidCount,
+                SUM(CASE
+                    WHEN (result_status=7) THEN 1
+                        ELSE 0
+                    END) AS acceptCount,
+                SUM(CASE
+                    WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
+                        ELSE 0
+                    END) AS printCount
+                FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
     $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
     $sQuery = $sQuery . ' GROUP BY vl.facility_id';
@@ -195,9 +199,7 @@ $tableResult = $db->rawQuery($sQuery);
     <div class="dashboard-stat2 " style="cursor:pointer;">
         <div class="display">
             <div class="number">
-                <h3 class="font-purple-soft">
-
-                </h3>
+                <h3 class="font-purple-soft"></h3>
                 <small class="font-purple-soft"><?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?></small><br>
                 <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
             </div>
@@ -219,8 +221,9 @@ $tableResult = $db->rawQuery($sQuery);
                         <th scope="row"><?php echo _("Facility Name"); ?></th>
                         <th class="sum"><?php echo _("Total Samples Registered"); ?></th>
                         <th class="sum"><?php echo _("Samples Currently Registered at HC"); ?></th>
-                        <!-- <th class="sum">Samples Received/ Sent To Lab</th> -->
-                        <th class="sum"><?php echo _("Samples Currently Registered at VL Lab"); ?><br><?php echo _("(Results not yet available)"); ?></th>
+                        <th class="sum"><?php echo _("Samples Currently Registered at VL Lab"); ?>
+                            <br><?php echo _("(Results not yet available)"); ?>
+                        </th>
                         <th class="sum"><?php echo _("Samples with Accepted Results"); ?></th>
                         <th class="sum"><?php echo _("Samples Rejected"); ?></th>
                         <th class="sum"><?php echo _("Samples with Invalid or Failed Results"); ?></th>
@@ -233,15 +236,15 @@ $tableResult = $db->rawQuery($sQuery);
                     if (isset($tableResult) && !empty($tableResult)) {
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
-                                <td><?php echo ($tableRow['facility_name']); ?></td>
-                                <td><?php echo $tableRow['totalCount']; ?></td>
-                                <td><?php echo $tableRow['registerCount']; ?></td>
-                                <td><?php echo $tableRow['pendingCount']; ?></td>
-                                <td><?php echo $tableRow['acceptCount']; ?></td>
-                                <td><?php echo $tableRow['rejectCount']; ?></td>
-                                <td><?php echo $tableRow['invalidCount']; ?></td>
-                                <td><?php echo $tableRow['reorderCount']; ?></td>
-                                <td><?php echo $tableRow['printCount']; ?></td>
+                                <td><?= ($tableRow['facility_name']); ?></td>
+                                <td><?= $tableRow['totalCount']; ?></td>
+                                <td><?= $tableRow['registerCount']; ?></td>
+                                <td><?= $tableRow['pendingCount']; ?></td>
+                                <td><?= $tableRow['acceptCount']; ?></td>
+                                <td><?= $tableRow['rejectCount']; ?></td>
+                                <td><?= $tableRow['invalidCount']; ?></td>
+                                <td><?= $tableRow['reorderCount']; ?></td>
+                                <td><?= $tableRow['printCount']; ?></td>
                             </tr>
                     <?php
                         }
@@ -249,7 +252,6 @@ $tableResult = $db->rawQuery($sQuery);
                 </tbody>
                 <tfoot>
                     <tr>
-                        <!-- <td></td> -->
                         <td></td>
                         <td></td>
                         <td></td>

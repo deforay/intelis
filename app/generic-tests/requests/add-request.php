@@ -26,8 +26,7 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $reasonForFailure = $genericTestsService->getReasonForFailure();
 $genericResults = $genericTestsService->getGenericResults();
 /* To get testing platform names */

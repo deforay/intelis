@@ -23,12 +23,12 @@ if ($params == "testing-labs") {
     $tableName = "health_facilities";
 }
 try {
-    $mappedFacility = explode(',',$_POST['selectedSample']);
-   // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
-    if (isset($mappedFacility) && count($mappedFacility) > 0) {
+    $mappedFacility = explode(',', $_POST['selectedSample']);
+    // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
+    if (isset($mappedFacility) && !empty($mappedFacility)) {
 
         $db->where('test_type', $testType);
-       // $db->where('facility_id', $mappedFacility, 'NOT IN');
+        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [];

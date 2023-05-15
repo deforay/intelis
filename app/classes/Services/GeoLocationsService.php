@@ -15,8 +15,7 @@ use MysqliDb;
 class GeoLocationsService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
 
     public function __construct($db = null)
     {
@@ -51,7 +50,7 @@ class GeoLocationsService
         } else {
             $this->db->where('geo_parent', 0);
         }
-        if(isset($_SESSION['mappedProvinces']) && !empty($_SESSION['mappedProvinces'])){
+        if (isset($_SESSION['mappedProvinces']) && !empty($_SESSION['mappedProvinces'])) {
             $this->db->where('geo_id', $_SESSION['mappedProvinces']);
         }
 
@@ -136,42 +135,44 @@ class GeoLocationsService
         return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
     }
 
-    public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false){
+    public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false)
+    {
 
         $response = [];
-    
-        if($districts === true){
+
+        if ($districts === true) {
             $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent = $provinceId AND geo_status='active'";
             $response['districts'] = $this->db->rawQuery($districtSql);
         }
-      
-        if($facilities === true){
+
+        if ($facilities === true) {
             $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id = $provinceId AND status='active'";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
-      
-       if($labs === true){
+
+        if ($labs === true) {
             $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id = $provinceId AND status='active'";
             $response['labs'] = $this->db->rawQuery($facilitySql);
         }
-        
+
         return $response;
     }
 
-    public function getByDistrictId($districtId, $facilities = true, $labs = false){
+    public function getByDistrictId($districtId, $facilities = true, $labs = false)
+    {
 
         $response = [];
-      
-        if($facilities === true){
+
+        if ($facilities === true) {
             $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_district_id = $districtId AND status='active'";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
-      
-        if($labs === true){
+
+        if ($labs === true) {
             $labSql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_district_id = $districtId AND status='active'";
             $response['labs'] = $this->db->rawQuery($labSql);
         }
-      
+
         return $response;
     }
 }

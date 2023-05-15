@@ -197,12 +197,12 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (!empty($sWhere) && count($sWhere) > 0) {
+if (!empty($sWhere)) {
 	$_SESSION['hepatitisTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-	$sQuery = $sQuery . ' AND ' .$sWhere;
+	$sQuery = $sQuery . ' AND ' . $sWhere;
 }
 //echo $sQuery; die();
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
 	$_SESSION['hepatitisTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

@@ -133,7 +133,7 @@ $sQuery = "SELECT * FROM form_tb as vl
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' where ' . $sWhere;
      if (isset($_POST['samplePackageCode']) && $_POST['samplePackageCode'] != '') {
           $sWhere = $sWhere . ' AND vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
@@ -162,7 +162,7 @@ $sFilter = '';
      $sFilter = ' AND result_status!=9';
 } */
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

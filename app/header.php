@@ -473,31 +473,32 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										</a>
 
 										<ul class="treeview-menu">
-										<?php 
-										if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu testTypeConfigurationMenu">
-												<a href="/generic-tests/configuration/test-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
-											</li>
-										<?php } if (isset($_SESSION['privileges']) && in_array("generic-sample-type.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu genericSampleTypeMenu">
-												<a href="/generic-tests/reference/sample-types/generic-sample-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
-											</li>
-										<?php } 
-										if (isset($_SESSION['privileges']) && in_array("generic-testing-reason.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu genericTestingReasonMenu">
-												<a href="/generic-tests/reference/testing-reasons/generic-testing-reason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
-											</li>
-										<?php }
-										if (isset($_SESSION['privileges']) && in_array("generic-symptoms.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu genericSymptomsMenu">
-												<a href="/generic-tests/reference/symptoms/generic-symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
-											</li>
-										<?php }
-										if (isset($_SESSION['privileges']) && in_array("generic-sample-rejection-reasons.php", $_SESSION['privileges'])) { ?>
-											<li class="allMenu genericSampleRejectionReasonsMenu">
-												<a href="/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Rejection Reasons"); ?></a>
-											</li>
-										<?php } ?>
+											<?php
+											if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu testTypeConfigurationMenu">
+													<a href="/generic-tests/configuration/test-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
+												</li>
+											<?php }
+											if (isset($_SESSION['privileges']) && in_array("generic-sample-type.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericSampleTypeMenu">
+													<a href="/generic-tests/reference/sample-types/generic-sample-type.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
+												</li>
+											<?php }
+											if (isset($_SESSION['privileges']) && in_array("generic-testing-reason.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericTestingReasonMenu">
+													<a href="/generic-tests/reference/testing-reasons/generic-testing-reason.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
+												</li>
+											<?php }
+											if (isset($_SESSION['privileges']) && in_array("generic-symptoms.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericSymptomsMenu">
+													<a href="/generic-tests/reference/symptoms/generic-symptoms.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
+												</li>
+											<?php }
+											if (isset($_SESSION['privileges']) && in_array("generic-sample-rejection-reasons.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericSampleRejectionReasonsMenu">
+													<a href="/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Rejection Reasons"); ?></a>
+												</li>
+											<?php } ?>
 										</ul>
 									</li>
 								<?php }
@@ -655,8 +656,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 						</li>
 					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-							if($genericTestRequestMenuAccess) { ?>
-							<li class="header"><?php echo _("LAB TESTS"); ?></li>
+					?>
+						<li class="header"><?php echo _("LAB TESTS"); ?></li>
+						<?php if ($genericTestRequestMenuAccess) { ?>
 							<li class="treeview allMenu generic-test-request-menu">
 								<a href="#">
 									<span class="fa-solid fa-pen-to-square"></span>
@@ -697,62 +699,64 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 							</li>
 						<?php }
 						if ($genericTestResultMenuAccess) { ?>
-						<li class="treeview allMenu generic-test-results-menu">
-							<a href="#">
-								<span class="fa-solid fa-list-check"></span>
-								<span><?php echo _("Test Result Management"); ?></span>
-								<span class="pull-right-container">
-									<span class="fa-solid fa-angle-left pull-right"></span>
-								</span>
-							</a>
-							<ul class="treeview-menu">
-								<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-									<!-- <li class="allMenu importGenericResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li> -->
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericTestResultMenu"><a href="/generic-tests/results/generic-test-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-								<?php } if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericFailedResultMenu"><a href="/generic-tests/results/generic-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("generic-result-approval.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericResultApprovalMenu"><a href="/generic-tests/results/generic-result-approval.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-								<?php } ?>
-							</ul>
-						</li>
-					<?php }
-					if ($genericManagementMenuAccess === true) { ?>
-						<li class="treeview allMenu generic-program-menu">
-							<a href="#">
-								<span class="fa-solid fa-book"></span>
-								<span><?php echo _("Management"); ?></span>
-								<span class="pull-right-container">
-									<span class="fa-solid fa-angle-left pull-right"></span>
-								</span>
-							</a>
-							<ul class="treeview-menu">
-								<?php if (isset($_SESSION['privileges']) && in_array("generic-sample-status.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericStatusReportMenu"><a href="/generic-tests/program-management/generic-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-								<?php } if (isset($_SESSION['privileges']) && in_array("generic-export-data.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericExportMenu"><a href="/generic-tests/program-management/generic-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("generic-print-result.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericPrintResultMenu"><a href="/generic-tests/results/generic-print-result.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("generic-weekly-report.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericWeeklyReport"><a href="/generic-tests/program-management/generic-weekly-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("VL Lab Weekly Report"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericSampleRejectionReport"><a href="/generic-tests/program-management/sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> Sample Rejection <?php echo _("Report"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("generic-monitoring-report.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericMonitoringReport"><a href="/generic-tests/program-management/generic-monitoring-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Monitoring Report"); ?></a></li>
-								<?php }
-								if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("generic-monthly-threshold-report.php", $_SESSION['privileges'])) { ?>
-									<li class="allMenu genericMonthlyThresholdReport"><a href="/generic-tests/program-management/generic-monthly-threshold-report.php"><span class="fa-solid fa-caret-right"></span><?php echo _("VL Testing Target Report"); ?></a></li>
-								<?php } ?>
-							</ul>
-						</li>
-					<?php }
+							<li class="treeview allMenu generic-test-results-menu">
+								<a href="#">
+									<span class="fa-solid fa-list-check"></span>
+									<span><?php echo _("Test Result Management"); ?></span>
+									<span class="pull-right-container">
+										<span class="fa-solid fa-angle-left pull-right"></span>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
+										<!-- <li class="allMenu importGenericResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li> -->
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericTestResultMenu"><a href="/generic-tests/results/generic-test-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericFailedResultMenu"><a href="/generic-tests/results/generic-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-result-approval.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericResultApprovalMenu"><a href="/generic-tests/results/generic-result-approval.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
+									<?php } ?>
+								</ul>
+							</li>
+						<?php }
+						if ($genericManagementMenuAccess === true) { ?>
+							<li class="treeview allMenu generic-program-menu">
+								<a href="#">
+									<span class="fa-solid fa-book"></span>
+									<span><?php echo _("Management"); ?></span>
+									<span class="pull-right-container">
+										<span class="fa-solid fa-angle-left pull-right"></span>
+									</span>
+								</a>
+								<ul class="treeview-menu">
+									<?php if (isset($_SESSION['privileges']) && in_array("generic-sample-status.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericStatusReportMenu"><a href="/generic-tests/program-management/generic-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-export-data.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericExportMenu"><a href="/generic-tests/program-management/generic-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-print-result.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericPrintResultMenu"><a href="/generic-tests/results/generic-print-result.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-weekly-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericWeeklyReport"><a href="/generic-tests/program-management/generic-weekly-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("VL Lab Weekly Report"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("sample-rejection-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericSampleRejectionReport"><a href="/generic-tests/program-management/sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> Sample Rejection <?php echo _("Report"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && in_array("generic-monitoring-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericMonitoringReport"><a href="/generic-tests/program-management/generic-monitoring-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Monitoring Report"); ?></a></li>
+									<?php }
+									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("generic-monthly-threshold-report.php", $_SESSION['privileges'])) { ?>
+										<li class="allMenu genericMonthlyThresholdReport"><a href="/generic-tests/program-management/generic-monthly-threshold-report.php"><span class="fa-solid fa-caret-right"></span><?php echo _("VL Testing Target Report"); ?></a></li>
+									<?php } ?>
+								</ul>
+							</li>
+						<?php }
 					}
 					if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) { ?>
 						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>

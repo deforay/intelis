@@ -78,6 +78,12 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
+    public $logo = '';
+    public $text = '';
+    public $lab = '';
+    public $htitle = '';
+    public $labFacilityId = null;
+    public $labName = '';
 
   //Page header
   public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null)

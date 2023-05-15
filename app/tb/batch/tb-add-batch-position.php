@@ -1,6 +1,6 @@
 <?php
 
- 
+
 require_once APPLICATION_PATH . '/header.php';
 
 $id = base64_decode($_GET['id']);
@@ -24,7 +24,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 
-if (!isset($batchInfo) || count($batchInfo) == 0) {
+if (!isset($batchInfo) || empty($batchInfo)) {
 	header("Location:tb-batches.php");
 }
 //Get machine's prev. label order

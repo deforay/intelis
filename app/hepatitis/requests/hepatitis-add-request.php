@@ -50,8 +50,8 @@ $hepatitisResults = $hepatitisService->getHepatitisResults();
 $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $labTechniciansResults = [];
 foreach ($userResult as $user) {
     $labTechniciansResults[$user['user_id']] = ($user['user_name']);
@@ -100,7 +100,7 @@ $fileArray = array(
     7 => 'forms/add-rwanda.php',
     8 => 'forms/add-angola.php',
 );
- //print_r($arr['vl_form']);die;
+//print_r($arr['vl_form']);die;
 require($fileArray[$arr['vl_form']]);
 ?>
 

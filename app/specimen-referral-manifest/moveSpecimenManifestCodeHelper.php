@@ -27,7 +27,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
-    if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && count($_POST['packageCode']) > 0) {
+    if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
         $value = array(
             'lab_id'                    => $_POST['assignLab'],
             'referring_lab_id'          => $_POST['testingLab'],
@@ -48,7 +48,7 @@ try {
 
     //Add event log
     $eventType = 'move-manifest';
-    $action = $_SESSION['userName'] . ' moved Sample Manifest ' . $_POST['packageCode']. ' to lab '.$_POST['assignLab'] . ' from lab '.$_POST['testingLab'];
+    $action = $_SESSION['userName'] . ' moved Sample Manifest ' . $_POST['packageCode'] . ' to lab ' . $_POST['assignLab'] . ' from lab ' . $_POST['testingLab'];
     $resource = 'specimen-manifest';
 
     $general->activityLog($eventType, $action, $resource);

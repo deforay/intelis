@@ -21,8 +21,7 @@ use App\Registries\ContainerRegistry;
 class CommonService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
 
 
     public function __construct($db = null)
@@ -241,7 +240,7 @@ class CommonService
     public static function decrypt($encrypted, $key)
     {
         $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
-        if ($decoded === false) {
+        if (empty($decoded)) {
             throw new SystemException('The message encoding failed');
         }
         if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {

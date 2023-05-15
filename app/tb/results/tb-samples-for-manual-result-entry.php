@@ -203,7 +203,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-if (!empty($sWhere) && count($sWhere > 0)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = "";    // Bcz using $swhere in line 212 & 215 or It prints Array in query
@@ -213,7 +213,7 @@ $sQuery = $sQuery . $sWhere;
 //echo $sQuery;
 $_SESSION['tbResultQuery'] = $sQuery;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

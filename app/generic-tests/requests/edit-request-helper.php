@@ -56,7 +56,7 @@ try {
      if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
           $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
           $provinceInfo = $db->query($provinceQuery);
-          if (!isset($provinceInfo) || count($provinceInfo) == 0) {
+          if (!isset($provinceInfo) || empty($provinceInfo)) {
                $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
           }
      }
@@ -344,36 +344,36 @@ try {
      $vldata = array_merge($vldata, $pngSpecificFields);
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
-          if (isset($_POST['testName']) && count($_POST['testName']) > 0) {
+          if (isset($_POST['testName']) && !empty($_POST['testName'])) {
                $db = $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete($testTableName);
-			foreach ($_POST['testName'] as $testKey => $testKitName) {
-				if (isset($testKitName) && !empty($testKitName)) {
-					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
-						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
-						$_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
-					} else {
-						$_POST['testDate'][$testKey] = null;
-					}
-					$covid19TestData = array(
-						'generic_id'				=> $_POST['vlSampleId'],
-						'test_name'					=> ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-						'facility_id'           	=> $_POST['labId'] ?? null,
-						'sample_tested_datetime' 	=> date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
-						'testing_platform'      	=> $_POST['testingPlatform'][$testKey] ?? null,
-						'kit_lot_no'      			=> (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date'      		=> (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-						'result'					=> $_POST['testResult'][$testKey]
-					);
-					$db->insert($testTableName, $covid19TestData);
-				}
-			}
-		}
-	} else {
-		$db = $db->where('generic_id', $_POST['vlSampleId']);
-		$db->delete($testTableName);
-		$covid19Data['sample_tested_datetime'] = null;
-	}
+               foreach ($_POST['testName'] as $testKey => $testKitName) {
+                    if (isset($testKitName) && !empty($testKitName)) {
+                         if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
+                              $testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
+                              $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+                         } else {
+                              $_POST['testDate'][$testKey] = null;
+                         }
+                         $covid19TestData = array(
+                              'generic_id'                    => $_POST['vlSampleId'],
+                              'test_name'                         => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+                              'facility_id'                => $_POST['labId'] ?? null,
+                              'sample_tested_datetime'      => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+                              'testing_platform'           => $_POST['testingPlatform'][$testKey] ?? null,
+                              'kit_lot_no'                     => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+                              'kit_expiry_date'                => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+                              'result'                         => $_POST['testResult'][$testKey]
+                         );
+                         $db->insert($testTableName, $covid19TestData);
+                    }
+               }
+          }
+     } else {
+          $db = $db->where('generic_id', $_POST['vlSampleId']);
+          $db->delete($testTableName);
+          $covid19Data['sample_tested_datetime'] = null;
+     }
 
      $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
      $db = $db->where('sample_id', $_POST['vlSampleId']);

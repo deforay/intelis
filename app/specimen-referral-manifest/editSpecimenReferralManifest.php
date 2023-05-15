@@ -20,10 +20,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $usersList = [];
-$users = $usersService->getActiveUsers();
+$users = $usersService->getActiveUsers($_SESSION['facilityMap']);
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }
@@ -47,12 +46,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'vl') ? 'vl' : $module;
 	$vlService = new VlService($db);
 	$sampleTypes = $vlService->getVlSampleTypes();
 } else if ($module == 'eid') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'eid') ? 'eid' : $module;
 	$eidService = new EidService($db);
 	$sampleTypes = $eidService->getEidSampleTypes();
@@ -60,7 +59,7 @@ if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'HEP') ? 'hepatitis' : $module;
 } else if ($module == 'covid19') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') " ;
+	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'C19') ? 'covid19' : $module;
 	$covid19Service = new Covid19Service($db);
 	$sampleTypes = $covid19Service->getCovid19SampleTypes();
@@ -78,8 +77,8 @@ if ($module == 'vl') {
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);
 
-if (!empty($facilityMap)) {
-	$query = $query . " AND facility_id IN($facilityMap)";
+if (!empty($_SESSION['facilityMap'])) {
+	$query = $query . " AND facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
 $query = $query . " ORDER BY vl.request_created_datetime ASC";

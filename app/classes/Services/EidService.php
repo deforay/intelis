@@ -24,10 +24,9 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 class EidService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_eid';
-    protected $shortCode = 'EID';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_eid';
+    protected string $shortCode = 'EID';
 
     public function __construct($db = null)
     {

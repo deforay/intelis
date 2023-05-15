@@ -188,7 +188,7 @@ $sQuery = "SELECT
         FROM form_vl as vl 
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
-        WHERE vl.lab_id is NOT NULL AND reason_for_vl_testing != 9999 ";
+        WHERE vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 
 if (!empty($labId)) {
     $sQuery = $sQuery . " AND vl.lab_id IN ($labId)";
@@ -358,7 +358,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
 }
 //Statistics sheet end
 if ($c > 0) {
-    
+
     $excel->setActiveSheetIndex(0);
     $writer = IOFactory::createWriter($excel, 'Xlsx');
     $filename = 'VLSM-VL-Lab-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';

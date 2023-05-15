@@ -28,7 +28,7 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 
 $transactionId = $general->generateUUID();
 $authToken = $general->getAuthorizationBearerToken();
-$user = $usersService->getUserFromToken($authToken);
+$user = $usersService->getUserByToken($authToken);
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
 $from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;

@@ -124,7 +124,7 @@ if (!empty($sWhere)) {
 }
 
 //$sQuery = $sQuery . ' GROUP BY action';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

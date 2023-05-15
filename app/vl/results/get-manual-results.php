@@ -267,18 +267,17 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
 } else {
      $sWhere[] = " vl.result_status!=9 ";
 }
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-     if (!empty($facilityMap)) {
-          $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")";
-     }
+
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
+
 if (isset($sWhere) && !empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
 $_SESSION['vlResultQuery'] = $sQuery;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

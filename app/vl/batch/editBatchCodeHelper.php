@@ -53,7 +53,7 @@ try {
             $displaySampleOrderArray = [];
             $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
             $batchInfo = $db->query($batchQuery);
-            if (isset($batchInfo) && count($batchInfo) > 0) {
+            if (isset($batchInfo) && !empty($batchInfo)) {
 
                 if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
                     foreach ($general->excelColumnRange('A', 'H') as $value) {

@@ -27,7 +27,7 @@ $labSignTable = "lab_report_signatories";
 
 $jsonData = file_get_contents('php://input');
 $apiData = json_decode($jsonData, true);
-if (isset($apiData['result']) && count($apiData['result']) > 0) {
+if (isset($apiData['result']) && !empty($apiData['result'])) {
 	$_POST = $apiData['result'];
 }
 try {
@@ -116,7 +116,7 @@ try {
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
-		if (!empty($_POST['sampleType']) && count($_POST['sampleType']) > 0) {
+		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
 				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
 			}
@@ -169,7 +169,7 @@ try {
 						'updated_datetime' => DateUtility::getCurrentDateTime()
 					));
 					// Mapping facility as a Testing Lab
-				} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
+				} elseif (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
 					$data = array(
 						'test_type' => $testType,
 						'facility_id' => $lastId,
@@ -178,7 +178,7 @@ try {
 					if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
 					}
-					if (isset($attributes) && count($attributes) > 0) {
+					if (isset($attributes) && !empty($attributes)) {
 						$data['attributes'] = json_encode($attributes, true);
 					}
 					$db->insert($testingLabsTable, $data);
@@ -233,7 +233,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && count($_FILES['signature']['name']) > 0 && isset($_POST['signName']) && $_POST['signName'] != "" && count($_POST['signName']) > 0) {
+		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && !empty($_FILES['signature']['name']) && isset($_POST['signName']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			foreach ($_POST['signName'] as $key => $name) {
 				if (isset($name) && $name != "") {
 					$signData = array(

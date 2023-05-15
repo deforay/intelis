@@ -108,8 +108,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
 	if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-			$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
-		
+		$sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
 	}
 }
 
@@ -122,10 +121,8 @@ $sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested
                         AND vl.result is not null
                         AND vl.result != ''";
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-		$sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+	if (!empty($_SESSION['facilityMap'])) {
+		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
 } else {
 	$sWhere[] = " vl.result_status!=9";
@@ -199,10 +196,10 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 
 if (!empty($sWhere)) {
 	$_SESSION['eidTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-	$sQuery = $sQuery . ' AND ' .$sWhere;
+	$sQuery = $sQuery . ' AND ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
 	$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

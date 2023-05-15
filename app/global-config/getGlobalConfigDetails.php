@@ -87,18 +87,18 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM global_config";
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = "WHERE status = 'active' AND " . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
-}else{
+} else {
     $sQuery = $sQuery . " WHERE status = 'active' ";
 }
 
-if(isset($_POST['category']) && $_POST['category']){
-    $sQuery = $sQuery . 'AND category like "'.$_POST['category'].'"';
+if (isset($_POST['category']) && $_POST['category']) {
+    $sQuery = $sQuery . 'AND category like "' . $_POST['category'] . '"';
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

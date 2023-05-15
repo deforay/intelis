@@ -18,13 +18,12 @@ use App\Registries\ContainerRegistry;
 class VlService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_vl';
-    protected $shortCode = 'VL';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_vl';
+    protected string $shortCode = 'VL';
 
     // keep all these in lower case to make it easier to compare
-    protected $suppressedArray = array(
+    protected array $suppressedArray = array(
         'hiv-1 not detected',
         'target not detected',
         'tnd',
@@ -44,7 +43,7 @@ class VlService
         'negat'
     );
 
-    protected $suppressionLimit = 1000;
+    protected int $suppressionLimit = 1000;
 
     public function __construct($db = null)
     {

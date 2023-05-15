@@ -14,8 +14,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 
@@ -28,8 +26,8 @@ $primaryKey = "sample_id";
 $aColumns = array('vl.sample_code', 'ty.test_standard_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'ty.test_standard_name', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] !=  'standalone') {
-     array_splice($aColumns, 1,0, array('vl.remote_sample_code'));
-     array_splice($orderColumns, 1,0, array('vl.remote_sample_code'));
+     array_splice($aColumns, 1, 0, array('vl.remote_sample_code'));
+     array_splice($orderColumns, 1, 0, array('vl.remote_sample_code'));
 }
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -80,10 +78,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                } else {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
           }
@@ -131,7 +129,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 if (isset($_POST['testType']) && $_POST['testType'] != "") {
      $sQuery = $sQuery . " WHERE vl.test_type like " . $_POST['testType'];
 }
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
@@ -193,7 +191,7 @@ foreach ($rResult as $aRow) {
 
      if ($editRequest) {
           $row[] = '<a href="edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-     }else{
+     } else {
           $row[] = "";
      }
 

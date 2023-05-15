@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -132,7 +132,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = ' where ' . $sWhere;
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
@@ -199,8 +199,8 @@ if ($sWhere != '') {
      $sWhere = $sWhere . ' where vl.result_status!=9';
 }
 
-if (!empty($facilityMap)) {
-     $sWhere .= " AND vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere .= " AND hf.test_type = 'tb'";
 $sQuery = $sQuery . ' ' . $sWhere;

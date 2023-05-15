@@ -35,7 +35,7 @@ $transactionId = $general->generateUUID();
 try {
     ini_set('memory_limit', -1);
     $authToken = $general->getAuthorizationBearerToken();
-    $user = $usersService->getUserFromToken($authToken);
+    $user = $usersService->getUserByToken($authToken);
     if (!empty($jsonResponse)) {
         $decode = json_decode($jsonResponse, true);
         //http_response_code(501);

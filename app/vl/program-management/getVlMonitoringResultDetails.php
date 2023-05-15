@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
+
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -80,7 +80,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 $sWhere = [];
-$sWhere[] = " WHERE reason_for_vl_testing != 9999 ";
+$sWhere[] = " WHERE IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -192,14 +192,14 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] =  " f.facility_state_id LIKE " . $_POST['state'];
 }
 
-if (count($sWhere) > 0) {
+if (!empty($sWhere)) {
      $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
 } else {
      $sWhere[] = ' WHERE vl.result!="" AND vl.result_status!=9';
 }
 
-if (!empty($facilityMap)) {
-     $sWhere[] = " vl.facility_id IN ($facilityMap) ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
@@ -209,7 +209,7 @@ $sQuery = $sQuery . ' ' . $sWhere;
 
 $_SESSION['vlMonitoringResultQuery'] = $sQuery;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

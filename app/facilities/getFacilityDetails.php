@@ -18,7 +18,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('facility_code', 'facility_name', 'facility_type_name', 'status','p.geo_name', 'd.geo_name');
+$aColumns = array('facility_code', 'facility_name', 'facility_type_name', 'status', 'p.geo_name', 'd.geo_name');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -83,7 +83,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 /* Individual column filtering */
 for ($i = 0; $i < count($aColumns); $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
-            $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
+        $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
 $facilityType = $_POST['facilityType'];
@@ -98,14 +98,11 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
 }
 $qry = "";
 if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
-   if(!empty($facilityType))
-   {
-        if($facilityType=='2'){
+    if (!empty($facilityType)) {
+        if ($facilityType == '2') {
             $qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
             $sWhere[] = ' tl.test_type = "' . $_POST['testType'] . '"';
-        }
-        else
-        {
+        } else {
             $qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
             $sWhere[] = ' hf.test_type = "' . $_POST['testType'] . '"';
         }
@@ -123,10 +120,10 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo
             LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id $qry ";
 
 if (isset($sWhere) && !empty($sWhere)) {
-    $sWhere = ' where ' . implode(' AND ',$sWhere);
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

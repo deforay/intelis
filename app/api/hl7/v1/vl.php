@@ -385,7 +385,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
             $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
             $provinceInfo = $db->query($provinceQuery);
-            if (!isset($provinceInfo) || count($provinceInfo) == 0) {
+            if (!isset($provinceInfo) || empty($provinceInfo)) {
                 $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
             }
         }
@@ -485,7 +485,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         $sQuery = "SELECT vl_sample_id, sample_code, remote_sample_code FROM form_vl where vl_sample_id = " . $_POST['vlSampleId'];
         $savedSamples = $db->rawQueryOne($sQuery);
     }
-    if ($id > 0 && isset($vlData) && count($vlData) > 0) {
+    if ($id > 0 && isset($vlData) && !empty($vlData)) {
         if ($savedSamples['sample_code'] != '') {
             $sampleCode = $savedSamples['sample_code'];
         } else {

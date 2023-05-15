@@ -19,11 +19,10 @@ use App\Services\GeoLocationsService;
 class HepatitisService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_hepatitis';
-    protected $shortCode = 'H';
-    public $suppressedArray = array(
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_hepatitis';
+    protected string $shortCode = 'H';
+    public array $suppressedArray = array(
         'target not detected',
         'tnd',
         'not detected',

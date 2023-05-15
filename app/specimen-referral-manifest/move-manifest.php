@@ -32,7 +32,7 @@ $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 $testingLabs = $facilitiesService->getTestingLabs($module);
 
 $usersList = [];
-$users = $usersService->getActiveUsers();
+$users = $usersService->getActiveUsers($_SESSION['facilityMap']);
 foreach ($users as $u) {
 	$usersList[$u["user_id"]] = $u['user_name'];
 }

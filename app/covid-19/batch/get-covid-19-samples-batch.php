@@ -44,7 +44,7 @@ if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id IS NULL OR sample_batch_id='')";
 }
 
-if (isset($_POST['fName']) && is_array($_POST['fName']) && count($_POST['fName']) > 0) {
+if (isset($_POST['fName']) && is_array($_POST['fName']) && !empty($_POST['fName'])) {
     $query = $query . " AND vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
@@ -73,41 +73,41 @@ $result = $db->rawQuery($query);
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <div class="row" style="margin: 15px;">
-                                   <h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-                                        <?php
-                                    foreach ($result as $sample) {
-                                    ?>
-                                        <option value="<?php echo $sample['covid19_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
-                                    <?php
-                                    }
-                                    ?>
-                                        </select>
-                                   </div>
+    <h4> <?php echo _("Sample Code"); ?></h4>
+    <div class="col-md-5">
+        <!-- <div class="col-lg-5"> -->
+        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+            <?php
+            foreach ($result as $sample) {
+            ?>
+                <option value="<?php echo $sample['covid19_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <?php
+            }
+            ?>
+        </select>
+    </div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+    <div class="col-md-2">
+        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+    </div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                                   </div>
-                              </div>
+    <div class="col-md-5">
+        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
         $('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
+            search: {
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 3;
+            }
+        });
     });
 </script>

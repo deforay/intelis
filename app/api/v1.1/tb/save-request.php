@@ -40,7 +40,7 @@ try {
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $params = file_get_contents("php://input");
     $authToken = $general->getAuthorizationBearerToken();
-    $user = $usersService->getUserFromToken($authToken);
+    $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
 
@@ -348,7 +348,7 @@ try {
         $tbData['last_modified_by'] =  $user['user_id'];
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (isset($data['testResult']) && count($data['testResult']) > 0) {
+            if (isset($data['testResult']) && !empty($data['testResult'])) {
                 $db = $db->where('tb_id', $data['tbSampleId']);
                 $db->delete($testTableName);
 

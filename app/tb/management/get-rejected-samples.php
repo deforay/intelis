@@ -21,7 +21,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -55,11 +54,11 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
 }
-if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
+if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
     $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
 }
-if (!empty($facilityMap)) {
-    $sWhere[] = " vl.facility_id IN ($facilityMap)";
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
 if (isset($swhere) && !empty($sWhere)) {
@@ -182,7 +181,7 @@ if (isset($tableResult) && !empty($tableResult)) { ?>
         });
     <?php }
 
-    if (isset($rjResult) && count($rjResult) > 0) { ?>
+    if (isset($rjResult) && !empty($rjResult)) { ?>
         $('#rejectedType').highcharts({
             chart: {
                 plotBackgroundColor: null,

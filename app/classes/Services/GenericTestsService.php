@@ -18,13 +18,12 @@ use App\Registries\ContainerRegistry;
 class GenericTestsService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_vl';
-    protected $shortCode = 'VL';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_vl';
+    protected string $shortCode = 'VL';
 
     // keep all these in lower case to make it easier to compare
-    protected $suppressedArray = array(
+    protected array $suppressedArray = array(
         'hiv-1 not detected',
         'target not detected',
         'tnd',
@@ -44,14 +43,14 @@ class GenericTestsService
         'negat'
     );
 
-    protected $suppressionLimit = 1000;
+    protected int $suppressionLimit = 1000;
 
     public function __construct($db = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType= null)
+    public function generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType = null)
     {
 
         if (!empty($maxCodeKeyVal)) {
@@ -93,7 +92,7 @@ class GenericTestsService
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
         $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
-        if(isset($testType) && !empty($testType)){
+        if (isset($testType) && !empty($testType)) {
             $prefixFromConfig = $testType;
         }
         if ($sampleCodeFormat == 'MMYY') {
@@ -139,7 +138,7 @@ class GenericTestsService
             $remotePrefix = $remotePrefix . "R";
         }
         if ($sampleCodeFormat == 'auto') {
-            if(isset($testType) && !empty($testType)){
+            if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
@@ -147,7 +146,7 @@ class GenericTestsService
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
-            if(isset($testType) && !empty($testType)){
+            if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
@@ -213,7 +212,7 @@ class GenericTestsService
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
         $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
-        if(isset($testType) && !empty($testType)){
+        if (isset($testType) && !empty($testType)) {
             $prefixFromConfig = $testType;
         }
         if ($sampleCodeFormat == 'MMYY') {
@@ -260,7 +259,7 @@ class GenericTestsService
         }
 
         if ($sampleCodeFormat == 'auto') {
-            if(isset($testType) && !empty($testType)){
+            if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
@@ -268,7 +267,7 @@ class GenericTestsService
             $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
-            if(isset($testType) && !empty($testType)){
+            if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
@@ -723,7 +722,7 @@ class GenericTestsService
             $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
             $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-            $testType = (isset($params['testType']) && !empty($params['testType']))?$params['testType']:null;
+            $testType = (isset($params['testType']) && !empty($params['testType'])) ? $params['testType'] : null;
 
             if (empty($sampleCollectionDate)) {
                 echo 0;
@@ -757,7 +756,7 @@ class GenericTestsService
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => $this->db->now()
             );
-            
+
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $vlData['remote_sample_code'] = $sampleData['sampleCode'];

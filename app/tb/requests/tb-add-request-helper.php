@@ -80,7 +80,7 @@ try {
     } else {
         $_POST['resultDate'] = null;
     }
-//echo '<pre>'; print_r($_POST); die;
+    //echo '<pre>'; print_r($_POST); die;
     if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -155,7 +155,7 @@ try {
         }
     }
     $reason = $_POST['reasonForTbTest'];
-    $reason['reason'] = array($reason['reason']=>'yes');
+    $reason['reason'] = array($reason['reason'] => 'yes');
 
     $tbData = array(
         'vlsm_instance_id'                    => $instanceId,
@@ -179,7 +179,7 @@ try {
         'previously_treated_for_tb'           => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
         'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'number_of_sputum_samples'            => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
-        'first_sputum_samples_collection_date'=> !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
+        'first_sputum_samples_collection_date' => !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
         'sample_requestor_name'               => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
         'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
@@ -221,7 +221,7 @@ try {
     }
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-        if (isset($_POST['testResult']) && count($_POST['testResult']) > 0) {
+        if (isset($_POST['testResult']) && !empty($_POST['testResult'])) {
             foreach ($_POST['testResult'] as $testKey => $testResult) {
                 if (isset($testResult) && !empty($testResult)) {
                     $db->insert($testTableName, array(

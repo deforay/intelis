@@ -1,40 +1,41 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 $title = "Enter Covid-19 Result";
 
 require_once APPLICATION_PATH . '/header.php';
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$id = base64_decode($_GET['id']);
 
-$configQuery = "SELECT * from global_config";
-$configResult = $db->query($configQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+$arr = $general->getGlobalConfig();
 
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
-$fQuery = "SELECT * FROM facility_details where status='active'";
-$fResult = $db->rawQuery($fQuery);
+$fResult = $facilitiesService->getAllFacilities();
 
-$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-$userResult = $db->rawQuery($userQuery);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
-//get lab facility details
-$lQuery = "SELECT * FROM facility_details where facility_type='2' AND status ='active'";
-$lResult = $db->rawQuery($lQuery);
+//get labs
+$lResult = $facilitiesService->getAllFacilities(2);
+
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -135,9 +136,9 @@ if ($arr['vl_form'] == 1) {
 		$('#isSampleRejected').change(function(e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function(e){
-            changeHistory(this.value);
-        });
+		$('#hasRecentTravelHistory').change(function(e) {
+			changeHistory(this.value);
+		});
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -165,61 +166,63 @@ if ($arr['vl_form'] == 1) {
 		});
 
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect:function(e){
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			onSelect: function(e) {
 				$('#sampleReceivedDate').val('');
-                $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+				$('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
+			},
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
-        $('#sampleReceivedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            onSelect:function(e){
+		$('#sampleReceivedDate').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			onSelect: function(e) {
 				$('#sampleTestedDateTime').val('');
-                $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
+			},
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
 		//$('.date').mask('99-aaa-9999');
 		//$('.dateTime').mask('99-aaa-9999 99:99');
 	});
-	function changeHistory(val){
-        if(val == 'no' || val == 'unknown'){
-            $('.historyfield').hide();
-            $('#countryName,#returnDate').removeClass('isRequired');
-        }else if(val == 'yes'){
-            $('.historyfield').show();
-            $('#countryName,#returnDate').addClass('isRequired');
-        }
-    }
-	function changeReject(val){
+
+	function changeHistory(val) {
+		if (val == 'no' || val == 'unknown') {
+			$('.historyfield').hide();
+			$('#countryName,#returnDate').removeClass('isRequired');
+		} else if (val == 'yes') {
+			$('.historyfield').show();
+			$('#countryName,#returnDate').addClass('isRequired');
+		}
+	}
+
+	function changeReject(val) {
 		if (val == 'yes') {
 			$('.show-rejection').show();
-			$('.test-name-table-input').prop('disabled',true);
+			$('.test-name-table-input').prop('disabled', true);
 			$('.test-name-table').addClass('disabled');
 			$('#sampleRejectionReason,#rejectionDate').addClass('isRequired');
 			$('#sampleTestedDateTime,#result,.test-name-table-input').removeClass('isRequired');
@@ -227,8 +230,8 @@ if ($arr['vl_form'] == 1) {
 			$('#sampleRejectionReason').prop('disabled', false);
 		} else if (val == 'no') {
 			$('#rejectionDate').val('');
-            $('.show-rejection').hide();
-			$('.test-name-table-input').prop('disabled',false);
+			$('.show-rejection').hide();
+			$('.test-name-table-input').prop('disabled', false);
 			$('.test-name-table').removeClass('disabled');
 			$('#sampleRejectionReason,#rejectionDate').removeClass('isRequired');
 			$('#sampleTestedDateTime,#result,.test-name-table-input').addClass('isRequired');

@@ -14,18 +14,18 @@ $displayOrder = [];
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->query($batchQuery);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id=".$batchInfo[0]['config_id'];
+$configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
 $configControlInfo = $db->query($configControlQuery);
 $configControl = [];
-foreach($configControlInfo as $info){
-	if($info['test_type'] == 'hepatitis'){
+foreach ($configControlInfo as $info) {
+	if ($info['test_type'] == 'hepatitis') {
 		$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
 		$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 	}
 }
 
-if (!isset($batchInfo) || count($batchInfo) == 0) {
+if (!isset($batchInfo) || empty($batchInfo)) {
 	header("Location:hepatitis-batches.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
@@ -45,20 +45,22 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
 	}
 } else {
-	if(isset($configControl['hepatitis']['noHouseCtrl']) && trim($configControl['hepatitis']['noHouseCtrl'])!='' && $configControl['hepatitis']['noHouseCtrl']>0){
-		foreach(range(1,$configControl['hepatitis']['noHouseCtrl']) as $h){
-			$displayOrder[] = "no_of_in_house_controls_".$h;
-			$content.='<li class="ui-state-default" id="no_of_in_house_controls_'.$h.'">In-House Controls '.$h.'</li>';
+	if (isset($configControl['hepatitis']['noHouseCtrl']) && trim($configControl['hepatitis']['noHouseCtrl']) != '' && $configControl['hepatitis']['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl['hepatitis']['noHouseCtrl']) as $h) {
+			$displayOrder[] = "no_of_in_house_controls_" . $h;
+			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
-	}if(isset($configControl['hepatitis']['noManufacturerCtrl']) && trim($configControl['hepatitis']['noManufacturerCtrl'])!='' && $configControl['hepatitis']['noManufacturerCtrl']>0){
-		foreach(range(1,$configControl['hepatitis']['noManufacturerCtrl']) as $m){
-			$displayOrder[] = "no_of_manufacturer_controls_".$m;
-		   	$content.='<li class="ui-state-default" id="no_of_manufacturer_controls_'.$m.'">Manufacturer Controls '.$m.'</li>';	
+	}
+	if (isset($configControl['hepatitis']['noManufacturerCtrl']) && trim($configControl['hepatitis']['noManufacturerCtrl']) != '' && $configControl['hepatitis']['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl['hepatitis']['noManufacturerCtrl']) as $m) {
+			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
+			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
-	}if(isset($configControl['hepatitis']['noCalibrators']) && trim($configControl['hepatitis']['noCalibrators'])!='' && $configControl['hepatitis']['noCalibrators']>0){
-		foreach(range(1,$configControl['hepatitis']['noCalibrators']) as $c){
-			$displayOrder[] = "no_of_calibrators_".$c;	 	
-		   	$content.='<li class="ui-state-default" id="no_of_calibrators_'.$c.'">Calibrators '.$c.'</li>';
+	}
+	if (isset($configControl['hepatitis']['noCalibrators']) && trim($configControl['hepatitis']['noCalibrators']) != '' && $configControl['hepatitis']['noCalibrators'] > 0) {
+		foreach (range(1, $configControl['hepatitis']['noCalibrators']) as $c) {
+			$displayOrder[] = "no_of_calibrators_" . $c;
+			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
 	$samplesQuery = "SELECT hepatitis_id,sample_code from form_hepatitis where sample_batch_id=$id ORDER BY sample_code ASC";
@@ -98,7 +100,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 
 	<!-- Main content -->
 	<section class="content">
-		
+
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>

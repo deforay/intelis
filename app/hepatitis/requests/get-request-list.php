@@ -276,7 +276,7 @@ if (isset($sWhere) && !empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 //die($sQuery);
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $_SESSION['hepatitisRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

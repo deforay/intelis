@@ -1536,7 +1536,7 @@ if (!empty($patientData)) {
         checkIsResultAuthorized();
 
         <?php $index = 0;
-        if (isset($covid19Symptoms) && count($covid19Symptoms) > 0) {
+        if (isset($covid19Symptoms) && !empty($covid19Symptoms)) {
             foreach ($covid19Symptoms as $symptomId => $symptomName) {
                 if ($covid19SelectedSymptoms[$symptomId] == "yes") { ?>
                     checkSubSymptoms($('#symptom<?php echo $symptomId; ?>').val(), <?php echo $symptomId; ?>, <?php echo $index; ?>);

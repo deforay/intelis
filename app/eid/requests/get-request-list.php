@@ -268,19 +268,19 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
 }
 if (isset($_POST['childId']) && $_POST['childId'] != "") {
-     $sWhere[] = ' vl.child_id like "%'.$_POST['childId'].'%"';
+     $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
 }
 if (isset($_POST['childName']) && $_POST['childName'] != "") {
-     $sWhere[] = ' vl.child_name like "%'.$_POST['childName'].'%"';
+     $sWhere[] = ' vl.child_name like "%' . $_POST['childName'] . '%"';
 }
 if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
-     $sWhere[] = ' vl.mother_id like "%'.$_POST['motherId'].'%"';
+     $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
 }
 if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
-     $sWhere[] = ' vl.mother_name like "%'.$_POST['motherName'].'%"';
+     $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
 }
 if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-     $sWhere[] = ' (vl.is_sample_rejected like "'.$_POST['rejectedSamples'].'" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+     $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
 }
 
 $sFilter = '';
@@ -299,8 +299,8 @@ if (isset($sWhere) && !empty($sWhere)) {
      $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
- //die($sQuery);
-if (isset($sOrder) && $sOrder != "") {
+//die($sQuery);
+if (isset($sOrder) && !empty($sOrder)) {
      $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

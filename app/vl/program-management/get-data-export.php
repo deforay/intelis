@@ -19,8 +19,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
@@ -76,7 +74,7 @@ if (isset($_POST['iSortCol_0'])) {
 * on very large tables, and MySQL's regex functionality is very limited
 */
 
-$sWhere[] = " (reason_for_vl_testing != 9999 or reason_for_vl_testing is null) ";
+$sWhere[] = " (IFNULL(reason_for_vl_testing, 0)  != 9999 or reason_for_vl_testing is null) ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", $_POST['sSearch']);
      $sWhereSub = "";
@@ -343,8 +341,8 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 }
 
 
-if ($_SESSION['instanceType'] == 'remoteuser' && !empty($facilityMap)) {
-     $sWhere[] =  "  vl.facility_id IN (" . $facilityMap . ")   ";
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 if (isset($sWhere) && !empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);
@@ -352,7 +350,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 $sQuery = $sQuery . ' WHERE ' . $sWhere;
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

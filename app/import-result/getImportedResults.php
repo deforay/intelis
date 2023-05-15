@@ -35,9 +35,9 @@ if ($module == 'vl') {
 } else if ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-    
-/** @var Covid19Service $covid19Service */
-$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+    /** @var Covid19Service $covid19Service */
+    $covid19Service = ContainerRegistry::get(Covid19Service::class);
     $covid19Results = $covid19Service->getCovid19Results();
 } else if ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";
@@ -214,13 +214,13 @@ $sQuery = "$dtsQuery";
 $sOrder = 'temp_sample_id ASC';
 //echo $sQuery;die;
 
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' AND $sWhere";
 } else {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' ";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 } else {
@@ -257,7 +257,7 @@ foreach ($rResult as $aRow) {
     if (isset($aRow['sample_code']) && trim($aRow['sample_code']) != '') {
         $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
         $batchCodeResult = $db->rawQuery($batchCodeQuery, array($aRow['sample_code']));
-        if (isset($batchCodeResult) && count($batchCodeResult) > 0) {
+        if (isset($batchCodeResult) && !empty($batchCodeResult)) {
             $batchCode = "'" . $batchCodeResult[0]['batch_code'] . "'";
             $aRow['batch_code'] = $batchCodeResult[0]['batch_code'];
         }
@@ -296,7 +296,7 @@ foreach ($rResult as $aRow) {
 			</select><br><br>';
     //}
     //sample to control & control to sample
-    if (!empty($scResult) && !empty($inResult) && !empty($inResult[0]) && count($scResult) > 0 && $inResult[0]['number_of_in_house_controls'] > 0 && $tsrResult[0]['count'] > 0 && $tsrResult[0]['count'] > $refno) {
+    if (!empty($scResult) && !empty($inResult) && !empty($inResult[0]) && !empty($scResult) && $inResult[0]['number_of_in_house_controls'] > 0 && $tsrResult[0]['count'] > 0 && $tsrResult[0]['count'] > $refno) {
         $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
     } else {
         if ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {

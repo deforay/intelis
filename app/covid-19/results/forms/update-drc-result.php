@@ -1208,7 +1208,7 @@ $patienZones["other"] = "Other";
             $('#isResultAuthorized').val('yes');
         }
         <?php $index = 0;
-        if (isset($covid19Symptoms) && count($covid19Symptoms) > 0) {
+        if (isset($covid19Symptoms) && !empty($covid19Symptoms)) {
             foreach ($covid19Symptoms as $symptomId => $symptomName) {
                 if ($covid19SelectedSymptoms[$symptomId] == "yes") { ?>
                     checkSubSymptoms($('#symptom<?php echo $symptomId; ?>').val(), <?php echo $symptomId; ?>, <?php echo $index; ?>);
@@ -1218,7 +1218,7 @@ $patienZones["other"] = "Other";
         } ?>
 
         <?php $index = 0;
-        if (isset($covid19ReasonsForTesting) && count($covid19ReasonsForTesting) > 0) {
+        if (isset($covid19ReasonsForTesting) && !empty($covid19ReasonsForTesting)) {
             foreach ($covid19ReasonsForTesting as $reasonId => $responseName) { ?>
                 checkSubResponse($('#symptomDetected<?php echo $reasonId; ?>').val(), <?php echo $reasonId; ?>, <?php echo $index; ?>);
         <?php $index++;

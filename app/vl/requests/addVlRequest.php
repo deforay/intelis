@@ -27,8 +27,8 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $reasonForFailure = $vlService->getReasonForFailure();
 $userInfo = [];
 foreach ($userResult as $user) {

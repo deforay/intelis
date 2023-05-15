@@ -37,7 +37,7 @@ $input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
 
 $authToken = $general->getAuthorizationBearerToken();
-$user = $usersService->getUserFromToken($authToken);
+$user = $usersService->getUserByToken($authToken);
 
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */

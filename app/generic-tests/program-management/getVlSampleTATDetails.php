@@ -135,10 +135,8 @@ LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01') AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' ) AND vl.result is not null AND vl.result != '' ";
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-		$sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+	if (!empty($_SESSION['facilityMap'])) {
+		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
 } else {
 	$sWhere[] = " vl.result_status!=9";
@@ -209,8 +207,8 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($sWhere) && count($sWhere)>0) {
-	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND '.implode(" AND ", $sWhere);
+if (isset($sWhere) && count($sWhere) > 0) {
+	$_SESSION['vlTatData']['sWhere'] = $sWhere = ' AND ' . implode(" AND ", $sWhere);
 	$sQuery = $sQuery . $sWhere;
 }
 if (isset($sOrder) && $sOrder != "") {
@@ -274,7 +272,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['sample_received_at_testing_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
-	
+
 	$output['aaData'][] = $row;
 }
 

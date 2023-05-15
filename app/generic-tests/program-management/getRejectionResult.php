@@ -20,7 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -31,7 +30,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     $end_date = '';
     $sWhere = [];
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -39,7 +37,13 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     //get value by rejection reason id
-    $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
+    $vlQuery = "SELECT count(*) as `total`,
+                vl.reason_for_sample_rejection,
+                sr.rejection_reason_name,
+                sr.rejection_type,
+                sr.rejection_reason_code,
+                fd.facility_name,
+                lab.facility_name as `labname`
                 FROM form_vl as vl
                 INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
@@ -55,15 +59,14 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
-    if (!empty($facilityMap)) {
-        $sWhere[] = " vl.facility_id IN ($facilityMap)";
+    if (!empty($_SESSION['facilityMap'])) {
+        $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
     }
 
-    if(isset($sWhere) && count($sWhere)>0)
-    {
-        $sWhere = implode(' AND ',$sWhere);
+    if (isset($sWhere) && !empty($sWhere)) {
+        $sWhere = implode(' AND ', $sWhere);
     }
-    $vlQuery = $vlQuery . ' where '.$sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
@@ -82,25 +85,25 @@ if (isset($tResult) && count($tResult) > 0) {
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel");?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></button>
     </div>
 <?php } ?>
 <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th><?php echo _("Lab Name");?></th>
-            <th><?php echo _("Facility Name");?></th>
-            <th><?php echo _("Rejection Reason");?></th>
-            <th><?php echo _("Reason Category");?></th>
-            <th><?php echo _("No. of Samples");?></th>
+            <th><?php echo _("Lab Name"); ?></th>
+            <th><?php echo _("Facility Name"); ?></th>
+            <th><?php echo _("Rejection Reason"); ?></th>
+            <th><?php echo _("Reason Category"); ?></th>
+            <th><?php echo _("No. of Samples"); ?></th>
         </tr>
     </thead>
-    <tbody> 
+    <tbody>
         <?php
         if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) {
         ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']);?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName']));?>" data-daterange="<?php echo $_POST['sampleCollectionDate'];?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?php echo $_POST['sampleCollectionDate']; ?>" data-type="rejection">
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
@@ -138,7 +141,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons");?>"
+                text: "<?php echo _("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -193,7 +196,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories");?>"
+                text: "<?php echo _("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false

@@ -111,7 +111,7 @@ try {
 		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
-		if (!empty($_POST['sampleType']) && count($_POST['sampleType']) > 0) {
+		if (!empty($_POST['sampleType'])) {
 			foreach ($_POST['sampleType'] as $testType => $sampleTypes) {
 				$facilityAttributes['sampleType'][$testType] = implode(",", $sampleTypes);
 			}
@@ -187,7 +187,7 @@ try {
 						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
 							$attributes['platforms'] = $_POST['availablePlatforms'];
 						}
-						if (isset($attributes) && count($attributes) > 0) {
+						if (isset($attributes) && !empty($attributes)) {
 							$data['attributes'] = json_encode($attributes, true);
 						}
 						$tid = $db->insert($testingLabsTable, $data);
@@ -231,7 +231,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && count($_FILES['signature']['name']) > 0 && isset($_POST['signName']) && $_POST['signName'] != "" && count($_POST['signName']) > 0) {
+		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && !empty($_FILES['signature']['name']) && isset($_POST['signName']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
 				$db = $db->where('signatory_id', $delete);

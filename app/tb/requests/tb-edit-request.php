@@ -45,8 +45,7 @@ $healthFacilities = $facilitiesService->getHealthFacilities('tb');
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 
 /* Get Active users for approved / reviewed / examined by */
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$userResult = $usersService->getActiveUsers($facilityMap);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
 foreach ($userResult as $user) {
     $userInfo[$user['user_id']] = ($user['user_name']);

@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Exceptions\SystemException;
+use GdImage;
 
 /**
  *
@@ -23,13 +24,13 @@ class ImageResizeUtility
     const IMG_FLIP_VERTICAL = 1;
     const IMG_FLIP_BOTH = 2;
 
-    public $quality_jpg = 85;
-    public $quality_webp = 85;
-    public $quality_png = 6;
-    public $quality_truecolor = true;
-    public $gamma_correct = true;
+    public int $quality_jpg = 85;
+    public int $quality_webp = 85;
+    public int $quality_png = 6;
+    public bool $quality_truecolor = true;
+    public bool $gamma_correct = true;
 
-    public $interlace = 1;
+    public int $interlace = 1;
 
     public $source_type;
 
@@ -38,8 +39,8 @@ class ImageResizeUtility
     protected $original_w;
     protected $original_h;
 
-    protected $dest_x = 0;
-    protected $dest_y = 0;
+    protected int $dest_x = 0;
+    protected int $dest_y = 0;
 
     protected $source_x;
     protected $source_y;
@@ -52,7 +53,7 @@ class ImageResizeUtility
 
     protected $source_info;
 
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * Create instance from a strng
@@ -737,7 +738,7 @@ class ImageResizeUtility
     /**
      *  Flips an image using a given mode if PHP version is lower than 5.5
      *
-     * @param  \GdImage $image
+     * @param  GdImage $image
      * @param  integer  $mode
      * @return null
      */

@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 
 
 $tableName = "move_samples";
@@ -103,12 +103,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 
 $sQuery = "select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id";
-if (isset($sWhere) && $sWhere != "") {
+if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' group by ms.move_sample_id';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

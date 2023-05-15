@@ -40,7 +40,7 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $authToken = $general->getAuthorizationBearerToken();
-$user = $usersService->getUserFromToken($authToken);
+$user = $usersService->getUserByToken($authToken);
 try {
     $transactionId = $general->generateUUID();
     $sQuery = "SELECT

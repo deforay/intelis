@@ -15,7 +15,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -190,12 +189,11 @@ if(!empty($whereResult))
     $sWhere[] = $whereResult;
     */
 //$sFilter = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-    if (!empty($facilityMap)) {
-        $sWhere[] = "  vl.facility_id IN (" . $facilityMap . ")  ";
-        //$sFilter = " AND vl.facility_id IN (" . $facilityMap . ") ";
-    }
+
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere[] = "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
+
 //  $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = implode(' AND ', $sWhere);
@@ -204,7 +202,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 
 //echo $sQuery; die;
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

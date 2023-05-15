@@ -38,7 +38,7 @@ try {
     // The request has to send an Authorization Bearer token
     $authToken = $general->getAuthorizationBearerToken();
     if (!empty($authToken)) {
-        $user = $usersService->getUserFromToken($authToken);
+        $user = $usersService->getUserByToken($authToken);
     }
     // If authentication fails then do not proceed
     if (empty($user) || empty($user['user_id'])) {
@@ -96,7 +96,7 @@ try {
             // print_r($spmF);
             // print_r($dateRange);
             // die;
-            if (isset($type) && count($type) > 0 && in_array($type[0], array("COVID-19", "VL", "EID"))) {
+            if (isset($type) && !empty($type) && in_array($type[0], array("COVID-19", "VL", "EID"))) {
 
                 if ($type[0] == "COVID-19") {
                     include_once("covid-19.php");

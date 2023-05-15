@@ -38,7 +38,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $samplesVlOverview              = "recencySmplesVlOverview";
     $labAverageTat                  = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " reason_for_vl_testing != 9999 ";
+    $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $sampleStatusOverviewContainer  = "vlSampleStatusOverviewContainer";
     $samplesVlOverview              = "vlSmplesVlOverview";
     $labAverageTat                  = "vlLabAverageTat";
@@ -425,7 +425,7 @@ foreach ($tatResult as $sRow) {
             xAxis: {
                 //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
-                                if (isset($result['date']) && count($result['date']) > 0) {
+                                if (isset($result['date']) && !empty($result['date'])) {
                                     foreach ($result['date'] as $date) {
                                         echo "'" . $date . "',";
                                     }

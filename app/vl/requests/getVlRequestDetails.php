@@ -14,7 +14,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -89,10 +88,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                } else {
-                    if(!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i]))
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                }
           }
@@ -301,7 +300,7 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
 if (!isset($_POST['recencySamples']) || empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
-     $sWhere[] = " reason_for_vl_testing != 9999 ";
+     $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 }
 if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
      $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
@@ -334,11 +333,11 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     if (!empty($facilityMap)) {
-          $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")  ";
+     if (!empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      }
 } else if (!$_POST['hidesrcofreq']) {
-     $sWhere[] = ' vl.result_status!=9'; 
+     $sWhere[] = ' vl.result_status!=9';
 }
 
 if (isset($sWhere) && !empty($sWhere)) {
@@ -346,7 +345,7 @@ if (isset($sWhere) && !empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

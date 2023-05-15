@@ -57,5 +57,8 @@
             "App\\": "app/classes/"
         }
     },
-    "config": {}
+    "config": {},
+    "require-dev": {
+        "symfony/var-dumper": "^5.4"
+    }
 }

@@ -6,6 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use DateTimeImmutable;
 use Exception;
+use MysqliDb;
 
 /**
  * General functions
@@ -16,10 +17,9 @@ use Exception;
 class Covid19Service
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
-    protected $table = 'form_covid19';
-    protected $shortCode = 'C19';
+    protected ?MysqliDb $db = null;
+    protected string $table = 'form_covid19';
+    protected string $shortCode = 'C19';
 
     public function __construct($db = null)
     {

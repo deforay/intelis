@@ -20,11 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 //system config
 $sarr = $general->getSystemConfig();
-$facilityMap = null;
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sCode = 'remote_sample_code';
-    $facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-} else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
+} elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
     $sCode = 'sample_code';
 }
 
@@ -34,28 +33,27 @@ if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
     $module = 'vl';
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
-} else if ($_POST['module'] == 'eid') {
+} elseif ($_POST['module'] == 'eid') {
     $module = 'eid';
     $tableName = "form_eid";
     $primaryKey = "eid_id";
-} else if ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
+} elseif ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
     $module = 'covid19';
     $tableName = "form_covid19";
     $primaryKey = "covid19_id";
-} else if ($_POST['module'] == 'hepatitis') {
+} elseif ($_POST['module'] == 'hepatitis') {
     $module = 'hepatitis';
     $tableName = "form_hepatitis";
     $primaryKey = "hepatitis_id";
-} else if ($_POST['module'] == 'tb') {
+} elseif ($_POST['module'] == 'tb') {
     $module = 'tb';
     $tableName = "form_tb";
     $primaryKey = "tb_id";
-} else if ($_POST['module'] == 'generic-tests') {
+} elseif ($_POST['module'] == 'generic-tests') {
     $module = 'generic-tests';
     $tableName = "form_generic";
     $primaryKey = "sample_id";
 }
-
 
 $vlForm = $general->getGlobalConfig('vl_form');
 
@@ -140,10 +138,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
             FROM package_details p
             INNER JOIN facility_details lab on lab.facility_id = p.lab_id";
 
-if (!empty($facilityMap)) {
+if (!empty($_SESSION['facilityMap'])) {
     $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.package_id ";
-    $sWhere[] = " t.facility_id IN(" . $facilityMap . ") ";
-    //$sWhere[] = " lab.facility_id IN(" . $facilityMap . ") ";
+    $sWhere[] = " t.facility_id IN(" . $_SESSION['facilityMap'] . ") ";
 }
 
 if (!empty($sWhere)) {
@@ -154,7 +151,7 @@ if (!empty($sWhere)) {
 
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.package_id';
-if (isset($sOrder) && $sOrder != "") {
+if (isset($sOrder) && !empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
@@ -197,7 +194,7 @@ foreach ($rResult as $aRow) {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }
-    if($module == 'generic-tests'){
+    if ($module == 'generic-tests') {
         $aRow['module'] = "LAB TESTS ";
     }
     $row = [];

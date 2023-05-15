@@ -401,7 +401,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_tested_datetime'] . '</td>';
         $html .= '</tr>';
 
-        if (isset($tbTestInfo) && count($tbTestInfo) > 0) {
+        if (isset($tbTestInfo) && !empty($tbTestInfo)) {
             /* Test Result Section */
             $html .= '<tr>';
             $html .= '<td colspan="4" style="border:1px solid #67b3ff;" >';

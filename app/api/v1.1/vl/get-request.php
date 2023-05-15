@@ -38,7 +38,7 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $params = file_get_contents("php://input");
 $authToken = $general->getAuthorizationBearerToken();
-$user = $usersService->getUserFromToken($authToken);
+$user = $usersService->getUserByToken($authToken);
 try {
     $sQuery = "SELECT
             vl.app_sample_code                                   as appSampleCode,
@@ -173,7 +173,7 @@ try {
     /* To check the sample code filter */
 
     if (!empty($input['sampleCode'])) {
-        $sampleCode = $input['sampleCode'] ?? [];
+        $sampleCode = $input['sampleCode'];
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }

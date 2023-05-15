@@ -9,8 +9,7 @@ use MysqliDb;
 class FacilitiesService
 {
 
-    /** @var MysqliDb $db */
-    protected $db = null;
+    protected ?MysqliDb $db = null;
     protected $table = 'facility_details';
 
     public function __construct($db = null)
@@ -20,18 +19,20 @@ class FacilitiesService
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)
     {
+        return once(function () use ($facilityType, $onlyActive) {
 
-        $this->db->orderBy("facility_name", "asc");
+            $this->db->orderBy("facility_name", "asc");
 
-        if (!empty($facilityType)) {
-            $this->db->where("facility_type", $facilityType);
-        }
+            if (!empty($facilityType)) {
+                $this->db->where("facility_type", $facilityType);
+            }
 
-        if ($onlyActive) {
-            $this->db->where('status', 'active');
-        }
+            if ($onlyActive) {
+                $this->db->where('status', 'active');
+            }
 
-        return $this->db->get("facility_details");
+            return $this->db->get("facility_details");
+        });
     }
 
 
@@ -112,18 +113,17 @@ class FacilitiesService
     // $facilityType = null for getting all mapped facilities
     public function getUserFacilityMap($userId, $facilityType = null)
     {
-        if (empty($userId)) {
-            return null;
-        }
 
         return once(function () use ($userId, $facilityType) {
+
+            if (empty($userId)) {
+                return null;
+            }
 
             /* if (!empty($facilityType)) {
             $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");
             $this->db->joinWhere("facility_details f", "f.facility_type", $facilityType);
-        } */
-
-
+            } */
 
             $this->db->where("user_id", $userId);
             $response = $this->db->getValue("user_facility_map", "facility_id", null);

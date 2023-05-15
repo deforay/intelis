@@ -43,8 +43,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-$facilityMap = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
-$labTechnicians = $usersService->getActiveUsers($facilityMap);
+$labTechnicians = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
