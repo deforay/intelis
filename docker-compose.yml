@@ -9,14 +9,13 @@ services:
     ports:
       - "${APACHE_PORT:-80}:80"
     volumes:
-      - app_code:/var/www/html
-      #- ./docker/php-apache/app.conf:/etc/apache2/sites-enabled/app.conf
-      #- ./docker/php-apache/api.conf:/etc/apache2/sites-enabled/api.conf
+      #- app_code:/var/www/html
+      - .:/var/www/html
     environment:
       - DOMAIN=${DOMAIN:-vlsm}
       - API_DOMAIN=${API_DOMAIN:-api.vlsm}
       - APACHE_PORT=${APACHE_PORT:-80}
-    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    entrypoint: [ "/usr/local/bin/entrypoint.sh" ]
     restart: unless-stopped
   cron:
     build:
@@ -24,8 +23,9 @@ services:
       target: php-cron
     #image: deforay/vlsm-cron:latest
     volumes:
-      - app_code:/var/www/html
-    entrypoint: ["/usr/local/bin/cron-entrypoint.sh"]
+      #- app_code:/var/www/html
+      - .:/var/www/html
+    entrypoint: [ "/usr/local/bin/cron-entrypoint.sh" ]
     restart: unless-stopped
   db:
     image: mysql:8.0
@@ -43,5 +43,5 @@ services:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
 volumes:
-  app_code: {}
+  #app_code: {}
   db_data: {}

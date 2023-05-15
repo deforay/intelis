@@ -119,7 +119,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
           l_f.facility_name as labName,
           l_f.facility_logo as facilityLogo,
           l_f.header_text as headerText,
@@ -128,12 +128,12 @@ $sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
           f.facility_district,
           u_d.user_name as reviewedBy,
           a_u_d.user_name as approvedBy
-          FROM form_eid as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-          LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
+          FROM form_eid as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+          LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 $start_date = '';
 $end_date = '';
@@ -226,11 +226,8 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere order by $sOrder");
-$iTotal = count($aResultTotal);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
           * Output

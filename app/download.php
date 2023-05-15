@@ -26,16 +26,6 @@ $allowedMimeTypes = [
     // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
-// $disallowedMimeTypes = [
-//     'application/x-httpd-php',
-//     'text/x-php',
-//     'application/json',
-//     'text/javascript',
-//     'text/html',
-//     'application/gzip',
-//     'application/zip',
-// ];
-
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
 if ($file === false) {
