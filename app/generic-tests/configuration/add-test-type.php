@@ -2,13 +2,13 @@
 require_once APPLICATION_PATH . '/header.php';
 
 $stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
-$sampleTypeInfo=$db->query($stQuery);
+$sampleTypeInfo = $db->query($stQuery);
 
 $tQuery = "SELECT * from r_generic_test_reasons where test_reason_status='active'";
-$testReasonInfo=$db->query($tQuery);
+$testReasonInfo = $db->query($tQuery);
 
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
-$symptomInfo=$db->query($symQuery);
+$symptomInfo = $db->query($symQuery);
 ?>
 <style>
 	.tooltip-inner {
@@ -45,7 +45,7 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _("Test Standard Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _("Test Standard Name"); ?>' title='<?php echo _("Please enter standard name"); ?>' onblur='checkNameValidation("r_test_types","test_standard_name",this,null,"<?php echo _("This test standard name that you entered already exists.Try another name"); ?>",null)'/>
+										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _("Test Standard Name"); ?>' title='<?php echo _("Please enter standard name"); ?>' onblur='checkNameValidation("r_test_types","test_standard_name",this,null,"<?php echo _("This test standard name that you entered already exists.Try another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -54,7 +54,7 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="testGenericName" class="col-lg-4 control-label"><?php echo _("Test Generic Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-									<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _("Test Generic Name"); ?>' title='<?php echo _("Please enter the test generic name"); ?>' onblur='checkNameValidation("r_test_types","test_generic_name",this,null,"<?php echo _("This test generic name that you entered already exists.Try another name"); ?>",null)'/>
+										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _("Test Generic Name"); ?>' title='<?php echo _("Please enter the test generic name"); ?>' onblur='checkNameValidation("r_test_types","test_generic_name",this,null,"<?php echo _("This test generic name that you entered already exists.Try another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -69,12 +69,12 @@ $symptomInfo=$db->query($symQuery);
 									</div>
 								</div>
 							</div>
-						
+
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("Test LOINC Code"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)'/>
+										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -85,12 +85,12 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type');?>" multiple>
+										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
 											<option value="">--Select--</option>
 											<?php
-											foreach($sampleTypeInfo as $sampleType){
+											foreach ($sampleTypeInfo as $sampleType) {
 											?>
-											<option value="<?php echo $sampleType['sample_type_id'];?>"><?php echo $sampleType['sample_type_name'];?></option>
+												<option value="<?php echo $sampleType['sample_type_id']; ?>"><?php echo $sampleType['sample_type_name']; ?></option>
 											<?php
 											}
 											?>
@@ -102,12 +102,12 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Testing Reason"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason');?>" multiple>
+										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
 											<option value="">--Select--</option>
 											<?php
-											foreach($testReasonInfo as $testReason){
+											foreach ($testReasonInfo as $testReason) {
 											?>
-											<option value="<?php echo $testReason['test_reason_id'];?>"><?php echo $testReason['test_reason'];?></option>
+												<option value="<?php echo $testReason['test_reason_id']; ?>"><?php echo $testReason['test_reason']; ?></option>
 											<?php
 											}
 											?>
@@ -122,12 +122,12 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms');?>" multiple>
+										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
 											<option value="">--Select--</option>
 											<?php
-											foreach($symptomInfo as $val){
+											foreach ($symptomInfo as $val) {
 											?>
-											<option value="<?php echo $val['symptom_id'];?>"><?php echo $val['symptom_name'];?></option>
+												<option value="<?php echo $val['symptom_id']; ?>"><?php echo $val['symptom_name']; ?></option>
 											<?php
 											}
 											?>
@@ -139,16 +139,16 @@ $symptomInfo=$db->query($symQuery);
 								<div class="form-group">
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status');?>">
-											<option value="active"><?php echo _("Active");?></option>
-											<option value="inactive"><?php echo _("Inactive");?></option>
+										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
+											<option value="active"><?php echo _("Active"); ?></option>
+											<option value="inactive"><?php echo _("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
 							</div>
 						</div>
-						
-						
+
+
 						<div class="box-header">
 							<h3 class="box-title "><?php echo _("Form Configuration"); ?></h3>
 						</div>
@@ -170,29 +170,29 @@ $symptomInfo=$db->query($symQuery);
 											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 										</td>
 										<td>
-											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type');?>">
-												<option value=""> <?php echo _("-- Select --");?> </option>
-												<option value="number"><?php echo _("Number");?></option>
-												<option value="text"><?php echo _("Text");?></option>
-												<option value="date"><?php echo _("Date");?></option>
+											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type'); ?>">
+												<option value=""> <?php echo _("-- Select --"); ?> </option>
+												<option value="number"><?php echo _("Number"); ?></option>
+												<option value="text"><?php echo _("Text"); ?></option>
+												<option value="date"><?php echo _("Date"); ?></option>
 											</select>
 										</td>
 										<td>
-											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory');?>">
-												<option value="yes"><?php echo _("Yes");?></option>
-												<option value="no" selected><?php echo _("No");?></option>
+											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
+												<option value="yes"><?php echo _("Yes"); ?></option>
+												<option value="no" selected><?php echo _("No"); ?></option>
 											</select>
 										</td>
 										<td>
-											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section');?>" onchange="checkSection('1')">
-												<option value=""> <?php echo _("-- Select --");?> </option>
-												<option value="facility"><?php echo _("Facility");?></option>
-												<option value="patient"><?php echo _("Patient");?></option>
-												<option value="specimen"><?php echo _("Specimen");?></option>
-												<option value="lap"><?php echo _("Lab");?></option>
-												<option value="other"><?php echo _("Other");?></option>
+											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
+												<option value=""> <?php echo _("-- Select --"); ?> </option>
+												<option value="facility"><?php echo _("Facility"); ?></option>
+												<option value="patient"><?php echo _("Patient"); ?></option>
+												<option value="specimen"><?php echo _("Specimen"); ?></option>
+												<option value="lab"><?php echo _("Lab"); ?></option>
+												<option value="other"><?php echo _("Other"); ?></option>
 											</select>
-											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;"/>
+											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -212,9 +212,9 @@ $symptomInfo=$db->query($symQuery);
 										<label for="resultType" class="col-lg-4 control-label"><?php echo _("Result Type"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
 											<select class="form-control isRequired" name='resultType' id='resultType' onchange="checkResultType();">
-												<option value=""> <?php echo _("-- Select --");?> </option>
-												<option value="qualitative"><?php echo _("Qualitative");?></option>
-												<option value="quantitative"><?php echo _("Quantitative");?></option>
+												<option value=""> <?php echo _("-- Select --"); ?> </option>
+												<option value="qualitative"><?php echo _("Qualitative"); ?></option>
+												<option value="quantitative"><?php echo _("Quantitative"); ?></option>
 											</select>
 										</div>
 									</div>
@@ -234,7 +234,7 @@ $symptomInfo=$db->query($symQuery);
 								<div class="box-header">
 									<h4 class="box-title "><?php echo _("Result"); ?></h4>
 								</div>
-								
+
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="highValueName" class="col-lg-4 control-label"><?php echo _("High Value Name"); ?> <span class="mandatory">*</span></label>
@@ -360,24 +360,24 @@ $symptomInfo=$db->query($symQuery);
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId'+tableRowId+'" class="form-control isRequired" />';
-		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type');?>">\
-							<option value=""> <?php echo _("-- Select --");?> </option>\
-							<option value="number"><?php echo _("Number");?></option>\
-							<option value="text"><?php echo _("Text");?></option>\
-							<option value="date"><?php echo _("Date");?></option>\
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
+		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>">\
+							<option value=""> <?php echo _("-- Select --"); ?> </option>\
+							<option value="number"><?php echo _("Number"); ?></option>\
+							<option value="text"><?php echo _("Text"); ?></option>\
+							<option value="date"><?php echo _("Date"); ?></option>\
 						</select>';
-		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory');?>">\
-							<option value="yes"><?php echo _("Yes");?></option>\
-							<option value="no" selected><?php echo _("No");?></option>\
+		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
+							<option value="yes"><?php echo _("Yes"); ?></option>\
+							<option value="no" selected><?php echo _("No"); ?></option>\
 						</select>';
-		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section');?>" onchange="checkSection(' + tableRowId + ')">\
-						<option value=""> <?php echo _("-- Select --");?> </option>\
-						<option value="facility"><?php echo _("Facility");?></option>\
-						<option value="patient"><?php echo _("Patient");?></option>\
-						<option value="specimen"><?php echo _("Specimen");?></option>\
-						<option value="lap"><?php echo _("Lab");?></option>\
-						<option value="other"><?php echo _("Other");?></option>\
+		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
+						<option value=""> <?php echo _("-- Select --"); ?> </option>\
+						<option value="facility"><?php echo _("Facility"); ?></option>\
+						<option value="patient"><?php echo _("Patient"); ?></option>\
+						<option value="specimen"><?php echo _("Specimen"); ?></option>\
+						<option value="lab"><?php echo _("Lab"); ?></option>\
+						<option value="other"><?php echo _("Other"); ?></option>\
 					</select>\
 					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
@@ -396,8 +396,8 @@ $symptomInfo=$db->query($symQuery);
 		});
 	}
 
-	function checkDublicateName(obj,name) {
-		dublicateObj = document.getElementsByName(name+"[]");
+	function checkDublicateName(obj, name) {
+		dublicateObj = document.getElementsByName(name + "[]");
 		for (m = 0; m < dublicateObj.length; m++) {
 			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
 				alert('Duplicate value not allowed');
@@ -406,17 +406,17 @@ $symptomInfo=$db->query($symQuery);
 		}
 	}
 
-	function checkResultType(){
-		resultType=$("#resultType").val();
-		if(resultType=='qualitative'){
+	function checkResultType() {
+		resultType = $("#resultType").val();
+		if (resultType == 'qualitative') {
 			$("#qualitativeDiv").show();
 			$("#quantitativeDiv").hide();
 			$("#qualitativeResult").addClass("isRequired");
 			$(".quantitativeResult").removeClass("isRequired");
 			$('.quantitativeResult').each(function() {
-        		$(this).val('');
-    		});
-		}else{
+				$(this).val('');
+			});
+		} else {
 			$("#qualitativeDiv").hide();
 			$("#quantitativeDiv").show();
 			$("#qualitativeResult").removeClass("isRequired");
@@ -425,24 +425,24 @@ $symptomInfo=$db->query($symQuery);
 		}
 	}
 
-	function checkSection(rowId){
-		sectionVal=$("#section"+rowId).val();
-		if(sectionVal=="other"){
-			$("#sectionOther"+rowId).addClass("isRequired");
-			$("#sectionOther"+rowId).show();
-		}else{
-			$("#sectionOther"+rowId).hide();
-			$("#sectionOther"+rowId).removeClass("isRequired");
-			$("#sectionOther"+rowId).val('');
+	function checkSection(rowId) {
+		sectionVal = $("#section" + rowId).val();
+		if (sectionVal == "other") {
+			$("#sectionOther" + rowId).addClass("isRequired");
+			$("#sectionOther" + rowId).show();
+		} else {
+			$("#sectionOther" + rowId).hide();
+			$("#sectionOther" + rowId).removeClass("isRequired");
+			$("#sectionOther" + rowId).val('');
 		}
 	}
-	
+
 	function generateRandomString(rowId) {
 		$.post("/includes/generateRandomString.php", {
 				format: "html"
 			},
 			function(data) {
-				$("#fieldId"+rowId).val(data);
+				$("#fieldId" + rowId).val(data);
 			});
 	}
 </script>

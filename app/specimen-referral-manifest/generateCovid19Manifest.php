@@ -14,7 +14,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $id = base64_decode($_POST['id']);
+
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
@@ -81,33 +83,44 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,CONCAT(patient_name,patient_surname) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name,u_d.user_name as releaser_name,
-                u_d.phone_number as phone,u_d.email as email,DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
-                from package_details as pd
-                Join form_covid19 as vl ON vl.sample_package_id=pd.package_id
-                Join facility_details as fd ON fd.facility_id=vl.facility_id
-                Join facility_details as l ON l.facility_id=vl.lab_id
+    $sQuery = "SELECT remote_sample_code,
+                    pd.number_of_samples,
+                    fd.facility_name as clinic_name,
+                    fd.facility_district,
+                    CONCAT(COALESCE(patient_name,''), COALESCE(patient_surname,'')) as `patient_fullname`,
+                    patient_dob,
+                    patient_age,
+                    sample_collection_date,
+                    patient_gender,
+                    patient_id,
+                    pd.package_code,
+                    l.facility_name as lab_name,
+                    u_d.user_name as releaser_name,
+                    u_d.phone_number as phone,
+                    u_d.email as email,
+                    DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
+                FROM package_details as pd
+                JOIN form_covid19 as vl ON vl.sample_package_id=pd.package_id
+                JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                where pd.package_id IN($id)";
-    $result = $db->query($sQuery);
+                WHERE pd.package_id IN(?)";
+    $result = $db->rawQuery($sQuery, [$id]);
 
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")) {
+    if (
+        !file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")
+        && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")
+    ) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
     }
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
+
+    $arr = $general->getGlobalConfig();
     $showPatientName = $arr['covid19_show_participant_name_in_manifest'];
-    $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
-    //echo $bQuery;die;
-    $bResult = $db->query($bQuery);
+    $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN(?)";
+    $bResult = $db->rawQuery($bQuery, [$id]);
     if (!empty($bResult)) {
 
 
@@ -161,7 +174,7 @@ if (trim($id) != '') {
             $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
             $tbl1 .= '<tr>
             <td align="left"> Releaser Name :  ' . $result[0]['releaser_name'] . '</td>
-            <td align="left"> Date :  ' . $result[0]['created_date'] . '</td>     
+            <td align="left"> Date :  ' . $result[0]['created_date'] . '</td>
             </tr>
             <tr>
             <td align="left"> Phone No. :  ' . $result[0]['phone'] . '</td>
@@ -169,7 +182,7 @@ if (trim($id) != '') {
             </tr>
             <tr>
             <td align="left"> Facility Name :  ' . $result[0]['clinic_name'] . '</td>
-            <td align="left"> District :  ' . $result[0]['facility_district'] . '</td>     
+            <td align="left"> District :  ' . $result[0]['facility_district'] . '</td>
             </tr>';
             $tbl1 .= '</table>';
             $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C');
@@ -180,7 +193,7 @@ if (trim($id) != '') {
             $tbl2 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
             $tbl2 .= '<tr>
             <td align="left"> Number of specimen included :  ' . $result[0]['number_of_samples'] . '</td>
-            <td align="left"> Forms completed and included :  Yes / No</td>     
+            <td align="left"> Forms completed and included :  Yes / No</td>
             </tr>
             <tr>
             <td align="left"> Packaged By :  ..................</td>

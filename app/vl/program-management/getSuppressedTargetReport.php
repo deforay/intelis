@@ -154,7 +154,7 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         xAxis: {
             //  categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
             categories: [<?php
-                            echo "'" . $monthYear . "',";
+                            echo "'" . htmlspecialchars($monthYear) . "',";
                             ?>]
         },
         yAxis: {
