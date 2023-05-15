@@ -613,7 +613,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-lg-7">
 													<input type="text" class="form-control date" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" value="<?php echo $vlQueryInfo['test_requested_on']; ?>" <?php echo $disable; ?> />
 												</div>
-											</div>
+											</div> 
 										</div>
 										<div class="row" style="display:none;">
 											<div class="col-md-4">

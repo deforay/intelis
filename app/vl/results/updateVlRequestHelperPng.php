@@ -15,7 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+$general = ContainerRegistry::get(CommonService::class); 
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";

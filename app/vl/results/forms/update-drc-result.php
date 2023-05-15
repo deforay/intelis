@@ -79,7 +79,7 @@ $disable = "disabled = 'disabled'";
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="updateVlRequestForm" id="updateVlRequestForm" autocomplete="off" action="updateVlRequestHelperDrc.php">
+				<form class="form-horizontal" method="post" name="updateVlRequestForm" id="updateVlRequestForm" autocomplete="off" action="updateVlTestResultHelper.php">
 					<div class="box-body">
 						<div class="box box-default">
 							<div class="box-body">
@@ -446,7 +446,7 @@ $disable = "disabled = 'disabled'";
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -458,7 +458,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="dateOfCompletionOfViralLoad" name="dateOfCompletionOfViralLoad" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
 										<td>
@@ -473,7 +473,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+											<select class="form-control isRequired" id="noResult" name="noResult" title="<?= _('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -620,7 +620,7 @@ $disable = "disabled = 'disabled'";
 	});
 
 	function checkTestStatus() {
-		var status = $("#isSampleRejected").val();
+		var status = $("#noResult").val();
 		if (status == 'yes') {
 			// $('#vlResult').attr('disabled', false);
 			// $('#vlLog').attr('disabled', false);
@@ -671,7 +671,7 @@ $disable = "disabled = 'disabled'";
 
 	function checkSampleReceviedDate() {
 		var sampleCollectionDate = $("#sampleCollectionDate").val();
-		var sampleReceivedDate = $("#sampleReceivedDate").val();
+		var sampleReceivedDate = $("#sampleReceivedOn").val();
 		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
 			//Set sample coll. datetime
 			splitSampleCollDateTime = sampleCollectionDate.split(" ");
@@ -696,7 +696,7 @@ $disable = "disabled = 'disabled'";
 			//Check diff
 			if (moment(sampleCollDateTime).diff(moment(sampleReceivedDateTime)) > 0) {
 				alert("L'échantillon de données reçues ne peut pas être antérieur à la date de collecte de l'échantillon!");
-				$("#sampleReceivedDate").val("");
+				$("#sampleReceivedOn").val("");
 			}
 		}
 	}

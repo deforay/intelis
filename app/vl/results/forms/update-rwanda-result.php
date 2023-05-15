@@ -543,7 +543,7 @@ $disable = "disabled = 'disabled'";
 										</div>
 									</div>
 								</div>
-								<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="updateVlRequestHelperRwd.php">
+								<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="updateVlTestResultHelper.php">
 									<div class="box box-primary">
 										<div class="box-header with-border">
 											<h3 class="box-title">Reserved for Testing Laboratory</h3>
