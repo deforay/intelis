@@ -257,10 +257,10 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
      $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+     $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {

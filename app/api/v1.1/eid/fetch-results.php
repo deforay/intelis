@@ -7,10 +7,14 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-session_unset(); // no need of session in json response
-
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
+
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+$origJson = (string) $request->getBody();
+$input = $request->getParsedBody();
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -29,14 +33,12 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $arr = $general->getGlobalConfig();
 $user = null;
-$input = json_decode(file_get_contents("php://input"), true);
 /* echo "<pre>";
 print_r($input);
 die; */
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$params = file_get_contents("php://input");
 $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 try {
@@ -230,5 +232,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Services\GenericTestsService;
@@ -10,11 +11,19 @@ require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
@@ -1289,7 +1298,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
                 <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
                 <a href="view-requests.php" class="btn btn-default"> Cancel</a>
             </div>
-            </form>
+            </section>
     </div>
     </section>
     </div>
