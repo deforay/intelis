@@ -85,7 +85,6 @@ try {
         $data['lab_id'] = $result[7];
         $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
         $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-        $data['result_status'] = 6;
         $data['data_sync'] = 0;
         $data['recency_vl'] = 'yes';
         $data['reason_for_vl_testing'] = 9999; // 9999 is Recency Test in r_vl_test_reasons table

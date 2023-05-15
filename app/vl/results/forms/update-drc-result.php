@@ -531,11 +531,11 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<th>Approuvé le <span class="mandatory">*</span></th>
+										<th scope="row">Approuvé le <span class="mandatory">*</span></th>
 										<td>
 											<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<th>Approuvé par <span class="mandatory">*</span></th>
+										<th scope="row">Approuvé par <span class="mandatory">*</span></th>
 										<td>
 											<select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>

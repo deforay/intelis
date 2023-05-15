@@ -155,7 +155,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-inline" method="post" name="addVlRequestForm" id="vlRequestFormAng" autocomplete="off" action="editVlRequestHelperAng.php">
+        <form class="form-inline" method="post" name="addVlRequestForm" id="vlRequestFormAng" autocomplete="off" action="editVlRequestHelper.php">
           <div class="box-body">
             <div class="box box-default">
               <div class="box-body">
@@ -166,7 +166,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                   <div class="box-header with-border">
                     <h3 class="box-title">A. UNIDADE DE SOLICITAÇÃO</h3>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <tr>
                       <td><label for="province">Província </label><span class="mandatory">*</span></td>
                       <td>
@@ -234,7 +234,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                             <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>-->
                     <h4>B. DADOS DO PACIENTE</h4>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <tr>
                       <td style="width:14%;"><label for="patientFirstName">Nome completo </label></td>
                       <td style="width:14%;">
@@ -302,7 +302,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                   <div class="box-header with-border">
                     <h3 class="box-title">C. INFORMAÇÃO DE TRATAMENTO</h3>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <tr>
                       <td style="width:14%;"><label for="">Data de início de TARV </label></td>
                       <td style="width:14%;">
@@ -421,7 +421,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                   <div class="box-header with-border">
                     <h3 class="box-title">D. INDICAÇÃO PARA SOLICITAÇÃO DE CARGA VIRAL</h3>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <?php
                     $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
                     $vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
@@ -470,7 +470,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                   <div class="box-header with-border">
                     <h3 class="box-title">E. UNIDADE DE COLHEITA</h3>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <tr>
                       <td style="width:14%;"><label for="fName">Nome da Unidade de colheita (se diferente da Unidade de solicitação) <span class="mandatory">*</span></label></td>
                       <td style="width:14%;">
@@ -514,7 +514,7 @@ if ($vlQueryInfo['reason_for_vl_testing'] != '') {
                   <div class="box-header with-border">
                     <h3 class="box-title">Informações laboratoriais</h3>
                   </div>
-                  <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                  <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                     <tr>
                       <td style="width:14%;"><label for="sampleCode"> Nº de amostra </label><span class="mandatory">*</span></td>
                       <td style="width:14%;">

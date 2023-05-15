@@ -47,7 +47,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr class="activateSample" style="display:none;">
-							<th style="width:20%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
+							<th scope="row" style="width:20%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
 							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
 
 							<td style="width:10%;">
