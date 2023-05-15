@@ -28,7 +28,9 @@ $data['forceSync'] = false;
 
 $referenceTables = array(
     'facility_details',
-    'geographical_divisions'
+    'geographical_divisions',
+    'instrument_machines',
+    'instruments',
 );
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
@@ -78,13 +80,6 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
     $referenceTables = array_merge($referenceTables, $hepatitisTables);
 }
 
-if (isset(SYSTEM_CONFIG['modules']['common']) && SYSTEM_CONFIG['modules']['common'] === true) {
-    $commonTables = array(
-        'instrument_machines',
-        'instruments',
-    );
-    $referenceTables = array_merge($referenceTables, $commonTables);
-}
 // print_r($referenceTables);die;
 
 try {
