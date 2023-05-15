@@ -212,20 +212,13 @@ class Dhis2
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
-		//$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		http_response_code($httpStatus);
 		curl_close($ch);
 
 		return $return;
-
-		//		if ($httpStatus === 200) {
-		//			return $return;
-		//		} else {
-		//			return false;
-		//		}
 	}
 
 	// Send POST request to DHIS2
@@ -246,27 +239,22 @@ class Dhis2
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
 		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		http_response_code($httpStatus);
 		curl_close($ch);
 
 		return $return;
-
-
-		//		if ($httpStatus === 200 && !empty($return)) {
-		//			return $return;
-		//		} else {
-		//			return false;
-		//		}
 	}
 
 	// Send PUT request to DHIS2
 	public function put($path, $data, $urlParams = [])
 	{
 
-		if (!$this->authenticated || empty($path) || empty($data)) return false;
+		if (!$this->authenticated || empty($path) || empty($data)) {
+			return false;
+		}
 
 		if (!empty($urlParams)) {
 			$urlParams = '?' . implode("&", $urlParams);
@@ -280,19 +268,14 @@ class Dhis2
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
 
 		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		http_response_code($httpStatus);
 		curl_close($ch);
 
-		if ($httpStatus === 200) {
-			return true;
-		} else {
-			return false;
-		}
+		return $return;
 	}
 
 	// Send PATCH request to DHIS2
@@ -318,13 +301,10 @@ class Dhis2
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
 		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		http_response_code($httpStatus);
 		curl_close($ch);
 
-		if ($httpStatus === 200) {
-			return true;
-		} else {
-			return false;
-		}
+		return $return;
 	}
 
 	public function addDataValuesToEventPayload($eventPayload, $inputArray)

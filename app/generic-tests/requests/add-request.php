@@ -1619,8 +1619,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data.patient.length > 0) {
                               $("#patientDynamicForm").html(data.patient);
                          }
-                         if (data.lap.length > 0) {
-                              $("#lapDynamicForm").html(data.lap);
+                         if (data.lab.length > 0) {
+                              $("#lapDynamicForm").html(data.lab);
                          }
                          if (data.specimen.length > 0) {
                               $("#specimenDynamicForm").html(data.specimen);
