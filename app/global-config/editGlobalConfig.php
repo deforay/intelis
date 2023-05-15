@@ -1231,7 +1231,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="generic_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("TB Auto Approve API Results"); ?></label>
+												<label for="generic_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="generic_auto_approve_api_results" name="generic_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select Lab Tests Auto Approve API Results'); ?>">
 														<option value=""><?php echo _("--Select--"); ?></option>
