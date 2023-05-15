@@ -127,7 +127,7 @@ $disable = "disabled = 'disabled'";
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-inline" method="post" name="addVlRequestForm" id="vlRequestFormAng" autocomplete="off" action="updateVlRequestHelperAng.php">
+				<form class="form-inline" method="post" name="addVlRequestForm" id="vlRequestFormAng" autocomplete="off" action="updateVlTestResultHelper.php">
 					<div class="box-body">
 						<div class="box box-default">
 							<div class="box-body">

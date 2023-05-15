@@ -466,7 +466,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 								<?php }
 								if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true && isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
 									<li class="treeview generic-reference-manage">
-										<a href="#"><i class="fa-solid fa-vial-circle-check"></i><?php echo _("Lab Tests Config"); ?>
+										<a href="#"><em class="fa-solid fa-vial-circle-check"></em><?php echo _("Lab Tests Config"); ?>
 											<span class="pull-right-container">
 												<span class="fa-solid fa-angle-left pull-right"></span>
 											</span>
