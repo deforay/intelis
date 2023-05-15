@@ -3977,3 +3977,6 @@ ALTER TABLE `audit_form_covid19` ADD `vaccination_dosage` TEXT NULL DEFAULT NULL
 ALTER TABLE `audit_form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL AFTER `vaccination_dosage`;
 ALTER TABLE `audit_form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
 ALTER TABLE `audit_form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL AFTER `patient_city`;
+
+-- Thana 15-May-2023
+DELETE p, rpm FROM `privileges` AS p INNER JOIN `roles_privileges_map` AS rpm ON rpm.privilege_id = p.privilege_id WHERE privilege_name IN ('generic-weekly-report.php', 'generic-monitoring-report.php');
