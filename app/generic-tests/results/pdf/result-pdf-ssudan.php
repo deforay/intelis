@@ -26,6 +26,9 @@ if (!empty($requestResult)) {
      foreach ($requestResult as $result) {
           $currentTime = DateUtility::getCurrentDateTime();
 
+          $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
+          $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
+
           $testedBy = '';
           if (isset($result['tested_by']) && !empty($result['tested_by'])) {
                $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
@@ -103,7 +106,7 @@ if (!empty($requestResult)) {
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
-          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'LAB TESTS PATIENT REPORT');
+          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'LAB TESTS PATIENT REPORT', null, $result['test_standard_name']);
           // set document information
           $pdf->SetCreator('VLSM');
           $pdf->SetTitle('LAB TESTS PATIENT REPORT');
@@ -332,22 +335,25 @@ if (!empty($requestResult)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
           } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           }
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
           if ($result['patient_gender'] == 'female') {
                $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
                $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
           } else {
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
                $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '</tr>';
 
+          $html .= '<tr>';
+          $html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+          $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
@@ -396,22 +402,37 @@ if (!empty($requestResult)) {
           // $html .= '<td colspan="3" style="line-height:10px;"></td>';
           // $html .= '</tr>';
 
+          if (isset($genericTestInfo) && !empty($genericTestInfo)) {
+               /* Test Result Section */
+               $html .= '<tr>';
+               $html .= '<td colspan="4"  >';
+               $html .= '<table border="1" style="padding:2px;">
+                                    <tr>
+                                        <td align="center" width="10%" style="line-height:20px;font-size:11px;font-weight:bold;">Test No.</td>
+                                        <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Method</td>
+                                        <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Date of Testing</td>
+                                        <td align="center" width="25%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Platform/Test Kit</td>
+                                        <td align="center" width="20%" style="line-height:20px;font-size:11px;font-weight:bold;">Test Result</td>
+                                    </tr>';
+
+               foreach ($genericTestInfo as $indexKey => $rows) {
+                    $html .= '<tr>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($indexKey + 1) . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . $genericTestInfo[$indexKey]['test_name'] . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($genericTestInfo[$indexKey]['sample_tested_datetime'])) . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . $genericTestInfo[$indexKey]['testing_platform'] . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($genericTestInfo[$indexKey]['result']) . '</td>
+                                    </tr>';
+               }
+               $html .= '</table>';
+               $html .= '</td>';
+               $html .= '</tr>';
+          }
           $html .= '<tr>';
+
           $html .= '<td colspan="3">';
           $html .= '<table style="padding:10px 2px 2px 2px;">';
-          $logValue = '';
-          if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
-               $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
-          } else {
-               if ($isResultNumeric) {
-                    $logV = round(log10($vlResult), 2);
-                    $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
-               } else {
-                    //$logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;0.0';
-                    $logValue = '';
-               }
-          }
-          $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
+          $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td><td >' . $smileyContent . '</td></tr>';
           if ($result['reason_for_sample_rejection'] != '') {
                $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
           }
@@ -440,14 +461,14 @@ if (!empty($requestResult)) {
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
                $html .= '</tr>';
           }
-          
+
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['test_platform']) . '</span></td>';
           $html .= '</tr>';
-          
+
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
