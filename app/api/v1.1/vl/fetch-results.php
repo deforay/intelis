@@ -218,7 +218,7 @@ try {
 
     $where = " WHERE " . implode(" AND ", $where);
     $sQuery .= $where . " limit 100;";
-    // // die($sQuery);
+    // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
     // No data found

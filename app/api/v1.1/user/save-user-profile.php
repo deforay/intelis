@@ -5,6 +5,7 @@ use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
+use App\Services\FacilitiesService;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -63,9 +64,9 @@ try {
             $post = $input['post'];
         }
     }
-    $post['loginId'] = $post['loginId'] ?: $post['login_id'] ?: null;
-    $post['role'] = $post['role'] ?: $post['role_id'] ?: null;
-    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hash_algorithm'] ?: 'phb';
+    $post['loginId'] = $post['loginId'] ?: $post['loginId'] ?: null;
+    $post['role'] = $post['role'] ?: $post['role'] ?: null;
+    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hashAlgorithm'] ?: 'phb';
 
     if (!isset($user)) {
         if (!$apiKey) {
@@ -78,10 +79,10 @@ try {
 
     $aRow = null;
     if (!empty($userId) || !empty($post['email'])) {
-        if (!empty($userId)) {
-            $db->where("user_id", $userId);
-        } else if (!empty($post['email'])) {
+        if (!empty($post['email'])) {
             $db->where("email", $db->escape($post['email']));
+        } else if (!empty($userId)) {
+            $db->where("user_id", $userId);
         }
         $aRow = $db->getOne("user_details");
     }
@@ -104,8 +105,8 @@ try {
     if (!empty($post['role'])) {
         $data['role_id'] =  $db->escape($post['role']);
     }
-    if (!empty($post['login_id'])) {
-        $data['login_id'] =  $db->escape($post['login_id']);
+    if (!empty($post['loginId'])) {
+        $data['login_id'] =  $db->escape($post['loginId']);
     }
 
     if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
@@ -124,7 +125,6 @@ try {
             $data['user_signature'] = $imageName;
         }
     }
-
     $id = 0;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);

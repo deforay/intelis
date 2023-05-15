@@ -131,7 +131,7 @@ class MYPDF extends TCPDF
 				$this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 30, strtoupper($this->testType).' PATIENT REPORT', 0, 0, 0, true, 'C');
+			$this->writeHTMLCell(0, 0, 10, 30, strtoupper($this->testType) . ' PATIENT REPORT', 0, 0, 0, true, 'C');
 
 			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
 		} else {
@@ -187,20 +187,4 @@ class MYPDF extends TCPDF
 	}
 }
 
-if ($arr['vl_form'] == 1) {
-	include('pdf/result-pdf-ssudan.php');
-} else if ($arr['vl_form'] == 2) {
-	include('pdf/result-pdf-sierraleone.php');
-} else if ($arr['vl_form'] == 3) {
-	include('pdf/result-pdf-drc.php');
-} else if ($arr['vl_form'] == 4) {
-	// include('pdf/result-pdf-zambia.php');
-} else if ($arr['vl_form'] == 5) {
-	// include('pdf/result-pdf-png.php');
-} else if ($arr['vl_form'] == 6) {
-	// include('pdf/result-pdf-who.php');
-} else if ($arr['vl_form'] == 7) {
-	include('pdf/result-pdf-rwanda.php');
-} else if ($arr['vl_form'] == 8) {
-	include('pdf/result-pdf-angola.php');
-}
+include('result-pdf.php');
