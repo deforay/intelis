@@ -53,7 +53,7 @@ try {
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => $db->now()
+		'last_modified_datetime'              => DateUtility::getCurrentDateTime()
 	);
 
 

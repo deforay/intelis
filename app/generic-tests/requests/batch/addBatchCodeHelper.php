@@ -2,9 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
-
-
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -30,7 +28,7 @@ try {
                 'position_type' => $_POST['positions'],
                 'test_type' => $_POST['testTypeCode'],
                 'created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
             $db->insert($tableName1, $data);
             $lastId = $db->getInsertId();
@@ -45,9 +43,8 @@ try {
                         $db = $db->where('sample_id', $vlSampleId);
                         $db->update($tableName2, $value);
                     }
-
                 }
-                header("Location:/generic-tests/requests/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']."&code=".$_POST['testTypeCode']);
+                header("Location:/generic-tests/requests/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions'] . "&code=" . $_POST['testTypeCode']);
             }
         } else {
             header("Location:/generic-tests/requests/batch/batch-code.php");

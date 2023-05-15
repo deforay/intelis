@@ -53,15 +53,13 @@ try {
 
     // VIRAL LOAD TEST RESULTS
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
-            FROM `form_vl` AS vl 
-            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
-            WHERE result_status NOT IN (9) 
-            AND (facility_id != '' AND facility_id is not null) 
-            AND (sample_code !='' AND sample_code is not null) 
+        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
+            FROM `form_vl` AS vl
+            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
+            WHERE result_status NOT IN (9)
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
             AND vl.data_sync = 0";
-        // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
-        // echo $vlQuery;die;
 
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($sampleCode) && trim($sampleCode) != "") {
             $vlQuery .= " AND sample_code like '$sampleCode'";
@@ -107,13 +105,13 @@ try {
 
     // EID TEST RESULTS
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-        $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name' 
-                    FROM `form_eid` AS vl 
-                    LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id 
-                    WHERE result_status NOT IN (9) 
-                    AND sample_code !='' 
-                    AND sample_code is not null 
-                    AND vl.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+        $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
+                    FROM `form_eid` AS vl
+                    LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
+                    WHERE result_status NOT IN (9)
+                    AND sample_code !=''
+                    AND sample_code is not null
+                    AND vl.data_sync=0";
 
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "eid" && !empty($sampleCode) && trim($sampleCode) != "") {
             $eidQuery .= " AND sample_code like '$sampleCode'";
@@ -165,7 +163,7 @@ try {
                     WHERE result_status NOT IN (9) 
                     AND sample_code !='' 
                     AND sample_code is not null 
-                    AND c19.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+                    AND c19.data_sync=0";
 
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "covid19" && !empty($sampleCode) && trim($sampleCode) != "") {
             $covid19Query .= " AND sample_code like '$sampleCode'";
@@ -222,13 +220,13 @@ try {
 
     if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
 
-        $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name' 
-                    FROM `form_hepatitis` AS hep 
-                    LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id 
-                    WHERE result_status NOT IN (9) 
-                    AND sample_code !='' 
-                    AND sample_code is not null 
-                    AND hep.data_sync=0"; // AND `last_modified_datetime` > SUBDATE( NOW(), INTERVAL ". $arr['data_sync_interval']." HOUR)";
+        $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name'
+                    FROM `form_hepatitis` AS hep
+                    LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
+                    WHERE result_status NOT IN (9)
+                    AND sample_code !=''
+                    AND sample_code is not null
+                    AND hep.data_sync=0";
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim($sampleCode) != "") {
             $hepQuery .= " AND sample_code like '$sampleCode'";
         }

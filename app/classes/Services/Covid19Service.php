@@ -452,9 +452,9 @@ class Covid19Service
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {

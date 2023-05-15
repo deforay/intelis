@@ -41,10 +41,9 @@ if (!empty($fMapResult)) {
 $tbQuery = "SELECT * FROM form_tb WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-    //$tbQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
     $tbQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
-    $tbQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
+    $tbQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
 
 $tbRemoteResult = $db->rawQuery($tbQuery);

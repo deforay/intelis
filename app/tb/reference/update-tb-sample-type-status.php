@@ -2,9 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
-
-
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -18,7 +16,7 @@ try {
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'status' => $_POST['status'],
-            'updated_datetime'     =>  $db->now(),
+            'updated_datetime'     =>  DateUtility::getCurrentDateTime(),
         );
         $db = $db->where('sample_id', $id[$i]);
         $db->update($tableName, $status);

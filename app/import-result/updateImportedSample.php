@@ -2,9 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
-
-
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -21,7 +19,7 @@ try {
             $data = array(
                 'machine' => 0,
                 'batch_code' => trim($_POST['batchCode']),
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
             $db->insert("batch_details", $data);
         }

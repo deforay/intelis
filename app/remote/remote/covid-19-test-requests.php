@@ -50,7 +50,7 @@ if (!empty($data['manifestCode'])) {
   //$covid19Query .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
   $covid19Query .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
-  $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
+  $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
 
 
@@ -63,9 +63,9 @@ if ($db->count > 0) {
   $sampleIds = array_column($covid19RemoteResult, 'covid19_id');
   $facilityIds = array_column($covid19RemoteResult, 'facility_id');
 
-  
-/** @var Covid19Service $covid19Service */
-$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+  /** @var Covid19Service $covid19Service */
+  $covid19Service = ContainerRegistry::get(Covid19Service::class);
   $symptoms = $covid19Service->getCovid19SymptomsByFormId($sampleIds);
   $comorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($sampleIds);
   $testResults = $covid19Service->getCovid19TestsByFormId($sampleIds);

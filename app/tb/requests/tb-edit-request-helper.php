@@ -196,9 +196,9 @@ try {
         'result_status'                       => $status,
         'data_sync'                           => 0,
         'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-        'sample_registered_at_lab'            => $db->now(),
+        'sample_registered_at_lab'            => DateUtility::getCurrentDateTime(),
         'last_modified_by'                    => $_SESSION['userId'],
-        'last_modified_datetime'              => $db->now(),
+        'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
         'request_created_by'                  => $_SESSION['userId'],
         'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
         'source_of_request'                   => "web"

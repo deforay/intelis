@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -15,7 +15,7 @@ $result = 0;
 try {
     $status = array(
         'status'            => $_POST['status'],
-        'updated_datetime'  =>  $db->now(),
+        'updated_datetime'  =>  DateUtility::getCurrentDateTime(),
     );
     $db = $db->where('failure_id', $_POST['id']);
     $result = $db->update($tableName, $status);

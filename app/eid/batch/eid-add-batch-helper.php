@@ -2,9 +2,9 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\DateUtility;
 
 
-  
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -28,7 +28,7 @@ try {
                 'position_type' => $_POST['positions'],
                 'test_type' => 'eid',
                 'created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $db->insert($tableName1, $data);

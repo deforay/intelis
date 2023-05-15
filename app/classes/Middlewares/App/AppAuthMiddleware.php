@@ -77,6 +77,8 @@ class AppAuthMiddleware implements MiddlewareInterface
             '/login/loginProcess.php',
             '/setup/index.php',
             '/setup/registerProcess.php',
+            '/setup/registerProcess.php',
+            '/includes/captcha.php',
             // Add other routes to exclude from the authentication check here
         ];
 

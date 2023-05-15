@@ -76,16 +76,6 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     }
     $sTestDate = '';
     $eTestDate = '';
-    /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-        $s_t_date = explode("to", $_POST['sampleTestDate']);
-        if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-            $sTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[0]));
-        }
-        if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-            $eTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[1]));
-        }
-    }*/
-
     $sWhere = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
@@ -94,13 +84,6 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    /* if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-        if (trim($sTestDate) == trim($eTestDate)) {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-        } else {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-        }
-    }*/
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
         $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
@@ -122,8 +105,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 f.facility_name,
                                 f.facility_code,
                                 f.facility_state,
-                                f.facility_district 
-                                FROM form_vl as vl 
+                                f.facility_district
+                                FROM form_vl as vl
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
@@ -141,7 +124,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
+
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
@@ -155,12 +139,12 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                                 f.facility_name,
                                                 f.facility_code,
                                                 f.facility_state,
-                                                f.facility_district 
-                                                FROM form_vl as vl 
-                                                JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                                                WHERE vl.sample_tested_datetime IS NULL 
-                                                AND vl.sample_type="' . $sample['sample_id'] . '" 
-                                                AND vl.sample_collection_date < NOW() - INTERVAL 1 MONTH
+                                                f.facility_district
+                                                FROM form_vl as vl
+                                                JOIN facility_details as f ON vl.facility_id=f.facility_id
+                                                WHERE vl.sample_tested_datetime IS NULL
+                                                AND vl.sample_type="' . $sample['sample_id'] . '"
+                                                AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH
                                                 AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
             if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {

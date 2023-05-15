@@ -373,9 +373,9 @@ class GenericTestsService
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $oldSampleCodeKey = null;
@@ -448,11 +448,12 @@ class GenericTestsService
         }
     }
 
-    public function getDynamicFields($genericTestId){
-        if($genericTestId > 0){
+    public function getDynamicFields($genericTestId)
+    {
+        if ($genericTestId > 0) {
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
-            if($generic['testTypeForm']){
+            if ($generic['testTypeForm']) {
                 $dynamicJson = (array)json_decode($generic['testTypeForm']);
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');

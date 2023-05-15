@@ -139,7 +139,7 @@ try {
         'revised_by'                                => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
         'revised_on'                                => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by'                          => $_SESSION['userId'],
-        'last_modified_datetime'                    => $db->now(),
+        'last_modified_datetime'                    => DateUtility::getCurrentDateTime(),
         'manual_result_entry'                       => 'yes',
         'result_status'                             => $resultStatus,
         'data_sync'                                 => 0,

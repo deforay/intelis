@@ -1,10 +1,11 @@
 <?php
 
+use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -76,13 +77,14 @@ try {
                                         WHERE ud.login_id = ? AND ud.status = ?",
                 $queryParams
             );
+
             $loginAttemptCount = $db->rawQueryOne(
                 "SELECT SUM(CASE WHEN login_id = ? THEN 1 ELSE 0 END) AS LoginIdCount,
                     SUM(CASE WHEN ip_address = ? THEN 1 ELSE 0 END) AS IpCount
                     FROM user_login_history
                     WHERE login_status='failed'
-                    AND login_attempted_datetime >= DATE_SUB(NOW(), INTERVAL 15 minute)",
-                array($userName, $ipaddress)
+                    AND login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)",
+                array($userName, $ipaddress, DateUtility::getCurrentDateTime())
             );
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
                 if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
@@ -216,8 +218,7 @@ try {
             throw new SystemException(_("Please check your login credentials"));
         }
     }
-} catch (Exception $exc) {
-    //$_SESSION['alertMsg'] = _("Please check your login credentials");
+} catch (SystemException $exc) {
     $_SESSION['alertMsg'] = $exc->getMessage();
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());

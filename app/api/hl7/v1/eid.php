@@ -342,9 +342,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
         'request_created_by' => null,
-        'request_created_datetime' => $db->now(),
+        'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_by' => null,
-        'last_modified_datetime' => $db->now()
+        'last_modified_datetime' => DateUtility::getCurrentDateTime()
     );
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
