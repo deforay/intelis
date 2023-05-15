@@ -26,7 +26,6 @@ $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
-    $sampleCode = 'remote_sample_code';
     if (!empty($eidInfo['remote_sample']) && $eidInfo['remote_sample'] == 'yes') {
         $sampleCode = 'remote_sample_code';
     } else {

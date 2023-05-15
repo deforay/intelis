@@ -73,7 +73,7 @@ class Fhir
 			$urlParams = "";
 		}
 
-		$this->requestUrl = $this->getFhirURL() . "{$path}{$urlParams}";
+		$this->requestUrl = $this->getFhirURL() . $path. $urlParams;
 
 		//echo $this->requestUrl."\n\n\n\n";
 

@@ -11,7 +11,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 $tableName1 = "batch_details";
-$tableName2 = "form_vl";
+$tableName2 = "form_generic";
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {

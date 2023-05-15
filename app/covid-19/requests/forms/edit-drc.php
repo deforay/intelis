@@ -62,7 +62,6 @@ $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_st
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
-    $sampleCode = 'remote_sample_code';
     if (!empty($covid19Info['remote_sample']) && $covid19Info['remote_sample'] == 'yes') {
         $sampleCode = 'remote_sample_code';
     } else {

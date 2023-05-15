@@ -294,7 +294,7 @@ class Covid19Service
             return null;
         }
         if ($api) {
-            if (is_array($c19Id) && !empty($c19Id)) {
+            if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = $c19Id");
@@ -303,7 +303,7 @@ class Covid19Service
         $response = [];
 
         // Using this in sync requests/results
-        if (is_array($c19Id) && !empty($c19Id)) {
+        if (is_array($c19Id)) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
 
 
@@ -332,7 +332,7 @@ class Covid19Service
             return null;
         }
         if ($api) {
-            if (is_array($c19Id) && !empty($c19Id)) {
+            if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` = $c19Id");
@@ -341,7 +341,7 @@ class Covid19Service
         $response = [];
 
         // Using this in sync requests/results
-        if (is_array($c19Id) && !empty($c19Id)) {
+        if (is_array($c19Id)) {
 
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             if ($allData) return $results;
@@ -367,7 +367,7 @@ class Covid19Service
             return null;
         }
         if ($api) {
-            if (is_array($c19Id) && !empty($c19Id)) {
+            if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = $c19Id");
@@ -376,7 +376,7 @@ class Covid19Service
         $response = [];
 
         // Using this in sync requests/results
-        if (is_array($c19Id) && !empty($c19Id)) {
+        if (is_array($c19Id)) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
             if ($allData) return $results;
             foreach ($results as $row) {
@@ -561,7 +561,7 @@ class Covid19Service
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
         if (!isset($exist['qc_code_key']) || empty($exist['qc_code_key'])) {
             $number = 001;
-        } elseif (!empty($exist['qc_code_key'])) {
+        } else {
             $number = ($exist['qc_code_key'] + 1);
         }
         $sCodeKey = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);

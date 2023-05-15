@@ -15,7 +15,7 @@ $tableName2 = "form_generic";
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
-    $tableName2 = "form_generic";
+    $tableName2 = "form_vl";
     $table2PrimaryColumn = "vl_sample_id";
     $editFileName = 'editBatch.php';
 } else if (isset($_POST['type']) && $_POST['type'] == 'eid') {

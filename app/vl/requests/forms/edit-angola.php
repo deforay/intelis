@@ -8,7 +8,6 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 //check remote user
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
-  $sampleCode = 'remote_sample_code';
   if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
     $sampleCode = 'remote_sample_code';
   } else {
