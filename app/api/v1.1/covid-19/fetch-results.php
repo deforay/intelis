@@ -8,10 +8,13 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-session_unset(); // no need of session in json response
-
 ini_set('memory_limit', -1);
 
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+$origJson = (string) $request->getBody();
+$input = $request->getParsedBody();
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -33,11 +36,9 @@ $arr = $general->getGlobalConfig();
 
 $transactionId = $general->generateUUID();
 
-$input = json_decode(file_get_contents("php://input"), true);
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$params = file_get_contents("php://input");
 $authToken = $general->getAuthorizationBearerToken();
 $user = $usersService->getUserByToken($authToken);
 
@@ -284,6 +285,6 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'covid19', $_SERVER['REQUEST_URI'], $params, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData), 'fetch-results', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
 // exit(0);

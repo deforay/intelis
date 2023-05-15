@@ -13,6 +13,13 @@ ini_set('memory_limit', -1);
 
 try {
 
+    /** @var Slim\Psr7\Request $request */
+    $request = $GLOBALS['request'];
+
+    $origJson = (string) $request->getBody();
+    $input = $request->getParsedBody();
+
+
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
 
@@ -32,9 +39,6 @@ try {
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
-
-    $origJson = file_get_contents("php://input") ?: '[]';
-    $input = json_decode($origJson, true);
 
     if (empty($input) || empty($input['data'])) {
         throw new SystemException("Invalid request");

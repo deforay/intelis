@@ -8,7 +8,12 @@ use App\Services\UsersService;
 use App\Utilities\ImageResizeUtility;
 
 
-session_unset(); // no need of session in json response
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+$origJson = (string) $request->getBody();
+
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -25,10 +30,11 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-$jsonResponse = file_get_contents('php://input');
+
+
 
 // error_log("------ USER API START-----");
-// error_log($jsonResponse);
+// error_log($origJson);
 // error_log("------ USER API END -----");
 $transactionId = $general->generateUUID();
 
@@ -36,26 +42,25 @@ try {
     ini_set('memory_limit', -1);
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
-    if (!empty($jsonResponse)) {
-        $decode = json_decode($jsonResponse, true);
-        //http_response_code(501);
+    if (!empty($origJson)) {
+        $input = $request->getParsedBody();
     } elseif (!empty($_REQUEST)) {
-        $decode = $_REQUEST;
-        $decode['post'] = json_decode($decode['post'], true);
+        $input = $_REQUEST;
+        $input['post'] = json_decode($input['post'], true);
     } else {
-        //$general->elog($decode);
+        //$general->elog($input);
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
-    $apiKey = isset($decode['x-api-key']) && !empty($decode['x-api-key']) ? $decode['x-api-key'] : null;
+    $apiKey = isset($input['x-api-key']) && !empty($input['x-api-key']) ? $input['x-api-key'] : null;
 
-    if ((empty($decode['post']) || $decode['post'] === false) && !isset($user)) {
-        //$general->elog($decode);
+    if ((empty($input['post']) || $input['post'] === false) && !isset($user)) {
+        //$general->elog($input);
         throw new SystemException("3 Invalid request. Please check your request parameters.");
     } else {
         if (isset($user)) {
-            $post = $decode;
+            $post = $input;
         } else {
-            $post = $decode['post'];
+            $post = $input['post'];
         }
     }
     $post['loginId'] = $post['loginId'] ?: $post['login_id'] ?: null;
@@ -174,6 +179,6 @@ try {
     error_log($exc->getTraceAsString());
 }
 
-$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $decode, $payload, 'json');
+$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;

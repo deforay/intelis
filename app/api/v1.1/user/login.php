@@ -6,6 +6,13 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
+
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+//$origJson = (string) $request->getBody();
+$input = $request->getParsedBody();
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -19,7 +26,6 @@ $app = ContainerRegistry::get(ApiService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $transactionId = $general->generateUUID();
-$input = json_decode(file_get_contents("php://input"), true);
 try {
     if (
         isset($input['userName']) && !empty($input['userName']) &&

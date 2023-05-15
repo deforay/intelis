@@ -13,7 +13,11 @@ use Aranyasen\HL7\Messages\ACK;
 use Aranyasen\HL7\Segments\MSH;
 
 ini_set('memory_limit', -1);
-header('Content-Type: application/json');
+
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+$hl7Msg = (string) $request->getBody();
 
 $user = null;
 /** @var MysqliDb $db */
@@ -53,7 +57,6 @@ try {
         //exit(0);
     }
 
-    $hl7Msg = file_get_contents("php://input");
     if (!isset($hl7Msg) && !empty($hl7Msg)) {
         $msh = new MSH();
         $ack = new ACK($msg, $msh);

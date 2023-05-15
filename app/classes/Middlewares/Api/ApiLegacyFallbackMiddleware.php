@@ -30,6 +30,8 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
             $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
+            $GLOBALS['request'] = $request;
+
             try {
                 ob_start();
                 require_once APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri;

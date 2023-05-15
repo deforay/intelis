@@ -12,6 +12,14 @@ use App\Services\UsersService;
 use App\Services\VlService;
 
 
+/** @var Slim\Psr7\Request $request */
+$request = $GLOBALS['request'];
+
+//$origJson = (string) $request->getBody();
+$input = $request->getParsedBody();
+
+
+
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var MysqliDb $db */
@@ -33,7 +41,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = $general->generateUUID();
-$input = json_decode(file_get_contents("php://input"), true);
 $formId = $general->getGlobalConfig('vl_form');
 
 $authToken = $general->getAuthorizationBearerToken();

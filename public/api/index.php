@@ -14,7 +14,7 @@ use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use function Laminas\Stratigility\middleware;
 
 use Slim\Factory\ServerRequestCreatorFactory;
-
+use Slim\Middleware\BodyParsingMiddleware;
 
 $container = new Container();
 AppFactory::setContainer($container);
@@ -51,6 +51,8 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 }));
 
 
+$middlewarePipe->pipe(new BodyParsingMiddleware());
+
 // Middleware to ensure we always return JSON only
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     $response = $handler->handle($request);
@@ -60,7 +62,7 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 // API Auth Middleware that checks for Bearer token
 $middlewarePipe->pipe(ContainerRegistry::get(ApiAuthMiddleware::class));
 
-// Add ApiErrorHandlingMiddleware
+// ErrorHandling Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(ApiErrorHandlingMiddleware::class));
 
 //API Routes
@@ -79,11 +81,17 @@ $app->any('/api/v1.1/init', function ($request, $response, $args) {
 // TODO - Next version API to use Controllers/Actions
 
 
-// 4. Allow existing PHP includes using LegacyFallbackMiddleware
+// Allow existing PHP includes using LegacyFallbackMiddleware
 $middlewarePipe->pipe(ContainerRegistry::get(ApiLegacyFallbackMiddleware::class));
 
 
-
+// Content Length Middleware
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    $response = $handler->handle($request);
+    // Calculate the length of the response body
+    $length = strlen((string) $response->getBody());
+    return $response->withHeader('Content-Length', (string) $length);
+}));
 
 $app->add($middlewarePipe);
 
