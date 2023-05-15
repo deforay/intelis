@@ -62,10 +62,12 @@ class Fhir
 		return $res->getBody()->getContents();
 	}
 
-	public function get($path, $urlParams = array())
+	public function get($path, $urlParams = [])
 	{
 
-		if (empty($path)) return false;
+		if (empty($path)) {
+			return false;
+		}
 
 		if (!empty($urlParams)) {
 			$urlParams = '?' . implode("&", $urlParams);
@@ -73,9 +75,7 @@ class Fhir
 			$urlParams = "";
 		}
 
-		$this->requestUrl = $this->getFhirURL() . $path. $urlParams;
-
-		//echo $this->requestUrl."\n\n\n\n";
+		$this->requestUrl = $this->getFhirURL() . $path . $urlParams;
 
 		$client = new Client();
 		$headers = [
@@ -93,7 +93,7 @@ class Fhir
 		return $this->requestUrl ?: "";
 	}
 
-	public function post($path = null, $body = array())
+	public function post($path = null, $body = [])
 	{
 
 		$client = new Client();

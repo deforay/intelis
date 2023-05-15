@@ -193,10 +193,12 @@ class Dhis2
 	}
 
 	// Send GET request to DHIS2
-	public function get($path, $urlParams = array())
+	public function get($path, $urlParams = [])
 	{
 
-		if (empty($path)) return false;
+		if (empty($path)) {
+			return false;
+		}
 
 		if (!empty($urlParams)) {
 			$urlParams = '?' . implode("&", $urlParams);
@@ -205,8 +207,6 @@ class Dhis2
 		}
 
 		$url = $this->dhis2url . $path . $urlParams;
-		//echo $url. "<br>";
-
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -229,7 +229,7 @@ class Dhis2
 	}
 
 	// Send POST request to DHIS2
-	public function post($path, $data, $urlParams = array())
+	public function post($path, $data, $urlParams = [])
 	{
 		if (!$this->authenticated || empty($path) || empty($data)) return false;
 
@@ -263,7 +263,7 @@ class Dhis2
 	}
 
 	// Send PUT request to DHIS2
-	public function put($path, $data, $urlParams = array())
+	public function put($path, $data, $urlParams = [])
 	{
 
 		if (!$this->authenticated || empty($path) || empty($data)) return false;
@@ -296,10 +296,12 @@ class Dhis2
 	}
 
 	// Send PATCH request to DHIS2
-	public function patch($path, $data, $urlParams = array())
+	public function patch($path, $data, $urlParams = [])
 	{
 
-		if (!$this->authenticated || empty($path) || empty($data)) return false;
+		if (!$this->authenticated || empty($path) || empty($data)) {
+			return false;
+		}
 
 		if (!empty($urlParams)) {
 			$urlParams = '?' . implode("&", $urlParams);
@@ -309,12 +311,10 @@ class Dhis2
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: " . $this->getContentType()));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: " . $this->getContentType()]);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		// curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
 		$return = curl_exec($ch);
 		$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);

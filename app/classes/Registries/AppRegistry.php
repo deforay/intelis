@@ -10,7 +10,7 @@ class AppRegistry extends ArrayObject
 {
     private static $appRegistry = null;
 
-    public function __construct($array = array(), $flags = parent::ARRAY_AS_PROPS)
+    public function __construct($array = [], $flags = parent::ARRAY_AS_PROPS)
     {
         parent::__construct($array, $flags);
     }
