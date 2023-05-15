@@ -263,7 +263,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 7) {
 	include('forms/update-rwanda-result.php');
 } else if ($arr['vl_form'] == 8) {
-	// include('forms/update-angola-result.php');
+	// include('forms/update-angola-result.php'); 
 }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\CommonService; 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
@@ -53,11 +53,11 @@ try {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-        $approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-        $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+        $approvedOnDateTime = explode(" ", $_POST['approvedOn']);
+        $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
     } else {
-        $_POST['approvedOnDateTime'] = null;
+        $_POST['approvedOn'] = null;
     }
 
 
@@ -152,7 +152,46 @@ try {
         $_POST['reviewedOn'] = null;
     }
     //echo $reasonForChanges;die;
+/** For PNG */
+if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
+    $failedtestDate = explode(" ", $_POST['failedTestDate']);
+    $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+} else {
+    $_POST['failedTestDate'] = null;
+}
+if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
+    $_POST['regStartDate'] = DateUtility::isoDateFormat($_POST['regStartDate']);
+} else {
+    $_POST['regStartDate'] = null;
+}
+if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
+    $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
+} else {
+    $_POST['qcDate'] = null;
+}
+if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
+    $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
+} else {
+    $_POST['reportDate'] = null;
+}
+if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
+    $_POST['clinicDate'] = DateUtility::isoDateFormat($_POST['clinicDate']);
+} else {
+    $_POST['clinicDate'] = null;
+}
 
+if ($_POST['failedTestingTech'] != '') {
+    $platForm = explode("##", $_POST['failedTestingTech']);
+    $_POST['failedTestingTech'] = $platForm[0];
+}
+
+/** DRC */
+if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
+    $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
+    $_POST['dateOfCompletionOfViralLoad'] = DateUtility::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+} else {
+    $_POST['dateOfCompletionOfViralLoad'] = null;
+}
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
 
     $vldata = array(
@@ -180,7 +219,7 @@ try {
         'vl_focal_person_phone_number' => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  null,
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-        'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOnDateTime'] :  null,
+        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
         'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  null,
         'reason_for_vl_result_changes' => $allChange,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
@@ -190,7 +229,23 @@ try {
         'manual_result_entry' => 'yes',
         'result_status' => $resultStatus,
         'data_sync' => 0,
-        'result_printed_datetime' => null
+        'result_printed_datetime' => null,
+        'failed_test_date' => $_POST['failedTestDate'],
+        'qc_date' => $_POST['qcDate'],
+        'clinic_date' => $_POST['clinicDate'],
+        'report_date' => $_POST['reportDate'],
+        'batch_quality' => (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null),
+        'sample_test_quality' => (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null),
+        'sample_batch_id' => (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null),
+        'failed_test_tech' => (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') ? $_POST['failedTestingTech'] : null,
+        'failed_vl_result' => (isset($_POST['failedvlResult']) && $_POST['failedvlResult'] != '' ? $_POST['failedvlResult'] : null),
+        'failed_batch_quality' => (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null),
+        'failed_sample_test_quality' => (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null),
+        'failed_batch_id' => (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null),
+        'sample_type' => (isset($_POST['sampleType']) && $_POST['sampleType'] != '' ? $_POST['sampleType'] : null),
+        'tech_name_png' => (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null,
+        'qc_tech_name' => (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null),
+        'qc_tech_sign' => (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null),
     );
 
 

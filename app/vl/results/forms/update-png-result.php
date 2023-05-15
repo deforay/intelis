@@ -184,7 +184,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleCode" class="labels">Laboratory ID </label>
-										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('form_vl','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
+										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Sample Code" title="Please enter Sample Code" style="width:100%;" value="<?php echo (isset($sCode) && $sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('form_vl','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
 									</div>
 								</div>
 							</div>
@@ -450,7 +450,7 @@ $disable = "disabled = 'disabled'";
 									</td>
 								</tr>
 							</table>
-							<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="updateVlRequestHelperPng.php">
+							<form class="form-inline" method='post' name='vlRequestForm' id='vlRequestForm' autocomplete="off" action="updateVlTestResultHelper.php">
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td colspan="6" class="labels" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
@@ -477,7 +477,7 @@ $disable = "disabled = 'disabled'";
 
 										<td class="laboratoryId labels"><label for="laboratoryId">Laboratory Name <span class="mandatory">*</span></label></td>
 										<td>
-											<select name="laboratoryId" id="laboratoryId" class="form-control isRequired" title="Please choose lab name" style="width:100%;">
+											<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab name" style="width:100%;">
 												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Select --'); ?>
 											</select>
 										</td>
@@ -500,9 +500,9 @@ $disable = "disabled = 'disabled'";
 												<?php } ?>
 											</select>
 										</td>
-										<td class="receivedDate labels"><label for="receivedDate">Date Received</label></td>
+										<td class="receivedDate labels"><label for="sampleReceivedOn">Date Received</label></td>
 										<td>
-											<input type="text" class="form-control" name="receivedDate" id="receivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
+											<input type="text" class="form-control" name="sampleReceivedOn" id="sampleReceivedOn" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
 										</td>
 										<td class="techName labels"><label for="techName">Lab Tech. Name</label></td>
 										<td>
@@ -510,13 +510,13 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="testDate">Test date <span class="mandatory">*</span></label></td>
+										<td class="labels"><label for="sampleTestingDateAtLab">Test date <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control isRequired" name="testDate" id="testDate" placeholder="Test Date" title="Enter Testing Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>">
+											<input type="text" class="form-control isRequired" name="sampleTestingDateAtLab" id="sampleTestingDateAtLab" placeholder="Test Date" title="Enter Testing Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>">
 										</td>
-										<td class="labels"><label for="testingTech">Testing Platform <span class="mandatory">*</span></label></td>
+										<td class="labels"><label for="testingPlatform">Testing Platform <span class="mandatory">*</span></label></td>
 										<td>
-											<select name="testingTech" id="testingTech" class="form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -704,9 +704,9 @@ $disable = "disabled = 'disabled'";
 			$('.ui-datepicker-calendar').show();
 		});
 		$('.date').mask('99-aaa-9999');
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
+		$('#collectionDate,#sampleReceivedOn,#sampleTestingDateAtLab,#failedTestDate').mask('99-aaa-9999 99:99');
 
-		$('#collectionDate,#receivedDate,#testDate,#failedTestDate').datetimepicker({
+		$('#collectionDate,#sampleReceivedOn,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
