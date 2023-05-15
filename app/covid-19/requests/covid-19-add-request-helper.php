@@ -349,7 +349,6 @@ try {
 				'error' => 'Unable to add this Covid-19 sample. Please try again later',
 				'data' => array()
 			);
-			http_response_code(301);
 		}
 
 		echo json_encode($payload);

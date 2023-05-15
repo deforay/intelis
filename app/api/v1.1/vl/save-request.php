@@ -491,14 +491,8 @@ try {
                     'status' => 'failed'
                 );
             } else {
-                $payload = array(
-                    'status' => 'failed',
-                    'timestamp' => time(),
-                    'error' => 'Unable to add this VL sample. Please try again later',
-                    'data' => array()
-                );
+                throw new SystemException('Unable to add this VL sample. Please try again later');
             }
-            http_response_code(301);
         }
     }
     if ($update == "yes") {
