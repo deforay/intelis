@@ -634,7 +634,7 @@ $state = $geolocationService->getProvinces("yes");
 			searchVlRequestData();
 		}
 		var withAlphaNum = null;
-		$.blockUI();
+		// $.blockUI();
 		oTable.fnDraw();
 		$.post('generic-result-export-in-excel.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),

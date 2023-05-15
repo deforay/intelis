@@ -4,6 +4,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
+use App\Services\GenericTestsService;
 
 $title = _("Print VL Results");
 
@@ -15,6 +16,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$generic = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -22,16 +24,14 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+$sampleTypeResults = $generic->getGenericSampleTypes();
 
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
-$sResult = $db->rawQuery($sQuery);
-
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='vl' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='generic-tests' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 
 $state = $geolocationService->getProvinces("yes");
@@ -40,19 +40,15 @@ $state = $geolocationService->getProvinces("yes");
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
-
-	.center {
-		/*text-align:left;*/
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-print"></em> <?php echo _("Print VL Results"); ?></h1>
+		<h1><em class="fa-solid fa-print"></em> <?php echo _("Print Lab Tests Results"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Print VL Results"); ?></li>
+			<li class="active"><?php echo _("Print Lab Tests Results"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -71,26 +67,12 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:200px;background:#fff;" />
 													</td>
-													<!--<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php
-															foreach ($batResult as $code) {
-															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-															<?php
-															}
-															?>
-														</select>
-													</td>-->
-
 													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
@@ -108,56 +90,43 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php
-															foreach ($sResult as $type) {
-															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-															<?php
-															}
-															?>
+														<select style="width:200px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --') ;?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
-														<select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:200px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Testing Labs"); ?> :</strong></td>
 													<td>
-														<select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="labId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:200px;">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-
 												</tr>
 												<tr>
 													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
+														<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:200px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="male"><?php echo _("Male"); ?></option>
 															<option value="female"><?php echo _("Female"); ?></option>
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _("ART Number"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="artNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchVlRequestData()" />
-													</td>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:200px;background:#fff;" />
 													</td>
-
-												</tr>
-												<tr>
 													<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
+												</tr>
+												<tr>
 													<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
@@ -187,7 +156,7 @@ $state = $geolocationService->getProvinces("yes");
 														<?php } ?>
 
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
 														</div>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label> <br>
@@ -229,7 +198,7 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Unique ART No."); ?></th>
+														<th><?php echo _("Patient ID"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th scope="row"><?php echo _("Testing Lab"); ?></th>
@@ -256,21 +225,8 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:200px;background:#fff;" />
 													</td>
-													<!--<td><strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php
-															foreach ($batResult as $code) {
-															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-															<?php
-															}
-															?>
-														</select>
-													</td>-->
 
 													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
@@ -288,55 +244,43 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<?php
-															foreach ($sResult as $type) {
-															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-															<?php
-															}
-															?>
+														<select style="width:200px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --') ;?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
-														<select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="printFacility" name="facility" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:200px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Testing Labs"); ?> :</strong></td>
 													<td>
-														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:200px;">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
-
 												</tr>
 												<tr>
 													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="gender" id="printGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;">
+														<select name="gender" id="printGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:200px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="male"><?php echo _("Male"); ?></option>
 															<option value="female"><?php echo _("Female"); ?></option>
 															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _("ART Number"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="printArtNo" name="artNo" class="form-control" placeholder="<?php echo _('ART Number'); ?>" style="width:220px;" onkeyup="searchPrintedVlRequestData()" />
-													</td>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:200px;background:#fff;" />
 													</td>
-												</tr>
-												<tr>
 													<td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
+												</tr>
+												<tr>
 													<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
@@ -349,7 +293,6 @@ $state = $geolocationService->getProvinces("yes");
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 													</td>
 												</tr>
-
 											</table>
 											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
 												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
@@ -366,7 +309,7 @@ $state = $geolocationService->getProvinces("yes");
 														<?php } ?>
 
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label>
+															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_id" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
 														</div>
 														<div class="col-md-3">
 															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_first_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label> <br>
@@ -407,7 +350,7 @@ $state = $geolocationService->getProvinces("yes");
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Unique ART No"); ?></th>
+														<th><?php echo _("Patient ID"); ?></th>
 														<th><?php echo _("Patient's Name"); ?></th>
 														<th scope="row"><?php echo _("Facility Name"); ?></th>
 														<th scope="row"><?php echo _("Testing Lab"); ?></th>
@@ -456,14 +399,7 @@ $state = $geolocationService->getProvinces("yes");
 		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
 			loadPrintedVlRequestData();
-			/*Hide Province, District Columns */
-			//var bVisCol = opTable.fnSettings().aoColumns[7].bVisible;
-			opTable.fnSetColumnVis(7, false);
-			//var bVisCol = opTable.fnSettings().aoColumns[8].bVisible;
-			opTable.fnSetColumnVis(8, false);
-			//var bVisCol = opTable.fnSettings().aoColumns[12].bVisible;
-			opTable.fnSetColumnVis(12, false);
-
+		
 			for (colNo = 0; colNo <= i; colNo++) {
 				$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
 				if (opTable.fnSettings().aoColumns[colNo].bVisible) {
@@ -474,14 +410,21 @@ $state = $geolocationService->getProvinces("yes");
 			}
 		});
 
-		$("#state, #printState").select2({
-			placeholder: "<?php echo _("Select Province"); ?>"
+		$("#sampleType, #printSampleType").select2({
+			placeholder: "<?php echo _("Select Sample Type"); ?>",
+			width : '200px'
+		});
+		$("#state, #printState, #printSampleType").select2({
+			placeholder: "<?php echo _("Select Province"); ?>",
+			width : '200px'
 		});
 		$("#district, #printDistrict").select2({
-			placeholder: "<?php echo _("Select District"); ?>"
+			placeholder: "<?php echo _("Select District"); ?>",
+			width : '200px'
 		});
 		$("#facility,#printFacility, #labId, #printLabId").select2({
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _("Select Facilities"); ?>",
+			width : '200px'
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
 				locale: {
@@ -513,15 +456,6 @@ $state = $geolocationService->getProvinces("yes");
 			});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
 		loadVlRequestData();
-
-		/*Hide Province, District Columns */
-		//var bVisCol = oTable.fnSettings().aoColumns[7].bVisible;
-		oTable.fnSetColumnVis(7, false);
-		//var bVisCol = oTable.fnSettings().aoColumns[8].bVisible;
-		oTable.fnSetColumnVis(8, false);
-		//var bVisCol = oTable.fnSettings().aoColumns[12].bVisible;
-		oTable.fnSetColumnVis(12, false);
-
 
 		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {
@@ -644,7 +578,7 @@ $state = $geolocationService->getProvinces("yes");
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
+			"sAjaxSource": "/generic-tests/results/get-generic-test-result-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
@@ -789,7 +723,7 @@ $state = $geolocationService->getProvinces("yes");
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
+			"sAjaxSource": "/generic-tests/results/get-generic-test-result-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
@@ -878,7 +812,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		<?php
 		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
+		$path = '/generic-tests/results/generate-result-pdf.php';
 		?>
 		$.post("<?php echo $path; ?>", {
 				source: 'print',
@@ -902,7 +836,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		<?php
 		$path = '';
-		$path = '/vl/results/generate-result-pdf.php';
+		$path = '/generic-tests/results/generate-result-pdf.php';
 		?>
 		if (newData == null) {
 			var rowsLength = selectedRows.length;

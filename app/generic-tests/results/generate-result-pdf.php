@@ -11,7 +11,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 $tableName1 = "activity_log";
-$tableName2 = "form_vl";
+$tableName2 = "form_generic";
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -28,17 +28,17 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   f.*,
                   imp.i_partner_name,
                   rst.*,
-                  vltr.test_reason_name,
+                  vltr.test_reason,
                   l.facility_name as labName,
                   u_d.user_name as reviewedBy,
                   a_u_d.user_name as approvedBy,
                   r_r_b.user_name as revised,
                   l.facility_logo as facilityLogo,
                   rsrr.rejection_reason_name
-                  FROM form_vl as vl
-                  LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
+                  FROM form_generic as vl
+                  LEFT JOIN r_generic_test_reasons as vltr ON vl.reason_for_testing = vltr.test_reason_id
                   LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
-                  LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.sample_type
+                  LEFT JOIN r_generic_sample_types as rst ON rst.sample_type_id = vl.sample_type
                   LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
                   LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
                   LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
@@ -48,7 +48,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
 
   $searchQueryWhere = [];
   if (!empty(trim($_POST['id']))) {
-    $searchQueryWhere[] = " vl.vl_sample_id IN(" . $_POST['id'] . ") ";
+    $searchQueryWhere[] = " vl.sample_id IN(" . $_POST['id'] . ") ";
   }
 
   if (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes']))) {
@@ -120,7 +120,7 @@ class MYPDF extends TCPDF
         $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
       }
       $this->SetFont('helvetica', '', 14);
-      $this->writeHTMLCell(0, 0, 10, 30, 'HIV VIRAL LOAD PATIENT REPORT', 0, 0, 0, true, 'C');
+      $this->writeHTMLCell(0, 0, 10, 30, 'LAB TESTS PATIENT REPORT', 0, 0, 0, true, 'C');
 
       $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
     } else {

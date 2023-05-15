@@ -22,18 +22,18 @@ $sarr = $general->getSystemConfig();
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-$tableName = "form_vl";
-$primaryKey = "vl_sample_id";
+$tableName = "form_generic";
+$primaryKey = "sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
 if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
@@ -115,14 +115,14 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * SQL queries
 * Get data to display
 */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_id,
 vl.sample_code,
 vl.remote_sample,
 vl.remote_sample_code,
 b.batch_code,
 vl.sample_collection_date,
 vl.sample_tested_datetime,
-vl.patient_art_no,
+vl.patient_id,
 vl.patient_first_name,
 vl.patient_middle_name,
 vl.patient_last_name,
@@ -130,25 +130,16 @@ f.facility_name,
 f.facility_district,
 f.facility_state,
 testingLab.facility_name as lab_name, 
-UPPER(s.sample_name) as sample_name, 
+UPPER(s.sample_type_name) as sample_type_name, 
 vl.result,
-vl.reason_for_vl_testing,
+vl.reason_for_testing,
 vl.last_modified_datetime,
-vl.vl_test_platform,
+vl.test_platform,
 vl.result_status,
-vl.requesting_vl_service_sector,
 vl.request_clinician_name,
 vl.requesting_phone,
-vl.patient_responsible_person,
 vl.patient_mobile_number,
 vl.consent_to_receive_sms,
-vl.result_value_log,
-vl.last_vl_date_routine,
-vl.last_vl_date_ecd,
-vl.last_vl_date_failure,
-vl.last_vl_date_failure_ac,
-vl.last_vl_date_cf,
-vl.last_vl_date_if,
 vl.lab_technician,
 vl.patient_gender,
 vl.locked,
@@ -156,16 +147,16 @@ ts.status_name,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
 vl.sample_received_at_hub_datetime, 
-vl.sample_received_at_vl_lab_datetime, 
+vl.sample_received_at_testing_lab_datetime, 
 vl.result_dispatched_datetime, 
 vl.result_printed_datetime,
 vl.result_approved_by
 
-FROM form_vl as vl 
+FROM form_generic as vl 
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
 LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
-LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
@@ -175,7 +166,6 @@ $t_start_date = '';
 $t_end_date = '';
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
@@ -186,7 +176,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);
-     //print_r($s_t_date);die;
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
           $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
@@ -207,7 +196,7 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
 }
 
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
+     $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
@@ -231,7 +220,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
-     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+     $sWhere[] = ' s.sample_type_id = "' . $_POST['sampleType'] . '"';
 }
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
@@ -240,7 +229,7 @@ if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
 if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
-     $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['artNo'] . "%' ";
+     $sWhere[] = " vl.patient_id LIKE '%" . $_POST['artNo'] . "%' ";
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
@@ -316,13 +305,13 @@ foreach ($rResult as $aRow) {
      $row = [];
      if (isset($_POST['vlPrint'])) {
           if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
-               $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
+               $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="checkedRow(this);"  />';
           } else {
-               $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
+               $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
           }
-          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+          $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
      } else {
-          $print = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
+          $print = '<a href="/generic-tests/results/update-generic-test-result.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
@@ -330,9 +319,9 @@ foreach ($rResult as $aRow) {
           }
      }
 
-     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
-     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
-     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
+     $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']);
+     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']);
+     $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']);
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
@@ -341,15 +330,15 @@ foreach ($rResult as $aRow) {
      if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
           $row[] = $aRow['batch_code'];
      }
-     $row[] = $aRow['patient_art_no'];
+     $row[] = $aRow['patient_id'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-     $row[] = ($aRow['facility_name']);
-     $row[] = ($aRow['lab_name']);
+     $row[] = ucwords($aRow['facility_name']);
+     $row[] = ucwords($aRow['lab_name']);
      if (empty($_POST['from']) || $_POST['from'] != "enterresult") {
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
      }
-     $row[] = ($aRow['sample_name']);
+     $row[] = ucwords($aRow['sample_type_name']);
      $row[] = $aRow['result'];
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
@@ -358,7 +347,7 @@ foreach ($rResult as $aRow) {
      }
 
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ($aRow['status_name']);
+     $row[] = ucwords($aRow['status_name']);
      $row[] = $print;
      $output['aaData'][] = $row;
 }
