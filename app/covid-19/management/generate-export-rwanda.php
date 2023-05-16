@@ -46,7 +46,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$output = [];
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason","Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	if ($_SESSION['instanceType'] == 'standalone') {
 		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
 			unset($headings[$key]);
@@ -89,19 +89,19 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 	}
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue));
+		->setValueExplicit(html_entity_decode($nameValue));
 	if ($_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
+				->setValueExplicit(html_entity_decode($value));
 			$colNo++;
 		}
 	} else {
 		foreach ($headings as $field => $value) {
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
+				->setValueExplicit(html_entity_decode($value));
 			$colNo++;
 		}
 	}
@@ -118,14 +118,25 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
 		}
 		//set gender
-		$gender = '';
-		if ($aRow['patient_gender'] == 'male') {
-			$gender = 'M';
-		} else if ($aRow['patient_gender'] == 'female') {
-			$gender = 'F';
-		} else if ($aRow['patient_gender'] == 'not_recorded') {
-			$gender = 'Unreported';
+		switch (strtolower($aRow['patient_gender'])) {
+			case 'male':
+			case 'm':
+				$gender = 'M';
+				break;
+			case 'female':
+			case 'f':
+				$gender = 'F';
+				break;
+			case 'not_recorded':
+			case 'notrecorded':
+			case 'unreported':
+				$gender = 'Unreported';
+				break;
+			default:
+				$gender = '';
+				break;
 		}
+
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
@@ -189,26 +200,22 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $aRow['patient_id'];
 		$row[] = $patientFname . " " . $patientLname;
 		$row[] = $dob;
-		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$aRow['patient_age'] ??= 0;
+		$row[] = ($aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
 		/* To get Symptoms and Comorbidities details */
 		$row[] = implode(',', $sysmtomsArr);
 		$row[] = implode(',', $comorbiditiesArr);
-		/* $row[] = \App\Utilities\DateUtility::humanReadableDateFormat($aRow['date_of_symptom_onset']);
-		$row[] = ($aRow['contact_with_confirmed_case']);
-		$row[] = ($aRow['has_recent_travel_history']);
-		$row[] = ($aRow['travel_country_names']);
-		$row[] = \App\Utilities\DateUtility::humanReadableDateFormat($aRow['travel_return_date']); */
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $sampleTestedOn;
 		$row[] = $covid19Results[$aRow['result']];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
-		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+		$row[] = $aRow['lab_tech_comments'];
+		$row[] = $aRow['funding_source_name'] ?? null;
+		$row[] = $aRow['i_partner_name'] ?? null;
 		$output[] = $row;
 		$no++;
 	}

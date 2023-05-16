@@ -27,8 +27,8 @@ $dateTimeUtil = new DateUtility();
 if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
-//	echo "<pre>";
-//	print_r($rResult);die;
+	//	echo "<pre>";
+	//	print_r($rResult);die;
 	$excel = new Spreadsheet();
 	$output = [];
 	$sheet = $excel->getActiveSheet();
@@ -117,13 +117,23 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			}
 		}
 		//set gender
-		$gender = '';
-		if ($aRow['patient_gender'] == 'male') {
-			$gender = 'M';
-		} else if ($aRow['patient_gender'] == 'female') {
-			$gender = 'F';
-		} else if ($aRow['patient_gender'] == 'not_recorded') {
-			$gender = 'Unreported';
+		switch (strtolower($aRow['patient_gender'])) {
+			case 'male':
+			case 'm':
+				$gender = 'M';
+				break;
+			case 'female':
+			case 'f':
+				$gender = 'F';
+				break;
+			case 'not_recorded':
+			case 'notrecorded':
+			case 'unreported':
+				$gender = 'Unreported';
+				break;
+			default:
+				$gender = '';
+				break;
 		}
 		//sample collecion date
 		$sampleCollectionDate = '';
@@ -221,8 +231,8 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$row[] = $sampleReceivedOn;
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+		$row[] = $aRow['funding_source_name'] ?? null;
+		$row[] = $aRow['i_partner_name'] ?? null;
 
 		$row[] = $requestCreatedDatetime;
 		$output[] = $row;

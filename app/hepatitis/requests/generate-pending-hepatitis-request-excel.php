@@ -48,27 +48,25 @@ $rResult = $db->rawQuery($sQuery);
 $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
-    if ($arr['vl_form'] == 1) {
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-        }
-        else{
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
-        }
+if ($arr['vl_form'] == 1) {
+    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
     } else {
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
-        }
-        else{
-            $headings = array("S. No.", "Sample Code","Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
-        }
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "HCV VL Result", "HBV VL Result", "Date result released");
     }
+} else {
+    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
+    } else {
+        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Date of Symptom Onset", "Has the patient had contact with a confirmed case?", "Has the patient had a recent history of travelling to an affected area?", "If Yes, Country Name(s)", "Return Date", "Is Sample Rejected?", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments");
+    }
+}
 
-    if ($_SESSION['instanceType'] == 'standalone') {
-        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+if ($_SESSION['instanceType'] == 'standalone') {
+    if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        unset($headings[$key]);
     }
+}
 $colNo = 1;
 
 $styleArray = array(
@@ -106,18 +104,19 @@ foreach ($_POST as $key => $value) {
     }
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));if ($_POST['withAlphaNum'] == 'yes') {
+    ->setValueExplicit(html_entity_decode($nameValue));
+if ($_POST['withAlphaNum'] == 'yes') {
     foreach ($headings as $field => $value) {
         $string = str_replace(' ', '', $value);
         $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+            ->setValueExplicit(html_entity_decode($value));
         $colNo++;
     }
 } else {
     foreach ($headings as $field => $value) {
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+            ->setValueExplicit(html_entity_decode($value));
         $colNo++;
     }
 }
@@ -263,8 +262,8 @@ foreach ($rResult as $aRow) {
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
         $row[] = $resultDispatchedDate;
         $row[] = ($aRow['lab_tech_comments']);
-      //  $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-      //  $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+        //  $row[] = $aRow['funding_source_name'] ?? null;
+        //  $row[] = $aRow['i_partner_name'] ?? null;
     }
     $output[] = $row;
     $no++;

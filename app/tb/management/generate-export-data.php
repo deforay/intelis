@@ -36,19 +36,17 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 	$excel = new Spreadsheet();
 	$output = [];
 	$sheet = $excel->getActiveSheet();
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code","Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason","Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	} else {
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	}
+	if ($_SESSION['instanceType'] == 'standalone') {
+		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+			unset($headings[$key]);
 		}
-		else
-		{
-			$headings = array("S. No.", "Sample Code", "Remote Sample Code","Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type","Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
-		}
-		if ($_SESSION['instanceType'] == 'standalone') {
-			if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-				unset($headings[$key]);
-			}
-		}
-	
+	}
+
 	$colNo = 1;
 
 	$styleArray = array(
@@ -124,13 +122,23 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
 		}
 		//set gender
-		$gender = '';
-		if ($aRow['patient_gender'] == 'male') {
-			$gender = 'M';
-		} else if ($aRow['patient_gender'] == 'female') {
-			$gender = 'F';
-		} else if ($aRow['patient_gender'] == 'not_recorded') {
-			$gender = 'Unreported';
+		switch (strtolower($aRow['patient_gender'])) {
+			case 'male':
+			case 'm':
+				$gender = 'M';
+				break;
+			case 'female':
+			case 'f':
+				$gender = 'F';
+				break;
+			case 'not_recorded':
+			case 'notrecorded':
+			case 'unreported':
+				$gender = 'Unreported';
+				break;
+			default:
+				$gender = '';
+				break;
 		}
 		//sample collecion date
 		$sampleCollectionDate = '';

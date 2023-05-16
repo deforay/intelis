@@ -105,8 +105,6 @@ try {
                     $data['batch_code'] = $rResult[0]['batch_code'];
                     $data['sample_type'] = $rResult[0]['sample_type'];
                     $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
-                    //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
-                    //$data['last_modified_datetime']=\App\Utilities\DateUtility::getCurrentDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
@@ -114,8 +112,6 @@ try {
                     $data['eid_test_platform'] = $rResult[0]['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult[0]['sample_tested_datetime'];
-                    //$data['request_created_by'] = $rResult[0]['result_reviewed_by'];
-                    //$data['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult[0]['result_reviewed_by'];
                     $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];

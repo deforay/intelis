@@ -394,8 +394,8 @@ foreach ($rResult as $aRow) {
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];
      $row[] = ($aRow['status_name']);
-     $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-     $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+     $row[] = $aRow['funding_source_name'] ?? null;
+     $row[] = $aRow['i_partner_name'] ?? null;
      $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
      $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
