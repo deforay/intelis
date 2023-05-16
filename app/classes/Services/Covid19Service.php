@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use DateTimeImmutable;
@@ -548,8 +549,8 @@ class Covid19Service
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
+            return 0;
         }
-        return 0;
     }
 
     public function getCovid19TestsByC19Id($c19Id)

@@ -2,6 +2,8 @@
 
 
 // echo "<pre>";print_r($_POST['bulkIds']);die;
+
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -59,5 +61,5 @@ try {
 }
 //catch exception
 catch (Exception $e) {
-    echo 'VL failed-results-retest.php: ' . $e->getMessage();
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

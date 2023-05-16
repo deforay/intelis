@@ -1,6 +1,8 @@
 <?php
 
 // echo "<pre>";print_r($_POST['eidId']);die;
+
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -11,6 +13,7 @@ try {
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
+
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
@@ -57,8 +60,6 @@ try {
         }
     }
     echo $id;
-}
-//catch exception
-catch (Exception $e) {
-    echo 'EID failed-results-retest.php: ' . $e->getMessage();
+} catch (Exception $e) {
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

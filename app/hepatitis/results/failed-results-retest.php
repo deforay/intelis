@@ -1,6 +1,8 @@
 <?php
 
 // echo "<pre>";print_r($_POST['hepatitisId']);die;
+
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -61,8 +63,6 @@ try {
         }
     }
     echo $id;
-}
-//catch exception
-catch (Exception $e) {
-    echo 'Hepatitis failed-results-retest.php: ' . $e->getMessage();
+} catch (Exception $e) {
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
