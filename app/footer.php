@@ -652,7 +652,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addHepatitisRequestMenu").addClass('active');
-	} else if (splitsUrl == 'add-samples-from-manifest.php') {
+	} else if (splitsUrl == 'add-samples-from-manifest.php' && splitsUrlCheck[1] != 'generic-tests') {
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addSamplesFromManifestHepatitisMenu").addClass('active');
@@ -660,7 +660,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".hepatitisBatchCodeMenu").addClass('active');
-	} else if (splitsUrl == 'add-samples-from-manifest.php') {
+	} else if (splitsUrl == 'add-samples-from-manifest.php' && splitsUrlCheck[1] != 'generic-tests') {
 		$(".hepatitisRequest").addClass('active');
 		$(".allMenu").removeClass('active');
 		$(".addSamplesFromManifestHepatitisMenu").addClass('active');
@@ -849,6 +849,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'batch-code.php') {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-request-menu, .batchGenericCodeMenu").addClass('active');
+	} else if (splitsUrlCheck[1] == 'generic-tests' && splitsUrl == 'add-samples-from-manifest.php') {
+		$(".allMenu").removeClass('active');
+		$(".generic-test-request-menu, .addGenericSamplesFromManifestMenu").addClass('active');
 	} else if (splitsUrlCheck[1] == 'generic-tests' && (splitsUrl == 'generic-test-results.php' || splitsUrl == 'update-generic-test-result.php')) {
 		$(".allMenu").removeClass('active');
 		$(".generic-test-results-menu, .genericTestResultMenu").addClass('active');
@@ -885,7 +888,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else {
 		$(".allMenu").removeClass('active');
 	}
-
+	
 	function screenshot(supportId, attached) {
 		if (supportId != "" && attached == 'yes') {
 			closeModal();

@@ -65,9 +65,9 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
 
      foreach ($rResult as $aRow) {
           $row = [];
-          $row[] = ($aRow['labname']);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['rejection_reason_name']);
+          $row[] = ucwords($aRow['labname']);
+          $row[] = ucwords($aRow['facility_name']);
+          $row[] = ucwords($aRow['rejection_reason_name']);
           $row[] = strtoupper($aRow['rejection_type']);
           $row[] = $aRow['total'];
           $output[] = $row;
@@ -88,7 +88,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           }
      }
      $writer = IOFactory::createWriter($excel, 'Xlsx');
-     $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = 'LAB-TESTS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
 }

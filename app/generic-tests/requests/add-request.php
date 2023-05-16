@@ -110,24 +110,6 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
      }
 </style>
 <?php
-// if ($arr['vl_form'] == 1) {
-//     require('forms/add-ssudan.php');
-// } else if ($arr['vl_form'] == 2) {
-//     require('forms/add-sierraleone.php');
-// } else if ($arr['vl_form'] == 3) {
-//     require('forms/add-drc.php');
-// } else if ($arr['vl_form'] == 4) {
-//     require('forms/add-zambia.php');
-// } else if ($arr['vl_form'] == 5) {
-//     require('forms/add-png.php');
-// } else if ($arr['vl_form'] == 6) {
-//     require('forms/add-who.php');
-// } else if ($arr['vl_form'] == 7) {
-//     require('forms/add-rwanda.php');
-// } else if ($arr['vl_form'] == 8) {
-//     require('forms/add-angola.php');
-// }
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -1007,7 +989,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if (provinceName) {
                     $.post("/includes/siteInformationDropdownOptions.php", {
                               pName: pName,
-                              testType: 'vl'
+                              testType: 'generic-tests'
                          },
                          function(data) {
                               if (data != "") {
