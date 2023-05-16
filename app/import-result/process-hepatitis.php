@@ -69,7 +69,7 @@ try {
                 if ($bvlResult) {
                     $data['batch_id'] = $bvlResult[0]['batch_id'];
                 } else {
-                    $batchResult = $db->insert('batch_details', array('test_type' => 'vl', 'batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => $db->now()));
+                    $batchResult = $db->insert('batch_details', array('test_type' => 'vl', 'batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
                     $data['batch_id'] = $db->getInsertId();
                 }
 
@@ -150,7 +150,7 @@ try {
                     if ($bvlResult) {
                         $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
                     } else {
-                        $batchResult = $db->insert('batch_details', array('batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => $db->now()));
+                        $batchResult = $db->insert('batch_details', array('batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
                         $data['sample_batch_id'] = $db->getInsertId();
                     }
 
@@ -227,8 +227,8 @@ try {
                 'lab_id' => $accResult[$i]['lab_id'],
                 'tested_by'                     => $_POST['testBy'],
                 'request_created_by' => $accResult[$i]['result_reviewed_by'],
-                'request_created_datetime' => $db->now(),
-                'last_modified_datetime' => $db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'result_approved_by' => $_POST['appBy'],
                 'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
@@ -257,7 +257,7 @@ try {
             if ($bvlResult) {
                 $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
             } else {
-                $batchResult = $db->insert('batch_details', array('batch_code' => $accResult[$i]['batch_code'], 'batch_code_key' => $accResult[$i]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => $db->now()));
+                $batchResult = $db->insert('batch_details', array('batch_code' => $accResult[$i]['batch_code'], 'batch_code_key' => $accResult[$i]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;

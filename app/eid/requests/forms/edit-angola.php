@@ -3,9 +3,16 @@
 // imported in eid-edit-request.php based on country in global config
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 //Funding source list

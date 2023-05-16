@@ -123,7 +123,7 @@ require_once APPLICATION_PATH . '/header.php';
 						}
 					});
 			} else {
-				window.top.location = window.top.location;
+				window.top.location.href = window.top.location;
 			}
 		}
 	}

@@ -112,7 +112,7 @@ class MYPDF extends TCPDF
 
 
 	//Page header
-	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = array(), $resultPrintedDate = null, $dataSync = null, $systemConfig = null)
+	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $resultPrintedDate = null, $dataSync = null, $systemConfig = null)
 	{
 		$this->logo = $logo;
 		$this->text = $text;

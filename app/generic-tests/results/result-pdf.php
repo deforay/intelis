@@ -418,10 +418,10 @@ if (!empty($requestResult)) {
                foreach ($genericTestInfo as $indexKey => $rows) {
                     $html .= '<tr>
                                         <td align="center" style="line-height:20px;font-size:11px;">' . ($indexKey + 1) . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . $genericTestInfo[$indexKey]['test_name'] . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($genericTestInfo[$indexKey]['sample_tested_datetime'])) . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . $genericTestInfo[$indexKey]['testing_platform'] . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($genericTestInfo[$indexKey]['result']) . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['test_name'] . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($rows['sample_tested_datetime'])) . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['testing_platform'] . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . ($rows['result']) . '</td>
                                     </tr>';
                }
                $html .= '</table>';

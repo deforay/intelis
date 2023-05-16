@@ -10,6 +10,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $id = base64_decode($_GET['id']);
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer
@@ -74,25 +75,31 @@ class MYPDF extends TCPDF
 }
 
 
-
-
 if (trim($id) != '') {
 
-    $sQuery = "SELECT sample_code,remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(patient_name,patient_surname) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,cpcm.manifest_code, l.facility_name as lab_name from covid19_positive_confirmation_manifest as cpcm Join form_covid19 as vl ON vl.positive_test_manifest_id=cpcm.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where cpcm.manifest_code LIKE '%$id%'";
-    // die($sQuery);
+    $sQuery = "SELECT sample_code,
+                    remote_sample_code,
+                    fd.facility_name as clinic_name,
+                    fd.facility_district,
+                    CONCAT(COALESCE(patient_name,''), COALESCE(patient_surname,'')) as `patient_fullname`,
+                    patient_dob,patient_age,
+                    sample_collection_date,
+                    patient_gender,patient_id,
+                    cpcm.manifest_code,
+                    l.facility_name as lab_name
+                FROM covid19_positive_confirmation_manifest as cpcm
+                JOIN form_covid19 as vl ON vl.positive_test_manifest_id=cpcm.manifest_id
+                JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                JOIN facility_details as l ON l.facility_id=vl.lab_id
+                WHERE cpcm.manifest_code LIKE '%" . $db->escape($id) . "%'";
     $result = $db->query($sQuery);
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    $bQuery = "SELECT * from covid19_positive_confirmation_manifest as cpcm where manifest_code LIKE '%$id%'";
-    //echo $bQuery;die;
+    $arr = $general->getGlobalConfig();
+
+    $bQuery = "SELECT * FROM covid19_positive_confirmation_manifest AS cpcm
+                WHERE manifest_code LIKE '%" . $db->escape($id) . "%'";
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
@@ -143,23 +150,21 @@ if (trim($id) != '') {
         $pdf->AddPage();
         $tbl = '';
         $packageCodeBarCode = $pdf->serializeTCPDFtagParameters(array($result[0]['manifest_code'], 'C39', '', '', 0, 8, 0.25, array('border' => false, 'align' => 'L', 'padding' => 0, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 2), 'N'));
-        //$tbl .= '<h1> ' . $result[0]['manifest_code'] . '<tcpdf method="write1DBarcode" params="' . $packageCodeBarCode . '" /> </h1>';
-        $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'] . ' <tcpdf method="write1DBarcode" params="' . $packageCodeBarCode . '" /> </span>';
+        $tbl .= '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'] . ' <img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"> </span>';
         $tbl .= '<br>';
         $tbl .= '<table style="width:100%;border:1px solid #333;">
-            
-                <tr nobr="true">
-                    <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
-                    <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
-                    <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
-                    <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Patient Name</em></strong></td>
-                    <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
-                    <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
-                    <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
-                    <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
-                    <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
-                    <td align="center" style="font-size:11px;width:22%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>
-                </tr>';
+                    <tr nobr="true">
+                        <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
+                        <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
+                        <td align="center" style="font-size:11px;width:14%;border:1px solid #333;"  ><strong><em>Health facility, District</em></strong></td>
+                        <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>Patient Name</em></strong></td>
+                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Patient ID</em></strong></td>
+                        <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
+                        <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Patient Gender</em></strong></td>
+                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
+                        <!-- <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Test Requested</em></strong></td> -->
+                        <td align="center" style="font-size:11px;width:22%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>
+                    </tr>';
 
         $sampleCounter = 1;
 
@@ -174,12 +179,13 @@ if (trim($id) != '') {
             if (isset($sample['patient_dob']) && $sample['patient_dob'] != '' && $sample['patient_dob'] != null && $sample['patient_dob'] != '0000-00-00') {
                 $patientDOB = DateUtility::humanReadableDateFormat($sample['patient_dob']);
             }
-            $params = $pdf->serializeTCPDFtagParameters(array($sample['sample_code'], 'C39', '', '', '', 9, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2), 'N'));
-            //$tbl.='<table cellspacing="0" cellpadding="3" style="width:100%">';
+            $params = $pdf->serializeTCPDFtagParameters(array(
+                $sample['sample_code'], 'C39', '', '', '', 9, 0.25,
+                ['border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => [0, 0, 0], 'bgcolor' => [255, 255, 255], 'text' => false, 'font' => 'helvetica', 'fontsize' => 10, 'stretchtext' => 2], 'N'
+            ));
             $tbl .= '<tr style="border:1px solid #333;">';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sampleCounter . '.</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['sample_code'] . '</td>';
-            // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['facility_district']) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
@@ -187,9 +193,8 @@ if (trim($id) != '') {
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
             // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
-            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><br><tcpdf method="write1DBarcode" params="' . $params . '" /></td>';
+            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><br><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
             $tbl .= '</tr>';
-            //$tbl .='</table>';
             $sampleCounter++;
         }
         $tbl .= '</table>';
@@ -201,8 +206,6 @@ if (trim($id) != '') {
         $tbl .= '<td align="right" style="vertical-align:middle;font-size:11px;width:15%;"><strong>Received By : <br>(at Referral lab/NRL)</strong></td><td style="width:18.33%;"></td>';
         $tbl .= '</tr>';
         $tbl .= '</table>';
-        //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
-        // $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C', true);
         $filename = trim($bResult[0]['manifest_code']) . '-' . date('Y-m-d') . '-Manifest.pdf';
         $pdf->writeHTML($tbl);
         $pdf->Output($filename);

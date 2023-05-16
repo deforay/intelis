@@ -261,8 +261,8 @@ try {
           'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
           'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
           'test_number'                           => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] :  null,
-          'request_created_datetime'              => $db->now(),
-          'last_modified_datetime'                => $db->now(),
+          'request_created_datetime'              => DateUtility::getCurrentDateTime(),
+          'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
           'manual_result_entry'                   => 'yes',
           'test_type'                             => $_POST['testType'],
           'test_type_form'                        => json_encode($_POST['dynamicFields'])

@@ -98,7 +98,7 @@ if (isset($tableResult) && !empty($tableResult)) { ?>
         if (isset($tableResult) && !empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
         ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?php echo $_POST['sampleCollectionDate']; ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>

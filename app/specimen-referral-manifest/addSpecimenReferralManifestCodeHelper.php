@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -25,8 +26,8 @@ try {
             'lab_id'                    => $_POST['testingLab'],
             'number_of_samples'         => count($_POST['sampleCode']),
             'package_status'            => 'pending',
-            'request_created_datetime'  => $db->now(),
-            'last_modified_datetime' => $db->now()
+            'request_created_datetime'  => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime' => DateUtility::getCurrentDateTime()
         );
         //var_dump($data);die;
         $db->insert($packageTable, $data);
@@ -37,7 +38,7 @@ try {
                     'sample_package_id' => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
                     'lab_id'    => $_POST['testingLab'],
-                    'last_modified_datetime' => $db->now(),
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
                 );
                 if ($_POST['module'] == 'vl') {

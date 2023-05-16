@@ -419,6 +419,8 @@ class Covid19Service
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
+        $patientCodePrefix = 'P';
+
         try {
             $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
@@ -452,9 +454,9 @@ class Covid19Service
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -479,7 +481,9 @@ class Covid19Service
             $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
             if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
                 $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
-                if (empty($patientCodePrefix)) $patientCodePrefix = 'P';
+                if (empty($patientCodePrefix)) {
+                    $patientCodePrefix = 'P';
+                }
                 $generateAutomatedPatientCode = true;
                 $patientCodeJson = $patientsModel->generatePatientId($patientCodePrefix);
                 $patientCodeArray = json_decode($patientCodeJson, true);

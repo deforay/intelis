@@ -17,7 +17,7 @@ $globalConfig = $general->getGlobalConfig();
 $vlsmSystemConfig = $general->getSystemConfig();
 
 if ($type[1] == 'RES' || $type[1] == 'QRY') {
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
             vl.*,
             rtr.test_reason_name,
             b.batch_code,
@@ -81,7 +81,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     }
 
     if (!empty($search[3]) && $search[3] == "yes") {
-        $where[] = " (vl.sample_tested_datetime != null AND vl.sample_tested_datetime not like '') ";
+        $where[] = " (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') ";
     }
     if (!empty($spmF[2]) && $spmF[2] != "") {
         $where[] = " (vl.sample_code like '" . $spmF[2] . "' OR vl.remote_sample_code like '" . $spmF[2] . "') ";
@@ -326,9 +326,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
         'request_created_by' => $user['user_id'],
-        'request_created_datetime' => $db->now(),
+        'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_by' => $user['user_id'],
-        'last_modified_datetime' => $db->now()
+        'last_modified_datetime' => DateUtility::getCurrentDateTime()
     );
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -444,8 +444,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'result' => (isset($_POST['result']) && $_POST['result'] != '') ? $_POST['result'] :  null,
             'result_status' => $status,
             'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
-            'request_created_datetime' => $db->now(),
-            'last_modified_datetime' => $db->now(),
+            'request_created_datetime' => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'manual_result_entry' => 'yes',
             'vl_result_category' => $vl_result_category
         );

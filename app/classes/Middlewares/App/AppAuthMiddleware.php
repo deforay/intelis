@@ -2,8 +2,6 @@
 
 namespace App\Middlewares\App;
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -77,6 +75,8 @@ class AppAuthMiddleware implements MiddlewareInterface
             '/login/loginProcess.php',
             '/setup/index.php',
             '/setup/registerProcess.php',
+            '/setup/registerProcess.php',
+            '/includes/captcha.php',
             // Add other routes to exclude from the authentication check here
         ];
 

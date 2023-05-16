@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\DateUtility;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -31,8 +32,8 @@ try {
         $value = array(
             'lab_id'                    => $_POST['assignLab'],
             'referring_lab_id'          => $_POST['testingLab'],
-            'last_modified_datetime'    => $db->now(),
-            'samples_referred_datetime' => $db->now(),
+            'last_modified_datetime'    => DateUtility::getCurrentDateTime(),
+            'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync'                 => 0
         );
         /* Update Package details table */

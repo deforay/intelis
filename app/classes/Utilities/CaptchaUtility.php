@@ -14,7 +14,7 @@ use Exception;
 class CaptchaUtility
 {
 
-    public function getCaptcha($config = array())
+    public function getCaptcha($config = [])
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

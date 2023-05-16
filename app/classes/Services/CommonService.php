@@ -328,7 +328,7 @@ class CommonService
         return (substr($string, 0, $len) === $startString);
     }
 
-    public function generateSelectOptions($optionList, $selectedOptions = array(), $emptySelectText = false)
+    public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
         if (empty($optionList)) {
             return '';
@@ -789,6 +789,7 @@ class CommonService
             error_log($exc->getMessage());
             error_log($this->db->getLastError());
             error_log($exc->getTraceAsString());
+            return 0;
         }
     }
 

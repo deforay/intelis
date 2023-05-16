@@ -159,7 +159,7 @@ $aResult = $db->query($aQuery);
                                         <td class="labels"><label for="labTestingPoint">Lab Testing Points</label> </td>
                                         <td>
                                             <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control" title="Please select the Lab Testing Points" style="width:100%;">
-                                               
+
                                             </select>
                                         </td>
                                     </tr>
@@ -237,7 +237,7 @@ $aResult = $db->query($aQuery);
 
                                         <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? </th>
                                         <td style="width:35% !important">
-                                        <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                            <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -251,28 +251,28 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr class="motherRegimen" style="display:none;">
-                                    <th scope="row" class="labels">Mother's Regimen</th>
+                                        <th scope="row" class="labels">Mother's Regimen</th>
                                         <td>
-                                        <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
-                                                                      <option value="">-- Select --</option>
-                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
-                                                                           <optgroup label="<?= $heading['headings']; ?>">
-                                                                                <?php
-                                                                                foreach ($aResult as $regimen) {
-                                                                                     if ($heading['headings'] == $regimen['headings']) {
-                                                                                ?>
-                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
-                                                                                <?php
-                                                                                     }
-                                                                                }
-                                                                                ?>
-                                                                           </optgroup>
-                                                                      <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
-                                                                           <option value="other">Other</option>
-                                                                      <?php } ?>
-                                                                 </select>
-                                                                 <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
+                                            <select class="form-control" id="motherRegimen" name="motherRegimen" title="Please choose Mother's ART Regimen" style="width:100%;" onchange="checkMotherARTRegimenValue();">
+                                                <option value="">-- Select --</option>
+                                                <?php foreach ($artRegimenResult as $heading) { ?>
+                                                    <optgroup label="<?= $heading['headings']; ?>">
+                                                        <?php
+                                                        foreach ($aResult as $regimen) {
+                                                            if ($heading['headings'] == $regimen['headings']) {
+                                                        ?>
+                                                                <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </optgroup>
+                                                <?php }
+                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
+                                                    <option value="other">Other</option>
+                                                <?php } ?>
+                                            </select>
+                                            <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                         </td>
                                     </tr>
                                     <tr>
@@ -372,7 +372,7 @@ $aResult = $db->query($aQuery);
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
-                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;" />
 
                                         </td>
                                         <th scope="row"></th>
@@ -564,11 +564,10 @@ $aResult = $db->query($aQuery);
     facilityName = true;
     machineName = true;
 
-    function showRegimen()
-    {
-        if($("#motherTreatment").val()=="yes")
+    function showRegimen() {
+        if ($("#motherTreatment").val() == "yes")
             $(".motherRegimen").show();
-                else
+        else
             $(".motherRegimen").hide();
     }
 
@@ -631,9 +630,9 @@ $aResult = $db->query($aQuery);
         $("#caretakerPhoneNumber").val(patientArray['caretaker_no']);
         $("#caretakerAddress").text(patientArray['caretaker_address']);
 
-       /* setTimeout(function() {
-            $("#patientDistrict").val(patientArray[15]).trigger('change');
-        }, 3000);*/
+        /* setTimeout(function() {
+             $("#patientDistrict").val(patientArray[15]).trigger('change');
+         }, 3000);*/
     }
 
     function sampleCodeGeneration() {
@@ -737,8 +736,7 @@ $aResult = $db->query($aQuery);
         }
     }
 
-    function checkPCRTestReason()
-    {
+    function checkPCRTestReason() {
         var otherReason = $("#pcrTestReason").val();
         if (otherReason == 'Other') {
             $(".reasonForRepeatPcrOther").show();
@@ -776,31 +774,28 @@ $aResult = $db->query($aQuery);
             }
 
             $.post("/includes/get-testing-points.php", {
-                        facilityId: labId,
-                        testType: 'eid'
-                    },
-                    function(data) {
-                        if(data!=0)
-                        {
-                            $('.testingPoint').show();
-                            $("#labTestingPoint").addClass("isRequired");
-                            $("#labTestingPoint").html(data);
-                        }
-                        else
-                        {
-                            $('.testingPoint').hide();
-                            $("#labTestingPoint").removeClass("isRequired");
-                            $("#labTestingPoint").html("");
-                        }
-                    });
+                    facilityId: labId,
+                    testType: 'eid'
+                },
+                function(data) {
+                    if (data != 0) {
+                        $('.testingPoint').show();
+                        $("#labTestingPoint").addClass("isRequired");
+                        $("#labTestingPoint").html(data);
+                    } else {
+                        $('.testingPoint').hide();
+                        $("#labTestingPoint").removeClass("isRequired");
+                        $("#labTestingPoint").html("");
+                    }
+                });
 
         });
 
-        $("#pcrTestNumber").on("change",function(){
-            if($(this).val()==1)
-                    $('.pcrBox').hide();
-                else
-                    $('.pcrBox').show();
+        $("#pcrTestNumber").on("change", function() {
+            if ($(this).val() == 1)
+                $('.pcrBox').hide();
+            else
+                $('.pcrBox').show();
         });
 
         $('#sampleCollectionDate').datetimepicker({
@@ -809,18 +804,18 @@ $aResult = $db->query($aQuery);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "Today");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

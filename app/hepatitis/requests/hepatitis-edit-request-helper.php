@@ -173,7 +173,7 @@ try {
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => $db->now(),
+		'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
 	);
 
@@ -202,7 +202,7 @@ try {
 				$riskFactorsData["hepatitis_id"] = $_POST['hepatitisSampleId'];
 				$riskFactorsData["riskfactors_id"] = $id;
 				$riskFactorsData["riskfactors_detected"] = (isset($value) && $value == 'other') ? $_POST['riskFactorsOther'][$id] : $value;
-                $db->insert("hepatitis_risk_factors", $riskFactorsData);
+				$db->insert("hepatitis_risk_factors", $riskFactorsData);
 			}
 		}
 

@@ -39,7 +39,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	}
 
 	$syncLatestTime = $general->getLastSyncDateTime();
-	
+
 	if (empty($syncLatestTime)) {
 		$syncHistoryDisplay = "display:none;";
 	} else {
@@ -67,11 +67,6 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
-
-
-<!-- HTML2CANVAS -->
-
-<!-- <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> -->
 
 <script type="text/javascript">
 	window.additionalXHRParams = {
@@ -890,6 +885,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	} else {
 		$(".allMenu").removeClass('active');
 	}
+
 	function screenshot(supportId, attached) {
 		if (supportId != "" && attached == 'yes') {
 			closeModal();
