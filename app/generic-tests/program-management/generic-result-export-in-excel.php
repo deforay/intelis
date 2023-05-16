@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -21,14 +22,23 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+/** @var GenericTestsService $genericObj */
+$genericObj = ContainerRegistry::get(GenericTestsService::class);
 $dateTimeUtil = new DateUtility();
 //system config
 
 if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
-//	echo "<pre>";
-//	print_r($rResult);die;
+	/* To get dynamic fields */
+	$labels= array();
+	foreach($rResult as $key=>$row){
+		$testType[$key] = $genericObj->getDynamicFields($row['sample_id']);
+		foreach($testType[$key]['dynamicLabel'] as $id => $le){
+			$labels[$id] = $le;
+		}
+	}
+
 	$excel = new Spreadsheet();
 	$output = [];
 	$sheet = $excel->getActiveSheet();
@@ -43,7 +53,10 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			unset($headings[$key]);
 		}
 	}
-	$colNo = 1;
+	/* Assign the dynamic labels to the heading */
+	if(isset($labels) && !empty($labels)){
+		$headings = array_merge($headings, $labels);
+	}
 
 	$styleArray = array(
 		'font' => array(
@@ -80,6 +93,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
+	$colNo = 1;
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
 		->setValueExplicit(html_entity_decode($nameValue));
 	if ($_POST['withAlphaNum'] == 'yes') {
@@ -97,10 +111,11 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			$colNo++;
 		}
 	}
-	$sheet->getStyle('A3:AI3')->applyFromArray($styleArray);
+	$lastColumn = Coordinate::stringFromColumnIndex(($colNo-1));
+	$sheet->getStyle('A3:'.$lastColumn.'3')->applyFromArray($styleArray);
 
 	$no = 1;
-	foreach ($rResult as $aRow) {
+	foreach ($rResult as $key => $aRow) {
 		$row = [];
 		//date of birth
 		$dob = '';
@@ -223,8 +238,18 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
 		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
-
 		$row[] = $requestCreatedDatetime;
+
+		/* To assign the dynamic fields values */
+		if(isset($labels) && !empty($labels)){
+			foreach($labels as $id => $le){
+				if(isset($testType[$key]['dynamicValue'][$id]) && !empty($testType[$key]['dynamicValue'][$id])){
+					$row[] = $testType[$key]['dynamicValue'][$id];
+				}else{
+					$row[] = "";
+				}
+			}
+		}
 		$output[] = $row;
 		$no++;
 	}
