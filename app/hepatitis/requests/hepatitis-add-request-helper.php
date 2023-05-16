@@ -151,9 +151,9 @@ try {
 		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'request_created_by'                  => $_SESSION['userId'],
 		'request_created_datetime'            => DateUtility::getCurrentDateTime(),
-		'sample_registered_at_lab'            => $db->now(),
+		'sample_registered_at_lab'            => DateUtility::getCurrentDateTime(),
 		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => $db->now(),
+		'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
 		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
 	);
 
@@ -162,8 +162,8 @@ try {
 	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$hepatitisData['source_of_request'] = 'vlsts';
 	} else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $hepatitisData['source_of_request'] = 'api';
-    }
+		$hepatitisData['source_of_request'] = 'api';
+	}
 
 	// echo "<pre>";print_r($hepatitisData);die;
 	// For Save Comorbidity 
@@ -191,7 +191,7 @@ try {
 				$riskFactorsData["hepatitis_id"] = $_POST['hepatitisSampleId'];
 				$riskFactorsData["riskfactors_id"] = $id;
 				$riskFactorsData["riskfactors_detected"] = (isset($value) && $value == 'other') ? $_POST['riskFactorsOther'][$id] : $value;
-                $db->insert("hepatitis_risk_factors", $riskFactorsData);
+				$db->insert("hepatitis_risk_factors", $riskFactorsData);
 			}
 		}
 

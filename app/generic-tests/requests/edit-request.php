@@ -65,7 +65,7 @@ $sResult = $db->query($sQuery);
 
 //get vl test reason list
 $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
-$vlTestReasonResult = $db->query($vlTestReasonQuery);
+$testReason = $db->query($vlTestReasonQuery);
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
 $genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
@@ -431,7 +431,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 }
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
@@ -470,7 +470,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
+					field &nbsp;</div>
 			</div>
 			<div class="box-body">
 				<!-- form start -->
@@ -478,7 +479,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					<div class="box-body">
 						<div class="box box-primary">
 							<div class="box-header with-border">
-								<h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
+								<h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)
+								</h3>
 							</div>
 							<div class="row">
 								<div class="col-xs-4 col-md-4">
@@ -487,7 +489,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] ?></option>
+												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>>
+													<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -505,7 +509,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
 											<label for="sampleReordered">
-												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample
+												Reordered
 											</label>
 										</div>
 									</div>
@@ -546,12 +551,21 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 									</div>
 								</div>
 								<div class="row facilityDetails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '' || trim($facilityResult[0]['facility_mobile_numbers']) != '' || trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><strong>Clinic Email(s)</strong></div>
-									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s)</strong></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
+									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+										<strong>Clinic Email(s)</strong>
+									</div>
+									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+										<?php echo $facilityResult[0]['facility_emails']; ?></div>
+									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+										<strong>Clinic Mobile No.(s)</strong>
+									</div>
+									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+										<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
+									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+										<strong>Clinic Contact Person -</strong>
+									</div>
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+										<?php echo ($facilityResult[0]['contact_person']); ?></div>
 								</div>
 
 
@@ -564,7 +578,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?php echo ($implementingPartner['i_partner_name']); ?></option>
+													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>
+														<?php echo ($implementingPartner['i_partner_name']); ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -577,7 +592,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?php echo ($fundingSource['funding_source_name']); ?></option>
+													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
+														<?php echo ($fundingSource['funding_source_name']); ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -588,7 +604,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
 											<option value="">-- Select --</option>
 											<?php foreach ($lResult as $labName) { ?>
-												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ($labName['facility_name']); ?></option>
+												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>>
+													<?php echo ($labName['facility_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -638,13 +655,16 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<div class="form-group">
 											<label for="gender">Gender</label><br>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
+												<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
+												Male
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
+												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>>
+												Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
+												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not
+												Recorded
 											</label>
 										</div>
 									</div>
@@ -652,10 +672,12 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<div class="form-group">
 											<label for="gender">Patient consent to receive SMS?</label><br>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>>
+												Yes
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'no') ? "checked='checked'" : "" ?>> No
+												<input type="radio" class="" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'no') ? "checked='checked'" : "" ?>>
+												No
 											</label>
 										</div>
 									</div>
@@ -671,10 +693,12 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<div class="form-group">
 											<label for="patientPregnant">Is Patient Pregnant? </label><br>
 											<label class="radio-inline">
-												<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												<input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>>
+												Yes
 											</label>
 											<label class="radio-inline">
-												<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> No
+												<input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>>
+												No
 											</label>
 										</div>
 									</div>
@@ -682,10 +706,12 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<div class="form-group">
 											<label for="breastfeeding">Is Patient Breastfeeding? </label><br>
 											<label class="radio-inline">
-												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>>
+												Yes
 											</label>
 											<label class="radio-inline">
-												<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> No
+												<input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>>
+												No
 											</label>
 										</div>
 									</div>
@@ -722,7 +748,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
 													<option value=""> -- Select -- </option>
 													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>><?php echo ($name['sample_type_name']); ?></option>
+														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>>
+															<?php echo ($name['sample_type_name']); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -735,85 +762,80 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<div class="row" id="othersDynamicForm"></div>
 									</div>
 
-									<?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+									<?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
 										</div>
 										<div class="box-body labSectionBody">
 											<div class="row">
-												<!-- <div class="col-md-4">
-													<label for="labId" class="col-lg-5 control-label">Lab Name </label>
-													<div class="col-lg-7">
-														<select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab" onchange="autoFillFocalDetails();">
-															<option value="">-- Select --</option>
-															<?php foreach ($lResult as $labName) { ?>
-																<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo ($labName['facility_name']); ?></option>
-															<?php } ?>
-														</select>
-													</div>
-												</div> -->
-												<div class="col-md-4">
-													<label for="vlFocalPerson" class="col-lg-5 control-label"> Focal Person </label>
+												<div class="col-md-6">
+													<label for="vlFocalPerson" class="col-lg-5 control-label"> Focal Person
+													</label>
 													<div class="col-lg-7">
 														<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter Focal Person">
-															<option value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?>" selected='selected'> <?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?></option>
+															<option value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?>" selected='selected'>
+																<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person']); ?>
+															</option>
 														</select>
 													</div>
 												</div>
-												<div class="col-md-4">
-													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label"> Focal Person Phone Number</label>
+												<div class="col-md-6">
+													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
+														Focal Person Phone Number</label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($vlQueryInfo['testing_lab_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
+											</div>
+											<div class="row" style="margin-top: 10px;">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date
+														Sample Received at Hub (PHL) </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" onchange="checkSampleReceviedAtHubDate()" />
 													</div>
 												</div>
-											</div>
-											<div class="row">
 
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
+														Sample Received at Testing Lab </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_testing_lab_datetime']; ?>" onchange="checkSampleReceviedDate()" />
 													</div>
 												</div>
-
-												<div class="col-md-4">
-													<label for="testPlatform" class="col-lg-5 control-label"> Testing Platform <span class="mandatory result-span">*</span></label>
+											</div>
+											<div class="row" style="margin-top: 10px;">
+												<div class="col-md-6">
+													<label for="testPlatform" class="col-lg-5 control-label"> Testing
+														Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
 														<select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
-																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>>
+																	<?php echo $mName['machine_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>
 												</div>
-											</div>
-											<div class="row">
-
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="noResult">Sample Rejection <span class="mandatory result-span">*</span></label>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="noResult">Sample Rejection
+														<span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
 														<select name="noResult" id="noResult" class="form-control isRequired labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
-															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
+																Yes</option>
+															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>
+																No</option>
 														</select>
 													</div>
 												</div>
-												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
-													</div>
-												</div>
-												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
-													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
+											</div>
+											<div class="row rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;margin-top: 10px;">
+												<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+													<label class="col-lg-5 control-label" for="rejectionReason">Rejection
+														Reason </label>
 													<div class="col-lg-7">
 														<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
@@ -822,7 +844,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																	<?php
 																	foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($reject['rejection_reason_name']); ?></option>
+																			<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
+																				<?php echo ($reject['rejection_reason_name']); ?>
+																			</option>
 																	<?php }
 																	} ?>
 																</optgroup>
@@ -834,32 +858,53 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 														<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 													</div>
 												</div>
-												<div class="col-md-4 rejectionReason" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
-													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date </label>
+												<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date
+													</label>
 													<div class="col-lg-7">
 														<input value="<?php echo DateUtility::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
 												</div>
-
-												<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 											</div>
-											<div class="row">
-											<?php } ?>
-
-											<?php if (count($reasonForFailure) > 0) { ?>
-												<div class="col-md-4 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
-													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure </label>
+											<div class="row" style="margin-top: 10px;">
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
-														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
-															<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+													</div>
+												</div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
+													<div class="col-lg-7">
+														<select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
+															<option value="">-- Select --</option>
+															<?php foreach ($testReason as $treason) { ?>
+																<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
+																	<?php echo ucwords($treason['test_reason']); ?></option>
+															<?php } ?>
 														</select>
 													</div>
 												</div>
-											<?php } ?>
-											<div class="col-md-4 vlResult" style="margin-top: 10px;">
-												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
+											</div>
+											
+											<div class="row" style="margin-top: 10px;">
+												<?php if (count($reasonForFailure) > 0) { ?>
+													<div class="col-md-6 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
+														<label class="col-lg-5 control-label" for="reasonForFailure">Reason for
+															Failure </label>
+														<div class="col-lg-7">
+															<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
+																<?= $general->generateSelectOptions($reasonForFailure, $vlQueryInfo['reason_for_failure'], '-- Select --'); ?>
+															</select>
+														</div>
+													</div>
+												<?php } ?>
+												<div class="col-md-6 vlResult">
+													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
+														Results Dispatched </label>
+													<div class="col-lg-7">
+														<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
+													</div>
 												</div>
 											</div>
 											<div class="row">
@@ -870,7 +915,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																<th scope="row" class="text-center">Test No.</th>
 																<th scope="row" class="text-center">Test Method</th>
 																<th scope="row" class="text-center">Date of Testing</th>
-																<th scope="row" class="text-center">Test Platform/Test Kit</th>
+																<th scope="row" class="text-center">Test Platform/Test
+																	Kit</th>
 																<th scope="row" class="text-center">Test Result</th>
 															</tr>
 														</thead>
@@ -880,7 +926,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																$kitShow = false;
 																foreach ($genericTestInfo as $indexKey => $rows) { ?>
 																	<tr>
-																		<td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+																		<td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>">
+																		</td>
 																		<td>
 																			<?php
 																			$value = '';
@@ -892,15 +939,21 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																			} ?>
 																			<select class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
 																				<option value="">--Select--</option>
-																				<option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>Real Time RT-PCR</option>
-																				<option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
-																				<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
-																				<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
-																				<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+																				<option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>
+																					Real Time RT-PCR</option>
+																				<option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>
+																					RDT-Antibody</option>
+																				<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>
+																					RDT-Antigen</option>
+																				<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>
+																					ELISA</option>
+																				<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>
+																					Others</option>
 																			</select>
 																			<input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
 																		</td>
-																		<td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime'], true); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
+																		<td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime'], true); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
+																		</td>
 																		<td>
 																			<select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
 																				<?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
@@ -920,12 +973,48 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																			<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
 																		</td>
 																	</tr>
-															<?php }
-															} ?>
+																<?php }
+															} else { ?>
+																<tr>
+																	<td class="text-center">1</td>
+																	<td>
+																		<select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+																			<option value="">-- Select --</option>
+																			<option value="Real Time RT-PCR">Real Time
+																				RT-PCR</option>
+																			<option value="RDT-Antibody">RDT-Antibody
+																			</option>
+																			<option value="RDT-Antigen">RDT-Antigen</option>
+																			<option value="GeneXpert">GeneXpert</option>
+																			<option value="ELISA">ELISA</option>
+																			<option value="other">Others</option>
+																		</select>
+																		<input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+																	</td>
+																	<td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" />
+																	</td>
+																	<td>
+																		<select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+																			<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+																		</select>
+																	</td>
+																	<td>
+																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+																		<!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+																			<?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+																		</select> -->
+																	</td>
+																	<td style="vertical-align:middle;text-align: center;width:100px;">
+																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+																	</td>
+																</tr>
+															<?php } ?>
 														</tbody>
 														<tfoot>
 															<tr>
-																<th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+																<th scope="row" colspan="4" class="text-right final-result-row">Final Result
+																</th>
 																<td>
 																	<input type="text" id="result" name="result" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter final result" title="Please enter final results">
 																	<!-- <select class="form-control result-focus" name="result" id="result">
@@ -942,7 +1031,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 											<div class="row">
 												<div class="col-md-4" style="margin-top: 10px;">
-													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
+														<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -950,13 +1040,15 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On
+														<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="testedBy">Tested By </label>
+													<label class="col-lg-5 control-label" for="testedBy">Tested By
+													</label>
 													<div class="col-lg-7">
 														<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
@@ -976,7 +1068,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 											<div class="row">
 												<div class="col-md-4" style="margin-top: 10px;">
-													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedBy">Approved By
+														<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -984,7 +1077,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedOn">Approved On
+														<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 													</div>
@@ -992,7 +1086,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 											<div class="row">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
+													<label class="col-lg-5 control-label" for="labComments">Lab Tech.
+														Comments </label>
 													<div class="col-lg-7">
 														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 													</div>
@@ -1010,22 +1105,25 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												</div>
 											<?php } ?>
 											<div class="row" id="lapDynamicForm"></div>
-											</div>
-										<?php } ?>
 										</div>
+									<?php } ?>
 								</div>
-								<div class="box-footer">
-									<input type="hidden" name="revised" id="revised" value="no" />
-									<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['sample_id']); ?>" />
-									<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
-									<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-									<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
-									<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
-									<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-									<a href="view-requests.php" class="btn btn-default"> Cancel</a>
-								</div>
-				</form>
+							</div>
+							<div class="box-footer">
+								<input type="hidden" name="revised" id="revised" value="no" />
+								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['sample_id']); ?>" />
+								<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
+								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_testing']); ?>" />
+								<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
+								<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
+								<a href="view-requests.php" class="btn btn-default"> Cancel</a>
+							</div>
+						</div>
+					</div>
 			</div>
+			</form>
+		</div>
 	</section>
 </div>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
@@ -1033,7 +1131,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 <script>
 	let provinceName = true;
 	let facilityName = true;
-	let testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 0; ?>;
+	let testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 1; ?>;
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
@@ -1089,10 +1187,12 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		/** Edit south sudan */
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+					"#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 			}
-			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+					"#sampleReceivedDate").val() == "") {
 				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
@@ -1141,6 +1241,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
+		});
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
 		});
 		$('#labId').select2({
 			width: '100%',
@@ -1314,7 +1417,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		});
 
 		$('#vlResult').on('change', function() {
-			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() ==
+				'error') {
 				if ($(this).val().trim().toLowerCase() == 'failed') {
 					$('.reasonForFailure').show();
 					$('#reasonForFailure').addClass('isRequired');
@@ -1537,7 +1641,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 			provinceName = true;
 			facilityName = true;
 			$("#province").html("<?php echo $province; ?>");
-			$("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>");
+			$("#fName").html(
+				"<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>"
+			);
 		}
 		$.unblockUI();
 	}
@@ -1615,7 +1721,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		($.trim(fmobilenos) != '') ? $(".fmobileNumbers").show(): $(".fmobileNumbers").hide();
 		($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos): $(".facilityMobileNumbers").html('');
 		($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
-		($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
+		($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html(
+			'');
 	}
 	$("input:radio[name=gender]").click(function() {
 		if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
@@ -1803,6 +1910,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	}
 
 	function addTestRow() {
+		testCounter++;
 		let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>

@@ -3952,9 +3952,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-management', 'generic-sample-status.php', 'Sample Status Report'), 
 (NULL, 'generic-management', 'generic-export-data.php', 'Export Report in Excel'),
 (NULL, 'generic-management', 'generic-print-result.php', 'Export Report in PDF'),
-(NULL, 'generic-management', 'generic-weekly-report.php', 'Weekly Report'),
 (NULL, 'generic-management', 'sample-rejection-report.php', 'Sample Rejection Report'),
-(NULL, 'generic-management', 'generic-monitoring-report.php', 'Monitoring Report'),
 (NULL, 'generic-management', 'generic-monthly-threshold-report.php', 'Monthly Threshold Report');
 UPDATE `resources` SET `display_name` = 'Lab Tests Request Management' WHERE `resources`.`resource_id` = 'generic-requests';
 UPDATE `resources` SET `display_name` = 'Lab Tests Result Management' WHERE `resources`.`resource_id` = 'generic-results';
@@ -3978,6 +3976,12 @@ ALTER TABLE `audit_form_covid19` ADD `vaccination_type` TEXT NULL DEFAULT NULL A
 ALTER TABLE `audit_form_covid19` ADD `vaccination_type_other` TEXT NULL DEFAULT NULL AFTER `vaccination_type`;
 ALTER TABLE `audit_form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NULL AFTER `patient_city`;
 
+-- Amit 16-May-2023
+ALTER TABLE `user_login_history` CHANGE `login_status` `login_status` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `user_login_history` CHANGE `ip_address` `ip_address` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Thana 16-May-2023
+ALTER TABLE user_login_history ADD INDEX login_status_attempted_datetime_idx (login_status, login_attempted_datetime);
 -- Thana 15-May-2023
 DELETE p, rpm FROM `privileges` AS p INNER JOIN `roles_privileges_map` AS rpm ON rpm.privilege_id = p.privilege_id WHERE privilege_name IN ('generic-weekly-report.php', 'generic-monitoring-report.php');
 

@@ -1,7 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService; 
+use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
@@ -152,46 +152,46 @@ try {
         $_POST['reviewedOn'] = null;
     }
     //echo $reasonForChanges;die;
-/** For PNG */
-if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
-    $failedtestDate = explode(" ", $_POST['failedTestDate']);
-    $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
-} else {
-    $_POST['failedTestDate'] = null;
-}
-if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
-    $_POST['regStartDate'] = DateUtility::isoDateFormat($_POST['regStartDate']);
-} else {
-    $_POST['regStartDate'] = null;
-}
-if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-    $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
-} else {
-    $_POST['qcDate'] = null;
-}
-if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-    $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
-} else {
-    $_POST['reportDate'] = null;
-}
-if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
-    $_POST['clinicDate'] = DateUtility::isoDateFormat($_POST['clinicDate']);
-} else {
-    $_POST['clinicDate'] = null;
-}
+    /** For PNG */
+    if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
+        $failedtestDate = explode(" ", $_POST['failedTestDate']);
+        $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
+    } else {
+        $_POST['failedTestDate'] = null;
+    }
+    if (isset($_POST['regStartDate']) && trim($_POST['regStartDate']) != "") {
+        $_POST['regStartDate'] = DateUtility::isoDateFormat($_POST['regStartDate']);
+    } else {
+        $_POST['regStartDate'] = null;
+    }
+    if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
+        $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
+    } else {
+        $_POST['qcDate'] = null;
+    }
+    if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
+        $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
+    } else {
+        $_POST['reportDate'] = null;
+    }
+    if (isset($_POST['clinicDate']) && trim($_POST['clinicDate']) != "") {
+        $_POST['clinicDate'] = DateUtility::isoDateFormat($_POST['clinicDate']);
+    } else {
+        $_POST['clinicDate'] = null;
+    }
 
-if ($_POST['failedTestingTech'] != '') {
-    $platForm = explode("##", $_POST['failedTestingTech']);
-    $_POST['failedTestingTech'] = $platForm[0];
-}
+    if ($_POST['failedTestingTech'] != '') {
+        $platForm = explode("##", $_POST['failedTestingTech']);
+        $_POST['failedTestingTech'] = $platForm[0];
+    }
 
-/** DRC */
-if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
-    $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
-    $_POST['dateOfCompletionOfViralLoad'] = DateUtility::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
-} else {
-    $_POST['dateOfCompletionOfViralLoad'] = null;
-}
+    /** DRC */
+    if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletionOfViralLoad']) != "") {
+        $dateofCompletionofViralLoad = explode(" ", $_POST['dateOfCompletionOfViralLoad']);
+        $_POST['dateOfCompletionOfViralLoad'] = DateUtility::isoDateFormat($dateofCompletionofViralLoad[0]) . " " . $dateofCompletionofViralLoad[1];
+    } else {
+        $_POST['dateOfCompletionOfViralLoad'] = null;
+    }
     $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
 
     $vldata = array(
@@ -225,7 +225,7 @@ if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletio
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'],
-        'last_modified_datetime' => $db->now(),
+        'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'manual_result_entry' => 'yes',
         'result_status' => $resultStatus,
         'data_sync' => 0,
@@ -255,7 +255,7 @@ if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletio
     /* Updating the high and low viral load data */
 
     $vldata['vl_result_category'] = $vlService->getVLResultCategory($vldata['result_status'], $vldata['result']);
-    
+
 
     if ($vldata['vl_result_category'] == 'failed' || $vldata['vl_result_category'] == 'invalid') {
         $vldata['result_status'] = 5;
@@ -274,7 +274,7 @@ if (isset($_POST['dateOfCompletionOfViralLoad']) && trim($_POST['dateOfCompletio
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['vlSampleId'],
             'test_type' => 'vl',
-            'updated_on' => $db->now()
+            'updated_on' => DateUtility::getCurrentDateTime()
         );
         $db->insert($tableName2, $data);
     } else {

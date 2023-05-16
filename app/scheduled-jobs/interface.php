@@ -11,6 +11,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Services\VlService;
+use App\Utilities\DateUtility;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
@@ -197,7 +198,7 @@ if (count($interfaceInfo) > 0) {
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
-                'last_modified_datetime' => $db->now(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             );
 
@@ -253,7 +254,7 @@ if (count($interfaceInfo) > 0) {
                 'result_reviewed_by' => (isset($reviewed['eid']) && $reviewed['eid'] != "") ? $reviewed['eid'] : null,
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
-                'last_modified_datetime' => $db->now(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             );
 
@@ -321,7 +322,7 @@ if (count($interfaceInfo) > 0) {
                 'result_reviewed_by' => (isset($reviewed['hepatitis']) && $reviewed['hepatitis'] != "") ? $reviewed['hepatitis'] : null,
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
-                'last_modified_datetime' => $db->now(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             );
 

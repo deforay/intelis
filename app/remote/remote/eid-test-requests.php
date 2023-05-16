@@ -53,7 +53,7 @@ if (!empty($data['manifestCode'])) {
   //$eidQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
   $eidQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
-  $eidQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
+  $eidQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
 
 

@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\DateUtility;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -61,8 +62,8 @@ try {
       'instance_facility_name' => $_POST['fName'],
       'instance_facility_code' => $_POST['fCode'],
       'instance_facility_type' => $_POST['fType'],
-      'instance_added_on' => $db->now(),
-      'instance_update_on' => $db->now()
+      'instance_added_on' => DateUtility::getCurrentDateTime(),
+      'instance_update_on' => DateUtility::getCurrentDateTime()
     ];
     $data['instance_mac_address'] = "not found";
     if (PHP_OS == 'Linux') {

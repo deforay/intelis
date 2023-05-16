@@ -2,9 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
-
-
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -30,24 +28,23 @@ try {
                 'position_type' => $_POST['positions'],
                 'test_type' => 'vl',
                 'created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
             $db->insert($tableName1, $data);
             $lastId = $db->getInsertId();
 
-            
+
             if ($lastId > 0 && trim($_POST['selectedSample']) != '') {
                 $selectedSample = explode(",", $_POST['selectedSample']);
                 $uniqueSampleId = array_unique($selectedSample);
                 for ($j = 0; $j <= count($selectedSample); $j++) {
                     if (isset($uniqueSampleId[$j])) {
-                      
+
                         $vlSampleId = $uniqueSampleId[$j];
                         $value = array('sample_batch_id' => $lastId);
                         $db = $db->where('vl_sample_id', $vlSampleId);
                         $db->update($tableName2, $value);
                     }
-
                 }
                 header("Location:/vl/batch/addBatchControlsPosition.php?id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             }

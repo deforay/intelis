@@ -301,9 +301,9 @@ class TbService
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $oldSampleCodeKey = null;
@@ -369,6 +369,7 @@ class TbService
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 }

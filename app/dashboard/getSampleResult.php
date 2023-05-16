@@ -117,20 +117,20 @@ $sWhere = '';
 
 //get waiting data
 if ($table == "form_eid") {
-    $waitingQuery = "SELECT COUNT(eid_id) as total FROM " . $table . " as eid LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB(now(), INTERVAL 6 MONTH)) AND (eid.result is null or eid.result = '') AND (eid.is_sample_rejected like 'no' or eid.is_sample_rejected is null or eid.is_sample_rejected like '')";
-} else if ($table == "form_covid19") {
-    $waitingQuery = "SELECT COUNT(covid19_id) as total FROM " . $table . " as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB(now(), INTERVAL 6 MONTH)) AND (covid19.result is null or covid19.result = '') AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
-} else if ($table == "form_hepatitis") {
-    $waitingQuery = "SELECT COUNT(hepatitis_id) as total FROM " . $table . " as hepatitis LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB(now(), INTERVAL 6 MONTH)) AND (((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '') AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = ''))) AND (hepatitis.is_sample_rejected like 'no' or hepatitis.is_sample_rejected is null or hepatitis.is_sample_rejected like '')";
-} else if ($table == "form_tb") {
-    $waitingQuery = "SELECT COUNT(tb_id) as total FROM " . $table . " as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB(now(), INTERVAL 6 MONTH)) AND (tb.result is null or tb.result = '') AND (tb.is_sample_rejected like 'no' or tb.is_sample_rejected is null or tb.is_sample_rejected like '')";
-} else if ($table == "form_vl") {
+    $waitingQuery = "SELECT COUNT(eid_id) as total FROM " . $table . " as eid LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (eid.result is null or eid.result = '') AND (eid.is_sample_rejected like 'no' or eid.is_sample_rejected is null or eid.is_sample_rejected like '')";
+} elseif ($table == "form_covid19") {
+    $waitingQuery = "SELECT COUNT(covid19_id) as total FROM " . $table . " as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (covid19.result is null or covid19.result = '') AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
+} elseif ($table == "form_hepatitis") {
+    $waitingQuery = "SELECT COUNT(hepatitis_id) as total FROM " . $table . " as hepatitis LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '') AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = ''))) AND (hepatitis.is_sample_rejected like 'no' or hepatitis.is_sample_rejected is null or hepatitis.is_sample_rejected like '')";
+} elseif ($table == "form_tb") {
+    $waitingQuery = "SELECT COUNT(tb_id) as total FROM " . $table . " as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (tb.result is null or tb.result = '') AND (tb.is_sample_rejected like 'no' or tb.is_sample_rejected is null or tb.is_sample_rejected like '')";
+} elseif ($table == "form_vl") {
     if ($whereCondition == "") {
         $vlWhereCondition = $recencyWhere . " AND ";
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition (sample_collection_date > DATE_SUB(now(), INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
+    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
 }
 
 $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result

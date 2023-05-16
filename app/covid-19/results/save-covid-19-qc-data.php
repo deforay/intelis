@@ -35,8 +35,8 @@ try {
             'tested_by'             => $_POST['testerName'],
             'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['receivedOn'])),
             'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['testedOn'])),
-            'created_on'            => $db->now(),
-            'updated_datetime'            => $db->now()
+            'created_on'            => DateUtility::getCurrentDateTime(),
+            'updated_datetime'            => DateUtility::getCurrentDateTime()
         );
         $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {

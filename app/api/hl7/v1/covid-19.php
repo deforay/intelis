@@ -80,7 +80,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     }
 
     if (!empty($search[3]) && $search[3] == "yes") {
-        $where[] = " (vl.sample_tested_datetime != null AND vl.sample_tested_datetime not like '') ";
+        $where[] = " (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') ";
     }
     if (!empty($spmF[2]) && $spmF[2] != "") {
         $where[] = " (vl.sample_code like '" . $spmF[2] . "%' OR vl.remote_sample_code like '" . $spmF[2] . "%') ";
@@ -397,9 +397,9 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
         'vlsm_instance_id' => $_POST['instanceId'],
         'province_id' => $provinceId,
         'request_created_by' => null,
-        'request_created_datetime' => $db->now(),
+        'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_by' => null,
-        'last_modified_datetime' => $db->now()
+        'last_modified_datetime' => DateUtility::getCurrentDateTime()
     );
 
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -524,8 +524,8 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
             'request_created_datetime'            => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : DateUtility::getCurrentDateTime(),
-            'sample_registered_at_lab'            => $db->now(),
-            'last_modified_datetime'              => $db->now()
+            'sample_registered_at_lab'            => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime'              => DateUtility::getCurrentDateTime()
         );
 
         $covid19Data['source_of_request'] = 'hl7';

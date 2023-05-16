@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Exceptions\SystemException;
+use Exception;
 use GdImage;
 
 /**
@@ -96,8 +97,8 @@ class ImageResizeUtility
         }
     }
 
-    public function __construct(){
-
+    public function __construct()
+    {
     }
 
     /**
@@ -192,7 +193,8 @@ class ImageResizeUtility
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (SystemException $e) {
+        } catch (Exception $e) {
+            error_log($e->getMessage());
             $exif = null;
         }
 

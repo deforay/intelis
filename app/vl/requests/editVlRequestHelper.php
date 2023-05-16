@@ -89,7 +89,7 @@ try {
           } else if ($_POST['isPatientNew'] == "no") {
                $_POST['dateOfArtInitiation'] = null;
           }
-     } 
+     }
 
      if (isset($_POST['regimenInitiatedOn']) && trim($_POST['regimenInitiatedOn']) != "") {
           $_POST['regimenInitiatedOn'] = DateUtility::isoDateFormat($_POST['regimenInitiatedOn']);
@@ -405,9 +405,9 @@ try {
           'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
           'vl_test_number'                        => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] :  null,
           // 'request_created_by'                 => $_SESSION['userId'],
-          'request_created_datetime'              => $db->now(),
+          'request_created_datetime'              => DateUtility::getCurrentDateTime(),
           // 'last_modified_by'                   => $_SESSION['userId'],
-          'last_modified_datetime'                => $db->now(),
+          'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
           'manual_result_entry'                   => 'yes',
           'vl_result_category'                    => $vl_result_category
      );

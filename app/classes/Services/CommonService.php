@@ -94,7 +94,7 @@ class CommonService
 
             return bin2hex(random_bytes($length / 2));
         } catch (Exception $e) {
-            // Handle the exception, e.g., log the error or throw an exception
+            throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
 
         return false;
@@ -789,6 +789,7 @@ class CommonService
             error_log($exc->getMessage());
             error_log($this->db->getLastError());
             error_log($exc->getTraceAsString());
+            return 0;
         }
     }
 

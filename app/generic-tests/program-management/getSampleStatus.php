@@ -33,9 +33,6 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'generic') {
 }
 
 $table = "form_generic";
-$highVL                         = "High Viral Load";
-$lowVL                          = "Low Viral Load";
-
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
 
@@ -120,9 +117,8 @@ if (isset($sWhere) && !empty($sWhere)) {
     $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-//echo $tQuery; die;
+// echo $tQuery; die;
 $tResult = $db->rawQuery($tQuery);
-
 //get LAB TAT
 if ($start_date == '' && $end_date == '') {
     $date = strtotime(date('Y-m-d') . ' -1 year');
@@ -205,11 +201,11 @@ foreach ($tatResult as $sRow) {
             <div id="<?php echo $sampleStatusOverviewContainer; ?>" style="float:left;width:100%; margin: 0 auto;"></div>
         </div>
     </div>
-    <div class="box">
+    <!-- <div class="box">
         <div class="box-body">
             <div id="<?php echo $samplesVlOverview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
         </div>
-    </div>
+    </div> -->
 </div>
 </div>
 <div class="col-xs-12 labAverageTatDiv">

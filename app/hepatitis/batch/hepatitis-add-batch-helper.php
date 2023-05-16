@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -28,7 +29,7 @@ try {
                 'batch_code_key' => $_POST['batchCodeKey'],
                 'test_type' => 'hepatitis',
                 'created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $db->insert($tableName1, $data);

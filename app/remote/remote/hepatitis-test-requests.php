@@ -44,7 +44,7 @@ if (!empty($data['manifestCode'])) {
     //$hepatitisQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
     $hepatitisQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
 } else {
-    $hepatitisQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( NOW(), INTERVAL $dataSyncInterval DAY)";
+    $hepatitisQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
 
 
@@ -59,9 +59,9 @@ if ($db->count > 0) {
     $sampleIds = array_column($hepatitisRemoteResult, 'hepatitis_id');
     $facilityIds = array_column($hepatitisRemoteResult, 'facility_id');
 
-    
-/** @var HepatitisService $hepatitisService */
-$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+    /** @var HepatitisService $hepatitisService */
+    $hepatitisService = ContainerRegistry::get(HepatitisService::class);
     $comorbidities = $hepatitisService->getComorbidityByHepatitisId($sampleIds);
     $risks = $hepatitisService->getRiskFactorsByHepatitisId($sampleIds);
 

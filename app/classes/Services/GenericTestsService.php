@@ -19,8 +19,8 @@ class GenericTestsService
 {
 
     protected ?MysqliDb $db = null;
-    protected string $table = 'form_vl';
-    protected string $shortCode = 'VL';
+    protected string $table = 'form_generic';
+    protected string $shortCode = 'LAB';
 
     // keep all these in lower case to make it easier to compare
     protected array $suppressedArray = array(
@@ -81,12 +81,6 @@ class GenericTestsService
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-
-        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-        //     $remotePrefix = 'R';
-        //     $sampleCodeKeyCol = 'remote_sample_code_key';
-        //     $sampleCodeCol = 'remote_sample_code';
-        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -159,6 +153,7 @@ class GenericTestsService
             $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
             $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
         }
+        
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if ($checkResult !== null) {
@@ -373,9 +368,9 @@ class GenericTestsService
                 'vlsm_instance_id' => $_SESSION['instanceId'],
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $this->db->now(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'],
-                'last_modified_datetime' => $this->db->now()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $oldSampleCodeKey = null;
@@ -413,12 +408,6 @@ class GenericTestsService
 
             $id = 0;
             if ($rowData) {
-                // $this->db = $this->db->where('sample_id', $rowData['sample_id']);
-                // $id = $this->db->update("form_vl", $vlData);
-                // $params['GenericSampleId'] = $rowData['sample_id'];
-
-
-                //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCodeGenericTest($params);
@@ -441,23 +430,32 @@ class GenericTestsService
                 return 0;
             }
         } catch (Exception $e) {
-            error_log('Insert VL Sample : ' . $this->db->getLastErrno());
-            error_log('Insert VL Sample : ' . $this->db->getLastError());
-            error_log('Insert VL Sample : ' . $this->db->getLastQuery());
-            error_log('Insert VL Sample : ' . $e->getMessage());
+            error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
+            error_log('Insert lab tests Sample : ' . $this->db->getLastError());
+            error_log('Insert lab tests Sample : ' . $this->db->getLastQuery());
+            error_log('Insert lab tests Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 
-    public function getDynamicFields($genericTestId){
-        if($genericTestId > 0){
+    public function getDynamicFields($genericTestId)
+    {
+        $return = array();
+        if ($genericTestId > 0) {
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
-            if($generic['testTypeForm']){
-                $dynamicJson = (array)json_decode($generic['testTypeForm']);
+            if ($generic['test_type_form']) {
+                $dynamicJson = (array)json_decode($generic['test_type_form']);
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');
             }
-            return array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
+            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
         }
+
+        return $return;
+    }
+
+    public function getReasonForFailure(){
+        return array();
     }
 }

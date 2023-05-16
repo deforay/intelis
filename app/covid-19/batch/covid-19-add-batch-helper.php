@@ -2,9 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
-
-  
+use App\Utilities\DateUtility;
 
 
 /** @var MysqliDb $db */
@@ -31,7 +29,7 @@ try {
                 'position_type' => $_POST['positions'],
                 'test_type' => 'covid19',
                 'created_by' => $_SESSION['userId'],
-                'request_created_datetime' => $db->now()
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
             );
 
             $db->insert($tableName1, $data);
@@ -42,7 +40,7 @@ try {
                 $uniqueSampleId = array_unique($selectedSample);
                 for ($j = 0; $j <= count($selectedSample); $j++) {
                     if (isset($uniqueSampleId[$j])) {
-                      
+
                         $vlSampleId = $uniqueSampleId[$j];
                         $value = array('sample_batch_id' => $lastId);
                         $db = $db->where('covid19_id', $vlSampleId);

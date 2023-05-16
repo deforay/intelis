@@ -27,8 +27,8 @@ $dateTimeUtil = new DateUtility();
 if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
-	echo "<pre>";
-	print_r($rResult);die;
+//	echo "<pre>";
+//	print_r($rResult);die;
 	$excel = new Spreadsheet();
 	$output = [];
 	$sheet = $excel->getActiveSheet();

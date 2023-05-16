@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\SystemException;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -62,8 +64,7 @@ if ($value != '') {
                 }
             }
         } catch (Exception $e) {
-            error_log($e->getMessage());
-            error_log($e->getTraceAsString());
+            throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

@@ -246,6 +246,7 @@ try {
           'sample_received_at_hub_datetime'       => $_POST['sampleReceivedAtHubOn'],
           'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
           'sample_tested_datetime'                => $_POST['sampleTestingDateAtLab'],
+          'reason_for_testing'                    => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] :  null,
           'result_dispatched_datetime'            => $_POST['resultDispatchedOn'],
           'is_sample_rejected'                    => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
           'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
@@ -261,8 +262,8 @@ try {
           'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
           'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
           'test_number'                           => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] :  null,
-          'request_created_datetime'              => $db->now(),
-          'last_modified_datetime'                => $db->now(),
+          'request_created_datetime'              => DateUtility::getCurrentDateTime(),
+          'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
           'manual_result_entry'                   => 'yes',
           'test_type'                             => $_POST['testType'],
           'test_type_form'                        => json_encode($_POST['dynamicFields'])

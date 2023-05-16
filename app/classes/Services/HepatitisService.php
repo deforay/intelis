@@ -373,6 +373,7 @@ class HepatitisService
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 }

@@ -6,9 +6,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -177,13 +175,12 @@ class EidService
         /** @var CommonService $general */
         $general = ContainerRegistry::get(CommonService::class);
 
-
         /** @var EidService $eidService */
         $eidService = ContainerRegistry::get(EidService::class);
         $eidResults = $eidService->getEidResults();
 
         //$sarr = $general->getSystemConfig();
-
+        $filename = "";
         if (isset($_SESSION['eidRequestSearchResultQuery']) && trim($_SESSION['eidRequestSearchResultQuery']) != "") {
 
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
@@ -192,7 +189,7 @@ class EidService
             $output = [];
             $sheet = $excel->getActiveSheet();
 
-            $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding status", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+            $headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "PCR Test Performed Before", "Last PCR Test results", "Sample Collection Date", "Is Sample Rejected?", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
             $colNo = 1;
 
             $styleArray = array(
@@ -257,9 +254,9 @@ class EidService
                 $gender = '';
                 if ($aRow['child_gender'] == 'male') {
                     $gender = 'M';
-                } else if ($aRow['child_gender'] == 'female') {
+                } elseif ($aRow['child_gender'] == 'female') {
                     $gender = 'F';
-                } else if ($aRow['child_gender'] == 'not_recorded') {
+                } elseif ($aRow['child_gender'] == 'not_recorded') {
                     $gender = 'Unreported';
                 }
                 //sample collecion date
@@ -364,8 +361,8 @@ class EidService
             $writer = IOFactory::createWriter($excel, 'Xlsx');
             $filename = 'VLSM-EID-Requested-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-            return $filename;
         }
+        return $filename;
     }
 
     public function insertSampleCode($params)
@@ -412,9 +409,9 @@ class EidService
                     'vlsm_instance_id' => $params['instanceId'],
                     'province_id' => $provinceId,
                     'request_created_by' => null,
-                    'request_created_datetime' => $this->db->now(),
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => null,
-                    'last_modified_datetime' => $this->db->now()
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 );
             } else {
                 $eidData = array(
@@ -423,9 +420,9 @@ class EidService
                     'province_id' => $provinceId,
                     'vlsm_instance_id' => $_SESSION['instanceId'],
                     'request_created_by' => $_SESSION['userId'],
-                    'request_created_datetime' => $this->db->now(),
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'],
-                    'last_modified_datetime' => $this->db->now()
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 );
             }
 
@@ -499,6 +496,7 @@ class EidService
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $this->db->getLastQuery());
             error_log('Insert EID Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 }
