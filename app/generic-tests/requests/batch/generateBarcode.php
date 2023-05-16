@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $id = base64_decode($_GET['id']);
 
-$getTestId = "SELECT * FROM r_test_types where test_short_code= '".$_GET['code']."' AND test_status='active'";
+$getTestId = "SELECT * FROM r_test_types where test_short_code= '".$_GET['code']."' AND test_status='active' ORDER BY test_standard_name ASC";
 $testTypeId = $db->query($getTestId);
 
 $showPatientName = false;

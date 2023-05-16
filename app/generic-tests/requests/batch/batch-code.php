@@ -4,7 +4,7 @@ $title = _("Manage Batch");
 
 
 require_once APPLICATION_PATH . '/header.php';
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -95,6 +95,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <script>
 	var oTable = null;
 	$(document).ready(function() {
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
+
 		$.blockUI();
 		oTable = $('#batchCodeDataTable').dataTable({
 			"oLanguage": {

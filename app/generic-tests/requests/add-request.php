@@ -167,7 +167,7 @@ $aResult = $db->query($aQuery);
 $sKey = '';
 $sFormat = '';
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <style>
@@ -804,6 +804,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });
+          $("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"

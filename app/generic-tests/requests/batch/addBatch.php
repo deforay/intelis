@@ -25,7 +25,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $sQuery = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
@@ -276,6 +276,9 @@ foreach ($testPlatformResult as $machine) {
 			}
 		});
 
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});

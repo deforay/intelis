@@ -3980,4 +3980,5 @@ ALTER TABLE `audit_form_covid19` ADD `specimen_taken_before_antibiotics` TEXT NU
 ALTER TABLE `user_login_history` CHANGE `login_status` `login_status` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `user_login_history` CHANGE `ip_address` `ip_address` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
+-- Thana 16-May-2023
 ALTER TABLE user_login_history ADD INDEX login_status_attempted_datetime_idx (login_status, login_attempted_datetime);

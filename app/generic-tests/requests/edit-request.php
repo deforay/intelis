@@ -431,7 +431,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 }
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
@@ -1176,6 +1176,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
+		});
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
 		});
 		$('#labId').select2({
 			width: '100%',

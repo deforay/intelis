@@ -62,7 +62,7 @@ if ($module == 'vl') {
 }
 $packageNo = strtoupper($shortCode . date('ymd') .  $general->generateRandomString(6));
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
