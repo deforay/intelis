@@ -41,7 +41,7 @@ $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.sample_id,vl.facility_id,v
 $result = $db->rawQuery($query);
 $result = array_merge($batchResultresult, $result);
 
-$getTestId = "SELECT * FROM r_test_types where test_short_code= '".$_GET['code']."' AND test_status='active'";
+$getTestId = "SELECT * FROM r_test_types where test_short_code= '".$_GET['code']."' AND test_status='active' ORDER BY test_standard_name ASC";
 
 $testTypeId = $db->rawQuery($getTestId);
 

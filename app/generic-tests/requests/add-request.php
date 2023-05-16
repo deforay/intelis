@@ -110,24 +110,6 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
      }
 </style>
 <?php
-// if ($arr['vl_form'] == 1) {
-//     require('forms/add-ssudan.php');
-// } else if ($arr['vl_form'] == 2) {
-//     require('forms/add-sierraleone.php');
-// } else if ($arr['vl_form'] == 3) {
-//     require('forms/add-drc.php');
-// } else if ($arr['vl_form'] == 4) {
-//     require('forms/add-zambia.php');
-// } else if ($arr['vl_form'] == 5) {
-//     require('forms/add-png.php');
-// } else if ($arr['vl_form'] == 6) {
-//     require('forms/add-who.php');
-// } else if ($arr['vl_form'] == 7) {
-//     require('forms/add-rwanda.php');
-// } else if ($arr['vl_form'] == 8) {
-//     require('forms/add-angola.php');
-// }
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -185,7 +167,7 @@ $aResult = $db->query($aQuery);
 $sKey = '';
 $sFormat = '';
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <style>
@@ -232,7 +214,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
-                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -822,6 +804,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });
+          $("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
@@ -1007,7 +992,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if (provinceName) {
                     $.post("/includes/siteInformationDropdownOptions.php", {
                               pName: pName,
-                              testType: 'vl'
+                              testType: 'generic-tests'
                          },
                          function(data) {
                               if (data != "") {

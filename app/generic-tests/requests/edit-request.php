@@ -431,7 +431,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 }
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
@@ -487,7 +487,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] ?></option>
+												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($vlQueryInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -921,7 +921,39 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																		</td>
 																	</tr>
 															<?php }
-															} ?>
+															} else{ ?> 
+																<tr>
+																	<td class="text-center">1</td>
+																	<td>
+																		<select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+																			<option value="">-- Select --</option>
+																			<option value="Real Time RT-PCR">Real Time RT-PCR</option>
+																			<option value="RDT-Antibody">RDT-Antibody</option>
+																			<option value="RDT-Antigen">RDT-Antigen</option>
+																			<option value="GeneXpert">GeneXpert</option>
+																			<option value="ELISA">ELISA</option>
+																			<option value="other">Others</option>
+																		</select>
+																		<input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+																	</td>
+																	<td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+																	<td>
+																		<select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+																			<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+																		</select>
+																	</td>
+																	<td>
+																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+																		<!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+																			<?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+																		</select> -->
+																	</td>
+																	<td style="vertical-align:middle;text-align: center;width:100px;">
+																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+																	</td>
+															</tr>
+															<?php } ?>
 														</tbody>
 														<tfoot>
 															<tr>
@@ -1018,12 +1050,15 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 									<input type="hidden" name="revised" id="revised" value="no" />
 									<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['sample_id']); ?>" />
 									<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
-									<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+									<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_testing']); ?>" />
 									<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
 									<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 									<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 									<a href="view-requests.php" class="btn btn-default"> Cancel</a>
 								</div>
+							</div>
+						</div>
+					</div>
 				</form>
 			</div>
 	</section>
@@ -1141,6 +1176,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
+		});
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
 		});
 		$('#labId').select2({
 			width: '100%',

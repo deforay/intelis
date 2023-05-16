@@ -4,7 +4,7 @@ $title = _("Manage Batch");
 
 
 require_once APPLICATION_PATH . '/header.php';
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -29,7 +29,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm()">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+										<option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 									<?php } ?>
 								</select>
 							</div>
@@ -95,6 +95,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <script>
 	var oTable = null;
 	$(document).ready(function() {
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
+
 		$.blockUI();
 		oTable = $('#batchCodeDataTable').dataTable({
 			"oLanguage": {

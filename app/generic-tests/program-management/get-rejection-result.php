@@ -9,9 +9,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -21,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$formId = $general->getGlobalConfig('vl_form');
+$formId = $general->getGlobalConfig('form_generic');
 
 $tResult = [];
 //$rjResult = [];
@@ -44,10 +41,11 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
                 sr.rejection_reason_code,
                 fd.facility_name,
                 lab.facility_name as `labname`
-                FROM form_vl as vl
-                INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                FROM form_generic as vl
+                INNER JOIN r_generic_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
+
     $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
     if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -73,15 +71,12 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     foreach ($tableResult as $tableRow) {
         $tResult[$tableRow['rejection_reason_name']]['total'] += $tableRow['total'];
         $tResult[$tableRow['rejection_reason_name']]['category'] = $tableRow['rejection_type'];
-
-        //$rjResult[$tableRow['rejection_type']]  += $tableRow['total'];
     }
 }
 
 if (isset($tResult) && count($tResult) > 0) {
 ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
-    <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
@@ -99,10 +94,8 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
         </tr>
     </thead>
     <tbody>
-        <?php
-        if (isset($tableResult) && count($tableResult) > 0) {
-            foreach ($tableResult as $tableRow) {
-        ?>
+        <?php if (isset($tableResult) && count($tableResult) > 0) {
+            foreach ($tableResult as $tableRow) { ?>
                 <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
@@ -110,10 +103,8 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                     <td><?php echo strtoupper($tableRow['rejection_type']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>
-        <?php
-            }
-        }
-        ?>
+        <?php }
+        } ?>
     </tbody>
 </table>
 <script>

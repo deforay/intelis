@@ -69,7 +69,7 @@ foreach ($srcResults as $list) {
 	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
 }
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <style>

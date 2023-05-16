@@ -2,29 +2,22 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
+use App\Services\GenericTestsService;
 
 $title = _("Sample Rejection Report");
-
-
 require_once APPLICATION_PATH . '/header.php';
-// $tsQuery = "SELECT * FROM r_sample_status";
-// $tsResult = $db->rawQuery($tsQuery);
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
-$sResult = $db->rawQuery($sQuery);
 
-
-
-
-
+/** @var GenericTestsService $facilitiesService */
+$genericService = ContainerRegistry::get(GenericTestsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
-
+$sampleTypeDetails = $genericService->getGenericSampleTypes();
 
 
 ?>
@@ -71,14 +64,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 							<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
-									<?php
-									foreach ($sResult as $type) {
-									?>
-										<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-									<?php
-									}
-									?>
+									<?= $general->generateSelectOptions($sampleTypeDetails, null, '-- Select --');?>
 								</select>
 							</td>
 
@@ -153,7 +139,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 	function searchResultData() {
 		$.blockUI();
-		$.post("/vl/program-management/getRejectionResult.php", {
+		$.post("/generic-tests/program-management/get-rejection-result.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				labName: $("#labName").val(),
 				clinicName: $("#clinicName").val(),
@@ -169,7 +155,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 	function exportInexcel() {
 		$.blockUI();
-		$.post("/vl/program-management/exportSampleRejectionReport.php", {
+		$.post("/generic-tests/program-management/export-sample-rejection-report.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				lab_name: $("#labName").val(),
 				clinic_name: $("#clinicName").val(),

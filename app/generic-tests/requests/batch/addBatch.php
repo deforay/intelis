@@ -25,7 +25,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active'";
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $sQuery = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
@@ -104,7 +104,7 @@ foreach ($testPlatformResult as $machine) {
 						<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchCodeForm(this);">
 							<option value=""> -- Select -- </option>
 							<?php foreach ($testTypeResult as $testType) { ?>
-								<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code'];?>"><?php echo $testType['test_standard_name'] ?></option>
+								<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code'];?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 							<?php } ?>
 						</select>
 					</div>
@@ -276,6 +276,9 @@ foreach ($testPlatformResult as $machine) {
 			}
 		});
 
+		$("#testType").select2({
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
