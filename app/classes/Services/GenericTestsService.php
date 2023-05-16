@@ -460,4 +460,8 @@ class GenericTestsService
             return array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
         }
     }
+
+    public function getReasonForFailure(){
+        return array();
+    }
 }
