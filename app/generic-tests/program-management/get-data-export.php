@@ -113,6 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.sample_id,
+                        vl.test_type,
                         vl.sample_code,
                         vl.remote_sample_code,
                         vl.patient_id,

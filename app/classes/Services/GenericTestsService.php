@@ -442,16 +442,21 @@ class GenericTestsService
     {
         $return = array();
         if ($genericTestId > 0) {
+            $labelsResponse = $dynamicJson = array();
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
             if ($generic['test_type_form']) {
                 $dynamicJson = (array)json_decode($generic['test_type_form']);
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');
-            }
-            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
-        }
+                $labels = json_decode($testTypes['test_form_config'], true);
 
+                foreach($labels['field_id'] as $key=>$le){
+                    $labelsResponse[$le] = $labels['field_name'][$key];
+                }
+            }
+            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse);
+        }
         return $return;
     }
 
