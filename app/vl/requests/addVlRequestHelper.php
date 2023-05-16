@@ -196,10 +196,10 @@ try {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-        $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'], true);
+    if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
+        $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'], true);
     } else {
-        $_POST['approvedOn'] = null;
+        $_POST['approvedOnDateTime'] = null;
     }
     if (isset($_POST['dateOfDemand']) && trim($_POST['dateOfDemand']) != "") {
         $_POST['dateOfDemand'] = DateUtility::isoDateFormat($_POST['dateOfDemand']);
@@ -394,7 +394,7 @@ try {
         'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'tested_by'                             => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
         'result_approved_by'                    => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-        'result_approved_datetime'              => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
+        'result_approved_datetime' 				=> $_POST['approvedOnDateTime'] ?? null,
         'date_test_ordered_by_physician'        => $_POST['dateOfDemand'],
         'lab_tech_comments'                     => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  null,
         'result_status'                         => $resultStatus,

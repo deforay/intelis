@@ -533,7 +533,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<th scope="row">Approuvé le <span class="mandatory">*</span></th>
 										<td>
-											<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
 										<th scope="row">Approuvé par <span class="mandatory">*</span></th>
 										<td>

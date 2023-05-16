@@ -53,11 +53,11 @@ try {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-        $approvedOnDateTime = explode(" ", $_POST['approvedOn']);
-        $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+    if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
+        $approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
+        $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
     } else {
-        $_POST['approvedOn'] = null;
+        $_POST['approvedOnDateTime'] = null;
     }
 
 
@@ -219,7 +219,7 @@ try {
         'vl_focal_person_phone_number' => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  null,
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] :  null,
+        'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
         'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  null,
         'reason_for_vl_result_changes' => $allChange,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,

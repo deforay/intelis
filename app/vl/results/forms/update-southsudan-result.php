@@ -809,9 +809,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 														</div>
 													</div>
 												</div>
@@ -996,7 +996,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').removeClass('isRequired');
 			$('#reviewedOn').removeClass('isRequired');
 			$('#approvedBy').removeClass('isRequired');
-			$('#approvedOn').removeClass('isRequired');
+			$('#approvedOnDateTime').removeClass('isRequired');
 			//$(".hivDetection").trigger("change");
 		}
 	});
