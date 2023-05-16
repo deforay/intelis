@@ -16,8 +16,6 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
-
-
 // Getting the list of Provinces, Districts and Facilities
 
 
@@ -35,7 +33,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 	$rKey = 'R';
 } else {
@@ -82,7 +80,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
@@ -158,7 +156,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row" colspan=8>
 											<h4>1. Données démographiques mère / enfant </h4><br>
@@ -245,7 +243,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 
 
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row" colspan=6>
 											<h4>2. Management de la mère</h4>
@@ -298,7 +296,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:70%">
 									<tr>
 										<th scope="row" colspan=2>
 											<h4>3. Mangement de l’enfant</h4>
@@ -367,7 +365,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									</tr>
 								</table>
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:70%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:70%">
 									<tr>
 										<th scope="row" colspan=2>
 											<h4>4. Information sur l’échantillon</h4>
@@ -458,7 +456,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									<div class="box-header with-border">
 										<h3 class="box-title">B. Réservé au laboratoire d’analyse </h3>
 									</div>
-									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
 											<th scope="row"><label for="">Date de réception de l'échantillon </label></th>
 											<td>

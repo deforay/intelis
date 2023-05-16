@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Exceptions\SystemException;
+use Exception;
 use GdImage;
 
 /**
@@ -96,8 +97,8 @@ class ImageResizeUtility
         }
     }
 
-    public function __construct(){
-
+    public function __construct()
+    {
     }
 
     /**

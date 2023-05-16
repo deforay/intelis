@@ -1,6 +1,8 @@
 <?php
 
 // echo "<pre>";print_r($_POST['tbId']);die;
+
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -63,5 +65,5 @@ try {
 }
 //catch exception
 catch (Exception $e) {
-    echo 'TB failed-results-retest.php: ' . $e->getMessage();
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

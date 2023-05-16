@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Services\ApiService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -175,4 +176,5 @@ try {
     error_log($db->getLastError());
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

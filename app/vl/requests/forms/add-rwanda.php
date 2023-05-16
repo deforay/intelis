@@ -331,7 +331,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="patientPregnant">Is Patient Pregnant? <span class="mandatory">*</span></label><br>
                                                                  <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check patient pregnant status"> Yes
+                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check if patient is pregnant"> Yes
                                                                  </label>
                                                                  <label class="radio-inline">
                                                                       <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
@@ -342,7 +342,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="breastfeeding">Is Patient Breastfeeding? <span class="mandatory">*</span></label><br>
                                                                  <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check patient breastfeeding status"> Yes
+                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check if patient is breastfeeding"> Yes
                                                                  </label>
                                                                  <label class="radio-inline">
                                                                       <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
@@ -544,7 +544,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
                                                                       <div class="col-lg-7">
@@ -561,7 +561,7 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                   
+
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
@@ -600,7 +600,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                               
+
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
@@ -622,7 +622,7 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                           
+
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
@@ -637,7 +637,7 @@ $sFormat = '';
                                                                            <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($userResult as $uName) { ?>
-                                                                                <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                                                                                     <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>
@@ -649,42 +649,42 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                  </div>
-                                        </div>
-                                   <?php } ?>
-                                   </div>
-                                   <div class="box-footer">
-                                        <!-- BARCODESTUFF START -->
-                                        <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                             <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
-                                                  <div class="progress" style="width:100%">
-                                                       <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                                        </div>
                                                   </div>
-                                             </div> <!-- /printer_data_loading -->
-                                             <div id="printer_details" style="display:none">
-                                                  <span id="selected_printer">No printer selected!</span>
-                                                  <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
-                                             </div><br /> <!-- /printer_details -->
-                                             <div id="printer_select" style="display:none">
-                                                  Zebra Printer Options<br />
-                                                  Printer: <select id="printers"></select>
-                                             </div> <!-- /printer_select -->
-                                        <?php } ?>
-                                        <!-- BARCODESTUFF END -->
-                                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                                        <input type="hidden" name="saveNext" id="saveNext" />
-                                        <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                             <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                                        <?php } ?>
-                                        <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-                                        <input type="hidden" name="provinceId" id="provinceId" />
-                                        <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                        <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
-                                   </div>
-                                   <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
-                                   <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+                                             <?php } ?>
+                                        </div>
+                                        <div class="box-footer">
+                                             <!-- BARCODESTUFF START -->
+                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                                       <div class="progress" style="width:100%">
+                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                            </div>
+                                                       </div>
+                                                  </div> <!-- /printer_data_loading -->
+                                                  <div id="printer_details" style="display:none">
+                                                       <span id="selected_printer">No printer selected!</span>
+                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                                  </div><br /> <!-- /printer_details -->
+                                                  <div id="printer_select" style="display:none">
+                                                       Zebra Printer Options<br />
+                                                       Printer: <select id="printers"></select>
+                                                  </div> <!-- /printer_select -->
+                                             <?php } ?>
+                                             <!-- BARCODESTUFF END -->
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                             <input type="hidden" name="saveNext" id="saveNext" />
+                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                             <?php } ?>
+                                             <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
+                                             <input type="hidden" name="provinceId" id="provinceId" />
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                             <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                        </div>
+                                        <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
+                                        <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
                     </form>
                </div>

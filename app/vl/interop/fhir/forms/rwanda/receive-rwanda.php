@@ -193,7 +193,7 @@ foreach ($entries as $entry) {
             if (empty($resource->getSpecimen())) {
                 throw new SystemException("Specimen is missing for ServiceRequest/$basedOnServiceRequest");
             }
-            
+
             $specimen = $fhir->getFHIRReference($resource->getSpecimen()[0]->getReference());
             $specimenParsed = $parser->parse($specimen);
             $specimenFhirId = (string) $specimenParsed->getId();
@@ -339,7 +339,7 @@ foreach ($formData as $serviceRequest => $data) {
         //error_log("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
     } catch (Exception $e) {
         error_log("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
-        error_log($e->getMessage());
+        throw new SystemException($e->getMessage(), $e->getCode(), $e);
     }
 
     if (isset($id) && $id) {
