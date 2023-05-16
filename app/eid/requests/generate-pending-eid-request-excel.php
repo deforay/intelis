@@ -249,8 +249,8 @@ foreach ($rResult as $aRow) {
     $row[] = $sampleReceivedOn;
     $row[] = $resultDispatchedDate;
     $row[] = ($aRow['lab_tech_comments']);
-    $row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-    $row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+    $row[] = $aRow['funding_source_name'] ?? null;
+    $row[] = $aRow['i_partner_name'] ?? null;
     $row[] = $requestCreatedDatetime;
     $output[] = $row;
     $no++;

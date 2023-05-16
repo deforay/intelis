@@ -63,7 +63,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>
@@ -84,9 +84,8 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										//$patientDetails = $patient['patient_first_name'] . "##" . $patient['patient_last_name'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age_in_years'] . "##" . $patient['patient_age_in_months'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_mobile_number'] . "##" . $patient['consent_to_receive_sms'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']) . "##" . $patient['current_regimen'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['last_viral_load_date']) . "##" . $patient['last_viral_load_result'] . "##" . $patient['number_of_enhanced_sessions'] . "##" . $patient['patient_id'] . "##" . $patient['is_patient_new'] . "##" .$patient['sample_tested_datetime']; 
 										$patientDetails = json_encode(array(
-											"name"=>$patient['patient_first_name'] . " " . $patient['patient_last_name'],
+											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
 											"gender" => $patient['patient_gender'],
 											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
 											"age_in_years" => $patient['patient_age_in_years'],
@@ -94,7 +93,7 @@ $pResult = $db->rawQuery($pQuery);
 											"is_pregnant" => $patient['is_patient_pregnant'],
 											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
 											"mobile" => $patient['patient_mobile_number'],
-											"consent_to_receive_sms" =>$patient['consent_to_receive_sms'],
+											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
 											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
 											"current_regimen" => $patient['current_regimen'],
 											"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
@@ -105,7 +104,7 @@ $pResult = $db->rawQuery($pQuery);
 											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
 											"result" => $patient['result'],
 										)); ?>
-										
+
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td><?php echo $patient['patient_id']; ?></td>
@@ -148,7 +147,7 @@ $pResult = $db->rawQuery($pQuery);
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [1, 'asc']
 		});
-		
+
 	});
 
 	function getPatientDetails(pDetails) {

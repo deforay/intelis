@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -21,7 +22,7 @@ if (!empty($loginId)) {
 					FROM user_login_history
 					WHERE login_status like 'failed'
 					AND login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)";
-	$attemptCount = $db->rawQueryOne($loginQuery, [$loginId, $ipAddress, \App\Utilities\DateUtility::getCurrentDateTime()]);
+	$attemptCount = $db->rawQueryOne($loginQuery, [$loginId, $ipAddress, DateUtility::getCurrentDateTime()]);
 
 
 	error_log($db->getLastQuery());

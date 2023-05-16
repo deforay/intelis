@@ -132,13 +132,23 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			}
 		}
 		//set gender
-		$gender = '';
-		if ($aRow['patient_gender'] == 'male') {
-			$gender = 'M';
-		} else if ($aRow['patient_gender'] == 'female') {
-			$gender = 'F';
-		} else if ($aRow['patient_gender'] == 'not_recorded') {
-			$gender = 'Unreported';
+		switch (strtolower($aRow['patient_gender'])) {
+			case 'male':
+			case 'm':
+				$gender = 'M';
+				break;
+			case 'female':
+			case 'f':
+				$gender = 'F';
+				break;
+			case 'not_recorded':
+			case 'notrecorded':
+			case 'unreported':
+				$gender = 'Unreported';
+				break;
+			default:
+				$gender = '';
+				break;
 		}
 		//sample collecion date
 		$sampleCollectionDate = '';

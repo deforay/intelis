@@ -104,20 +104,20 @@ try {
 	}
 
 	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
-        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
-        $artResult = $db->rawQuery($artQuery);
-        if (!isset($artResult[0]['art_id'])) {
-            $data = array(
-                'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => '1',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
-            $result = $db->insert('r_vl_art_regimen', $data);
-            $_POST['motherRegimen'] = $_POST['newArtRegimen'];
-        } else {
-            $_POST['motherRegimen'] = $artResult[0]['art_code'];
-        }
-    }
+		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
+		$artResult = $db->rawQuery($artQuery);
+		if (!isset($artResult[0]['art_id'])) {
+			$data = array(
+				'art_code' => $_POST['newArtRegimen'],
+				'parent_art' => '1',
+				'updated_datetime' => DateUtility::getCurrentDateTime(),
+			);
+			$result = $db->insert('r_vl_art_regimen', $data);
+			$_POST['motherRegimen'] = $_POST['newArtRegimen'];
+		} else {
+			$_POST['motherRegimen'] = $artResult[0]['art_code'];
+		}
+	}
 
 	if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
@@ -182,8 +182,8 @@ try {
 		'province_id' 										=> $_POST['provinceId'] ?? null,
 		'lab_id' 											=> $_POST['labId'] ?? null,
 		'lab_testing_point' 								=> $_POST['labTestingPoint'] ?? null,
-		//'implementing_partner' 								=> !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-		//'funding_source' 									=> !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
+		'implementing_partner' 								=> !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
+		'funding_source' 									=> !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
 		'mother_id' 										=> $_POST['mothersId'] ?? null,
 		'caretaker_contact_consent' 						=> $_POST['caretakerConsentForContact'] ?? null,
 		'caretaker_phone_number' 							=> $_POST['caretakerPhoneNumber'] ?? null,
@@ -238,7 +238,7 @@ try {
 		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
 		'lab_tech_comments' 									=> (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  null,
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-		'result_approved_datetime' 							=> (isset($_POST['approvedOnDateTime']) && $_POST['approvedOnDateTime'] != '') ? $_POST['approvedOnDateTime'] :  null,
+		'result_approved_datetime' 							=> $_POST['approvedOnDateTime'] ?? null,
 		'revised_by' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'reason_for_changing'				  				=> (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
@@ -304,15 +304,6 @@ try {
 			$resource = 'eid-request';
 
 			$general->activityLog($eventType, $action, $resource);
-
-			// $data=array(
-			// 'event_type'=>$eventType,
-			// 'action'=>$action,
-			// 'resource'=>$resource,
-			// 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
-			// );
-			// $db->insert($tableName1,$data);
-
 		} else {
 			$_SESSION['alertMsg'] = _("Please try again later");
 		}

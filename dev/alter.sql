@@ -3982,3 +3982,8 @@ ALTER TABLE `user_login_history` CHANGE `ip_address` `ip_address` VARCHAR(256) C
 
 -- Thana 16-May-2023
 ALTER TABLE user_login_history ADD INDEX login_status_attempted_datetime_idx (login_status, login_attempted_datetime);
+-- Thana 15-May-2023
+DELETE p, rpm FROM `privileges` AS p INNER JOIN `roles_privileges_map` AS rpm ON rpm.privilege_id = p.privilege_id WHERE privilege_name IN ('generic-weekly-report.php', 'generic-monitoring-report.php');
+
+--ilahir 16-May-2023
+ALTER TABLE `form_eid` CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAULT NULL;
