@@ -471,31 +471,20 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <div class="row" id="othersDynamicForm"></div>
                                              </div>
 
-                                             <?php if ($usersService->isAllowed('vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>
                                                        </div>
                                                        <div class="box-body">
                                                             <div class="row">
-                                                                 <!-- <div class="col-md-4">
-                                                                      <label for="labId" class="col-lg-5 control-label labels">Lab Name </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="labId" id="labId" class="select2 form-control" title="Please choose the testing lab" onchange="autoFillFocalDetails();">
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($lResult as $labName) { ?>
-                                                                                     <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div> -->
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="vlFocalPerson" class="col-lg-5 control-label labels"> Focal Person </label>
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="Focal Person" title="Please enter focal person name"></select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"> Focal Person Phone Number</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" />
@@ -503,28 +492,21 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
-                                                                      </div>
-                                                                 </div>
-
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
@@ -535,7 +517,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
@@ -545,7 +527,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                            </div>
+                                                            <div class="row rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
@@ -553,8 +537,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
                                                                                      <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
-                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                          ?>
+                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) { ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
@@ -567,18 +550,41 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-
                                                             </div>
-
                                                             <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($testReason as $treason) { ?>
+                                                                                     <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords($treason['test_reason']); ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6 vlResult">
+                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
+                                                                      </div>
+                                                                 </div>
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
-                                                                      <div class="col-md-4" style="display: none;">
+                                                                      <div class="col-md-6" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                            <div class="col-lg-7">
                                                                                 <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -587,12 +593,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                                                      </div>
-                                                                 </div>
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-12">
@@ -692,9 +692,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-2 control-label labels" for="labComments">Lab Tech. Comments </label>
-                                                                      <div class="col-lg-10">
+                                                            </div>
+                                                            <br>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-3 control-label labels" for="labComments">Lab Tech. Comments </label>
+                                                                      <div class="col-lg-9">
                                                                            <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
                                                                       </div>
                                                                  </div>
