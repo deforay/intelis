@@ -1,17 +1,4 @@
-
--- CREATE DATABASE IF NOT EXISTS audit_vlsm;
-
--- CREATE TABLE `audit_vlsm`.`form_vl` SELECT * from `vlsm`.`form_vl` WHERE 1=0;
-
-
--- -- DROP TRIGGER audit_form_vl;
--- DELIMITER //
--- CREATE TRIGGER `vlsm`.`audit_form_vl` AFTER UPDATE ON `vlsm`.`form_vl`
--- FOR EACH ROW BEGIN  
---     INSERT INTO `audit_vlsm`.`form_vl` SELECT * FROM `vlsm`.`form_vl` where `vlsm`.form_vl.`vl_sample_id` = `audit_vlsm`.NEW.vl_sample_id;
--- END;//
--- DELIMITER ;
-
+-- Viral Load
 
 CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
 
@@ -159,4 +146,33 @@ CREATE TRIGGER form_tb_data__au AFTER UPDATE ON `form_tb` FOR EACH ROW
 CREATE TRIGGER form_tb_data__bd BEFORE DELETE ON `form_tb` FOR EACH ROW
     INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.* 
     FROM `form_tb` AS d WHERE d.tb_id = OLD.tb_id;
+
+
+-- Generic Tests
+
+CREATE TABLE `audit_form_generic` SELECT * from `form_generic` WHERE 1=0;
+
+ALTER TABLE `audit_form_generic` 
+   MODIFY COLUMN `sample_id` int(11) NOT NULL, 
+   ENGINE = MyISAM, 
+   ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST, 
+   ADD `revision` INT(6) NOT NULL AUTO_INCREMENT AFTER `action`,
+   ADD `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`,
+   ADD PRIMARY KEY (`sample_id`, `revision`);
+
+DROP TRIGGER IF EXISTS form_generic_data__ai;
+DROP TRIGGER IF EXISTS form_generic_data__au;
+DROP TRIGGER IF EXISTS form_generic_data__bd;
+
+CREATE TRIGGER form_generic_data__ai AFTER INSERT ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.* 
+    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id;
+
+CREATE TRIGGER form_generic_data__au AFTER UPDATE ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'update', NULL, NOW(), d.*
+    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id;
+
+CREATE TRIGGER form_generic_data__bd BEFORE DELETE ON `form_generic` FOR EACH ROW
+    INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.* 
+    FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id;
 

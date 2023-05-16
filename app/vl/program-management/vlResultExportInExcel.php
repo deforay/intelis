@@ -118,17 +118,17 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		}
 
 		if ($aRow['patient_first_name'] != '') {
-			$patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
+			$patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
 		} else {
 			$patientFname = '';
 		}
 		if ($aRow['patient_middle_name'] != '') {
-			$patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+			$patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
 		} else {
 			$patientMname = '';
 		}
 		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+			$patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
 		} else {
 			$patientLname = '';
 		}
@@ -143,8 +143,8 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
 		$row[] = $aRow['facility_code'];
-		$row[] = ($aRow['facility_district']);
-		$row[] = ($aRow['facility_state']);
+		$row[] = $aRow['facility_district'];
+		$row[] = $aRow['facility_state'];
 
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			$row[] = $aRow['patient_art_no'];
