@@ -9,28 +9,15 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+$gconfig = $general->getGlobalConfig();
+$sarr = $general->getSystemConfig();
+
 $tableName = "form_eid";
 $primaryKey = "eid_id";
 
@@ -161,14 +148,9 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
 }
 //echo $sWhereSub; die;
 $dWhere = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-          $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-     }
+if (!empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+    $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 if (isset($sWhere) && !empty($sWhere)) {

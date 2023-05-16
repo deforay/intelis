@@ -2,6 +2,7 @@
 
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Services\GenericTestsService;
@@ -13,12 +14,22 @@ require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+$arr = $general->getGlobalConfig();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
@@ -116,20 +127,6 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 // } else if ($arr['vl_form'] == 8) {
 //     require('forms/add-angola.php');
 // }
-
-/* 
-$fileArray = array(
-    1 => 'forms/add-southsudan.php',
-    2 => 'forms/add-sierraleone.php',
-    3 => 'forms/add-drc.php',
-    4 => 'forms/add-zambia.php',
-    5 => 'forms/add-png.php',
-    6 => 'forms/add-who.php',
-    7 => 'forms/add-rwanda.php',
-    8 => 'forms/add-angola.php',
-);
- */
-//Form Starts.....
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";

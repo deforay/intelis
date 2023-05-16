@@ -419,6 +419,8 @@ class Covid19Service
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
 
+        $patientCodePrefix = 'P';
+
         try {
             $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
@@ -479,7 +481,9 @@ class Covid19Service
             $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
             if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
                 $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
-                if (empty($patientCodePrefix)) $patientCodePrefix = 'P';
+                if (empty($patientCodePrefix)) {
+                    $patientCodePrefix = 'P';
+                }
                 $generateAutomatedPatientCode = true;
                 $patientCodeJson = $patientsModel->generatePatientId($patientCodePrefix);
                 $patientCodeArray = json_decode($patientCodeJson, true);
