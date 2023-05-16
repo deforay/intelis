@@ -81,7 +81,7 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
     }
 
     if (!empty($search[3]) && $search[3] == "yes") {
-        $where[] = " (vl.sample_tested_datetime != null AND vl.sample_tested_datetime not like '') ";
+        $where[] = " (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') ";
     }
     if (!empty($spmF[2]) && $spmF[2] != "") {
         $where[] = " (vl.sample_code like '" . $spmF[2] . "' OR vl.remote_sample_code like '" . $spmF[2] . "') ";

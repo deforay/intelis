@@ -551,6 +551,7 @@ class VlService
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             error_log('Insert VL Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 

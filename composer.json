@@ -13,6 +13,8 @@
     "require": {
         "php": "^7.4 || ~8.0.0",
         "ext-gd": "*",
+        "ext-zip": "*",
+        "ext-pdo": "*",
         "ext-json": "*",
         "ext-curl": "*",
         "ext-gettext": "*",

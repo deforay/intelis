@@ -2,8 +2,6 @@
 
 namespace App\Middlewares\App;
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

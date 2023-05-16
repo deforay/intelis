@@ -445,11 +445,13 @@ class GenericTestsService
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             error_log('Insert VL Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 
     public function getDynamicFields($genericTestId)
     {
+        $return = [];
         if ($genericTestId > 0) {
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
@@ -458,7 +460,9 @@ class GenericTestsService
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');
             }
-            return array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
+            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $testTypes);
         }
+
+        return $return;
     }
 }

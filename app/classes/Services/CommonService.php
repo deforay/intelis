@@ -789,6 +789,7 @@ class CommonService
             error_log($exc->getMessage());
             error_log($this->db->getLastError());
             error_log($exc->getTraceAsString());
+            return 0;
         }
     }
 

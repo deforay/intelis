@@ -192,7 +192,8 @@ class ImageResizeUtility
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (SystemException $e) {
+        } catch (Exception $e) {
+            error_log($e->getMessage());
             $exif = null;
         }
 

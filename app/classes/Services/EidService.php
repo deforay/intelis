@@ -6,9 +6,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -177,13 +175,12 @@ class EidService
         /** @var CommonService $general */
         $general = ContainerRegistry::get(CommonService::class);
 
-
         /** @var EidService $eidService */
         $eidService = ContainerRegistry::get(EidService::class);
         $eidResults = $eidService->getEidResults();
 
         //$sarr = $general->getSystemConfig();
-
+        $filename = "";
         if (isset($_SESSION['eidRequestSearchResultQuery']) && trim($_SESSION['eidRequestSearchResultQuery']) != "") {
 
             $rResult = $this->db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
@@ -257,9 +254,9 @@ class EidService
                 $gender = '';
                 if ($aRow['child_gender'] == 'male') {
                     $gender = 'M';
-                } else if ($aRow['child_gender'] == 'female') {
+                } elseif ($aRow['child_gender'] == 'female') {
                     $gender = 'F';
-                } else if ($aRow['child_gender'] == 'not_recorded') {
+                } elseif ($aRow['child_gender'] == 'not_recorded') {
                     $gender = 'Unreported';
                 }
                 //sample collecion date
@@ -364,8 +361,8 @@ class EidService
             $writer = IOFactory::createWriter($excel, 'Xlsx');
             $filename = 'VLSM-EID-Requested-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-            return $filename;
         }
+        return $filename;
     }
 
     public function insertSampleCode($params)
@@ -499,6 +496,7 @@ class EidService
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $this->db->getLastQuery());
             error_log('Insert EID Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 }

@@ -379,9 +379,6 @@ try {
                 // error_log($db->getLastError());
             }
         }
-        /* echo "<pre>";
-        print_r($id);
-        die; */
         if ($id > 0) {
             $tbData = $app->getTableDataUsingId('form_tb', 'tb_id', $data['tbSampleId']);
             $tbSampleCode = (isset($tbData['sample_code']) && $tbData['sample_code']) ? $tbData['sample_code'] : $tbData['remote_sample_code'];
@@ -390,7 +387,7 @@ try {
                 'sampleCode' => $tbSampleCode,
                 'transactionId' => $transactionId,
                 'uniqueId' => $tbData['unique_id'],
-                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $tbData['app_sample_code'] : null,
+                'appSampleCode' => $tbData['app_sample_code'] ?? null,
             );
             http_response_code(200);
         } else {
@@ -398,15 +395,9 @@ try {
                 $responseData[$rootKey] = array(
                     'status' => 'failed'
                 );
-            } else {
-                $payload = array(
-                    'status' => 'failed',
-                    'timestamp' => time(),
-                    'error' => 'Unable to add this TB sample. Please try again later',
-                    'data' => array()
-                );
             }
-            http_response_code(301);
+            http_response_code(400);
+            throw new SystemException('Unable to add this TB sample. Please try again later');
         }
     }
     if ($update == "yes") {

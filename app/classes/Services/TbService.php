@@ -369,6 +369,7 @@ class TbService
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());
+            return 0;
         }
     }
 }
