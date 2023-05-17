@@ -232,15 +232,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'league/csv' => array(
-            'pretty_version' => '9.8.0',
-            'version' => '9.8.0.0',
-            'reference' => '9d2e0265c5d90f5dd601bc65ff717e05cec19b47',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../league/csv',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'maennchen/zipstream-php' => array(
             'pretty_version' => '2.2.6',
             'version' => '2.2.6.0',
@@ -489,8 +480,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(

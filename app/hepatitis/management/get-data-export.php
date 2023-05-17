@@ -149,7 +149,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-//     ";
+
 //echo $sQuery;die;
 $start_date = '';
 $end_date = '';
