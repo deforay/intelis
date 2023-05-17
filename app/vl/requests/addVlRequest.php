@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
-use App\Services\UsersService;
 use App\Services\VlService;
+use App\Services\UsersService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 $title = "VL | Add New Request";
@@ -12,10 +12,10 @@ require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
 /** @var UsersService $usersService */

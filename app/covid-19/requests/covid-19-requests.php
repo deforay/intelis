@@ -19,7 +19,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 $facilityId = null;
 $labId = null;
-if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
 	$facilityId = base64_decode($_GET['facilityId']);
 	$labId = base64_decode($_GET['labId']);
 }
@@ -130,11 +130,11 @@ foreach ($srcResults as $list) {
 									<option value="no"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-							
+
 
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
@@ -165,7 +165,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -193,8 +193,8 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
-						<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -216,18 +216,18 @@ foreach ($srcResults as $list) {
 							</td>
 							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							
-						
+
+
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-							<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
-                </select>
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+								</select>
 							</td>
 							<td><strong><?php echo _("Facility Name"); ?>:</strong></td>
 							<td>
@@ -243,7 +243,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
@@ -256,14 +256,14 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Patient ID'); ?>" title="<?php echo _('Please enter the patient ID to search'); ?>" />
 							</td>
-							
+
 							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-							
-							</tr>
-						
+
+						</tr>
+
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -280,7 +280,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
-									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllPendingCovid19Requests();"><span><?php echo _("Export Requests"); ?></span></a>
+									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllCovid19Requests();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -301,7 +301,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
-									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingCovid19Requests();"><span><?= _("Export Requests"); ?></span></button>
+									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span><?= _("Export Requests"); ?></span></button>
 								<?php } ?>
 								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?= _("Show Advanced Search Options"); ?></span></button>
 							</td>
@@ -717,13 +717,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function exportAllPendingCovid19Requests() {
+	function exportAllCovid19Requests() {
 		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
-		$.post("generate-pending-covid19-request-excel.php", {
+		$.post("export-covid19-requests.php", {
 				reqSampleType: requestSampleType,
 				patientInfo: $('#patientInfo').val(),
 			},
@@ -732,27 +732,27 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
-					window.open('/download.php?f=' + data, '_blank');
+					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
 	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
-        $("#facilityName").html('');
-        $("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
+		$("#facilityName").html('');
+		$("#vlLab").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
+			});
 	}
 
 	function getByDistrict(districtId) {
@@ -760,8 +760,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
-				facilities : true,
-				labs : true,
+				facilities: true,
+				labs: true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);

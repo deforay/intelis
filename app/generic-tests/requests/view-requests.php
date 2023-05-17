@@ -127,11 +127,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-					<table class="table" aria-hidden="true">
-						<tr>
-							<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
-						</tr>
-					</table>
+						<table class="table" aria-hidden="true">
+							<tr>
+								<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
+							</tr>
+						</table>
 						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
@@ -291,8 +291,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"bScrollCollapse": true,
 			//"bStateSave" : true,
 			"bRetrieve": true,
-			"aoColumns": [
-				{
+			"aoColumns": [{
 					"sClass": "center"
 				},
 				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
@@ -300,7 +299,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					},
 				<?php } ?> {
 					"sClass": "center"
-				},{
+				}, {
 					"sClass": "center"
 				},
 				{
@@ -463,16 +462,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("generatePendingVlRequestExcel.php", {
+		$.post("export-vl-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},
 			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _("Unable to generate the export"); ?>");
 				} else {
-					window.open('/download.php?f=' + data, '_blank');
+					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
 	}

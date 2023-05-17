@@ -19,10 +19,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 $facilityId = null;
 $labId = null;
-if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
 	$facilityId = base64_decode($_GET['facilityId']);
 	$labId = base64_decode($_GET['labId']);
 }
+
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -122,7 +123,7 @@ foreach ($srcResults as $list) {
 
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -142,7 +143,7 @@ foreach ($srcResults as $list) {
 									<option value="noresult"><?php echo _("Sample Without Result"); ?></option>
 								</select>
 							</td>
-						<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
+							<td><strong><?php echo _("Batch Code"); ?> :</strong></td>
 							<td>
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -157,7 +158,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
@@ -184,8 +185,8 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-						
-						<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Show only Reordered Samples"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _('Please choose record sample'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -199,20 +200,20 @@ foreach ($srcResults as $list) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							
-						<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
 							<td>
-							<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-						
+
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-							<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
-                            </select>
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _('Please select Province/State'); ?>">
+								</select>
 							</td>
 							<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 							<td>
@@ -226,10 +227,10 @@ foreach ($srcResults as $list) {
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-						
+
 						</tr>
 						<tr>
-                        <td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -245,7 +246,7 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-                                    </tr>
+						</tr>
 						<tr>
 							<td><strong><?php echo _("Show Rejected Samples"); ?>&nbsp;:</strong></td>
 							<td>
@@ -254,7 +255,7 @@ foreach ($srcResults as $list) {
 									<option value="no" selected="selected"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-									</tr>
+						</tr>
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -454,53 +455,53 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ records per page"
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ records per page"
+			},
+			"bJQueryUI": false,
+			"bAutoWidth": false,
+			"bInfo": true,
+			"bScrollCollapse": true,
+			//"bStateSave" : true,
+			"bRetrieve": true,
+			"aoColumns": [{
+					"sClass": "center"
 				},
-				"bJQueryUI": false,
-				"bAutoWidth": false,
-				"bInfo": true,
-				"bScrollCollapse": true,
-				//"bStateSave" : true,
-				"bRetrieve": true,
-				"aoColumns": [{
-                    "sClass": "center"
-                },
-                <?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
-                        "sClass": "center"
-                    },
-                <?php } ?> {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                },
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+						"sClass": "center"
+					},
+				<?php } ?> {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				},
 				{
-                    "sClass": "center"
-                },
-                <?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
-                        "sClass": "center action",
-                        "bSortable": false
-                    },
-                <?php } ?>
-            ],
+					"sClass": "center"
+				},
+				<?php if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges'])) || (in_array("hepatitis-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+						"sClass": "center action",
+						"bSortable": false
+					},
+				<?php } ?>
+			],
 			"aaSorting": [
 				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
@@ -622,7 +623,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				});
 			}
 		});
-	$.unblockUI();
+		$.unblockUI();
 	}
 
 	function searchVlRequestData() {
@@ -700,7 +701,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("/hepatitis/requests/generate-pending-hepatitis-request-excel.php", {
+		$.post("/hepatitis/requests/export-hepatitis-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},
@@ -709,27 +710,27 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
-					window.open('/download.php?f=' + data, '_blank');
+					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
 	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
-        $("#facilityName").html('');
-        $("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
+		$("#facilityName").html('');
+		$("#vlLab").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
+			});
 	}
 
 	function getByDistrict(districtId) {
@@ -737,8 +738,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
-				facilities : true,
-				labs : true,
+				facilities: true,
+				labs: true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);
