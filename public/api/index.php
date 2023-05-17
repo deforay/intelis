@@ -28,7 +28,6 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 $middlewarePipe = new MiddlewarePipe();
 
 // CORS Middleware
-
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     session_destroy();
     if (isset($_SERVER['HTTP_ORIGIN'])) {

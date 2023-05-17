@@ -24,9 +24,6 @@ if (!empty($loginId)) {
 					AND login_attempted_datetime >= DATE_SUB(?, INTERVAL 15 minute)";
 	$attemptCount = $db->rawQueryOne($loginQuery, [$loginId, $ipAddress, DateUtility::getCurrentDateTime()]);
 
-
-	error_log($db->getLastQuery());
-
 	$ipCount = $attemptCount['ipCount'];
 	$loginCount = $attemptCount['loginCount'];
 
