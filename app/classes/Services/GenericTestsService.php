@@ -460,7 +460,197 @@ class GenericTestsService
         return $return;
     }
 
-    public function getReasonForFailure(){
-        return array();
+    public function getReasonForFailure($option = true, $updatedDateTime = null)
+    {
+        $result = [];
+        $this->db->where('status', 'active');
+        if ($updatedDateTime) {
+            $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');
+        }
+        $results = $this->db->get('r_generic_test_failure_reasons');
+        if ($option) {
+            foreach ($results as $row) {
+                $result[$row['failure_id']] = $row['failure_reason'];
+            }
+            return $result;
+        } else {
+            return $results;
+        }
+    }
+
+    public function interpretResult($result, $unit = null, $defaultLowVlResultText = null)
+    {
+        $finalResult = $vlResult = trim($result);
+        $vlResult = strtolower($vlResult);
+        $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+        $vlResult = str_replace('-', '', $vlResult);
+        $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+
+        if ($vlResult == "-1.00") {
+            $vlResult = "Not Detected";
+        }
+        if (is_numeric($vlResult)) {
+            //passing only number 
+            return $this->interpretNumericResult($vlResult, $unit);
+        } else {
+            //Passing orginal result value for text results
+            return $this->interpretTextResult($finalResult, $unit, $defaultLowVlResultText);
+        }
+    }
+
+    public function interpretNumericResult($result, $unit = null)
+    {
+        // If result is blank, then return null
+        if (empty(trim($result))) {
+            return null;
+        }
+
+        // If result is NOT numeric, then return it as is
+        if (!is_numeric($result)) {
+            return $result;
+        }
+
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
+
+        $interpretAndConvertResult = $general->getGlobalConfig('generic_interpret_and_convert_results');
+
+
+        if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
+            $interpretAndConvertResult = true;
+        } else {
+            $interpretAndConvertResult = false;
+        }
+
+
+        $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+        $originalResultValue = $result;
+        if (strpos($unit, 'Log') !== false && is_numeric($result)) {
+            $logVal = $result;
+            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+        } elseif (strpos($unit, '10') !== false) {
+            $unitArray = explode(".", $unit);
+            $exponentArray = explode("*", $unitArray[0]);
+            $multiplier = pow($exponentArray[0], $exponentArray[1]);
+            $vlResult = $result * $multiplier;
+            $unit = $unitArray[1];
+        } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
+            if (strpos($result, '< 2.00E+1') !== false) {
+                $vlResult = "< 20";
+            } else {
+                // incase there are some brackets in the result
+                $resultArray = explode("(", $result);
+
+                $absVal = ($resultArray[0]);
+                $vlResult = $absDecimalVal = (float) $resultArray[0];
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+        } else {
+            $absVal = ($result);
+            $vlResult = $absDecimalVal = (float) trim($result);
+            $logVal = round(log10($absDecimalVal), 2);
+            $txtVal = null;
+        }
+
+        if ($interpretAndConvertResult) {
+            $originalResultValue = $vlResult;
+        }
+
+        return array(
+            'logVal' => $logVal,
+            'result' => $originalResultValue,
+            'absDecimalVal' => $absDecimalVal,
+            'absVal' => $absVal,
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus
+        );
+    }
+
+    public function interpretTextResult($result, $unit = null, $defaultLowVlResultText = null)
+    {
+
+        // If result is blank, then return null
+        if (empty(trim($result))) return null;
+
+        // If result is numeric, then return it as is
+        if (is_numeric($result)) {
+            $this->interpretNumericResult($result, $unit);
+        }
+
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
+
+        $interpretAndConvertResult = $general->getGlobalConfig('generic_interpret_and_convert_results');
+
+
+        if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
+            $interpretAndConvertResult = true;
+        } else {
+            $interpretAndConvertResult = false;
+        }
+
+        $resultStatus = null;
+        // Some machines and some countries prefer a default text result
+        $vlTextResult = $defaultLowVlResultText ?: "Target Not Detected";
+
+        $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
+
+        $originalResultValue = $result;
+
+        $result = strtolower($result);
+        if ($result == 'bdl' || $result == '< 839') {
+            $vlResult = $txtVal = 'Below Detection Limit';
+        } elseif ($result == 'target not detected' || $result == 'not detected' || $result == 'tnd') {
+            $vlResult = $txtVal = $vlTextResult;
+        } elseif ($result == '< 2.00E+1' || $result == '< titer min') {
+            $absDecimalVal = 20;
+            $txtVal = $vlResult = $absVal = "< 20";
+        } elseif ($result == '> titer max"') {
+            $absDecimalVal = 10000000;
+            $txtVal = $vlResult = $absVal = "> 1000000";
+        } elseif ($result == '< inf') {
+            $absDecimalVal = 839;
+            $vlResult = $absVal = 839;
+            $logVal = 2.92;
+            $txtVal = null;
+        } elseif (strpos($result, "<") !== false) {
+            $result = (float) trim(str_replace("<", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                $vlResult = $originalResultValue = "< " . $absDecimalVal;
+            } else {
+                $vlResult = $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+            $txtVal = null;
+        } elseif (strpos($result, ">") !== false) {
+            $result = (float) trim(str_replace(">", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                $vlResult = $originalResultValue = ">" . $absDecimalVal;
+            } else {
+                $vlResult = $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+
+            $txtVal = null;
+        } else {
+            $vlResult = $txtVal = $result;
+        }
+
+        if ($interpretAndConvertResult) {
+            $originalResultValue = $vlResult;
+        }
+
+        return array(
+            'logVal' => $logVal,
+            'result' => $originalResultValue,
+            'absDecimalVal' => $absDecimalVal,
+            'absVal' => $absVal,
+            'txtVal' => $txtVal,
+            'resultStatus' => $resultStatus,
+        );
     }
 }
