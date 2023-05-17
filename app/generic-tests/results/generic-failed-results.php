@@ -545,7 +545,7 @@ $state = $geolocationService->getProvinces("yes");
     function exportAllPendingVlRequest() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
-        $.post("generatePendingVlRequestExcel.php", {
+        $.post("export-vl-requests.php", {
                 reqSampleType: requestSampleType
             },
             function(data) {

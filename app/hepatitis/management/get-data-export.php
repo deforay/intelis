@@ -120,37 +120,36 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT       SQL_CALC_FOUND_ROWS
-                        vl.*,
-                        b.batch_code,
-                        ts.status_name,
-                        f.facility_name,
-                        l_f.facility_name as labName,
-                        f.facility_code,
-                        f.facility_state,
-                        f.facility_district,
-                        u_d.user_name as reviewedBy,
-                        a_u_d.user_name as approvedBy,
-                        lt_u_d.user_name as labTechnician,
-                        rs.rejection_reason_name as rejection_reason
-                    
-                        
-                        FROM form_hepatitis as vl 
-                        
-                        LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-                        LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_reception_person 
-                        LEFT JOIN r_hepatitis_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_hepatitis_test 
-                        LEFT JOIN r_hepatitis_sample_type as rst ON rst.sample_id=vl.specimen_type 
-                        LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-                        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
-                        LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-//     ";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+               vl.*,
+               b.batch_code,
+               ts.status_name,
+               f.facility_name,
+               l_f.facility_name as labName,
+               f.facility_code,
+               f.facility_state,
+               f.facility_district,
+               u_d.user_name as reviewedBy,
+               a_u_d.user_name as approvedBy,
+               lt_u_d.user_name as labTechnician,
+               rs.rejection_reason_name as rejection_reason
+               
+               FROM form_hepatitis as vl
+               
+               LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
+               LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+               LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+               LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+               LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+               LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+               LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_reception_person
+               LEFT JOIN r_hepatitis_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_hepatitis_test
+               LEFT JOIN r_hepatitis_sample_type as rst ON rst.sample_id=vl.specimen_type
+               LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+               LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
+               LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
+
 //echo $sQuery;die;
 $start_date = '';
 $end_date = '';
@@ -271,26 +270,19 @@ if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
 }
-$sWhere[] = '  vl.result_status!=9';
+$sWhere[] = ' vl.result_status!=9 ';
 
-//$cWhere = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-     //$cWhere = " AND request_created_by='".$_SESSION['userId']."'";
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-          //$cWhere = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-     }
+
+if (!empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
-if (!empty($sWhere))
-     $sWhere = ' where ' . implode(' AND ', $sWhere);
-else
-     $sWhere = "";
-$sQuery = $sQuery . ' ' . $sWhere;
-// echo $sQuery;die;
 
+if (!empty($sWhere)) {
+     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+} else {
+     $sWhere = "";
+}
+$sQuery = $sQuery . ' ' . $sWhere;
 
 if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -302,40 +294,14 @@ $_SESSION['hepatitisResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
 
-$aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id 
-          
-          FROM form_hepatitis as vl 
-                        
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-          
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-          LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-          LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-          -- LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-          
-          -- LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
-          -- LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner 
-          
-          $sWhere");
-
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length 
-$aResultTotal =  $db->rawQuery("select COUNT(*) as total FROM form_hepatitis as vl where result_status!=9 $cWhere");
-// $aResultTotal = $countResult->fetch_row();
-$iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-/*
-          * Output
-          */
+
+$_SESSION['hepatitisResultQueryCount'] = $iTotal;
+
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
@@ -355,11 +321,11 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_id'];
-     $row[] = ($patientFname . " " . $patientLname);
-     $row[] = ($aRow['facility_name']);
-     $row[] = ($aRow['hcv_vl_result']);
-     $row[] = ($aRow['hbv_vl_result']);
-     $row[] = ($aRow['status_name']);
+     $row[] = $patientFname . " " . $patientLname;
+     $row[] = $aRow['facility_name'];
+     $row[] = $aRow['hcv_vl_result'];
+     $row[] = $aRow['hbv_vl_result'];
+     $row[] = $aRow['status_name'];
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;
      if ($aRow['is_result_authorised'] == 'yes') {

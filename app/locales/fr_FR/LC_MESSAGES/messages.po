@@ -1105,8 +1105,8 @@ msgstr "Action"
 #: covid-19/management/generate-export-drc.php:41
 #: covid-19/requests/addSamplesFromManifest.php:53
 #: covid-19/requests/covid-19-requests.php:317
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: covid-19/results/covid-19-failed-results.php:153
 #: covid-19/results/covid-19-manual-results.php:117
 #: covid-19/results/covid-19-manual-results.php:170
@@ -3210,8 +3210,8 @@ msgstr "Lot"
 #: covid-19/batch/covid-19-add-batch.php:96
 #: covid-19/batch/covid-19-edit-batch.php:152
 #: covid-19/management/generate-export-drc.php:94
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: hepatitis/batch/hepatitis-add-batch.php:96 tb/batch/tb-add-batch.php:89
 #: vl/batch/addBatch.php:105
 msgid "Testing Platform"
@@ -3309,8 +3309,8 @@ msgstr "Veuillez sélectionner le nom de l’installation"
 #: covid-19/management/covid-19-sample-status.php:113
 #: covid-19/management/generate-export-drc.php:85
 #: covid-19/requests/covid-19-requests.php:117
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: covid-19/results/covid-19-failed-results.php:66
 #: covid-19/results/covid-19-manual-results.php:75
 #: covid-19/results/covid-19-print-results.php:76
@@ -4361,8 +4361,8 @@ msgstr "Noms du patient"
 #: covid-19/management/covid-19-sample-status.php:84
 #: covid-19/management/generate-export-drc.php:93
 #: covid-19/requests/covid-19-requests.php:138
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: eid/management/eid-clinic-report.php:191
 #: eid/management/eid-sample-status.php:94 eid/requests/eid-requests.php:126
 #: global-config/editGlobalConfig.php:1292
@@ -4432,8 +4432,8 @@ msgstr "Labo de test"
 #: covid-19/management/generate-export-drc.php:96
 #: covid-19/requests/addSamplesFromManifest.php:64
 #: covid-19/requests/covid-19-requests.php:333
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: covid-19/results/covid-19-failed-results.php:164
 #: covid-19/results/covid-19-manual-results.php:142
 #: covid-19/results/covid-19-manual-results.php:178
@@ -5061,7 +5061,7 @@ msgstr "Veuillez saisir le code manifeste puis soumettre"
 #: covid-19/requests/addSamplesFromManifest.php:61
 #: covid-19/requests/covid-19-requests.php:260
 #: covid-19/requests/covid-19-requests.php:330
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
+#: covid-19/requests/export-covid19-requests.php:79
 #: covid-19/results/covid-19-failed-results.php:123
 #: covid-19/results/covid-19-failed-results.php:161
 #: covid-19/results/covid-19-manual-results.php:177
@@ -5157,8 +5157,8 @@ msgstr "Gérer les colonnes"
 
 #: covid-19/management/covid-19-export-data.php:240
 #: covid-19/management/generate-export-drc.php:42
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: covid-19/results/covid-19-manual-results.php:123
 #: covid-19/results/covid-19-print-results.php:152
 #: covid-19/results/covid-19-print-results.php:305
@@ -5523,14 +5523,14 @@ msgid "Apply"
 msgstr "Appliquer"
 
 #: covid-19/management/generate-export-drc.php:40
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "S. No."
 msgstr "S. No."
 
 #: covid-19/management/generate-export-drc.php:43
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Testing Lab"
 msgid "Testing Lab Name"
@@ -5562,22 +5562,22 @@ msgid "No. EPID"
 msgstr "N° EPID"
 
 #: covid-19/management/generate-export-drc.php:51
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient ID"
 msgid "Patient DoB"
 msgstr "No Patient"
 
 #: covid-19/management/generate-export-drc.php:52
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Patient Age"
 msgstr "Age du Patient"
 
 #: covid-19/management/generate-export-drc.php:53
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: vl/batch/addBatch.php:148
 #, fuzzy
 #| msgid "Patient Name"
@@ -5585,32 +5585,32 @@ msgid "Patient Gender"
 msgstr "Nom du patient"
 
 #: covid-19/management/generate-export-drc.php:54
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: vl/batch/addBatch.php:170 vl/result-mail/editTestResultEmailConfig.php:94
 #, fuzzy
 msgid "Is Patient Pregnant"
 msgstr "La patiente est-elle enceinte"
 
 #: covid-19/management/generate-export-drc.php:55
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Caretaker Phone No."
 msgid "Patient Phone No."
 msgstr "No de téléphone du gardien"
 
 #: covid-19/management/generate-export-drc.php:56
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient Name"
 msgid "Patient Email"
 msgstr "Nom du patient"
 
 #: covid-19/management/generate-export-drc.php:57
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient Name"
 msgid "Patient Address"
@@ -5627,21 +5627,21 @@ msgid "Commune"
 msgstr "Commune"
 
 #: covid-19/management/generate-export-drc.php:60
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Nationality"
 msgstr "Nationalité"
 
 #: covid-19/management/generate-export-drc.php:61
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Fever/Temperature"
 msgstr "Fièvre/température"
 
 #: covid-19/management/generate-export-drc.php:62
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Temprature Measurement"
 msgstr "Mesure de la température"
@@ -5661,194 +5661,194 @@ msgid "Asymptomatic"
 msgstr "Symptôme"
 
 #: covid-19/management/generate-export-drc.php:66
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Symptoms Detected"
 msgstr "Symptômes détectés"
 
 #: covid-19/management/generate-export-drc.php:67
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Medical History"
 msgstr "Historique Medical"
 
 #: covid-19/management/generate-export-drc.php:68
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Co-morbidities"
 msgid "Comorbidities"
 msgstr "Co-morbidités"
 
 #: covid-19/management/generate-export-drc.php:69
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Recenty Hospitalized?"
 msgstr "Récemment hospitalisé?"
 
 #: covid-19/management/generate-export-drc.php:70
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Patient Lives With Children"
 msgstr "La vie des patients avec des enfants"
 
 #: covid-19/management/generate-export-drc.php:71
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Patient Cares for Children"
 msgstr "Les patients s’occupent des enfants"
 
 #: covid-19/management/generate-export-drc.php:72
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Close Contacts"
 msgstr "Contacts étroits"
 
 #: covid-19/management/generate-export-drc.php:73
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Has Recent Travel History"
 msgstr "A des antécédents de voyage récents"
 
 #: covid-19/management/generate-export-drc.php:74
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "County"
 msgid "Country Names"
 msgstr "Pays"
 
 #: covid-19/management/generate-export-drc.php:75
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Travel Return Date"
 msgstr "Date de retour du voyage"
 
 #: covid-19/management/generate-export-drc.php:76
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Airline"
 msgstr "Compagnie aérienne"
 
 #: covid-19/management/generate-export-drc.php:77
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Seat No."
 msgstr "Numéro de siège."
 
 #: covid-19/management/generate-export-drc.php:78
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Arrival Date/Time"
 msgstr "Date/heure d’arrivée"
 
 #: covid-19/management/generate-export-drc.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Departure Airport"
 msgstr "Aéroport de départ"
 
 #: covid-19/management/generate-export-drc.php:80
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 msgid "Transit"
 msgstr "Transport en commun"
 
 #: covid-19/management/generate-export-drc.php:81
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Reason of Visit"
 msgstr "Raison de la visite"
 
 #: covid-19/management/generate-export-drc.php:82
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Number of Samples Received"
 msgid "Number of Days Sick"
 msgstr "Nombre d'échantillons reçus"
 
 #: covid-19/management/generate-export-drc.php:83
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Date of Symptoms Onset"
 msgstr "Date d’apparition des symptômes"
 
 #: covid-19/management/generate-export-drc.php:84
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Date of Initial Consultation"
 msgstr "Date de la consultation initiale"
 
 #: covid-19/management/generate-export-drc.php:86
 #: covid-19/management/generate-export-drc.php:87
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Hepatitis Test Request"
 msgid "Reason for Test Request"
 msgstr "Hepatite-Demande de test"
 
 #: covid-19/management/generate-export-drc.php:88
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Date specimen received"
 msgstr "Date de réception du spécimen"
 
 #: covid-19/management/generate-export-drc.php:89
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Date specimen registered"
 msgstr "Date d’enregistrement du spécimen"
 
 #: covid-19/management/generate-export-drc.php:90
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Specimen Manifest"
 msgid "Specimen Condition"
 msgstr "Manifeste d'échantillons"
 
 #: covid-19/management/generate-export-drc.php:91
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Specimen Manifest"
 msgid "Specimen Status"
 msgstr "Manifeste d'échantillons"
 
 #: covid-19/management/generate-export-drc.php:92
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Specimen Manifest"
 msgid "Specimen Type"
 msgstr "Manifeste d'échantillons"
 
 #: covid-19/management/generate-export-drc.php:95
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Test Request"
 msgid "Test Method"
 msgstr "Demandes de test"
 
 #: covid-19/management/generate-export-drc.php:97
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Date result released"
 msgstr "Date de publication du résultat"
@@ -7096,7 +7096,7 @@ msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
 
 #: covid-19/requests/covid-19-requests.php:326
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
+#: covid-19/requests/export-covid19-requests.php:79
 #: tb/requests/tb-requests.php:314
 msgid "Case ID"
 msgstr "No du Cas"
@@ -7200,8 +7200,8 @@ msgstr "Voir la demande"
 msgid "Update Request"
 msgstr "Mettre à jour la demande"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #: covid-19/results/add-covid-19-qc-data.php:142
 #: covid-19/results/edit-covid-19-qc-data.php:153
 #, fuzzy
@@ -7209,54 +7209,54 @@ msgstr "Mettre à jour la demande"
 msgid "Testing Point"
 msgstr "Labo de test"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Lab staff Assigned"
 msgstr "Personnel de laboratoire affecté"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Source Of Alert / POE"
 msgstr "Source d’alerte / POE"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 msgid "Health Facility/POE County"
 msgstr "Établissement de santé/comté de POE"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Select Facilities"
 msgid "Health Facility/POE State"
 msgstr "Sélectionnez les structures"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Select Facilities"
 msgid "Health Facility/POE"
 msgstr "Sélectionnez les structures"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient Name"
 msgid "Patient State"
 msgstr "Nom du patient"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient ID"
 msgid "Patient County"
 msgstr "No Patient"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:83
+#: covid-19/requests/export-covid19-requests.php:79
+#: covid-19/requests/export-covid19-requests.php:83
 #, fuzzy
 #| msgid "Patient Name"
 msgid "Patient City/Village"

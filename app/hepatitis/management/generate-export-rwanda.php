@@ -23,68 +23,11 @@ $hepatitisResults = $hepatitisService->getHepatitisResults();
 if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['hepatitisResultQuery']);
-
-	$excel = new Spreadsheet();
+	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
-	$sheet = $excel->getActiveSheet();
-
-	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 
 	$colNo = 1;
-
-	// $styleArray = array(
-	// 	'font' => array(
-	// 		'bold' => true,
-	// 		'size' => 12,
-	// 	),
-	// 	'alignment' => array(
-	// 		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	// 		'vertical' => Alignment::VERTICAL_CENTER,
-	// 	),
-	// 	'borders' => array(
-	// 		'outline' => array(
-	// 			'style' => Border::BORDER_THIN,
-	// 		),
-	// 	)
-	// );
-
-	// $borderStyle = array(
-	// 	'alignment' => array(
-	// 		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	// 	),
-	// 	'borders' => array(
-	// 		'outline' => array(
-	// 			'style' => Border::BORDER_THIN,
-	// 		),
-	// 	)
-	// );
-
-	$sheet->mergeCells('A1:AG1');
-	$nameValue = '';
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-	if ($_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
-		}
-	}
-	//$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
-
 	$no = 1;
-	$sysmtomsArr = [];
-	$comorbiditiesArr = [];
 	foreach ($rResult as $aRow) {
 		$row = [];
 		//date of birth
@@ -150,6 +93,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$row[] = $hepatitisResults[$aRow['result']];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
@@ -157,17 +101,57 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$no++;
 	}
 
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-			$colNo++;
+
+	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 5000) {
+		$csvArray = array_merge(array($headings), $output);
+		$fileName = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$csvFile = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName, 'w');
+		foreach ($csvArray as $row) {
+			fputcsv($csvFile, $row);
 		}
+		fclose($csvFile);
+		echo $fileName;
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->mergeCells('A1:AG1');
+		$nameValue = '';
+
+		$colNo = 1;
+
+
+		foreach ($_POST as $key => $value) {
+			if (trim($value) != '' && trim($value) != '-- Select --') {
+				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+			}
+		}
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+		if ($_POST['withAlphaNum'] == 'yes') {
+			foreach ($headings as $field => $value) {
+				$string = str_replace(' ', '', $value);
+				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+				$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+					->setValueExplicit(html_entity_decode($value));
+				$colNo++;
+			}
+		} else {
+			foreach ($headings as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+				$colNo++;
+			}
+		}
+		//$start = (count($output)) + 2;
+		foreach ($output as $rowNo => $rowData) {
+			$colNo = 1;
+			$rRowCount = $rowNo + 4;
+			foreach ($rowData as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+				$colNo++;
+			}
+		}
+		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$fileName = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+		$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName);
+		echo $fileName;
 	}
-	$writer = IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	echo $filename;
 }

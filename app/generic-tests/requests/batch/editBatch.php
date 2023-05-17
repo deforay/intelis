@@ -308,7 +308,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-
+		getSampleCodeDetails();
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -548,7 +548,7 @@ startDate: moment().subtract(28, 'days'),
 		} else {
 			breastfeeding = $('input[name=breastfeeding]:checked').val();
 		}
-		$.post("/vl/batch/getSampleCodeDetails.php", {
+		$.post("/generic-tests/batch/getSampleCodeDetails.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				fName: fName,
 				sName: sName,

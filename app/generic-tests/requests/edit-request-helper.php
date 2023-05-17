@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
-$vlTestReasonTable = "r_vl_test_reasons";
+$vlTestReasonTable = "r_generic_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
 $vlResult = null;
@@ -147,7 +147,7 @@ try {
      }
 
      if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
-          $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
+          $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
           $rejectionResult = $db->rawQuery($rejectionReasonQuery);
           if (!isset($rejectionResult[0]['rejection_reason_id'])) {
                $data = array(
@@ -156,7 +156,7 @@ try {
                     'rejection_reason_status' => 'active',
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
                );
-               $id = $db->insert('r_vl_sample_rejection_reasons', $data);
+               $id = $db->insert('r_generic_sample_rejection_reasons', $data);
                $_POST['rejectionReason'] = $id;
           } else {
                $_POST['rejectionReason'] = $rejectionResult[0]['rejection_reason_id'];

@@ -1256,6 +1256,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_interpret_and_convert_results" class="col-lg-2 control-label"><?php echo _("Interpret and Convert Lab Test Results"); ?></label>
+												<div class="col-lg-4">
+													<select id="generic_interpret_and_convert_results" name="generic_interpret_and_convert_results" type="text" class="form-control readPage" title="<?php echo _('Please select Interpret and Convert Lab Test Results'); ?>">
+														<option value=""><?php echo _("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['generic_interpret_and_convert_results']) && $arr['generic_interpret_and_convert_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
+														<option value="no" <?php echo (isset($arr['generic_interpret_and_convert_results']) && $arr['generic_interpret_and_convert_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						<?php } ?>
