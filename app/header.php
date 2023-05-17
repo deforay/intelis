@@ -366,12 +366,16 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<ul class="treeview-menu">
 											<?php if (isset($_SESSION['privileges']) && in_array("roles.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu roleMenu">
-													<a href="/roles/roles.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Roles"); ?></a>
+													<a href="/roles/roles.php" data-inner-pages="<?= base64_encode('/roles/addRole.php') . ';' . base64_encode('/roles/editRole.php'); ?>">
+														<span class="fa-solid fa-caret-right"></span> <?php echo _("Roles"); ?>
+													</a>
 												</li>
 											<?php }
 											if (isset($_SESSION['privileges']) && in_array("users.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu userMenu">
-													<a href="/users/users.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Users"); ?></a>
+													<a href="/users/users.php" data-inner-pages="<?= base64_encode('/users/addUser.php') . ';' . base64_encode('/users/editUser.php'); ?>">
+														<span class="fa-solid fa-caret-right"></span> <?php echo _("Users"); ?>
+													</a>
 												</li>
 											<?php }
 											?>
