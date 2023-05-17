@@ -109,6 +109,8 @@ class ApiAuthMiddleware implements MiddlewareInterface
             ($uri === '/api/v1.1/user/save-user-profile.php' && !empty($input['x-api-key']))
         ) {
             return true;
+        } else {
+            return false;
         }
     }
 }
