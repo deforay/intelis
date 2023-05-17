@@ -39,9 +39,9 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$output = [];
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status","Comments", "Funding Source", "Implementing Partner");
 	} else {
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched","Result Status", "Comments", "Funding Source", "Implementing Partner");
 	}
 	if ($sarr['sc_user_type'] == 'standalone') {
 		if (($key = array_search('Remote Sample Code', $headings)) !== false) {
@@ -209,6 +209,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 		$row[] = ($aRow['hbv_vl_result']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = $resultDispatchedDate;
+		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;

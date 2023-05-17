@@ -28,7 +28,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 	$output = [];
 	$sheet = $excel->getActiveSheet();
 
-	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status","Comments", "Funding Source", "Implementing Partner");
 
 	$colNo = 1;
 
@@ -150,6 +150,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$row[] = $hepatitisResults[$aRow['result']];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;

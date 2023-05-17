@@ -97,19 +97,7 @@ foreach ($testPlatformResult as $machine) {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-4 col-md-4">
-					<div class="form-group" style="margin-left:30px;">
-						<label for="testType">Test Type</label>
-						<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchCodeForm(this);">
-							<option value=""> -- Select -- </option>
-							<?php foreach ($testTypeResult as $testType) { ?>
-								<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code'];?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
-							<?php } ?>
-						</select>
-					</div>
-				</div>
-			</div>
+			
 			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 					<th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
