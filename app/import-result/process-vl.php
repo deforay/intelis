@@ -1,10 +1,21 @@
 <?php
 
-// this file is included in /import-result/procesImportedResults.php
+// this file is included in /import-result/processImportedResults.php
 
-use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -15,7 +26,7 @@ try {
     $arr = $general->getGlobalConfig();
     $printSampleCode = [];
 
-    $importNonMatching = !((isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no'));
+    $importNonMatching = !(isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no');
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
     $result = '';
@@ -24,8 +35,8 @@ try {
     $rejectedReasonId = explode(",", $_POST['rejectReasonId']);
     if ($_POST['value'] != '') {
         for ($i = 0; $i < count($id); $i++) {
-            $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by ='$importedBy' AND temp_sample_id='" . $id[$i] . "'";
-            $rResult = $db->rawQuery($sQuery);
+            $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";
+            $rResult = $db->rawQuery($sQuery, [$importedBy], $id[$i]);
             $fileName = $rResult[0]['import_machine_file_name'];
 
             if (isset($rResult[0]['lab_tech_comments']) && $rResult[0]['lab_tech_comments'] != "") {
@@ -75,12 +86,18 @@ try {
                 }
                 $data['status'] = $status[$i];
 
-                $bquery = "SELECT * FROM batch_details WHERE batch_code='" . $rResult[0]['batch_code'] . "'";
-                $bvlResult = $db->rawQuery($bquery);
+                $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
+                $bvlResult = $db->rawQuery($bquery, [$rResult[0]['batch_code']]);
                 if ($bvlResult) {
                     $data['batch_id'] = $bvlResult[0]['batch_id'];
                 } else {
-                    $batchResult = $db->insert('batch_details', array('test_type' => 'vl', 'batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
+                    $batchResult = $db->insert('batch_details', [
+                        'test_type' => 'vl',
+                        'batch_code' => $rResult[0]['batch_code'],
+                        'batch_code_key' => $rResult[0]['batch_code_key'],
+                        'sent_mail' => 'no',
+                        'request_created_datetime' => DateUtility::getCurrentDateTime()
+                    ]);
                     $data['batch_id'] = $db->getInsertId();
                 }
 
@@ -99,7 +116,7 @@ try {
                     'result_value_text' => $rResult[0]['result_value_text'],
                     'result_value_absolute_decimal' => $rResult[0]['result_value_absolute_decimal'],
                     'result' => $rResult[0]['result'],
-                    'sample_tested_datetime' => $rResult[0]['sample_tested_datetime'],
+                    'sample_tested_datetime' => $rResult[0]['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
                     'lab_id' => $rResult[0]['lab_id'],
                     'import_machine_file_name' => $rResult[0]['import_machine_file_name'],
                     'manual_result_entry' => 'no',
@@ -111,8 +128,6 @@ try {
                     $data['batch_code'] = $rResult[0]['batch_code'];
                     $data['sample_type'] = $rResult[0]['sample_type'];
                     $data['vl_test_platform'] = $rResult[0]['vl_test_platform'];
-                    //$data['last_modified_by']=$rResult[0]['result_reviewed_by'];
-                    //$data['last_modified_datetime']=\App\Utilities\DateUtility::getCurrentDateTime();
                     $data['status'] = $status[$i];
                     $data['import_batch_tracking'] = $_SESSION['controllertrack'];
                     $result = $db->insert('hold_sample_import', $data);
@@ -143,27 +158,32 @@ try {
 
                         if (!empty(trim($rResult[0]['result_value_text'])) && $rResult[0]['result_value_text'] != '') {
                             $data['result'] = $rResult[0]['result_value_text'];
-                        } else if ($rResult[0]['result_value_absolute'] != '') {
+                        } elseif ($rResult[0]['result_value_absolute'] != '') {
                             $data['result'] = $rResult[0]['result_value_absolute'];
-                        } else if ($rResult[0]['result_value_log'] != '') {
+                        } elseif ($rResult[0]['result_value_log'] != '') {
                             $data['result'] = $rResult[0]['result_value_log'];
                         }
                     }
                     //get bacth code
-                    $bquery = "SELECT * FROM batch_details WHERE batch_code='" . $rResult[0]['batch_code'] . "'";
-                    $bvlResult = $db->rawQuery($bquery);
+                    $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
+                    $bvlResult = $db->rawQuery($bquery, [$rResult[0]['batch_code']]);
                     if ($bvlResult) {
                         $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
                     } else {
-                        $batchResult = $db->insert('batch_details', array('batch_code' => $rResult[0]['batch_code'], 'batch_code_key' => $rResult[0]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
+                        $batchResult = $db->insert('batch_details', [
+                            'batch_code' => $rResult[0]['batch_code'],
+                            'batch_code_key' => $rResult[0]['batch_code_key'],
+                            'sent_mail' => 'no',
+                            'request_created_datetime' => DateUtility::getCurrentDateTime()
+                        ]);
                         $data['sample_batch_id'] = $db->getInsertId();
                     }
 
-                    $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code='" . $sampleVal . "'";
-                    $vlResult = $db->rawQuery($query);
+                    $query = "SELECT vl_sample_id,result FROM form_vl WHERE sample_code= ?";
+                    $vlResult = $db->rawQuery($query, [$sampleVal]);
                     $data['result_status'] = $status[$i];
 
-                    $vlService = ContainerRegistry::get(VlService::class);
+
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
@@ -173,7 +193,7 @@ try {
                     }
 
                     $data['sample_code'] = $rResult[0]['sample_code'];
-                    if (count($vlResult) > 0) {
+                    if (!empty($vlResult)) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
 
@@ -241,7 +261,6 @@ try {
                 'manual_result_entry' => 'no',
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
-                //'result_status'=>'7',                
                 'vl_test_platform' => $accResult[$i]['vl_test_platform'],
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
             );
@@ -262,14 +281,13 @@ try {
 
                 if (!empty(trim($accResult[$i]['result_value_text'])) && $accResult[$i]['result_value_text'] != '') {
                     $data['result'] = trim($accResult[$i]['result_value_text']);
-                } else if ($accResult[$i]['result_value_absolute'] != '') {
+                } elseif ($accResult[$i]['result_value_absolute'] != '') {
                     $data['result'] = $accResult[$i]['result_value_absolute'];
-                } else if ($accResult[$i]['result_value_log'] != '') {
+                } elseif ($accResult[$i]['result_value_log'] != '') {
                     $data['result'] = $accResult[$i]['result_value_log'];
                 }
             }
 
-            $vlService = ContainerRegistry::get(VlService::class);
             $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
@@ -279,12 +297,17 @@ try {
             }
 
             //get bacth code
-            $bquery = "SELECT * FROM batch_details WHERE batch_code='" . $accResult[$i]['batch_code'] . "'";
-            $bvlResult = $db->rawQuery($bquery);
+            $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";
+            $bvlResult = $db->rawQuery($bquery, [$accResult[$i]['batch_code']]);
             if ($bvlResult) {
                 $data['sample_batch_id'] = $bvlResult[0]['batch_id'];
             } else {
-                $batchResult = $db->insert('batch_details', array('batch_code' => $accResult[$i]['batch_code'], 'batch_code_key' => $accResult[$i]['batch_code_key'], 'sent_mail' => 'no', 'request_created_datetime' => DateUtility::getCurrentDateTime()));
+                $batchResult = $db->insert('batch_details', [
+                    'batch_code' => $accResult[$i]['batch_code'],
+                    'batch_code_key' => $accResult[$i]['batch_code_key'],
+                    'sent_mail' => 'no',
+                    'request_created_datetime' => DateUtility::getCurrentDateTime()
+                ]);
                 $data['sample_batch_id'] = $db->getInsertId();
             }
             $data['data_sync'] = 0;
@@ -304,22 +327,16 @@ try {
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
         }
     }
-    //$sCode = implode(', ', $printSampleCode);
-    // $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l_f.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,acd.art_code,rst.sample_name as routineSampleName,fst.sample_name as failureSampleName,sst.sample_name as suspectedSampleName,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.last_vl_sample_type_routine LEFT JOIN r_vl_sample_type as fst ON fst.sample_id=vl.last_vl_sample_type_failure_ac LEFT JOIN r_vl_sample_type as sst ON sst.sample_id=vl.last_vl_sample_type_failure LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-    // $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
-    // $_SESSION['vlRequestSearchResultQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code where imported_by ='$importedBy' AND tsr.sample_type='s'";
-    $stResult = $db->rawQuery($stQuery);
+    $stQuery = "SELECT *
+                    FROM temp_sample_import as tsr
+                    LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code
+                    WHERE imported_by =? AND tsr.sample_type='s'";
+    $stResult = $db->rawQuery($stQuery, [$importedBy]);
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $general->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
-
-
-    //if (!$stResult) {
-    //    echo "importedStatistics.php";
-    //}
 
     echo "importedStatistics.php";
 } catch (Exception $exc) {
