@@ -174,7 +174,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	$(document).ready(function() {
 
 		$(".allMenu").removeClass('active');
-		let url = window.location.pathname;
+		let url = window.location.pathname + window.location.search;
 		$('a[href="' + url + '"]').parent().addClass('active');
 		$('a[href="' + url + '"]').parents('li.treeview').addClass('active');
 		$('a[data-inner-pages]').each(function() {
