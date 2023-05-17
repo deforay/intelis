@@ -92,6 +92,12 @@ class ApiAuthMiddleware implements MiddlewareInterface
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
+        $input = $request->getParsedBody();
+
+        if (!empty($input['x-api-key'])) {
+            return true;
+        }
+
         //error_log($uri);
 
         $excludedRoutes = [
@@ -102,13 +108,6 @@ class ApiAuthMiddleware implements MiddlewareInterface
             // Add other routes to exclude from the authentication check here
         ];
 
-        $input = $request->getParsedBody();
-
-        if (
-            in_array($uri, $excludedRoutes, true) ||
-            ($uri === '/api/user/save-user-profile.php' && !empty($input['x-api-key']))
-        ) {
-            return true;
-        }
+        return in_array($uri, $excludedRoutes, true);
     }
 }
