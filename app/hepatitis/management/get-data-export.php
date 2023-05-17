@@ -125,7 +125,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                b.batch_code,
                ts.status_name,
                f.facility_name,
-               l_f.facility_name as labName,
+               l.facility_name as labName,
                f.facility_code,
                f.facility_state,
                f.facility_district,
@@ -138,7 +138,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                
                LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-               LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+               LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
