@@ -4008,3 +4008,5 @@ CREATE TABLE `generic_test_failure_reason_map` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Interpret and Convert Lab Test Results', 'generic_interpret_and_convert_results', 'no', 'generic', NULL, NULL, NULL, 'active');
+
+ALTER TABLE `instruments` ADD `lab_id` INT NULL DEFAULT NULL AFTER `machine_name`;

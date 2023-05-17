@@ -400,6 +400,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 
 		$('#supportedTests').on('select2:select', function(e) {
 			var data = $('#supportedTests').val();
+			console.log(data);
 			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
 			$.each(data, function(key, value) {
 				if (value != "") {
