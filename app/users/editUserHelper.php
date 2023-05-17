@@ -135,8 +135,7 @@ try {
             $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = 'inactive';
-            $_POST['userId'] = base64_encode($data['user_id']);
-
+            $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($_POST),

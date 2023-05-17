@@ -31,9 +31,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-
-
-
 // error_log("------ USER API START-----");
 // error_log($origJson);
 // error_log("------ USER API END -----");
