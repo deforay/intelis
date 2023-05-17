@@ -53,7 +53,7 @@ try {
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
             $imageName = "usign-" . $userId . "." . $extension;
-            $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName);
+            $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new ImageResizeUtility();
                 $resizeObj = $resizeObj->setFileName($signatureImagePath);
@@ -131,8 +131,7 @@ try {
             $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = 'inactive';
-            $_POST['userId'] = base64_encode($data['user_id']);
-
+            $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($_POST),
