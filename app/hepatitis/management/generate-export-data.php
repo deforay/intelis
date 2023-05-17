@@ -17,10 +17,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var HepatitisService $hepatitisService */
-$hepatitisService = ContainerRegistry::get(HepatitisService::class);
-$hepatitisResults = $hepatitisService->gethepatitisResults();
-
 $sessionQuery = $_SESSION['hepatitisResultQuery'];
 if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	$rResult = $db->rawQuery($sessionQuery);
@@ -40,11 +36,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	foreach ($rResult as $aRow) {
 		$row = [];
 
-		$dob = '';
-		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
-		}
-		//set gender
+		//Gender
 		switch (strtolower($aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
@@ -102,7 +94,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 			$row[] = $aRow['patient_id'];
 			$row[] = $patientFname . " " . $patientLname;
 		}
-		$row[] = $dob;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
@@ -122,7 +114,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 	}
 
 
-	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 10000) {
+	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 5000) {
 		$csvArray = array_merge(array($headings), $output);
 		$fileName = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$csvFile = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName, 'w');

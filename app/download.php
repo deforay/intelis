@@ -22,6 +22,8 @@ $allowedMimeTypes = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/vnd.ms-excel',
+    'text/csv',
+    'text/plain'
     // 'application/msword',
     // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];

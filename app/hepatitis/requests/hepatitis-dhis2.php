@@ -209,10 +209,10 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
-									
-										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em> Receive Test Requests from DHIS2</a>
-										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send Results to DHIS2</a>
-								
+
+									<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em> Receive Test Requests from DHIS2</a>
+									<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send Results to DHIS2</a>
+
 								<?php } ?>
 
 							</td>
@@ -221,7 +221,7 @@ foreach ($srcResults as $list) {
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -332,14 +332,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -602,15 +602,15 @@ startDate: moment().subtract(28, 'days'),
 			.done(function(data) {
 				var response = JSON.parse(data);
 				if (response.received > 0) {
-					msg  = '<h3>No. of Records Received : ' + response.received + ' <br><img src="/assets/img/loading.gif" /></h3>'
-				}else{
-					msg =  '<h3>No Records received from DHIS2 for the selected date range</h3>'
+					msg = '<h3>No. of Records Received : ' + response.received + ' <br><img src="/assets/img/loading.gif" /></h3>'
+				} else {
+					msg = '<h3>No Records received from DHIS2 for the selected date range</h3>'
 				}
 				setTimeout(function() {
-						$.blockUI({
-							message: msg
-						});
-					}, 2500);
+					$.blockUI({
+						message: msg
+					});
+				}, 2500);
 				if (response.processed > 0) {
 					setTimeout(function() {
 						$.blockUI({
@@ -669,7 +669,7 @@ startDate: moment().subtract(28, 'days'),
 
 	function exportAllPendingHepatitisRequest() {
 		// $.blockUI();
-		$.post("/hepatitis/requests/generate-pending-hepatitis-request-excel.php", {
+		$.post("/hepatitis/requests/export-hepatitis-requests.php", {
 				reqSampleType: $('#requestSampleType').val()
 			},
 			function(data) {

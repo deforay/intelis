@@ -597,7 +597,7 @@ msgstr "Batch"
 
 #: covid-19/batch/covid-19-add-batch.php:85 covid-19/batch/covid-19-edit-batch.php:141
 #: covid-19/management/generate-export-drc.php:76
-#: covid-19/requests/generate-pending-covid19-request-excel.php:74
+#: covid-19/requests/export-covid19-requests.php:74
 #: hepatitis/batch/hepatitis-add-batch.php:85 vl/batch/addBatch.php:95
 msgid "Testing Platform"
 msgstr "ແພລຕຟອມການທົດສອບ"
@@ -780,7 +780,7 @@ msgstr "ກະລຸນາເລືອກຊື່ສະຖານທີ່"
 #: covid-19/management/covid-19-sample-rejection-report.php:42
 #: covid-19/management/covid-19-sample-status.php:49 covid-19/management/covid-19-sample-status.php:104
 #: covid-19/management/generate-export-drc.php:67 covid-19/requests/covid-19-requests.php:63
-#: covid-19/requests/generate-pending-covid19-request-excel.php:66
+#: covid-19/requests/export-covid19-requests.php:66
 #: covid-19/results/covid-19-failed-results.php:42 covid-19/results/covid-19-manual-results.php:59
 #: covid-19/results/covid-19-print-results.php:63 covid-19/results/covid-19-print-results.php:180
 #: covid-19/results/covid-19-result-status.php:89 covid-19/results/covid-19-result-status.php:166
@@ -1627,7 +1627,7 @@ msgstr "ການສົ່ງອອກສູ່ excel"
 #: covid-19/management/covid-19-clinic-report.php:365 covid-19/management/covid-19-export-data.php:179
 #: covid-19/management/covid-19-export-data.php:221 covid-19/management/generate-export-drc.php:24
 #: covid-19/requests/addSamplesFromManifest.php:51 covid-19/requests/covid-19-requests.php:205
-#: covid-19/requests/generate-pending-covid19-request-excel.php:24
+#: covid-19/requests/export-covid19-requests.php:24
 #: covid-19/results/covid-19-failed-results.php:113 covid-19/results/covid-19-manual-results.php:106
 #: covid-19/results/covid-19-manual-results.php:159 covid-19/results/covid-19-print-results.php:112
 #: covid-19/results/covid-19-print-results.php:154 covid-19/results/covid-19-print-results.php:229
@@ -1862,7 +1862,7 @@ msgid "Caretaker Phone No."
 msgstr "ໂທລະສັບມືຖື Caretaker No."
 
 #: covid-19/management/covid-19-clinic-report.php:145 covid-19/management/generate-export-drc.php:75
-#: covid-19/requests/generate-pending-covid19-request-excel.php:73
+#: covid-19/requests/export-covid19-requests.php:73
 #: eid/management/eid-clinic-report.php:147 global-config/editGlobalConfig.php:1107
 #: hepatitis/management/hepatitis-clinic-report.php:147 tb/management/tb-clinic-report.php:145
 #: vl/program-management/highViralLoad.php:160 vl/program-management/vlControlReport.php:34
@@ -1888,7 +1888,7 @@ msgstr "Lab ການທົດສອບ"
 #: covid-19/management/covid-19-export-data.php:201 covid-19/management/covid-19-export-data.php:230
 #: covid-19/management/generate-export-drc.php:78 covid-19/requests/addSamplesFromManifest.php:62
 #: covid-19/requests/covid-19-requests.php:220
-#: covid-19/requests/generate-pending-covid19-request-excel.php:76
+#: covid-19/requests/export-covid19-requests.php:76
 #: covid-19/results/covid-19-failed-results.php:125 covid-19/results/covid-19-manual-results.php:131
 #: covid-19/results/covid-19-manual-results.php:167 covid-19/results/covid-19-print-results.php:137
 #: covid-19/results/covid-19-print-results.php:162 covid-19/results/covid-19-print-results.php:254
@@ -2221,7 +2221,7 @@ msgstr "ລະຫັດຕົວຢ່າງຫ່າງໄກສອກຫຼີ
 #: covid-19/management/covid-19-export-data.php:195 covid-19/management/covid-19-export-data.php:227
 #: covid-19/management/generate-export-drc.php:32 covid-19/requests/addSamplesFromManifest.php:59
 #: covid-19/requests/covid-19-requests.php:217
-#: covid-19/requests/generate-pending-covid19-request-excel.php:33
+#: covid-19/requests/export-covid19-requests.php:33
 #: covid-19/results/covid-19-manual-results.php:166 covid-19/results/covid-19-print-results.php:160
 #: covid-19/results/covid-19-print-results.php:276 hepatitis/management/hepatitis-export-data.php:182
 #: hepatitis/management/hepatitis-export-data.php:214
@@ -2457,12 +2457,12 @@ msgid "Apply"
 msgstr "ສະຫມັກ"
 
 #: covid-19/management/generate-export-drc.php:23
-#: covid-19/requests/generate-pending-covid19-request-excel.php:23
+#: covid-19/requests/export-covid19-requests.php:23
 msgid "S. No."
 msgstr "ສ. No."
 
 #: covid-19/management/generate-export-drc.php:25
-#: covid-19/requests/generate-pending-covid19-request-excel.php:25
+#: covid-19/requests/export-covid19-requests.php:25
 msgid "Testing Lab Name"
 msgstr "ການທົດສອບຊື່ Lab"
 
@@ -2479,38 +2479,38 @@ msgid "State"
 msgstr "ລັດ"
 
 #: covid-19/management/generate-export-drc.php:33
-#: covid-19/requests/generate-pending-covid19-request-excel.php:34
+#: covid-19/requests/export-covid19-requests.php:34
 msgid "Patient DoB"
 msgstr "ຄົນເຈັບ DoB"
 
 #: covid-19/management/generate-export-drc.php:34
-#: covid-19/requests/generate-pending-covid19-request-excel.php:35
+#: covid-19/requests/export-covid19-requests.php:35
 msgid "Patient Age"
 msgstr "ອາຍຸຂອງຄົນເຈັບ"
 
 #: covid-19/management/generate-export-drc.php:35
-#: covid-19/requests/generate-pending-covid19-request-excel.php:36 vl/batch/addBatch.php:138
+#: covid-19/requests/export-covid19-requests.php:36 vl/batch/addBatch.php:138
 msgid "Patient Gender"
 msgstr "ເພດຄົນເຈັບ"
 
 #: covid-19/management/generate-export-drc.php:36
-#: covid-19/requests/generate-pending-covid19-request-excel.php:37 vl/batch/addBatch.php:160
+#: covid-19/requests/export-covid19-requests.php:37 vl/batch/addBatch.php:160
 #: vl/result-mail/editTestResultEmailConfig.php:94
 msgid "Is Patient Pregnant"
 msgstr "ເປັນຄົນອົດອາຫານຖືພາ"
 
 #: covid-19/management/generate-export-drc.php:37
-#: covid-19/requests/generate-pending-covid19-request-excel.php:38
+#: covid-19/requests/export-covid19-requests.php:38
 msgid "Patient Phone No."
 msgstr "ໂທລະສັບຄົນເຈັບ ເລກທີ."
 
 #: covid-19/management/generate-export-drc.php:38
-#: covid-19/requests/generate-pending-covid19-request-excel.php:39
+#: covid-19/requests/export-covid19-requests.php:39
 msgid "Patient Email"
 msgstr "ອີເມວຂອງຄົນເຈັບ"
 
 #: covid-19/management/generate-export-drc.php:39
-#: covid-19/requests/generate-pending-covid19-request-excel.php:40
+#: covid-19/requests/export-covid19-requests.php:40
 msgid "Patient Address"
 msgstr "ທີ່ຢູ່ຂອງຄົນເຈັບ"
 
@@ -2519,17 +2519,17 @@ msgid "Patient Province"
 msgstr "ແຂວງຄົນເຈັບ"
 
 #: covid-19/management/generate-export-drc.php:42
-#: covid-19/requests/generate-pending-covid19-request-excel.php:44
+#: covid-19/requests/export-covid19-requests.php:44
 msgid "Nationality"
 msgstr "ຊາດ"
 
 #: covid-19/management/generate-export-drc.php:43
-#: covid-19/requests/generate-pending-covid19-request-excel.php:45
+#: covid-19/requests/export-covid19-requests.php:45
 msgid "Fever/Temperature"
 msgstr "ໄຂ້/ອຸນຫະພູມ"
 
 #: covid-19/management/generate-export-drc.php:44
-#: covid-19/requests/generate-pending-covid19-request-excel.php:46
+#: covid-19/requests/export-covid19-requests.php:46
 msgid "Temprature Measurement"
 msgstr "ການວັດແທກTemprature"
 
@@ -2546,137 +2546,137 @@ msgid "Asymptomatic"
 msgstr "ບໍ່ສະແດງອາການ"
 
 #: covid-19/management/generate-export-drc.php:48
-#: covid-19/requests/generate-pending-covid19-request-excel.php:47
+#: covid-19/requests/export-covid19-requests.php:47
 msgid "Symptoms Detected"
 msgstr "ອາການຖືກກວດພົບ"
 
 #: covid-19/management/generate-export-drc.php:49
-#: covid-19/requests/generate-pending-covid19-request-excel.php:48
+#: covid-19/requests/export-covid19-requests.php:48
 msgid "Medical History"
 msgstr "ປະຫວັດການແພດ"
 
 #: covid-19/management/generate-export-drc.php:50
-#: covid-19/requests/generate-pending-covid19-request-excel.php:49
+#: covid-19/requests/export-covid19-requests.php:49
 msgid "Comorbidities"
 msgstr "Comorbidities"
 
 #: covid-19/management/generate-export-drc.php:51
-#: covid-19/requests/generate-pending-covid19-request-excel.php:50
+#: covid-19/requests/export-covid19-requests.php:50
 msgid "Recenty Hospitalized?"
 msgstr "Recenty Hospitalized?"
 
 #: covid-19/management/generate-export-drc.php:52
-#: covid-19/requests/generate-pending-covid19-request-excel.php:51
+#: covid-19/requests/export-covid19-requests.php:51
 msgid "Patient Lives With Children"
 msgstr "ຄົນເຈັບດໍາລົງຊີວິດກັບເດັກນ້ອຍ"
 
 #: covid-19/management/generate-export-drc.php:53
-#: covid-19/requests/generate-pending-covid19-request-excel.php:52
+#: covid-19/requests/export-covid19-requests.php:52
 msgid "Patient Cares for Children"
 msgstr "ການດູແລຄົນເຈັບສໍາລັບເດັກ"
 
 #: covid-19/management/generate-export-drc.php:54
-#: covid-19/requests/generate-pending-covid19-request-excel.php:53
+#: covid-19/requests/export-covid19-requests.php:53
 msgid "Close Contacts"
 msgstr "Close Contacts"
 
 #: covid-19/management/generate-export-drc.php:55
-#: covid-19/requests/generate-pending-covid19-request-excel.php:54
+#: covid-19/requests/export-covid19-requests.php:54
 msgid "Has Recent Travel History"
 msgstr "ມີປະຫວັດການເດີນທາງໃນມໍ່ໆມານີ້"
 
 #: covid-19/management/generate-export-drc.php:56
-#: covid-19/requests/generate-pending-covid19-request-excel.php:55
+#: covid-19/requests/export-covid19-requests.php:55
 msgid "Country Names"
 msgstr "ຊື່ປະເທດ"
 
 #: covid-19/management/generate-export-drc.php:57
-#: covid-19/requests/generate-pending-covid19-request-excel.php:56
+#: covid-19/requests/export-covid19-requests.php:56
 msgid "Travel Return Date"
 msgstr "ວັນທີການເດີນທາງກັບຄືນ"
 
 #: covid-19/management/generate-export-drc.php:58
-#: covid-19/requests/generate-pending-covid19-request-excel.php:57
+#: covid-19/requests/export-covid19-requests.php:57
 msgid "Airline"
 msgstr "ສາຍການບິນ"
 
 #: covid-19/management/generate-export-drc.php:59
-#: covid-19/requests/generate-pending-covid19-request-excel.php:58
+#: covid-19/requests/export-covid19-requests.php:58
 msgid "Seat No."
 msgstr "ບ່ອນນັ່ງ No."
 
 #: covid-19/management/generate-export-drc.php:60
-#: covid-19/requests/generate-pending-covid19-request-excel.php:59
+#: covid-19/requests/export-covid19-requests.php:59
 msgid "Arrival Date/Time"
 msgstr "ວັນທີທີ່ມາເຖິງ/ເວລາ"
 
 #: covid-19/management/generate-export-drc.php:61
-#: covid-19/requests/generate-pending-covid19-request-excel.php:60
+#: covid-19/requests/export-covid19-requests.php:60
 msgid "Departure Airport"
 msgstr "ສະຫນາມບິນອອກ"
 
 #: covid-19/management/generate-export-drc.php:62
-#: covid-19/requests/generate-pending-covid19-request-excel.php:61
+#: covid-19/requests/export-covid19-requests.php:61
 msgid "Transit"
 msgstr "ການເຊື່ອມຕໍ່"
 
 #: covid-19/management/generate-export-drc.php:63
-#: covid-19/requests/generate-pending-covid19-request-excel.php:62
+#: covid-19/requests/export-covid19-requests.php:62
 msgid "Reason of Visit"
 msgstr "ເຫດຜົນຂອງການຢ້ຽມຢາມ"
 
 #: covid-19/management/generate-export-drc.php:64
-#: covid-19/requests/generate-pending-covid19-request-excel.php:63
+#: covid-19/requests/export-covid19-requests.php:63
 msgid "Number of Days Sick"
 msgstr "ຈໍານວນວັນເຈັບປ່ວຍ"
 
 #: covid-19/management/generate-export-drc.php:65
-#: covid-19/requests/generate-pending-covid19-request-excel.php:64
+#: covid-19/requests/export-covid19-requests.php:64
 msgid "Date of Symptoms Onset"
 msgstr "ວັນທີຂອງອາການ Onset"
 
 #: covid-19/management/generate-export-drc.php:66
-#: covid-19/requests/generate-pending-covid19-request-excel.php:65
+#: covid-19/requests/export-covid19-requests.php:65
 msgid "Date of Initial Consultation"
 msgstr "ວັນທີປຶກສາຫາລືເບື້ອງຕົ້ນ"
 
 #: covid-19/management/generate-export-drc.php:68 covid-19/management/generate-export-drc.php:69
-#: covid-19/requests/generate-pending-covid19-request-excel.php:67
+#: covid-19/requests/export-covid19-requests.php:67
 msgid "Reason for Test Request"
 msgstr "ເຫດຜົນສໍາລັບການຮ້ອງຂໍການທົດສອບ"
 
 #: covid-19/management/generate-export-drc.php:70
-#: covid-19/requests/generate-pending-covid19-request-excel.php:68
+#: covid-19/requests/export-covid19-requests.php:68
 msgid "Date specimen received"
 msgstr "ຕົວຢ່າງວັນທີໄດ້ຮັບ"
 
 #: covid-19/management/generate-export-drc.php:71
-#: covid-19/requests/generate-pending-covid19-request-excel.php:69
+#: covid-19/requests/export-covid19-requests.php:69
 msgid "Date specimen registered"
 msgstr "ຕົວຢ່າງວັນທີທີ່ລົງທະບຽນ"
 
 #: covid-19/management/generate-export-drc.php:72
-#: covid-19/requests/generate-pending-covid19-request-excel.php:70
+#: covid-19/requests/export-covid19-requests.php:70
 msgid "Specimen Condition"
 msgstr "ສະພາບຕົວແບບ"
 
 #: covid-19/management/generate-export-drc.php:73
-#: covid-19/requests/generate-pending-covid19-request-excel.php:71
+#: covid-19/requests/export-covid19-requests.php:71
 msgid "Specimen Status"
 msgstr "ສະຖານະພາບຕົວຢ່າງ"
 
 #: covid-19/management/generate-export-drc.php:74
-#: covid-19/requests/generate-pending-covid19-request-excel.php:72
+#: covid-19/requests/export-covid19-requests.php:72
 msgid "Specimen Type"
 msgstr "ປະເພດຕົວຢ່າງ"
 
 #: covid-19/management/generate-export-drc.php:77
-#: covid-19/requests/generate-pending-covid19-request-excel.php:75
+#: covid-19/requests/export-covid19-requests.php:75
 msgid "Test Method"
 msgstr "ວິທີການທົດສອບ"
 
 #: covid-19/management/generate-export-drc.php:79
-#: covid-19/requests/generate-pending-covid19-request-excel.php:77
+#: covid-19/requests/export-covid19-requests.php:77
 msgid "Date result released"
 msgstr "ຜົນໄດ້ຮັບວັນທີຖືກປ່ອຍອອກມາ"
 
@@ -3496,7 +3496,7 @@ msgid "Quick Add Covid-19 Request"
 msgstr "Quick Add Covid-19 ຄໍາຮ້ອງຂໍ"
 
 #: covid-19/requests/covid-19-requests.php:213
-#: covid-19/requests/generate-pending-covid19-request-excel.php:32 tb/requests/tb-requests.php:190
+#: covid-19/requests/export-covid19-requests.php:32 tb/requests/tb-requests.php:190
 msgid "Case ID"
 msgstr "Id ກໍລະນີ"
 
@@ -3562,39 +3562,39 @@ msgstr "View Request"
 msgid "Update Request"
 msgstr "ອັບເດດຄໍາຮ້ອງຂໍ"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:26
+#: covid-19/requests/export-covid19-requests.php:26
 msgid "Testing Point"
 msgstr "ຈຸດທົດສອບ"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:27
+#: covid-19/requests/export-covid19-requests.php:27
 msgid "Lab staff Assigned"
 msgstr "ພະນັກງານ Lab ທີ່ໄດ້ຮັບມອບຫມາຍ"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:28
+#: covid-19/requests/export-covid19-requests.php:28
 msgid "Source Of Alert / POE"
 msgstr "Source Of Alert / POE"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:29
+#: covid-19/requests/export-covid19-requests.php:29
 msgid "Health Facility/POE County"
 msgstr "ອະນາໄມສຸຂະພາບ/POE County"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:30
+#: covid-19/requests/export-covid19-requests.php:30
 msgid "Health Facility/POE State"
 msgstr "ອະນາໄມສຸຂະພາບ/POE State"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:31
+#: covid-19/requests/export-covid19-requests.php:31
 msgid "Health Facility/POE"
 msgstr "ອະນາໄມສຸຂະພາບ/POE"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:41
+#: covid-19/requests/export-covid19-requests.php:41
 msgid "Patient State"
 msgstr "ລັດຜູ້ປ່ວຍ"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:42
+#: covid-19/requests/export-covid19-requests.php:42
 msgid "Patient County"
 msgstr "Patient County"
 
-#: covid-19/requests/generate-pending-covid19-request-excel.php:43
+#: covid-19/requests/export-covid19-requests.php:43
 msgid "Patient City/Village"
 msgstr "ເມືອງຜູ້ປ່ວຍ/ບ້ານ"
 

@@ -21,7 +21,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 $facilityId = null;
 $labId = null;
-if(isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != ""){
+if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
 	$facilityId = base64_decode($_GET['facilityId']);
 	$labId = base64_decode($_GET['labId']);
 }
@@ -122,7 +122,7 @@ foreach ($srcResults as $list) {
 
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
 							<td>
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
@@ -153,7 +153,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _('Please choose implementing partner'); ?>">
@@ -185,7 +185,7 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-							
+
 							<td><strong><?php echo _("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
@@ -250,9 +250,9 @@ foreach ($srcResults as $list) {
 							<td>
 								<input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _('Enter Child Name'); ?>" style="background:#fff;" />
 							</td>
-									</tr>
-									<tr>
-									<td><strong><?php echo _("Mother ID"); ?>&nbsp;:</strong></td>
+						</tr>
+						<tr>
+							<td><strong><?php echo _("Mother ID"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="motherId" name="motherId" class="form-control" placeholder="<?php echo _('Enter Mother ID'); ?>" style="background:#fff;" />
 							</td>
@@ -267,9 +267,9 @@ foreach ($srcResults as $list) {
 									<option value="no" selected="selected"><?php echo _("No"); ?></option>
 								</select>
 							</td>
-							</tr>
+						</tr>
 
-							
+
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -284,7 +284,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;
 							</td>
@@ -302,7 +302,7 @@ foreach ($srcResults as $list) {
 									<?php }
 								}
 								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
 							</td>
@@ -732,12 +732,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function exportAllPendingEidRequests() {
+	function exportAllEidRequests() {
 		$.blockUI();
 		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
-		$.post("generate-pending-eid-request-excel.php", {
+		$.post("export-eid-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},
@@ -746,27 +746,27 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
-					window.open('/download.php?f=' + data, '_blank');
+					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
 	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
-        $("#facilityName").html('');
-        $("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true,
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#district").html(Obj['districts']);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
+		$("#facilityName").html('');
+		$("#vlLab").html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#district").html(Obj['districts']);
+				$("#facilityName").html(Obj['facilities']);
+				$("#vlLab").html(Obj['labs']);
+			});
 	}
 
 	function getByDistrict(districtId) {
@@ -774,8 +774,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
 				districtId: districtId,
-				facilities : true,
-				labs : true,
+				facilities: true,
+				labs: true,
 			},
 			function(data) {
 				Obj = $.parseJSON(data);
