@@ -20,7 +20,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        if ($this->shouldExcludeFromAuthCheck($request)) {
+        if ($this->shouldExcludeFromAuthCheck($request) === true) {
 
             // Skip the authentication check if the request is an AJAX request,
             // a CLI request, or if the requested URI is excluded from the
@@ -109,8 +109,6 @@ class ApiAuthMiddleware implements MiddlewareInterface
             ($uri === '/api/v1.1/user/save-user-profile.php' && !empty($input['x-api-key']))
         ) {
             return true;
-        } else {
-            return false;
         }
     }
 }

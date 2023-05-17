@@ -23,7 +23,7 @@ class VlService
     protected string $shortCode = 'VL';
 
     // keep all these in lower case to make it easier to compare
-    protected array $suppressedArray = array(
+    protected array $suppressedArray = [
         'hiv-1 not detected',
         'target not detected',
         'tnd',
@@ -41,7 +41,7 @@ class VlService
         '< titer min',
         'negative',
         'negat'
-    );
+    ];
 
     protected int $suppressionLimit = 1000;
 
