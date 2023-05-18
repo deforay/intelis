@@ -3938,6 +3938,14 @@ DELETE FROM form_covid19 WHERE (lab_id, app_sample_code) IN (
     SELECT lab_id, app_sample_code
     FROM temp_table_form_covid19
 );
+ALTER TABLE `form_vl` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_generic` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
 
 ALTER TABLE `form_vl` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_eid` ADD UNIQUE( `lab_id`, `app_sample_code`);

@@ -174,19 +174,28 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		$(".allMenu").removeClass('active');
 		let url = window.location.pathname + window.location.search;
-		$('a[href="' + url + '"]').parent().addClass('active');
-		$('a[href="' + url + '"]').parents('li.treeview').addClass('active');
-		$('a[data-inner-pages]').each(function() {
-			let innerPages = $(this).data('inner-pages').split(';');
-			for (var i = 0; i < innerPages.length; i++) {
-				let fileName = atob(innerPages[i]);
-				if (url.indexOf(fileName) > -1) {
-					$(this).parent().addClass('active');
-					$(this).parents('li.treeview').addClass('active');
-					break;
+		let currentMenuItem = $('a[href="' + url + '"]');
+		if ($(currentMenuItem).length == 0) {
+			currentMenuItem = $('a[href="' + window.location.pathname + '"]');
+		}
+		$(currentMenuItem).parent().addClass('active');
+		$(currentMenuItem).parents('li.treeview').addClass('active');
+		if ($(currentMenuItem).data('inner-pages')) {
+			let innerPages = $(currentMenuItem).data('inner-pages').split(';');
+			console.log(innerPages);
+			if (innerPages.length > 0) {
+				for (var i = 0; i < innerPages.length; i++) {
+					let fileName = atob(innerPages[i]);
+					if (url.indexOf(fileName) > -1) {
+						$(currentMenuItem).parent().addClass('active');
+						$(currentMenuItem).parents('li.treeview').addClass('active');
+						break;
+					}
 				}
 			}
-		});
+		}
+
+
 
 		<?php if ($_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
 

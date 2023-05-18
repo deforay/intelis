@@ -229,6 +229,8 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
+
 /*
           * Output
           */
@@ -258,7 +260,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['child_name'];
      $row[] = $aRow['mother_id'];
      $row[] = $aRow['mother_name'];
-     $row[] = $eidResults[$aRow['result']];
+     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
      if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);

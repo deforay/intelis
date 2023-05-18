@@ -237,7 +237,7 @@ $state = $geolocationService->getProvinces("yes");
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('export-eid-results.php')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -650,7 +650,7 @@ $state = $geolocationService->getProvinces("yes");
 					alert("<?php echo _("Unable to generate excel"); ?>.");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					window.location.href = '/download.php?f=' + data;
 				}
 			});
 	}

@@ -192,18 +192,11 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;
 $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
-
-// $aResultFilterTotal = $db->rawQuery("SELECT * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id  $sWhere");
-// $iFilteredTotal = count($aResultFilterTotal);
-
-// $aResultTotal = $db->rawQuery("SELECT * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-// $iTotal = count($aResultTotal);
-
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+$_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
 
 /*
           * Output
@@ -253,7 +246,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['mother_id'];
     $row[] = $aRow['mother_name'];
     $row[] = ($aRow['facility_name']);
-    $row[] = $eidResults[$aRow['result']];
+    $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
