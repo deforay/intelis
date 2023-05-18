@@ -289,15 +289,18 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db = $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('health_facilities');
-            } else if ($dataType === 'testingLabs' && !empty($dataValues)) {
+            } elseif ($dataType === 'testingLabs' && !empty($dataValues)) {
                 $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                 $db->where('facility_id', $updatedFacilities, 'IN');
                 $id = $db->delete('testing_labs');
             }
 
-            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . $systemConfig['database']['db'] . "' AND table_name='" . $dataToSync[$dataType]['tableName'] . "'";
-            $columnList = array_map('current', $db->rawQuery($tableColumns));
-            
+            $tableColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name= ?";
+            $columnList = array_map('current', $db->rawQuery($tableColumns, [
+                $systemConfig['database']['db'],
+                $dataToSync[$dataType]['tableName']
+            ]));
+
             foreach ($dataValues as $tableDataValues) {
                 $tableData = [];
                 $updateColumns = [];
@@ -310,7 +313,7 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 }
 
                 // For users table, we do not want to sync password and few other fields
-                if ($dataType === 'users'){
+                if ($dataType === 'users') {
                     $userColumnList = array('user_id', 'user_name', 'phone_number', 'email', 'updated_datetime');
                     $tableData = array_intersect_key($tableData, array_flip($userColumnList));
                 }
