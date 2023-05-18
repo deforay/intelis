@@ -1596,8 +1596,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          testType: testType,
                     },
                     function(data) {
-                         //console.log(data);
                          data = JSON.parse(data);
+                         console.log(data);
                          if (data.facility.length > 0) {
                               $("#clinicDynamicForm").html(data.facility);
                          }
