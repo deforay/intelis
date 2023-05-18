@@ -21,6 +21,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $userId = base64_decode($_POST['userId']);
 
+if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
+    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
+}
+
+$signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
 
@@ -40,7 +46,7 @@ try {
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
-            $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage']);
+            $signatureImagePath .=  DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
             if (!empty($signatureImagePath) && file_exists($signatureImagePath)) {
                 unlink($signatureImagePath);
             }
@@ -48,12 +54,10 @@ try {
         }
 
         if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
-            }
+
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
             $imageName = "usign-" . $userId . "." . $extension;
-            $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName);
+            $signatureImagePath .=  DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $imageName;
             if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
                 $resizeObj = new ImageResizeUtility();
                 $resizeObj = $resizeObj->setFileName($signatureImagePath);
@@ -131,8 +135,7 @@ try {
             $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
             $_POST['status'] = 'inactive';
-            $_POST['userId'] = base64_encode($data['user_id']);
-
+            $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($_POST),

@@ -43,8 +43,8 @@ $primaryKey = "hepatitis_id";
 * you want to insert a non-database field (for example a counter or static image)
 */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l.facility_name',  'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
@@ -128,23 +128,23 @@ for ($i = 0; $i < count($aColumns); $i++) {
 */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name, f.facility_district,f.facility_state,
-            l_f.facility_name as labName,
-            l_f.facility_logo as facilityLogo,
-            l_f.header_text as headerText,
+            l.facility_name as labName,
+            l.facility_logo as facilityLogo,
+            l.header_text as headerText,
             f.facility_code,f.facility_state,f.facility_district,
             imp.i_partner_name,
             u_d.user_name as reviewedBy,
             a_u_d.user_name as approvedBy,
             c.iso_name as nationality,
-            rs.rejection_reason_name 
-            FROM form_hepatitis as vl 
+            rs.rejection_reason_name
+            FROM form_hepatitis as vl
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-            LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+            LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
             LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
             LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 $start_date = '';

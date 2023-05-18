@@ -341,7 +341,7 @@ class UsersService
         return  base64_encode($general->generateUUID() . "-" . $general->generateToken($size));
     }
 
-    public function getUserByUserId($userId = null): ?array
+    public function getUserByUserId(?string $userId = null): ?array
     {
         return once(function () use ($userId) {
             if (!empty($userId)) {
@@ -356,7 +356,7 @@ class UsersService
         });
     }
 
-    public function validateAuthToken($token = null): bool
+    public function validateAuthToken(?string $token = null): bool
     {
         return once(function () use ($token) {
             $result = null;
@@ -369,7 +369,7 @@ class UsersService
         });
     }
 
-    public function getAuthToken($token = null)
+    public function getAuthToken(string $token)
     {
 
         if (!empty($token)) {
@@ -415,7 +415,7 @@ class UsersService
         return $result;
     }
 
-    public function getUserRole($userId)
+    public function getUserRole(string $userId)
     {
         $query = "SELECT r.*
                     FROM roles as r
@@ -424,7 +424,7 @@ class UsersService
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function getUserRolePrivileges($userId)
+    public function getUserRolePrivileges(string $userId)
     {
         $response = [];
         $query = "SELECT r.role_id,

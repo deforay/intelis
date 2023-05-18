@@ -32,7 +32,6 @@
         "guzzlehttp/guzzle": "^7.5",
         "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.4",
-        "league/csv": "^9.8",
         "ramsey/uuid": "^4.2",
         "phpseclib/phpseclib": "^3.0",
         "hackzilla/password-generator": "^1.6",
