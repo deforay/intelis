@@ -205,9 +205,9 @@ foreach ($testPlatformResult as $machine) {
 							</div>
 						</div>
 
-						<div class="row" id="sampleDetails" style="margin: 15px;">
+						<div class="row" style="margin: 15px;">
 							<h4> <?php echo _("Sample Code"); ?></h4>
-							<div class="col-md-5">
+							<div class="col-md-5" id="sampleDetails">
 								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
@@ -225,9 +225,7 @@ foreach ($testPlatformResult as $machine) {
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
 							</div>
 						</div>
-
-
-
+						
 						<div class="row col-md-12" id="alertText" style="font-size:20px;"></div>
 					</div>
 					<!-- /.box-body -->
