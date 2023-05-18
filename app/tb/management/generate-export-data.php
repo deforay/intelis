@@ -5,16 +5,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
 /** @var MysqliDb $db */
@@ -26,6 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
+
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -33,94 +31,34 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 	$rResult = $db->rawQuery($_SESSION['tbResultQuery']);
 
-	$excel = new Spreadsheet();
+
 	$output = [];
-	$sheet = $excel->getActiveSheet();
+
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 	} else {
 		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 	}
-	if ($_SESSION['instanceType'] == 'standalone') {
-		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-			unset($headings[$key]);
-		}
+	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
+		unset($headings[$key]);
 	}
 
-	$colNo = 1;
 
-	$styleArray = array(
-		'font' => array(
-			'bold' => true,
-			'size' => 12,
-		),
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-			'vertical' => Alignment::VERTICAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		)
-	);
-
-	$borderStyle = array(
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		)
-	);
-
-	$sheet->mergeCells('A1:AG1');
-	$nameValue = '';
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));
-	if ($_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-			$colNo++;
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-			$colNo++;
-		}
-	}
-	$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = [];
-		if ($arr['vl_form'] == 1) {
-			// Get testing platform and test method 
-			$tbTestQuery = "SELECT * from tb_tests where tb_id= " . $aRow['tb_id'] . " ORDER BY tb_test_id ASC";
-			$tbTestInfo = $db->rawQuery($tbTestQuery);
 
-			foreach ($tbTestInfo as $indexKey => $rows) {
-				$testPlatform = $rows['testing_platform'];
-				$testMethod = $rows['test_name'];
-			}
+		// Get testing platform and test method
+		$tbTestQuery = "SELECT * from tb_tests where tb_id= ? ORDER BY tb_test_id ASC";
+		$tbTestInfo = $db->rawQuery($tbTestQuery, [$aRow['tb_id']]);
+
+		foreach ($tbTestInfo as $indexKey => $rows) {
+			$testPlatform = $rows['testing_platform'];
+			$testMethod = $rows['test_name'];
 		}
 
-		//date of birth
-		$dob = '';
-		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
-		}
+
 		//set gender
 		switch (strtolower($aRow['patient_gender'])) {
 			case 'male':
@@ -140,29 +78,11 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 				$gender = '';
 				break;
 		}
-		//sample collecion date
-		$sampleCollectionDate = '';
-		if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $aRow['sample_collection_date']);
-			$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
-		}
-
-		$sampleTestedOn = '';
-		if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-			$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
-		}
-
 
 		//set sample rejection
 		$sampleRejection = 'No';
 		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
-		}
-		//result dispatched date
-		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $aRow['result_printed_datetime']);
-			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
 		if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -171,24 +91,16 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			$sampleCode = 'sample_code';
 		}
 
-		if ($aRow['patient_name'] != '') {
+		if (!empty($aRow['patient_name'])) {
 			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
-		if ($aRow['patient_surname'] != '') {
+		if (!empty($aRow['patient_surname'])) {
 			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
 		}
-
-		// if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-		// 	$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
-		// } else {
-		// 	$sourceOfArtPOE = $aRow['source_of_alert_other'];
-		// }
-
-
 
 		$row[] = $no;
 		if ($_SESSION['instanceType'] == 'standalone') {
@@ -227,20 +139,55 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$no++;
 	}
 
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
-			$colNo++;
+
+	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 5000) {
+
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$file = new SplFileObject($fileName, 'w');
+		$file->fputcsv($headings);
+		foreach ($output as $row) {
+			$file->fputcsv($row);
 		}
+		// we dont need the $file variable anymore
+		$file = null;
+		echo base64_encode($fileName);
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+
+		$colNo = 1;
+		$nameValue = '';
+		foreach ($_POST as $key => $value) {
+			if (trim($value) != '' && trim($value) != '-- Select --') {
+				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+			}
+		}
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+		if ($_POST['withAlphaNum'] == 'yes') {
+			foreach ($headings as $field => $value) {
+				$string = str_replace(' ', '', $value);
+				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+				$colNo++;
+			}
+		} else {
+			foreach ($headings as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+				$colNo++;
+			}
+		}
+
+		foreach ($output as $rowNo => $rowData) {
+			$colNo = 1;
+			$rRowCount = $rowNo + 4;
+			foreach ($rowData as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+				$colNo++;
+			}
+		}
+		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+		$writer->save($filename);
+		echo $filename;
 	}
-	$writer = IOFactory::createWriter($excel, 'Xlsx');
-	$filename = 'TB-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	echo $filename;
 }

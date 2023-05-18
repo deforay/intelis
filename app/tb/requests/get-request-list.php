@@ -114,11 +114,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
 */
 $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          LEFT JOIN r_tb_results as rtbr ON rtbr.result_id=vl.result 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
+          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+          LEFT JOIN r_tb_results as rtbr ON rtbr.result_id=vl.result
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';
@@ -282,6 +282,8 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+$_SESSION['tbRequestSearchResultQueryCount'] = $iTotal;
 
 /*
 * Output

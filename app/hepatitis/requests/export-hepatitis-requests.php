@@ -66,7 +66,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
             $sampleRejection = 'Yes';
         }
 
-        if ($aRow['patient_name'] != '') {
+        if (!empty($aRow['patient_name'])) {
             $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
         } else {
             $patientFname = '';

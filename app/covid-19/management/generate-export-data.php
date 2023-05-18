@@ -159,12 +159,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
-		if ($aRow['patient_name'] != '') {
+		if (!empty($aRow['patient_name'])) {
 			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
 		} else {
 			$patientFname = '';
 		}
-		if ($aRow['patient_surname'] != '') {
+		if (!empty($aRow['patient_surname'])) {
 			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 		} else {
 			$patientLname = '';
