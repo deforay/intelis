@@ -3996,7 +3996,7 @@ CREATE TABLE `r_generic_test_failure_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int DEFAULT NULL,
   PRIMARY KEY (`failure_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_failure_reason_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4005,7 +4005,7 @@ CREATE TABLE `generic_test_failure_reason_map` (
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Interpret and Convert Lab Test Results', 'generic_interpret_and_convert_results', 'no', 'generic', NULL, NULL, NULL, 'active');
 

@@ -675,7 +675,7 @@ $state = $geolocationService->getProvinces("yes");
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
-		$.post('vlResultExportInExcel.php', {
+		$.post('export-vl-results.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),

@@ -365,6 +365,7 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['vlResultQueryCount'] = $iTotal;
 
 $output = array(
      "sEcho" => intval($_POST['sEcho']),

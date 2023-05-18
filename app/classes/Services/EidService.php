@@ -390,7 +390,7 @@ class EidService
 
             $rowData = false;
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
