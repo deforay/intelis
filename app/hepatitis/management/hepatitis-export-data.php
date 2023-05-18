@@ -52,11 +52,6 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 $hepatitisResults = $hepatitisService->getHepatitisResults();
-if ((isset($arr['hepatitis_report_type']) && $arr['hepatitis_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
-	$reportType = 'generate-export-rwanda.php';
-} else {
-	$reportType = 'generate-export-data.php';
-}
 
 $state = $geolocationService->getProvinces("yes");
 
@@ -92,20 +87,20 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _("Province/State"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
 								</select>
 							</td>
 
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
-                </select>
+								<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+								</select>
 							</td>
-						
+
 						</tr>
 						<tr>
-						<th scope="row"><?php echo _("Facility Name"); ?></th>
+							<th scope="row"><?php echo _("Facility Name"); ?></th>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
@@ -122,10 +117,10 @@ $state = $geolocationService->getProvinces("yes");
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 
-							
+
 						</tr>
 						<tr>
-						<th scope="row"><?php echo _("HCV VL Result"); ?> </th>
+							<th scope="row"><?php echo _("HCV VL Result"); ?> </th>
 							<td>
 								<select class="form-control" id="hcvVLoad" name="hcvVLoad" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -152,11 +147,11 @@ $state = $geolocationService->getProvinces("yes");
 								</select>
 							</td>
 
-							
+
 						</tr>
 
 						<tr>
-						<th scope="row"><?php echo _("Funding Sources"); ?></th>
+							<th scope="row"><?php echo _("Funding Sources"); ?></th>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _('Please choose funding source'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -182,10 +177,10 @@ $state = $geolocationService->getProvinces("yes");
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							
-									</tr>
-									<tr>
-									<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
+
+						</tr>
+						<tr>
+							<td><strong><?php echo _("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _("Yes"); ?></option>
@@ -197,19 +192,19 @@ $state = $geolocationService->getProvinces("yes");
 							<td>
 								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
 							</td>
-							
-									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+
+							<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-									</tr>
-							<tr>
+						</tr>
+						<tr>
 							<td colspan="6">
 								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo 'generate-export-data.php'; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -319,7 +314,7 @@ $state = $geolocationService->getProvinces("yes");
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
-		
+
 		$("#testingLab").select2({
 			placeholder: "<?php echo _("Select Labs"); ?>"
 		});
@@ -378,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 			}
 		}
 
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -545,9 +540,9 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportInexcel(fileName) {
-		if(searchExecuted === false){
-     		searchVlRequestData();
-  		}
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
@@ -569,42 +564,42 @@ $state = $geolocationService->getProvinces("yes");
 					alert("<?php echo _("Unable to generate excel"); ?>.");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}
-	function getByProvince(provinceId)
-	{
-        $("#district").html('');
-        $("#facilityName").html('');
+
+	function getByProvince(provinceId) {
+		$("#district").html('');
+		$("#facilityName").html('');
 		$("#testingLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
 				$("#testingLab").html(Obj['labs']);
-				});
+			});
 	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$("#testingLab").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['facilities']);
-			$("#testingLab").html(Obj['labs']);
-				});
+
+	function getByDistrict(districtId) {
+		$("#facilityName").html('');
+		$("#testingLab").html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities: true,
+				labs: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#facilityName").html(Obj['facilities']);
+				$("#testingLab").html(Obj['labs']);
+			});
 	}
 </script>
 <?php

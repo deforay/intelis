@@ -132,7 +132,6 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
     } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
-        $sheet->mergeCells('A1:AG1');
         $nameValue = '';
 
         $colNo = 1;
