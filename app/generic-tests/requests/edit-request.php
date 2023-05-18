@@ -886,7 +886,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</div>
 												</div>
 											</div>
-											
+
 											<div class="row" style="margin-top: 10px;">
 												<?php if (count($reasonForFailure) > 0) { ?>
 													<div class="col-md-6 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
@@ -962,11 +962,11 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																		<td>
 																			<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																			<!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
-																				<option value=''> -- Select -- </option>
-																				<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																					<option value="<?php echo $genResultKey; ?>" <?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																				<?php } ?>
-																			</select> -->
+                                                                                <option value=''> -- Select -- </option>
+                                                                                <?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
+                                                                                    <option value="<?php echo $genResultKey; ?>" <?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
+                                                                                <?php } ?>
+                                                                            </select> -->
 																		</td>
 																		<td style="vertical-align:middle;text-align: center;width:100px;">
 																			<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -1001,8 +1001,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																	<td>
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
 																		<!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-																			<?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-																		</select> -->
+                                                                            <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+                                                                        </select> -->
 																	</td>
 																	<td style="vertical-align:middle;text-align: center;width:100px;">
 																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -1018,11 +1018,11 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																<td>
 																	<input type="text" id="result" name="result" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter final result" title="Please enter final results">
 																	<!-- <select class="form-control result-focus" name="result" id="result">
-																		<option value=''> -- Select -- </option>
-																		<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																			<option value="<?php echo $genResultKey; ?>" <?php echo ($vlQueryInfo['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																		<?php } ?>
-																	</select> -->
+                                                                        <option value=''> -- Select -- </option>
+                                                                        <?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
+                                                                            <option value="<?php echo $genResultKey; ?>" <?php echo ($vlQueryInfo['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
+                                                                        <?php } ?>
+                                                                    </select> -->
 																</td>
 															</tr>
 														</tfoot>
@@ -1826,7 +1826,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		});
 
 		/* $('.isRequired').each(function() {
-			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+		    ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
 		}); */
 		if (flag) {
 			$.blockUI();
@@ -1845,8 +1845,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	function autoFillFocalDetails() {
 		// labId = $("#labId").val();
 		// if ($.trim(labId) != '') {
-		// 	$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
-		// 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
+		//     $("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
+		//     $("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
 		// }
 	}
 

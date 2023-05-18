@@ -126,9 +126,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 
-$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_hepatitis as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_hepatitis as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';
@@ -185,32 +185,28 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-// $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
-if (!empty($sWhere))
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
-else
+} else {
     $sWhere = "";
+}
 
 $sQuery = $sQuery . $sWhere;
 if (isset($sOrder) && !empty(trim($sOrder))) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-//$_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
+$_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
-$aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
-$aResultTotal =  $db->rawQuery("SELECT COUNT(hepatitis_id) as total FROM form_hepatitis as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+$_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
 
 $output = array(
     "sEcho" => intval($_POST['sEcho']),

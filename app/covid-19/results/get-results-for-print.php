@@ -295,7 +295,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);
     $row[] = ($aRow['sample_name']);
-    $row[] = $covid19Results[$aRow['result']];
+    $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     $row[] = ($aRow['status_name']);
     $row[] = $print;

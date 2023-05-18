@@ -307,7 +307,7 @@ $batResult = $db->rawQuery($batQuery);
 		}
 		$.blockUI();
 		oTable.fnDraw();
-	$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
+		$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),

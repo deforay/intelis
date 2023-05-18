@@ -106,7 +106,7 @@ $state = $geolocationService->getProvinces("yes");
 						<tr>
 							<td><strong><?php echo _("District/County"); ?> :</strong></td>
 							<td>
-								<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+								<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value        )">
 								</select>
 							</td>
 							<th scope="row"><?php echo _("Facility Name"); ?></th>
