@@ -424,7 +424,7 @@ foreach ($testPlatformResult as $machine) {
 			$('#alertText').html('');
 		}
 	});
-	
+
 	$(document.body).on("change", "#search, #search_to", function() {
 		countOff().then(function(count) {
 			// use the result here
