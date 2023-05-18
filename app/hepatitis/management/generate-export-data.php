@@ -115,7 +115,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
 
 	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 5000) {
-		$csvArray = array_merge(array($headings), $output);
+
 		$fileName = 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$csvFile = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName, 'w');
 		foreach ($csvArray as $row) {

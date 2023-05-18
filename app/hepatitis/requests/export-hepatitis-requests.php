@@ -119,13 +119,15 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
 
     if (isset($_SESSION['hepatitisRequestSearchResultQueryCount']) && $_SESSION['hepatitisRequestSearchResultQueryCount'] > 5000) {
-        $csvArray = array_merge(array($headings), $output);
+
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-        $csvFile = fopen($fileName, 'w');
-        foreach ($csvArray as $row) {
-            fputcsv($csvFile, $row);
+        $file = new SplFileObject($fileName, 'w');
+        $file->fputcsv($headings);
+        foreach ($output as $row) {
+            $file->fputcsv($row);
         }
-        fclose($csvFile);
+        // we dont need the $file variable anymore
+        $file = null;
         echo base64_encode($fileName);
     } else {
         $excel = new Spreadsheet();
