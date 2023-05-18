@@ -466,287 +466,285 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              </div>
                                              <div class="row" id="specimenDynamicForm"></div>
                                         </div>
+                                   </div>
+                                   <div class="box box-primary" id="othersDynamicForm"></div>
+                                   <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                         <div class="box box-primary">
-                                             <div class="box-body">
-                                                  <div class="row" id="othersDynamicForm"></div>
+                                             <div class="box-header with-border">
+                                                  <h3 class="box-title">Laboratory Information</h3>
                                              </div>
-
-                                             <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
-                                                  <div class="box box-primary">
-                                                       <div class="box-header with-border">
-                                                            <h3 class="box-title">Laboratory Information</h3>
+                                             <div class="box-body">
+                                                  <div class="row">
+                                                       <div class="col-md-6">
+                                                            <label for="vlFocalPerson" class="col-lg-5 control-label labels"> Focal Person </label>
+                                                            <div class="col-lg-7">
+                                                                 <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="Focal Person" title="Please enter focal person name"></select>
+                                                            </div>
                                                        </div>
-                                                       <div class="box-body">
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label for="vlFocalPerson" class="col-lg-5 control-label labels"> Focal Person </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="Focal Person" title="Please enter focal person name"></select>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"> Focal Person Phone Number</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" />
-                                                                      </div>
-                                                                 </div>
+                                                       <div class="col-md-6">
+                                                            <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"> Focal Person Phone Number</label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" />
                                                             </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($importResult as $mName) { ?>
-                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
-                                                                                <option value="">-- Select --</option>
-                                                                                <option value="yes">Yes</option>
-                                                                                <option value="no">No</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row rejectionReason" style="display:none;">
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo ($type['rejection_type']); ?>">
-                                                                                          <?php foreach ($rejectionResult as $reject) {
-                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
-                                                                                          <?php }
-                                                                                          } ?>
-                                                                                     </optgroup>
-                                                                                <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') {  ?>
-                                                                                     <option value="other">Other (Please Specify) </option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                           <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
-                                                                                <option value="">-- Select --</option>
-                                                                                <?php foreach ($testReason as $treason) { ?>
-                                                                                     <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords($treason['test_reason']); ?></option>
-                                                                                <?php } ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6 vlResult">
-                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <?php if (count($reasonForFailure) > 0) { ?>
-                                                                      <div class="col-md-6" style="display: none;">
-                                                                           <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
-                                                                           <div class="col-lg-7">
-                                                                                <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
-                                                                                     <?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>
-                                                                                </select>
-                                                                           </div>
-                                                                      </div>
-                                                                 <?php } ?>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-12">
-                                                                      <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
-                                                                           <thead>
-                                                                                <tr>
-                                                                                     <th scope="row" class="text-center">Test No</th>
-                                                                                     <th scope="row" class="text-center">Test Method</th>
-                                                                                     <th scope="row" class="text-center">Date of Testing</th>
-                                                                                     <th scope="row" class="text-center">Test Platform/Test Kit</th>
-                                                                                     <th scope="row" class="text-center">Test Result</th>
-                                                                                </tr>
-                                                                           </thead>
-                                                                           <tbody id="testKitNameTable">
-                                                                                <tr>
-                                                                                     <td class="text-center">1</td>
-                                                                                     <td>
-                                                                                          <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                                                                                               <option value="">-- Select --</option>
-                                                                                               <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                                                                                               <option value="RDT-Antibody">RDT-Antibody</option>
-                                                                                               <option value="RDT-Antigen">RDT-Antigen</option>
-                                                                                               <option value="GeneXpert">GeneXpert</option>
-                                                                                               <option value="ELISA">ELISA</option>
-                                                                                               <option value="other">Others</option>
-                                                                                          </select>
-                                                                                          <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-                                                                                     </td>
-                                                                                     <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
-                                                                                     <td>
-                                                                                          <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-                                                                                               <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-                                                                                          </select>
-                                                                                     </td>
-                                                                                     <td>
-                                                                                          <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                                                                                          <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-                                                                                          </select> -->
-                                                                                     </td>
-                                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                                          <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                                          <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-                                                                                     </td>
-                                                                                </tr>
-                                                                           </tbody>
-                                                                           <tfoot>
-                                                                                <tr>
-                                                                                     <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
-                                                                                     <td>
-                                                                                          <input type="text" id="result" name="result" class="form-control" placeholder="Enter final result" title="Please enter final results">
-                                                                                          <!-- <select class="form-control" name="result" id="result">
-                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-                                                                                          </select> -->
-                                                                                     </td>
-                                                                                </tr>
-                                                                           </tfoot>
-                                                                      </table>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
-                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
-                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
-                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <br>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-3 control-label labels" for="labComments">Lab Tech. Comments </label>
-                                                                      <div class="col-lg-9">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row" id="lapDynamicForm"></div>
                                                        </div>
                                                   </div>
-                                             <?php } ?>
-                                        </div>
-                                        <div class="box-footer">
-                                             <!-- BARCODESTUFF START -->
-                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
-                                                       <div class="progress" style="width:100%">
-                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                  <div class="row">
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
                                                             </div>
                                                        </div>
-                                                  </div> <!-- /printer_data_loading -->
-                                                  <div id="printer_details" style="display:none">
-                                                       <span id="selected_printer">No printer selected!</span>
-                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
-                                                  </div><br /> <!-- /printer_details -->
-                                                  <div id="printer_select" style="display:none">
-                                                       Zebra Printer Options<br />
-                                                       Printer: <select id="printers"></select>
-                                                  </div> <!-- /printer_select -->
-                                             <?php } ?>
-                                             <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                                             <input type="hidden" name="saveNext" id="saveNext" />
-                                             <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                                             <?php } ?>
-                                             <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="view-requests.php" class="btn btn-default"> Cancel</a>
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-6">
+                                                            <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($importResult as $mName) { ?>
+                                                                           <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                      <option value="">-- Select --</option>
+                                                                      <option value="yes">Yes</option>
+                                                                      <option value="no">No</option>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row rejectionReason" style="display:none;">
+                                                       <div class="col-md-6 rejectionReason" style="display:none;">
+                                                            <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                                           <optgroup label="<?php echo ($type['rejection_type']); ?>">
+                                                                                <?php foreach ($rejectionResult as $reject) {
+                                                                                     if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+                                                                                          <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
+                                                                                <?php }
+                                                                                } ?>
+                                                                           </optgroup>
+                                                                      <?php }
+                                                                      if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                           <option value="other">Other (Please Specify) </option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                                 <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-6 rejectionReason" style="display:none;">
+                                                            <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
+                                                            <div class="col-lg-7">
+                                                                 <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($testReason as $treason) { ?>
+                                                                           <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords($treason['test_reason']); ?></option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-6 vlResult">
+                                                            <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
+                                                            </div>
+                                                       </div>
+                                                       <?php if (count($reasonForFailure) > 0) { ?>
+                                                            <div class="col-md-6" style="display: none;">
+                                                                 <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
+                                                                 <div class="col-lg-7">
+                                                                      <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
+                                                                           <?= $general->generateSelectOptions($reasonForFailure, null, '-- Select --'); ?>
+                                                                      </select>
+                                                                 </div>
+                                                            </div>
+                                                       <?php } ?>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-12">
+                                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+                                                                 <thead>
+                                                                      <tr>
+                                                                           <th scope="row" class="text-center">Test No</th>
+                                                                           <th scope="row" class="text-center">Test Method</th>
+                                                                           <th scope="row" class="text-center">Date of Testing</th>
+                                                                           <th scope="row" class="text-center">Test Platform/Test Kit</th>
+                                                                           <th scope="row" class="text-center">Test Result</th>
+                                                                      </tr>
+                                                                 </thead>
+                                                                 <tbody id="testKitNameTable">
+                                                                      <tr>
+                                                                           <td class="text-center">1</td>
+                                                                           <td>
+                                                                                <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                                     <option value="">-- Select --</option>
+                                                                                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                                                                                     <option value="RDT-Antibody">RDT-Antibody</option>
+                                                                                     <option value="RDT-Antigen">RDT-Antigen</option>
+                                                                                     <option value="GeneXpert">GeneXpert</option>
+                                                                                     <option value="ELISA">ELISA</option>
+                                                                                     <option value="other">Others</option>
+                                                                                </select>
+                                                                                <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                                                           </td>
+                                                                           <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+                                                                           <td>
+                                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                                                </select>
+                                                                           </td>
+                                                                           <td>
+                                                                                <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                                                                                <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+                                                                                          </select> -->
+                                                                           </td>
+                                                                           <td style="vertical-align:middle;text-align: center;width:100px;">
+                                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                                                                                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                                                                           </td>
+                                                                      </tr>
+                                                                 </tbody>
+                                                                 <tfoot>
+                                                                      <tr>
+                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                                           <td>
+                                                                                <input type="text" id="result" name="result" class="form-control" placeholder="Enter final result" title="Please enter final results">
+                                                                                <!-- <select class="form-control" name="result" id="result">
+                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
+                                                                                          </select> -->
+                                                                           </td>
+                                                                      </tr>
+                                                                 </tfoot>
+                                                            </table>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-4">
+                                                            <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
+                                                                      <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-4">
+                                                            <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-4">
+                                                            <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
+                                                                      <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-4">
+                                                            <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                            <div class="col-lg-7">
+                                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
+                                                                      <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-md-4">
+                                                            <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <br>
+                                                  <div class="row">
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-3 control-label labels" for="labComments">Lab Tech. Comments </label>
+                                                            <div class="col-lg-9">
+                                                                 <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row" id="lapDynamicForm"></div>
+                                             </div>
                                         </div>
-                                   </div>
+                                   <?php } ?>
+                              </div>
+                              <div class="box-footer">
+                                   <!-- BARCODESTUFF START -->
+                                   <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+                                        <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                             <div class="progress" style="width:100%">
+                                                  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                  </div>
+                                             </div>
+                                        </div> <!-- /printer_data_loading -->
+                                        <div id="printer_details" style="display:none">
+                                             <span id="selected_printer">No printer selected!</span>
+                                             <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                        </div><br /> <!-- /printer_details -->
+                                        <div id="printer_select" style="display:none">
+                                             Zebra Printer Options<br />
+                                             Printer: <select id="printers"></select>
+                                        </div> <!-- /printer_select -->
+                                   <?php } ?>
+                                   <!-- BARCODESTUFF END -->
+                                   <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                   <input type="hidden" name="saveNext" id="saveNext" />
+                                   <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
+                                   <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                        <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                        <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                   <?php } ?>
+                                   <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
+                                   <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                   <a href="view-requests.php" class="btn btn-default"> Cancel</a>
                               </div>
                          </div>
-                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
-                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
-
-                    </form>
+                    </div>
                </div>
           </div>
-     </section>
+          <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
+          <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
+
+          </form>
+</div>
+</div>
+</section>
 </div>
 <!-- BARCODESTUFF START -->
 <?php
@@ -808,8 +806,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
           $("#testType").select2({
-			placeholder: "<?php echo _("Select Test Type"); ?>"
-		});
+               placeholder: "<?php echo _("Select Test Type"); ?>"
+          });
           $('#labId').select2({
                width: '100%',
                placeholder: "Select Testing Lab"
