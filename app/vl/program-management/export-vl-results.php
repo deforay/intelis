@@ -14,6 +14,8 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var DateUtility $dateTimeUtil */
 $dateTimeUtil = new DateUtility();
 
 
@@ -21,8 +23,9 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 	$rResult = $db->rawQuery($_SESSION['vlResultQuery']);
 
-	$excel = new Spreadsheet();
 	$output = [];
+
+	$excel = new Spreadsheet();
 	$sheet = $excel->getActiveSheet();
 	$sheet->setTitle('VL Results');
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
@@ -33,41 +36,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
 		unset($headings[$key]);
 	}
-	$colNo = 1;
-
-	$sheet->mergeCells('A1:AH1');
-	$nameValue = '';
-
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-	if ($_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
-		}
-	}
-
 	//$sheet->getStyle('A3:AI3')->applyFromArray($styleArray);
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = [];
-		//date of birth
-		$dob = '';
-		if (!empty($aRow['patient_dob'])) {
-			$dob =  DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		}
 
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -150,7 +123,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['patient_art_no'];
 			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		}
-		$row[] = $dob;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
@@ -179,17 +152,53 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$no++;
 	}
 
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-			$colNo++;
+	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 5000) {
+
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$file = new SplFileObject($fileName, 'w');
+		$file->fputcsv($headings);
+		foreach ($output as $row) {
+			$file->fputcsv($row);
 		}
+		// we dont need the $file variable anymore
+		$file = null;
+		echo base64_encode($fileName);
+	} else {
+
+		$colNo = 1;
+		$nameValue = '';
+		foreach ($_POST as $key => $value) {
+			if (trim($value) != '' && trim($value) != '-- Select --') {
+				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+			}
+		}
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+		if ($_POST['withAlphaNum'] == 'yes') {
+			foreach ($headings as $field => $value) {
+				$string = str_replace(' ', '', $value);
+				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+				$colNo++;
+			}
+		} else {
+			foreach ($headings as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+				$colNo++;
+			}
+		}
+
+		//$start = (count($output)) + 2;
+		foreach ($output as $rowNo => $rowData) {
+			$colNo = 1;
+			$rRowCount = $rowNo + 4;
+			foreach ($rowData as $field => $value) {
+				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+				$colNo++;
+			}
+		}
+		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+		$writer->save($filename);
+		echo base64_encode($filename);
 	}
-	$writer = IOFactory::createWriter($excel, 'Xlsx');
-	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
-	$writer->save($filename);
-	echo base64_encode($filename);
 }

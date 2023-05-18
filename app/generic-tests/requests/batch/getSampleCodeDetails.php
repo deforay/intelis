@@ -129,83 +129,83 @@ $result = $db->rawQuery($query);
 			}
 		});
 		/*$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
-			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _("Available samples"); ?>(<?php echo count($result); ?>)</div>",
-			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'><?php echo _("Selected samples"); ?>(0)</div>",
-			afterInit: function(ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+		    selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
+		    selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Sample Code"); ?>'>",
+		    selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'><?php echo _("Available samples"); ?>(<?php echo count($result); ?>)</div>",
+		    selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'><?php echo _("Selected samples"); ?>(0)</div>",
+		    afterInit: function(ms) {
+		        var that = this,
+		            $selectableSearch = that.$selectableUl.prev(),
+		            $selectionSearch = that.$selectionUl.prev(),
+		            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+		            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
+		        that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+		            .on('keydown', function(e) {
+		                if (e.which === 40) {
+		                    that.$selectableUl.focus();
+		                    return false;
+		                }
+		            });
 
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("<?php echo _('You have already selected Maximum no. of sample'); ?> " + noOfSamples);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("<?php echo _("Available samples"); ?>(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("<?php echo _("Selected samples"); ?>(" + this.qs2.cache().matchedResultsCount + ")");
-			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("<?php echo _('Available samples'); ?>(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("<?php echo _('Selected samples'); ?>(" + this.qs2.cache().matchedResultsCount + ")");
-			}
+		        that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+		            .on('keydown', function(e) {
+		                if (e.which == 40) {
+		                    that.$selectionUl.focus();
+		                    return false;
+		                }
+		            });
+		    },
+		    afterSelect: function() {
+		        //button disabled/enabled
+		        if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+		            alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
+		            $("#batchSubmit").attr("disabled", false);
+		            $("#batchSubmit").css("pointer-events", "auto");
+		        } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+		            $("#batchSubmit").attr("disabled", false);
+		            $("#batchSubmit").css("pointer-events", "auto");
+		        } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+		            alert("<?php echo _('You have already selected Maximum no. of sample'); ?> " + noOfSamples);
+		            $("#batchSubmit").attr("disabled", true);
+		            $("#batchSubmit").css("pointer-events", "none");
+		        }
+		        this.qs1.cache();
+		        this.qs2.cache();
+		        $("#unselectableCount").html("<?php echo _("Available samples"); ?>(" + this.qs1.cache().matchedResultsCount + ")");
+		        $("#selectableCount").html("<?php echo _("Selected samples"); ?>(" + this.qs2.cache().matchedResultsCount + ")");
+		    },
+		    afterDeselect: function() {
+		        //button disabled/enabled
+		        if (this.qs2.cache().matchedResultsCount == 0) {
+		            $("#batchSubmit").attr("disabled", true);
+		            $("#batchSubmit").css("pointer-events", "none");
+		        } else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+		            alert("<?php echo _('You have selected Maximum no. of sample'); ?> " + this.qs2.cache().matchedResultsCount);
+		            $("#batchSubmit").attr("disabled", false);
+		            $("#batchSubmit").css("pointer-events", "auto");
+		        } else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+		            $("#batchSubmit").attr("disabled", false);
+		            $("#batchSubmit").css("pointer-events", "auto");
+		        } else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+		            $("#batchSubmit").attr("disabled", true);
+		            $("#batchSubmit").css("pointer-events", "none");
+		        }
+		        this.qs1.cache();
+		        this.qs2.cache();
+		        $("#unselectableCount").html("<?php echo _('Available samples'); ?>(" + this.qs1.cache().matchedResultsCount + ")");
+		        $("#selectableCount").html("<?php echo _('Selected samples'); ?>(" + this.qs2.cache().matchedResultsCount + ")");
+		    }
 		});
 		$('#select-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('select_all');
-			return false;
+		    $('#sampleCode').multiSelect('select_all');
+		    return false;
 		});
 		$('#deselect-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('deselect_all');
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-			return false;
+		    $('#sampleCode').multiSelect('deselect_all');
+		    $("#batchSubmit").attr("disabled", true);
+		    $("#batchSubmit").css("pointer-events", "none");
+		    return false;
 		});*/
 	});
 </script>

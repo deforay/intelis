@@ -130,9 +130,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_covid19 as vl 
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_covid19 as vl
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
@@ -204,6 +204,7 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
 /*
           * Output
           */
@@ -251,7 +252,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['patient_id'];
     $row[] = $patientFname . " " . $patientLname;
     $row[] = ($aRow['facility_name']);
-    $row[] = $covid19Results[$aRow['result']];
+    $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {

@@ -217,7 +217,7 @@ foreach ($rResult as $aRow) {
 
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
-     $row[] = $eidResults[$aRow['result']];
+     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
 

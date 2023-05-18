@@ -1825,7 +1825,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		});
 
 		/* $('.isRequired').each(function() {
-			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+		    ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
 		}); */
 		if (flag) {
 			$.blockUI();
@@ -1844,8 +1844,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	function autoFillFocalDetails() {
 		// labId = $("#labId").val();
 		// if ($.trim(labId) != '') {
-		// 	$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
-		// 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
+		//     $("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
+		//     $("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
 		// }
 	}
 

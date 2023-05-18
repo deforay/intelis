@@ -215,7 +215,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
-		$row[] = $covid19Results[$aRow['result']];
+		$row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 
 		$output[] = $row;

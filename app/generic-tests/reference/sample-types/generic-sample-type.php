@@ -84,11 +84,10 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editSampleType.php", $_SESSION['privileges'])) { ?>
-				{
-					"sClass": "center",
-					"bSortable": false
-				}
+				<?php if (isset($_SESSION['privileges']) && in_array("editSampleType.php", $_SESSION['privileges'])) { ?> {
+						"sClass": "center",
+						"bSortable": false
+					}
 				<?php } ?>
 			],
 			"aaSorting": [

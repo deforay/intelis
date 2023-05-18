@@ -144,6 +144,8 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
+
 /*
 * Output
 */

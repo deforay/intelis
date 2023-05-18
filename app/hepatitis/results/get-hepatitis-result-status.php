@@ -131,10 +131,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, l.facility_name as labName FROM form_hepatitis as vl 
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-            LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id 
-            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, l.facility_name as labName FROM form_hepatitis as vl
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+            LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
+            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
@@ -201,15 +201,14 @@ if (isset($sOrder) && !empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
-// echo $sQuery;
-$_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
+$_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
+$rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+
+$_SESSION['hepatitisRequestSearchResultQueryCount'] = $iTotal;
 
 /*
           * Output

@@ -290,6 +290,8 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['covid19ResultQueryCount'] = $iTotal;
+
 /*
 * Output
 */
@@ -315,7 +317,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($patientFname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
-     $row[] = $covid19Results[$aRow['result']];
+     $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
      $row[] = ($aRow['status_name']);
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;

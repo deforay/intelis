@@ -3938,6 +3938,14 @@ DELETE FROM form_covid19 WHERE (lab_id, app_sample_code) IN (
     SELECT lab_id, app_sample_code
     FROM temp_table_form_covid19
 );
+ALTER TABLE `form_vl` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_generic` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
 
 ALTER TABLE `form_vl` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_eid` ADD UNIQUE( `lab_id`, `app_sample_code`);
@@ -3996,7 +4004,7 @@ CREATE TABLE `r_generic_test_failure_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int DEFAULT NULL,
   PRIMARY KEY (`failure_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_failure_reason_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4005,7 +4013,7 @@ CREATE TABLE `generic_test_failure_reason_map` (
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_failure_reason_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Interpret and Convert Lab Test Results', 'generic_interpret_and_convert_results', 'no', 'generic', NULL, NULL, NULL, 'active');
 

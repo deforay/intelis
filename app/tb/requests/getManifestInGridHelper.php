@@ -216,7 +216,7 @@ foreach ($rResult as $aRow) {
      $row[] = $patientFname . " " . $patientLname;
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
-     $row[] = $covid19Results[$aRow['result']];
+     $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
 

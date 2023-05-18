@@ -326,7 +326,7 @@ foreach ($rResult as $aRow) {
     if ($aRow['module'] == 'eid') {
         $row[] = $eidResults[$aRow['result']];
     } else if ($aRow['module'] == 'covid19') {
-        $row[] = $covid19Results[$aRow['result']];
+        $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     } else {
         $row[] = $aRow['result'];
     }
