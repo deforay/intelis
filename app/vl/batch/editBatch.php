@@ -8,10 +8,8 @@ use App\Services\CommonService;
 
 $title = "Edit Batch";
 
- 
+
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
-//global config
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -26,18 +24,25 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$batchQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=?";
+
+$id = base64_decode($_GET['id']);
+//global config
+// $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
+// $configResult = $db->query($configQuery);
+// $showUrgency = ($configResult[0]['value'] == 1 || $configResult[0]['value'] == 2) ? true : false;
+$batchQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 $batchInfo = $db->rawQuery($batchQuery, array($id));
 $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = $id ORDER BY vl.last_modified_datetime ASC";
 //error_log($bQuery);die;
+//echo '<pre>'; print_r($batchInfo); die;
 $batchResultresult = $db->rawQuery($bQuery);
-
 $query = "SELECT vl.sample_code,vl.sample_batch_id,vl.vl_sample_id,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' ORDER BY vl.last_modified_datetime ASC";
 //error_log($query);die;
 $result = $db->rawQuery($query);
 $result = array_merge($batchResultresult, $result);
 
-
+$sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
+$sResult = $db->rawQuery($sQuery);
 //Get active machines
 $testPlatformResult = $general->getTestingPlatforms('vl');
 ?>
@@ -90,27 +95,42 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
-				<tr>
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 80%;">
 
-					<th scope="col">Facility</th>
+				<tr>
+					<td>&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
 					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
-							<?= $facilitiesDropdown; ?>
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
+					</td>
+					<td>&nbsp;<strong>Sample Type&nbsp;:</strong></td>
+					<td>
+						<select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
+							<option value=""> -- Select -- </option>
+							<?php
+							foreach ($sResult as $type) {
+							?>
+								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+							<?php
+							}
 							?>
 						</select>
 					</td>
-					<th scope="col"></th>
-					<td></td>
 				</tr>
 				<tr>
-					<th scope="col">Sample Collection Date</th>
+					<td>&nbsp;<strong>Facility Name & Code&nbsp;:</strong></td>
 					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
+						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
+							<?= $facilitiesDropdown; ?>
+						</select>
 					</td>
-					<th scope="col">Date Sample Receieved at Lab</th>
+					<td><strong>Gender&nbsp;:</strong></td>
 					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
+						<select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enableFemaleSection(this);">
+							<option value=""> -- Select -- </option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="not_recorded">Not Recorded</option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -124,9 +144,21 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					<th scope="col"></th>
 					<td></td>
 				</tr>
+				<tr class="showFemaleSection">
+					<td><strong>Pregnant&nbsp;:</strong></td>
+					<td>
+						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
+						<input type="radio" name="pregnant" title="Please choose type" class="pregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
+					</td>
+					<td><strong>Is Patient Breastfeeding&nbsp;:</strong></td>
+					<td>
+						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingYes" value="yes" disabled="disabled" />&nbsp;&nbsp;Yes
+						<input type="radio" name="breastfeeding" title="Please choose type" class="breastfeeding" id="breastFeedingNo" value="no" disabled="disabled" />&nbsp;&nbsp;No
+					</td>
+				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset Filters</span></button>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Search" class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
 					</td>
 				</tr>
 			</table>
@@ -155,15 +187,15 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if ($batchInfo[0]['machine'] == $machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
+							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
-						<div class="row" id="sampleDetails">
+						<div class="row" style="margin: 15px;">
 							<!--<div class="col-md-8">
 								<div class="form-group">
 									<div class="col-md-12">
@@ -172,36 +204,44 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-												
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>-->
-							<h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php
+												<?php
 												foreach ($result as $key => $sample) {
 												?>
 													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 												<?php
 												}
 												?>
-                                        </select>
-                                   </div>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>-->
+							<h4> <?php echo _("Sample Code"); ?></h4>
+							<div class="col-md-5" id="sampleDetails">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+									<?php
+									foreach ($result as $key => $sample) {
+									?>
+										<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                                   </div>
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+
+								</select>
+							</div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -236,56 +276,55 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	function validateNow() {
 
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-          $("#selectedSample").val(selVal);
-		  if(selVal=="")
-		{
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+
+		if (selVal == "") {
 			alert("Please select sample code");
 			return false;
 		}
-		
-          flag = deforayValidator.init({
-               formId: 'editBatchForm'
-          });
-          if (flag) {
+
+		flag = deforayValidator.init({
+			formId: 'editBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('editBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('editBatchForm').submit();
+		}
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		
+
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
-		  setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
+		setTimeout(function() {
+			$("#search_rightSelected").trigger('click');
+		}, 10);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
 				alwaysShowCalendars: false,
 				startDate: moment().subtract(28, 'days'),
@@ -295,9 +334,52 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					'Today': [moment(), moment()],
 					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
 					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
 					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
+			$('#sampleCollectionDate').val("");
+		/*noOfSamples = 0;
+		< ?php
+		if (isset($batchInfo[0]['max_no_of_samples_in_a_batch']) && trim($batchInfo[0]['max_no_of_samples_in_a_batch']) > 0) {
+		?>
+			noOfSamples = < ?php echo intval($batchInfo[0]['max_no_of_samples_in_a_batch']); ?>;
+		< ?php }
+		?>
+		$("#facilityName").select2({
+			placeholder: "Select Facilities"
+		});
+		$('#sampleCollectionDate').daterangepicker({
+                locale: {
+                    cancelLabel: "< ?= _("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+				showDropdowns: true,
+alwaysShowCalendars: false,
+startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
 				}
 			},
 			function(start, end) {
@@ -306,7 +388,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 			});
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-	/*	$('.search').multiSelect({
+		/*$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
@@ -394,7 +476,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 			$("#batchSubmit").css("pointer-events", "none");
 		}
 
-		<?php
+		< ?php
 		$r = 1;
 		foreach ($result as $sample) {
 			if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
@@ -402,9 +484,9 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 					if ($r == 1) {
 		?>
 						$("#deselect-all-samplecode").remove();
-					<?php } ?>
-					resultSampleArray.push('<?php echo $sample['vl_sample_id']; ?>');
-		<?php $r++;
+					< ?php } ?>
+					resultSampleArray.push('< ?php echo $sample['vl_sample_id']; ?>');
+		< ?php $r++;
 				}
 			}
 		}
@@ -439,12 +521,36 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 
 	function getSampleCodeDetails() {
 		$.blockUI();
-		var fName = $("#facilityName").val();
 
-		$.post("/vl/batch/get-vl-samples-batch.php", {
+		/*var urgent = $("input:radio[name=urgency]");
+		if ((urgent[0].checked == false && urgent[1].checked == false) || urgent == 'undefined') {
+			urgent = '';
+		} else {
+			urgent = $('input[name=urgency]:checked').val();
+		}*/
+
+		var fName = $("#facilityName").val();
+		var sName = $("#sampleType").val();
+		var gender = $("#gender").val();
+		var prg = $("input:radio[name=pregnant]");
+		if ((prg[0].checked == false && prg[1].checked == false) || prg == 'undefined') {
+			pregnant = '';
+		} else {
+			pregnant = $('input[name=pregnant]:checked').val();
+		}
+		var breastfeeding = $("input:radio[name=breastfeeding]");
+		if ((breastfeeding[0].checked == false && breastfeeding[1].checked == false) || breastfeeding == 'undefined') {
+			breastfeeding = '';
+		} else {
+			breastfeeding = $('input[name=breastfeeding]:checked').val();
+		}
+		$.post("/vl/batch/getSelectedSampleCodeDetails.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
-				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-				fName: fName
+				fName: fName,
+				sName: sName,
+				gender: gender,
+				pregnant: pregnant,
+				breastfeeding: breastfeeding
 			},
 			function(data) {
 				if (data != "") {
