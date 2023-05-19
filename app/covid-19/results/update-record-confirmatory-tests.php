@@ -53,7 +53,10 @@ $sQuery = "SELECT * from r_covid19_sample_type where status='active'";
 $specimenTypeResult = $db->query($sQuery);
 
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $covid19Query = "SELECT * from form_covid19 where covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, array($id));
 

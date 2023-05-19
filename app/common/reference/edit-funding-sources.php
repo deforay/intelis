@@ -4,7 +4,10 @@ $title = "Implementation Partners";
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
     header("Location:province-details.php");
@@ -96,18 +99,18 @@ $partnerInfo = $db->query($query);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: removeDots.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-        function(data) {
-            if (data === '1') {
-                alert(alrt);
-                document.getElementById(obj.id).value = "";
-            }
-        });
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    document.getElementById(obj.id).value = "";
+                }
+            });
     }
 </script>
 

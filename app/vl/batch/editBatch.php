@@ -25,7 +25,10 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 //global config
 // $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 // $configResult = $db->query($configQuery);
@@ -347,7 +350,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-			$('#sampleCollectionDate').val("");
+		$('#sampleCollectionDate').val("");
 		/*noOfSamples = 0;
 		< ?php
 		if (isset($batchInfo[0]['max_no_of_samples_in_a_batch']) && trim($batchInfo[0]['max_no_of_samples_in_a_batch']) > 0) {

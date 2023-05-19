@@ -650,7 +650,7 @@ $state = $geolocationService->getProvinces("yes");
 					alert("<?php echo _("Unable to generate excel"); ?>.");
 				} else {
 					$.unblockUI();
-					window.location.href = '/download.php?f=' + data;
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

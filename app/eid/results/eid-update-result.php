@@ -11,7 +11,10 @@ $title = "Enter EID Result";
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 
 
@@ -55,7 +58,10 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * from r_eid_test_reasons where test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 

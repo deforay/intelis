@@ -10,6 +10,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_tb as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $artNo . "%' OR patient_name like '%" . $artNo . "%' OR patient_surname like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
@@ -63,7 +67,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>
@@ -84,14 +88,14 @@ $pResult = $db->rawQuery($pQuery);
 										$artNoList[] = $value;
 										//$patientDetails = $patient['patient_name'] . "##" . $patient['patient_surname'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age'] . "##" . $patient['patient_id'];
 										$patientDetails = json_encode(array(
-											"firstname"=>($patient['patient_name']),
-											"lastname"=>($patient['patient_surname']),
-											"gender"=>$patient['patient_gender'],
-											"dob"=> DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age"=>$patient['patient_age'],
-											"patient_id"=>$patient['patient_id'],
+											"firstname" => ($patient['patient_name']),
+											"lastname" => ($patient['patient_surname']),
+											"gender" => $patient['patient_gender'],
+											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
+											"age" => $patient['patient_age'],
+											"patient_id" => $patient['patient_id'],
 										));
-								
+
 								?>
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>

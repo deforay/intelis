@@ -10,6 +10,9 @@ use League\Csv\Statement;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
 
     $db = $db->where('imported_by', $_SESSION['userId']);

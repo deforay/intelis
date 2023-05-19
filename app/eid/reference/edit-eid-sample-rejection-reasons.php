@@ -3,7 +3,10 @@
 
 require_once APPLICATION_PATH . '/header.php';
 $rejReaons = $general->getRejectionReasons('eid');
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $rsnQuery = "SELECT * from r_eid_sample_rejection_reasons where rejection_reason_id=$id";
 $rsnInfo = $db->query($rsnQuery);
 ?>

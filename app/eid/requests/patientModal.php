@@ -10,11 +10,15 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $artNo = $_GET['artNo'];
 
 $pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
 $pResult = $db->rawQuery($pQuery);
-// print_r($pResult);die;
+
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
 <!-- Bootstrap 3.3.6 -->
@@ -63,7 +67,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">Select</th>
@@ -83,20 +87,20 @@ $pResult = $db->rawQuery($pQuery);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
 										//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
-								
-								$patientDetails = json_encode(array(
-									"name"=>$patient['child_name']." ".$patient['child_surname'],
-									"gender"=>$patient['child_gender'],
-									"dob"=> DateUtility::humanReadableDateFormat($patient['child_dob']),
-									"age"=>$patient['child_age'],
-									"caretaker_no"=>$patient['caretaker_phone_number'],
-									"child_id"=>$patient['child_id'],
-									"mother_id"=>$patient['mother_id'],
-									"caretaker_address"=>$patient['caretaker_address'],
-									"mother_name"=>$patient['mother_name'],
-									"mother_dob"=> DateUtility::humanReadableDateFormat($patient['mother_dob']),
-									"mother_marital_status"=>$patient['mother_marital_status'],
-								));
+
+										$patientDetails = json_encode(array(
+											"name" => $patient['child_name'] . " " . $patient['child_surname'],
+											"gender" => $patient['child_gender'],
+											"dob" => DateUtility::humanReadableDateFormat($patient['child_dob']),
+											"age" => $patient['child_age'],
+											"caretaker_no" => $patient['caretaker_phone_number'],
+											"child_id" => $patient['child_id'],
+											"mother_id" => $patient['mother_id'],
+											"caretaker_address" => $patient['caretaker_address'],
+											"mother_name" => $patient['mother_name'],
+											"mother_dob" => DateUtility::humanReadableDateFormat($patient['mother_dob']),
+											"mother_marital_status" => $patient['mother_marital_status'],
+										));
 								?>
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>

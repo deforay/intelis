@@ -2,16 +2,17 @@
 
 // imported in covid-19-edit-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
-use App\Services\Covid19Service;
-use App\Services\GeoLocationsService;
-use App\Services\PatientsService;
 use App\Utilities\DateUtility;
+use App\Services\Covid19Service;
+use App\Services\PatientsService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -29,7 +30,8 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-$patientsModel = new PatientsService();
+/** @var PatientsService $patientsModel */
+$patientsModel = ContainerRegistry::get(PatientsService::class);
 
 
 $covid19Results = $covid19Service->getCovid19Results();

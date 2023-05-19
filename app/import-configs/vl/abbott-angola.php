@@ -6,6 +6,9 @@ use App\Utilities\DateUtility;
 
 try {
 
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
     /** @noinspection PhpUndefinedVariableInspection */
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
@@ -34,7 +37,7 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
@@ -226,9 +229,9 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
+
+                /** @var UsersService $usersService */
+                $usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 

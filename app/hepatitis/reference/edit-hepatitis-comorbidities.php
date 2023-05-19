@@ -2,7 +2,10 @@
 
 
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $comorbidityQuery = "SELECT * from r_hepatitis_comorbidities where comorbidity_id=$id";
 $comorbidityInfo = $db->query($comorbidityQuery);
 ?>

@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GeoLocationsService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -16,7 +16,13 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$geolocation = new GeoLocationsService();
+
+/** @var GeoLocationsService $geolocation */
+$geolocation = ContainerRegistry::get(GeoLocationsService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 /* For reference we define the table names */
 $tableName = "facility_details";
 $facilityId = base64_decode($_POST['facilityId']);

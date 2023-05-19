@@ -1,20 +1,22 @@
 <?php
 
-
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 if (!isset($id) || trim($id) == '') {
 	header("Location:batchcode.php");
 }
 $content = '';
 $newContent = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
-$batchInfo = $db->query($batchQuery);
+$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id= ? ";
+$batchInfo = $db->rawQuery($batchQuery, [$id]);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
-$configControlInfo = $db->query($configControlQuery);
+$configControlQuery = "SELECT * from instrument_controls where config_id= ? ";
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['config_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	if ($info['test_type'] == 'vl') {
@@ -45,8 +47,8 @@ if (isset($configControl['vl']['noCalibrators']) && trim($configControl['vl']['n
 }
 //Get machine's prev. label order
 $machine = intval($batchInfo[0]['machine']);
-$prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = $machine AND b_d.batch_id!= $id ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
-$prevlabelInfo = $db->query($prevLabelQuery);
+$prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = ? AND b_d.batch_id!= ? ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
+$prevlabelInfo = $db->rawQuery($prevLabelQuery, [$machine, $id]);
 if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode($prevlabelInfo[0]['label_order'], true);
 	$prevDisplaySampleArray = [];
@@ -58,8 +60,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	}
 	//Get display sample only
 	$displaySampleOrderArray = [];
-	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=$id ORDER BY sample_code ASC";
-	$samplesInfo = $db->query($samplesQuery);
+	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=? ORDER BY sample_code ASC";
+	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displaySampleOrderArray[] = $sample['vl_sample_id'];
 	}
@@ -130,8 +132,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=$id ORDER BY sample_code ASC";
-	$samplesInfo = $db->query($samplesQuery);
+	$samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=? ORDER BY sample_code ASC";
+	$samplesInfo = $db->query($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample['vl_sample_id'];
 		$content .= '<li class="ui-state-default" id="s_' . $sample['vl_sample_id'] . '">' . $sample['sample_code'] . '</li>';
@@ -167,7 +169,6 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 
 	<!-- Main content -->
 	<section class="content">
-		<!-- <pre><?php print_r($configControl); ?></pre> -->
 
 		<div class="box box-default">
 			<div class="box-header with-border">

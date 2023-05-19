@@ -21,9 +21,15 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $sQuery = "SELECT * from instruments where config_id=?";
-$sInfo = $db->rawQueryOne($sQuery, array($id));
+$sInfo = $db->rawQueryOne($sQuery, [$id]);
+
+// Sanitize values before using them in the form
+$sInfo = array_map('htmlspecialchars', $sInfo);
 
 if (!empty($sInfo['supported_tests'])) {
 	$sInfo['supported_tests'] = json_decode($sInfo['supported_tests'], true);
@@ -37,10 +43,10 @@ if (!empty($sInfo['approved_by'])) {
 	$sInfo['approved_by'] = json_decode($sInfo['approved_by'], true);
 }
 
-$configMachineQuery = "SELECT * from instrument_machines where config_id=$id";
-$configMachineInfo = $db->query($configMachineQuery);
-$configControlQuery = "SELECT * from instrument_controls where config_id=$id";
-$configControlInfo = $db->query($configControlQuery);
+$configMachineQuery = "SELECT * from instrument_machines where config_id=?";
+$configMachineInfo = $db->rawQuery($configMachineQuery, [$id]);
+$configControlQuery = "SELECT * from instrument_controls where config_id=?";
+$configControlInfo = $db->rawQuery($configControlQuery, [$id]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noHouseCtrl'] = $info['number_of_in_house_controls'];
@@ -124,10 +130,10 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 												<option value='hepatitis' <?php echo (in_array('hepatitis', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Hepatitis"); ?></option>
-											<?php } 
+											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 												<option value='tb' <?php echo (in_array('tb', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("TB"); ?></option>
-											<?php } 
+											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
 												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : '';  ?>><?php echo _("Lab Tests"); ?></option>
 											<?php } ?>
@@ -290,7 +296,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 													</select>
 												</td>
 											</tr>
-										<?php } 
+										<?php }
 										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
 											<tr class="generic-access user-access-form" style="<?php echo in_array('generic', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="userTestType[]" id="testType1" value="generic-tests" /></td>
@@ -359,9 +365,9 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _('No of Manufacturer Controls in TB'); ?>" title="<?php echo _('Please enter No of Manufacturer Controls in TB'); ?>" /></td>
 												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _('No of Calibrators in TB'); ?>" title="<?php echo _('Please enter No of Calibrators in TB'); ?>" /></td>
 											</tr>
-										<?php } 
+										<?php }
 										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
-											<tr id="generic-testsTable" class="ctlCalibrator" <?php echo $genericTests;?>>
+											<tr id="generic-testsTable" class="ctlCalibrator" <?php echo $genericTests; ?>>
 												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" /></td>
 												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' /></td>
 												<td><input type="text" value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' /></td>

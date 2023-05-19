@@ -11,18 +11,21 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 if (!isset($id) || trim($id) == '') {
 	header("Location:eid-batches.php");
 }
 $content = '';
 $newContent = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
-$batchInfo = $db->query($batchQuery);
+$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id= ? ";
+$batchInfo = $db->rawQuery($batchQuery, [$id]);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
-$configControlInfo = $db->query($configControlQuery);
+$configControlQuery = "SELECT * from instrument_controls where config_id= ? ";
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['config_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	if ($info['test_type'] == 'eid') {
@@ -139,8 +142,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT eid_id,sample_code from form_eid where sample_batch_id=$id ORDER BY sample_code ASC";
-	$samplesInfo = $db->query($samplesQuery);
+	$samplesQuery = "SELECT eid_id,sample_code from form_eid where sample_batch_id=? ORDER BY sample_code ASC";
+	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample['eid_id'];
 		$content .= '<li class="ui-state-default" id="s_' . $sample['eid_id'] . '">' . $sample['sample_code'] . '</li>';

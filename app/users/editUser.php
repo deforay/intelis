@@ -7,15 +7,21 @@ use App\Services\FacilitiesService;
 $title = _("Edit User");
 
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 $userInfo = $db->rawQueryOne(
      'SELECT ud.*, r.role_id, r.role_name, r.role_code
-FROM user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id
-WHERE user_id= ?',
-     array($id)
+          FROM user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id
+          WHERE user_id= ?',
+     [$id]
 );
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+$userInfo = array_map('htmlspecialchars', $userInfo);
 
 $interfaceUsers = "";
 if (!empty($userInfo['interface_user_name'])) {

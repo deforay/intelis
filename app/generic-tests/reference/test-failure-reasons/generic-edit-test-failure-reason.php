@@ -4,7 +4,10 @@ $title = _("Test Failure Reason");
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $tQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_id=$id";
 $testFailureReasonInfo = $db->query($tQuery);
 ?>
@@ -12,10 +15,10 @@ $testFailureReasonInfo = $db->query($tQuery);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Edit Test Failure Reason");?></h1>
+        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Edit Test Failure Reason"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Test Failure Reason");?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Test Failure Reason"); ?></li>
         </ol>
     </section>
 
@@ -24,7 +27,7 @@ $testFailureReasonInfo = $db->query($tQuery);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field");?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -34,30 +37,30 @@ $testFailureReasonInfo = $db->query($tQuery);
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason");?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testFailureReason" name="testFailureReason" placeholder="<?php echo _('Test Failure Reason');?>" title="<?php echo _('Please enter test reason');?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason',this,'<?php echo "test_failure_reason_id##" . $testFailureReasonInfo[0]['test_failure_reason_id']; ?>','<?php echo _("This test reason that you entered already exists.Try another name");?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason']; ?>"/>
+                                        <input type="text" class="form-control isRequired" id="testFailureReason" name="testFailureReason" placeholder="<?php echo _('Test Failure Reason'); ?>" title="<?php echo _('Please enter test reason'); ?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason',this,'<?php echo "test_failure_reason_id##" . $testFailureReasonInfo[0]['test_failure_reason_id']; ?>','<?php echo _("This test reason that you entered already exists.Try another name"); ?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason']; ?>" />
                                         <input type="hidden" name="testFailureReasonId" id="testFailureReasonId" value="<?php echo base64_encode($testFailureReasonInfo[0]['test_failure_reason_id']); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReasonCode" class="col-lg-4 control-label"><?php echo _("Test Failure Reason Code");?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReasonCode" class="col-lg-4 control-label"><?php echo _("Test Failure Reason Code"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testFailureReasonCode" name="testFailureReasonCode" placeholder="<?php echo _('Test Reason Code');?>" title="<?php echo _('Please enter test failure reason code');?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason_code',this,'<?php echo "test_failure_reason_code##" . $testFailureReasonInfo[0]['test_failure_reason_id']; ?>','<?php echo _("This test reason code that you entered already exists.Try another code");?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason_code']; ?>"/>
+                                        <input type="text" class="form-control isRequired" id="testFailureReasonCode" name="testFailureReasonCode" placeholder="<?php echo _('Test Reason Code'); ?>" title="<?php echo _('Please enter test failure reason code'); ?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason_code',this,'<?php echo "test_failure_reason_code##" . $testFailureReasonInfo[0]['test_failure_reason_id']; ?>','<?php echo _("This test reason code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason_code']; ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReasonStatus" class="col-lg-4 control-label"><?php echo _("Status");?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReasonStatus" class="col-lg-4 control-label"><?php echo _("Status"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="testFailureReasonStatus" name="testFailureReasonStatus" title="<?php echo _('Please select status');?>">
-											<option value=""><?php echo _("--Select--");?></option>
-											<option value="active" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active");?></option>
-											<option value="inactive" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive");?></option>
-										</select>
+                                        <select class="form-control isRequired" id="testFailureReasonStatus" name="testFailureReasonStatus" title="<?php echo _('Please select status'); ?>">
+                                            <option value=""><?php echo _("--Select--"); ?></option>
+                                            <option value="active" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
+                                            <option value="inactive" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -66,8 +69,8 @@ $testFailureReasonInfo = $db->query($tQuery);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit");?></a>
-                        <a href="generic-test-failure-reason.php" class="btn btn-default"> <?php echo _("Cancel");?></a>
+                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+                        <a href="generic-test-failure-reason.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>

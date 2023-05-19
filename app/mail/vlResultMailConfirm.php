@@ -1,10 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-
-
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -16,6 +14,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $global = $general->getGlobalConfig();
 
+// sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "form_vl";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE `type` = 'result'";
@@ -24,10 +25,7 @@ $mailconf = [];
 foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
-//get logo
-$configQuery = "SELECT * from global_config WHERE `name`='logo'";
-$configResult = $db->query($configQuery);
-//print_r($configResult);die;
+
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
@@ -349,4 +347,3 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
-?>

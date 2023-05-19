@@ -15,19 +15,23 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $configId = (int) base64_decode($_POST['configId']);
 
-$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=$configId";
-$configControlInfo = $db->query($configControlQuery);
+$configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=?";
+$configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 // echo "<pre>";print_r($_POST);die;
 try {
     if (trim($_POST['configurationName']) != "") {
 
-        if (isset($_POST['supportedTests']) && sizeof($_POST['supportedTests']) > 0) {
+        if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
                 if (!file_exists($configDir)) {

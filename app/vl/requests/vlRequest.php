@@ -8,6 +8,10 @@ use App\Services\GeoLocationsService;
 $title = _("View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];

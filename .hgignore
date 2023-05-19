@@ -39,3 +39,4 @@ secretKey.txt
 .user.ini
 rector.php
 **/node_modules/
+.dccache
