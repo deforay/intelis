@@ -314,6 +314,8 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['eidExportResultQueryCount'] = $iTotal;
+
 /*
           * Output
           */
@@ -342,7 +344,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
      $row[] = $aRow['mother_id'];
-     $row[] = $eidResults[$aRow['result']];
+     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
      $row[] = ($aRow['status_name']);
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;

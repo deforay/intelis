@@ -8,11 +8,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -27,14 +24,11 @@ $covid19Results = $covid19Service->getCovid19Results();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
-// echo "<pre>";print_r($arr);die;
 if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
 
     $rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
-    $excel = new Spreadsheet();
     $output = [];
-    $sheet = $excel->getActiveSheet();
 
     $headings = array(
         _("S. No."),
@@ -42,11 +36,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Remote Sample Code"),
         _("Testing Lab Name"),
         _("Tested By"),
-        _("Prélévement"),
+        _("Test Number"),
         _("District"),
         _("State"),
-        _("POINT DE COLLECT"),
-        _("No. EPID"),
+        _("Collection Site"),
+        _("EPID No."),
         _("Patient Name"),
         _("Patient DoB"),
         _("Patient Age"),
@@ -97,93 +91,40 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _("Date result released")
     );
 
-    if ($_SESSION['instanceType'] == 'standalone') {
-        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-            unset($headings[$key]);
-        }
+    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
+        unset($headings[$key]);
     }
-    $colNo = 1;
-
-    $styleArray = array(
-        'font' => array(
-            'bold' => true,
-            'size' => 12,
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-            'vertical' => Alignment::VERTICAL_CENTER,
-        ),
-        'borders' => array(
-            'outline' => array(
-                'style' => Border::BORDER_THIN,
-            ),
-        )
-    );
-
-    $borderStyle = array(
-        'alignment' => array(
-            'vertical' => Alignment::VERTICAL_CENTER,
-        ),
-        'borders' => array(
-            'outline' => array(
-                'style' => Border::BORDER_THIN,
-            ),
-        )
-    );
-
-    $sheet->mergeCells('A1:BG1');
-    $nameValue = '';
-    foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --' && trim($value) != '-- Sélectionner --') {
-            $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-        }
-    }
-    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-    ->setValueExplicit(html_entity_decode($nameValue));    if ($_POST['withAlphaNum'] == 'yes') {
-        foreach ($headings as $field => $value) {
-            $string = str_replace(' ', '', $value);
-            $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-            $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-            ->setValueExplicit(html_entity_decode($value));
-            $colNo++;
-        }
-    } else {
-        foreach ($headings as $field => $value) {
-            $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-            $colNo++;
-        }
-    }
-    $sheet->getStyle('A3:CG3')->applyFromArray($styleArray);
 
     $no = 1;
     foreach ($rResult as $aRow) {
         $symptomList = [];
-        $squery = "SELECT s.*, ps.* FROM form_covid19 as c19 
-        INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id 
-        INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id 
-        WHERE ps.symptom_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
-        $result = $db->rawQuery($squery);
+        $squery = "SELECT s.*, ps.* FROM form_covid19 as c19
+        INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id
+        INNER JOIN r_covid19_symptoms AS s ON ps.symptom_id = s.symptom_id
+        WHERE ps.symptom_detected like 'yes' AND c19.covid19_id = ?";
+        $result = $db->rawQuery($squery, [$aRow['covid19_id']]);
         foreach ($result as $symp) {
-            //$symResult = (isset($symptom['symptom_detected']) && $symptom['symptom_detected'] != "") ? ($symptom['symptom_detected']) : "Unknown";
             $symptomList[] = $symp['symptom_name'];
         }
 
         $comorbiditiesList = [];
-        $squery = "SELECT s.*, como.* FROM form_covid19 as c19 
-        INNER JOIN covid19_patient_comorbidities AS como ON c19.covid19_id = como.covid19_id 
-        INNER JOIN r_covid19_comorbidities AS s ON como.comorbidity_id = s.comorbidity_id 
-        WHERE como.comorbidity_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
-        $result = $db->rawQuery($squery);
+        $squery = "SELECT s.*,como.*
+                    FROM form_covid19 as c19
+                    INNER JOIN covid19_patient_comorbidities AS como ON c19.covid19_id = como.covid19_id
+                    INNER JOIN r_covid19_comorbidities AS s ON como.comorbidity_id = s.comorbidity_id
+                    WHERE como.comorbidity_detected like 'yes' AND c19.covid19_id = ?";
+        $result = $db->rawQuery($squery, [$aRow['covid19_id']]);
         foreach ($result as $como) {
             $comorbiditiesList[] = $como['comorbidity_name'];
         }
 
         $subReasonsList = null;
-        $squery = "SELECT reas.* FROM form_covid19 as c19 
-        INNER JOIN covid19_reasons_for_testing AS reas ON c19.covid19_id = reas.covid19_id
-        WHERE reas.reasons_detected like 'yes' AND c19.covid19_id = " . $aRow['covid19_id'];
-        $result = $db->rawQueryOne($squery);
+        $squery = "SELECT reas.*
+                    FROM form_covid19 as c19
+                    INNER JOIN covid19_reasons_for_testing AS reas ON c19.covid19_id = reas.covid19_id
+                    WHERE reas.reasons_detected like 'yes'
+                    AND c19.covid19_id = ?";
+        $result = $db->rawQueryOne($squery[$aRow['covid19_id']]);
 
         $subReasonsList = json_decode($result['reason_details']);
         $subReasonsList = implode(", ", $subReasonsList);
@@ -191,60 +132,38 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
         $row = [];
         if ($arr['vl_form'] == 1) {
-            // Get testing platform and test method 
-            $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $aRow['covid19_id'] . " ORDER BY test_id DESC LIMIT 1";
-            $covid19TestInfo = $db->rawQueryOne($covid19TestQuery);
+            // Get testing platform and test method
+            $covid19TestQuery = "SELECT * FROM covid19_tests
+                                    WHERE covid19_id= ? ORDER BY test_id DESC LIMIT 1";
+            $covid19TestInfo = $db->rawQueryOne($covid19TestQuery, [$aRow['covid19_id']]);
             foreach ($covid19TestInfo as $indexKey => $rows) {
                 $testPlatform = $rows['testing_platform'];
                 $testMethod = $rows['test_name'];
             }
         }
 
-        //date of birth
-        $dob = '';
-        if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-            $dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
-        }
         //set gender
         $gender = '';
         if ($aRow['patient_gender'] == 'male') {
             $gender = 'M';
-        } else if ($aRow['patient_gender'] == 'female') {
+        } elseif ($aRow['patient_gender'] == 'female') {
             $gender = 'F';
-        } else if ($aRow['patient_gender'] == 'not_recorded') {
+        } elseif ($aRow['patient_gender'] == 'not_recorded') {
             $gender = 'Unreported';
         }
-        //sample collecion date
-        $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", $aRow['sample_collection_date']);
-            $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
-        }
-
-        $sampleTestedOn = '';
-        if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-            $sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
-        }
-
 
         //set sample rejection
         $sampleRejection = 'No';
         if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
             $sampleRejection = 'Yes';
         }
-        //result dispatched date
-        $resultDispatchedDate = '';
-        if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", $aRow['result_printed_datetime']);
-            $resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
-        }
 
-        if ($aRow['patient_name'] != '') {
+        if (!empty($aRow['patient_name'])) {
             $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
         } else {
             $patientFname = '';
         }
-        if ($aRow['patient_surname'] != '') {
+        if (!empty($aRow['patient_surname'])) {
             $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
         } else {
             $patientLname = '';
@@ -257,7 +176,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
 
 
-
         $row[] = $no;
         if ($_SESSION['instanceType'] == 'standalone') {
             $row[] = $aRow["sample_code"];
@@ -265,24 +183,24 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
             $row[] = $aRow["sample_code"];
             $row[] = $aRow["remote_sample_code"];
         }
-        $row[] = ($aRow['lab_name']);
-        $row[] = ($aRow['labTechnician']);
+        $row[] = $aRow['lab_name'];
+        $row[] = $aRow['labTechnician'];
         $row[] = $aRow['test_number'];
-        $row[] = ($aRow['facility_district']);
-        $row[] = ($aRow['facility_state']);
-        $row[] = ($aRow['facility_name']);
+        $row[] = $aRow['facility_district'];
+        $row[] = $aRow['facility_state'];
+        $row[] = $aRow['facility_name'];
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-        $row[] = ($aRow['patient_gender']);
-        $row[] = ($aRow['is_patient_pregnant']);
-        $row[] = ($aRow['patient_phone_number']);
-        $row[] = ($aRow['patient_email']);
-        $row[] = ($aRow['patient_address']);
-        $row[] = ($aRow['patient_province']);
-        $row[] = ($aRow['patient_district']);
-        $row[] = ($aRow['nationality']);
+        $row[] = $aRow['patient_gender'];
+        $row[] = $aRow['is_patient_pregnant'];
+        $row[] = $aRow['patient_phone_number'];
+        $row[] = $aRow['patient_email'];
+        $row[] = $aRow['patient_address'];
+        $row[] = $aRow['patient_province'];
+        $row[] = $aRow['patient_district'];
+        $row[] = $aRow['nationality'];
         $row[] = $aRow['fever_temp'];
         $row[] = $aRow['temperature_measurement_method'];
         $row[] = $aRow['respiratory_rate'];
@@ -318,27 +236,63 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
         $row[] = $aRow['covid19_test_platform'];
         $row[] = ($testMethod);
-        $row[] = $covid19Results[$aRow['result']];
+        $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 
         $output[] = $row;
         $no++;
     }
 
-    $start = (count($output)) + 2;
-    foreach ($output as $rowNo => $rowData) {
-        $colNo = 1;
-        $rRowCount = $rowNo + 4;
-        foreach ($rowData as $field => $value) {
-            $sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
-            $colNo++;
+
+    if (isset($_SESSION['covid19ResultQueryCount']) && $_SESSION['covid19ResultQueryCount'] > 5000) {
+
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+        $file = new SplFileObject($fileName, 'w');
+        $file->fputcsv($headings);
+        foreach ($output as $row) {
+            $file->fputcsv($row);
         }
+        // we dont need the $file variable anymore
+        $file = null;
+        echo base64_encode($fileName);
+    } else {
+        $excel = new Spreadsheet();
+        $sheet = $excel->getActiveSheet();
+        $colNo = 1;
+
+        $nameValue = '';
+        foreach ($_POST as $key => $value) {
+            if (trim($value) != '' && trim($value) != '-- Select --' && trim($value) != '-- Sélectionner --') {
+                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+            }
+        }
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+        if ($_POST['withAlphaNum'] == 'yes') {
+            foreach ($headings as $field => $value) {
+                $string = str_replace(' ', '', $value);
+                $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+                $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+                $colNo++;
+            }
+        } else {
+            foreach ($headings as $field => $value) {
+                $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+                $colNo++;
+            }
+        }
+
+        //$start = (count($output)) + 2;
+        foreach ($output as $rowNo => $rowData) {
+            $colNo = 1;
+            $rRowCount = $rowNo + 4;
+            foreach ($rowData as $field => $value) {
+                $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+                $colNo++;
+            }
+        }
+        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+        $writer->save($filename);
+        echo base64_encode($filename);
     }
-    $writer = IOFactory::createWriter($excel, 'Xlsx');
-    $filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }

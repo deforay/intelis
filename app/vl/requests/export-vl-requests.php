@@ -1,16 +1,14 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 ini_set('memory_limit', -1);
+ini_set('max_execution_time', -1);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -23,9 +21,9 @@ $dateTimeUtil = new DateUtility();
 $sQuery = $_SESSION['vlRequestSearchResultQuery'];
 $rResult = $db->rawQuery($sQuery);
 
-$excel = new Spreadsheet();
+
 $output = [];
-$sheet = $excel->getActiveSheet();
+
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
@@ -34,70 +32,9 @@ if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
 	unset($headings[$key]);
 }
-$colNo = 1;
-
-$styleArray = array(
-	'font' => array(
-		'bold' => true,
-		'size' => 12,
-	),
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
-
-$borderStyle = array(
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
-
-$sheet->mergeCells('A1:AH1');
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	}
-}
-$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue));
-if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	foreach ($headings as $field => $value) {
-		$string = str_replace(' ', '', $value);
-		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
-		$colNo++;
-	}
-} else {
-	foreach ($headings as $field => $value) {
-		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
-		$colNo++;
-	}
-}
-$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
-
 $no = 1;
 foreach ($rResult as $aRow) {
 	$row = [];
-	//date of birth
-	$dob = '';
-	if (!empty($aRow['patient_dob'])) {
-		$dob =  DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-	}
-
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
 	if (!empty($aRow['patient_dob'])) {
@@ -126,8 +63,6 @@ foreach ($rResult as $aRow) {
 			break;
 	}
 
-
-	//set ARV adherecne
 	$arvAdherence = '';
 	if (trim($aRow['arv_adherance_percentage']) == 'good') {
 		$arvAdherence = 'Good >= 95%';
@@ -172,7 +107,7 @@ foreach ($rResult as $aRow) {
 		$row[] = $aRow['patient_art_no'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	}
-	$row[] = $dob;
+	$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 	$aRow['patient_age_in_years'] ??= 0;
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
@@ -201,16 +136,55 @@ foreach ($rResult as $aRow) {
 	$no++;
 }
 
-$start = (count($output)) + 2;
-foreach ($output as $rowNo => $rowData) {
-	$colNo = 1;
-	$rRowCount = $rowNo + 4;
-	foreach ($rowData as $field => $value) {
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-		$colNo++;
+if (isset($_SESSION['vlRequestSearchResultQueryCount']) && $_SESSION['vlRequestSearchResultQueryCount'] > 5000) {
+
+	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
+	$file = new SplFileObject($fileName, 'w');
+	$file->fputcsv($headings);
+	foreach ($output as $row) {
+		$file->fputcsv($row);
 	}
+	// we dont need the $file variable anymore
+	$file = null;
+	echo base64_encode($fileName);
+} else {
+	//$start = (count($output)) + 2;
+	$colNo = 1;
+
+	$nameValue = '';
+	foreach ($_POST as $key => $value) {
+		if (trim($value) != '' && trim($value) != '-- Select --') {
+			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+		}
+	}
+
+	$excel = new Spreadsheet();
+	$sheet = $excel->getActiveSheet();
+	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+	if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+		foreach ($headings as $field => $value) {
+			$string = str_replace(' ', '', $value);
+			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+			$colNo++;
+		}
+	} else {
+		foreach ($headings as $field => $value) {
+			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+			$colNo++;
+		}
+	}
+
+	foreach ($output as $rowNo => $rowData) {
+		$colNo = 1;
+		$rRowCount = $rowNo + 4;
+		foreach ($rowData as $field => $value) {
+			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+			$colNo++;
+		}
+	}
+	$writer = IOFactory::createWriter($excel, 'Xlsx');
+	$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
+	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }
-$writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

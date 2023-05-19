@@ -208,6 +208,8 @@ $aResultTotal =  $db->rawQuery("SELECT COUNT(tb_id) as total FROM form_tb as vl 
 $iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+$_SESSION['tbRequestSearchResultQueryCount'] = $iTotal;
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,

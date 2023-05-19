@@ -1,8 +1,18 @@
 <?php
+
+use App\Registries\ContainerRegistry;
+
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
+
+$db->where("login_id", NULL, 'IS NOT');
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {
   header("Location:/login/login.php");
@@ -50,7 +60,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-  
+
   <!-- iCheck -->
   <style>
     body {

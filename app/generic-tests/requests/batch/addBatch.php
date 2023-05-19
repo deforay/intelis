@@ -97,7 +97,7 @@ foreach ($testPlatformResult as $machine) {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
-			
+
 			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
 				<tr>
 					<th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
@@ -449,8 +449,8 @@ foreach ($testPlatformResult as $machine) {
 
 	function getBatchCodeForm(obj) {
 		var shortCode = $(obj).find(':selected').data('short');
-		if(shortCode != ""){
-			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $maxId);?>';
+		if (shortCode != "") {
+			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $maxId); ?>';
 			$('#batchCode').val(code);
 		}
 	}

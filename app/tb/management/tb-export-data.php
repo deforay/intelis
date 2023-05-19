@@ -23,6 +23,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
@@ -48,14 +51,8 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 
-/** @var TbService $tbService */
-$tbService = ContainerRegistry::get(TbService::class);
 $tbResults = $tbService->getTbResults();
-if ((isset($arr['tb_report_type']) && $arr['tb_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
-	$reportType = 'generate-export-rwanda.php';
-} else {
-	$reportType = 'generate-export-data.php';
-}
+
 $state = $geolocationService->getProvinces("yes");
 
 ?>
@@ -78,7 +75,6 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- Main content -->
 	<section class="content">
-		<!-- <pre><?php print_r($arr); ?></pre> -->
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
@@ -218,7 +214,7 @@ $state = $geolocationService->getProvinces("yes");
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
 
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
+								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('generate-export-data.php')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Download"); ?></button>
 
 								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 							</td>
@@ -593,7 +589,7 @@ $state = $geolocationService->getProvinces("yes");
 					alert("<?php echo _("Unable to generate excel"); ?>.");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

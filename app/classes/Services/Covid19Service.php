@@ -439,7 +439,7 @@ class Covid19Service
             }
 
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
             $sampleDate = explode(" ", $params['sampleCollectionDate']);

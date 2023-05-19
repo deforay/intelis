@@ -198,7 +198,7 @@ $batResult = $db->rawQuery($batQuery);
 	function searchResultData() {
 		searchExecuted = true;
 		$.blockUI();
-		$.post("/generic-tests/program-management/getSampleStatus.php", {
+		$.post("/generic-tests/program-management/get-sample-status.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
@@ -263,7 +263,7 @@ $batResult = $db->rawQuery($batQuery);
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/generic-tests/program-management/getVlSampleTATDetails.php",
+			"sAjaxSource": "/generic-tests/program-management/get-sample-tat-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
@@ -307,7 +307,7 @@ $batResult = $db->rawQuery($batQuery);
 		}
 		$.blockUI();
 		oTable.fnDraw();
-	$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
+		$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),

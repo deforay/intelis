@@ -315,6 +315,8 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
+
 /*
           * Output
           */
@@ -371,7 +373,7 @@ foreach ($rResult as $aRow) {
 
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
-     $row[] = $eidResults[$aRow['result']];
+     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
      //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['eid_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';

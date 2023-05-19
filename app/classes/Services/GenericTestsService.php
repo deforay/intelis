@@ -328,7 +328,7 @@ class GenericTestsService
                 exit();
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);

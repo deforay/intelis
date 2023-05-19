@@ -49,7 +49,7 @@ if (isset($_POST['iSortCol_0'])) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
 
             $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
-				" . ($_POST['sSortDir_' . $i]) . ", ";
+                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -178,9 +178,9 @@ foreach ($rResult as $aRow) {
     $row[] = $lastDate;
     $row[] = $createdDate;
     //    $row[] = '<select class="form-control" name="status" id=' . $aRow['batch_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
-    //		    <option value="pending" ' . ($aRow['batch_status'] == "pending" ? "selected=selected" : "") . '>Pending</option>
-    //		    <option value="completed" ' . ($aRow['batch_status'] == "completed" ? "selected=selected" : "") . '>Completed</option>
-    //	    </select>';
+    //            <option value="pending" ' . ($aRow['batch_status'] == "pending" ? "selected=selected" : "") . '>Pending</option>
+    //            <option value="completed" ' . ($aRow['batch_status'] == "completed" ? "selected=selected" : "") . '>Completed</option>
+    //        </select>';
 
     if ($batch) {
         $row[] = '<a href="' . $editFileName . '?id=' . base64_encode($aRow['batch_id']) . '&code=' . $_POST['type'] . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;

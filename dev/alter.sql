@@ -15,7 +15,7 @@ UPDATE `privileges` SET `privilege_name` = 'vlWeeklyReport.php' WHERE `privilege
 
 
 
-UPDATE `global_config` SET `value` = '5' WHERE `global_config`.`name` = 'data_sync_interval'; 
+UPDATE `global_config` SET `value` = '5' WHERE `global_config`.`name` = 'data_sync_interval';
 -- saravanan 12-jun-2018
 INSERT INTO `global_config` (`display_name`, `name`, `value`) VALUES ('Edit Profile', 'edit_profile', 'no');
 
@@ -163,7 +163,7 @@ CREATE TABLE `result_import_stats` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`) VALUES ('Barcode Format', 'barcode_format', 'C39');
-		
+
 CREATE TABLE `eid_form` (
   `eid_id` INTEGER NOT NULL AUTO_INCREMENT,
   `vlsm_instance_id` VARCHAR(255) NULL DEFAULT NULL,
@@ -232,7 +232,7 @@ CREATE TABLE `eid_form` (
 );
 
 -- ---
--- Foreign Keys 
+-- Foreign Keys
 -- ---
 
 
@@ -308,10 +308,10 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 UPDATE `privileges` SET `privilege_name` = 'eid-manual-results.php' WHERE `privilege_name` = 'eid-results.php';
 UPDATE `resources` SET `display_name` = 'Import Result' WHERE `resource_id` = 8;
 UPDATE `privileges` SET `display_name` = 'Import Result from File' WHERE `privilege_id` = 19;
-delete from roles_privileges_map where privilege_id = 53; 
+delete from roles_privileges_map where privilege_id = 53;
 delete from privileges where privilege_id = 53;
 
-delete from roles_privileges_map where privilege_id = 54; 
+delete from roles_privileges_map where privilege_id = 54;
 delete from privileges where privilege_id = 54;
 
 
@@ -379,7 +379,7 @@ CREATE TABLE `eid_imported_controls` (
  `file_name` varchar(255) DEFAULT NULL,
  `imported_date_time` datetime DEFAULT NULL,
  PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;  
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
@@ -448,7 +448,7 @@ UPDATE `resources` SET `module` = 'eid' WHERE `resource_name` = 'eid-requests';
 UPDATE `privileges` SET `privilege_name` = 'vl-sample-status.php' WHERE `privilege_name` = 'missingResult.php';
 
 
--- Version 3.12 ---------- Amit 25-June-2019 
+-- Version 3.12 ---------- Amit 25-June-2019
 
 -- Amit 28 June 2019
 
@@ -525,7 +525,7 @@ ALTER TABLE `eid_form` ADD `sample_package_code` VARCHAR(255) NULL DEFAULT NULL 
 
 UPDATE vl_request_form INNER JOIN package_details
     ON vl_request_form.sample_package_id = package_details.package_id
-SET vl_request_form.sample_package_code = package_details.package_code 
+SET vl_request_form.sample_package_code = package_details.package_code
 WHERE vl_request_form.sample_package_code is NULL;
 
 UPDATE eid_form INNER JOIN package_details
@@ -546,53 +546,53 @@ INSERT INTO `r_vl_test_reasons` (`test_reason_id`, `test_reason_name`, `test_rea
 
 -- Amit 14 Apr 2020
 
-INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`) 
+INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`)
           VALUES (29, 'covid-19', 'covid-19-requests', 'Covid-19 Request Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
           VALUES (NULL, '29', 'covid-19-add-request.php', 'Add Request');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
           VALUES (NULL, '29', 'covid-19-edit-request.php', 'Edit Request');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
           VALUES (NULL, '29', 'covid-19-requests.php', 'View Requests');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
               VALUES (NULL, '29', 'covid-19-result-status.php', 'Manage Result Status');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
               VALUES (NULL, '29', 'covid-19-print-results.php', 'Print Results');
 
 
-INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`) 
+INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`)
   VALUES (30, 'covid-19', 'covid-19-batches', 'Covid-19 Batch Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
   VALUES (NULL, 30, 'covid-19-batches.php', 'View Batches');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
   VALUES (NULL, 30, 'covid-19-add-batch.php', 'Add Batch');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
   VALUES (NULL, 30, 'covid-19-edit-batch.php', 'Edit Batch');
 
-  INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`) 
+  INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`)
           VALUES (31, 'covid-19', 'covid-19-results', 'Covid-19 Result Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
         VALUES (NULL, 31, 'covid-19-manual-results.php', 'Enter Result Manually');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
         VALUES (NULL, 31, 'covid-19-import-result.php', 'Import Result File');
 
 
 
 
-INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`) 
+INSERT INTO `resources` (`resource_id`, `module`, `resource_name`, `display_name`)
           VALUES (32, 'eid', 'covid-19-management', 'Covid-19 Reports');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
         VALUES (NULL, 32, 'covid-19-export-data.php', 'Export Data');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
       VALUES (NULL, 32, 'covid-19-sample-rejection-report.php', 'Sample Rejection Report');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
       VALUES (NULL, 32, 'covid-19-sample-status.php', 'Sample Status Report');
 
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `status`) 
-      VALUES ('Covid-19 Maximum Length', 'covid19_max_length', '', 'active'), 
-      ('Covid-19 Minimum Length', 'covid19_min_length', '', 'active'), 
-      ('Covid-19 Sample Code Format', 'covid19_sample_code', 'MMYY', 'active'), 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `status`)
+      VALUES ('Covid-19 Maximum Length', 'covid19_max_length', '', 'active'),
+      ('Covid-19 Minimum Length', 'covid19_min_length', '', 'active'),
+      ('Covid-19 Sample Code Format', 'covid19_sample_code', 'MMYY', 'active'),
       ('Covid-19 Sample Code Prefix', 'covid19_sample_code_prefix', 'C19', 'active');
 
 
@@ -637,7 +637,7 @@ ALTER TABLE `r_covid19_sample_type`
   ADD PRIMARY KEY (`sample_id`);
 
 ALTER TABLE `r_covid19_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT;  
+  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT;
 
 
 CREATE TABLE `form_covid19` (
@@ -703,7 +703,7 @@ CREATE TABLE `form_covid19` (
   `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
-  `last_modified_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,  
+  `last_modified_by` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -714,7 +714,7 @@ ALTER TABLE `form_covid19`
 ALTER TABLE `form_covid19`
   MODIFY `covid19_id` int(11) NOT NULL AUTO_INCREMENT;
 
--- REJECTION REASONS TABLE  
+-- REJECTION REASONS TABLE
 
 CREATE TABLE `r_covid19_sample_rejection_reasons` (
   `rejection_reason_id` int(11) NOT NULL,
@@ -794,7 +794,7 @@ CREATE TABLE `covid19_imported_controls` (
  `file_name` varchar(255) DEFAULT NULL,
  `imported_date_time` datetime DEFAULT NULL,
  PRIMARY KEY (`control_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE `form_covid19` ADD `is_result_mail_sent` VARCHAR(255) NULL DEFAULT 'no' AFTER `lot_expiration_date`;
 
@@ -873,11 +873,11 @@ ALTER TABLE `form_covid19` ADD `patient_occupation` VARCHAR(255) NULL DEFAULT NU
 ALTER TABLE `form_covid19` ADD `patient_nationality` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_phone_number`;
 -- ALTER TABLE `form_covid19` ADD `patient_province` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_address`, ADD `patient_district` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_province`;
 
-ALTER TABLE `form_covid19` ADD `flight_airline` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_address`, 
-                           ADD `flight_seat_no` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_airline`, 
-                           ADD `flight_arrival_datetime` DATETIME NULL DEFAULT NULL AFTER `flight_seat_no`, 
-                           ADD `flight_airport_of_departure` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_arrival_datetime`, 
-                           ADD `flight_transit` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_airport_of_departure`, 
+ALTER TABLE `form_covid19` ADD `flight_airline` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_address`,
+                           ADD `flight_seat_no` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_airline`,
+                           ADD `flight_arrival_datetime` DATETIME NULL DEFAULT NULL AFTER `flight_seat_no`,
+                           ADD `flight_airport_of_departure` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_arrival_datetime`,
+                           ADD `flight_transit` VARCHAR(255) NULL DEFAULT NULL AFTER `flight_airport_of_departure`,
                            ADD `reason_of_visit` VARCHAR(500) NULL DEFAULT NULL AFTER `flight_transit`;
 
 ALTER TABLE `form_covid19`  ADD `date_of_initial_consultation` DATE NULL DEFAULT NULL  AFTER `date_of_symptom_onset`;
@@ -1768,10 +1768,10 @@ UPDATE `system_config` SET `value` = '4.2.5' WHERE `system_config`.`name` = 'ver
 -- Version 4.2.5 -- Amit -- 22-Oct-2020
 
 -- Thana 30-Oct-2020
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES 
-('Lock approved VL Samples', 'lock_approved_vl_samples', 'no', 'vl', 'yes', NULL, NULL, 'active'), 
-('Lock Approved EID Samples', 'lock_approved_eid_samples', 'no', 'eid', 'yes', NULL, NULL, 'active'), 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
+VALUES
+('Lock approved VL Samples', 'lock_approved_vl_samples', 'no', 'vl', 'yes', NULL, NULL, 'active'),
+('Lock Approved EID Samples', 'lock_approved_eid_samples', 'no', 'eid', 'yes', NULL, NULL, 'active'),
 ('Lock Approved Covid-19 Samples', 'lock_approved_covid19_samples', 'no', 'covid19', 'yes', NULL, NULL, 'active');
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'vl-test-request', 'edit-locked-vl-samples', 'Edit Locked VL Samples'), (NULL, 'eid-requests', 'edit-locked-eid-samples', 'Edit Locked EID Samples'), (NULL, 'covid-19-requests', 'edit-locked-covid19-samples', 'Edit Locked Covid-19 Samples');
@@ -1792,7 +1792,7 @@ ALTER TABLE `testing_labs` ADD `monthly_target`Varchar(255) NULL DEFAULT NULL ;
 
 -- Thana 09-Nov-2020
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'vl-reports', 'vlMonthlyThresholdReport.php', 'Monthly Threshold Report'), (NULL, 'eid-management', 'eidMonthlyThresholdReport.PHP', 'Monthly Threshold Report'), (NULL, 'covid-19-management', 'covid19MonthlyThresholdReport.PHP', 'Monthly Threshold Report');
- 
+
 -- Thana 10-Nov-2020
 
 DROP TABLE IF EXISTS `form_hepatitis`;
@@ -2090,7 +2090,7 @@ ALTER TABLE `form_covid19` ADD `source_of_request` VARCHAR(255) NULL DEFAULT NUL
 
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('import-results', 'common', 'Import Results using file Import');
 
-UPDATE `privileges` SET `resource_id` = 'import-results', `display_name` = 'Import Results from File' WHERE `privileges`.`privilege_id` = 19; 
+UPDATE `privileges` SET `resource_id` = 'import-results', `display_name` = 'Import Results from File' WHERE `privileges`.`privilege_id` = 19;
 
 -- Amit 26-Mar-2021
 
@@ -2115,16 +2115,16 @@ CREATE TABLE `lab_report_signatories` (
  `signatory_status` varchar(255) DEFAULT NULL,
  PRIMARY KEY (`signatory_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE `lab_report_signatories` ADD FOREIGN KEY (`lab_id`) REFERENCES `facility_details`(`facility_id`) ON DELETE RESTRICT ON UPDATE RESTRICT; 
+ALTER TABLE `lab_report_signatories` ADD FOREIGN KEY (`lab_id`) REFERENCES `facility_details`(`facility_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 -- Thana 16-Apr-2021
-ALTER TABLE `form_covid19` ADD `investigator_name` VARCHAR(255) NULL DEFAULT NULL AFTER `lab_technician`, ADD `investigator_phone` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_name`, ADD `investigator_email` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_phone`, ADD `clinician_name` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_email`, ADD `clinician_phone` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_name`, ADD `clinician_email` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_phone`, ADD `health_outcome` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_email`, ADD `health_outcome_date` DATE NULL DEFAULT NULL AFTER `health_outcome`; 
+ALTER TABLE `form_covid19` ADD `investigator_name` VARCHAR(255) NULL DEFAULT NULL AFTER `lab_technician`, ADD `investigator_phone` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_name`, ADD `investigator_email` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_phone`, ADD `clinician_name` VARCHAR(255) NULL DEFAULT NULL AFTER `investigator_email`, ADD `clinician_phone` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_name`, ADD `clinician_email` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_phone`, ADD `health_outcome` VARCHAR(255) NULL DEFAULT NULL AFTER `clinician_email`, ADD `health_outcome_date` DATE NULL DEFAULT NULL AFTER `health_outcome`;
 -- Thana 19-Apr-2021
-ALTER TABLE `form_covid19` ADD `suspected_case` VARCHAR(255) NULL DEFAULT NULL AFTER `date_of_symptom_onset`; 
+ALTER TABLE `form_covid19` ADD `suspected_case` VARCHAR(255) NULL DEFAULT NULL AFTER `date_of_symptom_onset`;
 -- Prasath M 22-Apr-2021
 ALTER TABLE `form_covid19` ADD `patient_zone` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_district`;
 
 -- Thana 22-Apr-2021
-ALTER TABLE `form_covid19` ADD `if_have_other_diseases` VARCHAR(50) NULL DEFAULT NULL AFTER `result`; 
+ALTER TABLE `form_covid19` ADD `if_have_other_diseases` VARCHAR(50) NULL DEFAULT NULL AFTER `result`;
 
 UPDATE `system_config` SET `value` = '4.3.1' WHERE `system_config`.`name` = 'version';
 -- Version 4.3.1  -- Amit -- 26-Apr-2021
@@ -2165,13 +2165,13 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 11-May-2021
 ALTER TABLE `form_covid19` CHANGE `sample_code_format` `sample_code_format` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `tested_by` `tested_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_alert` `source_of_alert` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `source_of_alert_other` `source_of_alert_other` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_id` `patient_id` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_name` `patient_name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_surname` `patient_surname` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_passport_number` `patient_passport_number` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_occupation` `patient_occupation` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `patient_address` `patient_address` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `flight_airline` `flight_airline` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `flight_airport_of_departure` `flight_airport_of_departure` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `reason_of_visit` `reason_of_visit` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `type_of_test_requested` `type_of_test_requested` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `is_result_mail_sent` `is_result_mail_sent` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'no', CHANGE `last_modified_by` `last_modified_by` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_covid19` ADD `app_local_test_req_id` TEXT NULL DEFAULT NULL AFTER `is_result_mail_sent`; 
+ALTER TABLE `form_covid19` ADD `app_local_test_req_id` TEXT NULL DEFAULT NULL AFTER `is_result_mail_sent`;
 ALTER TABLE `r_eid_results` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `status`;
 
 -- Prasath M 12-May-2021
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('VL Monthly Target', 'vl_monthly_target', 'no', 'vl', 'enable', null, null, 'active');
 -- Thana 12-May-2021
-ALTER TABLE `user_details` ADD `testing_user` TEXT NULL DEFAULT NULL AFTER `user_signature`; 
+ALTER TABLE `user_details` ADD `testing_user` TEXT NULL DEFAULT NULL AFTER `user_signature`;
 
 
 UPDATE `system_config` SET `value` = '4.3.2' WHERE `system_config`.`name` = 'version';
@@ -2196,17 +2196,17 @@ UPDATE `system_config` SET `value` = '4.3.5' WHERE `system_config`.`name` = 'ver
 -- Thana 14-Jun-2021
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('App Menu Name', 'app_menu_name', 'VLSM', 'app', 'no', '2021-06-14 18:47:11', NULL, 'active');
 -- Thana 28-Jun-2021
-ALTER TABLE `user_details` ADD `app_access` VARCHAR(50) NULL DEFAULT 'no' AFTER `status`; 
+ALTER TABLE `user_details` ADD `app_access` VARCHAR(50) NULL DEFAULT 'no' AFTER `status`;
 
 -- Thana 29-Jun-2021
 ALTER TABLE `roles` ADD `access_type` VARCHAR(256) NULL DEFAULT NULL AFTER `status`;
 ALTER TABLE `user_details` DROP COLUMN `testing_user`;
 -- Thana 30-Jun-2021
-ALTER TABLE `facility_details` ADD `report_format` VARCHAR(256) NULL DEFAULT NULL AFTER `test_type`; 
+ALTER TABLE `facility_details` ADD `report_format` VARCHAR(256) NULL DEFAULT NULL AFTER `test_type`;
 -- Thana 07-Jul-2021
-ALTER TABLE `facility_details` CHANGE `report_format` `report_format` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL; 
+ALTER TABLE `facility_details` CHANGE `report_format` `report_format` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 -- Thana 08-Jul-2021
-ALTER TABLE `form_covid19` ADD `asymptomatic` VARCHAR(50) NULL DEFAULT NULL AFTER `number_of_days_sick`; 
+ALTER TABLE `form_covid19` ADD `asymptomatic` VARCHAR(50) NULL DEFAULT NULL AFTER `number_of_days_sick`;
 -- Thana 09-Jul-2021
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('COVID-19 Report QR Code', 'covid19_report_qr_code', 'no', NULL, 'yes', '2021-07-09 17:32:23', NULL, 'active');
 
@@ -2224,15 +2224,15 @@ CREATE TABLE `track_qr_code_page` (
  `date_time` datetime DEFAULT NULL,
  PRIMARY KEY (`tqcp_d`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE `track_qr_code_page` ADD `sample_code` VARCHAR(256) NULL AFTER `test_type_id`; 
+ALTER TABLE `track_qr_code_page` ADD `sample_code` VARCHAR(256) NULL AFTER `test_type_id`;
 
 
 -- Amit -- 22-Jul-2021
 UPDATE `system_config` SET `value` = '4.3.7' WHERE `system_config`.`name` = 'version';
 
 
-UPDATE `system_config` SET `display_name` = 'Testing Lab ID', `name` = 'sc_testing_lab_id' WHERE `system_config`.`name` = 'lab_name'; 
-UPDATE `system_config` SET `name` = 'sc_user_type' WHERE `system_config`.`name` = 'user_type'; 
+UPDATE `system_config` SET `display_name` = 'Testing Lab ID', `name` = 'sc_testing_lab_id' WHERE `system_config`.`name` = 'lab_name';
+UPDATE `system_config` SET `name` = 'sc_user_type' WHERE `system_config`.`name` = 'user_type';
 UPDATE `system_config` SET `name` = 'sc_version' WHERE `system_config`.`name` = 'version';
 
 
@@ -2240,9 +2240,9 @@ UPDATE `system_config` SET `name` = 'sc_version' WHERE `system_config`.`name` = 
 UPDATE `system_config` SET `value` = '4.3.8' WHERE `system_config`.`name` = 'sc_version';
 
 -- Thana 28-Jul-2021
-ALTER TABLE `form_hepatitis` ADD `lab_technician` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`; 
-ALTER TABLE `form_hepatitis` ADD `social_category` VARCHAR(256) NULL DEFAULT NULL AFTER `patient_marital_status`; 
-ALTER TABLE `s_vlsm_instance` ADD `last_remote_requests_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`, ADD `last_remote_results_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_requests_sync`, ADD `last_remote_reference_data_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_results_sync`; 
+ALTER TABLE `form_hepatitis` ADD `lab_technician` VARCHAR(256) NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_hepatitis` ADD `social_category` VARCHAR(256) NULL DEFAULT NULL AFTER `patient_marital_status`;
+ALTER TABLE `s_vlsm_instance` ADD `last_remote_requests_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`, ADD `last_remote_results_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_requests_sync`, ADD `last_remote_reference_data_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_results_sync`;
 
 
 -- Amit -- 28-Jul-2021
@@ -2264,7 +2264,7 @@ CREATE TABLE `geographical_divisions` (
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'geographical-divisions-details.php', 'Manage Geographical Divisions'), (NULL, 'common-reference', 'add-geographical-divisions.php', 'Add Geographical Divisions'), (NULL, 'common-reference', 'edit-geographical-divisions.php', 'Edit Geographical Divisions');
 
-ALTER TABLE `facility_details` ADD `facility_state_id` VARCHAR(256) NULL DEFAULT NULL AFTER `country`, ADD `facility_district_id` VARCHAR(256) NULL DEFAULT NULL AFTER `facility_state_id`; 
+ALTER TABLE `facility_details` ADD `facility_state_id` VARCHAR(256) NULL DEFAULT NULL AFTER `country`, ADD `facility_district_id` VARCHAR(256) NULL DEFAULT NULL AFTER `facility_state_id`;
 
 -- Thana 17-Aug-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'common-reference', 'sync-history.php', 'Sync History');
@@ -2396,14 +2396,14 @@ UPDATE `system_config` SET `value` = '4.4.3' WHERE `system_config`.`name` = 'sc_
 
 
 
-ALTER TABLE `vl_request_form` ADD UNIQUE( `remote_sample_code`); 
-ALTER TABLE `vl_request_form` ADD UNIQUE( `sample_code`, `lab_id`); 
-ALTER TABLE `eid_form` ADD UNIQUE( `remote_sample_code`); 
-ALTER TABLE `eid_form` ADD UNIQUE( `sample_code`, `lab_id`); 
-ALTER TABLE `form_covid19` ADD UNIQUE( `remote_sample_code`); 
-ALTER TABLE `form_covid19` ADD UNIQUE( `sample_code`, `lab_id`); 
-ALTER TABLE `form_hepatitis` ADD UNIQUE( `remote_sample_code`); 
-ALTER TABLE `form_hepatitis` ADD UNIQUE( `sample_code`, `lab_id`); 
+ALTER TABLE `vl_request_form` ADD UNIQUE( `remote_sample_code`);
+ALTER TABLE `vl_request_form` ADD UNIQUE( `sample_code`, `lab_id`);
+ALTER TABLE `eid_form` ADD UNIQUE( `remote_sample_code`);
+ALTER TABLE `eid_form` ADD UNIQUE( `sample_code`, `lab_id`);
+ALTER TABLE `form_covid19` ADD UNIQUE( `remote_sample_code`);
+ALTER TABLE `form_covid19` ADD UNIQUE( `sample_code`, `lab_id`);
+ALTER TABLE `form_hepatitis` ADD UNIQUE( `remote_sample_code`);
+ALTER TABLE `form_hepatitis` ADD UNIQUE( `sample_code`, `lab_id`);
 
 
 
@@ -2636,7 +2636,7 @@ ALTER TABLE `user_details` CHANGE `user_name` `user_name` VARCHAR(1000) CHARACTE
 ALTER TABLE `user_details` ADD UNIQUE(`user_name`);
 
 -- Thana 18-Nov-2021
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES
 ('VL Sample Expiry Days', 'vl_sample_expiry_after_days', '9999', 'vl', 'yes', NULL, NULL, 'active'),
 ('EID Sample Expiry Days', 'eid_sample_expiry_after_days', '9999', 'eid', 'yes', NULL, NULL, 'active'),
 ('Covid19 Sample Expiry Days', 'covid19_sample_expiry_after_days', '9999', 'covid19', 'yes', NULL, NULL, 'active'),
@@ -2645,7 +2645,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 -- Thana 19-Nov-2021
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (10, 'Sample Expired', 'active');
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES
 ('VL Sample Lock Expiry Days', 'vl_sample_lock_after_days', NULL, 'vl', 'yes', NULL, NULL, 'active'),
 ('EID Sample Lock Expiry Days', 'eid_sample_lock_after_days', NULL, 'eid', 'yes', NULL, NULL, 'active'),
 ('Covid19 Sample Lock Expiry Days', 'covid19_sample_lock_after_days', NULL, 'covid19', 'yes', NULL, NULL, 'active'),
@@ -2690,10 +2690,10 @@ UPDATE `system_config` SET `value` = '4.4.5' WHERE `system_config`.`name` = 'sc_
 
 -- Sakthivel 01-Dec-2021
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-results', 'tb-export-data.php', 'Export Data');
-  
+
 -- Thana 01-Dec-2021
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('tb-batches', 'tb', 'TB Batch Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-batches', 'tb-batches.php', 'View Batches'), (NULL, 'tb-batches', 'tb-add-batch.php', 'Add Batch'), (NULL, 'tb-batches', 'tb-edit-batch.php', 'Edit Batch'), (NULL, 'tb-batches', 'tb-add-batch-position.php', 'Add Batch Position'), (NULL, 'tb-batches', 'tb-edit-batch-position.php', 'Edit Batch Position'); 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'tb-batches', 'tb-batches.php', 'View Batches'), (NULL, 'tb-batches', 'tb-add-batch.php', 'Add Batch'), (NULL, 'tb-batches', 'tb-edit-batch.php', 'Edit Batch'), (NULL, 'tb-batches', 'tb-add-batch-position.php', 'Add Batch Position'), (NULL, 'tb-batches', 'tb-edit-batch-position.php', 'Edit Batch Position');
 ALTER TABLE `tb_tests` ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_result`, ADD `testing_platform` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_tested_datetime`;
 
 -- Sakthivel P 03-Dec-2021
@@ -2723,8 +2723,8 @@ ALTER TABLE `form_tb` ADD `other_specimen_type` TEXT NULL DEFAULT NULL AFTER `sp
 ALTER TABLE `form_tb` ADD `other_referring_unit` TEXT NULL DEFAULT NULL AFTER `referring_unit`;
 ALTER TABLE `form_tb` ADD `other_patient_type` TEXT NULL DEFAULT NULL AFTER `patient_type`;
 -- Thana 10-Dec-2021
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
+VALUES
 ('Lock Approved TB Samples', 'lock_approved_tb_samples', 'no', 'tb', 'yes', NULL, NULL, 'active');
 
 -- Sakthivel 13-Dec-2021
@@ -2858,7 +2858,7 @@ ALTER TABLE `system_admin` ADD `system_admin_email` VARCHAR(255) NULL DEFAULT NU
 ALTER TABLE `user_details` ADD `data_sync` INT(11) NULL DEFAULT '0' AFTER `app_access`;
 
 -- Amit 11-Jan-2021
-ALTER TABLE `batch_details` CHANGE `batch_code_key` `batch_code_key` INT NULL DEFAULT NULL; 
+ALTER TABLE `batch_details` CHANGE `batch_code_key` `batch_code_key` INT NULL DEFAULT NULL;
 
 -- Thana 11-Jan-2022
 ALTER TABLE `batch_details` ADD `position_type` VARCHAR(256) NULL DEFAULT NULL AFTER `sent_mail`;
@@ -2877,10 +2877,10 @@ ALTER TABLE `log_result_updates` CHANGE `test_type` `test_type` VARCHAR(244) CHA
 ALTER TABLE `log_result_updates` ADD `result_method` VARCHAR(256) NULL DEFAULT NULL AFTER `test_type`;
 ALTER TABLE `log_result_updates` ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `result_method`;
 -- Amit 31 Jan 2022
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES 
-('Generate Patient Code', 'covid19_generate_patient_code', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
-('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'no', NULL, NULL, 'active'); 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
+VALUES
+('Generate Patient Code', 'covid19_generate_patient_code', 'no', 'covid19', 'no', NULL, NULL, 'active'),
+('Patient Code Prefix', 'covid19_patient_code_prefix', 'P', 'covid19', 'no', NULL, NULL, 'active');
 
 -- Amit 01-Feb-2022
 CREATE TABLE `patients` (
@@ -2918,8 +2918,8 @@ UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`n
 UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'l_vl_msg';
 UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'low_vl_text_results';
 UPDATE `global_config` SET `remote_sync_needed` = 'yes' WHERE `global_config`.`name` = 'vldashboard_url';
-DELETE FROM `global_config`  WHERE `global_config`.`name` = 'eid_positive' 
-OR`global_config`.`name` = 'eid_negative' 
+DELETE FROM `global_config`  WHERE `global_config`.`name` = 'eid_positive'
+OR`global_config`.`name` = 'eid_negative'
 OR `global_config`.`name` = 'eid_indeterminate'
 OR `global_config`.`name` = 'covid19_positive'
 OR `global_config`.`name` = 'covid19_negative'
@@ -2941,9 +2941,9 @@ ALTER TABLE `user_details` ADD `force_password_reset` INT NULL DEFAULT NULL AFTE
 
 -- Amit 24-Feb-2022
 
-INSERT INTO `global_config` 
-(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES 
+INSERT INTO `global_config`
+(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
+VALUES
 ('App Locale/Language', 'app_locale', 'en_US', 'common', 'no', NULL, NULL, 'active');
 
 -- Amit 24-Feb-2022 version 4.4.8
@@ -2988,7 +2988,7 @@ UPDATE form_tb SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (
 UPDATE form_tb SET source_of_request = 'app' WHERE (source_of_request like 'api' or app_sample_code is not null);
 
 -- Thana 22-Mar-2022
-ALTER TABLE `import_config` ADD `approved_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`, 
+ALTER TABLE `import_config` ADD `approved_by` JSON NULL DEFAULT NULL AFTER `low_vl_result_text`,
 ADD `reviewed_by` JSON NULL DEFAULT NULL AFTER `approved_by`;
 
 -- Amit 25-Mar-2022
@@ -3112,13 +3112,13 @@ UPDATE `covid19_imported_controls` SET `lab_tech_comments` = approver_comments;
 UPDATE `system_config` SET `value` = '4.5.1' WHERE `system_config`.`name` = 'sc_version';
 
 -- Amit 09-May-2022
-INSERT INTO `global_config` 
-(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
-VALUES 
-('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'no', 'vl', 'no', NULL, NULL, 'active'), 
-('EID Auto Approve API Results', 'eid_auto_approve_api_results', 'no', 'eid', 'no', NULL, NULL, 'active'), 
-('COVID-19 Auto Approve API Results', 'covid19_auto_approve_api_results', 'no', 'covid19', 'no', NULL, NULL, 'active'), 
-('Hepatitis Auto Approve API Results', 'hepatitis_auto_approve_api_results', 'no', 'hepatitis', 'no', NULL, NULL, 'active'), 
+INSERT INTO `global_config`
+(`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
+VALUES
+('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'no', 'vl', 'no', NULL, NULL, 'active'),
+('EID Auto Approve API Results', 'eid_auto_approve_api_results', 'no', 'eid', 'no', NULL, NULL, 'active'),
+('COVID-19 Auto Approve API Results', 'covid19_auto_approve_api_results', 'no', 'covid19', 'no', NULL, NULL, 'active'),
+('Hepatitis Auto Approve API Results', 'hepatitis_auto_approve_api_results', 'no', 'hepatitis', 'no', NULL, NULL, 'active'),
 ('TB Auto Approve API Results', 'tb_auto_approve_api_results', 'no', 'tb', 'no', NULL, NULL, 'active');
 
 -- Amit 21-Jun-2022 version 4.5.2
@@ -3131,7 +3131,7 @@ UPDATE `system_config` SET `value` = '4.5.3' WHERE `system_config`.`name` = 'sc_
 
 -- Jeyabanu 1-July-2022
 UPDATE `privileges` SET `privilege_name` = 'activity-log.php', `display_name` = 'User Activity Log' WHERE `privileges`.`privilege_name` = 'audit-trail.php';
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
 (NULL, 'common-reference', 'audit-trail.php', 'Audit Trail');
 
 -- Thana 06-Jul-2022
@@ -3186,8 +3186,8 @@ UPDATE `system_config` SET `value` = '5.0.4' WHERE `system_config`.`name` = 'sc_
 
 
 -- Amit 09-Aug-2022
-ALTER TABLE `form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`; 
-ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`; 
+ALTER TABLE `form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`;
+ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`;
 
 -- Amit 11-Aug-2022 version 5.0.5
 UPDATE `system_config` SET `value` = '5.0.5' WHERE `system_config`.`name` = 'sc_version';
@@ -3266,14 +3266,14 @@ CREATE TABLE `r_vl_results` (
 ALTER TABLE `r_tb_results` CHANGE `result_id` `result_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'vl-results.php', 'Manage VL Results');
-ALTER TABLE `form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `audit_form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `audit_form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `audit_form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
-ALTER TABLE `audit_form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`; 
+ALTER TABLE `form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `audit_form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `audit_form_eid` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `audit_form_covid19` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
+ALTER TABLE `audit_form_hepatitis` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `lab_id`, ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
 
 
 -- Amit 09-Nov-2022
@@ -3285,16 +3285,16 @@ UPDATE `form_vl` set result_status = 5 where vl_result_category like 'fail%';
 UPDATE `system_config` SET `value` = '5.0.9' WHERE `system_config`.`name` = 'sc_version';
 
 -- Thana 11-Nov-2022
--- ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`; 
+-- ALTER TABLE `import_config` ADD `date_time` TEXT NULL DEFAULT NULL AFTER `low_vl_result_text`;
 
 -- Thana 14-Nov-2022
--- ALTER TABLE `import_config` DROP `date_time`; 
+-- ALTER TABLE `import_config` DROP `date_time`;
 
 RENAME TABLE `import_config` TO `instruments`;
-RENAME TABLE `import_config_machines` TO `instrument_machines`; 
+RENAME TABLE `import_config_machines` TO `instrument_machines`;
 RENAME TABLE `import_config_controls` TO `instrument_controls`;
 
-ALTER TABLE `instrument_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`; 
+ALTER TABLE `instrument_machines` ADD `date_format` TEXT NULL DEFAULT NULL AFTER `config_machine_name`, ADD `file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `date_format`;
 
 UPDATE `instrument_machines` INNER JOIN `instruments`
     ON `instrument_machines`.`config_id` = `instruments`.`config_id`
@@ -3341,24 +3341,24 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 ALTER TABLE `package_details` ADD `number_of_samples` INT NULL DEFAULT NULL AFTER `lab_id`;
 ALTER TABLE `package_details` ADD `last_modified_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `request_created_datetime`;
 
-UPDATE package_details A 
+UPDATE package_details A
 INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_vl GROUP BY sample_package_code) as B
-  ON B.sample_package_code = A.package_code 
+  ON B.sample_package_code = A.package_code
 SET A.number_of_samples = B.sampleCount;
 
-UPDATE package_details A 
+UPDATE package_details A
 INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_eid GROUP BY sample_package_code) as B
-  ON B.sample_package_code = A.package_code 
+  ON B.sample_package_code = A.package_code
 SET A.number_of_samples = B.sampleCount;
 
-UPDATE package_details A 
+UPDATE package_details A
 INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_covid19 GROUP BY sample_package_code) as B
-  ON B.sample_package_code = A.package_code 
+  ON B.sample_package_code = A.package_code
 SET A.number_of_samples = B.sampleCount;
 
-UPDATE package_details A 
+UPDATE package_details A
 INNER JOIN (SELECT sample_package_code, COUNT(*) sampleCount FROM form_hepatitis GROUP BY sample_package_code) as B
-  ON B.sample_package_code = A.package_code 
+  ON B.sample_package_code = A.package_code
 SET A.number_of_samples = B.sampleCount;
 
 -- Amit 13-Feb-2023
@@ -3381,19 +3381,19 @@ UPDATE `system_config` SET `value` = '5.1.2' WHERE `system_config`.`name` = 'sc_
 -- Jeyabanu 10-03-2023
 ALTER TABLE `r_eid_results` CHANGE `result_id` `result_id` varchar(256) NOT NULL;
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', 'VL', 'no', null, null, 'active');
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'eid_show_participant_name_in_manifest', 'yes', 'EID', 'no', null, null, 'active');
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'covid19_show_participant_name_in_manifest', 'yes', 'COVID19', 'no', null, null, 'active');
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'hepatitis_show_participant_name_in_manifest', 'yes', 'HEPATITIS', 'no', null, null, 'active');
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'tb_show_participant_name_in_manifest', 'yes', 'TB', 'no', null, null, 'active');
 
 ALTER TABLE `form_vl` CHANGE `request_created_datetime` `request_created_datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
@@ -3406,7 +3406,7 @@ ALTER TABLE `form_hepatitis` CHANGE `request_created_datetime` `request_created_
 
 
 -- Amit 17-Mar-2023
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES ('Interpret and Convert VL Results', 'vl_interpret_and_convert_results', 'no', 'VL', 'yes', null, null, 'active');
 
 
@@ -3419,7 +3419,7 @@ ALTER TABLE `form_vl` CHANGE `data_sync` `data_sync` INT NOT NULL DEFAULT 0;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Key', 'key', null, 'general', 'yes', NULL, NULL, 'active');
 
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES
             ('EID Report QR Code', 'eid_report_qr_code', 'yes', 'EID', 'no', NULL, NULL, 'active'),
             ('Hepatitis Report QR Code', 'hepatitis_report_qr_code', 'yes', NULL, NULL, NULL, NULL, 'active');
 
@@ -3828,10 +3828,10 @@ ALTER TABLE `form_generic` CHANGE `test_type_form` `test_type_form` JSON NULL DE
 ALTER TABLE `form_generic` ADD PRIMARY KEY(`sample_id`);
 ALTER TABLE `form_generic` CHANGE `sample_id` `sample_id` INT NOT NULL AUTO_INCREMENT;
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-requests', 'generic-tests', 'Generic Tests Request Management'), ('generic-test-reference', 'generic-tests', 'Generic Tests Reference Tables');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
-(NULL, 'generic-requests', 'view-requests.php', 'View Generic Tests'),  
-(NULL, 'generic-requests', 'add-request.php', 'Add Generic Tests'), 
-(NULL, 'generic-requests', 'add-samples-from-manifest.php', 'Add Samples From Manifest'), 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-requests', 'view-requests.php', 'View Generic Tests'),
+(NULL, 'generic-requests', 'add-request.php', 'Add Generic Tests'),
+(NULL, 'generic-requests', 'add-samples-from-manifest.php', 'Add Samples From Manifest'),
 (NULL, 'generic-requests', 'batch-code.php', 'Add Batch Code'),
 (NULL, 'generic-test-reference', 'test-type.php', 'Test Type Configuration'),
 (NULL, 'generic-test-reference', 'addTestType.php', 'Add New Test Type'),
@@ -3861,8 +3861,8 @@ UPDATE `privileges` SET `privilege_name` = 'edit-test-type.php' WHERE `privilege
 UPDATE `privileges` SET `display_name` = 'Edit Test Type' WHERE `privileges`.`privilege_name` = 'edit-test-type.php';
 UPDATE `privileges` SET `display_name` = 'Add New Sample Type' WHERE `privileges`.`privilege_name` = 'generic-add-sample-type.php';
 
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
-(NULL, 'generic-test-reference', 'generic-sample-type.php', 'Manage Sample Type'), 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-reference', 'generic-sample-type.php', 'Manage Sample Type'),
 (NULL, 'generic-test-reference', 'generic-add-sample-type.php', 'Add New Sample Type'),
 (NULL, 'generic-test-reference', 'generic-edit-sample-type.php', 'Edit Sample Type'),
 (NULL, 'generic-test-reference', 'generic-testing-reason.php', 'Manage Testing Reason'),
@@ -3897,8 +3897,8 @@ CREATE TABLE `generic_test_results` (
 
 -- Thana 11-May-2023
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-results', 'generic-tests', 'Generic Tests Result Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
-(NULL, 'generic-results', 'generic-test-results.php', 'Manage Test Results'), 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-results', 'generic-test-results.php', 'Manage Test Results'),
 (NULL, 'generic-results', 'generic-failed-results.php', 'Manage Failed Results'),
 (NULL, 'generic-results', 'generic-result-approval.php', 'Approve Test Results');
 
@@ -3938,6 +3938,14 @@ DELETE FROM form_covid19 WHERE (lab_id, app_sample_code) IN (
     SELECT lab_id, app_sample_code
     FROM temp_table_form_covid19
 );
+ALTER TABLE `form_vl` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_generic` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `app_sample_code` `app_sample_code` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+
 
 ALTER TABLE `form_vl` ADD UNIQUE( `lab_id`, `app_sample_code`);
 ALTER TABLE `form_eid` ADD UNIQUE( `lab_id`, `app_sample_code`);
@@ -3948,8 +3956,8 @@ ALTER TABLE `form_generic` ADD UNIQUE( `lab_id`, `app_sample_code`);
 
 -- Thana 12-May-2023
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-management', 'generic-tests', 'Lab Test Management');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
-(NULL, 'generic-management', 'generic-sample-status.php', 'Sample Status Report'), 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-management', 'generic-sample-status.php', 'Sample Status Report'),
 (NULL, 'generic-management', 'generic-export-data.php', 'Export Report in Excel'),
 (NULL, 'generic-management', 'generic-print-result.php', 'Export Report in PDF'),
 (NULL, 'generic-management', 'sample-rejection-report.php', 'Sample Rejection Report'),

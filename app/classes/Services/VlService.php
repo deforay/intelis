@@ -252,7 +252,7 @@ class VlService
             $vlResult = "Not Detected";
         }
         if (is_numeric($vlResult)) {
-            //passing only number 
+            //passing only number
             return $this->interpretViralLoadNumericResult($vlResult, $unit);
         } else {
             //Passing orginal result value for text results
@@ -285,7 +285,7 @@ class VlService
 
         $resultStatus = null;
         // Some machines and some countries prefer a default text result
-        $vlTextResult = $defaultLowVlResultText ?: "Target Not Detected";
+        $vlTextResult = $defaultLowVlResultText ?? "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
@@ -458,7 +458,7 @@ class VlService
                 exit();
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?: null;
+            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);

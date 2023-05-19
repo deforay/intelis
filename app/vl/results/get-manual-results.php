@@ -293,6 +293,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 //$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $iTotal = $aResultFilterTotal['totalCount'];
 
+$_SESSION['vlResultQueryCount'] = $iTotal;
+
 /*
 * Output
 */

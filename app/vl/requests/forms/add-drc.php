@@ -2,6 +2,13 @@
 
 // imported in addVlRequest.php based on country in global config
 
+use App\Registries\ContainerRegistry;
+
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -16,8 +23,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
+	$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id=?";
+	$chkUserFcMapResult = $db->rawQuery($chkUserFcMapQry, [$_SESSION['userId']]);
 	if ($chkUserFcMapResult) {
 		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
@@ -214,8 +221,8 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2"><label for="artNo">Code du patient <span class="mandatory">*</span></label></td>
-										<td>
+										<td><label for="artNo">Code du Patient <span class="mandatory">*</span></label></td>
+										<td colspan="2">
 											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" style="width:100%;" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 											<span class="artNoGroup" id="artNoGroup"></span>
 										</td>
@@ -869,9 +876,7 @@ $sFormat = '';
 
 			let artNo = $.trim($(this).val());
 
-			if (artNo.length < 10) {
-				$("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-			}
+
 			if (artNo.length > 3) {
 
 				$.post("/common/patient-last-request-details.php", {
@@ -894,11 +899,11 @@ $sFormat = '';
 								$("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
 							}
 						} else {
-							if (artNo.length < 10) {
-								$("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-							} else {
-								$("#artNoGroup").html('');
-							}
+							// if (artNo.length < 10) {
+							// 	$("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+							// } else {
+							// 	$("#artNoGroup").html('');
+							// }
 						}
 					});
 			}

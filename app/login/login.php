@@ -10,8 +10,14 @@ if (isset($_SESSION['userId'])) {
 	header("Location:/dashboard/index.php");
 }
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
+
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
+$db->where("login_id", NULL, 'IS NOT');
 $count = $db->getValue("user_details", "count(*)");
 if ($count == 0) {
 	header("Location:/setup/index.php");
@@ -46,7 +52,7 @@ if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser
 
 if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	$path = '/uploads/bg.jpg';
-} else if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.png")) {
+} elseif (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.png")) {
 	$path = '/uploads/bg.png';
 }
 
