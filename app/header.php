@@ -451,7 +451,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/common/reference/geographical-divisions-details.php" data-inner-pages="<?= base64_encode('/common/reference/add-geographical-divisions.php') . ';' . base64_encode('/common/reference/edit-geographical-divisions.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Geographical Divisions"); ?></a>
 												</li>
 											<?php }
-											//if (isset($_SESSION['privileges']) && in_array("testResultEmailConfig.php", $_SESSION['privileges'])) { 
+											//if (isset($_SESSION['privileges']) && in_array("testResultEmailConfig.php", $_SESSION['privileges'])) {
 											?>
 											<!-- <li class="allMenu resultEmailConfigMenu">
                                                     <a href="/vl/result-mail/testResultEmailConfig.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Result Email Config"); ?></a>
@@ -815,11 +815,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("vlResultApproval.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu vlResultApprovalMenu"><a href="/vl/results/vlResultApproval.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
 									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("vlResultMail.php", $_SESSION['privileges'])) { 
+									//if (isset($_SESSION['privileges']) && in_array("vlResultMail.php", $_SESSION['privileges'])) {
 									?>
 									<!-- <li class="allMenu vlResultMailMenu"><a href="/mail/vlResultMail.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
 									<?php
-									// }  
+									// }
 									?>
 								</ul>
 							</li>
@@ -1026,7 +1026,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 										<li class="allMenu covid19ImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('covid19'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
 									<?php }
 									if (isset($_SESSION['privileges']) && in_array("covid-19-manual-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ResultsMenu"><a href="/covid-19/results/covid-19-manual-results.php" data-inner-pages="<?= base64_encode('/covid-19/batch/covid-19-update-result.php'); ?>><span class=" fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
+										<li class="allMenu covid19ResultsMenu"><a href="/covid-19/results/covid-19-manual-results.php" data-inner-pages="<?= base64_encode('/covid-19/batch/covid-19-update-result.php'); ?>"><span class=" fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
 										<li class="allMenu covid19FailedResultsMenu"><a href="/covid-19/results/covid-19-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
 									<?php }
 									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("covid-19-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
@@ -1038,7 +1038,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("covid-19-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19ResultStatus"><a href="/covid-19/results/covid-19-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
 									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("mail-covid-19-results.php", $_SESSION['privileges'])) { 
+									//if (isset($_SESSION['privileges']) && in_array("mail-covid-19-results.php", $_SESSION['privileges'])) {
 									?>
 									<!-- <li class="allMenu covid19ResultMailMenu"><a href="/covid-19/mail/mail-covid-19-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
 									<?php
@@ -1144,11 +1144,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("hepatitis-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu hepatitisResultStatus"><a href="/hepatitis/results/hepatitis-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
 									<?php }
-									//    if (isset($_SESSION['privileges']) && in_array("mail-hepatitis-results.php", $_SESSION['privileges'])) { 
+									//    if (isset($_SESSION['privileges']) && in_array("mail-hepatitis-results.php", $_SESSION['privileges'])) {
 									?>
 									<!-- <li class="allMenu hepatitisResultMailMenu"><a href="/hepatitis/mail/mail-hepatitis-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
 									<?php
-									// }  
+									// }
 									?>
 								</ul>
 							</li>
@@ -1248,11 +1248,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 									if (isset($_SESSION['privileges']) && in_array("tb-result-status.php", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbResultStatus"><a href="/tb/results/tb-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
 									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("mail-tb-results.php", $_SESSION['privileges'])) { 
+									//if (isset($_SESSION['privileges']) && in_array("mail-tb-results.php", $_SESSION['privileges'])) {
 									?>
 									<!-- <li class="allMenu tbResultMailMenu"><a href="/tb/mail/mail-tb-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
 									<?php
-									// }  
+									// }
 									?>
 								</ul>
 							</li>

@@ -32,7 +32,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
             $sOrder .= $aColumns[intval($_POST['iSortCol_' . $i])] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+                     " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);

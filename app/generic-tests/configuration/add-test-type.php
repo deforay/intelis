@@ -362,24 +362,24 @@ $symptomInfo = $db->query($symQuery);
 
 		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
 		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>">\
-							<option value=""> <?php echo _("-- Select --"); ?> </option>\
-							<option value="number"><?php echo _("Number"); ?></option>\
-							<option value="text"><?php echo _("Text"); ?></option>\
-							<option value="date"><?php echo _("Date"); ?></option>\
-						</select>';
+                            <option value=""> <?php echo _("-- Select --"); ?> </option>\
+                            <option value="number"><?php echo _("Number"); ?></option>\
+                            <option value="text"><?php echo _("Text"); ?></option>\
+                            <option value="date"><?php echo _("Date"); ?></option>\
+                        </select>';
 		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
-							<option value="yes"><?php echo _("Yes"); ?></option>\
-							<option value="no" selected><?php echo _("No"); ?></option>\
-						</select>';
+                            <option value="yes"><?php echo _("Yes"); ?></option>\
+                            <option value="no" selected><?php echo _("No"); ?></option>\
+                        </select>';
 		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
-						<option value=""> <?php echo _("-- Select --"); ?> </option>\
-						<option value="facility"><?php echo _("Facility"); ?></option>\
-						<option value="patient"><?php echo _("Patient"); ?></option>\
-						<option value="specimen"><?php echo _("Specimen"); ?></option>\
-						<option value="lab"><?php echo _("Lab"); ?></option>\
-						<option value="other"><?php echo _("Other"); ?></option>\
-					</select>\
-					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
+                        <option value=""> <?php echo _("-- Select --"); ?> </option>\
+                        <option value="facility"><?php echo _("Facility"); ?></option>\
+                        <option value="patient"><?php echo _("Patient"); ?></option>\
+                        <option value="specimen"><?php echo _("Specimen"); ?></option>\
+                        <option value="lab"><?php echo _("Lab"); ?></option>\
+                        <option value="other"><?php echo _("Other"); ?></option>\
+                    </select>\
+                    <input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 		generateRandomString(tableRowId);
