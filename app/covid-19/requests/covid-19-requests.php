@@ -7,6 +7,10 @@ use App\Services\GeoLocationsService;
 use App\Services\UsersService;
 
 $title = _("Covid-19 | View All Requests");
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 if (isset($_GET['id']) && !empty($_GET['id'])) {

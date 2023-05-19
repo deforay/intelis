@@ -14,10 +14,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $facilityInfo = $facilitiesService->getAllFacilities();
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
-$country = $configFormResult[0]['value'];
+
 $cDate = date('Y-m-d');
 $end_date = date('Y-m-d');
 $start_date = date('Y-m-d', strtotime('-7 days'));

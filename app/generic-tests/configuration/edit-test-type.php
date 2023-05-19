@@ -3,7 +3,10 @@
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $tQuery = "SELECT * from r_test_types where test_type_id=$id";
 $testTypeInfo = $db->query($tQuery);
 $testAttribute = json_decode($testTypeInfo[0]['test_form_config'], true);
@@ -198,7 +201,7 @@ foreach ($testSymptomsMapInfo as $val) {
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">

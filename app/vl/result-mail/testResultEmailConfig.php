@@ -1,6 +1,6 @@
 <?php
 $title = _("Result Email & SMS Config");
- 
+
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -24,7 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="resultEmailConfigDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="resultEmailConfigDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _("Config Name"); ?></th>
@@ -90,4 +90,3 @@ require_once APPLICATION_PATH . '/header.php';
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
-?>

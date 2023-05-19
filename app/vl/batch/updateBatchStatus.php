@@ -4,14 +4,15 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "batch_details";
 try {
     $id = $_POST['id'];

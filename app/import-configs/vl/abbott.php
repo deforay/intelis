@@ -11,6 +11,8 @@ use App\Utilities\DateUtility;
 $db = ContainerRegistry::get('db');
 
 try {
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');

@@ -24,7 +24,7 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <!--<div class="box-header with-border">
           <div class="pull-right" style="font-size:15px;"> </div>
@@ -86,4 +86,3 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';
-?>

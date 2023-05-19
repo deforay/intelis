@@ -16,6 +16,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $activeTestModules = $systemService->getActiveTestModules();
 
 if (isset($_POST['testType'])) {

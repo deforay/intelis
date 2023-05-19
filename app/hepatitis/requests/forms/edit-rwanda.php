@@ -8,7 +8,8 @@ use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
 
 
-
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

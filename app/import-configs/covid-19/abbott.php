@@ -7,6 +7,8 @@ use App\Utilities\DateUtility;
 use League\Csv\Reader;
 use League\Csv\Statement;
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 try {
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
@@ -60,7 +62,9 @@ try {
 
         $metaRecords = [];
         foreach ($topRecords as $topRecord) {
-            if (empty($topRecord[0])) continue;
+            if (empty($topRecord[0])) {
+                continue;
+            }
             $metaRecords[$topRecord[0]] = $topRecord[1];
         }
 

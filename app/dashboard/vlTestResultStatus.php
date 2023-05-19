@@ -1,31 +1,34 @@
 	<?php
 
 	require_once APPLICATION_PATH . '/header.php';
-	$id = base64_decode($_GET['id']);
+	// Sanitize values before using them below
+	$_GET = array_map('htmlspecialchars', $_GET);
+	$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 	$date = base64_decode($_GET['d']);
 	$tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
 	$tsResult = $db->rawQuery($tsQuery);
-	if (count($tsResult) == 0) {
+	if (empty($tsResult)) {
 		header("Location:/dashboard/index.php");
 		exit;
 	}
 	$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 	$configFormResult = $db->rawQuery($configFormQuery);
-	$sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
+	$sQuery = "SELECT * FROM r_vl_sample_type WHERE status='active'";
 	$sResult = $db->rawQuery($sQuery);
-	$fQuery = "SELECT * FROM facility_details where status='active'";
+	$fQuery = "SELECT * FROM facility_details WHERE status='active'";
 	$fResult = $db->rawQuery($fQuery);
-	$batQuery = "SELECT batch_code FROM batch_details where test_type ='vl' AND batch_status='completed'";
+	$batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='vl' AND batch_status='completed'";
 	$batResult = $db->rawQuery($batQuery);
 	?>
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
-			<h1>VL Test Result Status [<?php echo ($tsResult[0]['status_name']); ?> ]</h1>
+			<h1>VL Test Result Status [<?= ($tsResult[0]['status_name']); ?> ]</h1>
 			<ol class="breadcrumb">
 				<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-				<li class="active">VL Test Result Status [<?php echo ($tsResult[0]['status_name']); ?> ]</li>
+				<li class="active">VL Test Result Status [<?= ($tsResult[0]['status_name']); ?> ]</li>
 			</ol>
 		</section>
 
@@ -192,11 +195,11 @@
 					startDate = start.format('YYYY-MM-DD');
 					endDate = end.format('YYYY-MM-DD');
 				});
-				<?php if(isset($date) && !empty($date)){ ?>
-					$('#sampleCollectionDate').val('<?php echo $date;?>');
-				<?php }else{ ?>
-					$('#sampleCollectionDate').val("");
-				<?php } ?>
+			<?php if (isset($date) && !empty($date)) { ?>
+				$('#sampleCollectionDate').val('<?php echo $date; ?>');
+			<?php } else { ?>
+				$('#sampleCollectionDate').val("");
+			<?php } ?>
 
 			$(".showhideCheckBox").change(function() {
 				if ($(this).attr('checked')) {

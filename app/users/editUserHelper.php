@@ -18,6 +18,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 $userId = base64_decode($_POST['userId']);
 
@@ -118,10 +120,10 @@ try {
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
             // $nUser = [];
             // $_POST['userId'] = $userId;
-            // $nUser['userName'] = $_POST['userName']; 
-            // $nUser['email'] = $_POST['email']; 
-            // $nUser['phoneNo'] = $_POST['phoneNo']; 
-            // $nUser['interfaceUserName'] = $_POST['interfaceUserName']; 
+            // $nUser['userName'] = $_POST['userName'];
+            // $nUser['email'] = $_POST['email'];
+            // $nUser['phoneNo'] = $_POST['phoneNo'];
+            // $nUser['interfaceUserName'] = $_POST['interfaceUserName'];
             // $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
             // $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
             // $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS

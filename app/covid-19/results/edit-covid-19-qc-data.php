@@ -33,7 +33,10 @@ foreach ($testKitInfo as $kits) {
     $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
 }
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $qcDataInfo = $db->rawQueryOne("SELECT * FROM qc_covid19 WHERE qc_id =" . $id . " limit 1");
 $qcResultDataInfo = $db->rawQuery("SELECT * FROM qc_covid19_tests WHERE qc_id =" . $id);
 

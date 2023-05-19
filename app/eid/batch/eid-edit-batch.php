@@ -8,9 +8,12 @@ use App\Services\CommonService;
 
 $title = "Edit Batch";
 
- 
+
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 //global config
 
 /** @var MysqliDb $db */
@@ -155,13 +158,13 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 											<?php
 											foreach ($testPlatformResult as $machine) {
 											?>
-												<option value="<?php echo $machine['config_id']; ?>" <?php if($batchInfo[0]['machine']==$machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
+												<option value="<?php echo $machine['config_id']; ?>" <?php if ($batchInfo[0]['machine'] == $machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?php echo ($machine['machine_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em>  Edit Position</a></div>
+							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<!--<div class="col-md-8">
@@ -172,36 +175,36 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 											</div><br /><br />
 											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-												
+
 											</select>
 										</div>
 									</div>
 								</div>
 							</div>-->
 							<h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php
-												foreach ($result as $key => $sample) {
-												?>
-													<option value="<?php echo $sample['eid_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-												<?php
-												}
-												?>
-                                        </select>
-                                   </div>
+							<div class="col-md-5">
+								<!-- <div class="col-lg-5"> -->
+								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+									<?php
+									foreach ($result as $key => $sample) {
+									?>
+										<option value="<?php echo $sample['eid_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+							<div class="col-md-2">
+								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+							</div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                                   </div>
+							<div class="col-md-5">
+								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+							</div>
 						</div>
 						<div class="row" id="alertText" style="font-size:18px;"></div>
 					</div>
@@ -236,56 +239,54 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 	function validateNow() {
 
 		var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-		  var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-			{
-				alert("You have selected maximum number of samples");
-				return false;
-			}
-          $("#selectedSample").val(selVal);
-		  if(selVal=="")
-		{
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		var selected = $("#machine").find('option:selected');
+		noOfSamples = selected.data('no-of-samples');
+		if (noOfSamples < selVal.length) {
+			alert("You have selected maximum number of samples");
+			return false;
+		}
+		$("#selectedSample").val(selVal);
+		if (selVal == "") {
 			alert("Please select sample code");
 			return false;
 		}
-		
-          flag = deforayValidator.init({
-               formId: 'editBatchForm'
-          });
-          if (flag) {
+
+		flag = deforayValidator.init({
+			formId: 'editBatchForm'
+		});
+		if (flag) {
 			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('editBatchForm').submit();
-          }
+			$.blockUI();
+			document.getElementById('editBatchForm').submit();
+		}
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		
+
 		$('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
-		  setTimeout(function() {
-		$("#search_rightSelected").trigger('click');
-		},10);
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 3;
+			}
+		});
+		setTimeout(function() {
+			$("#search_rightSelected").trigger('click');
+		}, 10);
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
 				alwaysShowCalendars: false,
 				startDate: moment().subtract(28, 'days'),
@@ -306,113 +307,113 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			});
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-	/*	$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
-			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(" + $(".search :selected").length + ")</div>",
-			afterInit: function(ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+		/*	$('.search').multiSelect({
+				selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+				selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+				selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
+				selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(" + $(".search :selected").length + ")</div>",
+				afterInit: function(ms) {
+					var that = this,
+						$selectableSearch = that.$selectableUl.prev(),
+						$selectionSearch = that.$selectionUl.prev(),
+						selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+						selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
+					that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+						.on('keydown', function(e) {
+							if (e.which === 40) {
+								that.$selectableUl.focus();
+								return false;
+							}
+						});
 
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
+					that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+						.on('keydown', function(e) {
+							if (e.which == 40) {
+								that.$selectionUl.focus();
+								return false;
+							}
+						});
+				},
+				afterSelect: function() {
+					//button disabled/enabled
+					if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+						alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
+						$("#batchSubmit").attr("disabled", false);
+						$("#batchSubmit").css("pointer-events", "auto");
+					} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+						$("#batchSubmit").attr("disabled", false);
+						$("#batchSubmit").css("pointer-events", "auto");
+					} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+						alert("You have already selected Maximum no. of sample " + noOfSamples);
+						$("#batchSubmit").attr("disabled", true);
+						$("#batchSubmit").css("pointer-events", "none");
+					}
+					this.qs1.cache();
+					this.qs2.cache();
+					$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
+					$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
+				},
+				afterDeselect: function() {
+					//button disabled/enabled
+					if (this.qs2.cache().matchedResultsCount == 0) {
+						$("#batchSubmit").attr("disabled", true);
+						$("#batchSubmit").css("pointer-events", "none");
+					} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
+						alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
+						$("#batchSubmit").attr("disabled", false);
+						$("#batchSubmit").css("pointer-events", "auto");
+					} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
+						$("#batchSubmit").attr("disabled", false);
+						$("#batchSubmit").css("pointer-events", "auto");
+					} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
+						$("#batchSubmit").attr("disabled", true);
+						$("#batchSubmit").css("pointer-events", "none");
+					}
+					this.qs1.cache();
+					this.qs2.cache();
+					$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
+					$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
 				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#batchSubmit").attr("disabled", false);
-					$("#batchSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#batchSubmit").attr("disabled", true);
-					$("#batchSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
+			});
+			$('#select-all-samplecode').click(function() {
+				$('#sampleCode').multiSelect('select_all');
+				return false;
+			});
+			$('#deselect-all-samplecode').click(function() {
+				$('#sampleCode').multiSelect('deselect_all');
+				$("#batchSubmit").attr("disabled", true);
+				$("#batchSubmit").css("pointer-events", "none");
+				return false;
+			});
+
+			if (noOfSamples == 0) {
+				$("#batchSubmit").attr("disabled", true);
+				$("#batchSubmit").css("pointer-events", "none");
+			} else if ($("#sampleCode :selected").length > noOfSamples) {
+				$("#batchSubmit").attr("disabled", true);
+				$("#batchSubmit").css("pointer-events", "none");
 			}
-		});
-		$('#select-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('select_all');
-			return false;
-		});
-		$('#deselect-all-samplecode').click(function() {
-			$('#sampleCode').multiSelect('deselect_all');
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-			return false;
-		});
 
-		if (noOfSamples == 0) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		} else if ($("#sampleCode :selected").length > noOfSamples) {
-			$("#batchSubmit").attr("disabled", true);
-			$("#batchSubmit").css("pointer-events", "none");
-		}
-
-		<?php
-		$r = 1;
-		foreach ($result as $sample) {
-			if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
-				if (isset($sample['result']) && trim($sample['result']) != '') {
-					if ($r == 1) {
-		?>
-						$("#deselect-all-samplecode").remove();
-					<?php } ?>
-					resultSampleArray.push('<?php echo $sample['eid_id']; ?>');
-		<?php $r++;
+			<?php
+			$r = 1;
+			foreach ($result as $sample) {
+				if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
+					if (isset($sample['result']) && trim($sample['result']) != '') {
+						if ($r == 1) {
+			?>
+							$("#deselect-all-samplecode").remove();
+						<?php } ?>
+						resultSampleArray.push('<?php echo $sample['eid_id']; ?>');
+			<?php $r++;
+					}
 				}
 			}
-		}
-		?>
-		$("#resultSample").val(resultSampleArray);
-		if ($("#machine option:selected").text() != ' -- Select -- ') {
-			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-		}*/
+			?>
+			$("#resultSample").val(resultSampleArray);
+			if ($("#machine option:selected").text() != ' -- Select -- ') {
+				$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
+			}*/
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {

@@ -1,27 +1,31 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $sampleData = [];
-$symptomsQuery = 'SELECT * FROM r_covid19_symptoms where parent_symptom = "' . $_POST['symptomParent'] . '"';
-$covid19Symptoms = $db->query($symptomsQuery);
+$symptomsQuery = 'SELECT * FROM r_covid19_symptoms where parent_symptom = ?';
+$covid19Symptoms = $db->rawQuery($symptomsQuery, [$_POST['symptomParent']]);
 
 $disabled = (isset($_POST['from']) && $_POST['from'] == "update-result") ? "disabled" : "";
 $symptomsArray = [];
 if (isset($_POST['covid19Id']) && $_POST['covid19Id'] != '') {
-    $results = $db->query("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = " . $_POST['covid19Id'] . " ORDER BY symptom_id ASC");
+    $results = $db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = ? ORDER BY symptom_id ASC", [$_POST['covid19Id']]);
     foreach ($results as $key => $val) {
         $symptomsArray[$val['symptom_id']] = json_decode($val['symptom_details'], true);
         $symptomsParentArray[] = $val['symptom_id'];
     }
 }
-if (count($covid19Symptoms) > 0) {
+if (!empty($covid19Symptoms)) {
     $index = 1;
     foreach ($covid19Symptoms as $key => $symptoms) {
         $checked = (in_array($_POST['symptomParent'], $symptomsParentArray) && in_array($symptoms['symptom_id'], $symptomsArray[$_POST['symptomParent']])) ? "checked" : '';
@@ -44,7 +48,7 @@ if (count($covid19Symptoms) > 0) {
 } else {
     echo "";
 }
-/* 
+/*
 <th style="width:50%;padding-left:25px;">'.($sampleRow['symptom_name']).'</th>
 <td style="width:50%;">
     <input name="symptomId[]" type="hidden" value="'.$sampleRow['symptom_id'].'">

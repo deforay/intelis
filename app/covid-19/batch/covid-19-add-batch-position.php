@@ -3,18 +3,21 @@
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 if (!isset($id) || trim($id) == '') {
 	header("Location:covid-19-batches.php");
 }
 $content = '';
 $newContent = '';
 $displayOrder = [];
-$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
-$batchInfo = $db->query($batchQuery);
+$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id= ? ";
+$batchInfo = $db->rawQuery($batchQuery, [$id]);
 // Config control
-$configControlQuery = "SELECT * from instrument_controls where config_id=" . $batchInfo[0]['config_id'];
-$configControlInfo = $db->query($configControlQuery);
+$configControlQuery = "SELECT * from instrument_controls where config_id= ? ";
+$configControlInfo = $db->rawQuery($configControlQuery, [$batchInfo[0]['config_id']]);
 $configControl = [];
 foreach ($configControlInfo as $info) {
 	if ($info['test_type'] == 'covid-19') {
@@ -120,12 +123,12 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 		}
 	}if(isset($batchInfo[0]['number_of_manufacturer_controls']) && trim($batchInfo[0]['number_of_manufacturer_controls'])!='' && $batchInfo[0]['number_of_manufacturer_controls']>0){
 		for($m=0;$m<$batchInfo[0]['number_of_manufacturer_controls'];$m++){
-		   $displayOrder[] = "no_of_manufacturer_controls_".($m+1);	
+		   $displayOrder[] = "no_of_manufacturer_controls_".($m+1);
 		   $content.='<li class="ui-state-default" id="no_of_manufacturer_controls_'.($m+1).'">Manufacturer Controls '.($m+1).'</li>';
 		}
 	}if(isset($batchInfo[0]['number_of_calibrators']) && trim($batchInfo[0]['number_of_calibrators'])!='' && $batchInfo[0]['number_of_calibrators']>0){
 		for($c=0;$c<$batchInfo[0]['number_of_calibrators'];$c++){
-		   $displayOrder[] = "no_of_calibrators_".($c+1);	 	
+		   $displayOrder[] = "no_of_calibrators_".($c+1);
 		   $content.='<li class="ui-state-default" id="no_of_calibrators_'.($c+1).'">Calibrators '.($c+1).'</li>';
 		}
 	} */

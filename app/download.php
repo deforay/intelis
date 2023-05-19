@@ -26,6 +26,9 @@ $allowedMimeTypes = [
     'text/plain' => true
 ];
 
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
 if ($file === false) {

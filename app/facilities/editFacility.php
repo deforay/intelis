@@ -25,9 +25,16 @@ foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 //$id = $_GET['id'];
-$facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', array($id));
+$facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', [$id]);
+
+// sanitize $facilityInfo before using it
+$facilityInfo = array_map('htmlspecialchars', $facilityInfo);
+
 $facilityAttributes = json_decode($facilityInfo['facility_attributes']);
 
 
@@ -41,24 +48,8 @@ $chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map
 $chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
 
 $fType = $facilityInfo['facility_type'];
-// $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId FROM user_facility_map as vlfm join facility_details as fd ON fd.facility_id=vlfm.facility_id where facility_type = " . $fType;
-// $vlfmResult = $db->rawQuery($vlfmQuery);
 
-
-// $uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-// if (isset($vlfmResult[0]['userId'])) {
-// 	$exp = explode(",", $vlfmResult[0]['userId']);
-// 	foreach ($exp as $ex) {
-// 		$noUserId[] = "'" . $ex . "'";
-// 	}
-// 	$imp = implode(",", $noUserId);
-// 	$uQuery = $uQuery . " where user_id NOT IN(" . $imp . ")";
-// }
-// $uResult = $db->rawQuery($uQuery);
-
-//$selectedResult = $db->rawQuery('SELECT * FROM user_facility_map as vlfm join user_details as ud ON ud.user_id=vlfm.user_id join facility_details as fd ON fd.facility_id=vlfm.facility_id WHERE vlfm.facility_id = ?', array($id));
-
-$testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', array($id));
+$testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
 $attrValue = json_decode($testTypeInfo[0]['attributes']);
 $availPlatforms = $attrValue->platforms;
 

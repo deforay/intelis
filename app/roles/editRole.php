@@ -3,7 +3,10 @@
 
 require_once APPLICATION_PATH . '/header.php';
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $roleQuery = "SELECT * from roles where role_id=$id";
 $roleInfo = $db->query($roleQuery);
 /* Not allowed to edit API role */
@@ -211,7 +214,7 @@ if ($priInfo) {
 									$a = 0;
 
 									foreach ($rInfo as $moduleRow) {
-										$moduleName = ($moduleRow['module'] == 'generic-tests')?"Lab Tests":$moduleRow['module'];
+										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Lab Tests" : $moduleRow['module'];
 										if ($a == 0)
 											$cls = "active";
 										else
@@ -270,8 +273,8 @@ if ($priInfo) {
 												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
                                   <strong>" . ($privilege['display_name']) . "</strong>
                                   <br>
-                                  
-								  <div class='switch-field' style='margin: 30px 0 36px 90px;'> 
+
+								  <div class='switch-field' style='margin: 30px 0 36px 90px;'>
 								  <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked><label for='radio-one" . $privilege['privilege_id'] . "'>Yes</label>
 								  <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked> <label for='radio-two" . $privilege['privilege_id'] . "'> No</label>
                             </div>

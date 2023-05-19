@@ -8,6 +8,8 @@ use App\Utilities\DateUtility;
 
 
 
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";

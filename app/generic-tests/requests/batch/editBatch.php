@@ -25,7 +25,10 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 //global config
 // $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 // $configResult = $db->query($configQuery);

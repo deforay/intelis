@@ -35,7 +35,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $labFieldDisabled = 'disabled="disabled"';
 }
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
@@ -216,7 +219,7 @@ if (trim($patientLastName) != '') {
 
 if (!empty($patientFullName)) {
     $patientFullName = implode(" ", $patientFullName);
-} else { 
+} else {
     $patientFullName = '';
 }
 
@@ -958,43 +961,41 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                 </td>
                                                             </tr>
-                                                    <?php }
-                                                    } 
-                                                    else
-                                                    {
+                                                        <?php }
+                                                    } else {
                                                         ?>
- <tr>
-                                                                                     <td class="text-center">1</td>
-                                                                                     <td>
-                                                                                          <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                                                                                               <option value="">-- Select --</option>
-                                                                                               <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                                                                                               <option value="RDT-Antibody">RDT-Antibody</option>
-                                                                                               <option value="RDT-Antigen">RDT-Antigen</option>
-                                                                                               <option value="GeneXpert">GeneXpert</option>
-                                                                                               <option value="ELISA">ELISA</option>
-                                                                                               <option value="other">Others</option>
-                                                                                          </select>
-                                                                                          <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-                                                                                     </td>
-                                                                                     <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
-                                                                                     <td>
-                                                                                          <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-                                                                                               <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-                                                                                          </select>
-                                                                                     </td>
-                                                                                     <td>
-                                                                                          <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                                                                                          <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
+                                                        <tr>
+                                                            <td class="text-center">1</td>
+                                                            <td>
+                                                                <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                                                                    <option value="">-- Select --</option>
+                                                                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                                                                    <option value="RDT-Antibody">RDT-Antibody</option>
+                                                                    <option value="RDT-Antigen">RDT-Antigen</option>
+                                                                    <option value="GeneXpert">GeneXpert</option>
+                                                                    <option value="ELISA">ELISA</option>
+                                                                    <option value="other">Others</option>
+                                                                </select>
+                                                                <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                                            </td>
+                                                            <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
+                                                            <td>
+                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                    <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                                                                <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
                                                                                                <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
                                                                                           </select> -->
-                                                                                     </td>
-                                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                                          <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                                          <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-                                                                                     </td>
-                                                                                </tr>
-                                                        <?php
+                                                            </td>
+                                                            <td style="vertical-align:middle;text-align: center;width:100px;">
+                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                                                                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php
                                                     }
                                                     ?>
                                                 </tbody>

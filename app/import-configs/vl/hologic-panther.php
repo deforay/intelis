@@ -7,6 +7,10 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
 try {
+
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');

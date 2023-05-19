@@ -14,7 +14,8 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 try {
 
     $db = $db->where('imported_by', $_SESSION['userId']);
@@ -153,8 +154,8 @@ try {
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,covid19_id,result 
-                        FROM form_covid19 
+            $query = "SELECT facility_id,covid19_id,result
+                        FROM form_covid19
                             WHERE sample_code= ?";
             $vlResult = $db->rawQuery($query, array($sampleCode));
 

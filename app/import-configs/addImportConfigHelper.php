@@ -25,7 +25,7 @@ $_POST['configurationName'] = trim($_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
 
-        if (isset($_POST['supportedTests']) && sizeof($_POST['supportedTests']) > 0) {
+        if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
                 if (!file_exists($configDir)) {

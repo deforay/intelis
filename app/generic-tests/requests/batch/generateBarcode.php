@@ -12,18 +12,21 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
-$getTestId = "SELECT * FROM r_test_types where test_short_code= '".$_GET['code']."' AND test_status='active' ORDER BY test_standard_name ASC";
+
+$getTestId = "SELECT * FROM r_test_types where test_short_code= '" . $_GET['code'] . "' AND test_status='active' ORDER BY test_standard_name ASC";
 $testTypeId = $db->query($getTestId);
 
 $showPatientName = false;
 $refTable = "form_generic";
-    $refPrimaryColumn = "sample_id";
-    $patientIdColumn = 'patient_id';
-    $patientFirstName = 'patient_first_name';
-    $patientLastName = 'patient_last_name';
-    $worksheetName = $testTypeId[0]['test_standard_name'].' Test Worksheet';
+$refPrimaryColumn = "sample_id";
+$patientIdColumn = 'patient_id';
+$patientFirstName = 'patient_first_name';
+$patientLastName = 'patient_last_name';
+$worksheetName = $testTypeId[0]['test_standard_name'] . ' Test Worksheet';
 
 
 $barcodeFormat = $general->getGlobalConfig('barcode_format');
@@ -44,8 +47,8 @@ if ($id > 0) {
     $bQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine LEFT JOIN user_details as u ON u.user_id=b_d.created_by where batch_id=$id";
     $bResult = $db->query($bQuery);
 
-   
-        $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime!= '0000-00-00 00:00:00') LIMIT 1";
+
+    $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime!= '0000-00-00 00:00:00') LIMIT 1";
     $dateResult = $db->query($dateQuery);
     $resulted = '';
     $reviewed = '';
@@ -58,12 +61,12 @@ if ($id > 0) {
         $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
         $reviewed = DateUtility::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
     }
-   
+
     if (!empty($bResult)) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
-            public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy,$worksheetName)
+            public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName)
             {
                 $this->logo = $logo;
                 $this->text = $text;
@@ -118,7 +121,7 @@ if ($id > 0) {
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed,$bResult[0]['user_name'], $worksheetName);
+        $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
@@ -246,7 +249,7 @@ if ($id > 0) {
 
                             $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat).'"></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -254,7 +257,7 @@ if ($id > 0) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat).'"></td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -303,7 +306,7 @@ if ($id > 0) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat).'"></td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -311,7 +314,7 @@ if ($id > 0) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat).'"></td>';
+                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -425,7 +428,7 @@ if ($id > 0) {
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                     $tbl .= '<td align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat).'"></td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
@@ -433,7 +436,7 @@ if ($id > 0) {
 
                     $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="'.$general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat).'"></td>';
+                    $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';

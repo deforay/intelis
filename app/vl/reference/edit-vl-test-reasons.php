@@ -3,7 +3,10 @@
 $title = "VL Test Reasons";
 
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
 $testInfo = $db->query($testQuery);

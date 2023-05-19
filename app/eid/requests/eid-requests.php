@@ -10,6 +10,9 @@ $title = _("EID | View All Requests");
 
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $hidesrcofreq = false;
 if (isset($_GET['id']) && !empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));

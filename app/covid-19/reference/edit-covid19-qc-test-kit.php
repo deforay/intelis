@@ -17,7 +17,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $resultQuery = "SELECT * from r_covid19_qc_testkits where testkit_id = '" . $id . "' ";
 $resultInfo = $db->rawQueryOne($resultQuery);
 $subResult = json_decode($resultInfo['labels_and_expected_results'], true);

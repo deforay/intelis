@@ -4,7 +4,10 @@
 require_once APPLICATION_PATH . '/header.php';
 $rejQuery = "SELECT * from r_covid19_test_reasons WHERE test_reason_status ='active'";
 $rejInfo = $db->query($rejQuery);
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $tstQuery = "SELECT * from r_covid19_test_reasons where test_reason_id=$id";
 $tstInfo = $db->query($tstQuery);
 ?>

@@ -2,7 +2,10 @@
 
 
 require_once APPLICATION_PATH . '/header.php';
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 $resultQuery = "SELECT * from r_tb_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 ?>

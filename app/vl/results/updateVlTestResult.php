@@ -24,7 +24,10 @@ $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $reasonForFailure = $vlService->getReasonForFailure();
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
@@ -263,7 +266,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 7) {
 	include('forms/update-rwanda-result.php');
 } else if ($arr['vl_form'] == 8) {
-	// include('forms/update-angola-result.php'); 
+	// include('forms/update-angola-result.php');
 }
 
 ?>

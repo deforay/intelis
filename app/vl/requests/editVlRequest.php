@@ -30,7 +30,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $labFieldDisabled = 'disabled="disabled"';
 }
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";

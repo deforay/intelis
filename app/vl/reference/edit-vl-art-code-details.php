@@ -2,14 +2,18 @@
 
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 $artId = base64_decode($_GET['id']);
 
-$artQ = "SELECT * FROM `r_vl_art_regimen` WHERE art_id = $artId";
-$result = $db->query($artQ);
+$artQ = "SELECT * FROM `r_vl_art_regimen` WHERE art_id = ?";
+$result = $db->rawQuery($artQ, [$artId]);
 $artResult = $result[0];
 $artParent = [];
-$artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0 AND art_id != $artId";
-$artInfo = $db->query($artQuery);
+$artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0 AND art_id != ?";
+$artInfo = $db->rawQuery($artQuery,[$artId);
 foreach ($artInfo as $art) {
 	$artParent[$art['art_id']] = $art['art_code'];
 }

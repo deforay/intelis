@@ -8,6 +8,9 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use Aranyasen\HL7\Message;
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);

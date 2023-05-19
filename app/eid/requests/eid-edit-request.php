@@ -68,7 +68,10 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 // $lResult = $general->fetchDataFromTable('facility_details', $condition);
 
 
-$id = base64_decode($_GET['id']);
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
 //$id = ($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));

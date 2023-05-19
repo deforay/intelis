@@ -345,4 +345,3 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
-?>
