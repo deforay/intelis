@@ -958,13 +958,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																		</select>
 																	</td>
 																	<td>
-																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
-																		<!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
-																				<option value=''> -- Select -- </option>
-																				<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																					<option value="<?php echo $genResultKey; ?>" <?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																				<?php } ?>
-																			</select> -->
+																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
 																	<td style="vertical-align:middle;text-align: center;width:100px;">
 																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -997,10 +991,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 																	</select>
 																</td>
 																<td>
-																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-																	<!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-																			<?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-																		</select> -->
+																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
 																</td>
 																<td style="vertical-align:middle;text-align: center;width:100px;">
 																	<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -1013,14 +1004,8 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 														<tr>
 															<th scope="row" colspan="4" class="text-right final-result-row">Final Result
 															</th>
-															<td>
-																<input type="text" id="result" name="result" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter final result" title="Please enter final results">
-																<!-- <select class="form-control result-focus" name="result" id="result">
-																		<option value=''> -- Select -- </option>
-																		<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																			<option value="<?php echo $genResultKey; ?>" <?php echo ($vlQueryInfo['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																		<?php } ?>
-																	</select> -->
+															<td id="result-sections">
+																
 															</td>
 														</tr>
 													</tfoot>
@@ -1028,7 +1013,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-4" style="margin-top: 10px;">
+											<div class="col-md-6" style="margin-top: 10px;">
 												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
 													<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
@@ -1037,14 +1022,16 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</select>
 												</div>
 											</div>
-											<div class="col-md-4">
+											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On
 													<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
 													<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 												</div>
 											</div>
-											<div class="col-md-4">
+										</div>
+										<div class="row">
+											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="testedBy">Tested By
 												</label>
 												<div class="col-lg-7">
@@ -1056,16 +1043,10 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											<?php
 											$styleStatus = '';
 											if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == 9) || ($sCode != '')) {
-												$styleStatus = "display:none";
-											?>
+												$styleStatus = "display:none"; ?>
 												<input type="hidden" name="status" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
-											<?php
-											}
-											?>
-
-										</div>
-										<div class="row">
-											<div class="col-md-4" style="margin-top: 10px;">
+											<?php } ?>
+											<div class="col-md-6" style="margin-top: 10px;">
 												<label class="col-lg-5 control-label" for="approvedBy">Approved By
 													<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
@@ -1074,7 +1055,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</select>
 												</div>
 											</div>
-											<div class="col-md-4">
+										</div>
+										<div class="row">
+											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="approvedOn">Approved On
 													<span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
@@ -1084,15 +1067,14 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										</div>
 										<div class="row">
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="labComments">Lab Tech.
-													Comments </label>
+												<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
 												<div class="col-lg-7">
 													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 												</div>
 											</div>
-											<div class="col-md-6 reasonForResultChanges" style="display:none;">
-												<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span></label>
-												<div class="col-lg-6">
+											<div class="col-md-6 change-reason" style="display:none;">
+												<label class="col-lg-5 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span></label>
+												<div class="col-lg-7">
 													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 												</div>
 											</div>
@@ -1867,7 +1849,10 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 						$("#patientDynamicForm").after(data.patient);
 					}
 					if (data.lab.length > 0) {
-						$("#lapDynamicForm").after(data.lab);
+						$("#lapDynamicForm").html(data.lab);
+					}
+					if (data.result.length > 0) {
+						$("#result-sections").html(data.result);
 					}
 					if (data.specimen.length > 0) {
 						$("#specimenDynamicForm").after(data.specimen);
@@ -1889,7 +1874,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		} else {
 			$("#clinicDynamicFormInput").remove();
 			$("#patientDynamicFormInput").remove();
-			$("#lapDynamicFormInput").remove();
+			$("#lapDynamicForm").html('');
 			$("#specimenDynamicFormInput").remove();
 			$("#othersDynamicForm").html('');
 			$(".requestForm").hide();
