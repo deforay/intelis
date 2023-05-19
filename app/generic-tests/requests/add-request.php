@@ -467,7 +467,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <!-- <div id="specimenDynamicForm"></div> -->
                                         </div>
                                    </div>
-                                   <div class="box box-primary" id="othersDynamicForm"></div>
+                                   <div id="othersDynamicForm"></div>
                                    <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
@@ -636,14 +636,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </td>
                                                                       </tr>
                                                                  </tbody>
-                                                                 <tfoot>
+                                                                 <tfoot id="resultSection">
                                                                       <tr>
                                                                            <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
-                                                                           <td>
-                                                                                <input type="text" id="result" name="result" class="form-control" placeholder="Enter final result" title="Please enter final results">
-                                                                                <!-- <select class="form-control" name="result" id="result">
-                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-                                                                                          </select> -->
+                                                                           <td id="result-sections">
+                                                                                
                                                                            </td>
                                                                       </tr>
                                                                  </tfoot>
@@ -651,7 +648,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </div>
                                                   </div>
                                                   <div class="row">
-                                                       <div class="col-md-4">
+                                                       <div class="col-md-6">
                                                             <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                             <div class="col-lg-7">
                                                                  <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
@@ -659,13 +656,15 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </select>
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-4">
+                                                       <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                             <div class="col-lg-7">
                                                                  <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-4">
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
                                                             <div class="col-lg-7">
                                                                  <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
@@ -673,9 +672,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </select>
                                                             </div>
                                                        </div>
-                                                  </div>
-                                                  <div class="row">
-                                                       <div class="col-md-4">
+                                                       <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                             <div class="col-lg-7">
                                                                  <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
@@ -683,23 +680,22 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </select>
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-4">
+                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                             <div class="col-lg-7">
                                                                  <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                             </div>
                                                        </div>
-                                                  </div>
-                                                  <br>
-                                                  <div class="row">
-                                                       <div class="col-md-6" id="lapDynamicForm">
-                                                            <label class="col-lg-3 control-label labels" for="labComments">Lab Tech. Comments </label>
-                                                            <div class="col-lg-9">
-                                                                 <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
+                                                       <div class="col-md-6">
+                                                            <label class="col-lg-5 control-label labels" for="labComments">Lab Tech. Comments </label>
+                                                            <div class="col-lg-7">
+                                                                 <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments"></textarea>
                                                             </div>
                                                        </div>
                                                   </div>
-                                                  <!-- <div id="lapDynamicForm"></div> -->
+                                                  <div class="row" id="lapDynamicForm">
                                              </div>
                                         </div>
                                    <?php } ?>
@@ -806,14 +802,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
           $("#testType").select2({
+               width: '245px',
                placeholder: "<?php echo _("Select Test Type"); ?>"
           });
           $('#labId').select2({
-               width: '100%',
+               width: '245px',
                placeholder: "Select Testing Lab"
           });
           $('#fName').select2({
-               width: '100%',
+               width: '245px',
                placeholder: "Select Clinic/Health Center"
           });
           $('#reviewedBy').select2({
@@ -830,12 +827,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Approved By"
           });
           $('#facilityId').select2({
+               width: '245px',
                placeholder: "Select Clinic/Health Center"
           });
           $('#district').select2({
+               width: '245px',
                placeholder: "District"
           });
           $('#province').select2({
+               width: '245px',
                placeholder: "Province"
           });
           // BARCODESTUFF START
@@ -1591,6 +1591,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (testType != "") {
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
+                         result: $('#result').val(),
                          testType: testType,
                     },
                     function(data) {
@@ -1603,7 +1604,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $("#patientDynamicForm").after(data.patient);
                          }
                          if (data.lab.length > 0) {
-                              $("#lapDynamicForm").after(data.lab);
+                              $("#lapDynamicForm").html(data.lab);
+                         }
+                         if (data.result.length > 0) {
+                              $("#result-sections").html(data.result);
+                         }else{
+                              $('#resultSection').hide()
                          }
                          if (data.specimen.length > 0) {
                               $("#specimenDynamicForm").after(data.specimen);
@@ -1626,7 +1632,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           } else {
                $("#clinicDynamicFormInput").remove();
                $("#patientDynamicFormInput").remove();
-               $("#lapDynamicFormInput").remove();
+               $("#lapDynamicForm").html('');
                $("#specimenDynamicFormInput").remove();
                $("#othersDynamicForm").html('');
                $(".requestForm").hide();
