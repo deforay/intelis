@@ -493,6 +493,11 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/generic-tests/reference/testing-reasons/generic-testing-reason.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/testing-reasons/generic-add-testing-reason.php') . ';' . base64_encode('/generic-tests/reference/testing-reasons/generic-edit-testing-reason.php');?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
 												</li>
 											<?php }
+											if (isset($_SESSION['privileges']) && in_array("generic-test-failure-reason.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericTestFailureReasonMenu">
+													<a href="/generic-tests/reference/test-failure-reasons/generic-test-failure-reason.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-failure-reasons/generic-add-test-failure-reason.php') . ';' . base64_encode('/generic-tests/reference/test-failure-reasons/generic-edit-test-failure-reason.php');?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Failure Reasons"); ?></a>
+												</li>
+											<?php }
 											if (isset($_SESSION['privileges']) && in_array("generic-symptoms.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu genericSymptomsMenu">
 													<a href="/generic-tests/reference/symptoms/generic-symptoms.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/symptoms/generic-add-symptoms.php') . ';' . base64_encode('/generic-tests/reference/symptoms/generic-edit-symptoms.php');?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>

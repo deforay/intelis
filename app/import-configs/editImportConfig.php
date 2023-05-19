@@ -361,7 +361,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											</tr>
 										<?php } 
 										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
-											<tr id="genericTable" class="ctlCalibrator" <?php echo $genericTests;?>>
+											<tr id="generic-testsTable" class="ctlCalibrator" <?php echo $genericTests;?>>
 												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" /></td>
 												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' /></td>
 												<td><input type="text" value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' /></td>

@@ -3990,13 +3990,14 @@ ALTER TABLE `form_eid` CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAU
 
 -- Jeyabanu 16-May-2023
 CREATE TABLE `r_generic_test_failure_reasons` (
-  `failure_id` int NOT NULL AUTO_INCREMENT,
-  `failure_reason` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_failure_reason_id` int NOT NULL AUTO_INCREMENT,
+  `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `test_failure_reason` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `test_failure_reason_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int DEFAULT NULL,
-  PRIMARY KEY (`failure_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  PRIMARY KEY (`test_failure_reason_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 CREATE TABLE `generic_test_failure_reason_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4010,3 +4011,13 @@ CREATE TABLE `generic_test_failure_reason_map` (
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Interpret and Convert Lab Test Results', 'generic_interpret_and_convert_results', 'no', 'generic', NULL, NULL, NULL, 'active');
 
 ALTER TABLE `instruments` ADD `lab_id` INT NULL DEFAULT NULL AFTER `machine_name`;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-test-failure-reason.php', 'Manage Test Failure Reason'), (NULL, 'generic-test-reference', 'generic-add-test-failure-reason.php', 'Add New Test Failure Reason');
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-edit-test-failure-reason.php', 'Edit Test Failure Reason');
+
+CREATE TABLE `generic_sample_rejection_reason_map` (
+  `map_id` int NOT NULL,
+  `rejection_reason_id` int NOT NULL,
+  `test_type_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

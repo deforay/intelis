@@ -15,6 +15,12 @@ $sampleTypeInfo = $db->query($stQuery);
 $tQuery = "SELECT * from r_generic_test_reasons where test_reason_status='active'";
 $testReasonInfo = $db->query($tQuery);
 
+$tfQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_status='active'";
+$testFailureReasonInfo = $db->query($tfQuery);
+
+$srQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_status='active'";
+$sampleRejectionReasonInfo = $db->query($srQuery);
+
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
 $symptomInfo = $db->query($symQuery);
 
@@ -29,6 +35,18 @@ $testReasonMapInfo = $db->query($testReasonMapQuery);
 $testReasonId = [];
 foreach ($testReasonMapInfo as $val) {
 	$testReasonId[] = $val['test_reason_id'];
+}
+$testFailureReasonMapQuery = "SELECT * from generic_test_failure_reason_map where test_type_id=$id";
+$testFailureReasonMapInfo = $db->query($testFailureReasonMapQuery);
+$testFailureReasonId = [];
+foreach ($testFailureReasonMapInfo as $val) {
+	$testFailureReasonId[] = $val['test_failure_reason_id'];
+}
+$rejectionReasonMapQuery = "SELECT * from generic_sample_rejection_reason_map where test_type_id=$id";
+$rejectionReasonMapInfo = $db->query($rejectionReasonMapQuery);
+$rejectionReasonId = [];
+foreach ($rejectionReasonMapInfo as $val) {
+	$rejectionReasonId[] = $val['rejection_reason_id'];
 }
 $testSymptomsMapQuery = "SELECT * from generic_test_symptoms_map where test_type_id=$id";
 $testSymptomsMapInfo = $db->query($testSymptomsMapQuery);
@@ -144,7 +162,43 @@ foreach ($testSymptomsMapInfo as $val) {
 								</div>
 							</div>
 						</div>
-
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($testFailureReasonInfo as $testFailureReason) {
+											?>
+												<option value="<?php echo $testFailureReason['test_failure_reason_id']; ?>" <?php echo in_array($testFailureReason['test_failure_reason_id'], $testFailureReasonId) ? "selected='selected'" : "" ?>><?php echo $testFailureReason['test_failure_reason']; ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($sampleRejectionReasonInfo as $rejectionReason) {
+											?>
+												<option value="<?php echo $rejectionReason['rejection_reason_id']; ?>" <?php echo in_array($rejectionReason['rejection_reason_id'], $rejectionReasonId) ? "selected='selected'" : "" ?>><?php echo $rejectionReason['rejection_reason_name']; ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -373,6 +427,12 @@ foreach ($testSymptomsMapInfo as $val) {
 		});
 		$("#testingReason").select2({
 			placeholder: "<?php echo _("Select Testing Reason"); ?>"
+		});
+		$("#testFailureReason").select2({
+			placeholder: "<?php echo _("Select Test Failure Reason"); ?>"
+		});
+		$("#rejectionReason").select2({
+			placeholder: "<?php echo _("Select Rejection Reason"); ?>"
 		});
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
