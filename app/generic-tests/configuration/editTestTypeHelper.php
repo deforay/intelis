@@ -22,6 +22,7 @@ $tableName6 = "generic_sample_rejection_reason_map";
 $testAttribute = [];
 $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
+// echo "<pre>";print_r($_POST);die;
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 try {
     if (!empty($_POST['testStandardName']) && $testTypeId > 0) {
@@ -50,7 +51,7 @@ try {
             'test_short_code' => $_POST['testShortCode'],
             'test_loinc_code' => !empty($_POST['testLoincCode']) ? $_POST['testLoincCode'] : null,
             'test_form_config' => json_encode($testAttribute),
-            'test_results_config' => json_encode($testResultAttribute),
+            'test_results_config' => json_encode($_POST['resultConfig']),
             'test_status' => $_POST['status']
         );
         $db = $db->where('test_type_id', $testTypeId);

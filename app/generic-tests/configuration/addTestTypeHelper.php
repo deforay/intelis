@@ -20,7 +20,6 @@ $tableName4 = "generic_test_symptoms_map";
 $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
 $testAttribute = [];
-$testResultAttribute = [];
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 try {
     if (!empty($_POST['testStandardName'])) {
@@ -30,18 +29,6 @@ try {
         $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
         $testAttribute['section'] = $_POST['section'];
         $testAttribute['section_other'] = $_POST['sectionOther'];
-        //Result Type
-        $testResultAttribute['result_type'] = $_POST['resultType'];
-        if (isset($_POST['resultType']) && $_POST['resultType'] == 'quantitative') {
-            $testResultAttribute['high_value_name'] = $_POST['highValueName'];
-            $testResultAttribute['high_value'] = $_POST['highValue'];
-            $testResultAttribute['low_value_name'] = $_POST['lowValueName'];
-            $testResultAttribute['low_value'] = $_POST['lowValue'];
-            $testResultAttribute['threshold_value_name'] = $_POST['thresholdValueName'];
-            $testResultAttribute['threshold_value'] = $_POST['thresholdValue'];
-        } else {
-            $testResultAttribute['qualitative_result'] = explode(",", $_POST['qualitativeResult']);
-        }
 
         $data = array(
             'test_standard_name' => $_POST['testStandardName'],
@@ -49,7 +36,7 @@ try {
             'test_short_code' => $_POST['testShortCode'],
             'test_loinc_code' => !empty($_POST['testLoincCode']) ? $_POST['testLoincCode'] : null,
             'test_form_config' => json_encode($testAttribute),
-            'test_results_config' => json_encode($testResultAttribute),
+            'test_results_config' => json_encode($_POST['resultConfig']),
             'test_status' => $_POST['status']
         );
 
