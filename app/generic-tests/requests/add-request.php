@@ -316,7 +316,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </div>
                                              </div>
 
-                                             <div class="col-md-4 col-md-4">
+                                             <div class="col-md-4 col-md-4" id="clinicDynamicForm">
                                                   <label for="labId">Testing Lab <span class="mandatory">*</span></label>
                                                   <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
                                                        <option value="">-- Select --</option>
@@ -327,7 +327,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              </div>
 
                                         </div>
-                                        <div class="row" id="clinicDynamicForm"></div>
+                                        <!-- <div id="clinicDynamicForm"></div> -->
                                    </div>
                               </div>
                               <div class="box box-primary requestForm" style="display:none;">
@@ -425,14 +425,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3" style="display:none;">
+                                             <div class="col-xs-3 col-md-3" style="display:none;" id="patientDynamicForm">
                                                   <div class="form-group">
                                                        <label for="">How long has this patient been on treatment ? </label>
                                                        <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
                                                   </div>
                                              </div>
                                         </div>
-                                        <div class="row" id="patientDynamicForm"></div>
+                                        <!-- <div id="patientDynamicForm"></div> -->
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -452,7 +452,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on">
                                                        </div>
                                                   </div>
-                                                  <div class="col-xs-3 col-md-3">
+                                                  <div class="col-xs-3 col-md-3" id="specimenDynamicForm">
                                                        <div class="form-group">
                                                             <label for="specimenType">Sample Type <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
@@ -464,7 +464,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </div>
                                                   </div>
                                              </div>
-                                             <div class="row" id="specimenDynamicForm"></div>
+                                             <!-- <div id="specimenDynamicForm"></div> -->
                                         </div>
                                    </div>
                                    <div class="box box-primary" id="othersDynamicForm"></div>
@@ -692,14 +692,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </div>
                                                   <br>
                                                   <div class="row">
-                                                       <div class="col-md-6">
+                                                       <div class="col-md-6" id="lapDynamicForm">
                                                             <label class="col-lg-3 control-label labels" for="labComments">Lab Tech. Comments </label>
                                                             <div class="col-lg-9">
                                                                  <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
                                                             </div>
                                                        </div>
                                                   </div>
-                                                  <div class="row" id="lapDynamicForm"></div>
+                                                  <!-- <div id="lapDynamicForm"></div> -->
                                              </div>
                                         </div>
                                    <?php } ?>
@@ -1597,16 +1597,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          data = JSON.parse(data);
                          console.log(data);
                          if (data.facility.length > 0) {
-                              $("#clinicDynamicForm").html(data.facility);
+                              $("#clinicDynamicForm").after(data.facility);
                          }
                          if (data.patient.length > 0) {
-                              $("#patientDynamicForm").html(data.patient);
+                              $("#patientDynamicForm").after(data.patient);
                          }
                          if (data.lab.length > 0) {
-                              $("#lapDynamicForm").html(data.lab);
+                              $("#lapDynamicForm").after(data.lab);
                          }
                          if (data.specimen.length > 0) {
-                              $("#specimenDynamicForm").html(data.specimen);
+                              $("#specimenDynamicForm").after(data.specimen);
                          }
                          if (data.others.length > 0) {
                               $("#othersDynamicForm").html(data.others);
@@ -1624,10 +1624,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          });
                     });
           } else {
-               $("#clinicDynamicForm").html('');
-               $("#patientDynamicForm").html('');
-               $("#lapDynamicForm").html('');
-               $("#specimenDynamicForm").html('');
+               $("#clinicDynamicFormInput").remove();
+               $("#patientDynamicFormInput").remove();
+               $("#lapDynamicFormInput").remove();
+               $("#specimenDynamicFormInput").remove();
                $("#othersDynamicForm").html('');
                $(".requestForm").hide();
           }

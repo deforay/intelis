@@ -742,7 +742,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>">
 											</div>
 										</div>
-										<div class="col-xs-3 col-md-3">
+										<div class="col-xs-3 col-md-3" id="specimenDynamicForm">
 											<div class="form-group">
 												<label for="specimenType">Sample Type <span class="mandatory">*</span></label>
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
@@ -755,7 +755,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 										</div>
 									</div>
-									<div class="row" id="specimenDynamicForm"></div>
+									<!-- <div id="specimenDynamicForm"></div> -->
 								</div>
 							</div>
 							<div class="box box-primary" id="othersDynamicForm"></div>
@@ -1861,16 +1861,16 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					//console.log(data);
 					data = JSON.parse(data);
 					if (data.facility.length > 0) {
-						$("#clinicDynamicForm").html(data.facility);
+						$("#clinicDynamicForm").after(data.facility);
 					}
 					if (data.patient.length > 0) {
-						$("#patientDynamicForm").html(data.patient);
+						$("#patientDynamicForm").after(data.patient);
 					}
 					if (data.lab.length > 0) {
-						$("#lapDynamicForm").html(data.lab);
+						$("#lapDynamicForm").after(data.lab);
 					}
 					if (data.specimen.length > 0) {
-						$("#specimenDynamicForm").html(data.specimen);
+						$("#specimenDynamicForm").after(data.specimen);
 					}
 					if (data.others.length > 0) {
 						$("#othersDynamicForm").html(data.others);
@@ -1887,10 +1887,10 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					});
 				});
 		} else {
-			$("#clinicDynamicForm").html('');
-			$("#patientDynamicForm").html('');
-			$("#lapDynamicForm").html('');
-			$("#specimenDynamicForm").html('');
+			$("#clinicDynamicFormInput").remove();
+			$("#patientDynamicFormInput").remove();
+			$("#lapDynamicFormInput").remove();
+			$("#specimenDynamicFormInput").remove();
 			$("#othersDynamicForm").html('');
 			$(".requestForm").hide();
 		}
