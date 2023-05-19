@@ -1,5 +1,18 @@
 <?php
 
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them in the form
+$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -14,23 +27,23 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Sélectionner --');
 //Get selected state
-$stateQuery = "SELECT * from facility_details where facility_id='" . $vlQueryInfo['facility_id'] . "'";
-$stateResult = $db->query($stateQuery);
+$stateQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
+$stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['facility_id']]);
 if (!isset($stateResult[0]['facility_state'])) {
 	$stateResult[0]['facility_state'] = '';
 }
 //district details
-$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateResult[0]['facility_state'] . "'";
-$districtResult = $db->query($districtQuery);
+$districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state=?";
+$districtResult = $db->rawQuery($districtQuery, [$stateResult[0]['facility_state']]);
 
-$provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $stateResult[0]['facility_state'] . "'";
-$provinceResult = $db->query($provinceQuery);
+$provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_name=?";
+$provinceResult = $db->rawQuery($provinceQuery, [$stateResult[0]['facility_state']]);
 if (!isset($provinceResult[0]['geo_code'])) {
 	$provinceResult[0]['geo_code'] = '';
 }
 
 //get ART list
-$aQuery = "SELECT * from r_vl_art_regimen";
+$aQuery = "SELECT * FROM r_vl_art_regimen";
 $aResult = $db->query($aQuery);
 
 //Set plasma storage temp.

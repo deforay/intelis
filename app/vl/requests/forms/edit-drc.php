@@ -1,5 +1,13 @@
 <?php
 
+use App\Registries\ContainerRegistry;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+// Sanitize values before using them in the form
+$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -13,14 +21,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
 		$sampleCode = 'remote_sample_code';
 	} else {
-		$sampleCode = 'sample_code'; 
+		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
 	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
 		//$pdQuery="SELECT * from province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='".$_SESSION['userId']."'";
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 } else {
 	$sampleCode = 'sample_code';
@@ -112,7 +120,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<?php
 									if ($vlQueryInfo['sample_code'] != '') {
 									?>
-										<label for="sampleSuggest" class="text-danger">Cet exemple a déjà été importé avec l'ID échantillon VLSM <?= htmlspecialchars($vlQueryInfo['sample_code']); ?></label>
+										<label for="sampleSuggest" class="text-danger">Cet exemple a déjà été importé avec l'ID échantillon VLSM <?= ($vlQueryInfo['sample_code']); ?></label>
 									<?php
 									} else {
 									?>
@@ -244,15 +252,15 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td style="width:10%;"><label for="">Date de naissance </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:6%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:19%;">
-											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" value="<?= ($vlQueryInfo['patient_age_in_years']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15%;">
-											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10%;text-align:center;"><label for="sex">Sexe </label></td>
 										<td style="width:15%;">
@@ -269,7 +277,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									<tr>
 										<td><label for="artNo">Code du patient <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="Please enter code du patient" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td colspan="2"><label for="isPatientNew">Si S/ARV </label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
@@ -484,7 +492,7 @@ $sampleSuggestionDisplay = 'display:none;';
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
-											<td><label for="">Date de réception de l'échantillon  </label></td>
+											<td><label for="">Date de réception de l'échantillon </label></td>
 											<td>
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
@@ -540,7 +548,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 											<td class="vlResult"><label for="vlResult">Résultat</label></td>
 											<td class="vlResult resultInputContainer">
-												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
+												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults">
 													<!--<option value="< 20" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 20') ? "selected='selected'" : ""; ?>> &lt; 20 </option>
 													<option value="< 40" <?php echo (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] == '< 40') ? "selected='selected'" : ""; ?>> &lt; 40 </option>
@@ -550,7 +558,7 @@ $sampleSuggestionDisplay = 'display:none;';
 											</td>
 											<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label></td>
 											<td class="vlLog">
-												<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+												<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
@@ -605,9 +613,9 @@ $sampleSuggestionDisplay = 'display:none;';
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
-						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
-						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
+						<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
+						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
@@ -623,7 +631,6 @@ $sampleSuggestionDisplay = 'display:none;';
 </div>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script type="text/javascript">
-	
 	changeProvince = true;
 	changeFacility = true;
 
@@ -631,7 +638,7 @@ $sampleSuggestionDisplay = 'display:none;';
 	provinceName = true;
 	facilityName = true;
 
-	
+
 	$(document).ready(function() {
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
@@ -669,12 +676,12 @@ $sampleSuggestionDisplay = 'display:none;';
 
 		//$('#sampleCollectionDate').trigger("change");
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "+1Y",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -686,31 +693,31 @@ $sampleSuggestionDisplay = 'display:none;';
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-	
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
+
 
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-		if($("#sampleDispatchedDate").val()=="")
-		$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-		
+		if ($("#sampleDispatchedDate").val() == "")
+			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+
 		$('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            minDate: minDate,
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			minDate: minDate,
 			startDate: minDate,
-        });
+		});
 	});
-	
+
 
 	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 	//	var startDate = $('#sampleCollectionDate').datetimepicker('getDate');
-	
-		//$('#sampleDispatchedDate').datetimepicker('option', 'minDate', minDate);
- 	//	$("#sampleDispatchedDate").datetimepicker( {minDate, minDate });
+
+	//$('#sampleDispatchedDate').datetimepicker('option', 'minDate', minDate);
+	//	$("#sampleDispatchedDate").datetimepicker( {minDate, minDate });
 	function getfacilityDetails(obj) {
 		$.blockUI();
 		var pName = $("#province").val();
@@ -856,9 +863,9 @@ $sampleSuggestionDisplay = 'display:none;';
 	}
 
 	$('#vlResult').on('change', function() {
-		if($(this).val() != ""){
+		if ($(this).val() != "") {
 			$('.authorisation').addClass("isRequired");
-		}else{
+		} else {
 			$('.authorisation').removeClass("isRequired");
 		}
 		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
@@ -950,6 +957,4 @@ $sampleSuggestionDisplay = 'display:none;';
 				}
 			});
 	}
-
-	
 </script>
