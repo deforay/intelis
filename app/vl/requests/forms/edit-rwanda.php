@@ -1,10 +1,13 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
+
+// Sanitize values before using them in the form
+$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
 
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
@@ -97,16 +100,6 @@ if (trim($facilityResult[0]['facility_state']) != '') {
 //suggest sample id when lab user add request sample
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
-// if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-//      $vlObj = new \App\Services\VlService();
-//      $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-//      $sampleCollectionDate = \App\Utilities\DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-//      $sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['province_code'], $sampleCollectionDate);
-//      $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-//      $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-//      $sampleSuggestionDisplay = 'display:block;';
-// }
-
 //set reason for changes history
 $rch = '';
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
@@ -172,7 +165,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <?php
                                              if ($vlQueryInfo['sample_code'] != '') {
                                              ?>
-                                                  <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID <?= htmlspecialchars($vlQueryInfo['sample_code']); ?></label>
+                                                  <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID <?= ($vlQueryInfo['sample_code']); ?></label>
                                              <?php
                                              } else {
                                              ?>
@@ -192,7 +185,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <?php } else { ?>
                                                                  <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
                                                                  <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-                                                                 <input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
+                                                                 <input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
                                                             <?php } ?>
                                                        </div>
                                                   </div>
@@ -269,25 +262,25 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                            <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" onchange="if(this.value.length!=10) alert('ART No. should be 10 characters long');" />
+                                                            <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= ($vlQueryInfo['patient_art_no']); ?>" onchange="if(this.value.length!=10) alert('ART No. should be 10 characters long');" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="dob">Date of Birth <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                            <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                            <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="ageInYears">If DOB unknown, Age in Years </label>
-                                                            <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" />
+                                                            <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?= ($vlQueryInfo['patient_age_in_years']); ?>" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="ageInMonths">If Age
-                                                                 < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" />
+                                                                 < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
@@ -315,7 +308,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="patientPhoneNumber">Phone Number</label>
-                                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($vlQueryInfo['patient_mobile_number']); ?>" />
+                                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
@@ -604,13 +597,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter shipper name" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person']); ?>" />
+                                                                           <input type="text" class="form-control  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter shipper name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= htmlspecialchars($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <!-- <div class="col-md-4">
@@ -697,7 +690,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                                <input type="text" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                                 <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
                                                                                 &lt; 20<br>
                                                                                 <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
@@ -714,7 +707,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="vlLog">Viral Load Log </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                                <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                            </div>
                                                                       </div>
                                                                       <div class="col-md-4">
@@ -779,10 +772,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              </div>
                                              <div class="box-footer">
                                                   <input type="hidden" name="revised" id="revised" value="no" />
-                                                  <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
-                                                  <input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
+                                                  <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
+                                                  <input type="hidden" name="isRemoteSample" value="<?= ($vlQueryInfo['remote_sample']); ?>" />
                                                   <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
-                                                  <input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
+                                                  <input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
                                                   <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
                                                   <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
                                                   <a href="vlRequest.php" class="btn btn-default"> Cancel</a>

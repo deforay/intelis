@@ -1,19 +1,23 @@
 <?php
 
 
-use App\Registries\ContainerRegistry;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
-//global config
-$cSampleQuery = "SELECT * FROM global_config";
-$cSampleResult = $db->query($cSampleQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cSampleResult); $i++) {
-	$arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];
-}
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them in the form
+$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
+
+$arr = $general->getGlobalConfig();
 
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
@@ -210,7 +214,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										<?php
 										if ($vlQueryInfo['sample_code'] != '') {
 										?>
-											<label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?= htmlspecialchars($vlQueryInfo['sample_code']); ?></label>
+											<label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?= ($vlQueryInfo['sample_code']); ?></label>
 										<?php
 										} else {
 										?>
@@ -228,7 +232,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<?php } else { ?>
 												<label class="labels" for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
 												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
-												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" />
+												<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
 											<?php } ?>
 
 										</div>
@@ -327,7 +331,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td class="labels">
 											<label for="gender">Gender &nbsp;&nbsp;</label>
@@ -373,16 +377,16 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									<tr>
 										<td class="labels"><label for="dob">Date Of Birth</label></td>
 										<td>
-											<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" title="Please choose DOB" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();" style="width:100%;" />
+											<input type="text" class="form-control date" placeholder="DOB" name="dob" id="dob" title="Please choose DOB" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();" style="width:100%;" />
 										</td>
 										<td class="labels"><label for="ageInYears">If DOB unknown, Age in Years</label></td>
 										<td>
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="2" placeholder="Age in Year" title="Enter age in years" value="<?= ($vlQueryInfo['patient_age_in_years']); ?>" />
 										</td>
 										<td class="labels"><label for="ageInMonths">If Age < 1, Age in Months </label>
 										</td>
 										<td>
-											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" />
+											<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
 										</td>
 
 									</tr>
@@ -712,7 +716,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									<tr>
 										<td class="labels"><label for="finalViralResult">Final Viral Load Result(copies/ml)</label></td>
 										<td>
-											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>">
+											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= ($vlQueryInfo['result']); ?>">
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 										<td>
@@ -766,10 +770,10 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
-						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($vlQueryInfo['remote_sample']); ?>" />
+						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" name="isRemoteSample" value="<?= ($vlQueryInfo['remote_sample']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_vl_result_changes']; ?>" />
-						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($vlQueryInfo['result_status']); ?>" />
+						<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>

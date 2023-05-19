@@ -10,6 +10,9 @@ require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
@@ -221,7 +224,6 @@ if (!empty($patientFullName)) {
      $patientFullName = '';
 }
 
-
 ?>
 <style>
      .ui_tpicker_second_label {
@@ -262,24 +264,20 @@ if (!empty($patientFullName)) {
 </style>
 <?php
 
+$fileArray = array(
+     1 => 'forms/edit-southsudan.php',
+     2 => 'forms/edit-sierraleone.php',
+     3 => 'forms/edit-drc.php',
+     //4 => 'forms/edit-zambia.php',
+     5 => 'forms/edit-png.php',
+     6 => 'forms/edit-who.php',
+     7 => 'forms/edit-rwanda.php',
+     8 => 'forms/edit-angola.php',
+);
 
-if ($arr['vl_form'] == 1) {
-     require('forms/edit-southsudan.php');
-} elseif ($arr['vl_form'] == 2) {
-     require('forms/edit-sierraleone.php');
-} elseif ($arr['vl_form'] == 3) {
-     require('forms/edit-drc.php');
-} elseif ($arr['vl_form'] == 4) {
-     //require('forms/edit-zambia.php');
-} elseif ($arr['vl_form'] == 5) {
-     require('forms/edit-png.php');
-} elseif ($arr['vl_form'] == 6) {
-     require('forms/edit-who.php');
-} elseif ($arr['vl_form'] == 7) {
-     require('forms/edit-rwanda.php');
-} elseif ($arr['vl_form'] == 8) {
-     require('forms/edit-angola.php');
-}
+require($fileArray[$arr['vl_form']]);
+
+
 ?>
 <script>
      $(document).ready(function() {
