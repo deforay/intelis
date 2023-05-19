@@ -620,12 +620,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </td>
                                                                            <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                                            <td>
-                                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                                <select name="testingPlatform[]" id="testingPlatform1" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for 1">
                                                                                      <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                                 </select>
                                                                            </td>
                                                                            <td>
-                                                                                <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                                                                                <input type="text" id="testResult1" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
                                                                                 <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
                                                                                                <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
                                                                                           </select> -->

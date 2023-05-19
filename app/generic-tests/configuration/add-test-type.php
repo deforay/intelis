@@ -249,9 +249,9 @@ $symptomInfo = $db->query($symQuery);
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="resultType" class="col-lg-4 control-label"><?php echo _("Result Type"); ?> <span class="mandatory">*</span></label>
+										<label for="resultType" class="col-lg-3 control-label"><?php echo _("Result Type"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<select class="form-control isRequired" name='resultType' id='resultType' onchange="checkResultType();">
+											<select class="form-control isRequired" name='resultConfig[result_type]' id='resultType' onchange="checkResultType();">
 												<option value=""> <?php echo _("-- Select --"); ?> </option>
 												<option value="qualitative"><?php echo _("Qualitative"); ?></option>
 												<option value="quantitative"><?php echo _("Quantitative"); ?></option>
@@ -261,78 +261,90 @@ $symptomInfo = $db->query($symQuery);
 								</div>
 							</div>
 							<div class="row" id="qualitativeDiv" style="display:none;">
-								<div class="col-md-8">
-									<div class="form-group">
-										<label for="qualitativeResult" class="col-lg-3 control-label"><?php echo _("Result"); ?> <span class="mandatory">*</span></label>
-										<div class="col-lg-9">
-											<input type="text" class="form-control" id="qualitativeResult" name="qualitativeResult" placeholder='<?php echo _("Comma Separated Qualitative Result"); ?>' title='<?php echo _("Please enter qualitative result"); ?>' />
-										</div>
-									</div>
+								<div class="col-md-12">
+									<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+										<tbody id="qualitativeTable">
+											<tr>
+												<td class="text-center">1</td>
+												<th>Result<span class="mandatory">*</span></th>
+												<td><input type="text" name="resultConfig[result][]" id="result1" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
+												<th>Result Interpretation<span class="mandatory">*</span></th>
+												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+												<td style="vertical-align:middle;text-align: center;width:100px;">
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
-							<div class="row" id="quantitativeDiv" style="display:none;">
+							<div class="row quantitativeDiv" style="display:none;">
 								<div class="box-header">
-									<h4 class="box-title "><?php echo _("Result"); ?></h4>
+									<h4 class="box-title "><?php echo _("Result Range"); ?></h4>
 								</div>
-
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="highValueName" class="col-lg-4 control-label"><?php echo _("High Value Name"); ?> <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="highValueName" name="highValueName" placeholder='<?php echo _("Enter High Value Name"); ?>' title='<?php echo _("Please enter high value name"); ?>' />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<div class="form-group">
 										<label for="highValue" class="col-lg-4 control-label"><?php echo _("High Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="highValue" name="highValue" placeholder='<?php echo _("Enter High Value"); ?>' title='<?php echo _("Please enter high value"); ?>' />
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="highValue" name="resultConfig[high_value]" placeholder='<?php echo _("Enter High Value"); ?>' title='<?php echo _("Please enter high value"); ?>' value="<?php echo (isset($testResultAttribute['high_value'])) ? $testResultAttribute['high_value'] : "" ?> " />
 										</div>
 									</div>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="lowValueName" class="col-lg-4 control-label"><?php echo _("Low Value Name"); ?> <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="lowValueName" name="lowValueName" placeholder='<?php echo _("Enter Low Value Name"); ?>' title='<?php echo _("Please enter low value name"); ?>' />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="lowValue" class="col-lg-4 control-label"><?php echo _("Low Value"); ?> <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="lowValue" name="lowValue" placeholder='<?php echo _("Enter Low Value"); ?>' title='<?php echo _("Please enter low value"); ?>' />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="thresholdValueName" class="col-lg-4 control-label"><?php echo _("Threshold Value Name"); ?> <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="thresholdValueName" name="thresholdValueName" placeholder='<?php echo _("Enter Threshold Value Name"); ?>' title='<?php echo _("Please enter threshold value name"); ?>' />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<div class="form-group">
 										<label for="thresholdValue" class="col-lg-4 control-label"><?php echo _("Threshold Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="thresholdValue" name="thresholdValue" placeholder='<?php echo _("Enter Threshold Value"); ?>' title='<?php echo _("Please enter threshold value"); ?>' />
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="thresholdValue" name="resultConfig[threshold_value]" placeholder='<?php echo _("Enter Threshold Value"); ?>' title='<?php echo _("Please enter threshold value"); ?>' value="<?php echo (isset($testResultAttribute['threshold_value'])) ? $testResultAttribute['threshold_value'] : "" ?>" />
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="lowValue" class="col-lg-4 control-label"><?php echo _("Low Value"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7">
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="lowValue" name="resultConfig[low_value]" placeholder='<?php echo _("Enter Low Value"); ?>' title='<?php echo _("Please enter low value"); ?>' value="<?php echo (isset($testResultAttribute['low_value'])) ? $testResultAttribute['low_value'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+							<div class="row quantitativeDiv" style="display:none;">
+								<div class="box-header">
+									<h4 class="box-title "><?php echo _("Result Interpretation"); ?></h4>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _("Below Threshold"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7">
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _("At Threshold"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7">
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _("Above Threshold"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7">
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+										</div>
+									</div>
+								</div>
+							</div>
 
-					</div>
-					<!-- /.box-body -->
-					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="test-type.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
-					</div>
-					<!-- /.box-footer -->
+						</div>
+						<!-- /.box-body -->
+						<div class="box-footer">
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
+							<a href="test-type.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						</div>
+						<!-- /.box-footer -->
 				</form>
 				<!-- /.row -->
 			</div>
@@ -346,6 +358,7 @@ $symptomInfo = $db->query($symQuery);
 
 <script type="text/javascript">
 	tableRowId = 2;
+	testCounter = 1;
 
 	$(document).ready(function() {
 		$('input').tooltip();
@@ -456,16 +469,16 @@ $symptomInfo = $db->query($symQuery);
 		resultType = $("#resultType").val();
 		if (resultType == 'qualitative') {
 			$("#qualitativeDiv").show();
-			$("#quantitativeDiv").hide();
-			$("#qualitativeResult").addClass("isRequired");
+			$(".quantitativeDiv").hide();
+			$(".qualitativeResult").addClass("isRequired");
 			$(".quantitativeResult").removeClass("isRequired");
 			$('.quantitativeResult').each(function() {
 				$(this).val('');
 			});
 		} else {
 			$("#qualitativeDiv").hide();
-			$("#quantitativeDiv").show();
-			$("#qualitativeResult").removeClass("isRequired");
+			$(".quantitativeDiv").show();
+			$(".qualitativeResult").removeClass("isRequired");
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
 		}
@@ -490,6 +503,33 @@ $symptomInfo = $db->query($symQuery);
 			function(data) {
 				$("#fieldId" + rowId).val(data);
 			});
+	}
+
+	function addTestRow() {
+		testCounter++;
+		let rowString = `<tr>
+			<td class="text-center">` + testCounter + `</td>
+			<th>Result</th>
+			<td><input type="text" name="resultConfig[result][]" id="result` + testCounter + `" class="form-control" placeholder="Result" title="Please enter the result ` + testCounter + `" /></td>
+			<th>Result Interpretation</th>
+			<td><input type="text" id="resultInterpretation` + testCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation ` + testCounter + `"></td>
+			<td style="vertical-align:middle;text-align: center;width:100px;">
+				<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+				<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+			</td>
+        </tr>`;
+		$("#qualitativeTable").append(rowString);
+	}
+
+	function removeTestRow(el) {
+		$(el).fadeOut("slow", function() {
+			el.parentNode.removeChild(el);
+			rl = document.getElementById("qualitativeTable").rows.length;
+			if (rl == 0) {
+				testCounter = 0;
+				addTestRow();
+			}
+		});
 	}
 </script>
 
