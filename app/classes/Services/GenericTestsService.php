@@ -440,14 +440,14 @@ class GenericTestsService
     public function getReasonForFailure($option = true, $updatedDateTime = null)
     {
         $result = [];
-        $this->db->where('status', 'active');
+        $this->db->where('test_failure_reason_status', 'active');
         if ($updatedDateTime) {
             $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');
         }
         $results = $this->db->get('r_generic_test_failure_reasons');
         if ($option) {
             foreach ($results as $row) {
-                $result[$row['failure_id']] = $row['failure_reason'];
+                $result[$row['test_failure_reason_id']] = $row['test_failure_reason'];
             }
             return $result;
         } else {

@@ -7,6 +7,12 @@ $sampleTypeInfo = $db->query($stQuery);
 $tQuery = "SELECT * from r_generic_test_reasons where test_reason_status='active'";
 $testReasonInfo = $db->query($tQuery);
 
+$tfQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_status='active'";
+$testFailureReasonInfo = $db->query($tfQuery);
+
+$srQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_status='active'";
+$sampleRejectionReasonInfo = $db->query($srQuery);
+
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
 $symptomInfo = $db->query($symQuery);
 ?>
@@ -120,6 +126,42 @@ $symptomInfo = $db->query($symQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($testFailureReasonInfo as $testFailureReason) {
+											?>
+												<option value="<?php echo $testFailureReason['test_failure_reason_id']; ?>"><?php echo $testFailureReason['test_failure_reason']; ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reason"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($sampleRejectionReasonInfo as $rejectionReason) {
+											?>
+												<option value="<?php echo $rejectionReason['rejection_reason_id']; ?>"><?php echo $rejectionReason['rejection_reason_name']; ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
@@ -147,8 +189,6 @@ $symptomInfo = $db->query($symQuery);
 								</div>
 							</div>
 						</div>
-
-
 						<div class="box-header">
 							<h3 class="box-title "><?php echo _("Form Configuration"); ?></h3>
 						</div>
@@ -315,6 +355,12 @@ $symptomInfo = $db->query($symQuery);
 		});
 		$("#testingReason").select2({
 			placeholder: "<?php echo _("Select Testing Reason"); ?>"
+		});
+		$("#testFailureReason").select2({
+			placeholder: "<?php echo _("Select Test Failure Reason"); ?>"
+		});
+		$("#rejectionReason").select2({
+			placeholder: "<?php echo _("Select Rejection Reason"); ?>"
 		});
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"

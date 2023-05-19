@@ -17,6 +17,8 @@ $tableName = "r_test_types";
 $tableName2 = "generic_test_sample_type_map";
 $tableName3 = "generic_test_reason_map";
 $tableName4 = "generic_test_symptoms_map";
+$tableName5 = "generic_test_failure_reason_map";
+$tableName6 = "generic_sample_rejection_reason_map";
 $testAttribute = [];
 $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
@@ -71,6 +73,24 @@ try {
                 foreach ($_POST['testingReason'] as $val) {
                     $value = array('test_reason_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName3, $value);
+                }
+            }
+
+            if (isset($_POST['testFailureReason']) && !empty($_POST['testFailureReason'])) {
+                $db = $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName5);
+                foreach ($_POST['testFailureReason'] as $val) {
+                    $value = array('test_failure_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName5, $value);
+                }
+            }
+
+            if (isset($_POST['rejectionReason']) && !empty($_POST['rejectionReason'])) {
+                $db = $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName6);
+                foreach ($_POST['rejectionReason'] as $val) {
+                    $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName6, $value);
                 }
             }
 
