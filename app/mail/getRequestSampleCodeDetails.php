@@ -10,15 +10,12 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configResult = $db->rawQuery($configQuery);
-$formId = 0;
-if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
-  $formId = intval($configResult[0]['value']);
-}
-// if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
-//   $_POST['facility'] = [];
-// }
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+$formId = $general->getGlobalConfig('vl_form');
+
 if (!is_array($_POST['batch']) || empty($_POST['batch'])) {
   $_POST['batch'] = [];
 }
@@ -48,8 +45,8 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
   }
 }
 
-$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code 
-        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code
+        FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE sample_code is not null ";
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";

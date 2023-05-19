@@ -10,12 +10,13 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $start_date = '';
 $end_date = '';
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+$country = $general->getGlobalConfig('vl_form');
 if (isset($_POST['batchId']) && trim($_POST['batchId']) != '') {
     $batchId = $_POST['batchId'];
 }

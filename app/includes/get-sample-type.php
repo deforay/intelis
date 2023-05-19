@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -8,21 +9,21 @@ $general = ContainerRegistry::get(CommonService::class);
 if (empty($_POST)) {
     exit(0);
 }
-if(isset($_POST['testTypeId']))
-{
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+if (isset($_POST['testTypeId'])) {
     $testTypeId = $_POST['testTypeId'];
     $sampleTypeList = $general->getSampleType($testTypeId);
-   if (!empty($sampleTypeList)) { ?>
+    if (!empty($sampleTypeList)) { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
         <?php foreach ($sampleTypeList as $sample) { ?>
             <option value="<?php echo $sample['sample_type_id']; ?>" <?php echo (isset($_POST['sampleTypeId']) && !empty($_POST['sampleTypeId']) && $_POST['sampleTypeId'] == $sample['sample_type_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_type_name']; ?></option>
-        <?php } 
+        <?php }
     } else { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
-    <?php } 
-}
-else
-{
+    <?php }
+} else {
     $db = $db->where('facility_id', $_POST['facilityId']);
     $facilityDetails = $db->getOne('facility_details', array('facility_attributes'));
     $facilityAttributes = json_decode($facilityDetails['facility_attributes'], true);
@@ -42,6 +43,6 @@ else
         <?php } ?>
     <?php } else { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
-    <?php } 
+<?php }
 }
 ?>

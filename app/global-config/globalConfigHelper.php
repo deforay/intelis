@@ -29,7 +29,7 @@ try {
 
     //remove instance table data
     if (isset($_POST['removedInstanceLogoImage']) && trim($_POST['removedInstanceLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage'])) {
-        unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage']);
+        unlink(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage']));
         $data = array('instance_facility_logo' => null);
         $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
         $db->update($instanceTableName, $data);

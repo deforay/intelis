@@ -9,12 +9,12 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$configQuery = "SELECT * FROM global_config WHERE name ='hepatitis_form'";
-$configResult = $db->rawQuery($configQuery);
-$formId = 0;
-if (isset($configResult[0]['value']) && trim($configResult[0]['value']) != '') {
-  $formId = intval($configResult[0]['value']);
-}
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+$formId = $general->getGlobalConfig('vl_form');
+
 if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];
 }

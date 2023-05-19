@@ -70,7 +70,6 @@ class DateUtility
     // (with or without time depending on the $includeTime parameter)
     public static function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
     {
-        $date = trim($date);
         if (false === self::verifyIfDateValid($date)) {
             return null;
         } else {
@@ -92,7 +91,6 @@ class DateUtility
     // Returns the given date in Y-m-d format
     public static function isoDateFormat($date, $includeTime = false)
     {
-        $date = trim($date);
         if (false === self::verifyIfDateValid($date)) {
             return null;
         } else {

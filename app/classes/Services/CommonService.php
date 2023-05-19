@@ -96,8 +96,6 @@ class CommonService
         } catch (Exception $e) {
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
-
-        return false;
     }
 
     public function removeDirectory($dirname)

@@ -1,7 +1,19 @@
 <?php
 
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+use App\Utilities\DateUtility;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $importMachineTable = "instrument_machines";
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $configId = base64_decode($_POST['configId']);
 $iQuery = "SELECT config_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";
 $iResult = $db->rawQuery($iQuery);

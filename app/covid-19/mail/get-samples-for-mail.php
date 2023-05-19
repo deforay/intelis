@@ -3,6 +3,9 @@
 use App\Utilities\DateUtility;
 
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];
 }
