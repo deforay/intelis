@@ -467,7 +467,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <!-- <div id="specimenDynamicForm"></div> -->
                                         </div>
                                    </div>
-                                   <div class="box box-primary" id="othersDynamicForm"></div>
+                                   <div id="othersDynamicForm"></div>
                                    <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
@@ -636,7 +636,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            </td>
                                                                       </tr>
                                                                  </tbody>
-                                                                 <tfoot>
+                                                                 <tfoot id="resultSection">
                                                                       <tr>
                                                                            <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                                            <td id="result-sections">
@@ -1608,6 +1608,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }
                          if (data.result.length > 0) {
                               $("#result-sections").html(data.result);
+                         }else{
+                              $('#resultSection').hide()
                          }
                          if (data.specimen.length > 0) {
                               $("#specimenDynamicForm").after(data.specimen);

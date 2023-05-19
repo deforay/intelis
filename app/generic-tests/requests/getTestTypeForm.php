@@ -71,12 +71,12 @@ if ($n > 0) {
             }
             $title = '<div class="box-header with-border"><h3 class="box-title">' . $testAttribute['section_other'][$i] . '</h3></div>';
             $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '<div class="col-xs-3 col-md-3"><div class="form-group"><label>' . $testAttribute['field_name'][$i] . $mandatory . '</label><input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'][$i] . '" id="' . $testAttribute['field_id'][$i] . '" name="dynamicFields[' . $testAttribute['field_id'][$i] . ']" value="' . $value . '" ' . $disabled . '><input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '"></div></div>';
-            $others[$s[trim(strtolower($testAttribute['section_other'][$i]))]] = $title . $content[trim(strtolower($testAttribute['section_other'][$i]))];
+            $others[$s[trim(strtolower($testAttribute['section_other'][$i]))]] = $title . '<div class="box-body"><div class="row">' .$content[trim(strtolower($testAttribute['section_other'][$i]))] .'</div></div>';
         }
     }
     $key = 0;
     foreach($others as $form){
-        $otherForm[$key] = "<div class='row' style='margin-top: 0px; margin-left: -1px;'>" . $form . "</div></div>";
+        $otherForm[$key] = "<div class='box box-primary' style='margin-top: 0px; margin-left: -1px;'>" . $form . "</div></div>";
         $key++;
     }
 }
