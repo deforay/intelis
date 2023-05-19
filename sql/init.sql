@@ -1320,7 +1320,7 @@ CREATE TABLE `form_covid19` (
 -- Triggers `form_covid19`
 --
 DELIMITER $$
-CREATE TRIGGER `form_covid19_data__ai` AFTER INSERT ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_covid19_data__ai` AFTER INSERT ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = NEW.covid19_id
 $$
 DELIMITER ;
@@ -1330,7 +1330,7 @@ CREATE TRIGGER `form_covid19_data__au` AFTER UPDATE ON `form_covid19` FOR EACH R
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_covid19_data__bd` BEFORE DELETE ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_covid19_data__bd` BEFORE DELETE ON `form_covid19` FOR EACH ROW INSERT INTO `audit_form_covid19` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_covid19` AS d WHERE d.covid19_id = OLD.covid19_id
 $$
 DELIMITER ;
@@ -1463,7 +1463,7 @@ CREATE TABLE `form_eid` (
 -- Triggers `form_eid`
 --
 DELIMITER $$
-CREATE TRIGGER `form_eid_data__ai` AFTER INSERT ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_eid_data__ai` AFTER INSERT ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = NEW.eid_id
 $$
 DELIMITER ;
@@ -1473,7 +1473,7 @@ CREATE TRIGGER `form_eid_data__au` AFTER UPDATE ON `form_eid` FOR EACH ROW INSER
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_eid_data__bd` BEFORE DELETE ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_eid_data__bd` BEFORE DELETE ON `form_eid` FOR EACH ROW INSERT INTO `audit_form_eid` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_eid` AS d WHERE d.eid_id = OLD.eid_id
 $$
 DELIMITER ;
@@ -1636,7 +1636,7 @@ CREATE TABLE `form_generic` (
 -- Triggers `form_generic`
 --
 DELIMITER $$
-CREATE TRIGGER `form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id
 $$
 DELIMITER ;
@@ -1646,7 +1646,7 @@ CREATE TRIGGER `form_generic_data__au` AFTER UPDATE ON `form_generic` FOR EACH R
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_generic_data__bd` BEFORE DELETE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_generic_data__bd` BEFORE DELETE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id
 $$
 DELIMITER ;
@@ -1771,7 +1771,7 @@ CREATE TABLE `form_hepatitis` (
 -- Triggers `form_hepatitis`
 --
 DELIMITER $$
-CREATE TRIGGER `form_hepatitis_data__ai` AFTER INSERT ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_hepatitis_data__ai` AFTER INSERT ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = NEW.hepatitis_id
 $$
 DELIMITER ;
@@ -1781,7 +1781,7 @@ CREATE TRIGGER `form_hepatitis_data__au` AFTER UPDATE ON `form_hepatitis` FOR EA
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_hepatitis_data__bd` BEFORE DELETE ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_hepatitis_data__bd` BEFORE DELETE ON `form_hepatitis` FOR EACH ROW INSERT INTO `audit_form_hepatitis` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_hepatitis` AS d WHERE d.hepatitis_id = OLD.hepatitis_id
 $$
 DELIMITER ;
@@ -1885,7 +1885,7 @@ CREATE TABLE `form_tb` (
 -- Triggers `form_tb`
 --
 DELIMITER $$
-CREATE TRIGGER `form_tb_data__ai` AFTER INSERT ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_tb_data__ai` AFTER INSERT ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = NEW.tb_id
 $$
 DELIMITER ;
@@ -1895,7 +1895,7 @@ CREATE TRIGGER `form_tb_data__au` AFTER UPDATE ON `form_tb` FOR EACH ROW INSERT 
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_tb_data__bd` BEFORE DELETE ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_tb_data__bd` BEFORE DELETE ON `form_tb` FOR EACH ROW INSERT INTO `audit_form_tb` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_tb` AS d WHERE d.tb_id = OLD.tb_id
 $$
 DELIMITER ;
@@ -2141,7 +2141,7 @@ CREATE TABLE `form_vl` (
 -- Triggers `form_vl`
 --
 DELIMITER $$
-CREATE TRIGGER `form_vl_data__ai` AFTER INSERT ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'insert', NULL, NOW(), d.* 
+CREATE TRIGGER `form_vl_data__ai` AFTER INSERT ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'insert', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = NEW.vl_sample_id
 $$
 DELIMITER ;
@@ -2151,7 +2151,7 @@ CREATE TRIGGER `form_vl_data__au` AFTER UPDATE ON `form_vl` FOR EACH ROW INSERT 
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_vl_data__bd` BEFORE DELETE ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'delete', NULL, NOW(), d.* 
+CREATE TRIGGER `form_vl_data__bd` BEFORE DELETE ON `form_vl` FOR EACH ROW INSERT INTO `audit_form_vl` SELECT 'delete', NULL, NOW(), d.*
     FROM `form_vl` AS d WHERE d.vl_sample_id = OLD.vl_sample_id
 $$
 DELIMITER ;
@@ -4741,14 +4741,6 @@ CREATE TABLE `user_details` (
   `data_sync` int DEFAULT '0',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user_details`
---
-
-INSERT INTO `user_details` (`user_id`, `user_name`, `interface_user_name`, `email`, `phone_number`, `login_id`, `password`, `role_id`, `user_signature`, `api_token`, `api_token_generated_datetime`, `api_token_exipiration_days`, `force_password_reset`, `status`, `app_access`, `hash_algorithm`, `data_sync`, `updated_datetime`) VALUES
-('b1fb6071-e54a-4020-87dc-59fb9dcb7bac-mxiz', 'API User', NULL, '', '', 'apiuser', '$2y$14$RWFAjGQKBfJAzKESoAJ9TuOyR37e8HlFDyQlV9e44h7xbUrESQXRa', 7, NULL, '3f745ea8c2e8bc97d80f72ef7e35679a', '2023-02-21 17:13:43', NULL, 1, 'active', 'yes', 'phb', 0, '2023-02-21 17:13:43'),
-('daemon', 'Tech Support', NULL, '', '', 'admin', '$2y$14$AbS9zqOBpac6cDeMLjkZOe.PkfxS9WKX7uD8tb2mgBNZhC9wK6fku', 1, NULL, NULL, NULL, NULL, NULL, 'active', 'no', 'phb', 1, '2022-03-17 10:02:47');
 
 -- --------------------------------------------------------
 

@@ -360,16 +360,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										</div>
 									</div>
 									<!--<div class="row">
-					<div class="col-md-7">
-						<div class="form-group">
-						<label for="auto_approval" class="col-lg-4 control-label">Auto Approval </label>
-						<div class="col-lg-8">
-							<input type="radio" class="" id="auto_approval_yes" name="auto_approval" value="yes" < ?php echo($arr['auto_approval'] == 'yes')?'checked':''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
-							<input type="radio" class="" id="auto_approval_no" name="auto_approval" value="no" < ?php echo($arr['auto_approval'] == 'no' || $arr['auto_approval'] == '')?'checked':''; ?>>&nbsp;&nbsp;No
-						</div>
-						</div>
-					</div>
-					</div>-->
+                    <div class="col-md-7">
+                        <div class="form-group">
+                        <label for="auto_approval" class="col-lg-4 control-label">Auto Approval </label>
+                        <div class="col-lg-8">
+                            <input type="radio" class="" id="auto_approval_yes" name="auto_approval" value="yes" < ?php echo($arr['auto_approval'] == 'yes')?'checked':''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
+                            <input type="radio" class="" id="auto_approval_no" name="auto_approval" value="no" < ?php echo($arr['auto_approval'] == 'no' || $arr['auto_approval'] == '')?'checked':''; ?>>&nbsp;&nbsp;No
+                        </div>
+                        </div>
+                    </div>
+                    </div>-->
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">

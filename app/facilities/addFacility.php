@@ -433,26 +433,26 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 									</div>
 								</div>
 								<!-- <div class="col-md-6">
-								<div class="form-group">
-									<label for="stampLogo" class="col-lg-4 control-label">Stamp Image </label>
-									<div class="col-lg-8">
-										<div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
-											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-												
-											</div>
-											<div>
-												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-													<input type="file" id="stampLogo" name="stampLogo" title="Please select stamp image">
-												</span>
-												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-											</div>
-										</div>
-										<div class="box-body">
-											Please make sure logo image size of: <code>80x80</code>
-										</div>
-									</div>
-								</div>
-							</div> -->
+                                <div class="form-group">
+                                    <label for="stampLogo" class="col-lg-4 control-label">Stamp Image </label>
+                                    <div class="col-lg-8">
+                                        <div class="fileinput fileinput-new stampLogo" data-provides="fileinput">
+                                            <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+
+                                            </div>
+                                            <div>
+                                                <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+                                                    <input type="file" id="stampLogo" name="stampLogo" title="Please select stamp image">
+                                                </span>
+                                                <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                            </div>
+                                        </div>
+                                        <div class="box-body">
+                                            Please make sure logo image size of: <code>80x80</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="" class="col-lg-4 control-label"><?php echo _("Header Text"); ?></label>
@@ -752,29 +752,29 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 	function addNewRow() {
 		testCounter++;
 		let rowString = `<tr>
-			<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _("Name"); ?>" title="<?php echo _("Please enter the name"); ?>"></td>
-			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _("Designation"); ?>" title="<?php echo _("Please enter the Designation"); ?>"></td>
-			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _("Please enter the Signature"); ?>"></td>
-			<td style="width:14%;">
-				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _("Choose one test type"); ?>" multiple>
-					<option value="vl"><?php echo _("Viral Load"); ?></option>
-					<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
-					<option value="covid19"><?php echo _("Covid-19"); ?></option>
-					<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
-				</select>
-			</td>
-			<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _("Display Order"); ?>" title="<?php echo _("Please enter the Display Order"); ?>"></td>
-			<td style="width:14%;">
-				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _("Please select the status"); ?>">
-					<option value="active"><?php echo _("Active"); ?></option>
-					<option value="inactive"><?php echo _("Inactive"); ?></option>
-				</select>
-			</td>
-			<td style="vertical-align:middle;text-align: center;width:10%;">
-				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-			</td>
-		</tr>`;
+            <td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _("Name"); ?>" title="<?php echo _("Please enter the name"); ?>"></td>
+            <td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _("Designation"); ?>" title="<?php echo _("Please enter the Designation"); ?>"></td>
+            <td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _("Please enter the Signature"); ?>"></td>
+            <td style="width:14%;">
+                <select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _("Choose one test type"); ?>" multiple>
+                    <option value="vl"><?php echo _("Viral Load"); ?></option>
+                    <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                    <option value="covid19"><?php echo _("Covid-19"); ?></option>
+                    <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+                </select>
+            </td>
+            <td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _("Display Order"); ?>" title="<?php echo _("Please enter the Display Order"); ?>"></td>
+            <td style="width:14%;">
+                <select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _("Please select the status"); ?>">
+                    <option value="active"><?php echo _("Active"); ?></option>
+                    <option value="inactive"><?php echo _("Inactive"); ?></option>
+                </select>
+            </td>
+            <td style="vertical-align:middle;text-align: center;width:10%;">
+                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
 		$("#signDetails").append(rowString);
 
 		$("#testSignType" + testCounter).multipleSelect({

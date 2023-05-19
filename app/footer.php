@@ -176,25 +176,17 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
 		if ($(currentMenuItem).length == 0) {
-			currentMenuItem = $('a[href="' + window.location.pathname + '"]');
-		}
-		$(currentMenuItem).parent().addClass('active');
-		$(currentMenuItem).parents('li.treeview').addClass('active');
-		if ($(currentMenuItem).data('inner-pages')) {
-			let innerPages = $(currentMenuItem).data('inner-pages').split(';');
-			console.log(innerPages);
-			if (innerPages.length > 0) {
-				for (var i = 0; i < innerPages.length; i++) {
-					let fileName = atob(innerPages[i]);
-					if (url.indexOf(fileName) > -1) {
-						$(currentMenuItem).parent().addClass('active');
-						$(currentMenuItem).parents('li.treeview').addClass('active');
-						break;
-					}
-				}
-			}
+			currentMenuItem = $('a[data-inner-pages]').filter(function() {
+				let innerPages = $(this).data('inner-pages');
+				return innerPages.indexOf(btoa(url)) > -1 ||
+					innerPages.indexOf(btoa(window.location.pathname)) > -1;
+			});
 		}
 
+		if ($(currentMenuItem).length != 0) {
+			$(currentMenuItem).parent().addClass('active');
+			$(currentMenuItem).parents('li.treeview').addClass('active');
+		}
 
 
 		<?php if ($_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
@@ -238,8 +230,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				})();
 		<?php } ?>
 
-		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?>
-			alert("<?php echo $_SESSION['alertMsg']; ?>");
+		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert("<?php echo $_SESSION['alertMsg']; ?>");
 		<?php
 			$_SESSION['alertMsg'] = '';
 			unset($_SESSION['alertMsg']);
@@ -250,8 +241,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		// if instance facility name is not set, let us show the modal
 
 		if (empty($_SESSION['instanceFacilityName'])) {
-		?>
-			showModal('/addInstanceDetails.php', 900, 420);
+		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
 		$('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {
