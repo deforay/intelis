@@ -14,20 +14,12 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $whereCondition = '';
-// $configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
-// $configFormResult = $db->rawQuery($configFormQuery);
 
-//$systemType = $general->getSystemConfig('sc_user_type');
-
-// if ($systemType == 'remoteuser') {
-//     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` ORDER BY `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-//     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-//     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-//         $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
-//         $whereCondition = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
-//     }
-//}
 if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }

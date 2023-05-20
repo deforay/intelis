@@ -1,7 +1,18 @@
 <?php
+
+use App\Registries\ContainerRegistry;
+
 $title = "Enter Covid-19 Result";
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+// Sanitize values before using them below
+$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -147,7 +158,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>>Rejected Samples</option>
 							</select>
 						</div><br>
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>Sample Code</th>
@@ -194,14 +205,14 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {

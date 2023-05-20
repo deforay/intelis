@@ -33,16 +33,16 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Selecione --');
 
 //Get selected state
-$stateQuery = "SELECT * from facility_details where facility_id='" . $vlQueryInfo['requesting_facility_id'] . "'";
-$stateResult = $db->query($stateQuery);
+$stateQuery = "SELECT * from facility_details where facility_id= ?";
+$stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['requesting_facility_id']]);
 if (!isset($stateResult[0]['facility_state']) || $stateResult[0]['facility_state'] == '') {
   $stateResult[0]['facility_state'] = '';
 }
 //district details
-$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateResult[0]['facility_state'] . "'";
-$districtResult = $db->query($districtQuery);
-$provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $stateResult[0]['facility_state'] . "'";
-$provinceResult = $db->query($provinceQuery);
+$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state= ?";
+$districtResult = $db->rawQuery($districtQuery, [$stateResult[0]['facility_state']]);
+$provinceQuery = "SELECT * from geographical_divisions where geo_name= ?";
+$provinceResult = $db->rawQuery($provinceQuery, [$stateResult[0]['facility_state']]);
 if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == '') {
   $provinceResult[0]['geo_code'] = '';
 }

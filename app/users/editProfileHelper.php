@@ -10,8 +10,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
+/** @var UsersService $userModel */
 $userModel = ContainerRegistry::get(UsersService::class);
+
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+
 $tableName = "user_details";
 $upId = 0;
 
