@@ -242,7 +242,7 @@ class VlService
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null)
     {
-        $finalResult = $vlResult = trim($result);
+        $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
         $vlResult = strtolower($vlResult);
         $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
         $vlResult = str_replace('-', '', $vlResult);
@@ -264,7 +264,9 @@ class VlService
     {
 
         // If result is blank, then return null
-        if (empty(trim($result))) return null;
+        if (empty(trim($result))) {
+            return null;
+        }
 
         // If result is numeric, then return it as is
         if (is_numeric($result)) {

@@ -802,4 +802,44 @@ class CommonService
         $sampleTypeQry = "SELECT * FROM r_generic_sample_types as st INNER JOIN generic_test_sample_type_map as map ON map.sample_type_id=st.sample_type_id WHERE map.test_type_id=$testTypeId AND st.sample_type_status='active'";
         return $this->db->query($sampleTypeQry);
     }
+
+    /**
+     * Convert a JSON string to a string that can be used with JSON_SET()
+     *
+     * @param string $json The JSON string to convert
+     * @param string $column The name of the JSON column
+     * @param array $newData An optional array of new key-value pairs to add to the JSON
+     * @return string The string that can be used with JSON_SET()
+     */
+    public function jsonToSetString($json, $column, $newData = [])
+    {
+        $data = json_decode($json, true);
+        $setString = '';
+
+        foreach ($data as $key => $value) {
+            if (is_null($value)) {
+                $setString .= ', "$.' . $key . '", null';
+            } elseif (is_bool($value)) {
+                $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
+            } elseif (is_numeric($value)) {
+                $setString .= ', "$.' . $key . '", ' . $value;
+            } else {
+                $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
+            }
+        }
+
+        foreach ($newData as $key => $value) {
+            if (is_null($value)) {
+                $setString .= ', "$.' . $key . '", null';
+            } elseif (is_bool($value)) {
+                $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
+            } elseif (is_numeric($value)) {
+                $setString .= ', "$.' . $key . '", ' . $value;
+            } else {
+                $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
+            }
+        }
+
+        return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
+    }
 }

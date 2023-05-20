@@ -80,25 +80,45 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             unset($lab['reason_for_sample_rejection']);
         }
 
-        // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
-        if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-            $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_tb WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
-        } else if (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-            $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_tb WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
-        } else {
-            $sampleCodes[] = $lab['sample_code'];
-            $facilityIds[] = $lab['facility_id'];
+        try {
+            // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+            if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
+                $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key
+                            FROM form_tb WHERE remote_sample_code=?";
+                $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+            } else if (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+                $sQuery = "SELECT tb_id,sample_code,remote_sample_code,remote_sample_code_key
+                                FROM form_tb WHERE sample_code=? AND facility_id = ?";
+                $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+            } else {
+                $sampleCodes[] = $lab['sample_code'];
+                $facilityIds[] = $lab['facility_id'];
+                continue;
+            }
+
+            if (!empty($sResult)) {
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = $db->func($formAttributes);
+                $db = $db->where('tb_id', $sResult[0]['tb_id']);
+                $db->update('form_tb', $lab);
+                $id = $sResult[0]['tb_id'];
+            } else {
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = $db->func($formAttributes);
+                $db->insert('form_tb', $lab);
+                $id = $db->getInsertId();
+            }
+        } catch (Exception $e) {
+            error_log($db->getLastError());
+            error_log($e->getMessage());
+            error_log($e->getTraceAsString());
             continue;
-        }
-        //$lab['source_of_request'] = 'vlsts';
-        $sResult = $db->rawQuery($sQuery);
-        if ($sResult) {
-            $db = $db->where('tb_id', $sResult[0]['tb_id']);
-            $db->update('form_tb', $lab);
-            $id = $sResult[0]['tb_id'];
-        } else {
-            $db->insert('form_tb', $lab);
-            $id = $db->getInsertId();
         }
 
         if ($id > 0 && isset($lab['sample_code'])) {

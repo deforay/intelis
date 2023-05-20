@@ -18,15 +18,11 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
-
-//$dateUtils = new \vlsm\Utilities\DateUtility();
 
 $systemConfig = SYSTEM_CONFIG;
 
@@ -137,19 +133,11 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 }
             }
 
-            //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //check wheather sample code empty or not
-            // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT vl_sample_id FROM form_vl WHERE sample_code='" . $request['sample_code'] . "'";
-            //     $sResult = $db->rawQuery($sQuery);
-            //     $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
-            //     $id = $db->update('form_vl', $request);
-            // } else {
-            //check exist remote
-            $exsvlQuery = "SELECT vl_sample_id,sample_code FROM form_vl AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
-            $exsvlResult = $db->query($exsvlQuery);
+            $exsvlQuery = "SELECT vl_sample_id, sample_code
+                            FROM form_vl AS vl WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
             if (!empty($exsvlResult)) {
 
                 $removeMoreKeys = array(
@@ -195,33 +183,32 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
+
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
-                if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    // $request['request_created_by'] = 0;
-                    // $request['last_modified_by'] = 0;
-                    // $request['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
+                if (!empty($request['sample_collection_date'])) {
+
                     $request['source_of_request'] = "vlsts";
-                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
-                        $formAttributes = json_decode($request['form_attributes'], true);
-                        $formAttributes['syncTransactionId'] = $transactionId;
-                    } else {
-                        $formAttributes = array('syncTransactionId' => $transactionId);
-                    }
-                    $request['form_attributes'] = json_encode($formAttributes);
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
-                    /* echo "<pre>";
-                        print_r($request);
-                        die; */
                     $id = $db->insert('form_vl', $request);
                 }
             }
-            //}
         }
-
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
     }
 }
@@ -310,16 +297,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //check whether sample code empty or not
-            // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code='" . $request['sample_code'] . "'";
-            //     $sResult = $db->rawQuery($sQuery);
-            //     $db = $db->where('eid_id', $sResult[0]['eid_id']);
-            //     $id = $db->update('form_eid', $request);
-            // } else {
-            //check exist remote
-            $exsvlQuery = "SELECT eid_id,sample_code FROM form_eid AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
-            $exsvlResult = $db->query($exsvlQuery);
+            $exsvlQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
+                            WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
             if ($exsvlResult) {
 
                 $removeMoreKeys = array(
@@ -355,29 +335,30 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
-                if ($request['sample_collection_date'] != '' && $request['sample_collection_date'] != null && $request['sample_collection_date'] != '0000-00-00 00:00:00') {
+                if (!empty($request['sample_collection_date'])) {
 
-                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
-                        $formAttributes = json_decode($request['form_attributes'], true);
-                        $formAttributes['syncTransactionId'] = $transactionId;
-                    } else {
-                        $formAttributes = array('syncTransactionId' => $transactionId);
-                    }
-
-                    $request['form_attributes'] = json_encode($formAttributes);
-                    // $request['request_created_by'] = 0;
-                    // $request['last_modified_by'] = 0;
-                    // $request['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
-                    //$request['result_status'] = 6;
-                    $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
+
                     $id = $db->insert('form_eid', $request);
                 }
             }
-            //}
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $json_data, $jsonResponse, 'json', $labId);
@@ -468,17 +449,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //check whether sample code empty or not
-            // if ($request['sample_code'] != '' && $request['sample_code'] != 0 && $request['sample_code'] != null) {
-            //     $sQuery = "SELECT eid_id FROM form_eid WHERE sample_code='" . $request['sample_code'] . "'";
-            //     $sResult = $db->rawQuery($sQuery);
-            //     $db = $db->where('eid_id', $sResult[0]['eid_id']);
-            //     $id = $db->update('form_eid', $request);
-            // } else {
             //check exist remote
-            $exsvlQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
-
-            $exsvlResult = $db->query($exsvlQuery);
+            $exsvlQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
+                                WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
             if ($exsvlResult) {
 
                 $removeMoreKeys = array(
@@ -518,25 +492,27 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
+
                 $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
                 $db->update('form_covid19', $request);
                 $id = $exsvlResult[0]['covid19_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    // $request['request_created_by'] = 0;
-                    // $request['last_modified_by'] = 0;
-                    // $request['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
-                    //$request['result_status'] = 6;
-                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
-                        $formAttributes = json_decode($request['form_attributes'], true);
-                        $formAttributes['syncTransactionId'] = $transactionId;
-                    } else {
-                        $formAttributes = array('syncTransactionId' => $transactionId);
-                    }
-
-                    $request['form_attributes'] = json_encode($formAttributes);
-                    $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
                     $db->insert('form_covid19', $request);
                     $id = $db->getInsertId();
                 }
@@ -688,9 +664,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             //check exist remote
-            $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
-
-            $exsvlResult = $db->query($exsvlQuery);
+            $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
+                WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
             if ($exsvlResult) {
 
                 $removeMoreKeys = array(
@@ -730,26 +706,27 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
+
                 $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
                 $id = $exsvlResult[0]['hepatitis_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    // $request['request_created_by'] = 0;
-                    // $request['last_modified_by'] = 0;
-                    // $request['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
-                    //$request['result_status'] = 6;
-                    $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['source_of_request'] = "vlsts";
-
-                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
-                        $formAttributes = json_decode($request['form_attributes'], true);
-                        $formAttributes['syncTransactionId'] = $transactionId;
-                    } else {
-                        $formAttributes = array('syncTransactionId' => $transactionId);
-                    }
-
-                    $request['form_attributes'] = json_encode($formAttributes);
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
 
                     $db->insert('form_hepatitis', $request);
                     $id = $db->getInsertId();
@@ -890,9 +867,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             //check exist remote
-            $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl WHERE remote_sample_code='" . $request['remote_sample_code'] . "'";
-
-            $exsvlResult = $db->query($exsvlQuery);
+            $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
+                            WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
             if ($exsvlResult) {
 
                 $removeMoreKeys = array(
@@ -932,26 +909,27 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
                 $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
                 $db->update('form_tb', $request);
                 $id = $exsvlResult[0]['tb_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
-                    // $request['request_created_by'] = 0;
-                    // $request['last_modified_by'] = 0;
-                    // $request['request_created_datetime'] = \App\Utilities\DateUtility::getCurrentDateTime();
-                    //$request['result_status'] = 6;
-                    $request['data_sync'] = 0; //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+
                     $request['source_of_request'] = "vlsts";
-
-                    if (isset($request['form_attributes']) && !empty($request['form_attributes'])) {
-                        $formAttributes = json_decode($request['form_attributes'], true);
-                        $formAttributes['syncTransactionId'] = $transactionId;
-                    } else {
-                        $formAttributes = array('syncTransactionId' => $transactionId);
-                    }
-                    $request['form_attributes'] = json_encode($formAttributes);
-
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
 
                     $db->insert('form_tb', $request);
                     $id = $db->getInsertId();

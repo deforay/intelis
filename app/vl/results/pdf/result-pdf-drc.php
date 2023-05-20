@@ -25,9 +25,9 @@ class DRC_PDF extends MYPDF
 		if (trim($this->logo) != '') {
 			if ($this->imageExists($this->logo)) {
 				$imageFilePath = $this->logo;
-			} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
+			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
 				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
-			} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 			}
 			if (!empty($imageFilePath)) {
@@ -77,7 +77,7 @@ if (!empty($requestResult)) {
 	$page = 1;
 	foreach ($requestResult as $result) {
 
-		$signQuery = "SELECT * FROM lab_report_signatories where lab_id=? AND test_types like '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signQuery = "SELECT * FROM lab_report_signatories WHERE lab_id=? AND test_types LIKE '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
 		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 
 		$_SESSION['aliasPage'] = $page;
@@ -230,72 +230,21 @@ if (!empty($requestResult)) {
 		if (!empty($userRes['user_signature'])) {
 			$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
 		}
-		$vlResult = '';
+
 		$smileyContent = '';
 		$showMessage = '';
 		$tndMessage = '';
-		$messageTextSize = '12px';
-		if ($result['result'] != null && trim($result['result']) != '') {
-			$resultType = is_numeric($result['result']);
-			if (in_array(strtolower(trim($result['result'])), array("< 20", "< 40", "< 800", "< 400", "tnd", "target not detected", "not detected", "below detection level"))) {
-				$vlResult = 'TND*';
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-				$showMessage = ($arr['l_vl_msg']);
-				$tndMessage = 'TND* - Target not Detected';
-			} else if (in_array(strtolower(trim($result['result'])), array("failed", "fail", "no_sample", "invalid"))) {
-				$vlResult = $result['result'];
-				$smileyContent = '';
-				$showMessage = '';
-				$messageTextSize = '14px';
-			} else if (trim($result['result']) > 1000 && $result['result'] <= 10000000) {
-				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-				$showMessage = ($arr['h_vl_msg']);
-				$messageTextSize = '15px';
-			} else if (trim($result['result']) <= 1000 && $result['result'] >= 20) {
-				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-				$showMessage = ($arr['l_vl_msg']);
-			} else if (trim($result['result'] > 10000000) && $resultType) {
-				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-				//$showMessage = 'Value outside machine detection limit';
-			} else if (trim($result['result'] < 20) && $resultType) {
-				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-				//$showMessage = 'Value outside machine detection limit';
-			} else if (trim($result['result']) == '<20') {
-				$vlResult = '&lt;20';
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-				$showMessage = ($arr['l_vl_msg']);
-			} else if (trim($result['result']) == '>10000000') {
-				$vlResult = $result['result'];
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-				$showMessage = ($arr['h_vl_msg']);
-			} else if ($result['vl_test_platform'] == 'Roche') {
-				$chkSign = '';
-				$smileyShow = '';
-				$chkSign = strchr($result['result'], '>');
-				if ($chkSign != '') {
-					$smileyShow = str_replace(">", "", $result['result']);
-					$vlResult = $result['result'];
-					//$showMessage = 'Invalid value';
-				}
-			}
+		$messageTextSize = '15px';
+		$vlResult = $result['result'];
 
-			$chkSign = '';
-			$chkSign = strchr($result['result'], '<');
-			if ($chkSign != '') {
-				$smileyShow = str_replace("<", "", $result['result']);
-				$vlResult = str_replace("<", "&lt;", $result['result']);
-				//$showMessage = 'Invalid value';
-			}
-			if (isset($smileyShow) && $smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-			} else if (isset($smileyShow) && $smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-				$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-			}
+		if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
+			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+			$showMessage = ($arr['l_vl_msg']);
+		} elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
+			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
+			$showMessage = ($arr['h_vl_msg']);
 		}
+
 		if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
 			$smileyContent = '';
 		}
@@ -318,19 +267,6 @@ if (!empty($requestResult)) {
 		$html .= '<tr>';
 		$html .= '<td colspan="3" style="line-height:10px;"></td>';
 		$html .= '</tr>';
-		//$html .='<tr>';
-		// $html .='<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Pr�nom du patient</td>';
-		// $html .='<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Nom de famille du patient</td>';
-		// $html .='<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Mobile No.</td>';
-		//$html .='</tr>';
-		//$html .='<tr>';
-		//  $html .='<td style="line-height:11px;font-size:11px;text-align:left;">'.($result['patient_first_name']).'</td>';
-		//  $html .='<td style="line-height:11px;font-size:11px;text-align:left;">'.($result['patient_last_name']).'</td>';
-		//  $html .='<td style="line-height:11px;font-size:11px;text-align:left;">'.$result['patient_mobile_number'].'</td>';
-		//$html .='</tr>';
-		//$html .='<tr>';
-		//$html .='<td colspan="3" style="line-height:10px;"></td>';
-		//$html .='</tr>';
 		$html .= '<tr>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Âge</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Sexe</td>';
@@ -412,14 +348,15 @@ if (!empty($requestResult)) {
 		$html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
 		$html .= '</tr>';
 		$logValue = '<br/>';
-		if ($result['result_value_log'] != '') {
-			$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
+		if ($result['result'] == "< 40" || $result['result'] == "<40") {
+			$logValue = '1.60';
+		} elseif ($result['result_value_log'] != '') {
+			$logResult = $result['result_value_log'];
 		} else {
-			$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;0.0';
+			$logResult = '0.0';
 		}
-		if ($result['result'] == "< 40") {
-			$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;1.60';
-		}
+
+		$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
 		$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . $logValue . '</td></tr>';
 		$html .= '<tr><td colspan="3"></td></tr>';
 		$html .= '</table>';
@@ -539,7 +476,7 @@ if (!empty($requestResult)) {
 			if ($draftTextShow) {
 				//Watermark section
 				$watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+				$watermark->setFullPathToFile($filename);
 				$fullPathToFile = $filename;
 				$watermark->Output($filename, "F");
 			}

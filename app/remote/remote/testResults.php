@@ -106,28 +106,36 @@ try {
                 unset($lab['reason_for_sample_rejection']);
             }
 
-            // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
-            if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-                //error_log("INSIDE REMOTE");
-                $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                FROM form_vl
-                WHERE remote_sample_code= ?";
-                $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
-                $sResult = $db->rawQuery($sQuery);
-            } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
-                //error_log("INSIDE LOCAL");
-                $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
-                FROM form_vl
-                WHERE sample_code=? AND facility_id = ?";
-                $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
-            }
+
 
             try {
-                $sResult = $db->rawQuery($sQuery);
-                if ($sResult) {
+                // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+                if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
+                    //error_log("INSIDE REMOTE");
+                    $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
+                                FROM form_vl WHERE remote_sample_code= ?";
+                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+                } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
+                    //error_log("INSIDE LOCAL");
+                    $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
+                                FROM form_vl WHERE sample_code=? AND facility_id = ?";
+                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                }
+
+                if (!empty($sResult)) {
+                    $formAttributes = $general->jsonToSetString(
+                        $lab['form_attributes'],
+                        'form_attributes'
+                    );
+                    $lab['form_attributes'] = $db->func($formAttributes);
                     $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
                     $id = $db->update('form_vl', $lab);
                 } else {
+                    $formAttributes = $general->jsonToSetString(
+                        $lab['form_attributes'],
+                        'form_attributes'
+                    );
+                    $lab['form_attributes'] = $db->func($formAttributes);
                     $id = $db->insert('form_vl', $lab);
                 }
             } catch (Exception $e) {
@@ -145,7 +153,6 @@ try {
     }
 
     $payload = json_encode($sampleCodes);
-
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 

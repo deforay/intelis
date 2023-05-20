@@ -109,23 +109,43 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             unset($lab['reason_for_sample_rejection']);
         }
 
-        // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
-        if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
-            $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_covid19 WHERE remote_sample_code='" . $lab['remote_sample_code'] . "'";
-        } else if (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
-            $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key FROM form_covid19 WHERE sample_code='" . $lab['sample_code'] . "' AND facility_id = " . $lab['facility_id'];
-        } else {
-            $sampleCodes[] = $lab['sample_code'];
-            $facilityIds[] = $lab['facility_id'];
+        try {
+            // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+            if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
+                $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key
+                            FROM form_covid19 WHERE remote_sample_code= ?";
+                $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+            } elseif (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+                $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key
+                            FROM form_covid19 WHERE sample_code= ? AND facility_id = ?";
+                $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+            } else {
+                $sampleCodes[] = $lab['sample_code'];
+                $facilityIds[] = $lab['facility_id'];
+                continue;
+            }
+
+            if (!empty($sResult)) {
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = $db->func($formAttributes);
+                $db = $db->where('covid19_id', $sResult[0]['covid19_id']);
+                $id = $db->update('form_covid19', $lab);
+            } else {
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = $db->func($formAttributes);
+                $id = $db->insert('form_covid19', $lab);
+            }
+        } catch (Exception $e) {
+            error_log($db->getLastError());
+            error_log($e->getMessage());
+            error_log($e->getTraceAsString());
             continue;
-        }
-        //$lab['source_of_request'] = 'vlsts';
-        $sResult = $db->rawQuery($sQuery);
-        if ($sResult) {
-            $db = $db->where('covid19_id', $sResult[0]['covid19_id']);
-            $id = $db->update('form_covid19', $lab);
-        } else {
-            $id = $db->insert('form_covid19', $lab);
         }
 
         if ($id > 0 && isset($lab['sample_code'])) {
@@ -133,31 +153,6 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             $facilityIds[] = $lab['facility_id'];
         }
     }
-
-    // foreach ($symptomsData as $covid19Id => $symptoms) {
-    //     $db = $db->where('covid19_id', $covid19Id);
-    //     $db->delete("covid19_patient_symptoms");
-    //     foreach ($symptoms as $symId => $symValue) {
-    //         $db->insert("covid19_patient_symptoms", array(
-    //             "covid19_id"        => $symValue['covid19_id'],
-    //             "symptom_id"        => $symValue['symptom_id'],
-    //             "symptom_detected"  => $symValue['symptom_detected']
-    //         ));
-    //     }
-    // }
-
-    // foreach ($comorbiditiesData as $covid19Id => $comorbidities) {
-    //     $db = $db->where('covid19_id', $covid19Id);
-    //     $db->delete("covid19_patient_comorbidities");
-
-    //     foreach ($comorbidities as $comorbiditiesId => $comorbiditiesValue) {
-    //         $db->insert("covid19_patient_comorbidities", array(
-    //             "covid19_id"            => $comorbiditiesValue['covid19_id'],
-    //             "comorbidity_id"        => $comorbiditiesValue['comorbidity_id'],
-    //             "comorbidity_detected"  => $comorbiditiesValue['comorbidity_detected']
-    //         ));
-    //     }
-    // }
 
     foreach ($testResultsData as $covid19Id => $testResults) {
         $db = $db->where('covid19_id', $covid19Id);
