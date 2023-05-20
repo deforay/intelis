@@ -343,9 +343,9 @@ foreach ($testSymptomsMapInfo as $val) {
 												foreach ($testResultAttribute['result'] as $key => $row) { ?>
 													<tr>
 														<td class="text-center">1</td>
-														<th>Result<span class="mandatory">*</span></th>
+														<th scope="row">Result<span class="mandatory">*</span></th>
 														<td><input type="text" name="resultConfig[result][]" value="<?php echo $row; ?>" id="result<?php echo $key; ?>" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
-														<th>Result Interpretation<span class="mandatory">*</span></th>
+														<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
 														<td><input type="text" id="resultInterpretation<?php echo $key; ?>" value="<?php echo $testResultAttribute['result_interpretation'][$key]; ?>" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 														<td style="vertical-align:middle;text-align: center;width:100px;">
 															<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -356,9 +356,9 @@ foreach ($testSymptomsMapInfo as $val) {
 											} else { ?>
 												<tr>
 													<td class="text-center">1</td>
-													<th>Result<span class="mandatory">*</span></th>
+													<th scope="row">Result<span class="mandatory">*</span></th>
 													<td><input type="text" name="resultConfig[result][]" value="<?php echo $row; ?>" id="result1" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
-													<th>Result Interpretation<span class="mandatory">*</span></th>
+													<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
 													<td><input type="text" id="resultInterpretation1" value="<?php echo $testResultAttribute['result_interpretation'][$key]; ?>" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 													<td style="vertical-align:middle;text-align: center;width:100px;">
 														<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -452,7 +452,7 @@ foreach ($testSymptomsMapInfo as $val) {
 <script type="text/javascript">
 	tableRowId = <?php echo $n + 1; ?>;
 	testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 1; ?>;
-	
+
 
 	$(document).ready(function() {
 		$('input').tooltip();

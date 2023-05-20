@@ -266,9 +266,9 @@ $symptomInfo = $db->query($symQuery);
 										<tbody id="qualitativeTable">
 											<tr>
 												<td class="text-center">1</td>
-												<th>Result<span class="mandatory">*</span></th>
+												<th scope="row">Result<span class="mandatory">*</span></th>
 												<td><input type="text" name="resultConfig[result][]" id="result1" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
-												<th>Result Interpretation<span class="mandatory">*</span></th>
+												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
 												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 												<td style="vertical-align:middle;text-align: center;width:100px;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;

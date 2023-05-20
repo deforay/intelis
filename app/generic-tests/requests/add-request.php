@@ -540,7 +540,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                 } ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                      if ($_SESSION['instanceType'] != 'vluser') {  ?>
                                                                            <option value="other">Other (Please Specify) </option>
                                                                       <?php } ?>
                                                                  </select>
@@ -737,7 +737,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
           <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
           <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
-          </form>
+          </section>
 </div>
 </div>
 </section>

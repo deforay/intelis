@@ -10,10 +10,10 @@ use App\Registries\ContainerRegistry;
 $_POST = array_map('htmlspecialchars', $_POST);
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
+$general = ContainerRegistry::get(CommonService::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];

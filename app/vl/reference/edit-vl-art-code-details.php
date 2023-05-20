@@ -3,6 +3,10 @@
 
 require_once APPLICATION_PATH . '/header.php';
 
+/** @var MysqliDb $db */
+$db = \App\Registries\ContainerRegistry::get('db');
+
+$general = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
 
 // Sanitize values before using them below
 $_GET = array_map('htmlspecialchars', $_GET);
@@ -13,7 +17,7 @@ $result = $db->rawQuery($artQ, [$artId]);
 $artResult = $result[0];
 $artParent = [];
 $artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0 AND art_id != ?";
-$artInfo = $db->rawQuery($artQuery,[$artId);
+$artInfo = $db->rawQuery($artQuery,[$artId]);
 foreach ($artInfo as $art) {
 	$artParent[$art['art_id']] = $art['art_code'];
 }
