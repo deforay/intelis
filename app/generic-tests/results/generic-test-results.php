@@ -19,6 +19,10 @@ $generic = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+// Sanitize values before using them below
+$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

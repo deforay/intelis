@@ -8,6 +8,10 @@ use App\Services\TbService;
 use App\Services\VlService;
 
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+
 /* Selected Sample Types from Facility Edit */
 
 $selectedSamplesTypes = [];
