@@ -5,15 +5,15 @@ use App\Services\CommonService;
 use GuzzleHttp\Client;
 
 try {
-    
-      
+
+
 
 
     /** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+    $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
     // Define path to guzzle directory
     /** Zend_Application */
     // require_once APPLICATION_PATH.'/includes/Zend/Application.php';

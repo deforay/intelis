@@ -166,7 +166,7 @@ try {
 	}
 
 	// echo "<pre>";print_r($hepatitisData);die;
-	// For Save Comorbidity 
+	// For Save Comorbidity
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {
 
 		$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
@@ -181,7 +181,7 @@ try {
 				$db->insert("hepatitis_patient_comorbidities", $comorbidityData);
 			}
 		}
-		// For Save Risk factors 
+		// For Save Risk factors
 		$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 		$db->delete("hepatitis_risk_factors");
 		if (isset($_POST['riskFactors']) && !empty($_POST['riskFactors'])) {

@@ -315,7 +315,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
-                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;"/>
+                                            <input type="text" name="reasonForRepeatPcrOther" id="reasonForRepeatPcrOther" placeholder="Reason For Repeat PCR" class="form-control reasonForRepeatPcrOther" style="display:none; margin-top:12px;" />
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>
@@ -506,8 +506,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     facilityName = true;
     machineName = true;
 
-    function checkPCRTestReason()
-    {
+    function checkPCRTestReason() {
         var otherReason = $("#pcrTestReason").val();
         if (otherReason == 'Other') {
             $(".reasonForRepeatPcrOther").show();
@@ -566,9 +565,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $("#caretakerPhoneNumber").val(patientArray['caretaker_no']);
         $("#caretakerAddress").text(patientArray['caretaker_address']);
 
-       /* setTimeout(function() {
-            $("#patientDistrict").val(patientArray[15]).trigger('change');
-        }, 3000);*/
+        /* setTimeout(function() {
+             $("#patientDistrict").val(patientArray[15]).trigger('change');
+         }, 3000);*/
     }
 
     function sampleCodeGeneration() {
@@ -700,18 +699,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "Today");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
-			}
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "Today");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

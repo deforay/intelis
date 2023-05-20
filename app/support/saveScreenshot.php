@@ -15,8 +15,11 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
-	// File upload folder 
+	// File upload folder
 	$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "support";
 	if (isset($_POST['image']) && trim($_POST['image']) != "" && trim($_POST['supportId']) != "") {
 		$supportId = base64_decode($_POST['supportId']);
@@ -24,7 +27,7 @@ try {
 		// if (!file_exists($uploadDir) && !is_dir($uploadDir)) {
 		// 	mkdir($uploadDir, 0777, true);
 		// }
-		
+
 		if (
 			!file_exists($uploadDir . DIRECTORY_SEPARATOR . $supportId)
 			&& !is_dir($uploadDir . DIRECTORY_SEPARATOR . $supportId)
@@ -146,7 +149,7 @@ try {
 			}
 		}
 	}
-	// Return response 
+	// Return response
 	echo json_encode($response);
 } catch (Exception $exc) {
 	error_log($exc->getMessage());

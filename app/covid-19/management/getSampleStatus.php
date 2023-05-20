@@ -87,10 +87,10 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
         $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
-$tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name 
-                FROM form_covid19 as vl 
-                JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                JOIN facility_details as f ON vl.lab_id=f.facility_id 
+$tQuery = "SELECT COUNT(covid19_id) as total,status_id,status_name
+                FROM form_covid19 as vl
+                JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                JOIN facility_details as f ON vl.lab_id=f.facility_id
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
@@ -137,8 +137,8 @@ $vlSuppressionQuery = "SELECT   COUNT(covid19_id) as total,
                 ELSE 0
             END)) AS rejectedResult,
     status_id,
-    status_name 
-    
+    status_name
+
     FROM form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
@@ -173,7 +173,7 @@ if ($start_date == '' && $end_date == '') {
     $start_date = date('Y-m-d', $date);
     $end_date = date('Y-m-d');
 }
-$tatSampleQuery = "SELECT 
+$tatSampleQuery = "SELECT
    'vl.result_status', count(*) as 'totalSamples',
     DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
@@ -183,12 +183,12 @@ $tatSampleQuery = "SELECT
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_dispatched_datetime,vl.sample_received_at_vl_lab_datetime))) AS DECIMAL (10,2)) as AvgDispatchResult
 
-    FROM form_covid19 as vl 
-    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-    JOIN facility_details as f ON vl.lab_id=f.facility_id 
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-    
-    WHERE 
+    FROM form_covid19 as vl
+    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+    JOIN facility_details as f ON vl.lab_id=f.facility_id
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+
+    WHERE
     vl.result is not null
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
@@ -229,10 +229,10 @@ foreach ($tatResult as $sRow) {
 $sWhere = [];
 if (!empty(trim($whereCondition)))
     $sWhere[] = $whereCondition;
-$testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name 
-                    from form_covid19 as vl 
-                    INNER JOIN r_covid19_test_reasons as tr ON vl.reason_for_covid19_test = tr.test_reason_id 
-                    JOIN facility_details as f ON vl.facility_id=f.facility_id 
+$testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
+                    from form_covid19 as vl
+                    INNER JOIN r_covid19_test_reasons as tr ON vl.reason_for_covid19_test = tr.test_reason_id
+                    JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = ' vl.reason_for_covid19_test IS NOT NULL ';

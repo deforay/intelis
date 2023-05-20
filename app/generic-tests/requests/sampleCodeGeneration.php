@@ -24,7 +24,7 @@ if (isset($_POST['sampleCollectionDate'])) {
 } elseif (isset($_POST['sDate'])) {
   $sampleCollectionDate = $_POST['sDate'];
 }
-if(isset($_POST['testType']) && !empty($_POST['testType'])){
+if (isset($_POST['testType']) && !empty($_POST['testType'])) {
   $testType = $_POST['testType'];
 }
 

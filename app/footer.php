@@ -11,6 +11,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 
+
+
 ?>
 
 <footer class="main-footer">
@@ -18,7 +20,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 	<small>This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<?php if (!empty($supportEmail)) { ?>
-		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>', 900, 520);">Support</a></small>
+		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
 	<?php } ?>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;<?php echo "v" . VERSION; ?></small>
 	<?php

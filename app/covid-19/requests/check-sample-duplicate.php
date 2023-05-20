@@ -15,6 +15,10 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $systemType = $general->getSystemConfig('sc_user_type');
 
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
 $value = trim($_POST['value']);

@@ -20,24 +20,24 @@ $testFailureReasonId = (int) base64_decode($_POST['testFailureReasonId']);
 $_POST['testFailureReason'] = trim($_POST['testFailureReason']);
 try {
     if (!empty($_POST['testFailureReason'])) {
-       
+
         $data = array(
             'test_failure_reason' => $_POST['testFailureReason'],
             'test_failure_reason_code' => trim($_POST['testFailureReasonCode']),
             'test_failure_reason_status' => $_POST['testFailureReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        if(isset($testFailureReasonId) && !empty($testFailureReasonId)){
+        if (isset($testFailureReasonId) && !empty($testFailureReasonId)) {
             $db = $db->where('test_failure_reason_id', $testFailureReasonId);
             $lastId = $db->update($tableName, $data);
-            if($lastId > 0){
+            if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _("Test Failure reason updated successfully");
                 $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' updated new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
             }
-        }else{
+        } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
-            if($lastId > 0){
+            if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _("Test Failure reason added successfully");
                 $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' added new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
             }

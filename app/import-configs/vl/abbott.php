@@ -2,6 +2,7 @@
 
 // File included in addImportResultHelper.php
 
+use App\Exceptions\SystemException;
 use App\Helpers\ResultsHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
@@ -29,7 +30,14 @@ try {
     $allowedExtensions = array(
         'txt',
     );
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;

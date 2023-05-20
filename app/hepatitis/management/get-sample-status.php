@@ -77,10 +77,10 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
         $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
-$tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name 
-                FROM form_hepatitis as vl 
-                JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                JOIN facility_details as f ON vl.facility_id=f.facility_id 
+$tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name
+                FROM form_hepatitis as vl
+                JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                JOIN facility_details as f ON vl.facility_id=f.facility_id
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 //filter
@@ -136,8 +136,8 @@ $vlSuppressionQuery = "SELECT   COUNT(hepatitis_id) as total,
                                             ELSE 0
                                         END)) AS hbvnegativeResult,
                                 status_id,
-                                status_name 
-                                
+                                status_name
+
                                 FROM form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 $sWhere[] = " (vl.hcv_vl_result!='' and vl.hcv_vl_result is not null) ";
@@ -171,7 +171,7 @@ if ($start_date == '' && $end_date == '') {
     $start_date = date('Y-m-d', $date);
     $end_date = date('Y-m-d');
 }
-$tatSampleQuery = "SELECT 
+$tatSampleQuery = "SELECT
         count(*) as 'totalSamples',
                         DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
@@ -180,12 +180,12 @@ $tatSampleQuery = "SELECT
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
                         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
-                        from form_hepatitis as vl 
-                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        JOIN facility_details as f ON vl.lab_id=f.facility_id 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        
-                        WHERE 
+                        from form_hepatitis as vl
+                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                        JOIN facility_details as f ON vl.lab_id=f.facility_id
+                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+
+                        WHERE
                         vl.result is not null
                         AND vl.result != ''"; // No where condition
 $sWhere = [];
@@ -222,10 +222,10 @@ foreach ($tatResult as $sRow) {
     $j++;
 }
 $sWhere = [];
-$testReasonQuery = "SELECT count(c.sample_code) AS total, tr.test_reason_name 
-                    from form_hepatitis as c 
-                    INNER JOIN r_hepatitis_test_reasons as tr ON c.reason_for_hepatitis_test = tr.test_reason_id 
-                    JOIN facility_details as f ON c.facility_id=f.facility_id 
+$testReasonQuery = "SELECT count(c.sample_code) AS total, tr.test_reason_name
+                    from form_hepatitis as c
+                    INNER JOIN r_hepatitis_test_reasons as tr ON c.reason_for_hepatitis_test = tr.test_reason_id
+                    JOIN facility_details as f ON c.facility_id=f.facility_id
                     LEFT JOIN batch_details as b ON b.batch_id=c.sample_batch_id";
 
 $sWhere[] = ' c.reason_for_hepatitis_test IS NOT NULL ';

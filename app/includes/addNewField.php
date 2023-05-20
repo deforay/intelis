@@ -9,6 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -19,8 +21,8 @@ $tableName = "rejection_type";
 $value = trim($_POST['value']);
 $data = 0;
 if ($value != '') {
-    $rej = "SELECT * from rejection_type where rejection_type = '" . $value . "' ";
-    $rejInfo = $db->query($rej);
+    $rej = "SELECT * FROM rejection_type WHERE rejection_type = ? ";
+    $rejInfo = $db->rawQuery($rej, [$value]);
 
     if (empty($rejInfo)) {
         $data = array(

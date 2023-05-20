@@ -34,7 +34,14 @@ try {
         'csv',
     );
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {

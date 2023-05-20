@@ -415,7 +415,7 @@ foreach ($rejectionTypeResult as $type) {
 		//   selectedTestsIdValue.push(obj.value);
 		// }else{
 		//   var indexValue = selectedTests.indexOf(obj.id);
-		//   selectedTestsIdValue[indexValue]=obj.value;  
+		//   selectedTestsIdValue[indexValue]=obj.value;
 		// }
 		// $("#checkedTests").val(selectedTests.join());
 		// $("#checkedTestsIdValue").val(selectedTestsIdValue.join());

@@ -11,9 +11,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$usersService = ContainerRegistry::get(UsersService::class);
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -21,11 +26,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
 
-if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
-    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
+$signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+
+if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
+    mkdir($signatureImagePath, 0777, true);
 }
 
-$signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+
 
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {

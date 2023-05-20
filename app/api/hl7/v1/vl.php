@@ -37,23 +37,23 @@ if ($type[1] == 'RES' || $type[1] == 'QRY') {
             c.iso_name as nationality,
             c.iso2 as country_code1,
             c.iso3 as country_code2,
-            r_i_p.i_partner_name 
-            
-            FROM form_vl as vl 
-            
+            r_i_p.i_partner_name
+
+            FROM form_vl as vl
+
             LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-            LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-            LEFT JOIN user_details as r_c_b ON a_u_d.user_id=vl.request_created_by 
-            LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician 
-            LEFT JOIN r_vl_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_vl_testing 
-            LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.sample_type 
-            LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-            LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+            LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+            LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+            LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+            LEFT JOIN user_details as r_c_b ON a_u_d.user_id=vl.request_created_by
+            LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician
+            LEFT JOIN r_vl_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_vl_testing
+            LEFT JOIN r_vl_sample_type as rst ON rst.sample_id=vl.sample_type
+            LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+            LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
             LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
     $where = [];
     if (!empty($dateRange[1])) {

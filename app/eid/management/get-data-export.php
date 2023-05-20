@@ -126,9 +126,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     r_f_s.funding_source_name,
                     r_i_p.i_partner_name,
                     rs.rejection_reason_name as rejection_reason
-                    
+
                     FROM form_eid as vl
-                    
+
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
                     INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type

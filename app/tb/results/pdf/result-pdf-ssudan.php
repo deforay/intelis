@@ -460,8 +460,8 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:17px;font-size:11px;text-align:justify;border-top:1px solid #67b3ff;">
-                    <br><br>NP = Not Provided, DST = Drug Susceptibility Testing, LJ = Lowenstein-Jensen, MDR = Multi-Drug Restant TB Strain, XDR = Extensively Drug Resistant TB Stain, MGIT = Mycobacterium Growth Index Tube, 
-                    NTM = Non-TB Mycobacterium, ZN = Ziehl-Neelsen, 1-100 = Absolute colony counts on solid media, Smear Mircoscopy Grading 1-9/100 fields = absolute number of AFBs seen per 100 fields, 1+= 1-100/100 fields, 2+=1-9 AFBs/field; 
+                    <br><br>NP = Not Provided, DST = Drug Susceptibility Testing, LJ = Lowenstein-Jensen, MDR = Multi-Drug Restant TB Strain, XDR = Extensively Drug Resistant TB Stain, MGIT = Mycobacterium Growth Index Tube,
+                    NTM = Non-TB Mycobacterium, ZN = Ziehl-Neelsen, 1-100 = Absolute colony counts on solid media, Smear Mircoscopy Grading 1-9/100 fields = absolute number of AFBs seen per 100 fields, 1+= 1-100/100 fields, 2+=1-9 AFBs/field;
                     3+=10+AFBs/field, FM = Fluorescent Microscopy, Negative = Zero AFBs/1 Length, Scanty = 1-29 AFB/1 Length, 2+=10-100 AFB/1 Field on average, 3+=>100 AFB/1 Field on average, LPA = Line Probe Assay,
                     FLQ = Fuoroquinolones(Ofloxacin, Moxifloxacin), EMB = Ethambutol, AG/CP = Injectible antibotics(Kanamycin, Amikacin/Capreomycin, Viomycin), PAS = Para-Aminosalicylic Acid
                 </td>';

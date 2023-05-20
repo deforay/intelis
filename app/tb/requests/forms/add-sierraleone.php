@@ -1,6 +1,14 @@
 <style>
-	.followUp { display: inline-flex; list-style: none; padding: 0px; margin:5px; }
-	.followUp li { margin-right:5px;}
+	.followUp {
+		display: inline-flex;
+		list-style: none;
+		padding: 0px;
+		margin: 5px;
+	}
+
+	.followUp li {
+		margin-right: 5px;
+	}
 </style>
 <?php
 // imported in tb-add-request.php based on country in global config
@@ -61,7 +69,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-    $pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+	$pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 }
 $pdResult = $db->query($pQuery);
 $province = "<option value=''> -- Select -- </option>";
@@ -102,7 +110,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border">
 									<h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
 											<th scope="row" style="width: 16.6%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
@@ -125,7 +133,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">REFERRING HEALTH FACILITY INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
 										<td>
@@ -187,7 +195,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID or Patient Name" title="Enter art number or patient name" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -285,20 +293,20 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: none;">
-											<ul class="followUp">
-												<li>
-													<label>Month Of Treatment</label>
-													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
-												</li>
-												<li>
-												<label>Patient's District TB No.</label>
-													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
-												</li>
-												<li>
-												<label>Patient's MDR No.</label>
-													<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
-												</li>
-											</ul>												
+												<ul class="followUp">
+													<li>
+														<label>Month Of Treatment</label>
+														<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+													</li>
+													<li>
+														<label>Patient's District TB No.</label>
+														<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+													</li>
+													<li>
+														<label>Patient's MDR No.</label>
+														<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+													</li>
+												</ul>
 											</div>
 										</td>
 									</tr>
@@ -315,7 +323,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
 										<td>
 											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
-											<option value=''> -- Select -- </option>
+												<option value=''> -- Select -- </option>
 												<option value='yes'> Yes </option>
 												<option value='no'> No </option>
 												<option value='unknown'> Unknown </option>
@@ -327,7 +335,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true" >
+								<table aria-describedby="table" class="table" aria-hidden="true">
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
@@ -370,7 +378,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 													<option value="MTB/RIF ULTRA">MTB/RIF ULTRA</option>
 													<option value="TB LAM">TB LAM</option>
 												</optgroup>
-												<option value="Culture">Culture</option> 
+												<option value="Culture">Culture</option>
 												<option value="Drug Susceptibility">Drug Susceptibility</option>
 												<option value="Line probe assay">Line probe assay</option>
 											</select>
@@ -379,29 +387,29 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-											Number of sputum samples sent with this form 
+												Number of sputum samples sent with this form
 											</label>
 										</th>
 										<td>
-										<input type="text" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+											<input type="text" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
 										</td>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-											Date of collection of first sputum samples
+												Date of collection of first sputum samples
 											</label>
 										</th>
 										<td>
-										<input type="text" class="form-control" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
-									</td>
+											<input type="text" class="form-control" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+										</td>
 									</tr>
 									<tr>
-									<th scope="row">
+										<th scope="row">
 											<label class="label-control">
-											Name of signature of person requesting examination 
+												Name of signature of person requesting examination
 											</label>
 										</th>
 										<td>
-										<input type="text" class="form-control" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+											<input type="text" class="form-control" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
 										</td>
 
 									</tr>
@@ -409,13 +417,13 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 							</div>
 						</div>
 						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							
+
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
 									</div>
-									<table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
 											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
 											<td>
@@ -448,12 +456,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 											<th scope="row"><label class="label-control" for="resultDate">Date Of Result</label></th>
 											<td>
-											<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
-											
+
 										</tr>
 										<tr>
-										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
+											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
 													<option value=''> -- Select -- </option>
@@ -475,7 +483,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</tr>
 										<tr class="platform microscopy">
 											<td colspan="4">
-												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
 														<tr>
 															<th scope="row" colspan="3" style="text-align: center;">Microscopy Test Results</th>
@@ -666,12 +674,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 	function setPatientDetails(pDetails) {
 		patientArray = JSON.parse(pDetails);
-        $("#firstName").val(patientArray['firstname']);
-        $("#lastName").val(patientArray['lastname']);
-        $("#patientGender").val(patientArray['gender']);
-        $("#patientAge").val(patientArray['age']);
-        $("#patientDob").val(patientArray['dob']);
-        $("#patientId").val(patientArray['patient_id']);
+		$("#firstName").val(patientArray['firstname']);
+		$("#lastName").val(patientArray['lastname']);
+		$("#patientGender").val(patientArray['gender']);
+		$("#patientAge").val(patientArray['age']);
+		$("#patientDob").val(patientArray['dob']);
+		$("#patientId").val(patientArray['patient_id']);
 	}
 
 	function sampleCodeGeneration() {
@@ -771,12 +779,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	$(document).ready(function() {
 
 		$('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "+1Y",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
@@ -788,30 +796,30 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 				dt2.datetimepicker('option', 'minDateTime', minDate);
 				dt2.val($(this).val());
 			}
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
 		$("#firstSputumSamplesCollectionDate").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            maxDate: "Today",
-            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(dateText, inst) {
-                //$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
-                $(this).change();
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			maxDate: "Today",
+			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
+			onSelect: function(dateText, inst) {
+				//$("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+				$(this).change();
+			}
+		}).click(function() {
+			$('.ui-datepicker-calendar').show();
+		});
 
 
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
-			if ($("#labId").val() !='' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
 				// $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
 		});

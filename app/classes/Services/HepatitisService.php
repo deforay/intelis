@@ -50,7 +50,7 @@ class HepatitisService
     {
 
         /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(\App\Services\CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();
@@ -269,7 +269,7 @@ class HepatitisService
     public function insertSampleCode($params)
     {
         /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(\App\Services\CommonService::class);
 
         $globalConfig = $general->getGlobalConfig();
         $vlsmSystemConfig = $general->getSystemConfig();

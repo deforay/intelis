@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 //system config
 $systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery); 
+$systemConfigResult = $db->query($systemConfigQuery);
 $sarr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
@@ -36,10 +36,10 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
      if ($_SESSION['instanceType'] == 'standalone') {
-		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-			unset($headings[$key]);
-		}
-	}
+          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
 
      $colNo = 1;
 
@@ -68,11 +68,11 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue));
+          ->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-                    ->setValueExplicit(html_entity_decode($value));
+               ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
@@ -113,8 +113,9 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
-                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode($value));
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
                $colNo++;
           }
      }

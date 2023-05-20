@@ -16,6 +16,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+
+// Sanitize values before using them below
+$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
@@ -170,7 +175,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
                         <br>
 
-                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><?php echo _("Sample Code"); ?></th>

@@ -61,7 +61,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
             $condition = "updated_datetime > '" . $data['vlFailureReasonsLastModified'] . "'";
         }
         $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
-        
+
         // $condition = null;
         //$response['vlResults'] = [];
         if (isset($data['vlResultsLastModified']) && !empty($data['vlResultsLastModified'])) {
@@ -212,11 +212,11 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $response['users'] = [];
     $userIds = array_column($response['facilities'], 'contact_person');
-    
-    foreach($userIds as $userId){
-        if(!empty($userId)){
+
+    foreach ($userIds as $userId) {
+        if (!empty($userId)) {
             $userInfo = $general->fetchDataFromTable('user_details', "user_id = '$userId'");
-            if(!empty($userInfo)){
+            if (!empty($userInfo)) {
                 $response['users'][] = $userInfo[0];
             }
         }
@@ -265,7 +265,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     }
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
-    
+
     $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?) WHERE facility_id = ?';
     $db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
 

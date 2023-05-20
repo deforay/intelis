@@ -180,7 +180,7 @@ class ApiService
         /** @var FacilitiesService $facilitiesService */
         $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type 
+        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type
                     from geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
         $where = [];
@@ -303,19 +303,19 @@ class ApiService
         $sQuery = "";
         if ($testType == 'vl') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_vl` WHERE `patient_art_no`='" . $patientId . "') as no_of_req_time,
-                        (SELECT count(*) FROM `form_vl` WHERE `patient_art_no`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_vl 
+                        (SELECT count(*) FROM `form_vl` WHERE `patient_art_no`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_vl
                         WHERE `patient_art_no`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         } elseif ($testType == 'eid') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_eid` WHERE `child_id`='" . $patientId . "') as no_of_req_time,
-                        (SELECT count(*) FROM `form_eid` WHERE `child_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_eid 
+                        (SELECT count(*) FROM `form_eid` WHERE `child_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_eid
                         WHERE `child_id`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         } elseif ($testType == 'covid19') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_covid19` WHERE `patient_id`='" . $patientId . "') as no_of_req_time,
-                        (SELECT count(*) FROM `form_covid19` WHERE `patient_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_covid19 
+                        (SELECT count(*) FROM `form_covid19` WHERE `patient_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_covid19
                         WHERE `patient_id`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         } elseif ($testType == 'hepatitis') {
             $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date, (SELECT count(*) FROM `form_hepatitis` WHERE `patient_id`='" . $patientId . "') as no_of_req_time,
-                        (SELECT count(*) FROM `form_hepatitis` WHERE `patient_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_hepatitis 
+                        (SELECT count(*) FROM `form_hepatitis` WHERE `patient_id`='" . $patientId . "' AND sample_tested_datetime IS NOT NULL AND sample_tested_datetime!='0000-00-00 00:00:00') as no_of_tested_time from form_hepatitis
                         WHERE `patient_id`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         }
         return $this->db->rawQueryOne($sQuery);

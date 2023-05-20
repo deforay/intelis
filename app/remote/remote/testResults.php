@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var ApiService $app */
-//$app = ContainerRegistry::get(ApiService::class);
+//$app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 try {
     //this file receives the lab results and updates in the remote db
@@ -161,13 +161,13 @@ try {
 
     if (!empty($facilityIds)) {
         $facilityIds = array_unique(array_filter($facilityIds));
-        $sql = 'UPDATE facility_details 
+        $sql = 'UPDATE facility_details
                         SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.vlRemoteResultsSync", ?)
                         WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
         $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
     }
-    $sql = 'UPDATE facility_details SET 
-                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.vlLastResultsSync", ?) 
+    $sql = 'UPDATE facility_details SET
+                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.vlLastResultsSync", ?)
                     WHERE facility_id = ?';
     $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 

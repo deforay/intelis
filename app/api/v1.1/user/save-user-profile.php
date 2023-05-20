@@ -31,9 +31,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
-// error_log("------ USER API START-----");
-// error_log($origJson);
-// error_log("------ USER API END -----");
 $transactionId = $general->generateUUID();
 
 try {
@@ -64,6 +61,7 @@ try {
     $post['loginId'] = $post['loginId'] ?: $post['loginId'] ?: null;
     $post['role'] = $post['role'] ?: $post['role'] ?: null;
     $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hashAlgorithm'] ?: 'phb';
+
 
     if (!isset($user)) {
         if (!$apiKey) {
@@ -106,14 +104,19 @@ try {
         $data['login_id'] =  $db->escape($post['loginId']);
     }
 
-    if (isset($_FILES['sign']['name']) && $_FILES['sign']['name'] != "") {
+    if (isset($_FILES['sign']) && $_FILES['sign']['error'] === UPLOAD_ERR_OK && $_FILES['sign']['size'] > 0) {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
             mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
         }
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
-        $imageName = "usign-" . $data['user_id'] . "." . $extension;
+        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
-        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $imageName;
+        $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+
+        if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
+            mkdir($signatureImagePath, 0777, true);
+        }
+        $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $imageName;
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
             $resizeObj = new ImageResizeUtility();
             $resizeObj = $resizeObj->setFileName($signatureImagePath);

@@ -10,6 +10,9 @@ $geoDb = ContainerRegistry::get(GeoLocationsService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $text = '';
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];

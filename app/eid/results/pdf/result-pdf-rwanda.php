@@ -347,13 +347,13 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<table>';
-        if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync']==0) {
-            $generatedAtTestingLab = ' | '._("Report generated at Testing Lab");
+        if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync'] == 0) {
+            $generatedAtTestingLab = ' | ' . _("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
         }
         $html .= '<tr>';
-        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab .'</td>';
+        $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
         $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -367,19 +367,19 @@ if (!empty($requestResult)) {
             $pdf->writeHTML($html);
             if (isset($arr['eid_report_qr_code']) && $arr['eid_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-                if(!empty($keyFromGlobalConfig)){
-                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
-                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
-                     $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
+                if (!empty($keyFromGlobalConfig)) {
+                    $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode($keyFromGlobalConfig));
+                    $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
+                    $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, $style, 'N');
                 }
-           }
+            }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
             $pdf->Output($filename, "F");
             if ($draftTextShow) {
                 //Watermark section
                 $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }
@@ -414,7 +414,7 @@ $watermark->setFullPathToFile($filename);
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);

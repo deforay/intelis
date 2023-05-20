@@ -1,4 +1,9 @@
 <?php
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
+
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
 <!-- Bootstrap 3.3.6 -->
@@ -68,7 +73,7 @@
 							<div class="form-group">
 								<label class="col-xs-2 control-label"></label>
 								<div class="col-xs-9">
-									<input type="checkbox" name="attach_screenshot" id="attach_screenshot" > Attach current page screenshot
+									<input type="checkbox" name="attach_screenshot" id="attach_screenshot"> Attach current page screenshot
 								</div>
 							</div>
 
@@ -78,7 +83,7 @@
 								</div>
 							</div>
 						</form>
-						
+
 					</div>
 					<!-- /.box-body -->
 				</div>
@@ -101,44 +106,44 @@
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript">
-$(document).ready(function(e){
-    // Submit form data via Ajax
-    $("#supportForm").on('submit', function(e){
-		e.preventDefault();
-		flag = deforayValidator.init({
-      		formId: 'supportForm'
-   		});
-		if (flag) {
-			$.ajax({
-				type: 'POST',
-				url: 'addSupportHelper.php',
-				data: new FormData(this),
-				dataType: 'json',
-				contentType: false,
-				cache: false,
-				processData:false,
-				beforeSend: function(){
-					$('.submitBtn').attr("disabled","disabled");
-					$('#supportForm').css("opacity",".5");
-				},
-				success: function(response){
-					//$('.statusMsg').html('');
-					if(response.status == 1){
-						if(response.attached=='yes'){
-							parent.screenshot(response.supportId,'yes');
-						}else{
-							parent.screenshot(response.supportId,'');
-						}
-						//$('#fupForm')[0].reset();
-						//$('.statusMsg').html('<p class="alert alert-success">'+response.message+'</p>');
-					}else{
-						$('.statusMsg').html('<p class="alert alert-danger">'+response.message+'</p>');
-					}
-					$('#supportForm').css("opacity","");
-					$(".submitBtn").removeAttr("disabled");
-				}
+	$(document).ready(function(e) {
+		// Submit form data via Ajax
+		$("#supportForm").on('submit', function(e) {
+			e.preventDefault();
+			flag = deforayValidator.init({
+				formId: 'supportForm'
 			});
-		}
-    });
-});
+			if (flag) {
+				$.ajax({
+					type: 'POST',
+					url: 'addSupportHelper.php',
+					data: new FormData(this),
+					dataType: 'json',
+					contentType: false,
+					cache: false,
+					processData: false,
+					beforeSend: function() {
+						$('.submitBtn').attr("disabled", "disabled");
+						$('#supportForm').css("opacity", ".5");
+					},
+					success: function(response) {
+						//$('.statusMsg').html('');
+						if (response.status == 1) {
+							if (response.attached == 'yes') {
+								parent.screenshot(response.supportId, 'yes');
+							} else {
+								parent.screenshot(response.supportId, '');
+							}
+							//$('#fupForm')[0].reset();
+							//$('.statusMsg').html('<p class="alert alert-success">'+response.message+'</p>');
+						} else {
+							$('.statusMsg').html('<p class="alert alert-danger">' + response.message + '</p>');
+						}
+						$('#supportForm').css("opacity", "");
+						$(".submitBtn").removeAttr("disabled");
+					}
+				});
+			}
+		});
+	});
 </script>

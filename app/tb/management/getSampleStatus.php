@@ -88,10 +88,10 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
         $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
-$tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name 
-                FROM form_tb as vl 
-                JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                JOIN facility_details as f ON vl.lab_id=f.facility_id 
+$tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
+                FROM form_tb as vl
+                JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                JOIN facility_details as f ON vl.lab_id=f.facility_id
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
@@ -133,8 +133,8 @@ $vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
                                             ELSE 0
                                         END)) AS rejectedResult,
                                 status_id,
-                                status_name 
-                                
+                                status_name
+
                                 FROM form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
@@ -170,7 +170,7 @@ if ($start_date == '' && $end_date == '') {
     $start_date = date('Y-m-d', $date);
     $end_date = date('Y-m-d');
 }
-$tatSampleQuery = "SELECT 
+$tatSampleQuery = "SELECT
     count(*) as 'totalSamples',
     DATE_FORMAT(DATE(sample_tested_datetime), '%b-%Y') as monthDate,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
@@ -179,12 +179,12 @@ $tatSampleQuery = "SELECT
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
     CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted
 
-    FROM form_tb as vl 
-    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-    JOIN facility_details as f ON vl.lab_id=f.facility_id 
-    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-    
-    WHERE 
+    FROM form_tb as vl
+    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+    JOIN facility_details as f ON vl.lab_id=f.facility_id
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+
+    WHERE
     vl.result is not null
     AND vl.result != ''
     AND DATE(vl.sample_tested_datetime) >= '$start_date'
@@ -225,10 +225,10 @@ foreach ($tatResult as $sRow) {
     $j++;
 }
 $sWhere = [];
-$testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name 
-                    from form_tb as vl 
-                    INNER JOIN r_tb_test_reasons as tr ON vl.reason_for_tb_test = tr.test_reason_id 
-                    JOIN facility_details as f ON vl.facility_id=f.facility_id 
+$testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
+                    from form_tb as vl
+                    INNER JOIN r_tb_test_reasons as tr ON vl.reason_for_tb_test = tr.test_reason_id
+                    JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = ' vl.reason_for_tb_test IS NOT NULL ';

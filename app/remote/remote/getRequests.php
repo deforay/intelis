@@ -33,7 +33,7 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 
 $transactionId = $general->generateUUID();
@@ -126,15 +126,15 @@ if (!empty($sampleIds)) {
 
 if (!empty($facilityIds)) {
   $facilityIds = array_unique(array_filter($facilityIds));
-  $sql = 'UPDATE facility_details 
-            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?) 
+  $sql = 'UPDATE facility_details
+            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?)
             WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
   $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
 
 // Whether any data got synced or not, we will update sync datetime for the lab
-$sql = 'UPDATE facility_details 
-        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.vlLastRequestsSync", ?) 
+$sql = 'UPDATE facility_details
+        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.vlLastRequestsSync", ?)
         WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 

@@ -89,7 +89,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 							<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 							<td>
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-									<?= $general->generateSelectOptions($sampleTypesResults, $sampleType, '-- Select --');?>
+									<?= $general->generateSelectOptions($sampleTypesResults, $sampleType, '-- Select --'); ?>
 								</select>
 							</td>
 						</tr>

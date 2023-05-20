@@ -1008,7 +1008,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 															<th scope="row" colspan="4" class="text-right final-result-row">Final Result
 															</th>
 															<td id="result-sections">
-																
+
 															</td>
 														</tr>
 													</tfoot>
@@ -1856,7 +1856,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					}
 					if (data.result.length > 0) {
 						$("#result-sections").html(data.result);
-					}else{
+					} else {
 						$('#resultSection').hide()
 					}
 					if (data.specimen.length > 0) {

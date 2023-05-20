@@ -87,14 +87,14 @@ if (!empty($sampleIds)) {
 if (!empty($facilityIds)) {
     $facilityIds = array_unique(array_filter($facilityIds));
     $sql = 'UPDATE facility_details
-                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.hepatitisRemoteRequestsSync", ?) 
+                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.hepatitisRemoteRequestsSync", ?)
                 WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
     $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
 
 // Whether any data got synced or not, we will update sync datetime for the lab
 $sql = 'UPDATE facility_details
-          SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.hepatitisLastRequestsSync", ?) 
+          SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.hepatitisLastRequestsSync", ?)
           WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 

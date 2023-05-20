@@ -20,24 +20,24 @@ $testReasonId = (int) base64_decode($_POST['testReasonId']);
 $_POST['testReason'] = trim($_POST['testReason']);
 try {
     if (!empty($_POST['testReason'])) {
-       
+
         $data = array(
             'test_reason' => $_POST['testReason'],
             'test_reason_code' => trim($_POST['testReasonCode']),
             'test_reason_status' => $_POST['testReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        if(isset($testReasonId) && !empty($testReasonId)){
+        if (isset($testReasonId) && !empty($testReasonId)) {
             $db = $db->where('test_reason_id', $testReasonId);
             $lastId = $db->update($tableName, $data);
-            if($lastId > 0){
+            if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _("Testing reason updated successfully");
                 $general->activityLog('Testing Reason', $_SESSION['userName'] . ' updated new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
             }
-        }else{
+        } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
-            if($lastId > 0){
+            if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _("Testing reason added successfully");
                 $general->activityLog('Testing Reason', $_SESSION['userName'] . ' added new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
             }

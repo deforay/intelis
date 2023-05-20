@@ -9,6 +9,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $start_date = '';
 $end_date = '';
 $urgent = $_POST['urgent'] ?? null;
@@ -17,10 +21,7 @@ $sample = $_POST['sName'] ?? null;
 $gender = $_POST['gender'];
 $pregnant = $_POST['pregnant'];
 $breastfeeding = $_POST['breastfeeding'];
-//global config
-$configQuery = "SELECT `value` FROM `global_config` WHERE `name` ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	//print_r($s_c_date);die;
@@ -88,29 +89,28 @@ $query = $query . " ORDER BY vl.sample_code ASC";
 $result = $db->rawQuery($query);
 ?>
 
-	<!-- <div class="col-lg-5"> -->
-	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-		<?php
-		if ($result > 0) {
-			foreach ($result as $sample) {
-		?>
-				<option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
-		<?php
-			}
+<!-- <div class="col-lg-5"> -->
+<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+	<?php
+	if ($result > 0) {
+		foreach ($result as $sample) {
+	?>
+			<option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+	<?php
 		}
-		?>
-	</select>
+	}
+	?>
+</select>
 <script>
 	$(document).ready(function() {
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-				
 			},
 			fireSearch: function(value) {
 				return value.length > 3;
 			}
 		});
-		
+
 	});
 </script>

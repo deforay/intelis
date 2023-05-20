@@ -218,7 +218,7 @@ class FacilitiesService
         if (!empty($facilityIds)) {
             $facilityIds = array_unique(array_filter($facilityIds));
             $sql = 'UPDATE facility_details
-                        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?) 
+                        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?)
                         WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
             $this->db->rawQuery($sql, array($currentDateTime, $currentDateTime));
         }

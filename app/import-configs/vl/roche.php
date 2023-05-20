@@ -1,10 +1,17 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
 
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
+    $tableName = $_POST['tableName'];
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -27,7 +34,14 @@ try {
         'xlsx',
         'csv'
     );
-    $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     // $ranNumber         = $general->generateRandomString(12);

@@ -7,7 +7,7 @@ use App\Services\CommonService;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-  
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 

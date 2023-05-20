@@ -23,6 +23,10 @@ $vl_result_category = null;
 $systemType = $general->getSystemConfig('sc_user_type');
 $formId = $general->getGlobalConfig('vl_form');
 
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
     if (isset($_POST['api']) && $_POST['api'] == "yes") {
     } else {
@@ -44,8 +48,8 @@ try {
     //add province
     $splitProvince = explode("##", $_POST['province']);
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
-        $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
-        $provinceInfo = $db->query($provinceQuery);
+        $provinceQuery = "SELECT * from geographical_divisions where geo_name= ?";
+        $provinceInfo = $db->rawQuery($provinceQuery, [$splitProvince[0]]);
         if (!isset($provinceInfo) || empty($provinceInfo)) {
             $db->insert(
                 'geographical_divisions',

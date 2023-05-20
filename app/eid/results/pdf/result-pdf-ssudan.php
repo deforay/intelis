@@ -547,7 +547,7 @@ if (!empty($requestResult)) {
             if ($draftTextShow) {
                 //Watermark section
                 $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }

@@ -39,7 +39,7 @@ try {
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
-        
+
         if (!empty($aRow['remote_sample_code'])) {
             if (!empty($aRow['sample_code'])) {
                 $aRow['sample_code']      = $aRow['remote_sample_code'] . '-' . $aRow['sample_code'];
@@ -92,7 +92,7 @@ try {
         $data = array(
             'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );
-        
+
         $db->update('s_vlsm_instance', $data);
     }
     $general->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

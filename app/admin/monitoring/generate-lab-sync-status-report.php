@@ -100,7 +100,7 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['latest']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync']);
-    $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null)?$aRow['version']:" - ";
+    $row[] = (isset($aRow['version']) && !empty($aRow['version']) && $aRow['version'] != "" && $aRow['version'] != null) ? $aRow['version'] : " - ";
     $output[] = $row;
 
     $no++;
@@ -112,7 +112,7 @@ $colorNo = 0;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
-        $rRowCount = ($rowNo+2);
+        $rRowCount = ($rowNo + 2);
         $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value));
         // echo "Col : ".$colNo ." => Row : " . $rRowCount . " => Color : " .$color[$colorNo]['color'];
         // echo "<br>";

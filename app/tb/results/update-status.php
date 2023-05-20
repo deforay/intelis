@@ -5,9 +5,6 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -15,6 +12,10 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_tb";
 try {
+
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(

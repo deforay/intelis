@@ -21,7 +21,7 @@ foreach ($sampleResult as $sampleRow) {
 
     $testType = $genericObj->getDynamicFields($sampleRow['sample_id']);
     $testTypeShortCode = "LAB";
-    if(isset($testType['dynamicLabel']['test_short_code']) && !empty($testType['dynamicLabel']['test_short_code'])){
+    if (isset($testType['dynamicLabel']['test_short_code']) && !empty($testType['dynamicLabel']['test_short_code'])) {
         $testTypeShortCode = $testType['dynamicLabel']['test_short_code'];
     }
 

@@ -48,10 +48,10 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-list-check"></em> <?php echo _("Failed/Hold Samples");?></h1>
+        <h1><em class="fa-solid fa-list-check"></em> <?php echo _("Failed/Hold Samples"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-            <li class="active"><?php echo _("Test Request");?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+            <li class="active"><?php echo _("Test Request"); ?></li>
         </ol>
     </section>
 
@@ -60,7 +60,7 @@ $sResult = $db->rawQuery($sQuery);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+                    <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr>
                             <td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
                             <td>
@@ -68,14 +68,16 @@ $sResult = $db->rawQuery($sQuery);
                             </td>
                             <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
                             <td>
-                            <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>                            </td>
+                                <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+                                    <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                </select>
+                            </td>
                             <td><strong><?php echo _("District/County"); ?> :</strong></td>
                             <td>
-                            <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
-                </select>                            </td>
-                          
+                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                                </select>
+                            </td>
+
                         </tr>
                         <tr>
                             <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
@@ -85,11 +87,11 @@ $sResult = $db->rawQuery($sQuery);
                                 </select>
                             </td>
                             <td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
-							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
-									<?= $testingLabsDropdown; ?>
-								</select>
-							</td>
+                            <td>
+                                <select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
+                                    <?= $testingLabsDropdown; ?>
+                                </select>
+                            </td>
                             <td><strong><?php echo _("Sample Type"); ?> :</strong></td>
                             <td>
                                 <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
@@ -105,26 +107,26 @@ $sResult = $db->rawQuery($sQuery);
                             </td>
                         </tr>
                         <tr>
-                        <td><strong><?php echo _("Result Status"); ?>&nbsp;:</strong></td>
-							<td>
-                            <select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value="1"><?php echo _("Hold"); ?></option>
-									<option value="2"><?php echo _("Lost"); ?></option>
-									<option value="5"><?php echo _("Failed"); ?></option>
-									<option value="10"><?php echo _("Expired"); ?></option>
-								</select>
-							</td>
-                        <td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
-							</td>
-						
-									<td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
-							<td>
-								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
-							</td>
+                            <td><strong><?php echo _("Result Status"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+                                    <option value="1"><?php echo _("Hold"); ?></option>
+                                    <option value="2"><?php echo _("Lost"); ?></option>
+                                    <option value="5"><?php echo _("Failed"); ?></option>
+                                    <option value="10"><?php echo _("Expired"); ?></option>
+                                </select>
+                            </td>
+                            <td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+                            </td>
+
+                            <td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+                            </td>
                         </tr>
-                       
+
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
@@ -137,7 +139,7 @@ $sResult = $db->rawQuery($sQuery);
                     <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples");?></span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples"); ?></span></button>
                             </td>
                         </tr>
                     </table>
@@ -145,48 +147,48 @@ $sResult = $db->rawQuery($sQuery);
                     <!-- /.box-header -->
                     <div class="box-body">
                         <input type="hidden" name="checkedTests" id="checkedTests" />
-                        <table aria-describedby="table" id="hepatitisFailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="hepatitisFailedRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                                    <th><?php echo _("Sample Code");?></th>
+                                    <th><?php echo _("Sample Code"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _("Remote Sample");?> <br /><?php echo _("Code");?></th>
+                                        <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
                                     <?php } ?>
-                                    <th><?php echo _("Sample Collection");?><br /> <?php echo _("Date");?></th>
-                                    <th><?php echo _("Batch Code");?></th>
-                                    <th><?php echo _("Facility Name");?></th>
-                                    <th><?php echo _("Patient's ID");?></th>
-                                    <th><?php echo _("Patient's Name");?></th>
-                                    <th><?php echo _("Province/State");?></th>
-                                    <th><?php echo _("District/County");?></th>
-                                    <th><?php echo _("Result");?></th>
-                                    <th><?php echo _("Last Modified On");?></th>
-                                    <th><?php echo _("Status");?></th>
-                                    <th><?php echo _("Action");?></th>
+                                    <th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+                                    <th><?php echo _("Batch Code"); ?></th>
+                                    <th><?php echo _("Facility Name"); ?></th>
+                                    <th><?php echo _("Patient's ID"); ?></th>
+                                    <th><?php echo _("Patient's Name"); ?></th>
+                                    <th><?php echo _("Province/State"); ?></th>
+                                    <th><?php echo _("District/County"); ?></th>
+                                    <th><?php echo _("Result"); ?></th>
+                                    <th><?php echo _("Last Modified On"); ?></th>
+                                    <th><?php echo _("Status"); ?></th>
+                                    <th><?php echo _("Action"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                                    <td colspan="15" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
                         <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
 
-                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details");?>...</span><br />
+                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
                                 <div class="progress" style="width:100%">
                                     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                     </div>
                                 </div>
                             </div> <!-- /printer_data_loading -->
                             <div id="printer_details" style="display:none">
-                                <span id="selected_printer"><?php echo _("No printer selected");?>!</span>
-                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry");?></button>
+                                <span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
+                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
                             </div><br /> <!-- /printer_details -->
                             <div id="printer_select" style="display:none">
-                            <?php echo _("Zebra Printer Options");?><br />
-                            <?php echo _("Printer");?>: <select id="printers"></select>
+                                <?php echo _("Zebra Printer Options"); ?><br />
+                                <?php echo _("Printer"); ?>: <select id="printers"></select>
                             </div> <!-- /printer_select -->
                         <?php } ?>
                     </div>
@@ -232,14 +234,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     var oTable = null;
     $(document).ready(function() {
         $("#state").select2({
-			placeholder: "<?php echo _("Select Province"); ?>"
-		});
-		$("#district").select2({
-			placeholder: "<?php echo _("Select District"); ?>"
-		});
+            placeholder: "<?php echo _("Select Province"); ?>"
+        });
+        $("#district").select2({
+            placeholder: "<?php echo _("Select District"); ?>"
+        });
         $("#vlLab").select2({
-			placeholder: "<?php echo _("Select Labs"); ?>"
-		});
+            placeholder: "<?php echo _("Select Labs"); ?>"
+        });
         $("#facilityName").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -248,7 +250,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
         }
         ?>
-      
+
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
@@ -257,8 +259,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     separator: ' to ',
                 },
                 showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+                alwaysShowCalendars: false,
+                startDate: moment().subtract(28, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {
@@ -352,8 +354,8 @@ startDate: moment().subtract(28, 'days'),
                     "sClass": "center"
                 }, {
                     "sClass": "center"
-                }, 
-                   {
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
@@ -374,43 +376,43 @@ startDate: moment().subtract(28, 'days'),
             "bServerSide": true,
             "sAjaxSource": "get-failed-results.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
-              
+
                 aoData.push({
                     "name": "sampleCollectionDate",
                     "value": $("#sampleCollectionDate").val()
                 });
                 aoData.push({
-					"name": "state",
-					"value": $("#state").val()
-				});
-				aoData.push({
-					"name": "district",
-					"value": $("#district").val()
-				});
-				aoData.push({
-					"name": "facilityName",
-					"value": $("#facilityName").val()
-				});
-				aoData.push({
-					"name": "vlLab",
-					"value": $("#vlLab").val()
-				});
-				aoData.push({
-					"name": "sampleType",
-					"value": $("#sampleType").val()
-				});
-				aoData.push({
-					"name": "status",
-					"value": $("#status").val()
-				});
+                    "name": "state",
+                    "value": $("#state").val()
+                });
                 aoData.push({
-					"name": "patientId",
-					"value": $("#patientId").val()
-				});
-				aoData.push({
-					"name": "patientName",
-					"value": $("#patientName").val()
-				});
+                    "name": "district",
+                    "value": $("#district").val()
+                });
+                aoData.push({
+                    "name": "facilityName",
+                    "value": $("#facilityName").val()
+                });
+                aoData.push({
+                    "name": "vlLab",
+                    "value": $("#vlLab").val()
+                });
+                aoData.push({
+                    "name": "sampleType",
+                    "value": $("#sampleType").val()
+                });
+                aoData.push({
+                    "name": "status",
+                    "value": $("#status").val()
+                });
+                aoData.push({
+                    "name": "patientId",
+                    "value": $("#patientId").val()
+                });
+                aoData.push({
+                    "name": "patientName",
+                    "value": $("#patientName").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -497,48 +499,47 @@ startDate: moment().subtract(28, 'days'),
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("<?php echo _("Selected Sample(s) ready for testing");?>");
+                        alert("<?php echo _("Selected Sample(s) ready for testing"); ?>");
                         oTable.fnDraw();
                     } else {
-                        alert("<?php echo _("Something went wrong. Please try again later");?>");
+                        alert("<?php echo _("Something went wrong. Please try again later"); ?>");
                     }
                 });
         }
     }
 
-    function getByProvince(provinceId)
-	{
+    function getByProvince(provinceId) {
         $("#district").html('');
         $("#facilityName").html('');
-		$("#vlLab").html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-				$("#district").html(Obj['districts']);
-				$("#facilityName").html(Obj['facilities']);
-				$("#vlLab").html(Obj['labs']);
-				});
-	}
-	function getByDistrict(districtId)
-	{
-                $("#facilityName").html('');
-				$("#vlLab").html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					labs : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#facilityName").html(Obj['facilities']);
-			$("#vlLab").html(Obj['labs']);
-				});
-	}
+        $("#vlLab").html('');
+        $.post("/common/get-by-province-id.php", {
+                provinceId: provinceId,
+                districts: true,
+                facilities: true,
+                labs: true
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#district").html(Obj['districts']);
+                $("#facilityName").html(Obj['facilities']);
+                $("#vlLab").html(Obj['labs']);
+            });
+    }
+
+    function getByDistrict(districtId) {
+        $("#facilityName").html('');
+        $("#vlLab").html('');
+        $.post("/common/get-by-district-id.php", {
+                districtId: districtId,
+                facilities: true,
+                labs: true
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#facilityName").html(Obj['facilities']);
+                $("#vlLab").html(Obj['labs']);
+            });
+    }
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

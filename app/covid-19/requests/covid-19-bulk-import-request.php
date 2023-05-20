@@ -13,22 +13,22 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $countryFormId = $general->getGlobalConfig('vl_form');
-$fileName = WEB_ROOT. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
+$fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'covid-19' . DIRECTORY_SEPARATOR . $countryFormId . DIRECTORY_SEPARATOR . 'Covid19_Bulk_Import_Excel_Format.xlsx';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Import Test Requests In Bulk");?></h1>
+    <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Import Test Requests In Bulk"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("Import Test Requests In Bulk");?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+      <li class="active"><?php echo _("Import Test Requests In Bulk"); ?></li>
     </ol>
   </section>
 
   <!-- Main content -->
   <section class="content">
-    
+
     <div class="box box-default">
       <div class="box-header with-border">
         <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -55,10 +55,10 @@ $fileName = WEB_ROOT. DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'cov
                           </div>
                         </div>
                       </div>
-                      <?php if(file_exists($fileName)) {?>
-                      <div class="col-md-6">
-                        <a href="<?php echo "/files/covid-19/$countryFormId/Covid19_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank"  rel="noopener" class="btn btn-sm btn-primary" download><em class="fa-solid fa-download"></em> Download Example Format</a>
-                      </div>
+                      <?php if (file_exists($fileName)) { ?>
+                        <div class="col-md-6">
+                          <a href="<?php echo "/files/covid-19/$countryFormId/Covid19_Bulk_Import_Excel_Format.xlsx"; ?>" target="_blank" rel="noopener" class="btn btn-sm btn-primary" download><em class="fa-solid fa-download"></em> Download Example Format</a>
+                        </div>
                       <?php } ?>
                     </div>
                   </div>

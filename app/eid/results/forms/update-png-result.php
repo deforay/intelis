@@ -7,7 +7,8 @@ use App\Services\EidService;
 use App\Utilities\DateUtility;
 
 
-
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
@@ -16,11 +17,6 @@ $fundingSourceList = $db->query($fundingSourceQry);
 //Implementing partner list
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
-
-
-
-
-// Getting the list of Provinces, Districts and Facilities
 
 
 /** @var EidService $eidService */

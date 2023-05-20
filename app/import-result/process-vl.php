@@ -7,6 +7,8 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

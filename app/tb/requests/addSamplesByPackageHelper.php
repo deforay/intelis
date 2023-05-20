@@ -15,9 +15,17 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
-$sampleQuery = "SELECT tb_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_tb where tb_id IN (" . $_POST['sampleId'] . ") ORDER BY tb_id";
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = "SELECT tb_id,
+                sample_collection_date,
+                sample_package_code,
+                province_id,
+                sample_code
+                FROM form_tb
+                WHERE tb_id IN (?) ORDER BY tb_id";
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
@@ -44,7 +52,7 @@ foreach ($sampleResult as $sampleRow) {
         $tbData['sample_code'] = $sampleData['sampleCode'];
         $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
-        if(!empty($_POST['testDate'])){
+        if (!empty($_POST['testDate'])) {
             $tbData['sample_tested_datetime'] = null;
             $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }

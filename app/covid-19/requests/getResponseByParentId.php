@@ -6,14 +6,17 @@ use App\Services\CommonService;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $sampleData = [];
-$sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = "' . $_POST['responseParent'] . '"';
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = 'SELECT * FROM r_covid19_test_reasons where parent_reason = ?';
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['responseParent']]);
 
 if (isset($_POST['covid19Id']) && $_POST['covid19Id'] != '') {
-    $results = $db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = " . $_POST['covid19Id']);
+    $results = $db->rawQuery("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ? ", [$_POST['covid19Id']]);
     foreach ($results as $row) {
         $response[$row['reasons_id']] = $row['reasons_detected'];
     }

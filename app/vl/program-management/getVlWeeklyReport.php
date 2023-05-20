@@ -106,63 +106,63 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
-	
+
 		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
-		
+
 		SUM(CASE
           WHEN (reason_for_sample_rejection IS NOT NULL AND reason_for_sample_rejection!= '' AND reason_for_sample_rejection!= 0) THEN 1
           ELSE 0
           END) AS rejections,
-		SUM(CASE 
+		SUM(CASE
           WHEN (patient_age_in_years >= 0 AND patient_age_in_years <= 15 AND vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
-          END) AS lt15suppressed, 
-		SUM(CASE 
+          END) AS lt15suppressed,
+		SUM(CASE
           WHEN (patient_age_in_years >= 0 AND patient_age_in_years <= 15 AND vl.vl_result_category like 'not suppressed' ) THEN 1
           ELSE 0
           END) AS lt15NotSuppressed,
-		SUM(CASE 
+		SUM(CASE
           WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
           END) AS gt15suppressedM,
-		SUM(CASE 
+		SUM(CASE
           WHEN (patient_age_in_years > 15 AND patient_gender IN ('m','male','M','MALE') AND vl.vl_result_category like 'not suppressed' ) THEN 1
           ELSE 0
           END) AS gt15NotSuppressedM,
-		SUM(CASE 
+		SUM(CASE
           WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
           END) AS gt15suppressedF,
-		SUM(CASE 
+		SUM(CASE
           WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.vl_result_category like 'not suppressed' ) THEN 1
           ELSE 0
-          END) AS gt15NotSuppressedF,	
-		SUM(CASE 
+          END) AS gt15NotSuppressedF,
+		SUM(CASE
           WHEN ((is_patient_pregnant like 'yes') AND vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
-          END) AS pregSuppressed,	
-		SUM(CASE 
+          END) AS pregSuppressed,
+		SUM(CASE
           WHEN ((is_patient_pregnant like 'yes') AND vl.vl_result_category like 'not suppressed' ) THEN 1
           ELSE 0
-          END) AS pregNotSuppressed,           	           	
-		SUM(CASE 
+          END) AS pregNotSuppressed,
+		SUM(CASE
           WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
-          END) AS genderUnknownSuppressed, 
-		SUM(CASE 
+          END) AS genderUnknownSuppressed,
+		SUM(CASE
           WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'not suppressed') THEN 1
           ELSE 0
-          END) AS genderUnknownNotSuppressed,               
-		SUM(CASE 
+          END) AS genderUnknownNotSuppressed,
+		SUM(CASE
           WHEN (vl.vl_result_category like 'suppressed') THEN 1
           ELSE 0
-          END) AS totalLessThan1000,     
-		SUM(CASE 
+          END) AS totalLessThan1000,
+		SUM(CASE
           WHEN (vl.vl_result_category like 'not suppressed') THEN 1
           ELSE 0
           END) AS totalGreaterThan1000,
 		COUNT(result) as total
-        FROM form_vl as vl 
+        FROM form_vl as vl
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id ";
 

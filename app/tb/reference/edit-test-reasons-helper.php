@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -28,14 +28,14 @@ try {
 
 
 		$data = array(
-            'test_reason_name' => $_POST['testReasonName'],
-            'parent_reason' => $_POST['parentReason'],
+			'test_reason_name' => $_POST['testReasonName'],
+			'parent_reason' => $_POST['parentReason'],
 			'test_reason_status' => $_POST['testReasonStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-        $db = $db->where('test_reason_id', $testReasonId);
-        $db->update($tableName, $data);
+		$db = $db->where('test_reason_id', $testReasonId);
+		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Test reason details updated successfully";
 		$general->activityLog('update-test-reasons', $_SESSION['userName'] . ' updated new reference test reasons' . $_POST['test_reason_name'], 'reference-tb-test-reasons');

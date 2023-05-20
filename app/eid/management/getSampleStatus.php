@@ -140,8 +140,8 @@ $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 					ELSE 0
 				END)) AS negativeResult,
 		status_id,
-		status_name 
-		
+		status_name
+
 		FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = " (vl.result!='' and vl.result is not null) ";

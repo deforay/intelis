@@ -14,6 +14,7 @@
 // imported in tb-add-request.php based on country in global config
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -443,7 +444,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 							</div>
 						</div>
 						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-							<?php // if (false) { 
+							<?php // if (false) {
 							?>
 							<div class="box box-primary">
 								<div class="box-body">

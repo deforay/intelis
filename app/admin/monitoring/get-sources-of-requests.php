@@ -134,7 +134,7 @@ $sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         vl.source_of_request,
-        vl.sample_collection_date, 
+        vl.sample_collection_date,
         count(*) as 'samples',
         vl.lab_id,
         SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',
@@ -142,7 +142,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         SUM(CASE WHEN (vl." . $sampleReceivedfield . " is not null AND vl." . $sampleReceivedfield . " not like '') THEN 1 ELSE 0 END) AS 'noOfSampleReceivedAtLab',
         SUM(CASE WHEN (vl.result_sent_to_source is not null and vl.result_sent_to_source = 'sent') THEN 1 ELSE 0 END) AS 'noOfResultsReturned',
         MAX(request_created_datetime) AS 'lastRequest'
-        FROM $table as vl 
+        FROM $table as vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id";
 
 //echo $sQuery;die;

@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -28,14 +28,14 @@ try {
 
 
 		$data = array(
-            'symptom_name' => $_POST['symptomsName'],
-            'parent_symptom' => $_POST['parentSymptom'],
+			'symptom_name' => $_POST['symptomsName'],
+			'parent_symptom' => $_POST['parentSymptom'],
 			'symptom_status' => $_POST['symptomsStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-        $db = $db->where('symptom_id', $symptomId);
-        $db->update($tableName, $data);
+		$db = $db->where('symptom_id', $symptomId);
+		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Symptom details updated successfully";
 		$general->activityLog('update-symptoms', $_SESSION['userName'] . ' updated new reference symptoms' . $_POST['symptomsName'], 'reference-covid19-symptoms');

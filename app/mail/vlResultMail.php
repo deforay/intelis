@@ -504,7 +504,7 @@ $batchResult = $db->rawQuery($batchQuery);
     let samples = JSON.stringify($("#sample").val());
     $("#selectedSamples").val(samples);
     $("#sample").removeClass("isRequired");
-    $("#sample").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES    
+    $("#sample").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
     flag = deforayValidator.init({
       formId: 'mailForm'
     });

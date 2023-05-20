@@ -116,7 +116,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     vl.sample_code,
                     vl.patient_art_no,
                     vl.sample_collection_date,
@@ -131,15 +131,15 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     f.facility_district,
                     acd.art_code,
                     rs.rejection_reason_name,
-                    tr.test_reason_name 
-                    FROM form_vl as vl 
-                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                    LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                    LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen 
-                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+                    tr.test_reason_name
+                    FROM form_vl as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    LEFT JOIN r_vl_art_regimen as acd ON acd.art_id=vl.current_regimen
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing";
 
 $start_date = '';

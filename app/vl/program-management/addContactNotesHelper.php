@@ -5,7 +5,8 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
-
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 
 /** @var MysqliDb $db */

@@ -102,53 +102,53 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
-	
+
 		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
-		
+
 		SUM(CASE
 			WHEN (patient_gender IN ('f','female','F','FEMALE')) THEN 1
 		             ELSE 0
 		           END) AS totalFemale,
-		SUM(CASE 
+		SUM(CASE
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' )) THEN 1
              ELSE 0
-           END) AS pregSuppressed,	
-		SUM(CASE 
+           END) AS pregSuppressed,
+		SUM(CASE
              WHEN ((is_patient_pregnant ='Yes' OR is_patient_pregnant ='YES' OR is_patient_pregnant ='yes')  AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' ) THEN 1
              ELSE 0
-           END) AS pregNotSuppressed,  
-		SUM(CASE 
+           END) AS pregNotSuppressed,
+		SUM(CASE
              WHEN ((is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' )) THEN 1
              ELSE 0
-           END) AS bfsuppressed,	
-		SUM(CASE 
+           END) AS bfsuppressed,
+		SUM(CASE
              WHEN ((is_patient_breastfeeding ='Yes' OR is_patient_breastfeeding ='YES' OR is_patient_breastfeeding ='yes') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' ) THEN 1
              ELSE 0
-           END) AS bfNotSuppressed,  
-		SUM(CASE 
+           END) AS bfNotSuppressed,
+		SUM(CASE
              WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01')) THEN 1
              ELSE 0
            END) AS gt15suppressedF,
-		   SUM(CASE 
+		   SUM(CASE
              WHEN (patient_age_in_years > 15 AND patient_gender IN ('f','female','F','FEMALE') AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01') THEN 1
              ELSE 0
            END) AS gt15NotSuppressedF,
-		SUM(CASE 
+		SUM(CASE
 			WHEN ((patient_age_in_years >= 0 AND patient_age_in_years <= 15) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' )) THEN 1
 		             ELSE 0
 		           END) AS lt15suppressed,
-		SUM(CASE 
+		SUM(CASE
              WHEN ((patient_age_in_years >= 0 AND patient_age_in_years <= 15) AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' ) THEN 1
              ELSE 0
            END) AS lt15NotSuppressed,
-		SUM(CASE 
+		SUM(CASE
 			WHEN ((patient_age_in_years ='' OR patient_age_in_years IS NULL) AND ((vl.vl_result_category like 'suppressed') AND vl.result IS NOT NULL AND vl.result!= '' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' )) THEN 1
 		             ELSE 0
 		           END) AS ltUnKnownAgesuppressed,
-		SUM(CASE 
+		SUM(CASE
              WHEN ((patient_age_in_years ='' OR patient_age_in_years IS NULL)  AND vl.result IS NOT NULL AND vl.result!= '' AND vl.vl_result_category like 'suppressed' AND sample_tested_datetime is not null AND sample_tested_datetime not like '' AND DATE(sample_tested_datetime) !='1970-01-01' ) THEN 1
              ELSE 0
-           END) AS ltUnKnownAgeNotSuppressed  
+           END) AS ltUnKnownAgeNotSuppressed
 		FROM form_vl as vl RIGHT JOIN facility_details as f ON f.facility_id=vl.facility_id where vl.patient_gender IN ('f','female','F','FEMALE')";
 $start_date = '';
 $end_date = '';

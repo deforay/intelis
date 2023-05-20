@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -28,18 +28,18 @@ try {
 			'funding_source_status' => $_POST['fundingStatus'],
 			'updated_datetime'		=> DateUtility::getCurrentDateTime()
 		);
-		if(isset($_POST['fundingId']) && $_POST['fundingId'] != ""){
+		if (isset($_POST['fundingId']) && $_POST['fundingId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['fundingId']));
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$data['data_sync'] = 0;
 			$db->insert($tableName, $data);
 			$lastId = $db->getInsertId();
 		}
-        if($lastId > 0){
-            $_SESSION['alertMsg'] = _("Funding Source saved successfully");
-            $general->activityLog('Funding Source', $_SESSION['userName'] . ' added new Funding Source for ' . $_POST['fundingSrcName'], 'common-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("Funding Source saved successfully");
+			$general->activityLog('Funding Source', $_SESSION['userName'] . ' added new Funding Source for ' . $_POST['fundingSrcName'], 'common-reference');
+		}
 	}
 	header("Location:funding-sources.php");
 } catch (Exception $exc) {

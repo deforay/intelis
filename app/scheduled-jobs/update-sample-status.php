@@ -38,7 +38,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         if (empty($expiryDays)) {
             $expiryDays = 365 * 2; // by default, we consider samples more than 2 years as expired
         }
-        $db->where("result_status != 4"); // not rejected 
+        $db->where("result_status != 4"); // not rejected
         $db->where("result_status != 7"); // not approved
         $db->where("result_status != 10"); // not expired
         $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) > " . $expiryDays);

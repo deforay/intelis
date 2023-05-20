@@ -89,7 +89,7 @@ if (isset($where) && !empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
-// die($query);	
+// die($query);
 $result = $db->rawQuery($query);
 
 ?>

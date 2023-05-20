@@ -8,26 +8,26 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
-/* echo "<pre>";
-print_r($_POST);
-die; */
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $_POST['configurationName'] = trim($_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
 
         if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
-                $configDir = __DIR__;
+                $configDir = realpath(__DIR__);
                 if (!file_exists($configDir)) {
                     mkdir($configDir, 0777, true);
                 }

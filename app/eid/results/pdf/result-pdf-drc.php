@@ -257,7 +257,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Zone de santé</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_code']. '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['facility_code'] . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_state']) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
         $html .= '</tr>';
@@ -398,7 +398,7 @@ if (!empty($requestResult)) {
             if ($draftTextShow) {
                 //Watermark section
                 $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                $watermark->setFullPathToFile($filename);
                 $fullPathToFile = $filename;
                 $watermark->Output($filename, "F");
             }
@@ -433,7 +433,7 @@ $watermark->setFullPathToFile($filename);
         $resultPdf->setPrintHeader(false);
         $resultPdf->setPrintFooter(false);
         $resultPdf->concat();
-        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+        $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
         $general->removeDirectory($pathFront);
         unset($_SESSION['rVal']);

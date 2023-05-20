@@ -30,7 +30,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');

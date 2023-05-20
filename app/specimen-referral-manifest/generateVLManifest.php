@@ -14,6 +14,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $id = base64_decode($_POST['id']);
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
@@ -81,10 +85,10 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code, 
+    $sQuery = "SELECT remote_sample_code,
                         pd.number_of_samples,
-                        fd.facility_name as clinic_name, 
-                        fd.facility_district, 
+                        fd.facility_name as clinic_name,
+                        fd.facility_district,
                         patient_first_name,
                         patient_middle_name,
                         patient_last_name,
@@ -93,18 +97,18 @@ if (trim($id) != '') {
                         sample_name,
                         sample_collection_date,
                         patient_gender,
-                        patient_art_no,pd.package_code, 
+                        patient_art_no,pd.package_code,
                         l.facility_name as lab_name,
                         u_d.user_name as releaser_name,
                         u_d.phone_number as phone,
                         u_d.email as email,
                         DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
-                FROM package_details as pd 
-                LEFT JOIN form_vl as vl ON vl.sample_package_id=pd.package_id 
-                LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id 
-                LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
-                LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.sample_type 
-                LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by 
+                FROM package_details as pd
+                LEFT JOIN form_vl as vl ON vl.sample_package_id=pd.package_id
+                LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
+                LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.sample_type
+                LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
                 WHERE pd.package_id IN($id)";
 
     $result = $db->query($sQuery);
@@ -167,51 +171,50 @@ if (trim($id) != '') {
         // set font
         $pdf->SetFont('helvetica', '', 10);
         $pdf->setPageOrientation('L');
-        
+
         // add a page
         $pdf->AddPage();
-    if($arr['vl_form']==2)
-    {
-        //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
-        $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
+        if ($arr['vl_form'] == 2) {
+            //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
+            $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
 
-        $tbl1 = '<br>';
-        $tbl1.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-        $tbl1.='<tr>
-        <td align="left"> Releaser Name :  '.$result[0]['releaser_name'].'</td>
-        <td align="left"> Date :  '.$result[0]['created_date'].'</td>     
+            $tbl1 = '<br>';
+            $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+            $tbl1 .= '<tr>
+        <td align="left"> Releaser Name :  ' . $result[0]['releaser_name'] . '</td>
+        <td align="left"> Date :  ' . $result[0]['created_date'] . '</td>
         </tr>
         <tr>
-        <td align="left"> Phone No. :  '.$result[0]['phone'].'</td>
-        <td align="left"> Email :  '.$result[0]['email'].'</td>
+        <td align="left"> Phone No. :  ' . $result[0]['phone'] . '</td>
+        <td align="left"> Email :  ' . $result[0]['email'] . '</td>
         </tr>
         <tr>
-        <td align="left"> Facility Name :  '.$result[0]['clinic_name'].'</td>
-        <td align="left"> District :  '.$result[0]['facility_district'].'</td>     
+        <td align="left"> Facility Name :  ' . $result[0]['clinic_name'] . '</td>
+        <td align="left"> District :  ' . $result[0]['facility_district'] . '</td>
         </tr>';
-        $tbl1.='</table>';
-        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C');
+            $tbl1 .= '</table>';
+            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C');
 
-        $pdf->WriteHTML('<p></p><strong>SPECIMEN PACKAGING</strong>');
+            $pdf->WriteHTML('<p></p><strong>SPECIMEN PACKAGING</strong>');
 
-        $tbl2 = '<br>';
-        $tbl2.='<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-        $tbl2.='<tr>
-        <td align="left"> Number of specimen included :  '.$result[0]['number_of_samples'].'</td>
-        <td align="left"> Forms completed and included :  Yes / No</td>     
+            $tbl2 = '<br>';
+            $tbl2 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
+            $tbl2 .= '<tr>
+        <td align="left"> Number of specimen included :  ' . $result[0]['number_of_samples'] . '</td>
+        <td align="left"> Forms completed and included :  Yes / No</td>
         </tr>
         <tr>
         <td align="left"> Packaged By :  ..................</td>
         <td align="left"> Date :  ...................</td>
         </tr>';
-        $tbl2.='</table>';
+            $tbl2 .= '</table>';
 
-        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C');
+            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C');
 
-        $pdf->WriteHTML('<p></p><strong>CHAIN OF CUSTODY : </strong>(persons relinquishing and receiving specimen fill their respective sections)');
-        $pdf->WriteHTML('<p></p><strong>To be completed at facility in the presence of specimen courier</strong>');
-        $tbl3 = '<br>';
-        $tbl3 .= '<table border="1">
+            $pdf->WriteHTML('<p></p><strong>CHAIN OF CUSTODY : </strong>(persons relinquishing and receiving specimen fill their respective sections)');
+            $pdf->WriteHTML('<p></p><strong>To be completed at facility in the presence of specimen courier</strong>');
+            $tbl3 = '<br>';
+            $tbl3 .= '<table border="1">
         <tr>
             <td colspan="2">Relinquished By (Laboratory)</td>
             <td colspan="2">Received By (Courier)</td>
@@ -223,9 +226,9 @@ if (trim($id) != '') {
             <td align="left"> Date : <br><p></p><br> Time :</td>
         </tr>
         </table>';
-        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C');
+            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C');
 
-        $pdf->WriteHTML('<p></p><strong>To be completed at testing laboratory by specimen reception personnel</strong>');
+            $pdf->WriteHTML('<p></p><strong>To be completed at testing laboratory by specimen reception personnel</strong>');
             $tbl4 = '<br>';
             $tbl4 .= '<table border="1">
             <tr>
@@ -239,9 +242,8 @@ if (trim($id) != '') {
                 <td align="left"> Date : <br><p></p><br> Time :</td>
             </tr>
         </table>';
-        $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C');
-
-    }
+            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C');
+        }
 
 
         $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];

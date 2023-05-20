@@ -11,26 +11,23 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var EidService $eidObj */
 $eidObj = ContainerRegistry::get(EidService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
-$sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (" . $_POST['sampleId'] . ") ORDER BY eid_id";
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (?) ORDER BY eid_id";
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
     $provinceCode = null;
     if (isset($sampleRow['province_id']) && !empty($sampleRow['province_id'])) {
-        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= " . $sampleRow['province_id'];
-        $provinceResult = $db->rawQueryOne($provinceQuery);
+        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= ?";
+        $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
         $provinceCode = $provinceResult['geo_code'];
-    }
-    if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
-        $testDate = explode(" ", $_POST['testDate']);
-        $_POST['testDate'] = DateUtility::isoDateFormat($testDate[0]);
-        $_POST['testDate'] .= " " . $testDate[1];
-    } else {
-        $_POST['testDate'] = null;
     }
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
@@ -43,9 +40,9 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
         $eidData['result_status'] = 6;
         $eidData['data_sync'] = 0;
-        if(!empty($_POST['testDate'])){
+        if (!empty($_POST['testDate'])) {
             $eidData['sample_tested_datetime'] = null;
-            $eidData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+            $eidData['sample_received_at_vl_lab_datetime'] = DateUtility::isoDateFormat($_POST['testDate'], true);
         }
         $eidData['last_modified_by'] = $_SESSION['userId'];
         $eidData['last_modified_datetime'] = DateUtility::getCurrentDateTime();

@@ -60,16 +60,16 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
                   a_u_d.user_signature as approvedBySignature,
                   r_r_b.user_name as revised,
                   tp.config_machine_name as testingPlatform
-                  FROM form_eid as vl 
+                  FROM form_eid as vl
                   LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                  LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id 
-                  LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
+                  LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
+                  LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
                   LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                   LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
-                  LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type 
-                  LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
-                  LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner 
-                  LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name 
+                  LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type
+                  LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
+                  LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
+                  LEFT JOIN instrument_machines as tp ON tp.config_machine_id=vl.import_machine_name
                   WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;
@@ -95,9 +95,9 @@ class MYPDF extends TCPDF
 	}
 
 	public function imageExists($filePath)
-    {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
-    }
+	{
+		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+	}
 
 	//Page header
 	public function Header()

@@ -15,9 +15,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
-$sampleQuery = "SELECT hepatitis_id, hepatitis_test_type, sample_collection_date, sample_package_code, province_id, sample_code FROM form_hepatitis where hepatitis_id IN (" . $_POST['sampleId'] . ") ORDER BY hepatitis_id";
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = "SELECT hepatitis_id, hepatitis_test_type, sample_collection_date, sample_package_code, province_id, sample_code FROM form_hepatitis where hepatitis_id IN (?) ORDER BY hepatitis_id";
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
     $provinceCode = null;
@@ -46,10 +48,10 @@ foreach ($sampleResult as $sampleRow) {
         $hepatitisData['result_status'] = 6;
         $hepatitisData['data_sync'] = 0;
         $hepatitisData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-        if(!empty($_POST['testDate'])){
+        if (!empty($_POST['testDate'])) {
             $hepatitisData['sample_tested_datetime'] = null;
             $hepatitisData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
-        }        
+        }
         $hepatitisData['last_modified_by'] = $_SESSION['userId'];
         $hepatitisData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 

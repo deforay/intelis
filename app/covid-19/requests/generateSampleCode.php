@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
 
 
@@ -7,7 +8,10 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$c19Model = new Covid19Service();
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+$c19Model = ContainerRegistry::get(Covid19Service::class);
 
 $sampleCollectionDate = $province = '';
 

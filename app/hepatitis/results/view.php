@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -36,7 +37,7 @@ $id = $res['vl_sample_id'];
         border: 1px solid black;
         direction: ltr;
         margin-left: 15%;
-        margin-top:50px;
+        margin-top: 50px;
     }
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>

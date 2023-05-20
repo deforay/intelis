@@ -40,7 +40,7 @@ class SystemService
     public function setupTranslation($domain = "messages")
     {
         /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(\App\Services\CommonService::class);
 
         $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
             $general->getGlobalConfig('app_locale') ?? 'en_US';
@@ -57,7 +57,7 @@ class SystemService
     public function setupDateTimeZone()
     {
         /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
+        $general = ContainerRegistry::get(\App\Services\CommonService::class);
 
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $general->getGlobalConfig('default_time_zone') ?? 'UTC';

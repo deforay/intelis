@@ -83,7 +83,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Nº de amostra </label></td>
@@ -193,7 +193,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="box-header with-border">
                                     <h3 class="box-title">DADOS DO PACIENTE</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
 
@@ -290,7 +290,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                 <br><br>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
                                             <h4>Sample Information</h4>
@@ -334,7 +334,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Informações laboratoriais </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <td><label for="labId">Lab Name</label> </td>
                                             <td>

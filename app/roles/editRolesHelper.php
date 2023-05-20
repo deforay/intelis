@@ -1,10 +1,7 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-}
-  
-
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 $tableName1 = "roles";
 $tableName2 = "roles_privileges_map";
@@ -21,8 +18,8 @@ try {
                 $db = $db->where('role_id', $lastId);
                 $db->update($tableName1, $data);
         }
-        $roleQuery = "SELECT * from roles_privileges_map where role_id=$lastId";
-        $roleInfo = $db->query($roleQuery);
+        $roleQuery = "SELECT * from roles_privileges_map where role_id=?";
+        $roleInfo = $db->rawQuery($roleQuery, [$lastId]);
         if ($roleInfo) {
                 $db = $db->where('role_id', $lastId);
                 $db->delete($tableName2);

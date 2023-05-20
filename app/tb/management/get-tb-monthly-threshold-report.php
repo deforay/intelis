@@ -146,8 +146,8 @@ if (isset($sWhere) && !empty($sWhere)) {
      if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
           $fac = explode(',', $_POST['facilityName']);
           $out = '';
-//          print_r($fac);
-//          die;
+          //          print_r($fac);
+          //          die;
           for ($s = 0; $s < count($fac); $s++) {
                if ($out)
                     $out = $out . ',"' . $fac[$s] . '"';

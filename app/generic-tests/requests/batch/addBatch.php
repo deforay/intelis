@@ -12,13 +12,13 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = \App\Registries\\App\Registries\ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = \App\Registries\\App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = \App\Registries\\App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

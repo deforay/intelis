@@ -44,7 +44,7 @@ if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
 	}
 }
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo_name as district
-            FROM facility_details as f_d 
+            FROM facility_details as f_d
             LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type
             LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
             LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id $qry ";

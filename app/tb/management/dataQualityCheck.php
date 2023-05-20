@@ -177,11 +177,11 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
+/* Data set length after filtering
 $aResultFilterTotal = $db->rawQuery("SELECT vl.tb_id,vl.facility_id,vl.patient_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC, $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery("select COUNT(tb_id) as total FROM form_tb as vl where vlsm_country_id='" . $gconfig['vl_form'] . "' $dWhere");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);

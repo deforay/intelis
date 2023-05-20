@@ -1,9 +1,15 @@
 <?php
 
+use App\Exceptions\SystemException;
+
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 $tableName = "support";
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
 	$db->startTransaction();
 	if (isset($_POST['feedback']) && trim($_POST['feedback']) != "" && trim($_POST['feedbackUrl']) != "") {
@@ -16,20 +22,19 @@ try {
 			$response['attached'] = 'yes';
 		}
 
-		//print_r($data);die;
 		$db->insert($tableName, $data);
 		$supportId = $db->getInsertId();
-		// File upload folder 
-		$uploadDir = WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support";
-		if (!file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support") && !is_dir(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support")) {
-			mkdir(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support");
+		// File upload folder
+		$uploadDir = realpath(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support");
+		if (!file_exists($uploadDir) && !is_dir($uploadDir)) {
+			mkdir($uploadDir, 0777, true);
 		}
 
-		if (!empty($_FILES["supportFile"]["name"])) {
-			// Allowed file types 
+
+		if (isset($_FILES['supportFile']) && $_FILES['resultFile']['error'] === UPLOAD_ERR_OK && $_FILES['supportFile']['size'] > 0) {
+			// Allowed file types
 			$allowedExtensions = array('jpg', 'jpeg', 'png',);
-			$imageName = $_FILES['supportFile']['name'];
-			$_FILES['supportFile']['name'] = preg_replace('/[^A-Za-z0-9.]/', '-', $imageName);
+			$_FILES['supportFile']['name'] = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['supportFile']['name']));
 			$_FILES['supportFile']['name'] = str_replace(" ", "-", $_FILES['supportFile']['name']);
 			$extension = strtolower(pathinfo($_FILES['supportFile']['name'], PATHINFO_EXTENSION));
 
@@ -52,7 +57,7 @@ try {
 				}
 			} else {
 				$db->rollback();
-				$response['message'] = 'Sorry, only ' . implode('/', $allowedExtensions) . ' files are allowed to upload.';
+				$response['message'] = 'Sorry, only ' . implode(', ', $allowedExtensions) . ' files are allowed to upload.';
 			}
 		} else {
 			$response['status'] = 1;
@@ -61,7 +66,7 @@ try {
 			$db->commit();
 		}
 
-		// Return response 
+		// Return response
 		echo json_encode($response);
 	}
 } catch (Exception $exc) {

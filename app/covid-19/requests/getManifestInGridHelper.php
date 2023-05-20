@@ -128,9 +128,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 $aWhere = '';
-$sQuery = "SELECT * FROM form_covid19 as vl    
-                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+$sQuery = "SELECT * FROM form_covid19 as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (isset($sWhere) && !empty($sWhere)) {

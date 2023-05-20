@@ -43,7 +43,7 @@ if (!empty($fMapResult)) {
   $condition = "lab_id =" . $labId;
 }
 
-$covid19Query = "SELECT * FROM form_covid19 
+$covid19Query = "SELECT * FROM form_covid19
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
@@ -93,14 +93,14 @@ if (!empty($sampleIds)) {
 if (!empty($facilityIds)) {
   $facilityIds = array_unique(array_filter($facilityIds));
   $sql = 'UPDATE facility_details
-            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.covid19RemoteRequestsSync", ?) 
+            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.covid19RemoteRequestsSync", ?)
             WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
   $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
 
 // Whether any data got synced or not, we will update sync datetime for the lab
 $sql = 'UPDATE facility_details
-        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.covid19LastRequestsSync", ?) 
+        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.covid19LastRequestsSync", ?)
         WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 

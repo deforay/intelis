@@ -229,7 +229,7 @@ $rInfo = $db->query($resourcesQuery);
 									$a = 0;
 
 									foreach ($rInfo as $moduleRow) {
-										$moduleName = ($moduleRow['module'] == 'generic-tests')?"Lab Tests":$moduleRow['module'];
+										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Lab Tests" : $moduleRow['module'];
 										if ($a == 0)
 											$cls = "active";
 										else
@@ -281,8 +281,8 @@ $rInfo = $db->query($resourcesQuery);
 												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
                                   <strong>" . ($privilege['display_name']) . "</strong>
                                   <br>
-                                  
-								  <div class='switch-field' style='margin: 30px 0 36px 90px;'> 
+
+								  <div class='switch-field' style='margin: 30px 0 36px 90px;'>
 								  <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "'><label for='radio-one" . $privilege['privilege_id'] . "'>Yes</label>
 								  <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "'> <label for='radio-two" . $privilege['privilege_id'] . "'> No</label>
                             </div>

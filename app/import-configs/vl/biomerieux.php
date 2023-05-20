@@ -1,10 +1,14 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 try {
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat']))?$_POST['dateFormat']:'d/m/Y H:i';
+    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -22,7 +26,14 @@ try {
         'xlsx',
         'csv'
     );
-    $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
@@ -34,7 +45,7 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
@@ -112,7 +123,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
 
 
-            //$absDecimalVal=$absVal=$row[$absValCol];           
+            //$absDecimalVal=$absVal=$row[$absValCol];
             $batchCode = $row[$batchCodeCol];
 
             // Date time in the provided Biomerieux Sample file is in this format : 05-23-16 12:52:33

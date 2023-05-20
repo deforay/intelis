@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -33,8 +33,8 @@ try {
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-        $db = $db->where('comorbidity_id', $comorbidityId);
-        $db->update($tableName, $data);
+		$db = $db->where('comorbidity_id', $comorbidityId);
+		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Comorbidity details updated successfully";
 		$general->activityLog('update-comorbidity', $_SESSION['userName'] . ' updated new reference comorbidity ' . $_POST['comorbidityName'], 'reference-covid19-comorbidity');

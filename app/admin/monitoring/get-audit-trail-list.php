@@ -92,8 +92,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name, 
-               DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn FROM activity_log as a 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name,
+               DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn FROM activity_log as a
           LEFT JOIN resources as r ON a.resource = r.resource_id";
 
 //echo $sQuery;die;

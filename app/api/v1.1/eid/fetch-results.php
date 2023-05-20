@@ -29,7 +29,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $arr = $general->getGlobalConfig();
 $user = null;
@@ -125,7 +125,7 @@ try {
         r_r_b.user_name                                      as revisedByName,
         vl.revised_on                                        as revisedOn,
         vl.reason_for_changing                               as reasonForEidResultChanges
-        
+
         FROM form_eid as vl
         LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

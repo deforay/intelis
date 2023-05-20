@@ -1,6 +1,6 @@
 <?php
 
-///  if you change anyting in this file make sure Api file for covid 19 add also 
+///  if you change anyting in this file make sure Api file for covid 19 add also
 // Path   /vlsm/api/covid-19/v1/add-request.php
 
 use App\Services\ApiService;

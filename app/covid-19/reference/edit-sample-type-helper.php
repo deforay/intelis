@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -33,8 +33,8 @@ try {
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-        $db = $db->where('sample_id', $sampleId);
-        $db->update($tableName, $data);
+		$db = $db->where('sample_id', $sampleId);
+		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Sample details updated successfully";
 		$general->activityLog('update-sample-type', $_SESSION['userName'] . ' updated new reference sample type' . $_POST['sampleName'], 'reference-covid19-sample type');

@@ -1,6 +1,9 @@
 <?php
 
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "global_config";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -32,7 +35,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
         if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
             $sOrder .= $aColumns[intval($_POST['iSortCol_' . $i])] . "
-                     " . ($_POST['sSortDir_' . $i]) . ", ";
+                    " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -85,7 +88,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM global_config";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM global_config";
 
 if (isset($sWhere) && !empty($sWhere)) {
     $sWhere = "WHERE status = 'active' AND " . $sWhere;
@@ -106,20 +109,11 @@ if (isset($sOrder) && !empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
-// echo $sQuery;
+
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-// $aResultFilterTotal = $db->rawQuery("SELECT * FROM global_config $sWhere order by $sOrder");
-$iFilteredTotal = count($rResult);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM global_config");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
          * Output
         */
@@ -135,12 +129,12 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['display_name'];
     if ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'no') {
         $aRow['value'] = 'Month and Year';
-    } else if ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'yes') {
+    } elseif ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'yes') {
         $aRow['value'] = 'Full Date';
     }
     if ($aRow['name'] == 'vl_form' && trim($aRow['value']) != '') {
-        $query = "SELECT * FROM s_available_country_forms WHERE vlsm_country_id=" . $aRow['value'];
-        $formResult = $db->query($query);
+        $query = "SELECT * FROM s_available_country_forms WHERE vlsm_country_id= ?";
+        $formResult = $db->rawQuery($query, [$aRow['value']]);
         $aRow['value'] = $formResult[0]['form_name'];
     }
     $row[] = $aRow['value'];

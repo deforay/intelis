@@ -547,7 +547,7 @@ $state = $geolocationService->getProvinces("yes");
             "bScrollCollapse": true,
             "bStateSave": true,
             "iDisplayLength": 100,
-            //"bRetrieve": true,                    
+            //"bRetrieve": true,
             "aoColumns": [{
                     "sClass": "center",
                     "bSortable": false

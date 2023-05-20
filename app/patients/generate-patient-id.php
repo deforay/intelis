@@ -4,10 +4,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\PatientsService;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

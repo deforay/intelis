@@ -161,7 +161,7 @@ foreach ($testPlatformResult as $machine) {
                         </div>
 
                         <div class="row" id="sampleDetails">
-                           <!-- <div class="col-md-8">
+                            <!-- <div class="col-md-8">
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="col-md-12">
@@ -174,29 +174,29 @@ foreach ($testPlatformResult as $machine) {
                                 </div>
                             </div>-->
                             <h4> <?php echo _("Sample Code"); ?></h4>
-                                   <div class="col-md-5">
-                                        <!-- <div class="col-lg-5"> -->
-                                        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-                                            
-                                        </select>
-                                   </div>
+                            <div class="col-md-5">
+                                <!-- <div class="col-lg-5"> -->
+                                <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
-                                   <div class="col-md-2">
-                                        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                                   </div>
+                                </select>
+                            </div>
 
-                                   <div class="col-md-5">
-                                        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                                   </div>
+                            <div class="col-md-2">
+                                <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+                                <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                            </div>
+
+                            <div class="col-md-5">
+                                <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                            </div>
                         </div>
                         <div class="row col-md-12" id="alertText" style="font-size:20px;"></div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                    <input type="hidden" name="selectedSample" id="selectedSample" />
+                        <input type="hidden" name="selectedSample" id="selectedSample" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;">Save and Next</a>
                         <a href="eid-batches.php" class="btn btn-default"> Cancel</a>
                     </div>
@@ -222,14 +222,14 @@ foreach ($testPlatformResult as $machine) {
     sortedTitle = [];
     $(document).ready(function() {
         $('#search').multiselect({
-               search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-               },
-               fireSearch: function(value) {
-                    return value.length > 3;
-               }
-          });
+            search: {
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 3;
+            }
+        });
         $("#facilityName").select2({
             placeholder: "Select Facilities"
         });
@@ -241,8 +241,8 @@ foreach ($testPlatformResult as $machine) {
                     separator: ' to ',
                 },
                 showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+                alwaysShowCalendars: false,
+                startDate: moment().subtract(28, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {
@@ -264,32 +264,30 @@ startDate: moment().subtract(28, 'days'),
     function validateNow() {
 
         var selVal = [];
-          $('#search_to option').each(function(i, selected) {
-               selVal[i] = $(selected).val();
-          });
-           $("#selectedSample").val(selVal);
-           var selected = $("#machine").find('option:selected');
-            noOfSamples = selected.data('no-of-samples');
-            if(noOfSamples < selVal.length)
-            {
-                alert("You have selected maximum number of samples");
-                return false;
-            }
-		
-		if(selVal=="")
-		{
-			alert("Please select sample code");
-			return false;
-		}
-		
-          flag = deforayValidator.init({
-               formId: 'addBatchForm'
-          });
-          if (flag) {
-			$("#positions").val($('#positions-type').val());
-                    $.blockUI();
-                    document.getElementById('addBatchForm').submit();
-          }
+        $('#search_to option').each(function(i, selected) {
+            selVal[i] = $(selected).val();
+        });
+        $("#selectedSample").val(selVal);
+        var selected = $("#machine").find('option:selected');
+        noOfSamples = selected.data('no-of-samples');
+        if (noOfSamples < selVal.length) {
+            alert("You have selected maximum number of samples");
+            return false;
+        }
+
+        if (selVal == "") {
+            alert("Please select sample code");
+            return false;
+        }
+
+        flag = deforayValidator.init({
+            formId: 'addBatchForm'
+        });
+        if (flag) {
+            $("#positions").val($('#positions-type').val());
+            $.blockUI();
+            document.getElementById('addBatchForm').submit();
+        }
     }
 
     //$("#auditRndNo").multiselect({height: 100,minWidth: 150});
@@ -434,26 +432,26 @@ startDate: moment().subtract(28, 'days'),
         }
     });
     $(document.body).on("change", "#search, #search_to", function() {
-		countOff().then(function(count) {
-			// use the result here
-			if (count > 0) {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			} else {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			}
-		});
-	});
+        countOff().then(function(count) {
+            // use the result here
+            if (count > 0) {
+                $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+            } else {
+                $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+            }
+        });
+    });
 
-	function countOff() {
-		return new Promise(function(resolve, reject) {
-			setTimeout(function() {
-				resolve();
-			}, 300);
-		}).then(function() {
-			var count = $("#search_to option").length;
-			return count;
-		});
-	}
+    function countOff() {
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve();
+            }, 300);
+        }).then(function() {
+            var count = $("#search_to option").length;
+            return count;
+        });
+    }
 </script>
 
 

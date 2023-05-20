@@ -32,7 +32,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tbService = ContainerRegistry::get(TbService::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 $arr = $general->getGlobalConfig();
@@ -104,7 +104,7 @@ try {
         r_r_b.user_name                         as revisedByName,
         vl.revised_on                           as revisedOn,
         vl.reason_for_changing                  as reasonFortbResultChanges
-        
+
         FROM form_tb as vl
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id

@@ -18,7 +18,7 @@ $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 $zip = new ZipArchive();
 $request = $response = [];
-$folder = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
+$folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
 if (file_exists($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
     $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', ZipArchive::RDONLY);
     if ($res === true) {

@@ -43,13 +43,13 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
-    foreach ($rejectionResult as $reject) {
-        if ($type['rejection_type'] == $reject['rejection_type']) {
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
-        }
-    }
-    $rejectionReason .= '</optgroup>';
+	$rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
+	foreach ($rejectionResult as $reject) {
+		if ($type['rejection_type'] == $reject['rejection_type']) {
+			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
+		}
+	}
+	$rejectionReason .= '</optgroup>';
 }
 
 $state = $geolocationService->getProvinces("yes");
@@ -94,7 +94,7 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -128,28 +128,28 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td>
+														<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
-                </select>
-							</td>
+													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td>
+														<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														</select>
+													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-												
+
 												</tr>
 												<tr>
-												<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:220px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -177,7 +177,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 											</table>
 
-											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -203,7 +203,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -237,28 +237,28 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td>
+														<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
-                </select>
-							</td>
+													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td>
+														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+														</select>
+													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -269,10 +269,10 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td><strong><?php echo _("Rejection Reason"); ?>&nbsp;:</strong></td>
 													<td>
-													<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
-                                                    <option value=''> -- Select -- </option>
-                                                    <?php echo $rejectionReason; ?>
-                                                </select>
+														<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
+															<option value=''> -- Select -- </option>
+															<?php echo $rejectionReason; ?>
+														</select>
 													</td>
 												</tr>
 												<tr>
@@ -282,7 +282,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -305,7 +305,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -339,29 +339,29 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
-							<td>
-              <select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-              <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-								</select>
-							</td>
+													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td>
+														<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
 
-							<td><strong><?php echo _("District/County"); ?> :</strong></td>
-							<td>
-              <select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
-                </select>
-							</td>
+													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td>
+														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+														</select>
+													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
 														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
-													
-													
+
+
 												</tr>
 												<tr>
-												<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
@@ -378,7 +378,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -402,7 +402,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true"  style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -432,7 +432,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 											</table>
-											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true" >
+											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><?php echo _("Sample Code"); ?></th>
@@ -520,7 +520,7 @@ $state = $geolocationService->getProvinces("yes");
 		sampleRjtReport();
 		notAvailReport();
 		incompleteForm();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function(){
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -919,8 +919,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportHighViralLoadInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		var markAsComplete = false;
@@ -949,8 +948,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportRejectedResultInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
@@ -973,8 +971,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportNotAvailableResultInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
@@ -997,8 +994,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportDataQualityInexcel() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
 		$.blockUI();
@@ -1023,35 +1019,34 @@ $state = $geolocationService->getProvinces("yes");
 		$(".stDate").val($("#" + obj.id).val());
 	}
 
-	function getByProvince(districtId,facilityId,provinceId)
-	{
-        $("#"+districtId).html('');
-        $("#"+facilityId).html('');
-				$.post("/common/get-by-province-id.php", {
-					provinceId : provinceId,
-					districts : true,
-					facilities : true,
-					facilityCode : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#"+districtId).html(Obj['districts']);
-			$("#"+facilityId).html(Obj['facilities']);
-				});
+	function getByProvince(districtId, facilityId, provinceId) {
+		$("#" + districtId).html('');
+		$("#" + facilityId).html('');
+		$.post("/common/get-by-province-id.php", {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				facilityCode: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#" + districtId).html(Obj['districts']);
+				$("#" + facilityId).html(Obj['facilities']);
+			});
 
 	}
-	function getByDistrict(facilityId,districtId)
-	{
-                $("#"+facilityId).html('');
-				$.post("/common/get-by-district-id.php", {
-					districtId : districtId,
-					facilities : true,
-					facilityCode : true
-				},
-				function(data) {
-					Obj = $.parseJSON(data);
-			$("#"+facilityId).html(Obj['facilities']);
-				});
+
+	function getByDistrict(facilityId, districtId) {
+		$("#" + facilityId).html('');
+		$.post("/common/get-by-district-id.php", {
+				districtId: districtId,
+				facilities: true,
+				facilityCode: true
+			},
+			function(data) {
+				Obj = $.parseJSON(data);
+				$("#" + facilityId).html(Obj['facilities']);
+			});
 	}
 </script>
 <?php

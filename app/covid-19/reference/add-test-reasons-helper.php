@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -26,8 +26,8 @@ try {
 
 
 		$data = array(
-            'test_reason_name' => $_POST['testReasonName'],
-            'parent_reason' => $_POST['parentReason'],
+			'test_reason_name' => $_POST['testReasonName'],
+			'parent_reason' => $_POST['parentReason'],
 			'test_reason_status' => $_POST['testReasonStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);

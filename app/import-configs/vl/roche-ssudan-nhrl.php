@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
@@ -28,7 +29,14 @@ try {
         'xlsx',
         'csv'
     );
-    $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName          = str_replace(" ", "-", $fileName);
     $ranNumber         = $general->generateRandomString(12);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -39,7 +47,7 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 

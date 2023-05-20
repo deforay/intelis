@@ -4,9 +4,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-
-
-
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -14,6 +11,11 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+
 $tableName = "form_covid19";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";

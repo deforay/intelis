@@ -89,7 +89,7 @@ try {
 
 	$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
-	error_log ($db->getLastError() . PHP_EOL);
+	error_log($db->getLastError() . PHP_EOL);
 	if ($id > 0) {
 		$_SESSION['alertMsg'] = _("Hepatitis result updated successfully");
 	} else {
@@ -109,7 +109,7 @@ try {
 	// 	'updated_on' => \App\Utilities\DateUtility::getCurrentDateTime()
 	// );
 	// $db->insert($tableName2, $data);
-	error_log ($db->getLastError() . PHP_EOL);
+	error_log($db->getLastError() . PHP_EOL);
 
 	header("Location:hepatitis-manual-results.php");
 } catch (Exception $exc) {

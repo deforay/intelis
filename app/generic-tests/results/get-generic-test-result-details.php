@@ -126,11 +126,11 @@ vl.patient_id,
 vl.patient_first_name,
 vl.patient_middle_name,
 vl.patient_last_name,
-f.facility_name, 
+f.facility_name,
 f.facility_district,
 f.facility_state,
-testingLab.facility_name as lab_name, 
-UPPER(s.sample_type_name) as sample_type_name, 
+testingLab.facility_name as lab_name,
+UPPER(s.sample_type_name) as sample_type_name,
 vl.result,
 vl.reason_for_testing,
 vl.last_modified_datetime,
@@ -146,17 +146,17 @@ vl.locked,
 ts.status_name,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
-vl.sample_received_at_hub_datetime, 
-vl.sample_received_at_testing_lab_datetime, 
-vl.result_dispatched_datetime, 
+vl.sample_received_at_hub_datetime,
+vl.sample_received_at_testing_lab_datetime,
+vl.result_dispatched_datetime,
 vl.result_printed_datetime,
 vl.result_approved_by
 
-FROM form_generic as vl 
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
+FROM form_generic as vl
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 

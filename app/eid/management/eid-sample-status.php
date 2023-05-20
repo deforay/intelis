@@ -116,7 +116,7 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="eidExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
-						<table aria-describedby="table" id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("EID Sample ID"); ?></th>
@@ -156,11 +156,11 @@ $batResult = $db->rawQuery($batQuery);
 			placeholder: "<?php echo _("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				startDate: moment().subtract(179, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
@@ -181,7 +181,7 @@ $batResult = $db->rawQuery($batQuery);
 		loadVlTATData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
 
-		$("#filterDiv input, #filterDiv select").on("change", function(){
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -288,8 +288,7 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function eidExportTAT() {
-		if(searchExecuted === false)
-		{
+		if (searchExecuted === false) {
 			searchResultData();
 		}
 		$.blockUI();

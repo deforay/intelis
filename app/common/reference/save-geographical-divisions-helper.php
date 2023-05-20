@@ -30,7 +30,6 @@ try {
 			$db = $db->where("geo_id", base64_decode($_POST['geoId']));
 			$geoId = base64_decode($_POST['geoId']);
 			$lastId = $db->update("geographical_divisions", $data);
-			
 		} else {
 			$data['created_by'] = $_SESSION['userId'];
 			$data['created_on'] = DateUtility::getCurrentDateTime();

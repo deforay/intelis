@@ -14,11 +14,17 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "form_hepatitis";
 $configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
 $configSyncResult = $db->rawQuery($configSyncQuery);
 //get vl result mail sent list
-$resultmailSentQuery = "SELECT result_mail_datetime FROM form_hepatitis where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
+$resultmailSentQuery = "SELECT result_mail_datetime
+                        FROM form_hepatitis
+                        WHERE MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
 $resultmailSentResult = $db->rawQuery($resultmailSentQuery);
 $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 //get instance facility code
@@ -107,12 +113,13 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
          //update result mail sent flag
          $_POST['sample'] = explode(',', $_POST['sample']);
          for ($s = 0; $s < count($_POST['sample']); $s++) {
-            $sampleQuery = "SELECT hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = '" . $_POST['sample'][$s] . "'";
-            $sampleResult = $db->rawQuery($sampleQuery);
+            $sampleQuery = "SELECT hepatitis_id FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = ?";
+            $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sample'][$s]]);
             $db = $db->where('hepatitis_id', $sampleResult[0]['hepatitis_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
          //put file in sync path
+         $configSyncResult[0]['value'] = realpath($configSyncResult[0]['value']);
          if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {
             if (!file_exists($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email") && !is_dir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email")) {
                mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email", 0777, true);

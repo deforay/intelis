@@ -119,10 +119,10 @@ try {
         lt_u_d.user_name                                     as labTechnicianName,
         t_b.user_name                                        as testedByName,
         rs.rejection_reason_name                             as rejectionReason,
-        g.geo_name                                      as provinceName, 
-        r_f_s.funding_source_name                            as fundingSourceName, 
-        r_i_p.i_partner_name                                 as implementingPartnerName, 
-        ts.status_name                                       as resultStatusName, 
+        g.geo_name                                      as provinceName,
+        r_f_s.funding_source_name                            as fundingSourceName,
+        r_i_p.i_partner_name                                 as implementingPartnerName,
+        ts.status_name                                       as resultStatusName,
         f.facility_district_id                               as districtId,
         f.facility_name                                      as facilityName,
         vl.is_sample_rejected                                as isSampleRejected,
@@ -142,7 +142,7 @@ try {
         vl.result_reviewed_by                                as reviewedBy,
         vl.result_reviewed_datetime                          as reviewedOn,
         vl.reason_for_vl_result_changes                      as reasonForVlResultChanges
-        
+
         FROM form_vl as vl
         LEFT JOIN geographical_divisions as g ON vl.province_id=g.geo_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

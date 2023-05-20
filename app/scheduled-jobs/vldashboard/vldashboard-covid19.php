@@ -19,15 +19,15 @@ $lastUpdate = null;
 $output = [];
 
 try {
-    
+
     $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'covid19_last_dash_sync');
-    
+
     if (!empty($instanceUpdateOn)) {
         $db->where('last_modified_datetime', $instanceUpdateOn, ">");
     }
-    
+
     $db->orderBy("last_modified_datetime", "ASC");
-    
+
     $rResult = $db->get('form_covid19', 5000);
 
     if (empty($rResult)) {

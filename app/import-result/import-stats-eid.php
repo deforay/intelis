@@ -8,11 +8,11 @@ use App\Services\EidService;
 $eidObj = ContainerRegistry::get(EidService::class);
 $eidResults = $eidObj->getEidResults();
 
-$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, 
-            SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive, 
+$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
+            SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive,
             SUM(CASE WHEN tsr.result = 'negative' THEN 1 ELSE 0 END) AS negative,
-            SUM(CASE WHEN tsr.result = 'indeterminate' THEN 1 ELSE 0 END) AS indeterminate 
-            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code 
+            SUM(CASE WHEN tsr.result = 'indeterminate' THEN 1 ELSE 0 END) AS indeterminate
+            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code
             WHERE  imported_by ='$importedBy' ";
 $tsResult = $db->rawQuery($tsQuery);
 
@@ -25,8 +25,8 @@ if ($hResult) {
         $holdSample[] = $sample['sample_code'];
     }
 }
-$saQuery = "SELECT tsr.sample_code 
-            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code 
+$saQuery = "SELECT tsr.sample_code
+            FROM temp_sample_import as tsr $import_decided form_eid as vl ON vl.sample_code=tsr.sample_code
                 WHERE  imported_by ='$importedBy' ";
 $saResult = $db->rawQuery($saQuery);
 $sampleCode = [];
@@ -43,13 +43,13 @@ $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name 
                         u_d.user_name as reviewedBy,
                         a_u_d.user_name as approvedBy,
                         rs.rejection_reason_name
-                        FROM form_eid as vl 
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id 
-                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
+                        FROM form_eid as vl
+                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                        LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+                        INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                         LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
 $samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
 $_SESSION['eidPrintSearchResultQuery'] = $samplePrintQuery;
@@ -79,7 +79,7 @@ unset($_SESSION['controllertrack']);
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>

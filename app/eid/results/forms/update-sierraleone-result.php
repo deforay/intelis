@@ -389,7 +389,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <td><select name="machineName" id="machineName" class="form-control result-optional" title="Please select the machine name" ">
                                                 <?= $general->generateSelectOptions($machine, $eidInfo['import_machine_name'], '-- Select --'); ?>
                                         </td>
-                                    
+
 
                                         <th class=" labels" scope="row">Is Sample Rejected? <span class=" mandatory">*</span></th>
                                         <td>

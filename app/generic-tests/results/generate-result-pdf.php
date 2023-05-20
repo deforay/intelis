@@ -35,8 +35,8 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   r_r_b.user_name as revised,
                   l.facility_logo as facilityLogo,
                   rsrr.rejection_reason_name,
-				  rtt.test_standard_name, 
-				  rtt.test_loinc_code 
+				  rtt.test_standard_name,
+				  rtt.test_loinc_code
                   FROM form_generic as vl
                   INNER JOIN r_test_types as rtt ON rtt.test_type_id = vl.test_type
                   LEFT JOIN r_generic_test_reasons as vltr ON vl.reason_for_testing = vltr.test_reason_id

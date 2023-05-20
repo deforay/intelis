@@ -124,7 +124,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`, 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
                 MAX(vl.sample_tested_datetime) as last_tested_date,
                 b.request_created_datetime,
                 b.batch_code,

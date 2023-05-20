@@ -1,18 +1,19 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$systemType = $general->getSystemConfig('sc_user_type');
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
 $value = trim($_POST['value']);
@@ -26,7 +27,7 @@ if ($value != '') {
         if ($result) {
             $data = base64_encode($result[0]['eid_id']) . "##" . $result[0][$fieldName];
         } else {
-            if ($sarr['sc_user_type'] == 'vluser') {
+            if ($systemType == 'vluser') {
                 $sQuery = "SELECT * from $tableName where remote_sample_code= ?";
                 $parameters = array($value);
                 $result = $db->rawQuery($sQuery, $parameters);
@@ -48,7 +49,7 @@ if ($value != '') {
             if ($result) {
                 $data = base64_encode($result[0]['eid_id']) . "##" . $result[0][$fieldName];
             } else {
-                if ($sarr['sc_user_type'] == 'vluser') {
+                if ($systemType == 'vluser') {
                     $sQuery = "SELECT * from $tableName where remote_sample_code= ? and $table[0]!= ?";
                     $parameters = array($value, $table[1]);
                     $result = $db->rawQuery($sQuery, $parameters);

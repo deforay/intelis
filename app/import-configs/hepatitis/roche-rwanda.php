@@ -1,9 +1,13 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 try {
     $db->where('imported_by', $_SESSION['userId']);
@@ -24,7 +28,14 @@ try {
         'xlsx',
         'csv'
     );
-    $fileName          = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['resultFile']['name']);
+    if (
+        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
+        || $_FILES['resultFile']['size'] <= 0
+    ) {
+        throw new SystemException('Please select a file to upload', 400);
+    }
+
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['resultFile']['name']));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
@@ -36,7 +47,7 @@ try {
         mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
     }
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
@@ -226,9 +237,9 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
             //get user name
             if (!empty($d['reviewBy'])) {
-                
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
+
+                /** @var UsersService $usersService */
+                $usersService = ContainerRegistry::get(UsersService::class);
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
@@ -281,7 +292,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
                 $data['result_status'] = '7';
                 $data['sample_details'] = 'New Sample';
             }
-            //echo "<pre>";var_dump($data);echo "</pre>";continue; 
+            //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];

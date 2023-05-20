@@ -117,7 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
 vl.sample_collection_date,
 vl.sample_tested_datetime,
 vl.sample_received_at_testing_lab_datetime,
@@ -126,11 +126,11 @@ vl.remote_sample_code,
 vl.external_sample_code,
 vl.sample_dispatched_datetime,
 vl.request_created_by,
-vl." . $sampleCode . " from form_generic as vl 
-INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+vl." . $sampleCode . " from form_generic as vl
+INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 
 where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01') AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' ) AND vl.result is not null AND vl.result != '' ";
 
@@ -220,7 +220,7 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
+/* Data set length after filtering
 
 
 /* Data set length after filtering */

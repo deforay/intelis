@@ -134,7 +134,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Échantillon ID </label></td>
@@ -203,7 +203,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
@@ -297,7 +297,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Definition de cas
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true" >
+                                <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true">
                                     <tr>
                                         <td colspan="2">
                                             <label class="radio-inline" style="margin-left:0;">
@@ -463,7 +463,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         Signes vitaux du patient
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width:15% !important">Fièvre / température (&deg;C)</th>
                                         <td style="width:35% !important;">
@@ -541,7 +541,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="symptoms">
                                         <td colspan="4">
-                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true" >
+                                            <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
                                                     $diarrhée = "";
@@ -608,7 +608,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr class="comorbidities-row" style="display: none;">
                                         <td colspan="4">
-                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true" >
+                                            <table aria-describedby="table" id="comorbiditiesTable" class="table table-bordered" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Comorbidities as $comorbiditiesId => $comorbiditiesName) { ?>
                                                     <tr>
@@ -629,7 +629,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                 </table>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois? </th>
                                         <td style="width:35% !important;">
@@ -677,7 +677,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         VOYAGE ET CONTACT
                                     </h3>
                                 </div>
-                                <table aria-describedby="table" class="table" aria-hidden="true" >
+                                <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
@@ -757,7 +757,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Réservé à une utilisation en laboratoire </h3>
                                     </div>
-                                    <table aria-describedby="table" class="table" aria-hidden="true"  style="width:100%">
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
@@ -802,7 +802,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" >
+                                                <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                                                     <thead>
                                                         <tr>
                                                             <th scope="row" class="text-center">Test non</th>
@@ -1183,7 +1183,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     }
 
     function setPatientDetails(pDetails) {
-        patientArray = JSON.parse(pDetails); 
+        patientArray = JSON.parse(pDetails);
         //   console.log(patientArray);
         $("#patientProvince").val(patientArray['geo_name']);
         $("#firstName").val(patientArray['firstname']);
@@ -1315,28 +1315,28 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
 
     $(document).ready(function() {
-       
+
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "+1Y",
-           // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function(date) {
-               
-				var dt2 = $('#sampleDispatchedDate');
-				var startDate = $(this).datetimepicker('getDate');
-				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
-				startDate.setDate(startDate.getDate() + 1000000);
-				dt2.datetimepicker('option', 'maxDate', "+1Y");
-				dt2.datetimepicker('option', 'minDate', minDate);
-				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
+            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(date) {
+
+                var dt2 = $('#sampleDispatchedDate');
+                var startDate = $(this).datetimepicker('getDate');
+                var minDate = $(this).datetimepicker('getDate');
+                dt2.datetimepicker('setDate', minDate);
+                startDate.setDate(startDate.getDate() + 1000000);
+                dt2.datetimepicker('option', 'maxDate', "+1Y");
+                dt2.datetimepicker('option', 'minDate', minDate);
+                dt2.datetimepicker('option', 'minDateTime', minDate);
+                dt2.val($(this).val());
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', date);
-			}
+            }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });

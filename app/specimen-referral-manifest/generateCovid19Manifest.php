@@ -15,6 +15,9 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $id = base64_decode($_POST['id']);
 
 if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
@@ -243,7 +246,7 @@ if (trim($id) != '') {
         if (isset($result) && !empty($result)) {
 
             $tbl .= '<table style="width:100%;border:1px solid #333;">
-                
+
                     <tr nobr="true">';
             if ($showPatientName == "yes") {
 

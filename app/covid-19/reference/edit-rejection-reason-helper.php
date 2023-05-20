@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -29,14 +29,14 @@ try {
 
 		$data = array(
 			'rejection_reason_name' => $_POST['rejectionReasonName'],
-            'rejection_type' => $_POST['rejectionType'],
-            'rejection_reason_status' => $_POST['rejectionReasonStatus'],
-            'rejection_reason_code' => $_POST['rejectionReasonCode'],
+			'rejection_type' => $_POST['rejectionType'],
+			'rejection_reason_status' => $_POST['rejectionReasonStatus'],
+			'rejection_reason_code' => $_POST['rejectionReasonCode'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 
-        $db = $db->where('rejection_reason_id', $rejectionReasonId);
-        $db->update($tableName, $data);
+		$db = $db->where('rejection_reason_id', $rejectionReasonId);
+		$db->update($tableName, $data);
 
 		$_SESSION['alertMsg'] = "Covid-19 Sample Rejection Reasons details updated successfully";
 		$general->activityLog('update-sample-rejection-reasons', $_SESSION['userName'] . ' updated new reference sample rejection reasons ' . $_POST['rejectionReasonName'], 'reference-covid19-sample-rejection-reasons');

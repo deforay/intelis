@@ -51,7 +51,7 @@ foreach ($entries as $entry) {
     $db->where("geo_name", $facilityState);
     $db->where("geo_parent", 0);
     $facilityStateRow = $db->getOne('geographical_divisions', array("geo_id", "geo_name"));
-    if(!empty($facilityStateRow)){
+    if (!empty($facilityStateRow)) {
         $facilityStateId = $facilityStateRow['geo_id'];
     } else {
         $facilityStateId = $db->insert('geographical_divisions', array('geo_name' => $facilityState, 'geo_parent' => 0, 'geo_status' => 'active'));
@@ -62,11 +62,11 @@ foreach ($entries as $entry) {
     $db->where("geo_name", $facilityDistrict);
     $db->where("geo_parent", $facilityStateId);
     $facilityStateRow = $db->getOne('geographical_divisions', array("geo_id", "geo_name"));
-    if(!empty($facilityStateRow)){
+    if (!empty($facilityStateRow)) {
         $facilityDistrictId = $facilityStateRow['geo_id'];
     } else {
         $facilityDistrictId = $db->insert('geographical_divisions', array('geo_name' => $facilityDistrict, 'geo_parent' => $facilityStateId, 'geo_status' => 'active'));
-    }    
+    }
 
     $facilityRow = $facilitiesService->getFacilityByAttribute('facility_fhir_id', $facilityFHIRId);
 
@@ -110,5 +110,5 @@ foreach ($entries as $entry) {
         'facility_id' => $id,
         "updated_datetime" => DateUtility::getCurrentDateTime()
     );
-    $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);    
+    $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
 }

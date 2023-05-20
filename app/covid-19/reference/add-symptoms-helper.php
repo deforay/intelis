@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 
 /** @var MysqliDb $db */
@@ -26,8 +26,8 @@ try {
 	if (isset($_POST['symptomsName']) && trim($_POST['symptomsName']) != "") {
 
 		$data = array(
-            'symptom_name' => $_POST['symptomsName'],
-            'parent_symptom' => $_POST['parentSymptom'],
+			'symptom_name' => $_POST['symptomsName'],
+			'parent_symptom' => $_POST['parentSymptom'],
 			'symptom_status' => $_POST['symptomsStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);

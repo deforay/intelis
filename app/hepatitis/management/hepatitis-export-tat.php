@@ -65,10 +65,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));
+	->setValueExplicit(html_entity_decode($nameValue));
 foreach ($headings as $field => $value) {
 	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+		->setValueExplicit(html_entity_decode($value));
 	$colNo++;
 }
 $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
@@ -116,13 +116,13 @@ $start = (count($output)) + 2;
 foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
 	$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
-			$colNo++;
-		}
+	foreach ($rowData as $field => $value) {
+		$sheet->setCellValue(
+			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+			html_entity_decode($value)
+		);
+		$colNo++;
+	}
 }
 $writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'Hepatitis-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';

@@ -736,7 +736,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     // $(function () {
     // $('#addFacilityForm').bind('submit', function (event) {
-    // using this page stop being refreshing 
+    // using this page stop being refreshing
     // event.preventDefault();
     function addFacility() {
         flag = deforayValidator.init({

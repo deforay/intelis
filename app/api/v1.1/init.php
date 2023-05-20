@@ -471,7 +471,7 @@ if ($status) {
         'data' => array()
     );
     http_response_code(401);
-    // 
+    //
 }
 $payload = json_encode($payload);
 $trackId = $general->addApiTracking(

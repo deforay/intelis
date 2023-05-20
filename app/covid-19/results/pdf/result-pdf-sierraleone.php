@@ -469,7 +469,7 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
         }
 
-        /* 
+        /*
         $lqSign = "/uploads/covid-19/{$countryFormId}/pdf/lq.png";
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Quality Manager</td>';
@@ -477,7 +477,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lqSign . '" style="width:30px;"></td>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
         $html .= '</tr>';
-        
+
         $lsSign = "/uploads/covid-19/{$countryFormId}/pdf/ls.png";
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Supervisor</td>';

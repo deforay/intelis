@@ -91,7 +91,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:200px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --') ;?>
+															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --'); ?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
@@ -245,7 +245,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td><strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
 														<select style="width:200px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --') ;?>
+															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --'); ?>
 														</select>
 													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
@@ -399,7 +399,7 @@ $state = $geolocationService->getProvinces("yes");
 		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
 			loadPrintedVlRequestData();
-		
+
 			for (colNo = 0; colNo <= i; colNo++) {
 				$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
 				if (opTable.fnSettings().aoColumns[colNo].bVisible) {
@@ -412,19 +412,19 @@ $state = $geolocationService->getProvinces("yes");
 
 		$("#sampleType, #printSampleType").select2({
 			placeholder: "<?php echo _("Select Sample Type"); ?>",
-			width : '200px'
+			width: '200px'
 		});
 		$("#state, #printState, #printSampleType").select2({
 			placeholder: "<?php echo _("Select Province"); ?>",
-			width : '200px'
+			width: '200px'
 		});
 		$("#district, #printDistrict").select2({
 			placeholder: "<?php echo _("Select District"); ?>",
-			width : '200px'
+			width: '200px'
 		});
 		$("#facility,#printFacility, #labId, #printLabId").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>",
-			width : '200px'
+			width: '200px'
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
 				locale: {

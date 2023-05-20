@@ -61,7 +61,7 @@ try {
             if (isset($rowData['B']) && !empty($rowData['B'])) {
                 $sampleCode = $general->getDuplicateDataFromField('form_eid', 'sample_code', $rowData['B']);
 
-            
+
                 $sampleType = $general->getDuplicateDataFromField('r_eid_sample_type', 'sample_name', $rowData['AF']);
                 // ADDED
                 $facility = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['E']);

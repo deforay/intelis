@@ -68,21 +68,21 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								</div>
 							</div>
 						</div>
-						<?php if(isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser'){ ?>
-							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id');?>" name="testingLab"/>
-						<?php  }else{ ?>
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
-											<div class="col-lg-7">
-												<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
-													<?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
-												</select>
-											</div>
+						<?php if (isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser') { ?>
+							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id'); ?>" name="testingLab" />
+						<?php  } else { ?>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="testingLab" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-7">
+											<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
+												<?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
+											</select>
 										</div>
 									</div>
 								</div>
+							</div>
 						<?php } ?>
 						<div class="row">
 							<div class="col-md-6">
@@ -104,7 +104,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php }
 											if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
 												<option value='tb'><?php echo _("TB"); ?></option>
-											<?php } 
+											<?php }
 											if (!empty($activeTestModules) && in_array('genericTests', $activeTestModules)) { ?>
 												<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 											<?php } ?>
@@ -307,7 +307,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in TB"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in TB"); ?>' /></td>
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in TB"); ?>' title='<?php echo _("Please enter No of Calibrators in TB"); ?>' /></td>
 											</tr>
-										<?php } 
+										<?php }
 										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
 											<tr id="generic-testsTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" /></td>
@@ -340,10 +340,10 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _("Machine Name"); ?>' title='<?php echo _("Please enter machine name"); ?>' onblur="checkDublicateName(this, 'configMachineName');" />
 										</td>
 										<td>
-											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _("Date Format"); ?>' title='<?php echo _("Please enter date format"); ?>' value='d/m/Y H:i'/>
+											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _("Date Format"); ?>' title='<?php echo _("Please enter date format"); ?>' value='d/m/Y H:i' />
 										</td>
 										<td>
-											<input type="text" name="fileName[]" id="fileName1" class="form-control" placeholder='<?php echo _("File Name"); ?>' title='<?php echo _("Please enter file name"); ?>'  onblur="checkDublicateName(this, 'fileName');" />
+											<input type="text" name="fileName[]" id="fileName1" class="form-control" placeholder='<?php echo _("File Name"); ?>' title='<?php echo _("Please enter file name"); ?>' onblur="checkDublicateName(this, 'fileName');" />
 										</td>
 										<td>
 											<div class="col-md-3">
@@ -519,7 +519,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 	}
 
 	function checkDublicateName(obj, name) {
-		dublicateObj = document.getElementsByName(name+"[]");
+		dublicateObj = document.getElementsByName(name + "[]");
 		for (m = 0; m < dublicateObj.length; m++) {
 			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
 				alert('Duplicate value not allowed');

@@ -136,12 +136,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.is_patient_breastfeeding,
                         vl.request_clinician_name,
                         vl.lab_tech_comments,
-                        vl.sample_received_at_hub_datetime,							
-                        vl.sample_received_at_vl_lab_datetime,							
-                        vl.result_dispatched_datetime,	
-                        vl.request_created_datetime, 
-                        vl.result_printed_datetime,	
-                        vl.last_modified_datetime,	
+                        vl.sample_received_at_hub_datetime,
+                        vl.sample_received_at_vl_lab_datetime,
+                        vl.result_dispatched_datetime,
+                        vl.request_created_datetime,
+                        vl.result_printed_datetime,
+                        vl.last_modified_datetime,
                         vl.result_status,
                         UPPER(s.sample_name) as sample_name,
                         b.batch_code,
@@ -158,19 +158,19 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         r_f_s.funding_source_name,
                         r_i_p.i_partner_name,
                         rs.rejection_reason_name as rejection_reason
-                        
-                        FROM form_vl as vl 
-                        
-                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-                        LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
-                        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by 
-                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by 
-                        LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
-                        LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing 
-                        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source 
+
+                        FROM form_vl as vl
+
+                        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                        LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+                        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+                        LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                        LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+                        LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+                        LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+                        LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
+                        LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 //echo $sQuery;die;
 /* Sample collection date filter */

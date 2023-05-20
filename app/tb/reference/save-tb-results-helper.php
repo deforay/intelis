@@ -24,18 +24,18 @@ try {
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
-		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
+		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$db->insert($tableName, $data);
 			$lastId = $db->getInsertId();
 		}
 
-		if($lastId > 0){
-            $_SESSION['alertMsg'] = _("TB Results details saved successfully");
-            $general->activityLog('TB Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'tb-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("TB Results details saved successfully");
+			$general->activityLog('TB Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'tb-reference');
+		}
 	}
 	header("Location:tb-results.php");
 } catch (Exception $exc) {

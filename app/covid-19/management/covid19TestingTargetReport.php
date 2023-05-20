@@ -98,7 +98,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     font-size: 18px
   }
 
-  
+
 
   .mpr-month:hover {
     border-radius: 5px;

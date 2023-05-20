@@ -149,8 +149,8 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
 //echo $sWhereSub; die;
 $dWhere = '';
 if (!empty($_SESSION['facilityMap'])) {
-    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
-    $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 if (isset($sWhere) && !empty($sWhere)) {

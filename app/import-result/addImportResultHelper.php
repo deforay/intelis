@@ -8,6 +8,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 $machineImportScript = ($_POST['fileName']);
 
@@ -17,9 +19,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
-/* echo "<pre>";
-print_r($machineImportScript);
-die; */
 
 $type = $_POST['type'];
 

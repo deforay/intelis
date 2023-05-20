@@ -16,6 +16,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 
 $formId = $general->getGlobalConfig('vl_form');
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";

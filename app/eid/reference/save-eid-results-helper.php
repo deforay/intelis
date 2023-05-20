@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 

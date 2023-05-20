@@ -35,7 +35,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child's ID","Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
                unset($headings[$key]);
@@ -79,11 +79,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue));
+          ->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+               ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);

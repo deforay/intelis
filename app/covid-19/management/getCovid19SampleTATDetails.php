@@ -213,7 +213,7 @@ $aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_
                         AND vl.result != '' AND $saWhere $rUser");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' )
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
                         AND vl.result is not null

@@ -133,9 +133,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                a_u_d.user_name as approvedBy,
                lt_u_d.user_name as labTechnician,
                rs.rejection_reason_name as rejection_reason
-               
+
                FROM form_hepatitis as vl
-               
+
                LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id

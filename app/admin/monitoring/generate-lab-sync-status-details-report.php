@@ -80,7 +80,7 @@ $colorNo = 0;
 foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
-        $rRowCount = ($rowNo+2);
+        $rRowCount = ($rowNo + 2);
         $sheet->getCellByColumnAndRow($colNo, $rRowCount)->setValueExplicit(html_entity_decode($value));
         $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
         $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);

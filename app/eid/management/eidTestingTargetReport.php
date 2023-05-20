@@ -96,7 +96,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     font-size: 18px
   }
 
-  
+
 
   .mpr-month:hover {
     border-radius: 5px;
@@ -219,7 +219,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th scope="row"><?php echo _("Facility Name"); ?></th>
@@ -286,9 +286,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       });
     $('#sampleTestDate').val("");
     loadVlRequestData();
-    $("#filterDiv input, #filterDiv select").on("change", function(){
-			searchExecuted = false;
-		});
+    $("#filterDiv input, #filterDiv select").on("change", function() {
+      searchExecuted = false;
+    });
 
   });
 
@@ -363,8 +363,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 
   function exportInexcel() {
-    if(searchExecuted === false)
-    {
+    if (searchExecuted === false) {
       searchVlRequestData();
     }
     $.blockUI();

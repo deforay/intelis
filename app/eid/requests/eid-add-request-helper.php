@@ -99,20 +99,20 @@ try {
 	}
 
 	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
-        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
-        $artResult = $db->rawQuery($artQuery);
-        if (!isset($artResult[0]['art_id'])) {
-            $data = array(
-                'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => '1',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
-            $result = $db->insert('r_vl_art_regimen', $data);
-            $_POST['motherRegimen'] = $_POST['newArtRegimen'];
-        } else {
-            $_POST['motherRegimen'] = $artResult[0]['art_code'];
-        }
-    }
+		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
+		$artResult = $db->rawQuery($artQuery);
+		if (!isset($artResult[0]['art_id'])) {
+			$data = array(
+				'art_code' => $_POST['newArtRegimen'],
+				'parent_art' => '1',
+				'updated_datetime' => DateUtility::getCurrentDateTime(),
+			);
+			$result = $db->insert('r_vl_art_regimen', $data);
+			$_POST['motherRegimen'] = $_POST['newArtRegimen'];
+		} else {
+			$_POST['motherRegimen'] = $artResult[0]['art_code'];
+		}
+	}
 
 	if (isset($_POST['previousPCRTestDate']) && trim($_POST['previousPCRTestDate']) != "") {
 		$previousPCRTestDate = explode(" ", $_POST['previousPCRTestDate']);

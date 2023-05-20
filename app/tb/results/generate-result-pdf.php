@@ -15,6 +15,9 @@ use App\Utilities\DateUtility;
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";
 /** @var MysqliDb $db */
@@ -74,15 +77,15 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 				testres.test_reason_name as reasonForTesting
 				FROM form_tb as tb
 				LEFT JOIN facility_details as f ON tb.facility_id=f.facility_id
-				LEFT JOIN facility_details as l ON l.facility_id=tb.lab_id 
-				LEFT JOIN user_details as u_d ON u_d.user_id=tb.result_reviewed_by 
-				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=tb.result_approved_by 
-				LEFT JOIN user_details as r_u_d ON r_u_d.user_id=tb.request_created_by 
-				LEFT JOIN r_tb_test_reasons as testres ON testres.test_reason_id=tb.reason_for_tb_test 
-				LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=tb.reason_for_sample_rejection 
+				LEFT JOIN facility_details as l ON l.facility_id=tb.lab_id
+				LEFT JOIN user_details as u_d ON u_d.user_id=tb.result_reviewed_by
+				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=tb.result_approved_by
+				LEFT JOIN user_details as r_u_d ON r_u_d.user_id=tb.request_created_by
+				LEFT JOIN r_tb_test_reasons as testres ON testres.test_reason_id=tb.reason_for_tb_test
+				LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=tb.reason_for_sample_rejection
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=tb.implementing_partner
-				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=tb.funding_source 
-				LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=tb.specimen_type 
+				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=tb.funding_source
+				LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=tb.specimen_type
 				WHERE tb.tb_id IN(" . $_POST['id'] . ")";
 } else {
     $searchQuery = $allQuery;

@@ -31,10 +31,10 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 
 	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
 	/* To get dynamic fields */
-	$labels= array();
-	foreach($rResult as $key=>$row){
+	$labels = array();
+	foreach ($rResult as $key => $row) {
 		$testType[$key] = $genericObj->getDynamicFields($row['sample_id']);
-		foreach($testType[$key]['dynamicLabel'] as $id => $le){
+		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
 			$labels[$id] = $le;
 		}
 	}
@@ -54,7 +54,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		}
 	}
 	/* Assign the dynamic labels to the heading */
-	if(isset($labels) && !empty($labels)){
+	if (isset($labels) && !empty($labels)) {
 		$headings = array_merge($headings, $labels);
 	}
 
@@ -111,8 +111,8 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			$colNo++;
 		}
 	}
-	$lastColumn = Coordinate::stringFromColumnIndex(($colNo-1));
-	$sheet->getStyle('A3:'.$lastColumn.'3')->applyFromArray($styleArray);
+	$lastColumn = Coordinate::stringFromColumnIndex(($colNo - 1));
+	$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
 
 	$no = 1;
 	foreach ($rResult as $key => $aRow) {
@@ -251,11 +251,11 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$row[] = $requestCreatedDatetime;
 
 		/* To assign the dynamic fields values */
-		if(isset($labels) && !empty($labels)){
-			foreach($labels as $id => $le){
-				if(isset($testType[$key]['dynamicValue'][$id]) && !empty($testType[$key]['dynamicValue'][$id])){
+		if (isset($labels) && !empty($labels)) {
+			foreach ($labels as $id => $le) {
+				if (isset($testType[$key]['dynamicValue'][$id]) && !empty($testType[$key]['dynamicValue'][$id])) {
 					$row[] = $testType[$key]['dynamicValue'][$id];
-				}else{
+				} else {
 					$row[] = "";
 				}
 			}

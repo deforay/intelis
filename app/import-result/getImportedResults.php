@@ -66,17 +66,17 @@ $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
                     tsr.batch_code,fd.facility_name,
                     rsrr.rejection_reason_name,
                     tsr.sample_type,tsr.result,
-                    tsr.result_status,ts.status_name 
-                    FROM temp_sample_import as tsr $import_decided $mainTableName as vl 
-                    ON vl.sample_code=tsr.sample_code 
-                    LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id 
-                    LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
+                    tsr.result_status,ts.status_name
+                    FROM temp_sample_import as tsr $import_decided $mainTableName as vl
+                    ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                    LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
 
 if (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no') {
     //check matched samples avaiable or not
-    $sampleQuery = "SELECT tsr.temp_sample_id,vl.sample_collection_date 
-    FROM temp_sample_import as tsr $import_decided $mainTableName as vl 
+    $sampleQuery = "SELECT tsr.temp_sample_id,vl.sample_collection_date
+    FROM temp_sample_import as tsr $import_decided $mainTableName as vl
     ON vl.sample_code=tsr.sample_code";
     $sampleResultResult = $db->rawQuery($sampleQuery);
     if (count($sampleResultResult) > 0) {
@@ -85,7 +85,7 @@ if (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no') {
         $db = $db->where('sample_type', 'S');
         $delId = $db->delete($tableName);
         $import_decided = 'LEFT JOIN';
-        $dtsQuery = "SELECT 
+        $dtsQuery = "SELECT
                     SQL_CALC_FOUND_ROWS tsr.temp_sample_id,tsr.sample_code,
                     tsr.sample_details,tsr.result_value_absolute,
                     tsr.result_value_log,tsr.result_value_text,
@@ -94,11 +94,11 @@ if (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no') {
                     tsr.lot_number,
                     tsr.lot_expiration_date,tsr.batch_code,
                     fd.facility_name,rsrr.rejection_reason_name,tsr.sample_type,
-                    tsr.result,tsr.result_status,ts.status_name 
-                    FROM temp_sample_import as tsr $import_decided 
-                    $mainTableName as vl ON vl.sample_code=tsr.sample_code 
-                    LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id 
-                    LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
+                    tsr.result,tsr.result_status,ts.status_name
+                    FROM temp_sample_import as tsr $import_decided
+                    $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                    LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
     }
 }

@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 
 $title = _("EID | Sample Rejection Report");
- 
+
 require_once APPLICATION_PATH . '/header.php';
 
 
@@ -29,10 +29,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-book"></em> <?php echo _("Sample Rejection Report");?></h1>
+    <h1><em class="fa-solid fa-book"></em> <?php echo _("Sample Rejection Report"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("Rejection Result");?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+      <li class="active"><?php echo _("Rejection Result"); ?></li>
     </ol>
   </section>
 
@@ -43,11 +43,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box">
           <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><strong><?php echo _("Sample Collection Date");?>&nbsp;:</strong></td>
+              <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date');?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<strong><?php echo _("Lab");?> &nbsp;:</strong></td>
+              <td>&nbsp;<strong><?php echo _("Lab"); ?> &nbsp;:</strong></td>
               <td>
                 <select class="form-control" id="labName" name="labName" title="Please select lab name" style="width:220px;">
                   <?= $testingLabsDropdown; ?>
@@ -56,9 +56,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             </tr>
             <tr>
 
-              <td>&nbsp;<strong><?php echo _("Clinic Name");?> &nbsp;:</strong></td>
+              <td>&nbsp;<strong><?php echo _("Clinic Name"); ?> &nbsp;:</strong></td>
               <td>
-                <select class="form-control" id="clinicName" name="clinicName" title="<?php echo _('Please select clinic name');?>" multiple="multiple" style="width:220px;">
+                <select class="form-control" id="clinicName" name="clinicName" title="<?php echo _('Please select clinic name'); ?>" multiple="multiple" style="width:220px;">
                   <?= $facilitiesDropdown; ?>
                 </select>
               </td>
@@ -67,8 +67,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData();" value="<?php echo _("Search");?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset");?></span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchResultData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
               </td>
             </tr>
 
@@ -93,10 +93,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script>
   $(function() {
     $("#labName").select2({
-      placeholder: "<?php echo _("Select Labs");?>"
+      placeholder: "<?php echo _("Select Labs"); ?>"
     });
     $("#clinicName").select2({
-      placeholder: "<?php echo _("Select Clinics");?>"
+      placeholder: "<?php echo _("Select Clinics"); ?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
@@ -149,7 +149,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert("<?php echo _("Unable to generate excel");?>.");
+          alert("<?php echo _("Unable to generate excel"); ?>.");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

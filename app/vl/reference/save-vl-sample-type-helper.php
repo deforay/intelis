@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
-  
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -28,18 +28,18 @@ try {
 			'status' => $_POST['sampleStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
-		if(isset($_POST['sampleId']) && $_POST['sampleId'] != ""){
+		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['sampleId']));
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$data['data_sync'] = 0;
 			$db->insert($tableName, $data);
 			$lastId = $db->getInsertId();
 		}
-        if($lastId > 0){
-            $_SESSION['alertMsg'] = _("VL Sample details saved successfully");
-            $general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("VL Sample details saved successfully");
+			$general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
+		}
 	}
 	header("Location:vl-sample-type.php");
 } catch (Exception $exc) {

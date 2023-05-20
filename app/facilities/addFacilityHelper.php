@@ -11,12 +11,18 @@ if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$geolocation = new GeoLocationsService();
+
+/** @var GeoLocationsService $general */
+$geolocation = ContainerRegistry::get(GeoLocationsService::class);
+
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "geographical_divisions";
@@ -39,8 +45,8 @@ try {
 			$_POST['state'] = $_POST['provinceNew'];
 			// if (trim($_POST['state']) != "") {
 			$strSearch = (isset($_POST['provinceNew']) && trim($_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
-			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name='" . $strSearch . "'";
-			$facilityInfo = $db->query($facilityQuery);
+			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name= ?";
+			$facilityInfo = $db->rawQuery($facilityQuery, [$strSearch]);
 			if (isset($facilityInfo[0]['geo_name'])) {
 				$_POST['state'] = $facilityInfo[0]['geo_name'];
 			} else {

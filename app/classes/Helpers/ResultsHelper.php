@@ -22,10 +22,10 @@ class ResultsHelper
         }
 
         /** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+        $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
 
         if ($interpretFormat === true) {
             $find =     ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];

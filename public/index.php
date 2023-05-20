@@ -24,7 +24,7 @@ $middlewarePipe = new MiddlewarePipe();
 
 
 // Error Handler Middleware
-$middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));
+$middlewarePipe->pipe(\App\Registries\ContainerRegistry::get(ErrorHandlerMiddleware::class));
 
 
 // CORS Middleware
@@ -43,16 +43,16 @@ $middlewarePipe->pipe(new CorsMiddleware([
 $uri = $request->getUri()->getPath();
 if (fnmatch('/system-admin*', $uri)) {
     // System Admin Authentication Middleware
-    $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
+    $middlewarePipe->pipe(\App\Registries\ContainerRegistry::get(SystemAdminAuthMiddleware::class));
 } else {
     // For the rest of the requests, apply AppAuthMiddleware
-    $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
+    $middlewarePipe->pipe(\App\Registries\ContainerRegistry::get(AppAuthMiddleware::class));
 }
 
 // ACL Middleware
 // TODO: Implement ACL Middleware
 
-$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
+$middlewarePipe->pipe(new RequestHandlerMiddleware(\App\Registries\ContainerRegistry::get(LegacyRequestHandler::class)));
 
 
 // Handle the request and generate the response

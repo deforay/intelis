@@ -640,7 +640,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                       <tr>
                                                                            <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                                            <td id="result-sections">
-                                                                                
+
                                                                            </td>
                                                                       </tr>
                                                                  </tfoot>
@@ -696,42 +696,42 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </div>
                                                   </div>
                                                   <div class="row" id="lapDynamicForm">
-                                             </div>
-                                        </div>
-                                   <?php } ?>
-                              </div>
-                              <div class="box-footer">
-                                   <!-- BARCODESTUFF START -->
-                                   <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                        <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
-                                             <div class="progress" style="width:100%">
-                                                  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                                   </div>
                                              </div>
-                                        </div> <!-- /printer_data_loading -->
-                                        <div id="printer_details" style="display:none">
-                                             <span id="selected_printer">No printer selected!</span>
-                                             <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
-                                        </div><br /> <!-- /printer_details -->
-                                        <div id="printer_select" style="display:none">
-                                             Zebra Printer Options<br />
-                                             Printer: <select id="printers"></select>
-                                        </div> <!-- /printer_select -->
-                                   <?php } ?>
-                                   <!-- BARCODESTUFF END -->
-                                   <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                                   <input type="hidden" name="saveNext" id="saveNext" />
-                                   <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                                   <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                                        <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
-                                        <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-                                   <?php } ?>
-                                   <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-                                   <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                   <a href="view-requests.php" class="btn btn-default"> Cancel</a>
+                                        <?php } ?>
+                                        </div>
+                                        <div class="box-footer">
+                                             <!-- BARCODESTUFF START -->
+                                             <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
+                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                                       <div class="progress" style="width:100%">
+                                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                            </div>
+                                                       </div>
+                                                  </div> <!-- /printer_data_loading -->
+                                                  <div id="printer_details" style="display:none">
+                                                       <span id="selected_printer">No printer selected!</span>
+                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                                  </div><br /> <!-- /printer_details -->
+                                                  <div id="printer_select" style="display:none">
+                                                       Zebra Printer Options<br />
+                                                       Printer: <select id="printers"></select>
+                                                  </div> <!-- /printer_select -->
+                                             <?php } ?>
+                                             <!-- BARCODESTUFF END -->
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                             <input type="hidden" name="saveNext" id="saveNext" />
+                                             <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
+                                             <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                                                  <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                                  <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
+                                             <?php } ?>
+                                             <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                             <a href="view-requests.php" class="btn btn-default"> Cancel</a>
+                                        </div>
                               </div>
                          </div>
-                    </div>
                </div>
           </div>
           <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
@@ -1608,7 +1608,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }
                          if (data.result.length > 0) {
                               $("#result-sections").html(data.result);
-                         }else{
+                         } else {
                               $('#resultSection').hide()
                          }
                          if (data.specimen.length > 0) {

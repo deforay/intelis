@@ -6,6 +6,6 @@ use App\Services\UsersService;
 /** @var UsersService $general */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$size = $_POST['size'] ?? 6;
+$size = htmlspecialchars($_POST['size']) ?? 6;
 
-echo $usersService->generateAuthToken($size);
+echo $usersService->generateAuthToken((int)$size);

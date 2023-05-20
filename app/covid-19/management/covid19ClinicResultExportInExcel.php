@@ -21,7 +21,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 //system config
-$systemConfigQuery = "SELECT * FROM system_config"; 
+$systemConfigQuery = "SELECT * FROM system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
 $sarr = [];
 // now we create an associative array so that we can easily create view variables
@@ -36,12 +36,12 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.","Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
-		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-			unset($headings[$key]);
-		}
-	}
+          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
 
      $colNo = 1;
 
@@ -80,11 +80,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue));
+          ->setValueExplicit(html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
           $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-                    ->setValueExplicit(html_entity_decode($value));
+               ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -146,8 +146,9 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
-                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode($value));
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
                $colNo++;
           }
      }

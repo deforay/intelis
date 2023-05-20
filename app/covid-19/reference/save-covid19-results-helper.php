@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -24,17 +24,17 @@ try {
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
-		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
+		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$lastId = $db->insert($tableName, $data);
 		}
 
-		if($lastId > 0){
-            $_SESSION['alertMsg'] = _("Covid-19 Results details saved successfully");
-            $general->activityLog('Covid-19 Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'covid19-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("Covid-19 Results details saved successfully");
+			$general->activityLog('Covid-19 Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'covid19-reference');
+		}
 	}
 	header("Location:covid19-results.php");
 } catch (Exception $exc) {

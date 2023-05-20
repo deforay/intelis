@@ -122,12 +122,12 @@ $sheet->mergeCells('T2:T3');
 $c = 0;
 
 $sQuery = "SELECT
-            vl.lab_id, 
+            vl.lab_id,
             vl.facility_id,
             f.facility_code,
             f.facility_state,
             f.facility_district,
-            f.facility_name, 
+            f.facility_name,
             lab.facility_name as lab_name,
 
 		SUM(CASE
@@ -185,7 +185,7 @@ $sQuery = "SELECT
 		COUNT(result) as total
 
 
-        FROM form_vl as vl 
+        FROM form_vl as vl
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
         WHERE vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";

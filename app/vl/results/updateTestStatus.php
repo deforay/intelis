@@ -11,11 +11,12 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
-
 $tableName = "form_vl";
 try {
+
+
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
 
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {

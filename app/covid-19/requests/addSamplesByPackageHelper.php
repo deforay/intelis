@@ -14,6 +14,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_covid19 where covid19_id IN (" . $_POST['sampleId'] . ") ORDER BY covid19_id";
 $sampleResult = $db->query($sampleQuery);

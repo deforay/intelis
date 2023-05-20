@@ -24,7 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 
 $transactionId = $general->generateUUID();
@@ -191,13 +191,13 @@ if (!empty($sampleCodes)) {
 
 if (!empty($facilityIds)) {
     $facilityIds = array_unique(array_filter($facilityIds));
-    $sql = 'UPDATE facility_details 
+    $sql = 'UPDATE facility_details
                     SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.covid19RemoteResultsSync", ?)
                     WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
     $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
 }
-$sql = 'UPDATE facility_details SET 
-            facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.covid19LastResultsSync", ?) 
+$sql = 'UPDATE facility_details SET
+            facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.covid19LastResultsSync", ?)
                 WHERE facility_id = ?';
 $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
 

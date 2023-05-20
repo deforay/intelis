@@ -106,32 +106,32 @@ for ($i = 0; $i < count($aColumns); $i++) {
     }
 }
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-    vl.sample_id, 
-    vl.sample_code, 
-    vl.remote_sample_code, 
-    vl.sample_collection_date, 
-    vl.last_modified_datetime, 
-    vl.patient_id, 
-    vl.patient_first_name, 
-    vl.patient_middle_name, 
-    vl.patient_last_name, 
-    vl.result, 
-    vl.result_status, 
-    vl.data_sync, 
-    f.facility_name, 
-    f.facility_state, 
-    f.facility_district, 
-    s.sample_name, 
-    ts.status_name, 
-    b.batch_code 
-    FROM form_generic as vl    
-    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type 
-    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+    vl.sample_id,
+    vl.sample_code,
+    vl.remote_sample_code,
+    vl.sample_collection_date,
+    vl.last_modified_datetime,
+    vl.patient_id,
+    vl.patient_first_name,
+    vl.patient_middle_name,
+    vl.patient_last_name,
+    vl.result,
+    vl.result_status,
+    vl.data_sync,
+    f.facility_name,
+    f.facility_state,
+    f.facility_district,
+    s.sample_name,
+    ts.status_name,
+    b.batch_code
+    FROM form_generic as vl
+    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
     LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner
-    LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_testing 
+    LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_testing
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $start_date = '';

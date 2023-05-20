@@ -166,7 +166,7 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQuery($sQuery);
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery($sQuery);
 // $aResultTotal = $countResult->fetch_row();
 $iTotal = count($aResultTotal);*/

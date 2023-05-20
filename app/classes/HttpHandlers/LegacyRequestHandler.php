@@ -81,7 +81,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
 
                 return $response;
             }
-        } catch (SystemException|Exception $e) {
+        } catch (SystemException | Exception $e) {
             ob_end_clean(); // Clean the buffer in case of an error
             throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
         } catch (Throwable $e) {

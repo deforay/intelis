@@ -8,7 +8,7 @@ use App\Utilities\DateUtility;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-  
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -24,18 +24,18 @@ try {
 			'status' 	    => $_POST['resultStatus'],
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
-		if(isset($_POST['resultId']) && $_POST['resultId'] != ""){
+		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
-        	$lastId = $db->update($tableName, $data);
-		} else{
+			$lastId = $db->update($tableName, $data);
+		} else {
 			$db->insert($tableName, $data);
 			$lastId = $db->getInsertId();
 		}
 
-		if($lastId > 0){
-            $_SESSION['alertMsg'] = _("Hepatitis Results details saved successfully");
-            $general->activityLog('Hepatitis Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'hepatitis-reference');
-        }
+		if ($lastId > 0) {
+			$_SESSION['alertMsg'] = _("Hepatitis Results details saved successfully");
+			$general->activityLog('Hepatitis Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'hepatitis-reference');
+		}
 	}
 	header("Location:hepatitis-results.php");
 } catch (Exception $exc) {

@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -157,12 +157,12 @@ try {
     // COVID-19 TEST RESULTS
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
 
-        $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name' 
-                    FROM `form_covid19` AS c19 
-                    LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id 
-                    WHERE result_status NOT IN (9) 
-                    AND sample_code !='' 
-                    AND sample_code is not null 
+        $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name'
+                    FROM `form_covid19` AS c19
+                    LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
+                    WHERE result_status NOT IN (9)
+                    AND sample_code !=''
+                    AND sample_code is not null
                     AND c19.data_sync=0";
 
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "covid19" && !empty($sampleCode) && trim($sampleCode) != "") {

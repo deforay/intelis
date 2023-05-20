@@ -13,6 +13,9 @@ if (session_status() == PHP_SESSION_NONE) {
 $eidService = ContainerRegistry::get(EidService::class);
 
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 
 $sampleCollectionDate = $province = '';
 

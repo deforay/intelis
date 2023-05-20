@@ -9,9 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-
-
-
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 
 /** @var MysqliDb $db */
@@ -22,10 +21,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "global_config";
 $instanceTableName = "s_vlsm_instance";
 try {
-    $configQuery = "SELECT `value` FROM global_config where name='sample_code'";
-    $configResult = $db->rawQuery($configQuery);
-    $configFormQuery = "SELECT `value` FROM global_config where name='vl_form'";
-    $configFormResult = $db->rawQuery($configFormQuery);
 
     //remove instance table data
     if (isset($_POST['removedInstanceLogoImage']) && trim($_POST['removedInstanceLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $_POST['removedInstanceLogoImage'])) {

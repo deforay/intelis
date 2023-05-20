@@ -3,6 +3,8 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
 
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
@@ -18,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 
-$fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id 
+$fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
 			WHERE t.test_type = ? AND f.facility_type=2 AND f.facility_attributes->>\"$.allow_results_file_upload\" = 'yes' OR f.facility_attributes->>\"$.allow_results_file_upload\" is null";
 $fResult = $db->rawQuery($fQuery, array($type));
 

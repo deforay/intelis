@@ -110,11 +110,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_generic as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-          LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
-          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_generic as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 //echo $sQuery;die;

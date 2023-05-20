@@ -103,7 +103,7 @@ $result = [
     'patient' => $patientForm,
     'specimen' => $specimenForm,
     'lab' => $labForm,
-    'others' => (array)$otherForm,
+    'others' => $otherForm,
     'result' => $resultForm
 ];
 

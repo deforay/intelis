@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $transactionId = $general->generateUUID();
 
@@ -227,9 +227,9 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 }
 
 
-/* 
+/*
   ****************************************************************
-  *  EID TEST REQUESTS 
+  *  EID TEST REQUESTS
   ****************************************************************
   */
 
@@ -385,9 +385,9 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 }
 
 
-/* 
+/*
   ****************************************************************
-  *  COVID-19 TEST REQUESTS 
+  *  COVID-19 TEST REQUESTS
   ****************************************************************
   */
 $request = [];

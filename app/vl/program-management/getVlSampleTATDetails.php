@@ -207,7 +207,7 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering 
+/* Data set length after filtering
 $rUser = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;

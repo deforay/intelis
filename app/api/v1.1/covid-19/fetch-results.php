@@ -30,7 +30,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 // /** @var ApiService $app */
-// $app = ContainerRegistry::get(ApiService::class);
+// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 $arr = $general->getGlobalConfig();
 
@@ -165,7 +165,7 @@ try {
         vl.patient_nationality                  as patientNationality,
         CONCAT_WS('',c.iso_name, ' (', c.iso3,')') as patientNationalityName,
         vl.reason_for_changing                  as reasonForCovid19ResultChanges
-        
+
         FROM form_covid19 as vl
         LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

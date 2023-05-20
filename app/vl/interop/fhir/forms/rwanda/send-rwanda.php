@@ -43,14 +43,14 @@ $fhir = new Fhir($interopConfig['FHIR']['url'], $interopConfig['FHIR']['auth']);
 // $query = "SELECT vl.*, rej.rejection_reason_name, tester.user_name as tester_name, tester.phone_number as tester_phone_number
 //             FROM form_vl as vl
 //             LEFT JOIN r_vl_sample_rejection_reasons as rej ON rej.rejection_reason_id = vl.reason_for_sample_rejection
-//             LEFT JOIN user_details as tester ON vl.tested_by = tester.user_id 
+//             LEFT JOIN user_details as tester ON vl.tested_by = tester.user_id
 //             WHERE ((source_of_request LIKE 'fhir' AND source_of_request is NOT NULL) OR (unique_id like 'fhir%'))
-//             AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes')))) 
+//             AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes'))))
 //             AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
 $query = "SELECT vl.*, rej.rejection_reason_name, tester.user_name as tester_name, tester.phone_number as tester_phone_number
             FROM form_vl as vl
             LEFT JOIN r_vl_sample_rejection_reasons as rej ON rej.rejection_reason_id = vl.reason_for_sample_rejection
-            LEFT JOIN user_details as tester ON vl.tested_by = tester.user_id 
+            LEFT JOIN user_details as tester ON vl.tested_by = tester.user_id
             WHERE ((source_of_request LIKE 'fhir' AND source_of_request is NOT NULL) OR (unique_id like 'fhir%'))
             AND (result IS NOT NULL OR (is_sample_rejected IS NOT NULL AND is_sample_rejected = 'yes'))
             AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')

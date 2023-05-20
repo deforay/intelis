@@ -60,7 +60,7 @@ $testPlatforms = array(
 );
 
 //get facility map id
-$query = "SELECT 
+$query = "SELECT
             unique_id,
             covid19_id,
             source_of_request,
@@ -81,8 +81,8 @@ $query = "SELECT
             result_approved_by,
             tested_by,
             lab_technician
-            FROM form_covid19 
-            WHERE source_of_request LIKE 'dhis2' 
+            FROM form_covid19
+            WHERE source_of_request LIKE 'dhis2'
             AND result_status = 7
             AND result_sent_to_source NOT LIKE 'sent'";
 

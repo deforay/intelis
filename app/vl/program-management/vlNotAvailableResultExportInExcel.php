@@ -33,12 +33,12 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new Spreadsheet();
     $output = [];
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name","Sample Status");
-    if($sarr['sc_user_type']=='standalone') {
+    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    if ($sarr['sc_user_type'] == 'standalone') {
         if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-          unset($headings[$key]);
-      }
-   }
+            unset($headings[$key]);
+        }
+    }
 
     $colNo = 1;
 
@@ -66,11 +66,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         }
     }
     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));
+        ->setValueExplicit(html_entity_decode($nameValue));
 
     foreach ($headings as $field => $value) {
         $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+            ->setValueExplicit(html_entity_decode($value));
         $colNo++;
     }
     $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -132,9 +132,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         $rRowCount = $rowNo + 4;
         foreach ($rowData as $field => $value) {
             $sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
+                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                html_entity_decode($value)
+            );
             $colNo++;
         }
     }
@@ -142,5 +142,4 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $filename = 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo $filename;
-
 }

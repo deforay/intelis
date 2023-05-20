@@ -45,7 +45,7 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 /*
 * Ordering
 */
-//  echo intval($_POST['iSortingCols']); 
+//  echo intval($_POST['iSortingCols']);
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
      $sOrder = "";
@@ -102,8 +102,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS 
-          vl.*,ty.test_standard_name, 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+          vl.*,ty.test_standard_name,
           s.sample_name,
           b.batch_code,
           ts.status_name,
@@ -114,9 +114,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           f.facility_district,
           fs.funding_source_name,
           i.i_partner_name
-          
+
           FROM form_generic as vl
-          
+
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
           LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type

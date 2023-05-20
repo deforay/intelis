@@ -10,19 +10,28 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var VlService $vlObj */
 $vlObj = ContainerRegistry::get(VlService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
-$sampleQuery = "SELECT vl_sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_vl where vl_sample_id IN (" . $_POST['sampleId'] . ")";
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = "SELECT vl_sample_id,
+                sample_collection_date,
+                sample_package_code,
+                province_id,
+                sample_code
+                FROM form_vl where vl_sample_id IN (?)";
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
     $provinceCode = null;
 
     if (isset($sampleRow['province_id']) && !empty($sampleRow['province_id'])) {
-        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id = " . $sampleRow['province_id'];
-        $provinceResult = $db->rawQueryOne($provinceQuery);
+        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id = ?";
+        $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
         $provinceCode = $provinceResult['geo_code'];
     }
     if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {

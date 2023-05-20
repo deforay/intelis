@@ -12,6 +12,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+
 $tableName = "user_details";
 $userName = ($_POST['username']);
 $password = ($_POST['password']);

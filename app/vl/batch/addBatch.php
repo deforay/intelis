@@ -12,13 +12,13 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var MysqliDb $db */
-$db = \App\Registries\ContainerRegistry::get('db');
+$db = \App\Registries\\App\Registries\ContainerRegistry::get('db');
 
 /** @var CommonService $general */
-$general = \App\Registries\ContainerRegistry::get(CommonService::class);
+$general = \App\Registries\\App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
-$facilitiesService = \App\Registries\ContainerRegistry::get(FacilitiesService::class);
+$facilitiesService = \App\Registries\\App\Registries\ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -225,7 +225,7 @@ foreach ($testPlatformResult as $machine) {
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
 							</div>
 						</div>
-						
+
 						<div class="row col-md-12" id="alertText" style="font-size:20px;"></div>
 					</div>
 					<!-- /.box-body -->

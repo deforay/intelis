@@ -4,10 +4,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -15,8 +11,12 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_hepatitis";
 try {
+
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
     $id = explode(",", $_POST['id']);
-    
+
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'result_status'         => $_POST['status'],
@@ -52,7 +52,6 @@ try {
         $action = $_SESSION['userName'] . ' updated Hepatitis samples status';
         $resource = 'hepatitis-results';
         $general->activityLog($eventType, $action, $resource);
-
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

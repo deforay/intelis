@@ -29,10 +29,10 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $sheet = $excel->getActiveSheet();
      $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
-		if (($key = array_search("Remote Sample Code", $headings)) !== false) {
-			unset($headings[$key]);
-		}
-	}
+          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
      $colNo = 1;
 
      $styleArray = array(
@@ -69,12 +69,12 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
      }
      $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-     ->setValueExplicit(html_entity_decode($nameValue));
-foreach ($headings as $field => $value) {
-$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+          ->setValueExplicit(html_entity_decode($nameValue));
+     foreach ($headings as $field => $value) {
+          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
                ->setValueExplicit(html_entity_decode($value));
-$colNo++;
-}
+          $colNo++;
+     }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
      $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
      $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
@@ -133,13 +133,13 @@ $colNo++;
      foreach ($output as $rowNo => $rowData) {
           $colNo = 1;
           $rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
-			$colNo++;
-		}
+          foreach ($rowData as $field => $value) {
+               $sheet->setCellValue(
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+               );
+               $colNo++;
+          }
      }
      $writer = IOFactory::createWriter($excel, 'Xlsx');
      $filename = 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';

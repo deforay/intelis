@@ -16,6 +16,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+// Sanitize values before using them below
+$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
@@ -164,7 +167,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 						<br>
 
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
@@ -215,14 +218,14 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 			placeholder: "<?php echo _("Select Vl Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
+				locale: {
+					cancelLabel: "<?= _("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
 				showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				maxDate: moment(),
 				ranges: {
@@ -325,12 +328,10 @@ startDate: moment().subtract(28, 'days'),
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> 
-				"aaSorting": [
+			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
 					[8, "desc"]
 				],
-			<?php } else { ?> 
-				"aaSorting": [
+			<?php } else { ?> "aaSorting": [
 					[7, "desc"]
 				],
 			<?php } ?> "bProcessing": true,

@@ -4,9 +4,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-
-
-
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -14,6 +11,12 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
+
 $tableName = "form_hepatitis";
 //get other config values
 $geQuery = "SELECT * FROM other_config WHERE type = 'result'";
@@ -274,7 +277,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
    <div class="box box-default">
       <div class="box-header with-border">
          <div style="text-align:center;">
-            <h4>Facility Name : <?= htmlspecialchars($_POST['toName']); ?></h4>
+            <h4>Facility Name : <?= ($_POST['toName']); ?></h4>
          </div>
       </div>
       <div class="box-body">
@@ -291,13 +294,13 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
                         <?php
                         $resultOlySamples = [];
                         for ($s = 0; $s < count($_POST['sample']); $s++) {
-                           $sampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = '" . $_POST['sample'][$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
-                           $sampleResult = $db->rawQuery($sampleQuery);
+                           $sampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = ? AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+                           $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sample'][$s]]);
                            if (isset($sampleResult[0]['sample_code'])) {
                               $resultOlySamples[] = $sampleResult[0]['hepatitis_id'];
                         ?>
                               <tr>
-                                 <td style="text-align:left;"><?php echo $sampleResult[0]['sample_code']; ?></td>
+                                 <td style="text-align:left;"><?= $sampleResult[0]['sample_code']; ?></td>
                               </tr>
                         <?php }
                         } ?>
@@ -306,20 +309,20 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
                </div>
             </div>
             <div class="row">
-               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars($_POST['subject']); ?>" />
-               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars($_POST['toEmail']); ?>" />
-               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars($_POST['reportEmail']); ?>" />
-               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars($_POST['message']); ?>" />
+               <input type="hidden" id="subject" name="subject" value="<?php echo ($_POST['subject']); ?>" />
+               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo ($_POST['toEmail']); ?>" />
+               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo ($_POST['reportEmail']); ?>" />
+               <input type="hidden" id="message" name="message" value="<?php echo ($_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars($_POST['pdfFile']); ?>" />
+               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo ($_POST['pdfFile']); ?>" />
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">
                   <a href="/hepatitis/mail/mail-hepatitis-results.php" class="btn btn-default"> Cancel</a>&nbsp;
                   <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
                   <div><code><?php echo ($global['sync_path'] == '') ? 'Please enter "Sync Path" in General Config to enable file sharing via shared folder' : '' ?></code></div>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile1); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result only pdf</a></p>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile2); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result pdf </a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo ($downloadFile1); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result only pdf</a></p>
+                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo ($downloadFile2); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result pdf </a></p>
                </div>
             </div>
          </form>

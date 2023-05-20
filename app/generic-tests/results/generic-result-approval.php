@@ -308,8 +308,8 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-                [<?php echo ($sarr['sc_user_type'] != 'standalone') ? 9 : 8 ?>, "desc"]
-            ],
+				[<?php echo ($sarr['sc_user_type'] != 'standalone') ? 9 : 8 ?>, "desc"]
+			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;

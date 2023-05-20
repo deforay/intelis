@@ -246,7 +246,7 @@ $aResult = $db->query($aQuery);
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" /> Pregnancy <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" /> Labour/Delivery <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Postnatal" /> Postnatal <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> 
+                                            <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown-->
                                         </td>
                                     </tr>

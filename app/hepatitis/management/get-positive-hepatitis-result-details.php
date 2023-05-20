@@ -206,12 +206,12 @@ if (isset($sLimit) && isset($sOffset)) {
 // error_log($sQuery);
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering 
+/* Data set length after filtering
 
 $aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'  $sWhere group by vl.hepatitis_id order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery("select COUNT(hepatitis_id) as total FROM form_hepatitis as vl where result_status=7 AND  vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
 $iTotal = $aResultTotal[0]['total'];*/
 

@@ -13,6 +13,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName1 = "batch_details";
 $tableName2 = "form_generic";
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
     $tableName2 = "form_vl";

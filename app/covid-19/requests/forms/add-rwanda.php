@@ -723,11 +723,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 function(data) {
                     if (data != "0") {
                         obj = $.parseJSON(data);
-                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + 
-                        '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime + 
-                        '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date + 
-                        '<br>Total No. of times Patient tested for Covid-19 : ' + obj.no_of_tested_time +
-                        '</small>');
+                        $(".artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time +
+                            '<br>Last Test Request Added On VLSM : ' + obj.request_created_datetime +
+                            '<br>Sample Collection Date for Last Request : ' + obj.sample_collection_date +
+                            '<br>Total No. of times Patient tested for Covid-19 : ' + obj.no_of_tested_time +
+                            '</small>');
                     } else {
                         $(".artNoGroup").html('');
                     }
