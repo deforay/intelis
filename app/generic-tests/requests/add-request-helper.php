@@ -18,6 +18,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $tableName1 = "activity_log";
@@ -50,8 +54,8 @@ try {
     //add province
     $splitProvince = explode("##", $_POST['province']);
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
-        $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
-        $provinceInfo = $db->query($provinceQuery);
+        $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
+        $provinceInfo = $db->rawQuery($provinceQuery, [$splitProvince[0]]);
         if (!isset($provinceInfo) || empty($provinceInfo)) {
             $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
         }

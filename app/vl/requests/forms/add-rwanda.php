@@ -1,6 +1,17 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$arr = $general->getGlobalConfig();
+
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
      $maxLength = '';
@@ -48,9 +59,6 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 
 $aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
-
-
-
 
 $sKey = '';
 $sFormat = '';

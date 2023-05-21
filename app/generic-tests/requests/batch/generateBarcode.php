@@ -14,11 +14,12 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 // Sanitize values before using them below
 $_GET = array_map('htmlspecialchars', $_GET);
+
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
-$getTestId = "SELECT * FROM r_test_types where test_short_code= '" . $_GET['code'] . "' AND test_status='active' ORDER BY test_standard_name ASC";
-$testTypeId = $db->query($getTestId);
+$getTestId = "SELECT * FROM r_test_types where test_short_code= ? AND test_status='active' ORDER BY test_standard_name ASC";
+$testTypeId = $db->rawQuery($getTestId, [$_GET['code']]);
 
 $showPatientName = false;
 $refTable = "form_generic";
@@ -227,13 +228,13 @@ if ($id > 0) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName FROM $refTable WHERE $refPrimaryColumn = ?";
+                            $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName FROM $refTable WHERE $refPrimaryColumn =?";
+                            $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
                         }
-                        $sampleResult = $db->query($sampleQuery);
 
-                        // $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                         $lotDetails = '';
                         $lotExpirationDate = '';
                         if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {

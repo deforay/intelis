@@ -2,7 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -65,10 +65,10 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . ",&nbsp;&nbsp;";
         }
     }
-    $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode(($nameValue)));
+    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
     foreach ($headings as $field => $value) {
-        $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value));
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
         $colNo++;
     }
     $sheet->getStyle('A3:N3')->applyFromArray($styleArray);
@@ -98,18 +98,8 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
         $colNo = 1;
         foreach ($rowData as $field => $value) {
             $rRowCount = $rowNo + 4;
-            $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-            $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-            // $sheet->getDefaultRowDimension()->setRowHeight(18);
-            // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-            $value = html_entity_decode($value);
-            if (is_numeric($value)) {
-                $cellDataType = DataType::TYPE_NUMERIC;
-            } else {
-                $cellDataType = DataType::TYPE_STRING;
-            }
-            $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit($value, $cellDataType);
-            $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+
             $colNo++;
         }
     }

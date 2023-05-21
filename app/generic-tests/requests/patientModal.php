@@ -10,6 +10,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitize values before using them below
+$_GET = array_map('htmlspecialchars', $_GET);
+
 $artNo = $_GET['artNo'];
 $testType = $_GET['testType'];
 

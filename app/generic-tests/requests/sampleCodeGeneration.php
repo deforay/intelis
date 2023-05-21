@@ -3,13 +3,11 @@
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
-
-
-
-
-
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 $sampleCollectionDate = $province = $testType = '';
 
@@ -31,4 +29,4 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
-echo $genericTestsService->generateGenericSampleID(htmlspecialchars($province), $sampleCollectionDate, htmlspecialchars($sampleFrom), '', null, null, $testType);
+echo $genericTestsService->generateGenericSampleID($province, $sampleCollectionDate, $sampleFrom, '', null, null, $testType);

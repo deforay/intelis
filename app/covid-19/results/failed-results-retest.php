@@ -60,7 +60,7 @@ try {
             }
         }
     }
-    echo $id;
+    echo htmlspecialchars($id);
 }
 //catch exception
 catch (Exception $e) {

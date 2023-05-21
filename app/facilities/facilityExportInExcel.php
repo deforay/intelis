@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -70,47 +71,19 @@ $headings = array("Facility Code", "Facility Name", "Facility Type", "status", "
 
 $colNo = 1;
 
-$styleArray = array(
-	'font' => array(
-		'bold' => true,
-		'size' => '13',
-	),
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THICK,
-		),
-	)
-);
-
-$borderStyle = array(
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
-
-$sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
 	if (trim($value) != '' && trim($value) != '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
-$sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue));
+
+$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
 foreach ($headings as $field => $value) {
-	$sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value));
+	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
 	$colNo++;
 }
-$sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
 foreach ($rResult as $aRow) {
 	$row = [];
@@ -129,13 +102,7 @@ foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
 	foreach ($rowData as $field => $value) {
 		$rRowCount = $rowNo + 4;
-		$cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-		$sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-		$sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-		// $sheet->getDefaultRowDimension()->setRowHeight(18);
-		// $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-		$sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value));
-		$sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
 		$colNo++;
 	}
 }

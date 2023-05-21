@@ -26,11 +26,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "user_details";
 $tableName2 = "user_facility_map";
 
-$signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+$signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
 if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
     mkdir($signatureImagePath, 0777, true);
 }
+
+$signatureImagePath = realpath($signatureImagePath);
 
 
 

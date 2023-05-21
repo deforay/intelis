@@ -1,9 +1,17 @@
 <?php
 
-  
-
-// 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
 $tableName = "batch_details";
 try {
     $labelOrder = '';
@@ -29,10 +37,8 @@ try {
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
-        header("Location:covid-19-batches.php");
-    } else {
-        header("Location:covid-19-batches.php");
     }
+    header("Location:covid-19-batches.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

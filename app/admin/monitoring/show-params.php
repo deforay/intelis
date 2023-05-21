@@ -63,10 +63,10 @@ if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATO
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($request ?? []); ?></pre>
+                    <pre><?= $general->prettyJson(htmlspecialchars($request ?? [], ENT_QUOTES, 'UTF-8', false)); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= $general->prettyJson($response ?? []); ?></pre>
+                    <pre><?= $general->prettyJson(htmlspecialchars($response ?? [], ENT_QUOTES, 'UTF-8', false)); ?></pre>
                 </div>
             </div>
     </section>

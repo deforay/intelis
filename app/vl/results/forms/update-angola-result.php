@@ -28,16 +28,16 @@ if (!isset($stateResult[0]['facility_state']) || $stateResult[0]['facility_state
 	$stateResult[0]['facility_state'] = '';
 }
 //district details
-$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateResult[0]['facility_state'] . "'";
-$districtResult = $db->query($districtQuery);
-$provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $stateResult[0]['facility_state'] . "'";
-$provinceResult = $db->query($provinceQuery);
+$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state=?";
+$districtResult = $db->rawQuery($districtQuery, [$stateResult[0]['facility_state']]);
+$provinceQuery = "SELECT * from geographical_divisions where geo_name= ?";
+$provinceResult = $db->rawQuery($provinceQuery, [$stateResult[0]['facility_state']]);
 if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == '') {
 	$provinceResult[0]['geo_code'] = '';
 }
 
 //get ART list
-$aQuery = "SELECT * from r_vl_art_regimen";
+$aQuery = "SELECT * FROM r_vl_art_regimen";
 $aResult = $db->query($aQuery);
 
 //Set Dispatched From Clinic To Lab Date

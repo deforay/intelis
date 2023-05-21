@@ -329,12 +329,6 @@ if (!empty($jsonResponse) && $jsonResponse != "[]") {
                 // this ensures that if the logo was there previously it gets removed
                 if ($dataType === 'facilities') {
                     $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
-                    // if (file_exists($labLogoFolder) && is_dir($labLogoFolder)) {
-                    //     $images = glob("$labLogoFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
-                    //     foreach ($images as $image) {
-                    //         @unlink($image);
-                    //     }
-                    // }
                     if (!empty($tableData['facility_logo'])) {
                         if (!file_exists($labLogoFolder)) {
                             mkdir($labLogoFolder, 0777, true);

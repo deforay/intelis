@@ -13,19 +13,17 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 // Access-Control headers are received during OPTIONS requests
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    }
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
 
     exit(0);
 }
 try {
-
-
-
-
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
 
@@ -66,9 +64,13 @@ try {
 
     if (isset($result) && !empty($result) && $result[0] != "") {
 
+
+        // Sanitize values before using them below
+        $result = array_map('htmlspecialchars', $result);
+
         /* To get province and district from facility id */
-        $facilityQuery = "SELECT facility_id, facility_state, facility_district from facility_details WHERE other_id =" . $result[2];
-        $facilityResult = $db->query($facilityQuery);
+        $facilityQuery = "SELECT facility_id, facility_state, facility_district from facility_details WHERE other_id = ?";
+        $facilityResult = $db->rawQuery($facilityQuery, [$result[2]]);
 
         /* Prepare the values to insert */
         $data['remote_sample_code'] = $result[0];
@@ -94,10 +96,8 @@ try {
         $data['patient_age_in_years'] = $result[10];
         $data['patient_gender'] = $result[11];
 
-        /* Check if request data already placed or not */
-        // $vlFormReqQuery ="SELECT vl_sample_id from form_vl WHERE remote_sample_code ='".$result[0]."' AND patient_art_no ='".$result[1]."' AND facility_id ='".$result[2]."' AND patient_province ='".$facilityResult[0]['facility_state']."' AND patient_district ='".$facilityResult[0]['facility_district']."' AND sample_collection_date ='".date('Y-m-d',strtotime($result[5]))."' AND sample_type ='".$result[6]."'";
-        $vlFormReqQuery = "SELECT vl_sample_id from form_vl WHERE remote_sample_code ='" . $result[0] . "'";
-        $vlFormReqResult = $db->query($vlFormReqQuery);
+        $vlFormReqQuery = "SELECT vl_sample_id from form_vl WHERE remote_sample_code =?";
+        $vlFormReqResult = $db->rawQuery($vlFormReqQuery, [$result[0]]);
 
         /* If request data not requested then process otherwise send msg */
         if (empty($vlFormReqResult)) {

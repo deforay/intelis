@@ -31,19 +31,25 @@ try {
 		}
 
 
-		if (isset($_FILES['supportFile']) && $_FILES['resultFile']['error'] === UPLOAD_ERR_OK && $_FILES['supportFile']['size'] > 0) {
+		if (
+			isset($_FILES['supportFile']) && $_FILES['supportFile']['error'] === UPLOAD_ERR_OK
+			&& $_FILES['supportFile']['size'] > 0
+		) {
 			// Allowed file types
-			$allowedExtensions = array('jpg', 'jpeg', 'png',);
-			$_FILES['supportFile']['name'] = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars($_FILES['supportFile']['name']));
-			$_FILES['supportFile']['name'] = str_replace(" ", "-", $_FILES['supportFile']['name']);
-			$extension = strtolower(pathinfo($_FILES['supportFile']['name'], PATHINFO_EXTENSION));
+			$allowedExtensions = array('jpg', 'jpeg', 'png');
 
-			if (isset($_FILES['supportFile']["name"]) && trim($_FILES["supportFile"]["name"]) != "" && in_array($extension, $allowedExtensions)) {
+			$imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['supportFile']['name'])));
+			$imageName = str_replace(" ", "-", $imageName);
+			$extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+			$imageName = $imageName . "." . $extension;
+
+
+			if (in_array($extension, $allowedExtensions)) {
 				mkdir($uploadDir . DIRECTORY_SEPARATOR . $supportId);
 				$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $supportId;
-				if (move_uploaded_file($_FILES["supportFile"]["tmp_name"], $uploadPath . DIRECTORY_SEPARATOR . $_FILES['supportFile']['name'])) {
+				if (move_uploaded_file($_FILES["supportFile"]["tmp_name"], $uploadPath . DIRECTORY_SEPARATOR . $imageName)) {
 					$fData = array(
-						'upload_file_name' => $_FILES['supportFile']['name']
+						'upload_file_name' => $imageName
 					);
 					$db->where('support_id', $supportId);
 					$db->update($tableName, $fData);

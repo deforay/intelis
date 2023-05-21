@@ -19,6 +19,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $vlTestReasonTable = "r_generic_test_reasons";

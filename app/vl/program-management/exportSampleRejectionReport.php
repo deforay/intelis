@@ -2,10 +2,9 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -21,47 +20,20 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
 
      $colNo = 1;
 
-     $styleArray = array(
-          'font' => array(
-               'bold' => true,
-               'size' => '13',
-          ),
-          'alignment' => array(
-               'horizontal' => Alignment::HORIZONTAL_CENTER,
-               'vertical' => Alignment::VERTICAL_CENTER,
-          ),
-          'borders' => array(
-               'outline' => array(
-                    'style' => Border::BORDER_THIN,
-               ),
-          )
-     );
 
-     $borderStyle = array(
-          'alignment' => array(
-               'horizontal' => Alignment::HORIZONTAL_CENTER,
-          ),
-          'borders' => array(
-               'outline' => array(
-                    'style' => Border::BORDER_THIN,
-               ),
-          )
-     );
-
-     $sheet->mergeCells('A1:E1');
      $nameValue = '';
      foreach ($_POST as $key => $value) {
           if (trim($value) != '' && trim($value) != '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
-     $sheet->getCellByColumnAndRow($colNo, 1)->setValueExplicit(html_entity_decode($nameValue));
+     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
-          $sheet->getCellByColumnAndRow($colNo, 3)->setValueExplicit(html_entity_decode($value));
+          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
           $colNo++;
      }
-     $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
+
 
      foreach ($rResult as $aRow) {
           $row = [];
@@ -78,12 +50,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $colNo = 1;
           foreach ($rowData as $field => $value) {
                $rRowCount = $rowNo + 4;
-               $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-               $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-               // $sheet->getDefaultRowDimension()->setRowHeight(18);
-               // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-               $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value));
-               $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
                $colNo++;
           }
      }

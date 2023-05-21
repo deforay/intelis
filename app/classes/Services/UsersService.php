@@ -239,8 +239,7 @@ class UsersService
             '401.php',
             '404.php',
             'error.php',
-            'editProfile.php',
-            'vlExportField.php'
+            'editProfile.php'
         );
     }
 

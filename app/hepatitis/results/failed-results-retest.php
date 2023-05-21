@@ -62,7 +62,7 @@ try {
             }
         }
     }
-    echo $id;
+    echo htmlspecialchars($id);
 } catch (Exception $e) {
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

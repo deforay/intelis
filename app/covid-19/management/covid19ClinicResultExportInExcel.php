@@ -79,12 +79,10 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
-     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-          ->setValueExplicit(html_entity_decode($nameValue));
+     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
      foreach ($headings as $field => $value) {
-          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-               ->setValueExplicit(html_entity_decode($value));
+          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
           $colNo++;
      }
      $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
@@ -145,10 +143,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $colNo = 1;
           $rRowCount = $rowNo + 4;
           foreach ($rowData as $field => $value) {
-               $sheet->setCellValue(
-                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                    html_entity_decode($value)
-               );
+               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
                $colNo++;
           }
      }

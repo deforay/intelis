@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -10,14 +9,17 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
+
 $tableName1 = "batch_details";
 $tableName2 = "form_generic";
 $table2PrimaryColumn = "sample_id";
 
 $batchId = base64_decode($_POST['id']);
 
-$vlQuery = "SELECT $table2PrimaryColumn from $tableName2 as vl where sample_batch_id=$batchId";
-$vlInfo = $db->query($vlQuery);
+$vlQuery = "SELECT $table2PrimaryColumn from $tableName2 as vl where sample_batch_id=?";
+$vlInfo = $db->rawQuery($vlQuery, [$batchId]);
 if (count($vlInfo) > 0) {
 
     $value = array('sample_batch_id' => null);

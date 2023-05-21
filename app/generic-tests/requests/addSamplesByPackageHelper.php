@@ -12,9 +12,11 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
-$sampleQuery = "SELECT sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_generic where sample_id IN (" . $_POST['sampleId'] . ")";
-$sampleResult = $db->query($sampleQuery);
+$sampleQuery = "SELECT sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_generic where sample_id IN (?)";
+$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
     $provinceCode = null;

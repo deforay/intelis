@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
-    header("Location:" . $redirect);
+    header("Location:" . urlencode($redirect));
     exit;
 }
 

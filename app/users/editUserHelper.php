@@ -23,11 +23,13 @@ $_POST = array_map('htmlspecialchars', $_POST);
 
 $userId = base64_decode($_POST['userId']);
 
-$signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+$signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
 if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
     mkdir($signatureImagePath, 0777, true);
 }
+
+$signatureImagePath = realpath($signatureImagePath);
 
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {

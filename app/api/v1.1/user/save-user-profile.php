@@ -48,19 +48,22 @@ try {
     }
     $apiKey = isset($input['x-api-key']) && !empty($input['x-api-key']) ? $input['x-api-key'] : null;
 
-    if ((empty($input['post']) || $input['post'] === false) && !isset($user)) {
+    if ((empty($input['post']) || $input['post'] === false) && empty($user)) {
         //$general->elog($input);
         throw new SystemException("3 Invalid request. Please check your request parameters.");
     } else {
-        if (isset($user)) {
+        $input = array_map('htmlspecialchars', $input);
+        if (!empty($user)) {
             $post = $input;
         } else {
-            $post = $input['post'];
+            $post = array_map('htmlspecialchars', $input['post']);
         }
     }
-    $post['loginId'] = $post['loginId'] ?: $post['loginId'] ?: null;
-    $post['role'] = $post['role'] ?: $post['role'] ?: null;
-    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?: $post['hashAlgorithm'] ?: 'phb';
+
+
+    $post['loginId'] = $post['loginId'] ?? null;
+    $post['role'] = $post['role'] ?? null;
+    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?? 'phb';
 
 
     if (!isset($user)) {
@@ -108,15 +111,20 @@ try {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
             mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
         }
-        $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['sign']['name'], PATHINFO_EXTENSION));
+
+        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['sign']['name'])));
+        $imageName = str_replace(" ", "-", $imageName);
+        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
-        $signatureImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
         if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
             mkdir($signatureImagePath, 0777, true);
         }
-        $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $imageName;
+
+        $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
+
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
             $resizeObj = new ImageResizeUtility();
             $resizeObj = $resizeObj->setFileName($signatureImagePath);

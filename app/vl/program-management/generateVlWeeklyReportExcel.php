@@ -3,6 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -334,23 +335,11 @@ foreach ($excelResultSet as $vlLab => $labResult) {
         $r++;
     }
 
-    $start = (count($output));
-    //$sheet->getDefaultColumnDimension()->setWidth(20);
     foreach ($output as $rowNo => $rowData) {
         $colNo = 1;
         foreach ($rowData as $field => $value) {
             $rRowCount = $rowNo + 4;
-            $cellName = $sheet->getCellByColumnAndRow($colNo, $rRowCount)->getColumn();
-            $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-            $sheet->getStyle($cellName . $start)->applyFromArray($borderStyle);
-            $value = html_entity_decode($value);
-            if (is_numeric($value)) {
-                $cellDataType = DataType::TYPE_NUMERIC;
-            } else {
-                $cellDataType = DataType::TYPE_STRING;
-            }
-            $sheet->getCellByColumnAndRow($colNo, $rowNo + 4)->setValueExplicit(html_entity_decode($value), $cellDataType);
-            $sheet->getStyleByColumnAndRow($colNo, $rowNo + 4)->getAlignment()->setWrapText(true);
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
             $colNo++;
         }
     }

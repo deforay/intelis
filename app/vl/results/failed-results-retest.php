@@ -14,6 +14,10 @@ try {
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
+
+    // Sanitize values before using them below
+    $_POST = array_map('htmlspecialchars', $_POST);
+
     $sarr = $general->getSystemConfig();
     /* Status definition */
     $status = 6;
@@ -61,7 +65,7 @@ try {
             }
         }
     }
-    echo $id;
+    echo htmlspecialchars($id);
 }
 //catch exception
 catch (Exception $e) {
