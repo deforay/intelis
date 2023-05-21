@@ -417,9 +417,9 @@ class GenericTestsService
 
     public function getDynamicFields($genericTestId)
     {
-        $return = array();
+        $return = [];
         if ($genericTestId > 0) {
-            $labelsResponse = $dynamicJson = array();
+            $labelsResponse = $dynamicJson = [];
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
             if ($generic['test_type_form']) {

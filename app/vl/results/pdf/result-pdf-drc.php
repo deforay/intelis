@@ -136,13 +136,6 @@ if (!empty($requestResult)) {
 		// set image scale factor
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-		// set some language-dependent strings (optional)
-		//if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-		//    require_once(dirname(__FILE__).'/lang/eng.php');
-		//    $pdf->setLanguageArray($l);
-		//}
-
-		// ---------------------------------------------------------
 
 		// set font
 		$pdf->SetFont('helvetica', '', 18);
@@ -238,18 +231,19 @@ if (!empty($requestResult)) {
 		$vlResult = $result['result'];
 
 		if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
-			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+			$smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
 			$showMessage = ($arr['l_vl_msg']);
 		} elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
-			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
+			$smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
 			$showMessage = ($arr['h_vl_msg']);
+		} elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+			$smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
 		}
 
 		if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
 			$smileyContent = '';
-		}
-		if ($result['result_status'] == '4') {
-			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
+		} else {
+			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
 		}
 		$html = '<br>';
 		$html .= '<table style="padding:0px 2px 2px 2px;">';
@@ -477,7 +471,7 @@ if (!empty($requestResult)) {
 				//Watermark section
 				$watermark = new PdfWatermarkHelper();
 				$watermark->setFullPathToFile($filename);
-				$fullPathToFile = $filename;
+				//$fullPathToFile = $filename;
 				$watermark->Output($filename, "F");
 			}
 			$pages[] = $filename;
@@ -496,8 +490,9 @@ if (!empty($requestResult)) {
 			);
 			$db->insert($tableName1, $data);
 			//Update print datetime in VL tbl.
-			$vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
-			$vlResult = $db->query($vlQuery);
+			$vlQuery = "SELECT result_printed_datetime
+						FROM form_vl as vl WHERE vl.vl_sample_id = ?";
+			$vlResult = $db->rawQuery($vlQuery, [$result['vl_sample_id']]);
 			if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
 				$db = $db->where('vl_sample_id', $result['vl_sample_id']);
 				$db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));

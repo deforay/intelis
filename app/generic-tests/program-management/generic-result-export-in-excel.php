@@ -22,8 +22,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-/** @var GenericTestsService $genericObj */
-$genericObj = ContainerRegistry::get(GenericTestsService::class);
+
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+
 $dateTimeUtil = new DateUtility();
 //system config
 
@@ -31,9 +33,9 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 
 	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
 	/* To get dynamic fields */
-	$labels = array();
+	$labels = [];
 	foreach ($rResult as $key => $row) {
-		$testType[$key] = $genericObj->getDynamicFields($row['sample_id']);
+		$testType[$key] = $genericTestsService->getDynamicFields($row['sample_id']);
 		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
 			$labels[$id] = $le;
 		}

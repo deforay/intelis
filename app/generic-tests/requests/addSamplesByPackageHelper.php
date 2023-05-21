@@ -10,7 +10,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$genericObj = ContainerRegistry::get(GenericTestsService::class);
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 
 $sampleQuery = "SELECT sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_generic where sample_id IN (" . $_POST['sampleId'] . ")";
@@ -19,7 +19,7 @@ $status = 0;
 foreach ($sampleResult as $sampleRow) {
     $provinceCode = null;
 
-    $testType = $genericObj->getDynamicFields($sampleRow['sample_id']);
+    $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
     $testTypeShortCode = "LAB";
     if (isset($testType['dynamicLabel']['test_short_code']) && !empty($testType['dynamicLabel']['test_short_code'])) {
         $testTypeShortCode = $testType['dynamicLabel']['test_short_code'];
@@ -40,7 +40,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $genericObj->generateGenericSampleID($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']), null, '', null, null, $testTypeShortCode);
+        $sampleJson = $genericTestsService->generateGenericSampleID($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']), null, '', null, null, $testTypeShortCode);
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];

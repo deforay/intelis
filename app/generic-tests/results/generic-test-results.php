@@ -15,7 +15,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$generic = ContainerRegistry::get(GenericTestsService::class);
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -28,7 +28,7 @@ $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
-$sampleTypesResults = $generic->getGenericSampleTypes();
+$sampleTypesResults = $genericTestsService->getGenericSampleTypes();
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'generic-tests' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);

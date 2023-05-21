@@ -17,14 +17,14 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$generic = ContainerRegistry::get(GenericTestsService::class);
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
 $sQuery = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
 $sResult = $db->rawQuery($sQuery);
-$sampleTypeResults = $generic->getGenericSampleTypes();
+$sampleTypeResults = $genericTestsService->getGenericSampleTypes();
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

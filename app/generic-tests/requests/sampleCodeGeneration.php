@@ -8,8 +8,8 @@ use App\Services\GenericTestsService;
 
 
 
-/** @var GenericTestsService $genService */
-$genService = ContainerRegistry::get(GenericTestsService::class);
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $sampleCollectionDate = $province = $testType = '';
 
@@ -31,4 +31,4 @@ if (isset($_POST['testType']) && !empty($_POST['testType'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
-echo $genService->generateGenericSampleID(htmlspecialchars($province), $sampleCollectionDate, htmlspecialchars($sampleFrom), '', null, null, $testType);
+echo $genericTestsService->generateGenericSampleID(htmlspecialchars($province), $sampleCollectionDate, htmlspecialchars($sampleFrom), '', null, null, $testType);

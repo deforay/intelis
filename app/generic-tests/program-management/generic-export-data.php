@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$generic = ContainerRegistry::get(GenericTestsService::class);
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -25,7 +25,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $arr = $general->getGlobalConfig();
-$sampleTypeResults = $generic->getGenericSampleTypes();
+$sampleTypeResults = $genericTestsService->getGenericSampleTypes();
 
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
