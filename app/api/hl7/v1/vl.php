@@ -276,9 +276,7 @@ if ($type[1] == 'REQ' || $type[1] == 'UPI') {
     }
 
     $data['formId'] = $data['countryId'] = $general->getGlobalConfig('vl_form');
-    $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-    $rowData = $db->rawQuery($sQuery);
-    $data['instanceId'] = $rowData[0]['vlsm_instance_id'];
+    $data['instanceId'] = $general->getInstanceId();
     // print_r($data);die;
     $sampleFrom = '';
 

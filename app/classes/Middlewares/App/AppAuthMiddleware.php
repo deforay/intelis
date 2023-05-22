@@ -63,6 +63,8 @@ class AppAuthMiddleware implements MiddlewareInterface
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
+        $_SESSION['requestedURI'] = $uri;
+
         // Check if the URI matches the /remote/* pattern
         if (fnmatch('/remote/*', $uri)) {
             return true;

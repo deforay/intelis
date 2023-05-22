@@ -51,7 +51,8 @@ if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['inst
 }
 
 // Check if the user can access the requested page
-if (!$usersService->isAllowed(basename($_SERVER['PHP_SELF']))) {
+$currentPage = !empty($_SESSION['requestedURI']) ? $_SESSION['requestedURI'] : $_SERVER['PHP_SELF'];
+if (!$usersService->isAllowed(basename($currentPage))) {
 	http_response_code(401);
 	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }

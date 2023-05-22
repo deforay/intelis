@@ -11,8 +11,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Sanitize values before using them in the form
-$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
 
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);

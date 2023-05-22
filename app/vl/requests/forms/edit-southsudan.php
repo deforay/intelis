@@ -6,8 +6,7 @@ use App\Registries\ContainerRegistry;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-// Sanitize values before using them in the form
-$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
 
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";

@@ -6,8 +6,7 @@ use App\Registries\ContainerRegistry;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-// Sanitize values before using them in the form
-$vlQueryInfo = array_map('htmlspecialchars', $vlQueryInfo);
+
 
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
