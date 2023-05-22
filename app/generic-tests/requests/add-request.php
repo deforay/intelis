@@ -67,10 +67,7 @@ $sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition);
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
-//get suspected treatment failure at
-/*
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
+
 ?>
 <style>
      .ui_tpicker_second_label {
@@ -579,7 +576,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                     <!--  <?php if (count($reasonForFailure) > 0) { ?>
+                                                       <!--  <?php if (count($reasonForFailure) > 0) { ?>
                                                             <div class="col-md-6" style="display: none;">
                                                                  <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -736,7 +733,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
           <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
           <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
-          </section>
+     </section>
 </div>
 </div>
 </section>
@@ -1635,9 +1632,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $('.ui-datepicker-calendar').show();
                          });
                          $(".dynamicFacilitySelect2").select2({
-						width: '285px',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
-					});
+                              width: '285px',
+                              placeholder: "<?php echo _("Select any one of the option"); ?>"
+                         });
                          $(".dynamicSelect2").select2({
                               width: '100%',
                               placeholder: "<?php echo _("Select any one of the option"); ?>"

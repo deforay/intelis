@@ -30,6 +30,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();

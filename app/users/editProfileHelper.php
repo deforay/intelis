@@ -99,7 +99,7 @@ try {
 
             print_r(json_encode($response));
         } else {
-            $_SESSION['alertMsg'] = _("Your profile changes have been saved. You can continue using VLSM. Please click on any menu on the left to navigate");
+            $_SESSION['alertMsg'] = _("Your profile changes have been saved. You can continue using the application.");
             header("Location:editProfile.php");
         }
     }
