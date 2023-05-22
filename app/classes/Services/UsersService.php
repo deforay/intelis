@@ -29,6 +29,8 @@ class UsersService
     public function isAllowed($currentFileName)
     {
 
+
+
         $skippedPrivileges = $this->getSkippedPrivileges();
         $sharedPrivileges = $this->getSharedPrivileges();
 
