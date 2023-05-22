@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 // Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+array_walk_recursive($_POST, function(&$value) { $value = htmlspecialchars($value); });
 
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
@@ -30,7 +30,7 @@ $fDetails = "facility_details";
 $vl_result_category = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
-
+// echo "<pre>";print_r($_POST);die;
 try {
     if (isset($_POST['api']) && $_POST['api'] == "yes") {
     } else {
@@ -240,18 +240,6 @@ try {
         $resultStatus = 4;
         $_POST['result'] = '';
         $_POST['vlLog'] = '';
-    }
-
-    if (isset($_POST['result']) && trim(!empty($_POST['result']))) {
-
-        $resultStatus = 8; // Awaiting Approval
-
-        $interpretedResults = $genericTestsService->interpretResult($_POST['result']);
-
-        $logVal = $interpretedResults['logVal'];
-        $absDecimalVal = $interpretedResults['absDecimalVal'];
-        $absVal = $interpretedResults['absVal'];
-        $txtVal = $interpretedResults['txtVal'];
     }
 
     if ($_SESSION['instanceType'] == 'remoteuser') {

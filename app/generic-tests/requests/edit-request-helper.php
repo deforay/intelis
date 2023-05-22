@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 // Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+array_walk_recursive($_POST, function(&$value) { $value = htmlspecialchars($value); });
 
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
@@ -34,7 +34,7 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $resultStatus = null;
-
+// echo "<pre>";print_r(json_encode($_POST['dynamicFields']));die;
 try {
      if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else {
