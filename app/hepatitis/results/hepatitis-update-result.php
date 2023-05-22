@@ -39,8 +39,10 @@ foreach ($userResult as $user) {
 	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
@@ -54,8 +56,10 @@ $importResult = $db->query($importQuery);
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 

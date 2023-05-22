@@ -48,9 +48,7 @@ try {
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
 
-    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
-    $rowData = $db->rawQuery($sQuery);
-    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $instanceId = $general->getInstanceId();
     $formId = $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
@@ -87,7 +85,7 @@ try {
             continue;
         }
         $update = "no";
-        $rowData = false;
+        $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
             $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
@@ -107,12 +105,15 @@ try {
 
             $rowData = $db->rawQueryOne($sQuery);
 
-            if ($rowData) {
+            if (!empty($rowData)) {
+                if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    continue;
+                }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
-                $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
+                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
+                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
+                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
             } else {
                 $sampleJson = $tbService->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
@@ -172,7 +173,7 @@ try {
 
 
         $id = 0;
-        if ($rowData !== false && !empty($rowData)) {
+        if (!empty($rowData)) {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('tb_id', $rowData['tb_id']);
                 $id = $db->update("form_tb", $tbData);
@@ -339,7 +340,7 @@ try {
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
-        if ($rowData) {
+        if (!empty($rowData)) {
             $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {

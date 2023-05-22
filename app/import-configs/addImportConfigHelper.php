@@ -18,8 +18,10 @@ $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $_POST['configurationName'] = trim($_POST['configurationName']);
 try {

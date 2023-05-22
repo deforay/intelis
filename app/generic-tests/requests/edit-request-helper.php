@@ -20,8 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-// Sanitize values before using them below
-array_walk_recursive($_POST, function(&$value) { $value = htmlspecialchars($value); });
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = "form_generic";
 $testTableName = "generic_test_results";

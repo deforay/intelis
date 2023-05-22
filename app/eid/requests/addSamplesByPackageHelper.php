@@ -15,8 +15,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var EidService $eidObj */
 $eidObj = ContainerRegistry::get(EidService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (?) ORDER BY eid_id";
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);

@@ -19,8 +19,10 @@ $cDate = date('Y-m-d');
 $lastSevenDay = date('Y-m-d', strtotime('-7 days'));
 //$facilityInfo = $facilitiesService->getAllFacilities();
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 
 $waitingTotal = 0;

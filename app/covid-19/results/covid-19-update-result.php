@@ -28,8 +28,10 @@ foreach ($userResult as $user) {
 	$labTechniciansResults[$user['user_id']] = ($user['user_name']);
 }
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
@@ -55,8 +57,10 @@ $sQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $specimenTypeResult = $db->query($sQuery);
 
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 $covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";

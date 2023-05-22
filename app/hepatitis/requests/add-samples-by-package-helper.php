@@ -15,8 +15,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $sampleQuery = "SELECT hepatitis_id, hepatitis_test_type, sample_collection_date, sample_package_code, province_id, sample_code FROM form_hepatitis where hepatitis_id IN (?) ORDER BY hepatitis_id";
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);

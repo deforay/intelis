@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
-//config  query
+//config  query 
 $configQuery = "SELECT * FROM global_config";
 $configResult = $db->query($configQuery);
 $arr = [];
@@ -203,6 +203,7 @@ $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['resultNotAvailableCount'] = $iTotal;
 
 /*
          * Output

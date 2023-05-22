@@ -346,7 +346,7 @@ class TbService
 
             $id = 0;
 
-            if ($rowData) {
+            if (!empty($rowData)) {
                 // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
                 // $id = $this->db->update("form_tb", $tbData);
 

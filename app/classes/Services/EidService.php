@@ -193,7 +193,7 @@ class EidService
                 exit();
             }
 
-            $rowData = false;
+            $rowData = null;
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
@@ -269,7 +269,7 @@ class EidService
             $eidData['form_attributes'] = json_encode($formAttributes);
             $id = 0;
 
-            if ($rowData) {
+            if (!empty($rowData)) {
                 // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
                 // $id = $this->db->update("form_eid", $eidData);
                 // $params['eidSampleId'] = $rowData['eid_id'];

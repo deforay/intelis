@@ -14,8 +14,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $facilityId = base64_decode($_GET['labId']);
 

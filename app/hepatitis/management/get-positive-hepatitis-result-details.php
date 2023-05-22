@@ -218,6 +218,8 @@ $iTotal = $aResultTotal[0]['total'];*/
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['highViralResultCount'] = $iTotal;
+
 /*
          * Output
         */

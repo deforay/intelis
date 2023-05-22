@@ -1,7 +1,9 @@
 <?php
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName1 = "roles";
 $tableName2 = "roles_privileges_map";

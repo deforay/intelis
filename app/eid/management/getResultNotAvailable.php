@@ -206,6 +206,8 @@ $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM form_eid as v
 $iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['resultNotAvailableCount'] = $iTotal;
+
 /*
          * Output
         */

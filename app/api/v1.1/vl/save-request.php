@@ -57,9 +57,7 @@ try {
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
-    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
-    $rowData = $db->rawQuery($sQuery);
-    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $instanceId = $general->getInstanceId();
     $formId = $general->getGlobalConfig('vl_form');
 
     $version = $general->getSystemConfig('sc_version');
@@ -95,7 +93,7 @@ try {
         }
 
         $update = "no";
-        $rowData = false;
+        $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
@@ -116,12 +114,15 @@ try {
             }
 
             $rowData = $db->rawQueryOne($sQuery);
-            if ($rowData) {
+            if (!empty($rowData)) {
+                if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    continue;
+                }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
-                $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = (!empty($rowData['sample_code_format'])) ? $rowData['sample_code_format'] : $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = (!empty($rowData['sample_code_key'])) ? $rowData['sample_code_key'] : $rowData['remote_sample_code_key'];
+                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
+                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
+                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
             } else {
                 $sampleJson = $vlService->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
                 $sampleData = json_decode($sampleJson, true);
@@ -133,10 +134,6 @@ try {
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
-        }
-
-        if (!isset($data['countryId']) || $data['countryId'] == '') {
-            $data['countryId'] = '';
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
@@ -188,7 +185,7 @@ try {
 
 
         $id = 0;
-        if ($rowData !== false && !empty($rowData)) {
+        if (!empty($rowData)) {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
                 $id = $db->update("form_vl", $vlData);
@@ -451,7 +448,7 @@ try {
             $vlFulldata['patient_last_name'] = null;
         }
 
-        if ($rowData) {
+        if (!empty($rowData)) {
             $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];
         } else {

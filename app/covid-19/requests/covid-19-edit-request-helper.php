@@ -279,7 +279,7 @@ try {
 		if ($_POST['sampleCode'] != "" && !empty($_POST['sampleCode']) && !$sampleExist) {
 			$sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 where sample_code like '%" . $_POST['sampleCode'] . "%' or remote_sample_code like '%" . $_POST['sampleCode'] . "%' limit 1";
 			$rowData = $db->rawQueryOne($sQuery);
-			if ($rowData) {
+			if (!empty($rowData)) {
 				$_POST['covid19SampleId'] = $rowData['covid19_id'];
 			} else {
 				$payload = array(

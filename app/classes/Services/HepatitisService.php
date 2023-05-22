@@ -349,10 +349,7 @@ class HepatitisService
             $hepatitisData['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
-            if ($rowData) {
-                // $this->db = $this->db->where('hepatitis_id', $rowData['hepatitis_id']);
-                // $id = $this->db->update("form_hepatitis", $hepatitisData);
-
+            if (!empty($rowData)) {
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);

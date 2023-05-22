@@ -12,8 +12,10 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $sampleQuery = "SELECT sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_generic where sample_id IN (?)";
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);

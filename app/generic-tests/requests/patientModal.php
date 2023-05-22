@@ -11,8 +11,10 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $artNo = $_GET['artNo'];
 $testType = $_GET['testType'];

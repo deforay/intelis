@@ -11,8 +11,10 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $systemType = $general->getSystemConfig('sc_user_type');
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];

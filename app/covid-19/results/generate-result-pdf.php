@@ -28,8 +28,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();

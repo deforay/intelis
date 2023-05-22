@@ -617,6 +617,14 @@ class CommonService
 
         return $browser;
     }
+
+    // Returns the current Instance ID
+    public function getInstanceId(): ?string
+    {
+        return once(function () {
+            $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
+        });
+    }
     public function getLastSyncDateTime()
     {
         if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {

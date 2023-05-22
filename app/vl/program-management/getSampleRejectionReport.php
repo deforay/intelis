@@ -186,7 +186,6 @@ if (isset($sWhere) && !empty($sWhere)) {
 }
 
 
-
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
 //echo $sQuery; die;
 if (isset($sOrder) && !empty($sOrder)) {
@@ -213,6 +212,7 @@ $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['rejectedViralLoadResultCount'] = $iTotal;
 
 /*
          * Output

@@ -790,9 +790,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 let artNo = $.trim($(this).val());
 
-if (artNo.length < 10) {
-	 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-}
+
 if (artNo.length > 3) {
 
 	 $.post("/common/patient-last-request-details.php", {
@@ -815,11 +813,8 @@ if (artNo.length > 3) {
 						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
 					}
 			   } else {
-					if (artNo.length < 10) {
-						 $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-					} else {
+					
 						 $("#artNoGroup").html('');
-					}
 			   }
 		  });
 }

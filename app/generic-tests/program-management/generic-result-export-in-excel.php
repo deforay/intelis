@@ -266,20 +266,35 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$no++;
 	}
 
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
-			);
-			$colNo++;
+	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 5000) 
+	{
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$file = new SplFileObject($fileName, 'w');
+		$file->fputcsv($headings);
+		foreach ($output as $row) {
+			$file->fputcsv($row);
 		}
+		// we dont need the $file variable anymore
+		$file = null;
+		echo base64_encode($fileName);
 	}
-	$writer = IOFactory::createWriter($excel, 'Xlsx');
-	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
-	$writer->save($filename);
-	echo base64_encode($filename);
+	else
+	{
+		$start = (count($output)) + 2;
+		foreach ($output as $rowNo => $rowData) {
+			$colNo = 1;
+			$rRowCount = $rowNo + 4;
+			foreach ($rowData as $field => $value) {
+				$sheet->setCellValue(
+					Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+					html_entity_decode($value)
+				);
+				$colNo++;
+			}
+		}
+		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+		$writer->save($filename);
+		echo base64_encode($filename);
+	}
 }

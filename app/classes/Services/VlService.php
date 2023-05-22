@@ -520,7 +520,7 @@ class VlService
 
 
             $id = 0;
-            if ($rowData) {
+            if (!empty($rowData)) {
                 // $this->db = $this->db->where('vl_sample_id', $rowData['vl_sample_id']);
                 // $id = $this->db->update("form_vl", $vlData);
                 // $params['vlSampleId'] = $rowData['vl_sample_id'];
