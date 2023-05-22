@@ -15,7 +15,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$gconfig = $general->getGlobalConfig();
+$gconfig = $general->getGlobalConfig(); 
 $sarr = $general->getSystemConfig();
 
 $tableName = "form_vl";
@@ -195,6 +195,7 @@ $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['vlIncompleteFormCount'] = $iTotal;
 
 /*
                                                        * Output

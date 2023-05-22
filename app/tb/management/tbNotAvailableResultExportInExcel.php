@@ -111,21 +111,33 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         $row[] = ($aRow['status_name']);
         $output[] = $row;
     }
+    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 5000) {
 
-    $start = (count($output)) + 2;
-    foreach ($output as $rowNo => $rowData) {
-        $colNo = 1;
-        $rRowCount = $rowNo + 4;
-        foreach ($rowData as $field => $value) {
-            $sheet->setCellValue(
-                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode($value)
-            );
-            $colNo++;
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
+		$file = new SplFileObject($fileName, 'w');
+		$file->fputcsv($headings);
+		foreach ($output as $row) {
+			$file->fputcsv($row);
+		}
+		// we dont need the $file variable anymore
+		$file = null;
+		echo base64_encode($fileName);
+	} else {
+        $start = (count($output)) + 2;
+        foreach ($output as $rowNo => $rowData) {
+            $colNo = 1;
+            $rRowCount = $rowNo + 4;
+            foreach ($rowData as $field => $value) {
+                $sheet->setCellValue(
+                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                    html_entity_decode($value)
+                );
+                $colNo++;
+            }
         }
+        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+        $writer->save($fileName);
+		echo base64_encode($fileName);
     }
-    $writer = IOFactory::createWriter($excel, 'Xlsx');
-    $filename = 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
 }

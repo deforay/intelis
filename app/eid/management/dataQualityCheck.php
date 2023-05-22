@@ -180,6 +180,7 @@ $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM form_eid as v
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
+$_SESSION['vlIncompleteFormCount'] = $iTotal;
 
 /*
                                                        * Output

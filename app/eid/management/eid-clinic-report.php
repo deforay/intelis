@@ -940,8 +940,7 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
-				}
+					window.open('/download.php?f=' + data, '_blank');				}
 			});
 	}
 
@@ -964,8 +963,7 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
-				}
+					window.open('/download.php?f=' + data, '_blank');				}
 			});
 	}
 
@@ -987,8 +985,7 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
-				}
+					window.open('/download.php?f=' + data, '_blank');				}
 			});
 	}
 
@@ -1002,13 +999,13 @@ foreach ($rejectionTypeResult as $type) {
 				Field_Name: $("#formField  option:selected").text()
 			},
 			function(data) {
+				alert(data);
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					location.href = '/temporary/' + data;
-				}
+					window.open('/download.php?f=' + data, '_blank');				}
 			});
 	}
 
@@ -1046,4 +1043,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+require_once APPLICATION_PATH . '/footer.php'; 
