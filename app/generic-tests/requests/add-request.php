@@ -207,11 +207,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
                                    </div>
-                                   <div class="row">
+                                   <div class="box-body row">
                                         <div class="col-xs-4 col-md-4">
                                              <div class="form-group">
-                                                  <label for="testType">Test Type</label>
-                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+                                                  <label for="testType">Test Type</label><br>
+                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:90% !important;" onchange="getTestTypeForm()">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
                                                             <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
@@ -219,24 +219,22 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </select>
                                              </div>
                                         </div>
+                                        <div class="col-xs-4 col-md-4 requestForm" style="display:none;">
+                                             <div class="form-group">
+                                                  <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+                                                  <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                             </div>
+                                        </div>
+                                        <div class="col-xs-4 col-md-4 requestForm" style="display:none;">
+                                             <div class="form-group">
+                                                  <label for="sampleReordered">
+                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
+                                                  </label>
+                                             </div>
+                                        </div>
                                    </div>
                                    <div class="box-body requestForm" style="display:none;">
                                         <div class="row">
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
-                                                       </label>
-                                                  </div>
-                                             </div>
-
-
                                              <!-- BARCODESTUFF START -->
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-4 col-md-4 pull-right">
@@ -251,7 +249,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="province">State/Province <span class="mandatory">*</span></label>
+                                                       <label for="province">State/Province <span class="mandatory">*</span></label><br>
                                                        <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
                                                             <?php echo $province; ?>
                                                        </select>
@@ -259,7 +257,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              </div>
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="district">District/County <span class="mandatory">*</span></label>
+                                                       <label for="district">District/County <span class="mandatory">*</span></label><br>
                                                        <select class="form-control isRequired" name="district" id="district" title="Please choose county" style="width:100%;" onchange="getFacilities(this);">
                                                             <option value=""> -- Select -- </option>
                                                        </select>
@@ -267,7 +265,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              </div>
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
+                                                       <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label><br>
                                                        <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility;  ?>
                                                        </select>
@@ -291,7 +289,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="implementingPartner">Implementing Partner</label>
+                                                       <label for="implementingPartner">Implementing Partner</label><br>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -304,7 +302,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              </div>
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="fundingSource">Funding Source</label>
+                                                       <label for="fundingSource">Funding Source</label><br>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -316,18 +314,19 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </div>
                                              </div>
 
-                                             <div class="col-md-4 col-md-4" id="facilitySection">
-                                                  <label for="labId">Testing Lab <span class="mandatory">*</span></label>
-                                                  <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
-                                                       <option value="">-- Select --</option>
-                                                       <?php foreach ($lResult as $labName) { ?>
-                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
-                                                       <?php } ?>
-                                                  </select>
+                                             <div class="col-xs-4 col-md-4">
+                                                  <div class="form-group">
+                                                       <label for="labId">Testing Lab <span class="mandatory">*</span></label><br>
+                                                       <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
+                                                            <option value="">-- Select --</option>
+                                                            <?php foreach ($lResult as $labName) { ?>
+                                                                 <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>"><?= $labName['facility_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
                                              </div>
-
                                         </div>
-                                        <!-- <div id="facilitySection"></div> -->
+                                        <div class="row" id="facilitySection"></div>
                                    </div>
                               </div>
                               <div class="box box-primary requestForm" style="display:none;">
@@ -802,15 +801,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
           $("#testType").select2({
-               width: '245px',
+               width: '285px',
                placeholder: "<?php echo _("Select Test Type"); ?>"
           });
           $('#labId').select2({
-               width: '245px',
+               width: '285px',
                placeholder: "Select Testing Lab"
           });
           $('#fName').select2({
-               width: '245px',
+               width: '285px',
                placeholder: "Select Clinic/Health Center"
           });
           $('#reviewedBy').select2({
@@ -827,16 +826,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Approved By"
           });
           $('#facilityId').select2({
-               width: '245px',
+               width: '285px',
                placeholder: "Select Clinic/Health Center"
           });
           $('#district').select2({
-               width: '245px',
+               width: '285px',
                placeholder: "District"
           });
           $('#province').select2({
-               width: '245px',
+               width: '285px',
                placeholder: "Province"
+          });
+          $('#implementingPartner').select2({
+               width: '285px',
+               placeholder: "Implementing Partner"
+          });
+          $('#fundingSource').select2({
+               width: '285px',
+               placeholder: "Funding Source"
           });
           // BARCODESTUFF START
           <?php
@@ -1597,7 +1604,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          data = JSON.parse(data);
                          if (data.facilitySection.length > 0) {
-                              $("#facilitySection").after(data.facilitySection);
+                              $("#facilitySection").html(data.facilitySection);
                          }
                          if (data.patientSection.length > 0) {
                               $("#patientSection").after(data.patientSection);
@@ -1627,16 +1634,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }).click(function() {
                               $('.ui-datepicker-calendar').show();
                          });
+                         $(".dynamicFacilitySelect2").select2({
+						width: '285px',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
                          $(".dynamicSelect2").select2({
-                              width: '245px',
+                              width: '100%',
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
                     });
           } else {
-               $("#facilitySectionInput").remove();
-               $("#patientSectionInput").remove();
+               $(".facilitySection").html('');
+               $(".patientSectionInput").remove();
                $("#labSection").html('');
-               $("#specimenSectionInput").remove();
+               $(".specimenSectionInput").remove();
                $("#otherSection").html('');
                $(".requestForm").hide();
           }

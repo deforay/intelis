@@ -53,80 +53,87 @@ if ($n > 0) {
         ) {
             $isRequired = "";
         }
+
+        if($testAttribute['section'][$i] == 'facilitySection') {
+            $inputWidth = "285px !important;";
+            $inputClass = " dynamicFacilitySelect2 ";
+        }else{
+            $inputClass = " dynamicSelect2 ";
+            $inputWidth = "100%;";
+        }
         // print_r($testAttribute);die;
         if ($testAttribute['field_type'][$i] == 'dropdown' || $testAttribute['field_type'][$i] == 'multiple') {
             $dropDownName = 'dynamicFields[' . $testAttribute['field_id'][$i] . ']';
-            if($testAttribute['field_type'][$i] == 'multiple'){
+            if ($testAttribute['field_type'][$i] == 'multiple') {
                 $dropDownName = 'dynamicFields[' . $testAttribute['field_id'][$i] . '][]';
             }
             $dropDownField = '';
-            $dropDownField .= '<select name="'.$dropDownName.'" id="'.$testAttribute['field_id'][$i].'" class="form-control dynamicSelect2 ' . $isRequired . $fieldType . $disabled . '" title="Please select the option" '.$testAttribute['field_type'][$i].' style="width:100%;">';
+            $dropDownField .= '<select name="' . $dropDownName . '" id="' . $testAttribute['field_id'][$i] . '" class="form-control ' .$inputClass .  $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'][$i] . ' style="width:'.$inputWidth.';">';
             $dropDownField .= '<option value="">-- Select --</option>';
-            foreach(explode(',' , $testAttribute['drop_down'][$i]) as $option){
-                if($testAttribute['field_type'][$i] == 'multiple'){
-                    $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$testAttribute['field_id'][$i]]))? "selected":"";
-                }else{
-                    $selected = (isset($value) && !empty($value) && $value == $option)? "selected":"";
+            foreach (explode(',', $testAttribute['drop_down'][$i]) as $option) {
+                if ($testAttribute['field_type'][$i] == 'multiple') {
+                    $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$testAttribute['field_id'][$i]])) ? "selected" : "";
+                } else {
+                    $selected = (isset($value) && !empty($value) && $value == $option) ? "selected" : "";
                 }
-                $dropDownField .= '<option value="'.trim($option).'" '.$selected.'>'.ucwords($option).'</option>';
+                $dropDownField .= '<option value="' . trim($option) . '" ' . $selected . '>' . ucwords($option) . '</option>';
             }
             $dropDownField .= '</select>';
-
-            $result[$testAttribute['section'][$i]][] = 
-            '<div class="col-xs-3 col-md-3" id="'.$testAttribute['section'][$i].'Input">
-                <div class="form-group">
-                    <label for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label>
-                    '.$dropDownField.'
-                    <input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '">
-                </div>
-            </div>';
-        }else{
-            
-            $assign = '';
-            
-            if($testAttribute['section'][$i] == 'labSection'){
-                $assign .= '<div class="col-md-6" id="'.$testAttribute['section'][$i].'Input">';
-                $assign .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label>';
-            }else{
-                $assign .= '<div class="col-xs-3 col-md-3" id="'.$testAttribute['section'][$i].'Input">';
-                $assign .= '<div class="form-group">';
-                $assign .= '<label class="control-label labels" for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label>';
-            }if($testAttribute['section'][$i] == 'labSection'){
-                $assign .= '<div class="col-lg-7">';
-            }
-            $assign .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'][$i] . '" id="' . $testAttribute['field_id'][$i] . '" name="dynamicFields[' . $testAttribute['field_id'][$i] . ']" value="' . $value . '" ' . $disabled . ' style="width:100%;">';
-            $assign .= '<input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '">';
-            $assign .= '</div></div>';
-
-            $result[$testAttribute['section'][$i]][] = $assign;
         }
 
+        $assign = '';
+
+        if ($testAttribute['section'][$i] == 'labSection') {
+            $assign .= '<div class="col-md-6 ' . $testAttribute['section'][$i] . 'Input">';
+            $assign .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label>';
+            $assign .= '<div class="col-lg-7">';
+        } elseif($testAttribute['section'][$i] == 'facilitySection') {
+            $assign .= '<div class="col-xs-4 col-md-4 ' . $testAttribute['section'][$i] . 'Input">';
+            $assign .= '<div class="form-group">';
+            $assign .= '<label class="control-label labels" for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label><br>';
+        } else{
+            $assign .= '<div class="col-xs-3 col-md-3 ' . $testAttribute['section'][$i] . 'Input">';
+            $assign .= '<div class="form-group">';
+            $assign .= '<label class="control-label labels" for="' . $testAttribute['field_id'][$i] . '">' . $testAttribute['field_name'][$i] . $mandatory . '</label>';
+        }
+
+
+        if($testAttribute['field_type'][$i] == 'dropdown' || $testAttribute['field_type'][$i] == 'multiple'){
+            $assign .= $dropDownField;
+        }else{
+            $assign .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'][$i] . '" id="' . $testAttribute['field_id'][$i] . '" name="dynamicFields[' . $testAttribute['field_id'][$i] . ']" value="' . $value . '" ' . $disabled . ' style="width:'.$inputWidth.';">';
+        }
+        $assign .= '<input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '">';
+        $assign .= '</div></div>';
+
+        $result[$testAttribute['section'][$i]][] = $assign;
+
         if ($testAttribute['section'][$i] == 'otherSection') {
-            if(in_array($testAttribute['section_other'][$i], $otherSection)){
-                if(!isset($s[trim(strtolower($testAttribute['section_other'][$i]))]))
+            if (in_array($testAttribute['section_other'][$i], $otherSection)) {
+                if (!isset($s[trim(strtolower($testAttribute['section_other'][$i]))]))
                     $s[trim(strtolower($testAttribute['section_other'][$i]))] = $i;
-            }else{
+            } else {
                 $s[trim(strtolower($testAttribute['section_other'][$i]))] = $i;
                 $otherSection[] = $testAttribute['section_other'][$i];
             }
             $title = '<div class="box-header with-border"><h3 class="box-title">' . $testAttribute['section_other'][$i] . '</h3></div>';
-            
+
             // Grouping Other Sections via array
             $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '<div class="col-xs-3 col-md-3">';
             $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '<div class="form-group">';
             $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '<label>' . $testAttribute['field_name'][$i] . $mandatory . '</label>';
             if ($testAttribute['field_type'][$i] == 'dropdown' || $testAttribute['field_type'][$i] == 'multiple') {
-                $content[trim(strtolower($testAttribute['section_other'][$i]))] .=$dropDownField;
-            }else{
-                $content[trim(strtolower($testAttribute['section_other'][$i]))] .='<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'][$i] . '" id="' . $testAttribute['field_id'][$i] . '" name="dynamicFields[' . $testAttribute['field_id'][$i] . ']" value="' . $value . '" ' . $disabled . '><input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '">';
+                $content[trim(strtolower($testAttribute['section_other'][$i]))] .= $dropDownField;
+            } else {
+                $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'][$i] . '" id="' . $testAttribute['field_id'][$i] . '" name="dynamicFields[' . $testAttribute['field_id'][$i] . ']" value="' . $value . '" ' . $disabled . '><input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttribute['field_id'][$i] . '">';
             }
             $content[trim(strtolower($testAttribute['section_other'][$i]))] .= '</div></div>';
 
-            $others[$s[trim(strtolower($testAttribute['section_other'][$i]))]] = $title . '<div class="box-body"><div class="row">' .$content[trim(strtolower($testAttribute['section_other'][$i]))] .'</div></div>';
+            $others[$s[trim(strtolower($testAttribute['section_other'][$i]))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_other'][$i]))] . '</div></div>';
         }
     }
     $key = 0;
-    foreach($others as $form){
+    foreach ($others as $form) {
         $otherForm[$key] = "<div class='box box-primary' style='margin-top: 0px; margin-left: -1px;'>" . $form . "</div></div>";
         $key++;
     }
@@ -134,18 +141,18 @@ if ($n > 0) {
 }
 // echo "<pre>";
 // print_r($testResultsAttribute);die;
-if(isset($testResultsAttribute) && !empty($testResultsAttribute)){
-    if($testResultsAttribute['result_type'] = 'qualitative'){
+if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
+    if ($testResultsAttribute['result_type'] = 'qualitative') {
         $resultSection = '<select class="form-control result-select" name="result" id="result">';
         $resultSection .= '<option value="">-- Select --</option>';
-        if(isset($testResultsAttribute['result']) && !empty($testResultsAttribute['result'])){
-            foreach($testResultsAttribute['result'] as $row){
-                $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == $row)? "selected":"";
-                $resultSection .= '<option value="'.$row.'" '.$selected.'>'.ucwords($row).'</option>';
+        if (isset($testResultsAttribute['result']) && !empty($testResultsAttribute['result'])) {
+            foreach ($testResultsAttribute['result'] as $row) {
+                $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == $row) ? "selected" : "";
+                $resultSection .= '<option value="' . $row . '" ' . $selected . '>' . ucwords($row) . '</option>';
             }
         }
         $resultSection .= '</select>';
-    }else{
+    } else {
         $resultSection = '<input type="text" id="result" name="result" class="form-control result-text" placeholder="Enter final result" title="Please enter final results">';
     }
     $resultForm[] = $resultSection;
