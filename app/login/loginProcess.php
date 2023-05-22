@@ -218,11 +218,12 @@ try {
 
                 throw new SystemException(_("Please check your login credentials"));
             }
-        } else {
-            throw new SystemException(_("Please check your login credentials"));
+            } else {
+                throw new SystemException(_("Please check your login credentials"));
+            }
         }
-    }
-} catch (SystemException $exc) {
+    } 
+}catch (SystemException $exc) {
     $_SESSION['alertMsg'] = $exc->getMessage();
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
