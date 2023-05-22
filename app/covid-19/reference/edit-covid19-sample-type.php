@@ -2,8 +2,10 @@
 
 
 require_once APPLICATION_PATH . '/header.php';
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 $sampleQuery = "SELECT * from r_covid19_sample_type where sample_id=$id";
@@ -88,8 +90,8 @@ $sampleInfo = $db->query($sampleQuery);
   }
 
   function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-    var removeDots = obj.value.replace(/\./g, "");
-    var removeDots = removeDots.replace(/\,/g, "");
+    let removeDots = obj.value.replace(/\./g, "");
+    removeDots = removeDots.replace(/\,/g, "");
     //str=obj.value;
     removeDots = removeDots.replace(/\s{2,}/g, ' ');
 

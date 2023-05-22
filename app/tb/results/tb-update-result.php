@@ -62,8 +62,10 @@ $rejectionQuery = "SELECT * FROM r_tb_sample_rejection_reasons where rejection_r
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 $tbQuery = "SELECT * from form_tb where tb_id=?";

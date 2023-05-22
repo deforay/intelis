@@ -18,8 +18,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
@@ -444,8 +446,7 @@ foreach ($testPlatformResult as $machine) {
 				resolve();
 			}, 300);
 		}).then(function() {
-			var count = $("#search_to option").length;
-			return count;
+			return $("#search_to option").length;
 		});
 	}
 

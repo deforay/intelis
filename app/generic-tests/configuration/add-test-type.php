@@ -215,7 +215,10 @@ $symptomInfo = $db->query($symQuery);
 												<option value="number"><?php echo _("Number"); ?></option>
 												<option value="text"><?php echo _("Text"); ?></option>
 												<option value="date"><?php echo _("Date"); ?></option>
-											</select>
+												<option value="dropdown"><?php echo _("Dropdown"); ?></option>
+												<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
+											</select><br>
+											<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
@@ -226,11 +229,11 @@ $symptomInfo = $db->query($symQuery);
 										<td>
 											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
 												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="facility"><?php echo _("Facility"); ?></option>
-												<option value="patient"><?php echo _("Patient"); ?></option>
-												<option value="specimen"><?php echo _("Specimen"); ?></option>
-												<option value="lab"><?php echo _("Lab"); ?></option>
-												<option value="other"><?php echo _("Other"); ?></option>
+												<option value="facilitySection"><?php echo _("Facility"); ?></option>
+												<option value="patientSection"><?php echo _("Patient"); ?></option>
+												<option value="specimenSection"><?php echo _("Specimen"); ?></option>
+												<option value="labSection"><?php echo _("Lab"); ?></option>
+												<option value="otherSection"><?php echo _("Other"); ?></option>
 											</select>
 											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
@@ -420,23 +423,26 @@ $symptomInfo = $db->query($symQuery);
 		f.setAttribute("style", "vertical-align:middle");
 
 		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>">\
+		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
                             <option value=""> <?php echo _("-- Select --"); ?> </option>\
                             <option value="number"><?php echo _("Number"); ?></option>\
                             <option value="text"><?php echo _("Text"); ?></option>\
                             <option value="date"><?php echo _("Date"); ?></option>\
-                        </select>';
+							<option value="dropdown"><?php echo _("Dropdown"); ?></option>\
+							<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>\
+						</select><br>\
+						<textarea name="dropDown[]" id="dropDown' + tableRowId + '" class="form-control" placeholder="<?php echo _("Drop down values as , separated"); ?>" title="<?php echo _("Please drop down values as comma separated"); ?>" style="display:none;"></textarea>';
 		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
                             <option value="yes"><?php echo _("Yes"); ?></option>\
                             <option value="no" selected><?php echo _("No"); ?></option>\
                         </select>';
 		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
                         <option value=""> <?php echo _("-- Select --"); ?> </option>\
-                        <option value="facility"><?php echo _("Facility"); ?></option>\
-                        <option value="patient"><?php echo _("Patient"); ?></option>\
-                        <option value="specimen"><?php echo _("Specimen"); ?></option>\
-                        <option value="lab"><?php echo _("Lab"); ?></option>\
-                        <option value="other"><?php echo _("Other"); ?></option>\
+                        <option value="facilitySection"><?php echo _("Facility"); ?></option>\
+						<option value="patientSection"><?php echo _("Patient"); ?></option>\
+						<option value="specimenSection"><?php echo _("Specimen"); ?></option>\
+						<option value="labSection"><?php echo _("Lab"); ?></option>\
+						<option value="otherSection"><?php echo _("Other"); ?></option>\
                     </select>\
                     <input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
@@ -486,7 +492,7 @@ $symptomInfo = $db->query($symQuery);
 
 	function checkSection(rowId) {
 		sectionVal = $("#section" + rowId).val();
-		if (sectionVal == "other") {
+		if (sectionVal == "otherSection") {
 			$("#sectionOther" + rowId).addClass("isRequired");
 			$("#sectionOther" + rowId).show();
 		} else {
@@ -530,6 +536,9 @@ $symptomInfo = $db->query($symQuery);
 				addTestRow();
 			}
 		});
+	}
+	function changeField(obj, i){
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('#dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}
 </script>
 

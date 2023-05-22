@@ -10,8 +10,10 @@ $title = _("EID | View All Requests");
 
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $hidesrcofreq = false;
 if (isset($_GET['id']) && !empty($_GET['id'])) {

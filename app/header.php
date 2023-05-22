@@ -213,7 +213,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 
 	<!-- Ionicons -->
-	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+
 	<!-- DataTables -->
 	<link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
 	<!-- Theme style -->
@@ -451,13 +451,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/common/reference/geographical-divisions-details.php" data-inner-pages="<?= base64_encode('/common/reference/add-geographical-divisions.php') . ';' . base64_encode('/common/reference/edit-geographical-divisions.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Geographical Divisions"); ?></a>
 												</li>
 											<?php }
-											//if (isset($_SESSION['privileges']) && in_array("testResultEmailConfig.php", $_SESSION['privileges'])) {
-											?>
-											<!-- <li class="allMenu resultEmailConfigMenu">
-                                                    <a href="/vl/result-mail/testResultEmailConfig.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Result Email Config"); ?></a>
-                                                </li> -->
-											<?php
-											//}
 											?>
 											<li class="allMenu common-reference-implementation-partners">
 												<a href="/common/reference/implementation-partners.php" data-inner-pages="<?= base64_encode('/common/reference/add-implementation-partners.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Implementation Partners"); ?></a>

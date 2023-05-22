@@ -20,8 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
@@ -34,7 +36,7 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $resultStatus = null;
-
+// echo "<pre>";print_r(json_encode($_POST['dynamicFields']));die;
 try {
      if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else {

@@ -4,8 +4,10 @@
 require_once APPLICATION_PATH . '/header.php';
 $rejQuery = "SELECT * from r_covid19_test_reasons WHERE test_reason_status ='active'";
 $rejInfo = $db->query($rejQuery);
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 $tstQuery = "SELECT * from r_covid19_test_reasons where test_reason_id=$id";
@@ -107,8 +109,8 @@ $tstInfo = $db->query($tstQuery);
   }
 
   function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-    var removeDots = obj.value.replace(/\./g, "");
-    var removeDots = removeDots.replace(/\,/g, "");
+    let removeDots = obj.value.replace(/\./g, "");
+    removeDots = removeDots.replace(/\,/g, "");
     //str=obj.value;
     removeDots = removeDots.replace(/\s{2,}/g, ' ');
 

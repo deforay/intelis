@@ -25,8 +25,10 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 //global config
@@ -610,8 +612,7 @@ startDate: moment().subtract(28, 'days'),
 				resolve();
 			}, 300);
 		}).then(function() {
-			var count = $("#search_to option").length;
-			return count;
+			return $("#search_to option").length;
 		});
 	}
 </script>

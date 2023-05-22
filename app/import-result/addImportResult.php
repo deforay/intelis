@@ -3,8 +3,10 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
