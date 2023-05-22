@@ -260,29 +260,6 @@ if (!empty($patientFullName)) {
 	}
 </style>
 <?php
-
-/*
-if ($arr['vl_form'] == 1) {
-     require('forms/edit-southsudan.php');
-} else if ($arr['vl_form'] == 2) {
-     require('forms/edit-sierraleone.php');
-} else if ($arr['vl_form'] == 3) {
-     require('forms/edit-drc.php');
-} else if ($arr['vl_form'] == 4) {
-     //require('forms/edit-zambia.php');
-} else if ($arr['vl_form'] == 5) {
-     require('forms/edit-png.php');
-} else if ($arr['vl_form'] == 6) {
-     require('forms/edit-who.php');
-} else if ($arr['vl_form'] == 7) {
-     require('forms/edit-rwanda.php');
-} else if ($arr['vl_form'] == 8) {
-     require('forms/edit-angola.php');
-}*/
-
-
-
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -334,11 +311,6 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
 
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
@@ -361,79 +333,6 @@ if (!isset($facilityResult[0]['facility_state'])) {
 }
 if (!isset($facilityResult[0]['facility_district'])) {
 	$facilityResult[0]['facility_district'] = '';
-}
-//set reason for changes history
-$rch = '';
-$allChange = [];
-if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
-	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
-	if (!empty($allChange)) {
-		$rch .= '<h4>Result Changes History</h4>';
-		$rch .= '<table style="width:100%;">';
-		$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
-		$rch .= '<tbody>';
-		$allChange = array_reverse($allChange);
-		foreach ($allChange as $change) {
-			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['usr'] . "'";
-			$usrResult = $db->rawQuery($usrQuery);
-			$name = '';
-			if (isset($usrResult[0]['user_name'])) {
-				$name = ($usrResult[0]['user_name']);
-			}
-			$expStr = explode(" ", $change['dtime']);
-			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-		}
-		$rch .= '</tbody>';
-		$rch .= '</table>';
-	}
-}
-
-//var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
-$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0);
-
-if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
-	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
-} else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
-
-	$vlQueryInfo['result_value_hiv_detection'] = null;
-
-	$hivDetectedStringsToSearch = [
-		'HIV-1 Detected',
-		'HIV 1 Detected',
-		'HIV1 Detected',
-		'HIV 1Detected',
-		'HIV1Detected',
-		'HIV Detected',
-		'HIVDetected',
-	];
-
-	$hivNotDetectedStringsToSearch = [
-		'HIV-1 Not Detected',
-		'HIV-1 NotDetected',
-		'HIV-1Not Detected',
-		'HIV 1 Not Detected',
-		'HIV1 Not Detected',
-		'HIV 1Not Detected',
-		'HIV1Not Detected',
-		'HIV1NotDetected',
-		'HIV1 NotDetected',
-		'HIV 1NotDetected',
-		'HIV Not Detected',
-		'HIVNotDetected',
-	];
-
-	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
-	if ($detectedMatching !== false) {
-		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
-		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-	} else {
-		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
-		if ($notDetectedMatching !== false) {
-			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
-			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
-		}
-	}
 }
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
@@ -604,7 +503,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										</div>
 									</div>
 
-									<div class="col-md-4 col-md-4">
+									<div class="col-md-4 col-md-4" id="facilitySection">
 										<label for="labId">Testing Lab <span class="mandatory">*</span></label>
 										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
 											<option value="">-- Select --</option>
@@ -615,7 +514,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										</select>
 									</div>
 								</div>
-								<div class="row" id="clinicDynamicForm"></div>
 							</div>
 						</div>
 						<div class="box box-primary requestForm" style="display:none;">
@@ -720,14 +618,13 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</label>
 										</div>
 									</div>
-									<div class="col-xs-3 col-md-3" style="display:none;">
+									<div class="col-xs-3 col-md-3" style="display:none;" id="patientSection">
 										<div class="form-group">
 											<label for="">How long has this patient been on treatment ? </label>
 											<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($vlQueryInfo['treatment_initiation']); ?>" />
 										</div>
 									</div>
 								</div>
-								<div class="row" id="patientDynamicForm"></div>
 							</div>
 							<div class="box box-primary">
 								<div class="box-header with-border">
@@ -747,7 +644,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>">
 											</div>
 										</div>
-										<div class="col-xs-3 col-md-3" id="specimenDynamicForm">
+										<div class="col-xs-3 col-md-3" id="specimenSection">
 											<div class="form-group">
 												<label for="specimenType">Sample Type <span class="mandatory">*</span></label>
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
@@ -760,10 +657,10 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</div>
 										</div>
 									</div>
-									<!-- <div id="specimenDynamicForm"></div> -->
+									<!-- <div id="specimenSection"></div> -->
 								</div>
 							</div>
-							<div id="othersDynamicForm"></div>
+							<div id="otherSection"></div>
 							<?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 								<div class="box box-primary">
 									<div class="box-header with-border">
@@ -1089,7 +986,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 												<div class="col-md-12"><?php echo $rch; ?></div>
 											</div>
 										<?php } ?>
-										<div class="row" id="lapDynamicForm"></div>
+										<div class="row" id="labSection"></div>
 									</div>
 								<?php } ?>
 								</div>
@@ -1837,6 +1734,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 	}
 
 	function getTestTypeForm() {
+		removeDynamicForm();
 		var testType = $("#testType").val();
 		if (testType != "") {
 			$(".requestForm").show();
@@ -1845,27 +1743,26 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					testTypeForm: '<?php echo base64_encode($vlQueryInfo['test_type_form']); ?>',
 				},
 				function(data) {
-					//console.log(data);
 					data = JSON.parse(data);
-					if (data.facility.length > 0) {
-						$("#clinicDynamicForm").after(data.facility);
+					if (data.facilitySection.length > 0) {
+						$("#facilitySection").after(data.facilitySection);
 					}
-					if (data.patient.length > 0) {
-						$("#patientDynamicForm").after(data.patient);
+					if (data.patientSection.length > 0) {
+						$("#patientSection").after(data.patientSection);
 					}
-					if (data.lab.length > 0) {
-						$("#lapDynamicForm").html(data.lab);
+					if (data.labSection.length > 0) {
+						$("#labSection").html(data.labSection);
 					}
 					if (data.result.length > 0) {
 						$("#result-sections").html(data.result);
 					} else {
 						$('#resultSection').hide()
 					}
-					if (data.specimen.length > 0) {
-						$("#specimenDynamicForm").after(data.specimen);
+					if (data.specimenSection.length > 0) {
+						$("#specimenSection").after(data.specimenSection);
 					}
-					if (data.others.length > 0) {
-						$("#othersDynamicForm").html(data.others);
+					if (data.otherSection.length > 0) {
+						$("#otherSection").html(data.otherSection);
 					}
 					$('.date').datepicker({
 						changeMonth: true,
@@ -1877,15 +1774,23 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					}).click(function() {
 						$('.ui-datepicker-calendar').show();
 					});
+					$(".dynamicSelect2").select2({
+						width: '245px',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
 				});
 		} else {
-			$("#clinicDynamicFormInput").remove();
-			$("#patientDynamicFormInput").remove();
-			$("#lapDynamicForm").html('');
-			$("#specimenDynamicFormInput").remove();
-			$("#othersDynamicForm").html('');
-			$(".requestForm").hide();
+			removeDynamicForm();
 		}
+	}
+
+	function removeDynamicForm(){
+		$("#facilitySectionInput").remove();
+		$("#patientSectionInput").remove();
+		$("#labSection").html('');
+		$("#specimenSectionInput").remove();
+		$("#otherSection").html('');
+		$(".requestForm").hide();
 	}
 
 	function getSampleTypeList(testTypeId) {

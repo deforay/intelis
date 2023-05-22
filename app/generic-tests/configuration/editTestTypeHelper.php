@@ -29,6 +29,7 @@ try {
         $testAttribute['field_id'] = $_POST['fieldId'];
         $testAttribute['field_name'] = $_POST['fieldName'];
         $testAttribute['field_type'] = $_POST['fieldType'];
+        $testAttribute['drop_down'] = $_POST['dropDown'];
         $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
         $testAttribute['section'] = $_POST['section'];
         $testAttribute['section_other'] = $_POST['sectionOther'];

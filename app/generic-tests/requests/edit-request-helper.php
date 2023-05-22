@@ -36,7 +36,7 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $resultStatus = null;
-
+// echo "<pre>";print_r(json_encode($_POST['dynamicFields']));die;
 try {
      if (isset($_POST['api']) && $_POST['api'] == "yes") {
      } else {
