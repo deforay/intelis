@@ -42,8 +42,7 @@ $csp .= "; img-src 'self' data:; font-src 'self'; object-src 'none'; frame-src '
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);
     $response = $response->withAddedHeader('Content-Security-Policy', $csp);
-    $response =  $response->withAddedHeader('X-Content-Type-Options', 'nosniff');
-    return $response;
+    return  $response->withAddedHeader('X-Content-Type-Options', 'nosniff');
 }));
 
 
