@@ -113,7 +113,7 @@ try {
                         )
                     );
                 } else {
-                    throw new SystemException(_("Please checkss your login credentials"));
+                    throw new SystemException(_("Please checks your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
@@ -121,7 +121,7 @@ try {
 
                     throw new SystemException(_("Please check your login credentials"));
                 }
-            }
+
 
             if (isset($userRow) && !empty($userRow)) {
 

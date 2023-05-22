@@ -12334,7 +12334,7 @@ msgstr ""
 #: login/loginProcess.php:115
 #, fuzzy
 #| msgid "Province/State"
-msgid "Please checkss your login credentials"
+msgid "Please checks your login credentials"
 msgstr "Province"
 
 #: login/loginProcess.php:121 login/loginProcess.php:220

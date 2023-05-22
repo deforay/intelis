@@ -336,7 +336,8 @@ try {
         'manual_result_entry'                   => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type'                             => $_POST['testType'],
-        'test_type_form'                        => json_encode($_POST['dynamicFields'])
+        'test_type_form'                        => json_encode($_POST['dynamicFields']),
+       // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );
 
     if (isset($systemType) && ($systemType == "vluser" || $systemType == "standalone")) {
