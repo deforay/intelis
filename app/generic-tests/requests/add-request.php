@@ -249,7 +249,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <!-- BARCODESTUFF END -->
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-4 col-md-4">
+                                             <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="province">State/Province <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
@@ -257,7 +257,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-4 col-md-4">
+                                             <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="district">District/County <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" name="district" id="district" title="Please choose county" style="width:100%;" onchange="getFacilities(this);">
@@ -289,7 +289,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-4 col-md-4">
+                                             <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="implementingPartner">Implementing Partner</label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
@@ -302,7 +302,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-4 col-md-4">
+                                             <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="fundingSource">Funding Source</label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
@@ -316,7 +316,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </div>
                                              </div>
 
-                                             <div class="col-md-4 col-md-4" id="facilitySection">
+                                             <div class="col-md-3 col-md-3" id="facilitySection">
                                                   <label for="labId">Testing Lab <span class="mandatory">*</span></label>
                                                   <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
                                                        <option value="">-- Select --</option>
@@ -580,7 +580,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                       <?php if (count($reasonForFailure) > 0) { ?>
+                                                     <!--  <?php if (count($reasonForFailure) > 0) { ?>
                                                             <div class="col-md-6" style="display: none;">
                                                                  <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -589,7 +589,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                       </select>
                                                                  </div>
                                                             </div>
-                                                       <?php } ?>
+                                                       <?php } ?>-->
                                                   </div>
                                                   <div class="row">
                                                        <div class="col-md-12">

@@ -267,7 +267,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$sampleClass = '';
@@ -334,7 +334,7 @@ if (!isset($facilityResult[0]['facility_state'])) {
 if (!isset($facilityResult[0]['facility_district'])) {
 	$facilityResult[0]['facility_district'] = '';
 }
-
+//echo '<pre>'; print_r($facility); die;
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
@@ -418,7 +418,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											</label>
 										</div>
 									</div>
-
 
 								</div>
 								<div class="row">
@@ -788,7 +787,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 										</div>
 
 										<div class="row" style="margin-top: 10px;">
-											<?php if (count($reasonForFailure) > 0) { ?>
+											<!--<?php if (count($reasonForFailure) > 0) { ?>
 												<div class="col-md-6 labSection" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
 													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for
 														Failure </label>
@@ -798,7 +797,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 														</select>
 													</div>
 												</div>
-											<?php } ?>
+											<?php } ?>--->
 											<div class="col-md-6 vlResult">
 												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
 													Results Dispatched </label>
@@ -1468,7 +1467,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					cName: cName,
-					testType: 'vl'
+					testType: 'generic-tests'
 				},
 				function(data) {
 					if (data != "") {
@@ -1505,7 +1504,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 			//if (provinceName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					pName: pName,
-					testType: 'vl'
+					testType: 'generic-tests'
 				},
 				function(data) {
 					if (data != "") {
@@ -1541,7 +1540,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 					dName: dName,
 					cliName: cName,
 					fType: 2,
-					testType: 'vl'
+					testType: 'generic-tests'
 				},
 				function(data) {
 					if (data != "") {
@@ -1569,7 +1568,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
 					cName: cName,
-					testType: 'vl'
+					testType: 'generic-tests'
 				},
 				function(data) {
 					if (data != "") {
