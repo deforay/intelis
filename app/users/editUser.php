@@ -7,8 +7,10 @@ use App\Services\FacilitiesService;
 $title = _("Edit User");
 
 require_once APPLICATION_PATH . '/header.php';
-// Sanitize values before using them below
-$_GET = array_map('htmlspecialchars', $_GET);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
@@ -19,8 +21,10 @@ $userInfo = $db->rawQueryOne(
      [$id]
 );
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 $userInfo = array_map('htmlspecialchars', $userInfo);
 
 $interfaceUsers = "";

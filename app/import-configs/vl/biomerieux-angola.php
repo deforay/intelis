@@ -5,8 +5,10 @@ use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 try {
-    // Sanitize values before using them below
-    $_POST = array_map('htmlspecialchars', $_POST);
+    // Sanitized values from $request object
+    /** @var Laminas\Diactoros\ServerRequest $request */
+    $request = $GLOBALS['request'];
+    $_POST = $request->getParsedBody();
     $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
 
     $db = $db->where('imported_by', $_SESSION['userId']);

@@ -13,8 +13,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = ?", [base64_decode($_POST['kitId'])]);
 $result = "";

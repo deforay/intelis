@@ -34,7 +34,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
             $uri = trim(parse_url($uri, PHP_URL_PATH), "/");
 
-            //error_log("RequestHandler 1 :::" . $uri);
+            $GLOBALS['request'] = $request;
 
             switch ($uri) {
                 case null:

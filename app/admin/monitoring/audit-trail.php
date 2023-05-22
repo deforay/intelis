@@ -16,8 +16,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $activeTestModules = $systemService->getActiveTestModules();
 

@@ -14,8 +14,10 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $sampleCollectionDate = $province = '';
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 
 if (isset($_POST['provinceCode'])) {

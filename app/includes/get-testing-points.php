@@ -2,8 +2,10 @@
 if (empty($_POST)) {
     exit(0);
 }
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $db = $db->where('facility_id', $_POST['facilityId']);
 $facilityDetails = $db->getOne('facility_details', array('testing_points'));

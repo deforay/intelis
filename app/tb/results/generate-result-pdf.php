@@ -15,8 +15,10 @@ use App\Utilities\DateUtility;
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName1 = "activity_log";
 $tableName2 = "form_tb";

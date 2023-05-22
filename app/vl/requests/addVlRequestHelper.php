@@ -24,8 +24,10 @@ $systemType = $general->getSystemConfig('sc_user_type');
 $formId = $general->getGlobalConfig('vl_form');
 
 
-// Sanitize values before using them below
-$_POST = array_map('htmlspecialchars', $_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 try {
     if (isset($_POST['api']) && $_POST['api'] == "yes") {
