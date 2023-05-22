@@ -45,35 +45,35 @@ try {
         $lastId = $db->getInsertId();
         if ($lastId != 0) {
 
-            if (isset($_POST['sampleType']) && !empty($_POST['sampleType'])) {
+            if (!empty($_POST['sampleType'])) {
                 foreach ($_POST['sampleType'] as $val) {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName2, $value);
                 }
             }
 
-            if (isset($_POST['testingReason']) && !empty($_POST['testingReason'])) {
+            if (!empty($_POST['testingReason'])) {
                 foreach ($_POST['testingReason'] as $val) {
                     $value = array('test_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName3, $value);
                 }
             }
 
-            if (isset($_POST['testFailureReason']) && !empty($_POST['testFailureReason'])) {
+            if (!empty($_POST['testFailureReason'])) {
                 foreach ($_POST['testFailureReason'] as $val) {
                     $value = array('test_failure_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName5, $value);
                 }
             }
 
-            if (isset($_POST['rejectionReason']) && !empty($_POST['rejectionReason'])) {
+            if (!empty($_POST['rejectionReason'])) {
                 foreach ($_POST['rejectionReason'] as $val) {
                     $value = array('rejection_reason_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName6, $value);
                 }
             }
 
-            if (isset($_POST['symptoms']) && !empty($_POST['symptoms'])) {
+            if (!empty($_POST['symptoms'])) {
                 foreach ($_POST['symptoms'] as $val) {
                     $value = array('symptom_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName4, $value);

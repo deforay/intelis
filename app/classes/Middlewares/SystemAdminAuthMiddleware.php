@@ -25,7 +25,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
             return $handler->handle($request);
-        } elseif (!isset($_SESSION['adminUserId']) || empty($_SESSION['adminUserId'])) {
+        } elseif (empty($_SESSION['adminUserId'])) {
 
             // Redirect to the login page if the system user is not logged in
             $redirect = new RedirectResponse('/system-admin/login/login.php');

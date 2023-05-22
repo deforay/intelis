@@ -34,7 +34,7 @@ $systemInfo = $general->getSystemConfig();
 
 $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 
-if (isset(SYSTEM_CONFIG['instanceName']) && !empty(SYSTEM_CONFIG['instanceName'])) {
+if (!empty(SYSTEM_CONFIG['instanceName'])) {
 	$systemType = SYSTEM_CONFIG['instanceName'];
 } else {
 	$systemType = _("Lab Sample Management Module");

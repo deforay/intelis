@@ -30,7 +30,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:hepatitis-batches.php");
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {

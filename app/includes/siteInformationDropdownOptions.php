@@ -27,7 +27,7 @@ if ($arr['vl_form'] == '3') {
 	$GLOBALS['option'] = '<option value=""> ' . _("-- Select --") . ' </option>';
 }
 
-if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+if (!empty($_POST['testType'])) {
 	$GLOBALS['testType'] = $_POST['testType'];
 } else {
 	$GLOBALS['testType'] = 'vl';

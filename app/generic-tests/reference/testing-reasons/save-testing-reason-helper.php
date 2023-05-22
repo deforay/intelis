@@ -27,7 +27,7 @@ try {
             'test_reason_status' => $_POST['testReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        if (isset($testReasonId) && !empty($testReasonId)) {
+        if (!empty($testReasonId)) {
             $db = $db->where('test_reason_id', $testReasonId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

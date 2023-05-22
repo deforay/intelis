@@ -31,7 +31,7 @@ class AppAuthMiddleware implements MiddlewareInterface
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
             return $handler->handle($request);
-        } elseif (!isset($_SESSION['userId']) || empty($_SESSION['userId'])) {
+        } elseif (empty($_SESSION['userId'])) {
 
             // Redirect to the login page if the user is not logged in
             $redirect = new RedirectResponse('/login/login.php');

@@ -29,7 +29,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:tb-batches.php");
 }
 //Get machine's prev. label order

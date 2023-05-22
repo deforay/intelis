@@ -46,7 +46,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortName = _("Sample Tracking");
 }
 
-if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['instanceName'])) {
+if (!empty($applicationConfig['instanceName'])) {
 	$systemType = $applicationConfig['instanceName'];
 }
 

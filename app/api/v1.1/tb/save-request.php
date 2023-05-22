@@ -64,7 +64,7 @@ try {
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && !empty($province)) {
+            if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
@@ -77,9 +77,9 @@ try {
         }
 
         $data['api'] = "yes";
-        $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
+        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -91,11 +91,11 @@ try {
             $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
             $sQueryWhere = [];
 
-            if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
+            if (!empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
-            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+            if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
@@ -140,9 +140,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
+            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
+            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -213,10 +213,10 @@ try {
             isset($globalConfig['tb_auto_approve_api_results']) &&
             $globalConfig['tb_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
-            (isset($data['result']) && !empty($data['result']))
+            (!empty($data['result']))
         ) {
             $status = 7;
-        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
+        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
             $status = 8;
         }
 
@@ -333,7 +333,7 @@ try {
             'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
-            'reason_for_changing'                 => (isset($data['reasonFortbResultChanges']) && !empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
+            'reason_for_changing'                 => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
@@ -341,10 +341,10 @@ try {
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
         if (!empty($rowData)) {
-            $tbData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $tbData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $tbData['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
             $tbData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }
@@ -353,12 +353,12 @@ try {
         $tbData['last_modified_by'] =  $user['user_id'];
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (isset($data['testResult']) && !empty($data['testResult'])) {
+            if (!empty($data['testResult'])) {
                 $db = $db->where('tb_id', $data['tbSampleId']);
                 $db->delete($testTableName);
 
                 foreach ($data['testResult'] as $testKey => $testResult) {
-                    if (isset($testResult) && !empty($testResult) && trim($testResult) != "") {
+                    if (!empty($testResult) && trim($testResult) != "") {
                         $db->insert($testTableName, array(
                             'tb_id'             => $data['tbSampleId'],
                             'actual_no'         => $data['actualNo'][$testKey] ?? null,
@@ -406,7 +406,7 @@ try {
     } else {
         $msg = 'Successfully added.';
     }
-    if (isset($responseData) && !empty($responseData)) {
+    if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),

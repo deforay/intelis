@@ -48,7 +48,7 @@ class ResultsHelper
             $testingDateFormat = "$testingDateFormat A";
         }
         $timestamp = DateTimeImmutable::createFromFormat("!" . $testingDateFormat, $inputTestingDate);
-        if ($timestamp !== false && !empty($timestamp)) {
+        if (!empty($timestamp)) {
             $testingDate = $timestamp->format('Y-m-d H:i');
         } else {
             $testingDate = null;

@@ -492,7 +492,7 @@ class CommonService
 
         $pdfFormat = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-        if (false !== $pdfFormat && !empty($pdfFormat)) {
+        if (!empty($pdfFormat)) {
             foreach ($pdfFormat as $formatPath) {
                 $baseName = basename($formatPath);
                 $value = str_replace(array('.php', 'result-pdf-'), '', $baseName);

@@ -58,7 +58,7 @@ try {
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
         $provinceInfo = $db->rawQuery($provinceQuery, [$splitProvince[0]]);
-        if (!isset($provinceInfo) || empty($provinceInfo)) {
+        if (empty($provinceInfo)) {
             $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
         }
     }
@@ -418,9 +418,9 @@ try {
     $id = 0;
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
-        if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+        if (!empty($_POST['testName'])) {
             foreach ($_POST['testName'] as $testKey => $testKitName) {
-                if (isset($testKitName) && !empty($testKitName)) {
+                if (!empty($testKitName)) {
                     if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
                         $testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
                         $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];

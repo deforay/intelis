@@ -29,7 +29,7 @@ foreach ($configControlInfo as $info) {
 	}
 }
 
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:covid-19-batches.php");
 }
 //Get batch controls order

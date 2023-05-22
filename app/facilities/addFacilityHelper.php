@@ -35,7 +35,7 @@ $labSignTable = "lab_report_signatories";
 
 $jsonData = file_get_contents('php://input');
 $apiData = json_decode($jsonData, true);
-if (isset($apiData['result']) && !empty($apiData['result'])) {
+if (!empty($apiData['result'])) {
 	$_POST = $apiData['result'];
 }
 try {
@@ -112,7 +112,7 @@ try {
 			'report_email' => $email,
 			'contact_person' => $_POST['contactPerson'],
 			'facility_type' => $_POST['facilityType'],
-			'test_type' => (isset($_POST['testType']) && !empty($_POST['testType'])) ?  implode(', ', $_POST['testType'])  : null,
+			'test_type' => (!empty($_POST['testType'])) ?  implode(', ', $_POST['testType'])  : null,
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
 			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat']) : null,
@@ -121,7 +121,7 @@ try {
 		);
 
 		$facilityAttributes = [];
-		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+		if (!empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
 		if (!empty($_POST['sampleType'])) {
@@ -167,7 +167,7 @@ try {
 		$db->insert($facilityTable, $data);
 		$lastId = $db->getInsertId();
 
-		if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+		if (!empty($_POST['testType'])) {
 			foreach ($_POST['testType'] as $testType) {
 				// Mapping facility as a Health Facility
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
@@ -183,10 +183,10 @@ try {
 						'facility_id' => $lastId,
 						'updated_datetime' => DateUtility::getCurrentDateTime()
 					);
-					if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
+					if (!empty($_POST['availablePlatforms'])) {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
 					}
-					if (isset($attributes) && !empty($attributes)) {
+					if (!empty($attributes)) {
 						$data['attributes'] = json_encode($attributes, true);
 					}
 					$db->insert($testingLabsTable, $data);
@@ -241,7 +241,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && !empty($_FILES['signature']['name']) && isset($_POST['signName']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			foreach ($_POST['signName'] as $key => $name) {
 				if (isset($name) && $name != "") {
 					$signData = array(

@@ -28,8 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $transactionId = $general->generateUUID();
 try {
     if (
-        isset($input['userName']) && !empty($input['userName']) &&
-        isset($input['password']) && !empty($input['password'])
+        !empty($input['userName']) && !empty($input['password'])
     ) {
 
         $queryParams = array($input['userName']);

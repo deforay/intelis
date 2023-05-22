@@ -70,7 +70,7 @@ try {
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && !empty($province)) {
+            if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
@@ -83,9 +83,9 @@ try {
         } */
 
         $data['api'] = "yes";
-        $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
+        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -101,11 +101,11 @@ try {
 
             $sQueryWhere = [];
 
-            if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
+            if (!empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
-            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+            if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
@@ -151,9 +151,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
+            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
+            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -380,8 +380,8 @@ try {
             'is_sample_rejected'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] != '') ? $data['isSampleRejected'] : null,
             'reason_for_sample_rejection'           => (isset($data['rejectionReason']) && $data['rejectionReason'] != '') ? $data['rejectionReason'] :  null,
             'rejection_on'                          => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
-            'result_value_absolute'                 => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  null,
-            'result_value_absolute_decimal'         => (isset($data['vlResult']) && !empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  null,
+            'result_value_absolute'                 => (!empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? $data['vlResult'] :  null,
+            'result_value_absolute_decimal'         => (!empty($data['vlResult']) && ($data['vlResult'] != 'Target Not Detected' && $data['vlResult'] != 'Below Detection Level')) ? number_format((float)$data['vlResult'], 2, '.', '') :  null,
             'result'                                => $finalResult,
             'result_value_log'                      => (isset($data['vlLog']) && $data['vlLog'] != '') ? $data['vlLog'] :  null,
             'tested_by'                             => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  null,
@@ -389,13 +389,13 @@ try {
             'result_approved_datetime'              => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedOnDateTime'] :  null,
             'revised_by'                            => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                            => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
-            'reason_for_vl_result_changes'          => (isset($data['reasonForVlResultChanges']) && !empty($data['reasonForVlResultChanges'])) ? $data['reasonForVlResultChanges'] : null,
+            'reason_for_vl_result_changes'          => (!empty($data['reasonForVlResultChanges'])) ? $data['reasonForVlResultChanges'] : null,
             'lab_tech_comments'                     => (isset($data['labComments']) && trim($data['labComments']) != '') ? trim($data['labComments']) :  null,
             'result_status'                         => $status,
             'funding_source'                        => (isset($data['fundingSource']) && trim($data['fundingSource']) != '') ? $data['fundingSource'] : null,
             'implementing_partner'                  => (isset($data['implementingPartner']) && trim($data['implementingPartner']) != '') ? $data['implementingPartner'] : null,
-            'request_created_datetime'              => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
-            'last_modified_datetime'                => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime(),
+            'request_created_datetime'              => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
+            'last_modified_datetime'                => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'vl_result_category'                    => (isset($data['isSampleRejected']) && $data['isSampleRejected'] == 'yes') ? "rejected" : "",
             'external_sample_code'                  => $data['serialNo'] ?? null,
@@ -449,7 +449,7 @@ try {
         }
 
         if (!empty($rowData)) {
-            $vlFulldata['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $vlFulldata['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $vlFulldata['last_modified_by']  = $user['user_id'];
         } else {
             $vlFulldata['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
@@ -502,7 +502,7 @@ try {
     } else {
         $msg = 'Successfully added';
     }
-    if (isset($responseData) && !empty($responseData)) {
+    if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),

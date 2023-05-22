@@ -25,7 +25,7 @@ if ($params == "testing-labs") {
 try {
     $mappedFacility = explode(',', $_POST['selectedSample']);
     // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
-    if (isset($mappedFacility) && !empty($mappedFacility)) {
+    if (!empty($mappedFacility)) {
 
         $db->where('test_type', $testType);
         // $db->where('facility_id', $mappedFacility, 'NOT IN');

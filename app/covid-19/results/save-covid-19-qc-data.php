@@ -54,7 +54,7 @@ try {
             $db->update($tableName, $data);
             $lastId = base64_decode($_POST['qcDataId']);
         } else {
-            if (isset($_POST['qcKey']) && !empty($_POST['qcKey'])) {
+            if (!empty($_POST['qcKey'])) {
                 $data['qc_code_key'] = $_POST['qcKey'];
             }
             $lastId = $db->insert($tableName, $data);

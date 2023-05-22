@@ -52,7 +52,7 @@ try {
     if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name= ?";
         $provinceInfo = $db->rawQuery($provinceQuery, [$splitProvince[0]]);
-        if (!isset($provinceInfo) || empty($provinceInfo)) {
+        if (empty($provinceInfo)) {
             $db->insert(
                 'geographical_divisions',
                 [

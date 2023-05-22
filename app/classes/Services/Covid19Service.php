@@ -277,7 +277,7 @@ class Covid19Service
         $response = [];
 
         // Using this in sync requests/results
-        if (isset($c19Id) && is_array($c19Id) && !empty($c19Id)) {
+        if (is_array($c19Id) && !empty($c19Id)) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` IN (" . implode(",", $c19Id) . ") ORDER BY test_id ASC");
 
             foreach ($results as $row) {
@@ -293,7 +293,7 @@ class Covid19Service
     }
     public function getCovid19SymptomsByFormId($c19Id, $allData = false, $api = false)
     {
-        if (!isset($c19Id) || empty($c19Id)) {
+        if (empty($c19Id)) {
             return null;
         }
         if ($api) {
@@ -335,7 +335,7 @@ class Covid19Service
 
     public function getCovid19ComorbiditiesByFormId($c19Id, $allData = false, $api = false)
     {
-        if (!isset($c19Id) || empty($c19Id)) {
+        if (empty($c19Id)) {
             return null;
         }
         if ($api) {
@@ -374,7 +374,7 @@ class Covid19Service
 
     public function getCovid19ReasonsForTestingByFormId($c19Id, $allData = false, $api = false)
     {
-        if (!isset($c19Id) || empty($c19Id)) {
+        if (empty($c19Id)) {
             return null;
         }
         if ($api) {
@@ -410,7 +410,7 @@ class Covid19Service
 
     public function getCovid19ReasonsDetailsForTestingByFormId($c19Id)
     {
-        if (!isset($c19Id) || empty($c19Id)) {
+        if (empty($c19Id)) {
             return null;
         }
         return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", array($c19Id));
@@ -437,9 +437,9 @@ class Covid19Service
         $patientCodePrefix = 'P';
 
         try {
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
+            $provinceCode = (!empty($params['provinceCode'])) ? $params['provinceCode'] : null;
+            $provinceId = (!empty($params['provinceId'])) ? $params['provinceId'] : null;
+            $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
             if (empty($sampleCollectionDate)) {
                 echo 0;
@@ -459,7 +459,7 @@ class Covid19Service
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
+            if (empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
 
@@ -523,7 +523,7 @@ class Covid19Service
 
             $covid19Data['patient_id'] = $patientCode;
             $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
@@ -578,7 +578,7 @@ class Covid19Service
     public function generateCovid19QcCode()
     {
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
-        if (!isset($exist['qc_code_key']) || empty($exist['qc_code_key'])) {
+        if (empty($exist['qc_code_key'])) {
             $number = 001;
         } else {
             $number = ($exist['qc_code_key'] + 1);

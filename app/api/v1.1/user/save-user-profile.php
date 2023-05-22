@@ -46,7 +46,7 @@ try {
         //$general->elog($input);
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
-    $apiKey = isset($input['x-api-key']) && !empty($input['x-api-key']) ? $input['x-api-key'] : null;
+    $apiKey = !empty($input['x-api-key']) ? $input['x-api-key'] : null;
 
     if ((empty($input['post']) || $input['post'] === false) && empty($user)) {
         //$general->elog($input);
@@ -142,7 +142,7 @@ try {
         $id = $db->insert("user_details", $data);
     }
 
-    if ($id > 0 && trim($post['selectedFacility']) != '') {
+    if ($id > 0) {
         if ($id > 0 && trim($post['selectedFacility']) != '') {
             $db = $db->where('user_id', $data['user_id']);
             $delId = $db->delete("user_facility_map");

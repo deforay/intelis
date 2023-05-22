@@ -67,7 +67,7 @@ try {
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && !empty($province)) {
+            if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
@@ -81,9 +81,9 @@ try {
 
         $data['api'] = "yes";
 
-        $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
+        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
+        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
         if (empty($sampleCollectionDate)) {
             exit();
@@ -97,12 +97,12 @@ try {
 
             $sQueryWhere = [];
 
-            if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
+            if (!empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
 
-            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+            if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
@@ -147,9 +147,9 @@ try {
             'sample_collection_date' => $data['sampleCollectionDate'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
+            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
             'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
+            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
         );
 
         if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -215,10 +215,10 @@ try {
             isset($globalConfig['eid_auto_approve_api_results']) &&
             $globalConfig['eid_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
-            (isset($data['result']) && !empty($data['result']))
+            (!empty($data['result']))
         ) {
             $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
+        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
             $status = 8;
         }
 
@@ -316,7 +316,7 @@ try {
             'caretaker_contact_consent'                         => $data['caretakerConsentForContact'] ?? null,
             'caretaker_phone_number'                            => $data['caretakerPhoneNumber'] ?? null,
             'caretaker_address'                                 => $data['caretakerAddress'] ?? null,
-            'mother_name'                                       => (isset($data['mothersName']) && !empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
+            'mother_name'                                       => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
             'mother_dob'                                        => $data['mothersDob'] ?? null,
             'mother_marital_status'                             => $data['mothersMaritalStatus'] ?? null,
             'mother_treatment'                                  => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
@@ -365,7 +365,7 @@ try {
             'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by'                                        => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on'                                        => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
-            'reason_for_changing'                               => (isset($data['reasonForEidResultChanges']) && !empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
+            'reason_for_changing'                               => (!empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
             'result_status'                                     => $status,
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => $data['sampleRejectionReason'] ?? null,
@@ -374,7 +374,7 @@ try {
         );
 
         if (!empty($rowData)) {
-            $eidData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
             $eidData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();

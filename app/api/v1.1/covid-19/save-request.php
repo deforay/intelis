@@ -65,7 +65,7 @@ try {
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
-            if (isset($province) && !empty($province)) {
+            if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
@@ -78,20 +78,20 @@ try {
         }
         if (isset($data['patientNationality']) && !is_numeric($data['patientNationality'])) {
             $iso = explode("(", $data['patientNationality']);
-            if (isset($iso) && !empty($iso)) {
+            if (!empty($iso)) {
                 $data['patientNationality'] = trim($iso[0]);
             }
             $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
         }
         $pprovince = explode("##", $data['patientProvince']);
-        if (isset($pprovince) && !empty($pprovince)) {
+        if (!empty($pprovince)) {
             $data['patientProvince'] = $pprovince[0];
         }
 
         $data['api'] = "yes";
-        $provinceCode = (isset($data['provinceCode']) && !empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (isset($data['provinceId']) && !empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (isset($data['sampleCollectionDate']) && !empty($data['sampleCollectionDate'])) ? DateUtility::isoDateFormat($data['sampleCollectionDate'], true) : null;
+        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
+        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = (!empty($data['sampleCollectionDate'])) ? DateUtility::isoDateFormat($data['sampleCollectionDate'], true) : null;
 
         if (empty($sampleCollectionDate)) {
             continue;
@@ -105,12 +105,12 @@ try {
 
             $sQueryWhere = [];
 
-            if (isset($data['uniqueId']) && !empty($data['uniqueId'])) {
+            if (!empty($data['uniqueId'])) {
                 $uniqueId = $data['uniqueId'];
                 $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
             }
 
-            if (isset($data['appSampleCode']) && !empty($data['appSampleCode'])) {
+            if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
             }
 
@@ -152,9 +152,9 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => null,
-            'request_created_datetime' => (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
+            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
             'last_modified_by' => null,
-            'last_modified_datetime' => (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
+            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
         );
 
 
@@ -233,10 +233,10 @@ try {
             isset($globalConfig['covid19_auto_approve_api_results']) &&
             $globalConfig['covid19_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
-            (isset($data['result']) && !empty($data['result']))
+            (!empty($data['result']))
         ) {
             $status = 7;
-        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (isset($data['result']) && !empty($data['result']))) {
+        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
             $status = 8;
         }
 
@@ -371,7 +371,7 @@ try {
             'result_reviewed_datetime'            => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'result_approved_by'                  => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
             'result_approved_datetime'            => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  null,
-            'reason_for_changing'                 => (isset($_POST['reasonForCovid19ResultChanges']) && !empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
+            'reason_for_changing'                 => (!empty($_POST['reasonForCovid19ResultChanges'])) ? $_POST['reasonForCovid19ResultChanges'] : null,
             'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status'                       => $status,
             'data_sync'                           => 0,
@@ -379,10 +379,10 @@ try {
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
         );
         if (!empty($rowData)) {
-            $covid19Data['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $covid19Data['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
         } else {
-            $covid19Data['request_created_datetime']  = (isset($data['createdOn']) && !empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $covid19Data['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
             $covid19Data['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $covid19Data['request_created_by']  = $user['user_id'];
         }
@@ -392,13 +392,13 @@ try {
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
             $db = $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
-            if (isset($data['symptomDetected']) && !empty($data['symptomDetected']) || (isset($data['symptom']) && !empty($data['symptom']))) {
+            if (!empty($data['symptomDetected']) || (!empty($data['symptom']))) {
                 for ($i = 0; $i < count($data['symptomDetected']); $i++) {
                     $symptomData = [];
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
                     $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
-                    $symptomData["symptom_details"]     = (isset($data['symptomDetails'][$data['symptomId'][$i]]) && !empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
+                    $symptomData["symptom_details"]     = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     //var_dump($symptomData);
                     $db->insert("covid19_patient_symptoms", $symptomData);
                     error_log($db->getLastError());
@@ -420,7 +420,7 @@ try {
 
         $db = $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_patient_comorbidities");
-        if (isset($data['comorbidityDetected']) && !empty($data['comorbidityDetected'])) {
+        if (!empty($data['comorbidityDetected'])) {
             for ($i = 0; $i < count($data['comorbidityDetected']); $i++) {
                 $comorbidityData = [];
                 $comorbidityData["covid19_id"] = $data['covid19SampleId'];
@@ -431,11 +431,11 @@ try {
             }
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (isset($data['c19Tests']) && !empty($data['c19Tests'])) {
+            if (!empty($data['c19Tests'])) {
                 $db = $db->where('covid19_id', $data['covid19SampleId']);
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {
-                    if (isset($test['testName']) && !empty($test['testName'])) {
+                    if (!empty($test['testName'])) {
                         if (isset($test['testDate']) && trim($test['testDate']) != "") {
                             $data['testDate'] = DateUtility::isoDateFormat($data['testDate'], true);
                         } else {
@@ -506,7 +506,7 @@ try {
     } else {
         $msg = 'Successfully added.';
     }
-    if (isset($responseData) && !empty($responseData)) {
+    if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),

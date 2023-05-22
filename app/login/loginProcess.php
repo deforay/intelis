@@ -68,7 +68,7 @@ try {
 
     $adminCount = $db->getValue("user_details", "count(*)");
     if ($adminCount != 0) {
-        if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
+        if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
             $userName = ($_POST['username']);
             $password = ($_POST['password']);
@@ -91,7 +91,7 @@ try {
                 array($userName, $ipaddress, DateUtility::getCurrentDateTime())
             );
             if ($loginAttemptCount['LoginIdCount'] >= 3 || $loginAttemptCount['IpCount'] >= 3) {
-                if (!isset($_POST['captcha']) || empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
+                if (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode']) {
                     $usersService->userHistoryLog($userName, 'failed');
                     $_SESSION['alertMsg'] = _("You have exhausted maximum number of login attempts. Please retry login after sometime.");
                     header("Location:/login/login.php");
@@ -120,7 +120,7 @@ try {
                 }
             }
 
-            if (isset($userRow) && !empty($userRow)) {
+            if (!empty($userRow)) {
 
                 // regenerate session id
                 session_regenerate_id(true);

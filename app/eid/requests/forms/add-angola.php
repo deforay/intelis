@@ -47,7 +47,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Selecione -- </option>";
 foreach ($pdResult as $provinceName) {
-    $province .= "<option value='" . $provinceName['geo_name'] . "##" . (isset($provinceName['geo_code']) && !empty($provinceName['geo_code']) ? $provinceName['geo_code'] : $provinceName['geo_name']) . "'>" . ($provinceName['geo_name']) . "</option>";
+    $province .= "<option value='" . $provinceName['geo_name'] . "##" . (!empty($provinceName['geo_code']) ? $provinceName['geo_code'] : $provinceName['geo_name']) . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');

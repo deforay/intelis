@@ -25,12 +25,12 @@ $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
     $provinceCode = null;
-    if (isset($sampleRow['province_id']) && !empty($sampleRow['province_id'])) {
+    if (!empty($sampleRow['province_id'])) {
         $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= " . $sampleRow['province_id'];
         $provinceResult = $db->rawQueryOne($provinceQuery);
         $provinceCode = $provinceResult['geo_code'];
     }
-    if (isset($_POST['testDate']) && !empty($_POST['testDate'])) {
+    if (!empty($_POST['testDate'])) {
         $testDate = explode(" ", $_POST['testDate']);
         $_POST['testDate'] = DateUtility::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
