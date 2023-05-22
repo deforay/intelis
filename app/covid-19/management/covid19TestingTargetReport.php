@@ -667,16 +667,14 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     //$('#mrp-lowerDate').val(startDate);
     //$('#mrp-upperDate').val(endDate);
 
-    if (startmonth < 10)
+    if (startmonth < 10) {
       startmonth = '0' + startmonth;
-    else
-      startmonth = startmonth;
+    }
 
     if (endmonth < 10) {
       endmonth = '0' + endmonth;
-    } else {
-      endmonth = endmonth;
     }
+
     $('#mrp-lowerDate').val(startyear + '-' + startmonth);
     $('#mrp-upperDate').val(endyear + '-' + endmonth);
 

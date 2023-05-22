@@ -610,8 +610,7 @@ startDate: moment().subtract(28, 'days'),
 				resolve();
 			}, 300);
 		}).then(function() {
-			var count = $("#search_to option").length;
-			return count;
+			return $("#search_to option").length;
 		});
 	}
 </script>

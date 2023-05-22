@@ -438,8 +438,7 @@ foreach ($testPlatformResult as $machine) {
 				resolve();
 			}, 300);
 		}).then(function() {
-			var count = $("#search_to option").length;
-			return count;
+			return $("#search_to option").length;
 		});
 	}
 </script>

@@ -5,7 +5,7 @@ ALTER TABLE `vl_request_form` ADD `consultation` VARCHAR(255) NULL DEFAULT NULL 
 ALTER TABLE `vl_request_form` ADD `vl_result_category` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_processed`;
 ALTER TABLE `vl_request_form` ADD `sample_received_at_hub_datetime` DATETIME NULL DEFAULT NULL AFTER `vl_focal_person_phone_number`;
 
-UPDATE `privileges` SET `privilege_name` = 'vlWeeklyReport.php' WHERE `privilege_name` = 'monthlyReport.php'; 
+UPDATE `privileges` SET `privilege_name` = 'vlWeeklyReport.php' WHERE `privilege_name` = 'monthlyReport.php';
 
 -- Version 3.3 ---------- Amit 06-May-2018
 
@@ -3997,6 +3997,7 @@ DELETE p, rpm FROM `privileges` AS p INNER JOIN `roles_privileges_map` AS rpm ON
 ALTER TABLE `form_eid` CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAULT NULL;
 
 -- Jeyabanu 16-May-2023
+
 CREATE TABLE `r_generic_test_failure_reasons` (
   `test_failure_reason_id` int NOT NULL AUTO_INCREMENT,
   `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -4005,7 +4006,7 @@ CREATE TABLE `r_generic_test_failure_reasons` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int DEFAULT NULL,
   PRIMARY KEY (`test_failure_reason_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_failure_reason_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4015,8 +4016,6 @@ CREATE TABLE `generic_test_failure_reason_map` (
   KEY `test_type_id` (`test_type_id`),
   KEY `test_reason_id` (`test_failure_reason_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Interpret and Convert Lab Test Results', 'generic_interpret_and_convert_results', 'no', 'generic', NULL, NULL, NULL, 'active');
 
 ALTER TABLE `instruments` ADD `lab_id` INT NULL DEFAULT NULL AFTER `machine_name`;
 
