@@ -278,13 +278,13 @@ foreach ($testSymptomsMapInfo as $val) {
 												<td>
 													<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('<?php echo $i ?>')">
 														<option value=""> <?php echo _("-- Select --"); ?> </option>
-														<option value="facilitySection" <?php echo ($testAttribute['section'][$i] == 'facility') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
-														<option value="patientSection" <?php echo ($testAttribute['section'][$i] == 'patient') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
-														<option value="specimenSection" <?php echo ($testAttribute['section'][$i] == 'specimen') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
-														<option value="labSection" <?php echo ($testAttribute['section'][$i] == 'lab') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
-														<option value="otherSection" <?php echo ($testAttribute['section'][$i] == 'other') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
+														<option value="facilitySection" <?php echo ($testAttribute['section'][$i] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
+														<option value="patientSection" <?php echo ($testAttribute['section'][$i] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
+														<option value="specimenSection" <?php echo ($testAttribute['section'][$i] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
+														<option value="labSection" <?php echo ($testAttribute['section'][$i] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
+														<option value="otherSection" <?php echo ($testAttribute['section'][$i] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
 													</select>
-													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'other') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'other') ? $testAttribute['section_other'][$i] : "" ?>" />
+													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? $testAttribute['section_other'][$i] : "" ?>" />
 												</td>
 												<td align="center" style="vertical-align:middle;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -318,11 +318,11 @@ foreach ($testSymptomsMapInfo as $val) {
 										<td>
 											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
 												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="facility"><?php echo _("Facility"); ?></option>
-												<option value="patient"><?php echo _("Patient"); ?></option>
-												<option value="specimen"><?php echo _("Specimen"); ?></option>
-												<option value="lab"><?php echo _("Lab"); ?></option>
-												<option value="other"><?php echo _("Other"); ?></option>
+												<option value="facilitySection"><?php echo _("Facility"); ?></option>
+												<option value="patientSection"><?php echo _("Patient"); ?></option>
+												<option value="specimenSection"><?php echo _("Specimen"); ?></option>
+												<option value="labSection"><?php echo _("Lab"); ?></option>
+												<option value="otherSection"><?php echo _("Other"); ?></option>
 											</select>
 											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
