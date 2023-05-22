@@ -12,10 +12,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
-$_POST = $request->getParsedBody();
+// Sanitize values before using them below
+$_POST = array_map('htmlspecialchars', $_POST);
 
 
 $tableName = "user_details";
@@ -121,7 +119,7 @@ try {
 
                     throw new SystemException(_("Please check your login credentials"));
                 }
-
+            }
 
             if (isset($userRow) && !empty($userRow)) {
 
