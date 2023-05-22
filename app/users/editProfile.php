@@ -29,7 +29,7 @@ $data = $db->get("user_login_history", 25);
 
 <!-- DataTables Responsive CSS -->
 <link href="vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -172,7 +172,7 @@ $data = $db->get("user_login_history", 25);
 
 <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
 <script src="vendor/datatables-responsive/dataTables.responsive.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script type="text/javascript" src="/assets/js/toastify.js"></script>
 <!-- $(document).ready(function() {
 $('#example').DataTable({
 responsive: true
