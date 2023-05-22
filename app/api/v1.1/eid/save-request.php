@@ -51,9 +51,7 @@ try {
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
 
-    $sQuery = "SELECT vlsm_instance_id FROM s_vlsm_instance";
-    $rowData = $db->rawQuery($sQuery);
-    $instanceId = $rowData[0]['vlsm_instance_id'];
+    $instanceId = $general->getInstanceId();
     $formId = $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
@@ -91,7 +89,7 @@ try {
             exit();
         }
         $update = "no";
-        $rowData = false;
+        $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
@@ -112,7 +110,10 @@ try {
                 $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
             }
             $rowData = $db->rawQueryOne($sQuery);
-            if ($rowData) {
+            if (!empty($rowData)) {
+                if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    continue;
+                }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
                 $sampleData['sampleCode'] = (!empty($rowData['sample_code'])) ? $rowData['sample_code'] : $rowData['remote_sample_code'];
@@ -375,7 +376,7 @@ try {
             'source_of_request'                                 => $data['sourceOfRequest'] ?? "API"
         );
 
-        if ($rowData) {
+        if (!empty($rowData)) {
             $eidData['last_modified_datetime']  = (isset($data['updatedOn']) && !empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {

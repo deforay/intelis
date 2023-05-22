@@ -525,7 +525,7 @@ class Covid19Service
             $covid19Data['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
-            if ($rowData) {
+            if (!empty($rowData)) {
                 // $this->db = $this->db->where('covid19_id', $rowData['covid19_id']);
                 // $id = $this->db->update("form_covid19", $covid19Data);
 

@@ -384,7 +384,7 @@ class GenericTestsService
 
 
             $id = 0;
-            if ($rowData) {
+            if (!empty($rowData)) {
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCodeGenericTest($params);

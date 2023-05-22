@@ -287,11 +287,11 @@ if ($id > 0) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =$xplodJsonToArray[1]";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
                         }
-                        $sampleResult = $db->query($sampleQuery);
+                        $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         // $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                         $lotDetails = '';

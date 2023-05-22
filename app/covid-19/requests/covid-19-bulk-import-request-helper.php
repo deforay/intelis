@@ -62,8 +62,7 @@ try {
                 $resultStatus       = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['BO']);
                 $labTechnician      = $usersService->addUserIfNotExists($rowData['BR']);
 
-                $sQuery = "SELECT vlsm_instance_id from s_vlsm_instance";
-                $instanceId = $db->rawQueryOne($sQuery);
+                $instanceId = $general->getInstanceId();
 
                 if (trim($rowData['AU']) != '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['AU']));
