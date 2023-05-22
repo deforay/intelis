@@ -27,7 +27,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
   $searchQuery = "SELECT vl.*,
                   f.*,
                   imp.i_partner_name,
-                  rst.*,
+                  rst.sample_name,
                   vltr.test_reason_name,
                   l.facility_name as labName,
                   u_d.user_name as reviewedBy,
@@ -67,10 +67,7 @@ if (empty($requestResult) || !$requestResult) {
 }
 
 //set print time
-$printedTime = date('Y-m-d H:i:s');
-$expStr = explode(" ", $printedTime);
-$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
-$printDateTime = $expStr[1];
+$printDate = DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s'), true);
 
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;

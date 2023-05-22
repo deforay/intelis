@@ -111,12 +111,11 @@ try {
                         )
                     );
                 } else {
-                    throw new SystemException(_("Please checks your login credentials"));
+                    throw new SystemException(_("Please checkss your login credentials"));
                 }
             } else if ($userRow['hash_algorithm'] == 'phb') {
                 if (!password_verify($_POST['password'], $userRow['password'])) {
                     $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
-
                     throw new SystemException(_("Please check your login credentials"));
                 }
             }
@@ -218,12 +217,11 @@ try {
 
                 throw new SystemException(_("Please check your login credentials"));
             }
-            } else {
-                throw new SystemException(_("Please check your login credentials"));
-            }
+        } else {
+            throw new SystemException(_("Please check your login credentials"));
         }
-    } 
-}catch (SystemException $exc) {
+    }
+} catch (SystemException $exc) {
     $_SESSION['alertMsg'] = $exc->getMessage();
     error_log($exc->getMessage() . " | " . $ipaddress . " | " . $userName);
     error_log($exc->getTraceAsString());
