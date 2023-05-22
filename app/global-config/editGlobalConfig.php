@@ -1143,7 +1143,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("Lab Tests Settings"); ?></h3>
+									<h3 class="panel-title"><?php echo _("Generic Lab Tests Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
@@ -1159,17 +1159,17 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 													if ($arr['generic_sample_code'] == 'MMYY') {
 														$sPrefixMMYY = $arr['generic_sample_code_prefix'];
 														$sPrefixMMYYDisplay = '';
-													} else if ($arr['generic_sample_code'] == 'YY') {
+													} elseif ($arr['generic_sample_code'] == 'YY') {
 														$sPrefixYY = $arr['generic_sample_code_prefix'];
 														$sPrefixYYDisplay = '';
 													}
 													?>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate_yy" name="generic_sample_code" value="YY" <?php echo ($arr['generic_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixYY readPage" id="generic_prefixYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate_mmyy" name="generic_sample_code" value="MMYY" <?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixMMYY readPage" id="generic_prefixMMYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate" name="generic_sample_code" value="auto" <?php echo ($arr['generic_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="generic_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_auto_generate2" name="generic_sample_code" value="auto2" <?php echo ($arr['generic_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="generic_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_numeric" name="generic_sample_code" value="numeric" <?php echo ($arr['generic_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the TB Sample Code Format'); ?>" id="generic_alpha_numeric" name="generic_sample_code" value="alphanumeric" <?php echo ($arr['generic_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_auto_generate_yy" name="generic_sample_code" value="YY" <?php echo ($arr['generic_sample_code'] == 'YY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixMMYY','prefixYY')">&nbsp;<input <?php echo $sPrefixYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixYY readPage" id="generic_prefixYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixYY; ?>" /> <?php echo _("YY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_auto_generate_mmyy" name="generic_sample_code" value="MMYY" <?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'checked' : ''; ?> onclick="makeReadonly('prefixYY','prefixMMYY')">&nbsp;<input <?php echo $sPrefixMMYYDisplay; ?> type="text" class="generic_boxWidth generic_prefixMMYY readPage" id="generic_prefixMMYY" name="generic_sample_code_prefix" title="<?php echo _('Enter Prefix'); ?>" value="<?php echo $sPrefixMMYY; ?>" /> <?php echo _("MMYY"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_auto_generate" name="generic_sample_code" value="auto" <?php echo ($arr['generic_sample_code'] == 'auto') ? 'checked' : ''; ?>><span id="generic_auto1"><?php echo ($arr['vl_form'] == 5) ? ' Auto 1' : ' Auto'; ?> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_auto_generate2" name="generic_sample_code" value="auto2" <?php echo ($arr['generic_sample_code'] == 'auto2') ? 'checked' : ''; ?> style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"><span id="generic_auto2" style="display:<?php echo ($arr['vl_form'] == 5) ? '' : 'none'; ?>"> <?php echo _("Auto"); ?> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_numeric" name="generic_sample_code" value="numeric" <?php echo ($arr['generic_sample_code'] == 'numeric') ? 'checked' : ''; ?>> <?php echo _("Numeric"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<input type="radio" class="isRequired readPage" title="<?php echo _('Please select the Generic Test Sample Code Format'); ?>" id="generic_alpha_numeric" name="generic_sample_code" value="alphanumeric" <?php echo ($arr['generic_sample_code'] == 'alphanumeric') ? 'checked' : ''; ?>> <?php echo _("Alpha Numeric"); ?>
 												</div>
 											</div>
 										</div>
@@ -1256,26 +1256,12 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="generic_interpret_and_convert_results" class="col-lg-2 control-label"><?php echo _("Interpret and Convert Lab Test Results"); ?></label>
-												<div class="col-lg-4">
-													<select id="generic_interpret_and_convert_results" name="generic_interpret_and_convert_results" type="text" class="form-control readPage" title="<?php echo _('Please select Interpret and Convert Lab Test Results'); ?>">
-														<option value=""><?php echo _("--Select--"); ?></option>
-														<option value="yes" <?php echo (isset($arr['generic_interpret_and_convert_results']) && $arr['generic_interpret_and_convert_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
-														<option value="no" <?php echo (isset($arr['generic_interpret_and_convert_results']) && $arr['generic_interpret_and_convert_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
 								</div>
 							</div>
 						<?php } ?>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title"><?php echo _("APP Settings"); ?></h3>
+								<h3 class="panel-title"><?php echo _("Mobile App Settings"); ?></h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
@@ -1295,45 +1281,6 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<h3 class="panel-title"><?php echo _("Connect"); ?></h3>
 							</div>
 							<div class="panel-body">
-								<!-- <div class="row">
-                  <div class="col-md-7" style="height:38px;">
-                    <div class="form-group" style="height:38px;">
-                      <label for="sync_path" class="col-lg-4 control-label">Sync Path (Dropbox or Shared folder)</label>
-                      <div class="col-lg-8">
-                        <input type="text" class="form-control" id="sync_path" name="sync_path" placeholder="Sync Path" title="Please enter sync path" value="<?php echo $arr['sync_path']; ?>"/>
-                      </div>
-                    </div>
-                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-7 col-md-offset-2" style="text-align:center;">
-                      <code>Used for Dropbox or shared folder sync using the vlsm-connect module</code>
-                  </div>
-                </div><br/> -->
-
-								<!-- <div class="row">
-                  <div class="col-md-7">
-                    <div class="form-group">
-                      <label for="data_sync_interval" class="col-lg-4 control-label">VLSTS Data Sync Interval (in Days) <span class="mandatory">*</span> </label>
-                      <div class="col-lg-8">
-                        <input type="number" min="1" max="1000" class="form-control forceNumeric" id="data_sync_interval" name="data_sync_interval" placeholder="Data Sync Interval" title="Please enter sync interval" value="<?php echo $arr['data_sync_interval']; ?>"/>
-                      </div>
-                    </div>
-                   </div>
-                </div>                 -->
-
-								<!-- <div class="row">
-                  <div class="col-md-7">
-                    <div class="form-group">
-                      <label for="enable_qr_mechanism" class="col-lg-4 control-label">Enable QR Code </label>
-                      <div class="col-lg-8">
-                        <input type="radio" class="" id="enable_qr_mechanism_yes" name="enable_qr_mechanism" value="yes" <?php echo ($arr['enable_qr_mechanism'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
-                        <input type="radio" class="" id="enable_qr_mechanism_no" name="enable_qr_mechanism" value="no" <?php echo ($arr['enable_qr_mechanism'] == 'no' || $arr['enable_qr_mechanism'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;No
-                      </div>
-                    </div>
-                  </div>
-                </div>   -->
-
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">

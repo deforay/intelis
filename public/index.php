@@ -14,6 +14,7 @@ use App\Middlewares\SystemAdminAuthMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
+use function Laminas\Stratigility\middleware;
 
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
@@ -21,6 +22,29 @@ $request = ServerRequestFactory::fromGlobals();
 
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
+
+
+$uri = $request->getUri()->getPath();
+
+$allowedDomains = [];
+
+if (isset(SYSTEM_CONFIG['remoteURL'])) {
+    $allowedDomains[] = SYSTEM_CONFIG['remoteURL'];
+}
+
+$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'";
+foreach ($allowedDomains as $domain) {
+    $csp .= " $domain";
+}
+
+$csp .= "; img-src 'self' data:; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+
+$middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
+    $response = $handler->handle($request);
+    $response = $response->withAddedHeader('Content-Security-Policy', $csp);
+    $response =  $response->withAddedHeader('X-Content-Type-Options', 'nosniff');
+    return $response;
+}));
 
 
 // Error Handler Middleware
@@ -40,7 +64,6 @@ $middlewarePipe->pipe(new CorsMiddleware([
 
 // Auth Middleware
 // Check if the request is for the system admin or not
-$uri = $request->getUri()->getPath();
 if (fnmatch('/system-admin*', $uri)) {
     // System Admin Authentication Middleware
     $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
