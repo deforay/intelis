@@ -103,7 +103,7 @@ foreach ($testPlatformResult as $machine) {
                             foreach ($testPlatformResult as $machine) {
                                 $labelOrder = $machinesLabelOrder[$machine['config_id']];
                             ?>
-                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?php echo ($machine['machine_name']); ?></option>
+                                <option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>

@@ -451,7 +451,7 @@ $sampleSuggestionDisplay = 'display:none;';
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($sResult as $type) { ?>
-														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?php echo ($type['sample_name']); ?></option>
+														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>

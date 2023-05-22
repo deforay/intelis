@@ -92,7 +92,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php
 									foreach ($sResult as $type) {
 									?>
-										<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 									<?php
 									}
 									?>
