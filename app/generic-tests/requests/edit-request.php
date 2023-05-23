@@ -115,12 +115,6 @@ if (isset($vlQueryInfo['treatment_initiated_date']) && trim($vlQueryInfo['treatm
 	$vlQueryInfo['treatment_initiated_date'] = '';
 }
 
-if (isset($vlQueryInfo['date_of_initiation_of_current_regimen']) && trim($vlQueryInfo['date_of_initiation_of_current_regimen']) != '' && $vlQueryInfo['date_of_initiation_of_current_regimen'] != '0000-00-00') {
-	$vlQueryInfo['date_of_initiation_of_current_regimen'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen']);
-} else {
-	$vlQueryInfo['date_of_initiation_of_current_regimen'] = '';
-}
-
 if (isset($vlQueryInfo['test_requested_on']) && trim($vlQueryInfo['test_requested_on']) != '' && $vlQueryInfo['test_requested_on'] != '0000-00-00') {
 	$vlQueryInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($vlQueryInfo['test_requested_on']);
 } else {
@@ -487,7 +481,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 											<label for="fundingSource">Funding Source</label><br>
 											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
 												<option value=""> -- Select -- </option>
-												<?php foreach ($fundingSourceList as $fundingSource) {?>
+												<?php foreach ($fundingSourceList as $fundingSource) { ?>
 													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
 														<?php echo ($fundingSource['funding_source_name']); ?></option>
 												<?php } ?>
@@ -525,7 +519,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="dob">Date of Birth </label>
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" onchange="getAge();" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -1364,21 +1358,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		}
 	}
 
-	function checkARTInitiationDate() {
-		var dob = changeFormat($("#dob").val());
-		var artInitiationDate = $("#dateOfArtInitiation").val();
-		if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
-
-			date1 = new Date(dob);
-			date2 = new Date(artInitiationDate);
-
-			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
-				$("#dateOfArtInitiation").val("");
-			}
-		}
-	}
-
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
 		if ($.trim($("#" + id).val()) != '') {
 			$.blockUI();
@@ -1424,28 +1403,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		}
 	}
 
-	function checkARTRegimenValue() {
-		var artRegimen = $("#artRegimen").val();
-		if (artRegimen == 'other') {
-			$(".newArtRegimen").show();
-			$("#newArtRegimen").addClass("isRequired");
-			$("#newArtRegimen").focus();
-		} else {
-			$(".newArtRegimen").hide();
-			$("#newArtRegimen").removeClass("isRequired");
-			$('#newArtRegimen').val("");
-		}
-	}
-
-	function changeFormat(date) {
-		splitDate = date.split("-");
-		var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
-		var monthDigit = fDate.getMonth();
-		var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
-		fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
-		format = splitDate[2] + '-' + fMonth + '-' + splitDate[0];
-		return format;
-	}
 
 	function showPatientList() {
 		$("#showEmptyResult").hide();
@@ -1794,7 +1751,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 		}
 	}
 
-	function removeDynamicForm(){
+	function removeDynamicForm() {
 		$(".facilitySection").html('');
 		$(".patientSectionInput").remove();
 		$("#labSection").html('');

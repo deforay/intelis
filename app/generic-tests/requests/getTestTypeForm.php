@@ -141,7 +141,7 @@ if ($n > 0) {
 // echo "<pre>";
 // print_r($testResultsAttribute);die;
 if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
-    if ($testResultsAttribute['result_type'] = 'qualitative') {
+    if ($testResultsAttribute['result_type'] == 'qualitative') {
         $resultSection = '<select class="form-control result-select" name="result" id="result">';
         $resultSection .= '<option value="">-- Select --</option>';
         if (isset($testResultsAttribute['result']) && !empty($testResultsAttribute['result'])) {
@@ -152,8 +152,9 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
         }
         $resultSection .= '</select>';
     } else {
-        $resultSection = '<input type="text" id="result" name="result" class="form-control result-text" placeholder="Enter final result" title="Please enter final results">';
+        $resultSection = '<input type="text" id="result" name="result" class="form-control result-text" value="'.$_POST['result'].'" placeholder="Enter final result" title="Please enter final results">';
     }
+    $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="'.$testResultsAttribute['result_type'].'">';
     $resultForm[] = $resultSection;
 }
 $result['result'] = $resultForm;

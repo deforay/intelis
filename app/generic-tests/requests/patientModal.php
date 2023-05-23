@@ -101,7 +101,6 @@ $pResult = $db->rawQuery($pQuery);
 											"mobile" => $patient['patient_mobile_number'],
 											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
 											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
-											"current_regimen" => $patient['current_regimen'],
 											"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
 											"last_viral_load_result" => $patient['last_viral_load_result'],
 											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
