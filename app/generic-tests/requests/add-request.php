@@ -67,7 +67,10 @@ $sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition);
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
-
+//get suspected treatment failure at
+/*
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
 ?>
 <style>
      .ui_tpicker_second_label {
@@ -1435,21 +1438,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function checkARTInitiationDate() {
-          var dob = changeFormat($("#dob").val());
-          var artInitiationDate = $("#dateOfArtInitiation").val();
-          if ($.trim(dob) != '' && $.trim(artInitiationDate) != '') {
-
-               date1 = new Date(dob);
-               date2 = new Date(artInitiationDate);
-
-               if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
-                    $("#dateOfArtInitiation").val("");
-               }
-          }
-     }
-
      function showPatientList() {
           $("#showEmptyResult").hide();
           if ($.trim($("#artPatientNo").val()) != '') {
@@ -1549,15 +1537,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(val) != "") {
                $("#dob").val("");
           }
-     }
-
-     function changeFormat(date) {
-          splitDate = date.split("-");
-          var fDate = new Date(splitDate[1] + splitDate[2] + ", " + splitDate[0]);
-          var monthDigit = fDate.getMonth();
-          var fMonth = isNaN(monthDigit) ? 1 : (parseInt(monthDigit) + parseInt(1));
-          fMonth = (fMonth < 10) ? '0' + fMonth : fMonth;
-          return splitDate[2] + '-' + fMonth + '-' + splitDate[0];
      }
 
      function getfacilityProvinceDetails(obj) {

@@ -61,13 +61,14 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <!-- DataTables -->
 <script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
 <script type="text/javascript" src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js") ?>'></script>
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
-<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+
 
 <script type="text/javascript">
 	window.additionalXHRParams = {

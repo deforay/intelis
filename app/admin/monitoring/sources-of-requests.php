@@ -270,8 +270,7 @@ $activeTestModules = $systemService->getActiveTestModules();
 
     function viewMore(url) {
         params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
-        console.log(Base64.encode(params));
-        showModal(url + '?id=' + Base64.encode(params), 1200, 720);
+        showModal(url + '?id=' + btoa(params), 1200, 720);
     }
 </script>
 <?php
