@@ -206,12 +206,12 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
           }
      }
 }
-if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      // $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (isset($sWhere) && !empty($sWhere))
+if (!empty($sWhere))
      $sWhere = implode(' AND ', $sWhere);
 
 
@@ -220,7 +220,7 @@ $sQuery = $sQuery . ' WHERE ' . $sWhere;
 $_SESSION['vlResultQuery'] = $sQuery;
 //echo $_SESSION['vlResultQuery'];die;
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

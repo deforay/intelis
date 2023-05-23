@@ -16,7 +16,7 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
     $_POST = $request->getParsedBody();
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table

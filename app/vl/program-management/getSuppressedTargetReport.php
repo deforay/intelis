@@ -45,7 +45,7 @@ SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'sup
  FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
 $sWhere = ' WHERE vl.result_status!=9';
-if (isset($_POST['facilityName']) && !empty($_POST['facilityName'])) {
+if (!empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];
     $out = '';
     for ($s = 0; $s < count($fac); $s++) {

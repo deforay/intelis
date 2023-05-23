@@ -66,7 +66,7 @@ $batResult = $db->rawQuery($batQuery);
                   <?php
                   foreach ($sResult as $type) {
                   ?>
-                    <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+                    <option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
                   <?php
                   }
                   ?>
@@ -97,7 +97,7 @@ $batResult = $db->rawQuery($batQuery);
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th>Select</th>

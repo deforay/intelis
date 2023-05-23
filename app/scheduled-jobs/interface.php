@@ -109,7 +109,7 @@ if (count($interfaceInfo) > 0) {
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
             $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
             $tableInfo = $db->rawQueryOne($tableQuery);
-            if (isset($tableInfo[$individualIdColumn]) && !empty($tableInfo[$individualIdColumn])) {
+            if (!empty($tableInfo[$individualIdColumn])) {
                 break;
             }
         }
@@ -124,8 +124,8 @@ if (count($interfaceInfo) > 0) {
             $instrumentDetails = $db->rawQueryOne($sql, array($result['machine_used']));
         }
 
-        $approved = isset($instrumentDetails['approved_by']) && !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : [];
-        $reviewed = isset($instrumentDetails['reviewed_by']) && !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
+        $approved = !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : [];
+        $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
 
         if (isset($tableInfo['vl_sample_id'])) {
             $absDecimalVal = null;

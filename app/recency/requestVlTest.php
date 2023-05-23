@@ -62,7 +62,7 @@ try {
     $data = [];
     $vlReqFromTable = "form_vl";
 
-    if (isset($result) && !empty($result) && $result[0] != "") {
+    if (!empty($result) && $result[0] != "") {
 
 
         // Sanitize values before using them below

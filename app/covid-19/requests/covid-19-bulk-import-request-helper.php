@@ -50,7 +50,7 @@ try {
 
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
-            if (isset($rowData['A']) && !empty($rowData['A'])) {
+            if (!empty($rowData['A'])) {
                 $sampleCode         = $general->getDuplicateDataFromField('form_covid19', 'sample_code', $rowData['A']);
                 $provinceId         = $general->getDuplicateDataFromField('geographical_divisions', 'geo_name', $rowData['D']);
                 $facility           = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['F']);

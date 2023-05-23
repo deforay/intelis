@@ -28,7 +28,7 @@ foreach ($configControlInfo as $info) {
 		$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 	}
 }
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:batch-code.php");
 }
 //Get batch controls order

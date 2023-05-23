@@ -67,8 +67,7 @@ if ($n > 0) {
             if ($testAttribute['field_type'][$i] == 'multiple') {
                 $dropDownName = 'dynamicFields[' . $testAttribute['field_id'][$i] . '][]';
             }
-            $dropDownField = '';
-            $dropDownField .= '<select name="' . $dropDownName . '" id="' . $testAttribute['field_id'][$i] . '" class="form-control ' .$inputClass .  $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'][$i] . ' style="width:'.$inputWidth.';">';
+            $dropDownField = '<select name="' . $dropDownName . '" id="' . $testAttribute['field_id'][$i] . '" class="form-control ' . $inputClass . $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'][$i] . ' style="width:' . $inputWidth . ';">';
             $dropDownField .= '<option value="">-- Select --</option>';
             foreach (explode(',', $testAttribute['drop_down'][$i]) as $option) {
                 if ($testAttribute['field_type'][$i] == 'multiple') {

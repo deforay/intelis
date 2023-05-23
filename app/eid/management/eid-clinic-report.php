@@ -119,7 +119,7 @@ foreach ($rejectionTypeResult as $type) {
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -228,7 +228,7 @@ foreach ($rejectionTypeResult as $type) {
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -333,7 +333,7 @@ foreach ($rejectionTypeResult as $type) {
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -940,7 +940,8 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');				}
+					window.open('/download.php?f=' + data, '_blank');
+				}
 			});
 	}
 
@@ -963,7 +964,8 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');				}
+					window.open('/download.php?f=' + data, '_blank');
+				}
 			});
 	}
 
@@ -985,7 +987,8 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');				}
+					window.open('/download.php?f=' + data, '_blank');
+				}
 			});
 	}
 
@@ -1005,7 +1008,8 @@ foreach ($rejectionTypeResult as $type) {
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');				}
+					window.open('/download.php?f=' + data, '_blank');
+				}
 			});
 	}
 
@@ -1043,4 +1047,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php'; 
+require_once APPLICATION_PATH . '/footer.php';

@@ -118,7 +118,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
@@ -165,7 +165,7 @@ if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
@@ -206,7 +206,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate";
@@ -255,7 +255,7 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $testReasonQuery .= ' where ' . implode(" AND ", $sWhere);
 }
 $testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
@@ -288,7 +288,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 </div>
 <script>
     <?php
-    if (isset($tResult) && !empty($tResult)) {
+    if (!empty($tResult)) {
     ?>
         $('#tbSampleStatusOverviewContainer').highcharts({
             chart: {
@@ -415,7 +415,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         });
     <?php
     }
-    if (isset($result) && !empty($result)) {
+    if (!empty($result)) {
     ?>
         $('#tbLabAverageTat').highcharts({
             chart: {
@@ -437,7 +437,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             xAxis: {
                 //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
-                                if (isset($result['date']) && !empty($result['date'])) {
+                                if (!empty($result['date'])) {
                                     foreach ($result['date'] as $date) {
                                         echo "'" . $date . "',";
                                     }
@@ -546,7 +546,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             ],
         });
     <?php }
-    if (isset($testReasonResult) && !empty($testReasonResult)) { ?>
+    if (!empty($testReasonResult)) { ?>
         $('#tbTestReasonContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,

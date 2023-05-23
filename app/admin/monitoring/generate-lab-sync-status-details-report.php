@@ -8,6 +8,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 ini_set('memory_limit', -1);
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -19,7 +20,14 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("Facility Name", "Test Type", "Province", "District", "Latest Results Sync from Lab", "Latest Requests Sync from VLSTS");
+$headings = [
+    "Facility Name",
+    "Test Type",
+    "Province",
+    "District",
+    "Latest Results Sync from Lab",
+    "Latest Requests Sync from VLSTS"
+];
 $colNo = 1;
 
 foreach ($headings as $field => $value) {
@@ -33,10 +41,10 @@ $no = 1;
 
 foreach ($rResult as $aRow) {
     $row = [];
-    $row[] = ($aRow['facility_name']);
+    $row[] = $aRow['facility_name'];
     $row[] = $aRow['testType'];
-    $row[] = ($aRow['province']);
-    $row[] = ($aRow['district']);
+    $row[] = $aRow['province'];
+    $row[] = $aRow['district'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync']);
     $output[] = $row;

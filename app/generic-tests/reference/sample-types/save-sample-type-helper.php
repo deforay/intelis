@@ -26,7 +26,7 @@ try {
             'sample_type_status' => $_POST['sampleTypeStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        if (isset($sampleTypeId) && !empty($sampleTypeId)) {
+        if (!empty($sampleTypeId)) {
             $db = $db->where('sample_type_id', $sampleTypeId);
             $lastId = $db->update($tableName, $data);
             $_SESSION['alertMsg'] = _("Sample type updated successfully");

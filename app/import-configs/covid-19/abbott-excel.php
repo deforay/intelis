@@ -215,7 +215,7 @@ try {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if ($vlResult && $sampleCode != '') {
-                if (isset($vlResult[0]['result']) && !empty($vlResult[0]['result'])) {
+                if (!empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
                     $data['result_status'] = '7';

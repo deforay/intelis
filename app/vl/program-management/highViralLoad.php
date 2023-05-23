@@ -99,7 +99,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -233,7 +233,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -373,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
@@ -1069,7 +1069,7 @@ $state = $geolocationService->getProvinces("yes");
 					alert("<?php echo _("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');				
+					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}

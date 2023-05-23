@@ -114,7 +114,7 @@ class ImageResizeUtility
             define('IMAGETYPE_WEBP', 18);
         }
         $filename = realpath($filename);
-        if ($filename === null || empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
+        if (empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
             throw new SystemException('File does not exist');
         }
 

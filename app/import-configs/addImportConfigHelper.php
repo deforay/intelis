@@ -27,7 +27,7 @@ $_POST['configurationName'] = trim($_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
 
-        if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
+        if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = realpath(__DIR__);
                 if (!file_exists($configDir)) {
@@ -78,7 +78,7 @@ try {
             }
         }
 
-        if ($id > 0 && isset($_POST['testType']) && !empty($_POST['testType'])) {
+        if ($id > 0 && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim($val) != '') {
                     $configControlData = array('test_type' => $val, 'config_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);

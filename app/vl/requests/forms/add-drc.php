@@ -401,7 +401,7 @@ $sFormat = '';
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<?php foreach ($sResult as $type) { ?>
-														<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+														<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
@@ -899,8 +899,8 @@ $sFormat = '';
 								$("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
 							}
 						} else {
-							
-							 	$("#artNoGroup").html('');
+
+							$("#artNoGroup").html('');
 						}
 					});
 			}

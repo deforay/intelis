@@ -20,7 +20,7 @@ try {
             'symptom_status' => $_POST['status'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );
-        if(isset($symptomId) && !empty($symptomId)){
+        if(!empty($symptomId)){
             $db = $db->where('symptom_id', $symptomId);
             $lastId = $db->update($tableName, $data);
             if($lastId > 0){

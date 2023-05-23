@@ -83,7 +83,7 @@ $batResult = $db->rawQuery($batQuery);
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php foreach ($sResult as $type) { ?>
-										<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 									<?php } ?>
 								</select>
 							</td>

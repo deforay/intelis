@@ -46,7 +46,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuse
 	$shortName = _("Sample Tracking");
 }
 
-if (isset($applicationConfig['instanceName']) && !empty($applicationConfig['instanceName'])) {
+if (!empty($applicationConfig['instanceName'])) {
 	$systemType = $applicationConfig['instanceName'];
 }
 
@@ -72,7 +72,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$vlTestResultMenuAccess = false;
 }
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'vlControlReport.php', 'vlWeeklyReport.php', 'sampleRejectionReport.php', 'vlMonitoringReport.php'))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'vlControlReport.php', 'vlWeeklyReport.php', 'sampleRejectionReport.php', 'vlMonitoringReport.php', 'vlPrintResult.php'))) {
 	$vlManagementMenuAccess = true;
 } else {
 	$vlManagementMenuAccess = false;

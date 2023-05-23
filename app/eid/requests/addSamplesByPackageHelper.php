@@ -26,7 +26,7 @@ $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
     $provinceCode = null;
-    if (isset($sampleRow['province_id']) && !empty($sampleRow['province_id'])) {
+    if (!empty($sampleRow['province_id'])) {
         $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= ?";
         $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
         $provinceCode = $provinceResult['geo_code'];

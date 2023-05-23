@@ -109,7 +109,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($sTypeResult as $type) {
                         ?>
-                          <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+                          <option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
                         <?php
                         }
                         ?>
@@ -147,7 +147,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         <?php
                         foreach ($pdResult as $province) {
                         ?>
-                          <option value="<?php echo $province['geo_name']; ?>"><?php echo ($province['geo_name']); ?></option>
+                          <option value="<?php echo $province['geo_name']; ?>"><?= $province['geo_name']; ?></option>
                         <?php } ?>
                       </select>
                     </td>
@@ -278,8 +278,8 @@ $batchResult = $db->rawQuery($batchQuery);
           separator: ' to ',
         },
         showDropdowns: true,
-alwaysShowCalendars: false,
-startDate: moment().subtract(28, 'days'),
+        alwaysShowCalendars: false,
+        startDate: moment().subtract(28, 'days'),
         endDate: moment(),
         maxDate: moment(),
         ranges: {

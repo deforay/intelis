@@ -211,7 +211,7 @@ if (!empty($requestResult)) {
           if ($result['result_status'] == '4') {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
           }
-         $html = '<table style="padding:0px 2px 2px 2px;">';
+          $html = '<table style="padding:0px 2px 2px 2px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LABORATORY ID</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
@@ -413,7 +413,7 @@ if (!empty($requestResult)) {
           $html .= '<table>';
           $html .= '<tr>';
           $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
-          $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+          $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
@@ -430,7 +430,7 @@ if (!empty($requestResult)) {
                if ($draftTextShow) {
                     //Watermark section
                     $watermark = new PdfWatermarkHelper();
-$watermark->setFullPathToFile($filename);
+                    $watermark->setFullPathToFile($filename);
                     $fullPathToFile = $filename;
                     $watermark->Output($filename, "F");
                }
@@ -465,7 +465,7 @@ $watermark->setFullPathToFile($filename);
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);
           $resultPdf->concat();
-          $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6). '.pdf';
+          $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
           $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
           $general->removeDirectory($pathFront);
           unset($_SESSION['rVal']);

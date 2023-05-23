@@ -170,14 +170,18 @@ class HepatitisService
         if (is_array($formId)) {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
-            if ($allData) return $results;
+            if ($allData) {
+                return $results;
+            }
             foreach ($results as $row) {
                 $response[$row['hepatitis_id']][$row['comorbidity_id']] = $row['comorbidity_detected'];
             }
         } else {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities WHERE `hepatitis_id` = $formId");
-            if ($allData) return $results;
+            if ($allData) {
+                return $results;
+            }
             foreach ($results as $row) {
                 $response[$row['comorbidity_id']] = $row['comorbidity_detected'];
             }
@@ -197,14 +201,18 @@ class HepatitisService
         if (is_array($formId)) {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
-            if ($allData) return $results;
+            if ($allData) {
+                return $results;
+            }
             foreach ($results as $row) {
                 $response[$row['hepatitis_id']][$row['riskfactors_id']] = $row['riskfactors_detected'];
             }
         } else {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors WHERE `hepatitis_id` = $formId");
-            if ($allData) return $results;
+            if ($allData) {
+                return $results;
+            }
             foreach ($results as $row) {
                 $response[$row['riskfactors_id']] = $row['riskfactors_detected'];
             }
@@ -275,10 +283,10 @@ class HepatitisService
         $vlsmSystemConfig = $general->getSystemConfig();
 
         try {
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-            $prefix = (isset($params['prefix']) && !empty($params['prefix'])) ? $params['prefix'] : null;
+            $provinceCode = (!empty($params['provinceCode'])) ? $params['provinceCode'] : null;
+            $provinceId = (!empty($params['provinceId'])) ? $params['provinceId'] : null;
+            $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
+            $prefix = (!empty($params['prefix'])) ? $params['prefix'] : null;
 
             if (empty($sampleCollectionDate)) {
                 echo 0;
@@ -298,7 +306,7 @@ class HepatitisService
             $sampleDate = explode(" ", $params['sampleCollectionDate']);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
 
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
+            if (empty($params['countryId'])) {
                 $params['countryId'] = null;
             }
 
@@ -333,7 +341,7 @@ class HepatitisService
                 $hepatitisData['result_status'] = 6;
             }
             $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
