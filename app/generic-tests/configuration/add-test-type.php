@@ -274,8 +274,8 @@ $symptomInfo = $db->query($symQuery);
 												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
 												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 												<td style="vertical-align:middle;text-align: center;width:100px;">
-													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 												</td>
 											</tr>
 										</tbody>
@@ -319,7 +319,7 @@ $symptomInfo = $db->query($symQuery);
 									<div class="form-group">
 										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _("Below Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -327,7 +327,7 @@ $symptomInfo = $db->query($symQuery);
 									<div class="form-group">
 										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _("At Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -335,12 +335,30 @@ $symptomInfo = $db->query($symQuery);
 									<div class="form-group">
 										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _("Above Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 							</div>
-
+							<div class="row quantitativeDiv" style="display:none;">
+								<div class="col-md-12">
+									<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+										<tbody id="quantitativeTable">
+											<tr>
+												<td class="text-center">1</td>
+												<th scope="row">Result<span class="mandatory">*</span></th>
+												<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult1" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+												<td><input type="text" id="quantitativeResultInterpretation1" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+												<td style="vertical-align:middle;text-align: center;width:100px;">
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
@@ -361,7 +379,8 @@ $symptomInfo = $db->query($symQuery);
 
 <script type="text/javascript">
 	tableRowId = 2;
-	testCounter = 1;
+	testQualCounter = 1;
+	testQuanCounter = 1;
 
 	$(document).ready(function() {
 		$('input').tooltip();
@@ -481,12 +500,19 @@ $symptomInfo = $db->query($symQuery);
 			$('.quantitativeResult').each(function() {
 				$(this).val('');
 			});
-		} else {
+		} else if (resultType == 'quantitative') {
 			$("#qualitativeDiv").hide();
 			$(".quantitativeDiv").show();
 			$(".qualitativeResult").removeClass("isRequired");
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
+		} else{
+			$("#qualitativeDiv, .quantitativeDiv").hide();
+			$(".qualitativeResult, .quantitativeResult").removeClass("isRequired");
+			$("#qualitativeResult, .quantitativeResult").val('');
+			$('.quantitativeResult').each(function() {
+				$(this).val('');
+			});
 		}
 	}
 
@@ -511,32 +537,50 @@ $symptomInfo = $db->query($symQuery);
 			});
 	}
 
-	function addTestRow() {
-		testCounter++;
-		let rowString = `<tr>
-			<td class="text-center">` + testCounter + `</td>
-			<th>Result</th>
-			<td><input type="text" name="resultConfig[result][]" id="result` + testCounter + `" class="form-control" placeholder="Result" title="Please enter the result ` + testCounter + `" /></td>
-			<th>Result Interpretation</th>
-			<td><input type="text" id="resultInterpretation` + testCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation ` + testCounter + `"></td>
-			<td style="vertical-align:middle;text-align: center;width:100px;">
-				<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-				<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-			</td>
-        </tr>`;
-		$("#qualitativeTable").append(rowString);
+	function addResultRow(table) {
+		let rowString = '';
+
+		if(table == 'qualitativeTable'){
+			testQualCounter++;
+			rowString = `<tr>
+				<td class="text-center">` + testQualCounter + `</td>
+				<th scope="row">Result<span class="mandatory">*</span></th>
+				<td><input type="text" name="resultConfig[result][]" id="result` + testQualCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+				<td><input type="text" id="resultInterpretation` + testQualCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td style="vertical-align:middle;text-align: center;width:100px;">
+					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
+				</td>
+			</tr>`;
+		}else if(table == 'quantitativeTable'){
+			testQuanCounter++;
+			rowString = `<tr>
+				<td class="text-center">` + testQuanCounter + `</td>
+				<th scope="row">Result<span class="mandatory">*</span></th>
+				<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult` + testQuanCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+				<td><input type="text" id="quantitativeResultInterpretation` + testQuanCounter + `" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td style="vertical-align:middle;text-align: center;width:100px;">
+					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
+				</td>
+			</tr>`;
+		}
+		$("#"+table).append(rowString);
 	}
 
-	function removeTestRow(el) {
+	function removeResultRow(el, table) {
 		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
-			rl = document.getElementById("qualitativeTable").rows.length;
+			rl = document.getElementById(table).rows.length;
 			if (rl == 0) {
-				testCounter = 0;
-				addTestRow();
+				testQuanCounter = 0;
+				addResultRow(table);
 			}
 		});
 	}
+
 	function changeField(obj, i){
 		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('#dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}

@@ -51,6 +51,12 @@ if (isset($vlQueryInfo['sample_type']) && $vlQueryInfo['sample_type'] != 2) {
 }
 
 $disable = "disabled = 'disabled'";
+$reasonChange="";
+if(isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes']!="")
+{
+	$result = explode("##",$vlQueryInfo['reason_for_vl_result_changes']);
+	$reasonChange = $result[1];
+}
 ?>
 <style>
 	.translate-content {
@@ -485,7 +491,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control isRequired" id="noResult" name="noResult" title="<?= _('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+											<select class="form-control result-focus isRequired" id="noResult" name="noResult" title="<?= _('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -555,11 +561,11 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td class=" reasonForResultChanges" style="visibility:hidden;">
+										<td class="reasonForResultChanges" style="display:<?php if($reasonChange!="") echo "block"; else echo "none;"; ?>">
 											<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>
 										</td>
-										<td colspan="7" class="reasonForResultChanges" style="visibility:hidden;">
-											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Razão para as mudanças nos resultados" style="width:100%;"></textarea>
+										<td class="reasonForResultChanges" style="display:<?php if($reasonChange!="") echo "block"; else echo "none;"; ?>none;">
+											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Razão para as mudanças nos resultados" style="width:100%;"><?php if($reasonChange!="") echo $reasonChange; ?></textarea>
 										</td>
 									</tr>
 								</table>

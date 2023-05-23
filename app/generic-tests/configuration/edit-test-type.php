@@ -360,16 +360,16 @@ foreach ($testSymptomsMapInfo as $val) {
 										<tbody id="qualitativeTable">
 											<?php
 											if (isset($testResultAttribute['result']) && !empty($testResultAttribute['result']) && count($testResultAttribute['result']) > 0) {
-												foreach ($testResultAttribute['result'] as $key => $row) { ?>
+												foreach ($testResultAttribute['result'] as $qualKey => $row) { ?>
 													<tr>
-														<td class="text-center">1</td>
+														<td class="text-center"><?php echo ($qualKey + 1); ?></td>
 														<th scope="row">Result<span class="mandatory">*</span></th>
-														<td><input type="text" name="resultConfig[result][]" value="<?php echo $row; ?>" id="result<?php echo $key; ?>" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
+														<td><input type="text" name="resultConfig[result][]" value="<?php echo $row; ?>" id="result<?php echo ($qualKey + 1); ?>" class="form-control" placeholder="Result" title="Please enter the result" /></td>
 														<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-														<td><input type="text" id="resultInterpretation<?php echo $key; ?>" value="<?php echo $testResultAttribute['result_interpretation'][$key]; ?>" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+														<td><input type="text" id="resultInterpretation<?php echo ($qualKey + 1); ?>" value="<?php echo $testResultAttribute['result_interpretation'][$qualKey]; ?>" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 														<td style="vertical-align:middle;text-align: center;width:100px;">
-															<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-															<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+															<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+															<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 														</td>
 													</tr>
 												<?php }
@@ -377,12 +377,12 @@ foreach ($testSymptomsMapInfo as $val) {
 												<tr>
 													<td class="text-center">1</td>
 													<th scope="row">Result<span class="mandatory">*</span></th>
-													<td><input type="text" name="resultConfig[result][]" value="<?php echo $row; ?>" id="result1" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
+													<td><input type="text" name="resultConfig[result][]" id="result1" class="form-control" placeholder="Result" title="Please enter the result" /></td>
 													<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-													<td><input type="text" id="resultInterpretation1" value="<?php echo $testResultAttribute['result_interpretation'][$key]; ?>" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+													<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 													<td style="vertical-align:middle;text-align: center;width:100px;">
-														<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-														<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+														<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+														<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 													</td>
 												</tr>
 											<?php } ?>
@@ -428,7 +428,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _("Below Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -436,7 +436,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _("At Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -444,9 +444,45 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _("Above Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
 										</div>
 									</div>
+								</div>
+							</div>
+							<div class="row quantitativeDiv" style="display:none;">
+								<div class="col-md-12">
+									<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+										<tbody id="quantitativeTable">
+											<?php
+											if (isset($testResultAttribute['quantitative_result']) && !empty($testResultAttribute['quantitative_result']) && count($testResultAttribute['quantitative_result']) > 0) {
+												foreach ($testResultAttribute['quantitative_result'] as $quanKey => $quanRow) { ?>
+													<tr>
+														<td class="text-center"><?php echo ($quanKey + 1); ?></td>
+														<th scope="row">Result<span class="mandatory">*</span></th>
+														<td><input type="text" name="resultConfig[quantitative_result][]" value="<?php echo $quanRow; ?>" id="quantitativeResult<?php echo ($quanKey + 1); ?>" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+														<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+														<td><input type="text" id="quantitativeResultInterpretation<?php echo ($quanKey + 1); ?>" value="<?php echo $testResultAttribute['quantitative_result_interpretation'][$quanKey]; ?>" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+														<td style="vertical-align:middle;text-align: center;width:100px;">
+															<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+															<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
+														</td>
+													</tr>
+												<?php }
+											} else { ?>
+												<tr>
+													<td class="text-center">1</td>
+													<th scope="row">Result<span class="mandatory">*</span></th>
+													<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult1" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+													<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+													<td><input type="text" id="quantitativeResultInterpretation1" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+													<td style="vertical-align:middle;text-align: center;width:100px;">
+														<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+														<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
+													</td>
+												</tr>
+											<?php } ?>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
@@ -471,7 +507,8 @@ foreach ($testSymptomsMapInfo as $val) {
 
 <script type="text/javascript">
 	tableRowId = <?php echo $n + 1; ?>;
-	testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 1; ?>;
+	testQualCounter = <?php echo count($testResultAttribute['result']);?>;
+	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']);?>;
 
 
 	$(document).ready(function() {
@@ -594,12 +631,19 @@ foreach ($testSymptomsMapInfo as $val) {
 			$('.quantitativeResult').each(function() {
 				$(this).val('');
 			});
-		} else {
+		} else if (resultType == 'quantitative') {
 			$("#qualitativeDiv").hide();
 			$(".quantitativeDiv").show();
 			$(".qualitativeResult").removeClass("isRequired");
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
+		} else{
+			$("#qualitativeDiv, .quantitativeDiv").hide();
+			$(".qualitativeResult, .quantitativeResult").removeClass("isRequired");
+			$("#qualitativeResult, .quantitativeResult").val('');
+			$('.quantitativeResult').each(function() {
+				$(this).val('');
+			});
 		}
 	}
 
@@ -624,29 +668,46 @@ foreach ($testSymptomsMapInfo as $val) {
 			});
 	}
 
-	function addTestRow() {
-		testCounter++;
-		let rowString = `<tr>
-			<td class="text-center">` + testCounter + `</td>
-			<th>Result</th>
-			<td><input type="text" name="resultConfig[result][]" id="result` + testCounter + `" class="form-control" placeholder="Result" title="Please enter the result ` + testCounter + `" /></td>
-			<th>Result Interpretation</th>
-			<td><input type="text" id="resultInterpretation` + testCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation ` + testCounter + `"></td>
-			<td style="vertical-align:middle;text-align: center;width:100px;">
-				<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-				<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-			</td>
-        </tr>`;
-		$("#qualitativeTable").append(rowString);
+	function addResultRow(table) {
+		let rowString = '';
+
+		if(table == 'qualitativeTable'){
+			testQualCounter++;
+			rowString = `<tr>
+				<td class="text-center">` + testQualCounter + `</td>
+				<th scope="row">Result<span class="mandatory">*</span></th>
+				<td><input type="text" name="resultConfig[result][]" id="result` + testQualCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+				<td><input type="text" id="resultInterpretation` + testQualCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td style="vertical-align:middle;text-align: center;width:100px;">
+					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
+				</td>
+			</tr>`;
+		}else if(table == 'quantitativeTable'){
+			testQuanCounter++;
+			rowString = `<tr>
+				<td class="text-center">` + testQuanCounter + `</td>
+				<th scope="row">Result<span class="mandatory">*</span></th>
+				<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult` + testQuanCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
+				<td><input type="text" id="quantitativeResultInterpretation` + testQuanCounter + `" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td style="vertical-align:middle;text-align: center;width:100px;">
+					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
+				</td>
+			</tr>`;
+		}
+		$("#"+table).append(rowString);
 	}
 
-	function removeTestRow(el) {
+	function removeResultRow(el, table) {
 		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
-			rl = document.getElementById("qualitativeTable").rows.length;
+			rl = document.getElementById(table).rows.length;
 			if (rl == 0) {
-				testCounter = 0;
-				addTestRow();
+				testQuanCounter = 0;
+				addResultRow(table);
 			}
 		});
 	}
