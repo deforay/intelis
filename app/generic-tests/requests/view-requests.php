@@ -49,10 +49,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilityId, "-- Select --");
-$testingLabs = $facilitiesService->getTestingLabs('vl');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
 //Funding source list
@@ -62,11 +62,10 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
+$sQuery = "SELECT * FROM r_generic_sample_types WHERE `sample_type_status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
-$batResult = $db->rawQuery($batQuery);
+
 // Src of alert req
 $srcQuery = "SELECT DISTINCT source_of_request from form_generic where source_of_request is not null AND source_of_request not like ''";
 $srcResults = $db->rawQuery($srcQuery);

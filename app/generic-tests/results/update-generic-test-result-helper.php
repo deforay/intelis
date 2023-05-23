@@ -73,7 +73,7 @@ try {
     }
 
     if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
-        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_vl_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
+        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
             $data = array(
@@ -81,7 +81,7 @@ try {
                 'rejection_type' => 'general',
                 'rejection_reason_status' => 'active'
             );
-            $id = $db->insert('r_vl_sample_rejection_reasons', $data);
+            $id = $db->insert('r_generic_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;
         } else {
             $_POST['rejectionReason'] = $rejectionResult[0]['rejection_reason_id'];

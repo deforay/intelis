@@ -47,7 +47,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
                   LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
                   LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
-                  LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
+                  LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
 
 	$searchQueryWhere = [];
 	if (!empty(trim($_POST['id']))) {

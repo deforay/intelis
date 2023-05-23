@@ -117,7 +117,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -158,11 +158,7 @@ foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
+
 
 $sKey = '';
 $sFormat = '';
@@ -1054,7 +1050,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $.post("/includes/siteInformationDropdownOptions.php", {
                          dName: dName,
                          cliName: cName,
-                         testType: 'vl'
+                         testType: 'generic-tests'
                     },
                     function(data) {
                          if (data != "") {
@@ -1550,7 +1546,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (cName != '' && facilityName) {
                $.post("/includes/siteInformationDropdownOptions.php", {
                          cName: cName,
-                         testType: 'vl'
+                         testType: 'generic-tests'
                     },
                     function(data) {
                          if (data != "") {

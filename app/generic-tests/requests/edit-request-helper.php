@@ -191,23 +191,7 @@ try {
      if (!empty($allChange)) {
           $reasonForChanges = json_encode($allChange);
      }
-     //set vl test reason
-     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
-          if (!is_numeric($_POST['reasonForVLTesting'])) {
-               $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons where test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
-               $reasonResult = $db->rawQuery($reasonQuery);
-               if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-                    $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
-               } else {
-                    $data = array(
-                         'test_reason_name' => $_POST['reasonForVLTesting'],
-                         'test_reason_status' => 'active'
-                    );
-                    $id = $db->insert('r_vl_test_reasons', $data);
-                    $_POST['reasonForVLTesting'] = $id;
-               }
-          }
-     }
+   
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
           $reviewedOn = explode(" ", $_POST['reviewedOn']);
           $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];

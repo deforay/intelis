@@ -104,7 +104,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           vl.*,ty.test_standard_name,
-          s.sample_name,
+          s.sample_type_name,
           b.batch_code,
           ts.status_name,
           f.facility_name,
@@ -119,7 +119,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
-          LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+          LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
@@ -186,7 +186,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
-     $row[] = ($aRow['sample_name']);
+     $row[] = ($aRow['sample_type_name']);
      $row[] = $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
