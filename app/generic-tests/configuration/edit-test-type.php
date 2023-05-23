@@ -428,7 +428,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _("Below Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -436,7 +436,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _("At Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -444,7 +444,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									<div class="form-group">
 										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _("Above Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>

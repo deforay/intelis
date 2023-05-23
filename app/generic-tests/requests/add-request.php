@@ -244,7 +244,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <!-- BARCODESTUFF END -->
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
+                                             <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="province">State/Province <span class="mandatory">*</span></label><br>
                                                        <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
