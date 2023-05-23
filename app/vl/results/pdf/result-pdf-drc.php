@@ -228,7 +228,7 @@ if (!empty($requestResult)) {
 		$showMessage = '';
 		$tndMessage = '';
 		$messageTextSize = '15px';
-		$vlResult = $result['result'];
+
 
 		if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
 			$smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
@@ -341,17 +341,21 @@ if (!empty($requestResult)) {
 		$html .= '<td colspan="3"></td>';
 		$html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
 		$html .= '</tr>';
-		$logValue = '<br/>';
+
 		if ($result['result'] == "< 40" || $result['result'] == "<40") {
-			$logValue = '1.60';
-		} elseif ($result['result_value_log'] != '') {
+			$logResult = '1.60';
+		} elseif (!empty($result['result_value_log'])) {
 			$logResult = $result['result_value_log'];
 		} else {
 			$logResult = '0.0';
 		}
 
-		$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
-		$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . $logValue . '</td></tr>';
+		$logValue = '';
+		if (!empty($logResult)) {
+			$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
+		}
+
+		$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars($result['result']) . $logValue . '</td></tr>';
 		$html .= '<tr><td colspan="3"></td></tr>';
 		$html .= '</table>';
 		$html .= '</td>';
@@ -462,21 +466,21 @@ if (!empty($requestResult)) {
 		$html .= '</td>';
 		$html .= '</tr>';
 		$html .= '</table>';
-		if ($result['result'] != '') {
-			$pdf->writeHTML($html);
-			$pdf->lastPage();
-			$filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
-			$pdf->Output($filename, "F");
-			if ($draftTextShow) {
-				//Watermark section
-				$watermark = new PdfWatermarkHelper();
-				$watermark->setFullPathToFile($filename);
-				//$fullPathToFile = $filename;
-				$watermark->Output($filename, "F");
-			}
-			$pages[] = $filename;
-			$page++;
+
+		$pdf->writeHTML($html);
+		$pdf->lastPage();
+		$filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
+		$pdf->Output($filename, "F");
+		if ($draftTextShow) {
+			//Watermark section
+			$watermark = new PdfWatermarkHelper();
+			$watermark->setFullPathToFile($filename);
+			//$fullPathToFile = $filename;
+			$watermark->Output($filename, "F");
 		}
+		$pages[] = $filename;
+		$page++;
+
 		if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
 			//Add event log
 			$eventType = 'print-result';

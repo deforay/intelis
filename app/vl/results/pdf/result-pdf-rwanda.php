@@ -152,69 +152,23 @@ if (!empty($requestResult)) {
           $smileyContent = '';
           $showMessage = '';
           $tndMessage = '';
-          $messageTextSize = '12px';
-          $vlResult = trim($result['result']);
-          if (!empty($vlResult)) {
+          $messageTextSize = '15px';
 
-               $isResultNumeric = is_numeric($vlResult);
 
-               if ($isResultNumeric) {
-                    if ($vlResult > 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                         $showMessage = ($arr['h_vl_msg']);
-                         $messageTextSize = '15px';
-                    } else if ($vlResult <= 1000) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                         $showMessage = ($arr['l_vl_msg']);
-                    }
-               } else {
-                    if (in_array(strtolower($vlResult), array("tnd", "target not detected"))) {
-                         $vlResult = 'TND*';
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                         $showMessage = ($arr['l_vl_msg']);
-                         $tndMessage = 'TND* - Target not Detected';
-                    } else if (in_array(strtolower($vlResult), array("failed", "fail", "no_sample", "invalid"))) {
-                         $smileyContent = '';
-                         $showMessage = '';
-                         $messageTextSize = '14px';
-                    } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40"))) {
-                         $vlResult = str_replace("<", "&lt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                         $showMessage = ($arr['l_vl_msg']);
-                    } else if ($vlResult == '>10000000' || $vlResult == '> 10000000') {
-                         $vlResult = str_replace(">", "&gt;", $vlResult);
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                         $showMessage = ($arr['h_vl_msg']);
-                    }
-               }
-
-               // if ($result['vl_test_platform'] == 'Roche') {
-               //      $chkSign = '';
-               //      $smileyShow = '';
-               //      $chkSign = strchr($vlResult, '>');
-               //      if ($chkSign != '') {
-               //           $smileyShow = str_replace(">", "", $vlResult);
-               //           //$showMessage = 'Invalid value';
-               //      }
-               //      $chkSign = '';
-               //      $chkSign = strchr($vlResult, '<');
-               //      if ($chkSign != '') {
-               //           $smileyShow = str_replace("<", "", $vlResult);
-               //           $vlResult = str_replace("<", "&lt;", $vlResult);
-               //           //$showMessage = 'Invalid value';
-               //      }
-               //      if ($smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-               //      } else if ($smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-               //           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-               //      }
-               // }
+          if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+               $showMessage = ($arr['l_vl_msg']);
+          } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
+               $showMessage = ($arr['h_vl_msg']);
+          } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+               $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
+
           if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
                $smileyContent = '';
-          }
-          if ($result['result_status'] == '4') {
-               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
+          } else {
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
           }
           $html = '<table style="padding:0px 2px 2px 2px;z-index:1;">';
           $html .= '<tr>';
@@ -350,7 +304,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3"></td>';
           $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
           $html .= '</tr>';
-          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td></tr>';
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '</td></tr>';
           $html .= '<tr><td colspan="3"></td></tr>';
           $html .= '</table>';
           $html .= '</td>';
@@ -434,7 +388,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
-          if ($vlResult != '') {
+          if (!empty($result['result'])) {
                $pdf->writeHTML($html);
                if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $keyFromGlobalConfig = $general->getGlobalConfig('key');
