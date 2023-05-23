@@ -473,7 +473,7 @@ class GenericTestsService
                     }
                 }
             }else if(isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative'){
-                $resultIndex =  (isset($_POST['result']) && isset($resultConfig['result']) && in_array($_POST['result'], $resultConfig['result']))? array_search($_POST['result'], $resultConfig['result']):'';
+                $resultIndex =  (isset($_POST['result']) && isset($resultConfig['result']) && in_array($_POST['result'], $resultConfig['result']))? array_search(strtolower($_POST['result']), array_map('strtolower', $resultConfig['result'])):'';
                 return $resultConfig['result_interpretation'][$resultIndex];
             }
         }
