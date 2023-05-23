@@ -128,14 +128,14 @@ try {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } else if (strpos($sheetData[$resultCol], 'Copies') !== false) {
+                    } elseif (strpos($sheetData[$resultCol], 'Copies') !== false) {
                         if (strpos($sheetData[$resultCol], '<') !== false || $sheetData[$resultCol] == '839 Copies / mL') {
                             $txtVal = "Below Detection Level";
                             $logVal = $absDecimalVal = $absVal = $resultFlag = "";
                         } else {
                             $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         }
-                    } else if (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
+                    } elseif (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
                         if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected') {
@@ -143,7 +143,7 @@ try {
                             $resultFlag = "";
                             $absVal = "";
                             $logVal = "";
-                        } else if ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
+                        } elseif ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
                             //$txtVal =  $sheetData[$flagCol];
                             $txtVal = "Failed";
                             $resultFlag = $sheetData[$flagCol];
@@ -170,15 +170,15 @@ try {
                     $sampleType = $sheetData[$sampleTypeCol];
                     if ($sampleType == 'Patient') {
                         $sampleType = 'S';
-                    } else if ($sampleType == 'Control') {
+                    } elseif ($sampleType == 'Control') {
 
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
                             $sampleCode = $sampleCode . '-' . $lotNumberVal;
-                        } else if ($sampleCode == 'HIV_LOPOS') {
+                        } elseif ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
                             $sampleCode = $sampleCode . '-' . $lotNumberVal;
-                        } else if ($sampleCode == 'HIV_NEG') {
+                        } elseif ($sampleCode == 'HIV_NEG') {
                             $sampleType = 'NC';
                             $sampleCode = $sampleCode . '-' . $lotNumberVal;
                         }
@@ -228,8 +228,8 @@ try {
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
                 'sample_type' => $d['sampleType'],
+                'result_value_log' => $d['logVal'],
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
@@ -244,9 +244,9 @@ try {
             //echo "<pre>";var_dump($data);continue;
             if ($d['txtVal'] != "") {
                 $data['result'] = $d['txtVal'];
-            } else if ($d['absVal'] != "") {
+            } elseif ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] != "") {
                 $data['result'] = $d['logVal'];
             } else {
                 $data['result'] = "";

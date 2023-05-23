@@ -19,22 +19,30 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$query = "SELECT config_id,machine_name,import_machine_file_name FROM instruments WHERE status='active' ORDER BY machine_name ASC";
+$query = "SELECT config_id,machine_name,import_machine_file_name
+            FROM instruments
+            WHERE status='active'
+            ORDER BY machine_name ASC";
 $iResult = $db->rawQuery($query);
 
-$fQuery = "SELECT * FROM facility_details as f INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
-			WHERE t.test_type = ? AND f.facility_type=2 AND f.facility_attributes->>\"$.allow_results_file_upload\" = 'yes' OR f.facility_attributes->>\"$.allow_results_file_upload\" is null";
+$fQuery = 'SELECT * FROM facility_details as f
+            INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
+            WHERE t.test_type = ?
+                AND f.facility_type=2
+                AND (f.facility_attributes->>"$.allow_results_file_upload" = "yes"
+                    OR f.facility_attributes->>"$.allow_results_file_upload" IS NULL)
+            ORDER BY f.facility_name ASC';
 $fResult = $db->rawQuery($fQuery, array($type));
 
 if ($type == 'vl') {
 	$lastQuery = "SELECT lab_id FROM form_vl WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
-} else if ($type == 'eid') {
+} elseif ($type == 'eid') {
 	$lastQuery = "SELECT lab_id FROM form_eid WHERE lab_id is not NULL ORDER BY eid_id DESC LIMIT 1";
-} else if ($type == 'covid19') {
+} elseif ($type == 'covid19') {
 	$lastQuery = "SELECT lab_id FROM form_covid19 WHERE lab_id is not NULL ORDER BY covid19_id DESC LIMIT 1";
-} else if ($type == 'hepatitis') {
+} elseif ($type == 'hepatitis') {
 	$lastQuery = "SELECT lab_id FROM form_hepatitis WHERE lab_id is not NULL ORDER BY hepatitis_id DESC LIMIT 1";
-} else if ($type == 'tb') {
+} elseif ($type == 'tb') {
 	$lastQuery = "SELECT lab_id FROM form_tb WHERE lab_id is not NULL ORDER BY tb_id DESC LIMIT 1";
 }
 

@@ -196,76 +196,27 @@ if (!empty($requestResult)) {
           } else {
                $resultApprovedBy  = '';
           }
-          $vlResult = '';
+
           $smileyContent = '';
           $showMessage = '';
           $tndMessage = '';
-          $messageTextSize = '12px';
-          if ($result['result'] != null && trim($result['result']) != '') {
-               $resultType = is_numeric($result['result']);
-               if (in_array(strtolower(trim($result['result'])), array("tnd", "target not detected"))) {
-                    $vlResult = 'TND*';
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-                    $tndMessage = 'TND* - Target not Detected';
-               } else if (in_array(strtolower(trim($result['result'])), array("failed", "fail", "no_sample", "invalid"))) {
-                    $vlResult = $result['result'];
-                    $smileyContent = '';
-                    $showMessage = '';
-                    $messageTextSize = '14px';
-               } else if (trim($result['result']) > 1000 && $result['result'] <= 10000000) {
-                    $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    $showMessage = ($arr['h_vl_msg']);
-                    $messageTextSize = '15px';
-               } else if (trim($result['result']) <= 1000 && $result['result'] >= 20) {
-                    $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-               } else if (trim($result['result'] > 10000000) && $resultType) {
-                    $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    //$showMessage = 'Value outside machine detection limit';
-               } else if (trim($result['result'] < 20) && $resultType) {
-                    $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    //$showMessage = 'Value outside machine detection limit';
-               } else if (trim($result['result']) == '<20') {
-                    $vlResult = '&lt;20';
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-               } else if (trim($result['result']) == '>10000000') {
-                    $vlResult = $result['result'];
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    $showMessage = ($arr['h_vl_msg']);
-               } else if ($result['vl_test_platform'] == 'Roche') {
-                    $chkSign = '';
-                    $smileyShow = '';
-                    $chkSign = strchr($result['result'], '>');
-                    if ($chkSign != '') {
-                         $smileyShow = str_replace(">", "", $result['result']);
-                         $vlResult = $result['result'];
-                         //$showMessage = 'Invalid value';
-                    }
-                    $chkSign = '';
-                    $chkSign = strchr($result['result'], '<');
-                    if ($chkSign != '') {
-                         $smileyShow = str_replace("<", "", $result['result']);
-                         $vlResult = str_replace("<", "&lt;", $result['result']);
-                         //$showMessage = 'Invalid value';
-                    }
-                    if ($smileyShow != '' && $smileyShow <= $arr['viral_load_threshold_limit']) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-                    } else if ($smileyShow != '' && $smileyShow > $arr['viral_load_threshold_limit']) {
-                         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
-                    }
-               }
+          $messageTextSize = '15px';
+
+
+          if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+               $showMessage = ($arr['l_vl_msg']);
+          } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
+               $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
+               $showMessage = ($arr['h_vl_msg']);
+          } elseif ($result['result_status'] == '4' || $result['is_sample_rejected'] == 'yes') {
+               $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
+
           if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
                $smileyContent = '';
-          }
-          if ($result['result_status'] == '4') {
-               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
+          } else {
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
           }
           $html = '<table style="padding:0px 2px 2px 2px;">';
           $html .= '<tr>';
@@ -401,7 +352,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3"></td>';
           $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
           $html .= '</tr>';
-          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Resultado (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td></tr>';
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Resultado (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '</td></tr>';
           $html .= '<tr><td colspan="3"></td></tr>';
           $html .= '</table>';
           $html .= '</td>';

@@ -240,7 +240,7 @@ class VlService
         return $vlResultCategory;
     }
 
-    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null)
+    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
         $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
         $vlResult = strtolower($vlResult);
@@ -260,7 +260,7 @@ class VlService
         }
     }
 
-    public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null)
+    public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
 
         // If result is blank, then return null
@@ -350,7 +350,7 @@ class VlService
         );
     }
 
-    public function interpretViralLoadNumericResult($result, $unit = null)
+    public function interpretViralLoadNumericResult($result, $unit = null): ?array
     {
         // If result is blank, then return null
         if (empty(trim($result))) {
