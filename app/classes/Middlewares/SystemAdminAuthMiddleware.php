@@ -61,7 +61,9 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
 
         $excludedRoutes = [
             '/system-admin/login/login.php',
+            '/system-admin/login/adminLoginProcess.php',
             '/system-admin/setup/index.php',
+            '/system-admin/setup/registerProcess.php',
             // Add other routes to exclude from the authentication check here
         ];
 
