@@ -1870,10 +1870,9 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
                },
                function(interpretation) {
                     if (interpretation != "") {
-                         $('#resultInterpretation').removeClass('hide');
                          $('#resultInterpretation').val(interpretation);
 					}else{
-                         $('#resultInterpretation').addClass('hide');
+                         $('#resultInterpretation').val('');
                     }
                });
 		}
