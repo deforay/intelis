@@ -4,7 +4,6 @@ syntax: glob
 syntax: regexp
 public/uploads/(?!.htaccess)
 public/temporary/(?!.htaccess)
-vendor/*
 cache/(?!.htaccess)
 vendor/dcarbone/(?!.htaccess)
 docker/mysql/data/(?!.htaccess)
@@ -14,7 +13,6 @@ backup/(?!index.php)
 .*\.idea$
 .*\.pid$
 .*\.log$
-.*\.vendor$
 error_log
 \.DS_Store$
 [Tt]humbs\.db$

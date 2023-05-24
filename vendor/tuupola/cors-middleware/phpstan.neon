@@ -1,0 +1,5 @@
+parameters:
+    checkMissingIterableValueType: false
+    treatPhpDocTypesAsCertain: false
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
