@@ -175,7 +175,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="form-group">
 											<label for="default_time_zone" class="col-lg-4 control-label"><?php echo _("Default Time Zone"); ?> </label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('eg: Africa/Harare'); ?>" title="<?php echo _('Please enter default time zone'); ?>" value="<?php echo $arr['default_time_zone']; ?>" />
+												<select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('Timezone'); ?>" title="<?php echo _('Please choose Timezone'); ?>">
+													<option value=""><?= _("-- Select --"); ?></option>
+													<?php
+													$timezone_identifiers = DateTimeZone::listIdentifiers();
+
+													foreach ($timezone_identifiers as $value) {
+													?>
+														<option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
+													<?php
+													}
+
+													?>
+												</select>
 											</div>
 										</div>
 									</div>
