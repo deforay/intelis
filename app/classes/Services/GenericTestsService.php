@@ -470,21 +470,21 @@ class GenericTestsService
             if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
                 if (is_numeric($result)) {
                     if ($result >= $resultConfig['high_value']) {
-                        return $resultConfig['above_threshold'];
+                        return ucwords($resultConfig['above_threshold']);
                     }
                     if ($result == $resultConfig['threshold_value']) {
-                        return $resultConfig['at_threshold'];
+                        return ucwords($resultConfig['at_threshold']);
                     }
                     if ($result < $resultConfig['low_value']) {
-                        return $resultConfig['below_threshold'];
+                        return ucwords($resultConfig['below_threshold']);
                     }
                 } else {
                     $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
-                    return $resultConfig['quantitative_result_interpretation'][$resultIndex];
+                    return ucwords($resultConfig['quantitative_result_interpretation'][$resultIndex]);
                 }
             } else if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
                 $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
-                return $resultConfig['result_interpretation'][$resultIndex];
+                return ucwords($resultConfig['result_interpretation'][$resultIndex]);
             }
         }
     }

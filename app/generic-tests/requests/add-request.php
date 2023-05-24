@@ -1754,8 +1754,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                },
                function(interpretation) {
                     if (interpretation != "") {
-                         $('#result-interpretation').removeClass('hide');
-                         $('#result-interpretation').html(interpretation);
+                         $('#resultInterpretation').removeClass('hide');
+                         $('#resultInterpretation').val(interpretation);
+                    }else{
+                         $('#resultInterpretation').addClass('hide');
                     }
                });
 		}

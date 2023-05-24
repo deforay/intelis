@@ -142,7 +142,7 @@ if ($n > 0) {
 // print_r($testResultsAttribute);die;
 if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
     if ($testResultsAttribute['result_type'] == 'qualitative') {
-        $resultSection = '<select class="form-control result-select" name="result" id="result">';
+        $resultSection = '<select class="form-control result-select" name="result" id="result" onchange="updateInterpretationResult(this);">>';
         $resultSection .= '<option value="">-- Select --</option>';
         if (isset($testResultsAttribute['result']) && !empty($testResultsAttribute['result'])) {
             foreach ($testResultsAttribute['result'] as $row) {
@@ -163,9 +163,9 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
                 }
                 $resultSection .= '</datalist>';
             }
-            $resultSection .= '<br><span class="list-group-item list-group-item-warning hide" id="result-interpretation"></span>';
         }
     }
+    $resultSection .= '<br><input type"text" class="form-control hide" id="resultInterpretation" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
     $resultForm[] = $resultSection;
 }
