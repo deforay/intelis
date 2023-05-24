@@ -1706,7 +1706,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 				},
 				function(data) {
 					data = JSON.parse(data);
-					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
 					}
 					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
@@ -1863,10 +1863,17 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 
 	function updateInterpretationResult(obj){
 		if(obj.value){
-			let result = $(obj).find(':selected').data('interpretation');
-			if(result){
-				$('#result').val(result);
-			}
+               $.post("get-result-config.php", {
+                    result: obj.value,
+                    resultType: $('#resultType').val(),
+                    testType : $('#testType').val()
+               },
+               function(interpretation) {
+                    if (interpretation != "") {
+                         $('#result-interpretation').removeClass('hide');
+                         $('#result-interpretation').html(interpretation);
+                    }
+               });
 		}
 	}
 </script>

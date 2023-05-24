@@ -455,25 +455,35 @@ class GenericTestsService
         }
     }
 
-    public function getInterpretationResults($testType, $result){
+    public function getInterpretationResults($testType, $result)
+    {
+        if (!isset($result) || empty($result)) {
+            return null;
+        }
+        if (!isset($testType) || empty($testType)) {
+            return null;
+        }
         $this->db->where('test_type_id', $testType);
         $testTypeResult = $this->db->getOne('r_test_types');
-        if(isset($testTypeResult['test_results_config']) && !empty($testTypeResult['test_results_config'])){
+        if (isset($testTypeResult['test_results_config']) && !empty($testTypeResult['test_results_config'])) {
             $resultConfig = json_decode($testTypeResult['test_results_config'], true);
-            if(isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative'){
-                if(isset($_POST['result'])){
-                    if($_POST['result'] >= $resultConfig['high_value']){
+            if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
+                if (is_numeric($result)) {
+                    if ($result >= $resultConfig['high_value']) {
                         return $resultConfig['above_threshold'];
                     }
-                    if($_POST['result'] == $resultConfig['threshold_value']){
+                    if ($result == $resultConfig['threshold_value']) {
                         return $resultConfig['at_threshold'];
                     }
-                    if($_POST['result'] < $resultConfig['low_value']){
+                    if ($result < $resultConfig['low_value']) {
                         return $resultConfig['below_threshold'];
                     }
+                } else {
+                    $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
+                    return $resultConfig['quantitative_result_interpretation'][$resultIndex];
                 }
-            }else if(isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative'){
-                $resultIndex =  (isset($_POST['result']) && isset($resultConfig['result']) && in_array($_POST['result'], $resultConfig['result']))? array_search(strtolower($_POST['result']), array_map('strtolower', $resultConfig['result'])):'';
+            } else if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
+                $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
                 return $resultConfig['result_interpretation'][$resultIndex];
             }
         }

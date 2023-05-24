@@ -153,16 +153,17 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
         $resultSection .= '</select>';
     } else {
         $resultSection = '';
-        $resultSection .= '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results">';
+        $resultSection .= '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
         if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
             $resultSection .= '<datalist id="resultList">';
             if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
                 foreach ($testResultsAttribute['quantitative_result'] as $key => $row) {
                     $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == trim($row)) ? "selected" : "";
-                    $resultSection .= '<option value="'.trim($row).'" '.$selected.'> '.ucwords($row).' </option>';
+                    $resultSection .= '<option value="'.trim($row).'" '.$selected.' data-interpretation="'.$testResultsAttribute['quantitative_result_interpretation'][$key].'"> '.ucwords($row).' </option>';
                 }
                 $resultSection .= '</datalist>';
             }
+            $resultSection .= '<br><span class="list-group-item list-group-item-warning hide" id="result-interpretation"></span>';
         }
     }
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
