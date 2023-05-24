@@ -165,7 +165,7 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
             }
         }
     }
-    $resultSection .= '<br><input type"text" class="form-control" id="resultInterpretation" name="resultInterpretation"></input>';
+    $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
     $resultForm[] = $resultSection;
 }

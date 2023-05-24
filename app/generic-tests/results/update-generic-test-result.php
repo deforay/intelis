@@ -967,19 +967,14 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
                                                     }
                                                     ?>
                                                 </tbody>
-                                                <tfoot>
+                                                <tfoot id="resultSection">
                                                     <tr>
-                                                        <th scope="row" colspan="4" class="text-right final-result-row">
-                                                            Final Result
-                                                        </th>
-                                                        <td>
-                                                            <input type="text" id="result" name="result" class="form-control" value="<?php echo $vlQueryInfo['result']; ?>" placeholder="Enter final result" title="Please enter final results">
-                                                            <!-- <select class="form-control result-focus" name="result" id="result">
-																		<option value=''> -- Select -- </option>
-																		<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																			<option value="<?php echo $genResultKey; ?>" <?php echo ($vlQueryInfo['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																		<?php } ?>
-																	</select> -->
+                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                        <td id="result-sections">
+                                                            <input type="text" id="result" name="result" class="form-control result-text" value="" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);" autocomplete="off">
+                                                            <br>
+                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation">
+                                                            <input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="quantitative">
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -1763,52 +1758,68 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
     }
 
     function getTestTypeForm() {
-        var testType = $("#testType").val();
-        if (testType != "") {
-            $(".requestForm").show();
-            $.post("/generic-tests/requests/getTestTypeForm.php", {
-                    testType: testType,
-                    formType: 'update-form',
-                    testTypeForm: '<?php echo base64_encode($vlQueryInfo['test_type_form']); ?>',
-                },
-                function(data) {
-                    //console.log(data);
-                    data = JSON.parse(data);
-                    if (data.facility.length > 0) {
-                        $("#clinicDynamicForm").html(data.facility);
-                    }
-                    if (data.patient.length > 0) {
-                        $("#patientDynamicForm").html(data.patient);
-                    }
-                    if (data.lap.length > 0) {
-                        $("#lapDynamicForm").html(data.lap);
-                    }
-                    if (data.specimen.length > 0) {
-                        $("#specimenDynamicForm").html(data.specimen);
-                    }
-                    if (data.others.length > 0) {
-                        $("#othersDynamicForm").html(data.others);
-                    }
-                    $('.date').datepicker({
-                        changeMonth: true,
-                        changeYear: true,
-                        dateFormat: 'dd-M-yy',
-                        timeFormat: "hh:mm",
-                        maxDate: "Today",
-                        yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-                    }).click(function() {
-                        $('.ui-datepicker-calendar').show();
-                    });
-                });
-        } else {
-            $("#clinicDynamicForm").html('');
-            $("#patientDynamicForm").html('');
-            $("#lapDynamicForm").html('');
-            $("#specimenDynamicForm").html('');
-            $("#othersDynamicForm").html('');
-            $(".requestForm").hide();
-        }
-    }
+		removeDynamicForm();
+		var testType = $("#testType").val();
+		if (testType != "") {
+			$(".requestForm").show();
+			$.post("/generic-tests/requests/getTestTypeForm.php", {
+					testType: testType,
+					testTypeForm: '<?php echo base64_encode($vlQueryInfo['test_type_form']); ?>',
+				},
+				function(data) {
+					data = JSON.parse(data);
+					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+						$("#facilitySection").html(data.facilitySection);
+					}
+					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
+						$("#patientSection").after(data.patientSection);
+					}
+					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
+						$("#labSection").html(data.labSection);
+					}
+					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+						$("#result-sections").html(data.result);
+					} else {
+						$('#resultSection').hide()
+					}
+					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
+						$("#specimenSection").after(data.specimenSection);
+					}
+					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
+						$("#otherSection").html(data.otherSection);
+					}
+					$('.date').datepicker({
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: 'dd-M-yy',
+						timeFormat: "hh:mm",
+						maxDate: "Today",
+						yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+					}).click(function() {
+						$('.ui-datepicker-calendar').show();
+					});
+					$(".dynamicFacilitySelect2").select2({
+						width: '285px',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
+					$(".dynamicSelect2").select2({
+						width: '100%',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
+				});
+		} else {
+			removeDynamicForm();
+		}
+	}
+
+    function removeDynamicForm() {
+		$(".facilitySection").html('');
+		$(".patientSectionInput").remove();
+		$("#labSection").html('');
+		$(".specimenSectionInput").remove();
+		$("#otherSection").html('');
+		$(".requestForm").hide();
+	}
 
     function getSampleTypeList(testTypeId) {
         $.post("/includes/get-sample-type.php", {
@@ -1910,5 +1921,22 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
             }
         });
     }
+
+    function updateInterpretationResult(obj){
+		if(obj.value){
+               $.post("/generic-tests/requests/get-result-interpretation.php", {
+                    result: obj.value,
+                    resultType: $('#resultType').val(),
+                    testType : $('#testType').val()
+               },
+               function(interpretation) {
+                    if (interpretation != "") {
+                         $('#resultInterpretation').val(interpretation);
+					}else{
+                         $('#resultInterpretation').val('');
+                    }
+               });
+		}
+	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';
