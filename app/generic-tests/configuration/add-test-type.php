@@ -126,9 +126,9 @@ $symptomInfo = $db->query($symQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+										<select class="form-control" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 											<option value="">--Select--</option>
 											<?php
 											foreach ($testFailureReasonInfo as $testFailureReason) {
@@ -274,7 +274,7 @@ $symptomInfo = $db->query($symQuery);
 												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
 												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 												<td style="vertical-align:middle;text-align: center;width:100px;">
-												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
 													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 												</td>
 											</tr>
@@ -506,7 +506,7 @@ $symptomInfo = $db->query($symQuery);
 			$(".qualitativeResult").removeClass("isRequired");
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
-		} else{
+		} else {
 			$("#qualitativeDiv, .quantitativeDiv").hide();
 			$(".qualitativeResult, .quantitativeResult").removeClass("isRequired");
 			$("#qualitativeResult, .quantitativeResult").val('');
@@ -540,7 +540,7 @@ $symptomInfo = $db->query($symQuery);
 	function addResultRow(table) {
 		let rowString = '';
 
-		if(table == 'qualitativeTable'){
+		if (table == 'qualitativeTable') {
 			testQualCounter++;
 			rowString = `<tr>
 				<td class="text-center">` + testQualCounter + `</td>
@@ -553,7 +553,7 @@ $symptomInfo = $db->query($symQuery);
 					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 				</td>
 			</tr>`;
-		}else if(table == 'quantitativeTable'){
+		} else if (table == 'quantitativeTable') {
 			testQuanCounter++;
 			rowString = `<tr>
 				<td class="text-center">` + testQuanCounter + `</td>
@@ -567,7 +567,7 @@ $symptomInfo = $db->query($symQuery);
 				</td>
 			</tr>`;
 		}
-		$("#"+table).append(rowString);
+		$("#" + table).append(rowString);
 	}
 
 	function removeResultRow(el, table) {
@@ -581,8 +581,8 @@ $symptomInfo = $db->query($symQuery);
 		});
 	}
 
-	function changeField(obj, i){
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('#dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
+	function changeField(obj, i) {
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown' + i).show(), $('#dropDown' + i).addClass('isRequired')) : ($('#dropDown' + i).hide(), $('#dropDown' + i).removeClass('isRequired'));
 	}
 </script>
 

@@ -4000,7 +4000,7 @@ ALTER TABLE `form_eid` CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAU
 
 CREATE TABLE `r_generic_test_failure_reasons` (
   `test_failure_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `test_failure_reason` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `test_failure_reason_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,

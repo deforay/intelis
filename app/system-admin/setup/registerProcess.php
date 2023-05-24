@@ -21,7 +21,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $userPassword = $usersService->passwordHash($password);
 
 try {
-    $key = file_get_contents("app/system-admin/secretKey.txt");
+    $key = file_get_contents(APPLICATION_PATH . "/system-admin/secretKey.txt");
 
     if ($secretKey == trim($key)) {
         if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
@@ -32,7 +32,7 @@ try {
                 'system_admin_password' => $userPassword
             );
             $db->insert($tableName, $insertData);
-            unlink("app/system-admin/secretKey.txt");
+            unlink(APPLICATION_PATH . "/system-admin/secretKey.txt");
             $_SESSION['alertMsg'] = _("New User Added successfully");
             header("Location:/system-admin/login/login.php");
         }
