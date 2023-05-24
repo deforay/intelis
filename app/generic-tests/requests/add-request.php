@@ -596,6 +596,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <th scope="row" class="text-center">Date of Testing</th>
                                                                            <th scope="row" class="text-center">Test Platform/Test Kit</th>
                                                                            <th scope="row" class="text-center">Test Result</th>
+                                                                           <th scope="row" class="text-center">Action</th>
                                                                       </tr>
                                                                  </thead>
                                                                  <tbody id="testKitNameTable">
@@ -1575,24 +1576,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          data = JSON.parse(data);
-                         if (data.facilitySection.length > 0) {
+                         if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);
                          }
-                         if (data.patientSection.length > 0) {
+                         if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
                               $("#patientSection").after(data.patientSection);
                          }
-                         if (data.labSection.length > 0) {
+                         if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
                               $("#labSection").html(data.labSection);
                          }
-                         if (data.result.length > 0) {
+                         if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
                               $("#result-sections").html(data.result);
                          } else {
                               $('#resultSection').hide()
                          }
-                         if (data.specimenSection.length > 0) {
+                         if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
                               $("#specimenSection").after(data.specimenSection);
                          }
-                         if (data.otherSection.length > 0) {
+                         if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
                               $("#otherSection").html(data.otherSection);
                          }
                          checkNum();

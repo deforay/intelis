@@ -806,6 +806,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 															<th scope="row" class="text-center">Test Platform/Test
 																Kit</th>
 															<th scope="row" class="text-center">Test Result</th>
+															<th scope="row" class="text-center">Action</th>
 														</tr>
 													</thead>
 													<tbody id="testKitNameTable">
@@ -892,8 +893,7 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 													</tbody>
 													<tfoot id="resultSection">
 														<tr>
-															<th scope="row" colspan="4" class="text-right final-result-row">Final Result
-															</th>
+															<th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
 															<td id="result-sections">
 
 															</td>
@@ -998,7 +998,6 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 </section>
 </div>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
-
 <script>
 	let provinceName = true;
 	let facilityName = true;
@@ -1707,24 +1706,24 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 				},
 				function(data) {
 					data = JSON.parse(data);
-					if (data.facilitySection.length > 0) {
+					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
 					}
-					if (data.patientSection.length > 0) {
+					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
 						$("#patientSection").after(data.patientSection);
 					}
-					if (data.labSection.length > 0) {
+					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
 						$("#labSection").html(data.labSection);
 					}
-					if (data.result.length > 0) {
+					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#result-sections").html(data.result);
 					} else {
 						$('#resultSection').hide()
 					}
-					if (data.specimenSection.length > 0) {
+					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
 					}
-					if (data.otherSection.length > 0) {
+					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 					}
 					$('.date').datepicker({
@@ -1860,6 +1859,15 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 				addTestRow();
 			}
 		});
+	}
+
+	function updateInterpretationResult(obj){
+		if(obj.value){
+			let result = $(obj).find(':selected').data('interpretation');
+			if(result){
+				$('#result').val(result);
+			}
+		}
 	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';
