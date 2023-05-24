@@ -160,7 +160,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	function generateBarcode(bId) {
 		$.post("/generic-tests/requests/batch/generateBarcode.php", {
 				id: bId,
-				type: 'vl'
+				type: 'generic-tests'
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {

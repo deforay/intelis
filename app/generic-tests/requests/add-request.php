@@ -117,7 +117,7 @@ $fundingSourceList = $db->query($fundingSourceQry);
 $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$lResult = $facilitiesService->getTestingLabs('vl', true, true);
+$lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
      $sampleClass = '';
@@ -158,11 +158,7 @@ foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
+
 
 $sKey = '';
 $sFormat = '';
@@ -600,6 +596,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <th scope="row" class="text-center">Date of Testing</th>
                                                                            <th scope="row" class="text-center">Test Platform/Test Kit</th>
                                                                            <th scope="row" class="text-center">Test Result</th>
+                                                                           <th scope="row" class="text-center">Action</th>
                                                                       </tr>
                                                                  </thead>
                                                                  <tbody id="testKitNameTable">
@@ -1054,7 +1051,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $.post("/includes/siteInformationDropdownOptions.php", {
                          dName: dName,
                          cliName: cName,
-                         testType: 'vl'
+                         testType: 'generic-tests'
                     },
                     function(data) {
                          if (data != "") {
@@ -1550,7 +1547,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (cName != '' && facilityName) {
                $.post("/includes/siteInformationDropdownOptions.php", {
                          cName: cName,
-                         testType: 'vl'
+                         testType: 'generic-tests'
                     },
                     function(data) {
                          if (data != "") {
@@ -1579,24 +1576,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          data = JSON.parse(data);
-                         if (data.facilitySection.length > 0) {
+                         if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);
                          }
-                         if (data.patientSection.length > 0) {
+                         if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
                               $("#patientSection").after(data.patientSection);
                          }
-                         if (data.labSection.length > 0) {
+                         if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
                               $("#labSection").html(data.labSection);
                          }
-                         if (data.result.length > 0) {
+                         if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
                               $("#result-sections").html(data.result);
                          } else {
                               $('#resultSection').hide()
                          }
-                         if (data.specimenSection.length > 0) {
+                         if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
                               $("#specimenSection").after(data.specimenSection);
                          }
-                         if (data.otherSection.length > 0) {
+                         if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
                               $("#otherSection").html(data.otherSection);
                          }
                          checkNum();

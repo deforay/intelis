@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('vl');
+$healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 //$formId = $general->getGlobalConfig('vl_form');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
@@ -54,7 +54,7 @@ $testTypeId = $db->rawQuery($getTestId);
 $sampleResult = $general->getSampleType($testTypeId[0]['test_type_id']);
 $sResult = $sampleResult;
 //Get active machines
-$testPlatformResult = $general->getTestingPlatforms('vl');
+$testPlatformResult = $general->getTestingPlatforms('generic-tests');
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>

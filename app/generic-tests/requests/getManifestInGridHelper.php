@@ -141,7 +141,7 @@ if (isset($sLimit) && isset($sOffset)) {
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.sample_id,vl.facility_id,vl.patient_first_name,vl.result,f.facility_name,f.facility_code,vl.patient_id,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_generic as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
+$aResultFilterTotal = $db->rawQuery("SELECT vl.sample_id,vl.facility_id,vl.patient_first_name,vl.result,f.facility_name,f.facility_code,vl.patient_id,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_generic as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

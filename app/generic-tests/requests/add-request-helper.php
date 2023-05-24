@@ -105,22 +105,7 @@ try {
         $_POST['regimenInitiatedOn'] = null;
     }
 
-    if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
-        $artQuery = "SELECT art_id, art_code FROM r_vl_art_regimen
-                        WHERE (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
-        $artResult = $db->rawQuery($artQuery);
-        if (!isset($artResult[0]['art_id'])) {
-            $data = array(
-                'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => $countryFormId,
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
-            $result = $db->insert('r_vl_art_regimen', $data);
-            $_POST['artRegimen'] = $_POST['newArtRegimen'];
-        } else {
-            $_POST['artRegimen'] = $artResult[0]['art_code'];
-        }
-    }
+   
 
     if (!isset($_POST['hasChangedRegimen']) || trim($_POST['hasChangedRegimen']) == '') {
         $_POST['hasChangedRegimen'] = null;
@@ -250,25 +235,6 @@ try {
     } else {
         $sampleCode = 'sample_code';
         $sampleCodeKey = 'sample_code_key';
-    }
-
-    //set vl test reason
-    if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
-        if (!is_numeric($_POST['reasonForVLTesting'])) {
-            $reasonQuery = "SELECT test_reason_id FROM r_generic_test_reasons
-                        WHERE test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
-            $reasonResult = $db->rawQuery($reasonQuery);
-            if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-                $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
-            } else {
-                $data = array(
-                    'test_reason_name' => $_POST['reasonForVLTesting'],
-                    'test_reason_status' => 'active'
-                );
-                $id = $db->insert('r_generic_test_reasons', $data);
-                $_POST['reasonForVLTesting'] = $id;
-            }
-        }
     }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {

@@ -198,7 +198,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('#sampleId').val(data);
 					} else {
 						<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'vl');
+							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'generic-tests');
 						<?php } ?>
 					}
 				});
