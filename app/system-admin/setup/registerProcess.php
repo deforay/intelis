@@ -32,7 +32,7 @@ try {
                 'system_admin_password' => $userPassword
             );
             $db->insert($tableName, $insertData);
-            unlink(APPLICATION_PATH . "/system-admin/secretKey.txt");
+            unlink("app/system-admin/secretKey.txt");
             $_SESSION['alertMsg'] = _("New User Added successfully");
             header("Location:/system-admin/login/login.php");
         }
