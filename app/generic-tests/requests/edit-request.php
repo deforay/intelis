@@ -1863,15 +1863,16 @@ $testTypeForm = json_decode($vlQueryInfo['test_type_form'], true);
 
 	function updateInterpretationResult(obj){
 		if(obj.value){
-               $.post("get-result-config.php", {
+               $.post("get-result-interpretation.php", {
                     result: obj.value,
                     resultType: $('#resultType').val(),
                     testType : $('#testType').val()
                },
                function(interpretation) {
                     if (interpretation != "") {
-                         $('#result-interpretation').removeClass('hide');
-                         $('#result-interpretation').html(interpretation);
+                         $('#resultInterpretation').val(interpretation);
+					}else{
+                         $('#resultInterpretation').val('');
                     }
                });
 		}
