@@ -312,43 +312,31 @@ class GenericTestsService
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
 
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-            $testType = (isset($params['testType']) && !empty($params['testType'])) ? $params['testType'] : null;
+            $testType = $params['testType'] ?? null;
+            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceId = $params['provinceId'] ?? null;
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
-            }
-
-            // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+            if (empty($testType) || empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+                return 0;
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
-            $vlData = array(
-                'vlsm_country_id' => $params['countryId'],
-                'sample_collection_date' => $sameplCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
+            $vlData = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
+                'sample_collection_date' => $sampleCollectionDate,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
 
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -401,11 +389,7 @@ class GenericTestsService
                 }
             }
 
-            if ($id > 0) {
-                return $id;
-            } else {
-                return 0;
-            }
+            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
             error_log('Insert lab tests Sample : ' . $this->db->getLastError());

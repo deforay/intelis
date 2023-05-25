@@ -7,6 +7,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 /**
@@ -21,6 +22,7 @@ class VlService
     protected ?MysqliDb $db = null;
     protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
+    protected CommonService $commonService;
 
     // keep all these in lower case to make it easier to compare
     protected array $suppressedArray = [
@@ -45,9 +47,10 @@ class VlService
 
     protected int $suppressionLimit = 1000;
 
-    public function __construct($db = null)
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
+        $this->commonService = $commonService;
     }
 
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
@@ -57,12 +60,8 @@ class VlService
             error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
         }
 
-
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -273,10 +272,7 @@ class VlService
             $this->interpretViralLoadNumericResult($result, $unit);
         }
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
+        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
 
 
         if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
@@ -362,10 +358,7 @@ class VlService
             return $result;
         }
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $interpretAndConvertResult = $general->getGlobalConfig('vl_interpret_and_convert_results');
+        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
 
 
         if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
@@ -429,7 +422,7 @@ class VlService
             $this->db->where('import_machine_file_name', $machineFile);
         }
 
-        $this->db->where("low_vl_result_text", NULL, 'IS NOT');
+        $this->db->where("low_vl_result_text", null, 'IS NOT');
         $this->db->where("status", 'active', 'like');
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
@@ -438,50 +431,33 @@ class VlService
     {
         try {
 
-            /** @var CommonService $general */
-            $general = ContainerRegistry::get(CommonService::class);
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-            $globalConfig = $general->getGlobalConfig();
-            $vlsmSystemConfig = $general->getSystemConfig();
+            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceId = $params['provinceId'] ?? null;
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-
-
-            if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
-            }
-
-            // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+            if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+                return 0;
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
-
-            $vlData = array(
-                'vlsm_country_id' => $params['countryId'],
-                'sample_collection_date' => $sameplCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
+            $vlData = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
+                'sample_collection_date' => $sampleCollectionDate,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
 
             $oldSampleCodeKey = null;
 
@@ -503,58 +479,44 @@ class VlService
                 $vlData['result_status'] = 6;
             }
 
-            $sQuery = "SELECT vl_sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+            $sQuery = "SELECT vl_sample_id,
+                        sample_code,
+                        sample_code_format,
+                        sample_code_key,
+                        remote_sample_code,
+                        remote_sample_code_format,
+                        remote_sample_code_key
+                        FROM form_vl ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
-            /* Update version in form attributes */
-            $version = $general->getSystemConfig('sc_version');
-            $ipaddress = $general->getClientIpAddress();
-            $formAttributes = array(
-                'applicationVersion'  => $version,
-                'ip_address'    => $ipaddress
-            );
-            $vlData['form_attributes'] = json_encode($formAttributes);
-
 
             $id = 0;
-            if (!empty($rowData)) {
-                // $this->db = $this->db->where('vl_sample_id', $rowData['vl_sample_id']);
-                // $id = $this->db->update("form_vl", $vlData);
-                // $params['vlSampleId'] = $rowData['vl_sample_id'];
-
-
-                //error_log('Insert VL Sample : ' . $this->db->getLastQuery());
-                // If this sample code exists, let us regenerate
+            if (empty($rowData)) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $vlData['form_attributes'] = json_encode($formAttributes);
+                if (!empty($params['sampleCode']) && !empty($params['sampleCollectionDate'])) {
+                    $vlData['unique_id'] = $vlData['unique_id'] ?? $this->commonService->generateUUID();
+                    $id = $this->db->insert("form_vl", $vlData);
+                    error_log($this->db->getLastError());
+                }
+            } else {
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
-            } else {
-                if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("form_vl", $vlData);
-                    $params['vlSampleId'] = $id;
-                } else {
-                    if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $vlData['unique_id'] = $general->generateUUID();
-                        $id = $this->db->insert("form_vl", $vlData);
-                        error_log($this->db->getLastError());
-                    }
-                }
-            }
-
-            if ($id > 0) {
-                return $id;
-            } else {
-                return 0;
             }
         } catch (Exception $e) {
             error_log('Insert VL Sample : ' . $this->db->getLastErrno());
             error_log('Insert VL Sample : ' . $this->db->getLastError());
             error_log('Insert VL Sample : ' . $this->db->getLastQuery());
             error_log('Insert VL Sample : ' . $e->getMessage());
-            return 0;
+            $id = 0;
         }
+        return $id > 0 ? $id : 0;
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)

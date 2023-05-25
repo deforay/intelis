@@ -217,9 +217,7 @@ try {
         }
 
 
-        if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = null;
-        }
+        $data['sampleCode'] = $data['sampleCode'] ?? null;
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -467,13 +465,10 @@ try {
             if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
                 $db = $db->where('covid19_id', $data['covid19SampleId']);
                 $id = $db->update($tableName, $covid19Data);
-                // error_log($db->getLastError());
+            } else {
+                continue;
             }
         }
-
-        // $general->elog($db->getLastQuery());
-        // $general->elog($db->getLastError());
-
         if ($id > 0) {
             $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
             $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
@@ -487,16 +482,17 @@ try {
             http_response_code(200);
         } else {
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'failed'
-                );
+                $responseData[$rootKey] = [
+                    'status' => 'failed',
+                    'timestamp' => time(),
+                ];
             } else {
-                $payload = array(
+                $payload = [
                     'status' => 'failed',
                     'timestamp' => time(),
                     'error' => 'Unable to add this Covid-19 sample. Please try again later',
-                    'data' => array()
-                );
+                    'data' => []
+                ];
             }
             http_response_code(301);
         }
@@ -525,12 +521,12 @@ try {
 } catch (SystemException $exc) {
 
     http_response_code(400);
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

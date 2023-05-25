@@ -72,7 +72,7 @@ $builder->addDefinitions([
     CommonService::class => DI\create(CommonService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     EidService::class => DI\create(EidService::class)
         ->constructor(DI\get('db')),
     Covid19Service::class => DI\create(Covid19Service::class)

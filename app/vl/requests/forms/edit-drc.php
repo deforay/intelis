@@ -194,7 +194,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
-											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -211,7 +211,7 @@ $sampleSuggestionDisplay = 'display:none;';
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
-											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {

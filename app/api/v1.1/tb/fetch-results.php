@@ -185,37 +185,27 @@ try {
         $whereStr = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereStr . " limit 100;";
-    // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
-    // No data found
-    if (!$rowData) {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'error' => 'No matching data',
-            'data' => $rowData
-
-        );
-        http_response_code(200);
-    } else {
+    if (!empty($rowData)) {
         foreach ($rowData as $key => $row) {
             $rowData[$key]['tbTests'] = $tbService->getTbTestsByFormId($row['tbId']);
         }
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'data' => $rowData
-        );
-        http_response_code(200);
     }
+
+    http_response_code(200);
+    $payload = [
+        'status' => 'success',
+        'timestamp' => time(),
+        'data' => $rowData ?? []
+    ];
 } catch (SystemException $exc) {
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

@@ -283,45 +283,33 @@ class HepatitisService
         $vlsmSystemConfig = $general->getSystemConfig();
 
         try {
-            $provinceCode = (!empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (!empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-            $prefix = (!empty($params['prefix'])) ? $params['prefix'] : null;
 
-            if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
-            }
+            $prefix = $params['prefix'] ?? 'HEP';
+            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceId = $params['provinceId'] ?? null;
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+            if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+                return 0;
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            if (empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
-
-            $hepatitisData = array(
-                'vlsm_country_id' => $params['countryId'],
+            $hepatitisData = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
-                'hepatitis_test_type' => $prefix,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'hepatitis_test_type' => $prefix,
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $hepatitisData['remote_sample_code'] = $sampleData['sampleCode'];
@@ -367,11 +355,7 @@ class HepatitisService
                     $id = $this->db->insert("form_hepatitis", $hepatitisData);
                 }
             }
-            if ($id > 0) {
-                return  $id;
-            } else {
-                return 0;
-            }
+            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
 
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());

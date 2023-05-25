@@ -197,11 +197,7 @@ try {
         $tableName = "form_eid";
         $tableName1 = "activity_log";
 
-
-
-        if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = null;
-        }
+        $data['sampleCode'] = $data['sampleCode'] ?? null;
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -392,6 +388,8 @@ try {
             if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
                 $db = $db->where('eid_id', $data['eidSampleId']);
                 $id = $db->update($tableName, $eidData);
+            } else {
+                continue;
             }
         }
         if ($id > 0) {
@@ -406,19 +404,19 @@ try {
             );
             http_response_code(200);
         } else {
+            http_response_code(301);
             if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
+                $responseData[$rootKey] = [
                     'status' => 'failed'
-                );
+                ];
             } else {
-                $payload = array(
+                $payload = [
                     'status' => 'failed',
                     'timestamp' => time(),
                     'error' => 'Unable to add this EID sample. Please try again later',
-                    'data' => array()
-                );
+                    'data' => []
+                ];
             }
-            http_response_code(301);
         }
     }
     if ($update == "yes") {
@@ -445,12 +443,12 @@ try {
 } catch (SystemException $exc) {
 
     http_response_code(400);
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
 
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

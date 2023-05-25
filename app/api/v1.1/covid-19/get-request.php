@@ -223,17 +223,8 @@ try {
     $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
     // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
-    // No data found
-    if (!$rowData) {
-        // array_splice($rowData, 1, 2);
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'error' => 'No matching data',
-            'data' => $rowData
 
-        );
-    } else {
+    if (!empty($rowData)) {
         foreach ($rowData as $key => $row) {
             $rowData[$key]['c19Tests'] = $covid19Service->getCovid19TestsByC19Id($row['covid19Id']);
             $rowData[$key]['c19Symptoms'] = $covid19Service->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
@@ -241,19 +232,21 @@ try {
             $rowData[$key]['c19ReasonForTesting'] = $covid19Service->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
         }
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'data' => $rowData
-        );
     }
+
+    http_response_code(200);
+    $payload = [
+        'status' => 'success',
+        'timestamp' => time(),
+        'data' => $rowData ?? []
+    ];
 } catch (SystemException $exc) {
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

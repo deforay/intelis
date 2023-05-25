@@ -622,7 +622,7 @@ class CommonService
     public function getInstanceId(): ?string
     {
         return once(function () {
-            $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
+            return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
         });
     }
     public function getLastSyncDateTime()

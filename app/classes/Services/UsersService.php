@@ -370,7 +370,7 @@ class UsersService
         });
     }
 
-    public function getAuthToken(string $token)
+    public function getAuthToken(?string $token)
     {
 
         if (!empty($token)) {
@@ -392,6 +392,7 @@ class UsersService
                     $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
                 }
                 if (
+                    empty($data['api_token']) ||
                     empty($result['api_token_generated_datetime']) ||
                     $today->diff($lastTokenDate)->days > $tokenExpiration
                 ) {
