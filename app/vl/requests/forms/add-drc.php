@@ -503,10 +503,6 @@ $sFormat = '';
 											<td class="resultInputContainer">
 												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);" disabled>
 												<datalist id="possibleVlResults">
-													<!--<option value="< 20"> &lt; 20 </option>
-													<option value="< 40"> &lt; 40 </option>
-													<option value="< 400"> &lt; 400 </option>
-													<option value="Target Not Detected"> Target Not Detected </option>-->
 												</datalist>
 											</td>
 											<td style="text-align:center;"><label for="vlLog">Log </label></td>

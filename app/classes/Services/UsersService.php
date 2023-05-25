@@ -370,14 +370,10 @@ class UsersService
         });
     }
 
+
     public function getAuthToken(?string $token)
     {
-
-        if (!empty($token)) {
-            $result = $this->getUserByToken($token);
-        } else {
-            $result = null;
-        }
+        $result = $this->getUserByToken($token) ?? null;
 
         if (!empty($result)) {
             $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
@@ -385,17 +381,10 @@ class UsersService
             $id = false;
             $data = [];
             // Tokens with expiration = 0 are tokens that never expire
-            if ($tokenExpiration != 0 || empty($result['api_token'])) {
+            if ($tokenExpiration > 0 || empty($result['api_token'])) {
                 $today = new DateTime();
-                $lastTokenDate = null;
-                if (!empty($result['api_token_generated_datetime'])) {
-                    $lastTokenDate = new DateTime($result['api_token_generated_datetime']);
-                }
-                if (
-                    empty($data['api_token']) ||
-                    empty($result['api_token_generated_datetime']) ||
-                    $today->diff($lastTokenDate)->days > $tokenExpiration
-                ) {
+                $lastTokenDate = new DateTime($result['api_token_generated_datetime'] ?? null);
+                if (empty($result['api_token']) || $today->diff($lastTokenDate)->days > $tokenExpiration) {
                     $data['api_token'] = $this->generateAuthToken();
                     $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -404,14 +393,9 @@ class UsersService
                 }
             }
 
-            if ($id === true && !empty($data)) {
-                $result['token_updated'] = true;
-                $result['new_token'] = $data['api_token'];
-                $result['token'] = $data['api_token'];
-            } else {
-                $result['token_updated'] = false;
-                $result['token'] = $result['api_token'];
-            }
+            $result['token_updated'] = $id === true && !empty($data);
+            $result['new_token'] = $result['token_updated'] ? $data['api_token'] : null;
+            $result['token'] = $result['api_token'] ?? null;
         }
 
         return $result;
