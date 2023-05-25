@@ -21,12 +21,20 @@ $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
 $testAttribute = [];
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
+$i=0;
+foreach($_POST['fdropDown'] as $val)
+{
+    $_POST['fdropDown'][$i] = substr($val, 0, -1);
+    $i++;
+}
+
 try {
+    
     if (!empty($_POST['testStandardName'])) {
         $testAttribute['field_id'] = $_POST['fieldId'];
         $testAttribute['field_name'] = $_POST['fieldName'];
         $testAttribute['field_type'] = $_POST['fieldType'];
-        $testAttribute['drop_down'] = $_POST['dropDown'];
+        $testAttribute['drop_down'] = $_POST['fdropDown'];
         $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
         $testAttribute['section'] = $_POST['section'];
         $testAttribute['section_other'] = $_POST['sectionOther'];

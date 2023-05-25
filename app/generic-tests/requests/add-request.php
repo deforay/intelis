@@ -1587,7 +1587,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data.result.length > 0) {
                               $("#result-sections").html(data.result);
                          } else {
-                              $('#resultSection').hide()
+                              $('#resultSection').hide();
                          }
                          if (data.specimenSection.length > 0) {
                               $("#specimenSection").after(data.specimenSection);
@@ -1596,16 +1596,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $("#otherSection").html(data.otherSection);
                          }
                          checkNum();
-                         $('.date').datepicker({
-                              changeMonth: true,
-                              changeYear: true,
-                              dateFormat: 'dd-M-yy',
-                              timeFormat: "hh:mm",
-                              maxDate: "Today",
-                              yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-                         }).click(function() {
-                              $('.ui-datepicker-calendar').show();
-                         });
+                         $(document).trigger(".dateTime");
+
                          $(".dynamicFacilitySelect2").select2({
                               width: '285px',
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
@@ -1615,6 +1607,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
                     });
+                   
           } else {
                $(".facilitySection").html('');
                $(".patientSectionInput").remove();
@@ -1623,6 +1616,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#otherSection").html('');
                $(".requestForm").hide();
           }
+        
      }
 
      function checkNum() {
@@ -1743,6 +1737,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
      }
+    
 </script>
 
 <?php include APPLICATION_PATH . '/footer.php';
