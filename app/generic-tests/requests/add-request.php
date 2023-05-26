@@ -1597,13 +1597,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $("#otherSection").html(data.otherSection);
                          }
                          checkNum();
-                         $('.date').datepicker({
+                         $('.dateTime').datetimepicker({
                               changeMonth: true,
                               changeYear: true,
                               dateFormat: 'dd-M-yy',
-                              timeFormat: "hh:mm",
+                              timeFormat: "HH:mm",
                               maxDate: "Today",
-                              yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                              onChangeMonthYear: function(year, month, widget) {
+                                   setTimeout(function() {
+                                        $('.ui-datepicker-calendar').show();
+                                   });
+                              }
                          }).click(function() {
                               $('.ui-datepicker-calendar').show();
                          });

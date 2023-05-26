@@ -1727,16 +1727,20 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 					}
-					$('.date').datepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: 'dd-M-yy',
-						timeFormat: "hh:mm",
-						maxDate: "Today",
-						yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
+					$('.dateTime').datetimepicker({
+                              changeMonth: true,
+                              changeYear: true,
+                              dateFormat: 'dd-M-yy',
+                              timeFormat: "HH:mm",
+                              maxDate: "Today",
+                              onChangeMonthYear: function(year, month, widget) {
+                                   setTimeout(function() {
+                                        $('.ui-datepicker-calendar').show();
+                                   });
+                              }
+                         }).click(function() {
+                              $('.ui-datepicker-calendar').show();
+                         });
 					$(".dynamicFacilitySelect2").select2({
 						width: '285px',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
