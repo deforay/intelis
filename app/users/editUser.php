@@ -25,7 +25,6 @@ $userInfo = $db->rawQueryOne(
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
-$userInfo = array_map('htmlspecialchars', $userInfo);
 
 $interfaceUsers = "";
 if (!empty($userInfo['interface_user_name'])) {

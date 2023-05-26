@@ -156,7 +156,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td><label for="supportPartner">Partnaire d'appui </label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
-											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -167,7 +167,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 										<td><label for="fundingSource">Source de Financement</label></td>
 										<td>
-											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -349,7 +349,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											<input type="checkbox" name="childTreatment[]" value="NVP" <?php echo in_array('NVP', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
 											<input type="checkbox" name="childTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
-									
+
 										<th scope="row">Bébé a arrêté allaitement maternel ?</th>
 										<td>
 											<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
@@ -365,7 +365,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
 										</td>
-									
+
 										<th scope="row">Choix d’allaitement de bébé :</th>
 										<td>
 											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
@@ -408,7 +408,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
 										</td>
-									
+
 										<th scope="row">Tel. du préleveur</th>
 										<td>
 											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
@@ -424,7 +424,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												<?php } ?>
 											</select>
 										</td>
-									
+
 										<th scope="row">Nom du demandeur</th>
 										<td>
 											<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
@@ -457,7 +457,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												<option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											</select>
 										</td>
-									
+
 										<th scope="row">Si oui, date :</th>
 										<td>
 											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />

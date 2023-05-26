@@ -457,19 +457,19 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
 }
 
 if ($status) {
-    $payload = array(
+    $payload = [
         'status' => 1,
         'message' => 'Success',
         'data' => $data,
         'timestamp' => time(),
-    );
+    ];
 } else {
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => 'Please contact system administrator.',
-        'data' => array()
-    );
+        'data' => []
+    ];
     http_response_code(401);
     //
 }

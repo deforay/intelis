@@ -196,10 +196,7 @@ try {
             $data['arrivalDateTime'] = null;
         }
 
-
-        if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = null;
-        }
+        $data['sampleCode'] = $data['sampleCode'] ?? null;
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -378,6 +375,8 @@ try {
                 $db = $db->where('tb_id', $data['tbSampleId']);
                 $id = $db->update($tableName, $tbData);
                 // error_log($db->getLastError());
+            } else {
+                continue;
             }
         }
         if ($id > 0) {
@@ -427,12 +426,12 @@ try {
 } catch (SystemException $exc) {
 
     // http_response_code(500);
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
 
 
     $payload = json_encode($payload);

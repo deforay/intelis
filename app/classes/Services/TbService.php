@@ -269,42 +269,29 @@ class TbService
         $vlsmSystemConfig = $general->getSystemConfig();
 
         try {
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
+            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceId = $params['provinceId'] ?? null;
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
+            if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+                return 0;
             }
-            // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-
-                echo 0;
-                exit();
-            }
-
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
-            $tbData = array(
-                'vlsm_country_id' => $params['countryId'],
+            $tbData = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
 
             $oldSampleCodeKey = null;
 
@@ -361,11 +348,7 @@ class TbService
                 }
             }
 
-            if ($id > 0) {
-                return $id;
-            } else {
-                return 0;
-            }
+            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());

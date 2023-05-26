@@ -12,6 +12,8 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 
+$sarr = $general->getSystemConfig();
+
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
@@ -48,24 +50,45 @@ $fResult = $facilitiesService->getAllFacilities(2);
                 <div class="row">
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _("Instance Type"); ?> <span class="mandatory">*</span></label>
+                      <label for="timezone" class="col-lg-4 control-label"><?php echo _("Timezone"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                        <select class="form-control" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _('Instance Type'); ?>" title="<?php echo _('Please choose instance type'); ?>" onchange="enableLab();">
-                          <option value="standalone" <?php echo ('standalone' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Standalone"); ?></option>
-                          <option value="vluser" <?php echo ('vluser' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Lab Instance"); ?></option>
-                          <option value="remoteuser" <?php echo ('remoteuser' == $arr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Remote Instance"); ?></option>
+                        <select class="form-control select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('Timezone'); ?>" title="<?php echo _('Please choose Timezone'); ?>">
+                          <option value=""><?= _("-- Select --"); ?></option>
+                          <?php
+                          $timezone_identifiers = DateTimeZone::listIdentifiers();
+
+                          foreach ($timezone_identifiers as $value) {
+                          ?>
+                            <option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
+                          <?php
+                          }
+
+                          ?>
                         </select>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-7 labName" style="<?php echo ($arr['sc_user_type'] == 'vluser') ? 'display:show' : 'display:none'; ?>">
+                  <div class="col-md-7">
+                    <div class="form-group">
+                      <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _("Instance Type"); ?> <span class="mandatory">*</span></label>
+                      <div class="col-lg-8">
+                        <select class="form-control select2" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _('Instance Type'); ?>" title="<?php echo _('Please choose instance type'); ?>" onchange="enableLab();">
+                          <option value=""><?php echo _("-- Select --"); ?></option>
+                          <option value="standalone" <?php echo ('standalone' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Standalone"); ?></option>
+                          <option value="vluser" <?php echo ('vluser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Lab Instance"); ?></option>
+                          <option value="remoteuser" <?php echo ('remoteuser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Remote Instance"); ?></option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-7 labName" style="<?php echo ($sarr['sc_user_type'] == 'vluser') ? 'display:show' : 'display:none'; ?>">
                     <div class="form-group">
                       <label for="sc_testing_lab_id" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?></label>
                       <div class="col-lg-8">
-                        <select class="form-control" name="sc_testing_lab_id" id="sc_testing_lab_id" title="<?php echo _('Please select the lab name'); ?>">
+                        <select class="form-control select2" name="sc_testing_lab_id" id="sc_testing_lab_id" style="width:100%;" title="<?php echo _('Please select the lab name'); ?>">
                           <option value=""><?php echo _("-- Select --"); ?></option>
                           <?php foreach ($fResult as $labName) { ?>
-                            <option value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $arr['sc_testing_lab_id']) ? "selected='selected'" : "" ?>><?php echo $labName['facility_name']; ?></option>
+                            <option value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $sarr['sc_testing_lab_id']) ? "selected='selected'" : "" ?>><?php echo $labName['facility_name']; ?></option>
                           <?php } ?>
                         </select>
                       </div>
@@ -85,7 +108,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
                     <div class="form-group">
                       <label for="sup_email" class="col-lg-4 control-label">Email </label>
                       <div class="col-lg-8">
-                        <input type="text" class="form-control isEmail" id="sup_email" name="sup_email" placeholder="Email" title="Please enter email" value="<?php echo $arr['sup_email']; ?>">
+                        <input type="text" class="form-control isEmail" id="sup_email" name="sup_email" placeholder="Email" title="Please enter email" value="<?php echo $sarr['sup_email']; ?>">
                       </div>
                     </div>
                   </div>
@@ -95,7 +118,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
                     <div class="form-group">
                       <label for="sup_password" class="col-lg-4 control-label">Password </label>
                       <div class="col-lg-8">
-                        <input type="text" class="form-control" id="sup_password" name="sup_password" placeholder="Password" title="Please enter password" value="<?php echo $arr['sup_password']; ?>">
+                        <input type="text" class="form-control" id="sup_password" name="sup_password" placeholder="Password" title="Please enter password" value="<?php echo $sarr['sup_password']; ?>">
                       </div>
                     </div>
                   </div>
@@ -116,6 +139,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
 <script>
   $(document).ready(function() {
     enableLab();
+    $(".select2").select2();
   });
 
   function enableLab() {

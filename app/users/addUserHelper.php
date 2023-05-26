@@ -73,7 +73,9 @@ try {
         }
         if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
-            // $data['testing_user'] = $_POST['testingUser'];
+            $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
+        } elseif (!empty($_POST['appAccessable']) && $_POST['appAccessable'] == 'yes') {
+            $data['api_token'] = $usersService->generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
 

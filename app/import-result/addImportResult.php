@@ -10,7 +10,7 @@ $_GET = $request->getQueryParams();
 
 $type = base64_decode($_GET['t']);
 //$type = $_GET['t'];
-$title = _("Import ") . strtoupper($type) . _(" Test Results From File");
+$title = _("Import") . " " . strtoupper($type) . " " . _("test results from file");
 
 require_once APPLICATION_PATH . '/header.php';
 

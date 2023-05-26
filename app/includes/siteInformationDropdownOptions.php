@@ -157,28 +157,28 @@ if (!empty($facilityIdRequested)) {
 	$provinceOptions = getProvinceDropdown($facilityInfo['facility_state']);
 	$districtOptions = getDistrictDropdown($facilityInfo['facility_state'], $facilityInfo['facility_district']);
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
-} else if (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
+} elseif (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
 	$provinceName = explode("##", $provinceRequested);
 	$districtOptions = getDistrictDropdown($provinceName[0], $districtRequested);
 	echo "###" . $districtOptions . "###";
-} else if (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
+} elseif (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
 	$districtOptions = getDistrictDropdown($provinceRequested, $districtRequested);
 	echo "###" . $districtOptions . "###";
-} else if (!empty($provinceRequested)) {
+} elseif (!empty($provinceRequested)) {
 	$provinceName = explode("##", $provinceRequested);
 
 	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersService);
 	$districtOptions = getDistrictDropdown($provinceName[0]);
 
 	echo $facilityOptions . "###" . $districtOptions . "###";
-} else if (!empty($districtRequested)) {
+} elseif (!empty($districtRequested)) {
 
 	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersService);
-	$testingLabsList = $facilitiesService->getTestingLabs($testType);
+	$testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
-} else if (!empty($facilityTypeRequested)) {
+} elseif (!empty($facilityTypeRequested)) {
 	$facilityOptions = getFacilitiesDropdown(null, $districtRequested, $usersService);
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }

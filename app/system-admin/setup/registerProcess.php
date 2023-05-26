@@ -21,7 +21,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $userPassword = $usersService->passwordHash($password);
 
 try {
-    $key = file_get_contents("app/system-admin/secretKey.txt");
+    $key = file_get_contents(APPLICATION_PATH . "/system-admin/secretKey.txt");
 
     if ($secretKey == trim($key)) {
         if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {

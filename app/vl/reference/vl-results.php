@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("vl-sample-type.php", $_SESSION['privileges'])) { ?>
+						<?php if (isset($_SESSION['privileges']) && in_array("add-vl-results.php", $_SESSION['privileges'])) { ?>
 							<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Results"); ?></a>
 						<?php } ?>
 					</div>

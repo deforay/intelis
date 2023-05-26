@@ -10,20 +10,20 @@
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 
-<script src="/assets/js/select2.min.js"></script>
+<script type="text/javascript" src="/assets/js/select2.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <!-- AdminLTE App -->
-<script src="/assets/js/app.min.js"></script>
-<script src="/assets/js/main.js"></script>
-<script src="/assets/js/deforayValidation.js"></script>
-<script src="/assets/js/jquery.maskedinput.js"></script>
-<script src="/assets/js/jquery.blockUI.js"></script>
-<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
 
 <script type="text/javascript">
   $(document).ready(function() {

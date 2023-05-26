@@ -463,16 +463,17 @@ class Covid19Service
                 $params['countryId'] = null;
             }
 
-            $covid19Data = array(
-                'vlsm_country_id' => $params['countryId'],
+
+            $covid19Data = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];

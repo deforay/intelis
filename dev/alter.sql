@@ -3841,9 +3841,9 @@ UPDATE `privileges` SET `privilege_name` = 'batch-code.php' WHERE `privileges`.`
 -- Thana 09-May-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-requests', 'edit-request.php', 'Edit Generic Tests');
 
-RENAME TABLE `r_sample_types` TO `r_generic_sample_types`;
-RENAME TABLE `r_symptoms` TO `r_generic_symptoms`;
-RENAME TABLE `r_testing_reasons` TO `r_generic_test_reasons`;
+-- RENAME TABLE `r_sample_types` TO `r_generic_sample_types`;
+-- RENAME TABLE `r_symptoms` TO `r_generic_symptoms`;
+-- RENAME TABLE `r_testing_reasons` TO `r_generic_test_reasons`;
 
 CREATE TABLE `r_generic_sample_rejection_reasons` (
   `rejection_reason_id` int NOT NULL AUTO_INCREMENT,
@@ -4000,7 +4000,7 @@ ALTER TABLE `form_eid` CHANGE `sample_code_key` `sample_code_key` INT NULL DEFAU
 
 CREATE TABLE `r_generic_test_failure_reasons` (
   `test_failure_reason_id` int NOT NULL AUTO_INCREMENT,
-  `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `test_failure_reason_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `test_failure_reason` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `test_failure_reason_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -4028,3 +4028,7 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
   `rejection_reason_id` int NOT NULL,
   `test_type_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Amit 25-May-2023
+INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'add-vl-results.php', 'Add VL Result Types');
+INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'edit-vl-results.php', 'Edit VL Result Types');

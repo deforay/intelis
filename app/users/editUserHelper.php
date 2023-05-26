@@ -46,9 +46,11 @@ try {
             'status'                => $_POST['status'],
             'app_access'            => $_POST['appAccessable']
         );
-        if (isset($_POST['authToken']) && !empty($_POST['authToken'])) {
+        if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
-            // $data['testing_user'] = $_POST['testingUser'];
+            $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
+        } elseif (!empty($_POST['appAccessable']) && $_POST['appAccessable'] == 'yes') {
+            $data['api_token'] = $usersService->generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {

@@ -64,10 +64,17 @@ try {
     $deviceId = $general->getHeader('deviceId');
 
     foreach ($input['data'] as $rootKey => $data) {
+
+        $sampleCollectionDate = $data['sampleCollectionDate'] ?? null;
+
+        if (empty($sampleCollectionDate)) {
+            continue;
+        }
+
         $sampleFrom = '';
         $data['formId'] = $data['countryId'] = $formId;
         $sampleFrom = '';
-        /* V1 name to Id mapping */
+
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
@@ -75,29 +82,25 @@ try {
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
         }
-        /* if (!is_numeric($data['implementingPartner'])) {
-            $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
-        }
-        if (!is_numeric($data['fundingSource'])) {
-            $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
-        } */
 
         $data['api'] = "yes";
-        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
-
-        if (empty($sampleCollectionDate)) {
-            continue;
-            //throw new SystemException(_("Sample Collection Date is required"));
-        }
+        $provinceCode = $data['provinceCode'] ?? null;
+        $provinceId = $data['provinceId'] ?? null;
 
         $update = "no";
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT vl_sample_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_vl ";
+            $sQuery = "SELECT vl_sample_id,
+                            unique_id,
+                            sample_code,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key
+                        FROM form_vl ";
 
             $sQueryWhere = [];
 
@@ -142,12 +145,12 @@ try {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
-        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
+        $data['instanceId'] = $data['instanceId'] ?? $instanceId;
 
         $vlData = array(
             'vlsm_country_id' => $data['formId'] ?? null,
             'unique_id' => $uniqueId,
-            'sample_collection_date' => $data['sampleCollectionDate'],
+            'sample_collection_date' => DateUtility::isoDateFormat($data['sampleCollectionDate'], true),
             'vlsm_instance_id' => $data['instanceId'],
             'province_id' => $provinceId,
             'request_created_by' => $user['user_id'],
@@ -189,21 +192,21 @@ try {
             if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
                 $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
                 $id = $db->update("form_vl", $vlData);
+                error_log($db->getLastError());
             } else {
                 continue;
             }
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
             $id = $db->insert("form_vl", $vlData);
+            error_log($db->getLastError());
             $data['vlSampleId'] = $id;
         }
         $tableName = "form_vl";
         $tableName1 = "activity_log";
 
 
-        if (empty(trim($data['sampleCode']))) {
-            $data['sampleCode'] = null;
-        }
+        $data['sampleCode'] = $data['sampleCode'] ?? null;
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -340,14 +343,14 @@ try {
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  null,
             'sample_collection_date'                => $data['sampleCollectionDate'],
             'patient_Gender'                        => (isset($data['patientGender']) && $data['patientGender'] != '') ? $data['patientGender'] :  null,
-            'patient_dob'                           => $data['patientDob'],
+            'patient_dob'                           => $data['patientDob'] ?? null,
             'patient_age_in_years'                  => (isset($data['ageInYears']) && $data['ageInYears'] != '') ? $data['ageInYears'] :  null,
             'patient_age_in_months'                 => (isset($data['ageInMonths']) && $data['ageInMonths'] != '') ? $data['ageInMonths'] :  null,
             'is_patient_pregnant'                   => (isset($data['patientPregnant']) && $data['patientPregnant'] != '') ? $data['patientPregnant'] :  null,
             'is_patient_breastfeeding'              => (isset($data['breastfeeding']) && $data['breastfeeding'] != '') ? $data['breastfeeding'] :  null,
             'patient_art_no'                        => (isset($data['patientArtNo']) && $data['patientArtNo'] != '') ? $data['patientArtNo'] :  null,
             'treatment_initiated_date'              => DateUtility::isoDateFormat($data['dateOfArtInitiation']),
-            'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'],
+            'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'] ?? null,
             'regimen_change_date'                   => DateUtility::isoDateFormat($data['dateOfArvRegimenChange']),
             'current_regimen'                       => (isset($data['artRegimen']) && $data['artRegimen'] != '') ? $data['artRegimen'] :  null,
             'date_of_initiation_of_current_regimen' => $data['regimenInitiatedOn'],
@@ -355,7 +358,7 @@ try {
             'consent_to_receive_sms'                => (isset($data['receiveSms']) && $data['receiveSms'] != '') ? $data['receiveSms'] :  null,
             'sample_type'                           => (isset($data['specimenType']) && $data['specimenType'] != '') ? $data['specimenType'] :  null,
             'arv_adherance_percentage'              => (isset($data['arvAdherence']) && $data['arvAdherence'] != '') ? $data['arvAdherence'] :  null,
-            'reason_for_vl_testing'                 => $data['reasonForVLTesting'] ?: $data['vlTestReason'] ?: null,
+            'reason_for_vl_testing'                 => $data['reasonForVLTesting'] ?? $data['vlTestReason'] ?? null,
             'community_sample'                      => (isset($data['communitySample'])) ? $data['communitySample'] : null,
             'last_vl_date_routine'                  => (isset($data['rmTestingLastVLDate']) && $data['rmTestingLastVLDate'] != '') ? DateUtility::isoDateFormat($data['rmTestingLastVLDate']) :  null,
             'last_vl_result_routine'                => (isset($data['rmTestingVlValue']) && $data['rmTestingVlValue'] != '') ? $data['rmTestingVlValue'] :  null,
@@ -472,7 +475,7 @@ try {
 
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update($tableName, $vlFulldata);
-            // error_log($db->getLastError());
+            error_log($db->getLastError());
 
             // echo "ID=>" . $id;
         }
@@ -521,12 +524,12 @@ try {
 } catch (SystemException $exc) {
 
     http_response_code(400);
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

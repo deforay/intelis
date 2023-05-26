@@ -123,7 +123,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<td><label for="supportPartner">Partnaire d'appui </label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
-											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -134,7 +134,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										</td>
 										<td><label for="fundingSource">Source de Financement</label></td>
 										<td>
-											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -310,7 +310,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 											<input type="checkbox" name="childTreatment[]" value="NVP" />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
 											<input type="checkbox" name="childTreatment[]" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
-									
+
 										<th scope="row">Bébé a arrêté allaitement maternel ?</th>
 										<td>
 											<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
@@ -326,8 +326,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<td>
 											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
 										</td>
-									
-									<!-- <tr>
+
+										<!-- <tr>
                               <th scope="row">Bébé encore allaité?</th>
                               <td>
                                   <select class="form-control" name="isInfantStillBeingBreastfed" id="isInfantStillBeingBreastfed">
@@ -338,7 +338,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
                                   </select>
                               </td>
                             </tr> -->
-									
+
 										<th scope="row">Choix d’allaitement de bébé :</th>
 										<td>
 											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
@@ -375,7 +375,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 										<td>
 											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="sampleCodeGeneration();" />
 										</td>
-									
+
 										<th scope="row">Tel. du préleveur</th>
 										<td>
 											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" />
@@ -391,7 +391,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<?php } ?>
 											</select>
 										</td>
-									
+
 										<th scope="row">Nom du demandeur</th>
 										<td>
 											<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" />
@@ -423,7 +423,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 												<option value="no"> Non </option>
 											</select>
 										</td>
-									
+
 										<th scope="row">Si oui, date :</th>
 										<td>
 											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" />

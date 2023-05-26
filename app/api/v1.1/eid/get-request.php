@@ -191,31 +191,21 @@ try {
     // // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
-    // No data found
-    if (!$rowData) {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'error' => 'No matching data',
-            'data' => $rowData
-        );
-    } else {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'data' => $rowData
-        );
-    }
     http_response_code(200);
+    $payload = [
+        'status' => 'success',
+        'timestamp' => time(),
+        'data' => $rowData ?? []
+    ];
 } catch (SystemException $exc) {
 
     // http_response_code(500);
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
-        'data' => array()
-    );
+        'data' => []
+    ];
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

@@ -312,43 +312,31 @@ class GenericTestsService
             $globalConfig = $general->getGlobalConfig();
             $vlsmSystemConfig = $general->getSystemConfig();
 
-            $provinceCode = (isset($params['provinceCode']) && !empty($params['provinceCode'])) ? $params['provinceCode'] : null;
-            $provinceId = (isset($params['provinceId']) && !empty($params['provinceId'])) ? $params['provinceId'] : null;
-            $sampleCollectionDate = (isset($params['sampleCollectionDate']) && !empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
-            $testType = (isset($params['testType']) && !empty($params['testType'])) ? $params['testType'] : null;
+            $testType = $params['testType'] ?? null;
+            $provinceCode = $params['provinceCode'] ?? null;
+            $provinceId = $params['provinceId'] ?? null;
+            $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
-            }
-
-            // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+            if (empty($testType) || empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+                return 0;
             }
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
-            $sameplCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            if (!isset($params['countryId']) || empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
-            $vlData = array(
-                'vlsm_country_id' => $params['countryId'],
-                'sample_collection_date' => $sameplCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'],
+            $vlData = [
+                'vlsm_country_id' => $globalConfig['vl_form'],
+                'sample_collection_date' => $sampleCollectionDate,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
                 'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'],
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
 
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
@@ -401,11 +389,7 @@ class GenericTestsService
                 }
             }
 
-            if ($id > 0) {
-                return $id;
-            } else {
-                return 0;
-            }
+            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
             error_log('Insert lab tests Sample : ' . $this->db->getLastError());
@@ -455,26 +439,36 @@ class GenericTestsService
         }
     }
 
-    public function getInterpretationResults($testType, $result){
+    public function getInterpretationResults($testType, $result)
+    {
+        if (!isset($result) || empty($result)) {
+            return null;
+        }
+        if (!isset($testType) || empty($testType)) {
+            return null;
+        }
         $this->db->where('test_type_id', $testType);
         $testTypeResult = $this->db->getOne('r_test_types');
-        if(isset($testTypeResult['test_results_config']) && !empty($testTypeResult['test_results_config'])){
+        if (isset($testTypeResult['test_results_config']) && !empty($testTypeResult['test_results_config'])) {
             $resultConfig = json_decode($testTypeResult['test_results_config'], true);
-            if(isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative'){
-                if(isset($_POST['result'])){
-                    if($_POST['result'] >= $resultConfig['high_value']){
-                        return $resultConfig['above_threshold'];
+            if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
+                if (is_numeric($result)) {
+                    if ($result >= $resultConfig['high_value']) {
+                        return ucwords($resultConfig['above_threshold']);
                     }
-                    if($_POST['result'] == $resultConfig['threshold_value']){
-                        return $resultConfig['at_threshold'];
+                    if ($result == $resultConfig['threshold_value']) {
+                        return ucwords($resultConfig['at_threshold']);
                     }
-                    if($_POST['result'] < $resultConfig['low_value']){
-                        return $resultConfig['below_threshold'];
+                    if ($result < $resultConfig['low_value']) {
+                        return ucwords($resultConfig['below_threshold']);
                     }
+                } else {
+                    $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
+                    return ucwords($resultConfig['quantitative_result_interpretation'][$resultIndex]);
                 }
-            }else if(isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative'){
-                $resultIndex =  (isset($_POST['result']) && isset($resultConfig['result']) && in_array($_POST['result'], $resultConfig['result']))? array_search(strtolower($_POST['result']), array_map('strtolower', $resultConfig['result'])):'';
-                return $resultConfig['result_interpretation'][$resultIndex];
+            } else if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
+                $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
+                return ucwords($resultConfig['result_interpretation'][$resultIndex]);
             }
         }
     }

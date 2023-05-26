@@ -16,10 +16,16 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
+        // Get the requested URI
+        $uri = $request->getUri()->getPath();
 
+        // Clean up the URI
+        $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
+
+        $_SESSION['requestedURI'] = $uri;
 
         $redirect = null;
-        if ($this->isAjaxRequest($request) || $this->isCliRequest() || $this->shouldExcludeFromAuthCheck($request)) {
+        if ($this->shouldExcludeFromAuthCheck($request)) {
 
             // Skip the authentication check if the request is an AJAX request,
             // a CLI request, or if the requested URI is excluded from the
@@ -38,33 +44,31 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         }
     }
 
-    private function isAjaxRequest(ServerRequestInterface $request): bool
-    {
-        return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
-    }
-
-    private function isCliRequest(): bool
-    {
-        return (php_sapi_name() === 'cli');
-    }
-
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
-        // Get the requested URI
-        $uri = $request->getUri()->getPath();
+        $return = false;
+        if (
+            php_sapi_name() === 'cli' ||
+            strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest'
+        ) {
+            $return = true;
+        } else {
 
-        // Clean up the URI
-        $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
+            // Check if the URI matches the /remote/* pattern
+            if (fnmatch('/remote/*', $_SESSION['requestedURI'])) {
+                $return = true;
+            } else {
+                $excludedRoutes = [
+                    '/system-admin/login/login.php',
+                    '/system-admin/login/adminLoginProcess.php',
+                    '/system-admin/setup/index.php',
+                    '/system-admin/setup/registerProcess.php',
+                    // Add other routes to exclude from the authentication check here
+                ];
+                $return = in_array($_SESSION['requestedURI'], $excludedRoutes, true);
+            }
+        }
 
-
-        //error_log($uri);
-
-        $excludedRoutes = [
-            '/system-admin/login/login.php',
-            '/system-admin/setup/index.php',
-            // Add other routes to exclude from the authentication check here
-        ];
-
-        return in_array($uri, $excludedRoutes, true);
+        return $return;
     }
 }
