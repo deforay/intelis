@@ -72,6 +72,8 @@ try {
 
     $data = [];
     $data['api-version'] = 'v2';
+    $data['source'] = ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS';
+    $data['labId'] =  ($data['source'] == 'LIS') ? $general->getGlobalConfig('sc_testing_lab_id') : null;
     $data['eidFile'] = new CURLFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'application/json', $filename);
 
     $options = [

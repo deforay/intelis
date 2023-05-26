@@ -51,10 +51,9 @@ if (isset($vlQueryInfo['sample_type']) && $vlQueryInfo['sample_type'] != 2) {
 }
 
 $disable = "disabled = 'disabled'";
-$reasonChange="";
-if(isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes']!="")
-{
-	$result = explode("##",$vlQueryInfo['reason_for_vl_result_changes']);
+$reasonChange = "";
+if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != "") {
+	$result = explode("##", $vlQueryInfo['reason_for_vl_result_changes']);
 	$reasonChange = $result[1];
 }
 ?>
@@ -561,11 +560,13 @@ if(isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_f
 										</td>
 									</tr>
 									<tr>
-										<td class="reasonForResultChanges" style="display:<?php if($reasonChange!="") echo "block"; else echo "none;"; ?>">
-											<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>
+										<td class="reasonForResultChanges" style="display:<?php if ($reasonChange != "") echo "block";
+																							else echo "none;"; ?>">
+											<label for="reasonForResultChanges"><?= _("Enter reason for changing the result"); ?> <span class="mandatory">*</span></label>
 										</td>
-										<td class="reasonForResultChanges" style="display:<?php if($reasonChange!="") echo "block"; else echo "none;"; ?>none;">
-											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Razão para as mudanças nos resultados" style="width:100%;"><?php if($reasonChange!="") echo $reasonChange; ?></textarea>
+										<td class="reasonForResultChanges" style="display:<?php if ($reasonChange != "") echo "block";
+																							else echo "none;"; ?>none;">
+											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _("Enter reason for changing the result"); ?>" title="<?= _("Enter reason for changing the result"); ?>" style="width:100%;"><?php if ($reasonChange != "") echo $reasonChange; ?></textarea>
 										</td>
 									</tr>
 								</table>

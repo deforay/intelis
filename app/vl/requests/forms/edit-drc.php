@@ -596,10 +596,10 @@ $sampleSuggestionDisplay = 'display:none;';
 										</tr>
 										<tr>
 											<td class=" reasonForResultChanges" style="visibility:hidden;">
-												<label for="reasonForResultChanges">Razão para as mudanças nos resultados <span class="mandatory">*</span></label>
+												<label for="reasonForResultChanges"><?= _("Enter reason for changing the result"); ?> <span class="mandatory">*</span></label>
 											</td>
 											<td colspan="7" class="reasonForResultChanges" style="visibility:hidden;">
-												<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _("Enter reason for changing the result"); ?>" title="Razão para as mudanças nos resultados" style="width:100%;"></textarea>
+												<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _("Enter reason for changing the result"); ?>" title="<?= _("Enter reason for changing the result"); ?>" style="width:100%;"></textarea>
 											</td>
 										</tr>
 									</table>

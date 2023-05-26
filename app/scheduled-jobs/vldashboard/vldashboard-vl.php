@@ -31,9 +31,11 @@ try {
 
     $rResult = $db->get('form_vl', 10000);
 
+
     if (empty($rResult)) {
-        exit(0);
+        die('No data found');
     }
+
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
 
@@ -68,8 +70,12 @@ try {
 
     $apiUrl = $vldashboardUrl . "/api/vlsm";
 
+
+
     $data = [];
     $data['api-version'] = 'v2';
+    $data['source'] = ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS';
+    $data['labId'] =  $general->getSystemConfig('sc_testing_lab_id') ?? null;
     $data['vlFile'] = new CURLFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'application/json', $filename);
 
     $options = [

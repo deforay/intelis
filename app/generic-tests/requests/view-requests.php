@@ -245,7 +245,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			placeholder: "<?php echo _("Select Vl Lab"); ?>"
 		});
 		$("#batchCode").select2({
-			placeholder: "<?php echo _("Select Batch Code'"); ?>"
+			placeholder: "<?php echo _("Select Batch Code"); ?>"
 		});
 		loadRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({

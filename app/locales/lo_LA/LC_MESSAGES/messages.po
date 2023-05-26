@@ -7422,7 +7422,7 @@ msgid "No printer selected!"
 msgstr "ບໍ່ມີການຄັດເລືອກເຄື່ອງພິມ!"
 
 #: vl/requests/vlRequest.php:367
-msgid "Select Batch Code'"
+msgid "Select Batch Code"
 msgstr "ຄັດເລືອກລະຫັດ Batch'"
 
 #: vl/requests/vlRequest.php:651
