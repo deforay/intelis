@@ -598,10 +598,11 @@ foreach ($testSymptomsMapInfo as $val) {
 			$('.container'+cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
 			options.push(tag);
 			obj.value = "";
-			obj.removeClass('isRequired');
+			//obj.removeClass('isRequired');
 		}
 		
 		}
+		console.log(options); 
 		for(let i = 0; i < options.length; i++){
 			$('#fdropDown'+cls).val($('#fdropDown'+cls).val()+options[i]+',');
 			
@@ -791,8 +792,9 @@ foreach ($testSymptomsMapInfo as $val) {
 		});
 	}
 
+	
 	function changeField(obj, i){
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('#dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show()) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}
 </script>
 

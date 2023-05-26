@@ -126,7 +126,7 @@ $sFormat = '';
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-4 col-md-4 pull-right">
                                                        <div class="form-group">
-                                                            <label for="sampleCode">Print Barcode Label<span class="mandatory">*</span> </label>
+                                                            <label for="sampleCode">Print Barcode Label<span class="mandatory">*</span> </label> 
                                                             <input type="checkbox" class="" id="printBarCode" name="printBarCode" checked />
                                                        </div>
                                                   </div>
@@ -232,8 +232,8 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="dob">Date of Birth </label>
-                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
+                                                       <label for="dob">Date of Birth <span class="mandatory">*</span></label>
+                                                       <input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="Enter DOB" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -258,36 +258,60 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="gender">Gender</label><br>
+                                                       <label for="gender">Gender<span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender">Male
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender">Male
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender">Female
+                                                            <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender">Female
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
-                                                       </label>
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="gender">Patient consent to receive SMS?</label><br>
-                                                       <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> Yes
-                                                       </label>
-                                                       <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> No
+                                                            <input type="radio" class="isRequired" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
                                                        </label>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="patientPhoneNumber">Phone Number</label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <label for="gender">Patient consent to receive SMS?<span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                            <input type="radio" class="isRequired" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> Yes
+                                                       </label>
+                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                            <input type="radio" class="isRequired" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> No
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric isRequired" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
+                                        <div class="row">
+                                        <div class="col-xs-3 col-md-3 femaleSection">
+                                                            <div class="form-group">
+                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                                 </label>
+                                                            </div>
+                                                       </div>
+                                                       <div class="col-xs-3 col-md-3 femaleSection">
+                                                            <div class="form-group">
+                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                                 </label>
+                                                            </div>
+                                                       </div>
+                                                       </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -328,7 +352,7 @@ $sFormat = '';
                                                   <div class="row">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">How long has this Patient been on treatment?</label>
+                                                                 <label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
                                                                       <option value=""> — Select-- </option>
                                                                       <option value="6 Months - < 1 year"> 6 Months - < 1 year </option>   
@@ -340,13 +364,13 @@ $sFormat = '';
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Date of Treatment Initiation</label>
+                                                                 <label for="">Date of Treatment Initiation<span class="mandatory">*</span></label>
                                                                  <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Indication for Treatment Initiation</label>
+                                                                 <label for="">Indication for Treatment Initiation<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
                                                                  <option value=""> — Select-- </option>
                                                                  <option value="PMTCT"> PMTCT </option>     
@@ -360,7 +384,7 @@ $sFormat = '';
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="artRegimen">Current Regimen</label>
+                                                                 <label for="artRegimen">Current Regimen<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
@@ -387,7 +411,7 @@ $sFormat = '';
                                                   <div class="row">                                                       
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Which Treatment Line is Patient On? </label>
+                                                                 <label for="">Which Treatment Line is Patient On? <span class="mandatory">*</span></label>
                                                                  <select name="lineOfTreatment" id="lineOfTreatment" class="form-control" title="Please Select Line of Treatment">
                                                                       <option value="">-- Select --</option>
                                                                       <option value="1">First</option>
@@ -398,7 +422,7 @@ $sFormat = '';
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">If not on first line, how was failure assessed? </label>
+                                                                 <label for="">If not on first line, how was failure assessed? <span class="mandatory">*</span></label>
                                                                  <select name="lineOfTreatmentFailureAssessed" id="lineOfTreatmentFailureAssessed" class="form-control" title="Please Select Failure Assessed">
                                                                       <option value="">-- Select --</option>
                                                                       <option value="N/A">N/A</option>
@@ -410,13 +434,13 @@ $sFormat = '';
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Date of Initiation of Current Regimen </label>
+                                                                 <label for="">Date of Initiation of Current Regimen<span class="mandatory">*</span> </label>
                                                                  <input type="text" class="form-control date" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="arvAdherence">ARV Adherence </label>
+                                                                 <label for="arvAdherence">ARV Adherence <span class="mandatory">*</span></label>
                                                                  <select name="arvAdherence" id="arvAdherence" class="form-control" title="Please choose adherence">
                                                                       <option value=""> -- Select -- </option>
                                                                       <option value="good">Good >= 95%</option>
@@ -427,32 +451,11 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                                   <div class="row ">
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
+                                                       
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Patient has active TB </label>
-                                                                 <select name="activeTB" id="activeTB" class="form-control" title="Please check if Patient has active TB or not">
+                                                                 <label for="">Patient has active TB<span class="mandatory">*</span> </label>
+                                                                 <select name="activeTB" id="activeTB" class="form-control isRequired" title="Please check if Patient has active TB or not">
                                                                       <option value="">-- Select --</option>
                                                                       <option value="yes">Yes</option>
                                                                       <option value="no">No</option>
@@ -665,18 +668,18 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                                           <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                                       </div>
                                                                  </div>
 
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="mandatory result-span">*</span></label>
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -685,9 +688,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                           <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="yes">Yes</option>
                                                                                 <option value="no">No</option>
@@ -768,7 +771,7 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -776,7 +779,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
+                                                                      <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
@@ -932,9 +935,17 @@ if (artNo.length > 3) {
 });
          $('#activeTB').on('change',function(){
           if($(this).val()=='yes')
+          {
                $('.tbPhaseBox').show();
+               $('#tbPhase').addClass('isRequired');
+
+          }
                     else
-               $('.tbPhaseBox').hide();
+                    {
+                         $('.tbPhaseBox').hide();
+                         $('#tbPhase').removeClass('isRequired');
+                    }
+               
          });
         
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {

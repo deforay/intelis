@@ -466,7 +466,7 @@ function showTags(e,obj,cls)
         $('.container'+cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
 		options.push(tag);
 		obj.value = "";
-		obj.removeClass('isRequired');
+		//obj.removeClass('isRequired');
 
       }
 	  
@@ -655,7 +655,7 @@ function showTags(e,obj,cls)
 	}
 
 	function changeField(obj, i){
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show()) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}
 </script>
 
