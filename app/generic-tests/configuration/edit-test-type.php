@@ -66,6 +66,35 @@ foreach ($testSymptomsMapInfo as $val) {
 		color: #000;
 		border: 1px solid #000;
 	}
+
+	.tag-input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.tag-input .tag-input-field {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.remove-tag {
+  margin-left: 5px;
+  cursor: pointer;
+}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -254,6 +283,7 @@ foreach ($testSymptomsMapInfo as $val) {
 									$n = count($testAttribute['field_name']);
 									if ($n > 0) {
 										for ($i = 0; $i < $n; $i++) {
+											//echo $testAttribute['drop_down'][$i];
 									?>
 											<tr>
 												<td>
@@ -269,7 +299,21 @@ foreach ($testSymptomsMapInfo as $val) {
 														<option value="dropdown" <?php echo ($testAttribute['field_type'][$i] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _("Dropdown"); ?></option>
 														<option value="multiple" <?php echo ($testAttribute['field_type'][$i] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _("Multiselect Dropdown"); ?></option>
 													</select><br>
-													<textarea name="dropDown[]" id="dropDown<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="<?php echo ($testAttribute['field_type'][$i] == 'multiple' || $testAttribute['field_type'][$i] == 'dropdown') ? "" : "display:none;" ?>"><?php echo (isset($testAttribute['drop_down'][$i]) && !empty($testAttribute['drop_down'][$i])) ? $testAttribute['drop_down'][$i] : "" ?></textarea>
+													<!--<textarea name="dropDown[]" id="dropDown<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="<?php echo ($testAttribute['field_type'][$i] == 'multiple' || $testAttribute['field_type'][$i] == 'dropdown') ? "" : "display:none;" ?>"><?php echo (isset($testAttribute['drop_down'][$i]) && !empty($testAttribute['drop_down'][$i])) ? $testAttribute['drop_down'][$i] : "" ?></textarea>-->
+													<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'][$i] == 'multiple' || $testAttribute['field_type'][$i] == 'dropdown') ? "" : "display:none;" ?>">
+													<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
+													<input type="hidden" value="<?php echo (isset($testAttribute['drop_down'][$i]) && !empty($testAttribute['drop_down'][$i])) ? $testAttribute['drop_down'][$i].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
+													<div class="tag-container container<?php echo $i ?>">
+													<?php  
+													if(isset($testAttribute['drop_down'][$i]) && !empty($testAttribute['drop_down'][$i])) 
+													$val = explode(",",$testAttribute['drop_down'][$i]);
+													foreach($val as $v)
+													{
+													?>
+													<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
+													<?php } ?>
+													</div>
+													</div>
 												</td>
 												<td>
 													<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i ?>" title="<?php echo _('Please select is it mandatory'); ?>">
@@ -309,7 +353,13 @@ foreach ($testSymptomsMapInfo as $val) {
 												<option value="dropdown"><?php echo _("Dropdown"); ?></option>
 												<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
 											</select><br>
-											<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>
+											<!--<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>--> 
+												<div class="tag-input dropDown1" style="display:none;">
+												<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
+												<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]"/>
+												<div class="tag-container container1">
+												</div>
+												</div>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
@@ -529,8 +579,35 @@ foreach ($testSymptomsMapInfo as $val) {
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
 		});
+		$(document).on('click', '.remove-tag', function() {
+			htmlVal = ($(this).parent().html());
+			htmlVal = htmlVal.replace('<span class="remove-tag">x</span>', '');
+			prevVal = $(this).parent().parent().prev(".fdropDown").val();
+			curVal = prevVal.replace(htmlVal+',', "");
+			$(this).parent().parent().prev(".fdropDown").val(curVal);
+			$(this).parent().remove();
+		});
 	});
-
+	function showTags(e,obj,cls)
+	{
+		var options=new Array();
+		if (e.key === ',' || e.key === 'Enter') {
+			var val = obj.value;
+			if (val.length > 0) {
+			var tag = val.split(',')[0].trim();
+			$('.container'+cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
+			options.push(tag);
+			obj.value = "";
+			//obj.removeClass('isRequired');
+		}
+		
+		}
+		console.log(options); 
+		for(let i = 0; i < options.length; i++){
+			$('#fdropDown'+cls).val($('#fdropDown'+cls).val()+options[i]+',');
+			
+		}
+	}
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'editTestTypeForm'
@@ -581,7 +658,10 @@ foreach ($testSymptomsMapInfo as $val) {
 							<option value="dropdown"><?php echo _("Dropdown"); ?></option>\
 							<option value="multiple"><?php echo _("multiple Dropdown"); ?></option>\
 						</select><br>\
-						<textarea name="dropDown[]" id="dropDown' + tableRowId + '" class="form-control" placeholder="<?php echo _("Drop down values as , separated"); ?>" title="<?php echo _("Please drop down values as comma separated"); ?>" style="display:none;"></textarea>';
+						<div class="tag-input dropDown'+tableRowId+'" style="display:none;"><input type="text" name="dropDown[]" id="dropDown'+tableRowId+'" onkeyup="showTags(event,this,'+tableRowId+')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown'+tableRowId+'" name="fdropDown[]" /><div class="tag-container container'+tableRowId+'"></div></div>';		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
+                            <option value="yes"><?php echo _("Yes"); ?></option>\
+                            <option value="no" selected><?php echo _("No"); ?></option>\
+                        </select>';
 		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
 							<option value="yes"><?php echo _("Yes"); ?></option>\
 							<option value="no" selected><?php echo _("No"); ?></option>\
@@ -712,8 +792,9 @@ foreach ($testSymptomsMapInfo as $val) {
 		});
 	}
 
+	
 	function changeField(obj, i){
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown'+i).show(), $('#dropDown'+i).addClass('isRequired')) : ($('#dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show()) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}
 </script>
 

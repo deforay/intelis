@@ -22,7 +22,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$maxLength = '';
 	if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength;
+		$maxLength = "maxlength=" . $maxLength; 
 	}
 } else {
 	$sampleClass = '';
@@ -338,8 +338,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for="dob">Date of Birth </label>
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
+											<label for="dob">Date of Birth <span class="mandatory">*</span></label>
+											<input type="text" name="dob" id="dob" class="form-control date isRequired" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -364,26 +364,26 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for="gender">Gender</label><br>
+											<label for="gender">Gender<span class="mandatory">*</span></label><br>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
+												<input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
+												<input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
+												<input type="radio" class="isRequired" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'not_recorded') ? "checked='checked'" : "" ?>>Not Recorded
 											</label>
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for="gender">Patient consent to receive SMS?</label><br>
+											<label for="gender">Patient consent to receive SMS?<span class="mandatory">*</span></label><br>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>> Yes
+												<input type="radio" class="isRequired" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>> Yes
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'no') ? "checked='checked'" : "" ?>> No
+												<input type="radio" class="isRequired" id="receivesmsNo" name="receiveSms" value="no" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($vlQueryInfo['consent_to_receive_sms'] == 'no') ? "checked='checked'" : "" ?>> No
 											</label>
 										</div>
 									</div>
@@ -810,18 +810,18 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
+													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+														<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory result-span">*</span></label>
+													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
+														<select name="testingPlatform" id="testingPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -830,9 +830,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="noResult">Sample Rejection <span class="mandatory result-span">*</span></label>
+													<label class="col-lg-5 control-label" for="noResult">Sample Rejection <span class="mandatory result-span"></span></label>
 													<div class="col-lg-7">
-														<select name="noResult" id="noResult" class="form-control isRequired labSection" title="Please check if sample is rejected or not">
+														<select name="noResult" id="noResult" class="form-control labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -915,7 +915,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											</div>
 											<div class="row">
 												<div class="col-md-4" style="margin-top: 10px;">
-													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -923,7 +923,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 													</div>
@@ -949,7 +949,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											</div>
 											<div class="row">
 												<div class="col-md-4" style="margin-top: 10px;">
-													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
 															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
@@ -957,7 +957,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
+													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 													<div class="col-lg-7">
 														<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 													</div>
@@ -1028,10 +1028,27 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			if ($(this).val() == 'yes') {
 				$('.tbPhaseBox').show();
 			} else {
-				$('#tbPhase').val("");
 				$('.tbPhaseBox').hide();
 			}
 		});
+
+		$('#activeTB').on('change',function(){
+          if($(this).val()=='yes')
+          {
+               $('.tbPhaseBox').show();
+               $('#tbPhase').addClass('isRequired');
+
+          }
+         else
+          	{
+				$('#tbPhase').val("");
+                $('.tbPhaseBox').hide();
+                $('#tbPhase').removeClass('isRequired');
+            }
+               
+         });
+
+
 		$('#activeTB').trigger('change');
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 

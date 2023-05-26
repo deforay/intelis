@@ -42,7 +42,7 @@ if ($n > 0) {
         if ($testAttribute['field_type'][$i] == 'number') {
             $fieldType = " forceNumeric";
         } elseif ($testAttribute['field_type'][$i] == 'date') {
-            $fieldType = " date";
+            $fieldType = " dateTime";
         }
 
         if (

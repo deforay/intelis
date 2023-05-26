@@ -24,12 +24,18 @@ $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
 // echo "<pre>";print_r($_POST);die;
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
+$i=0;
+foreach($_POST['fdropDown'] as $val)
+{
+    $_POST['fdropDown'][$i] = substr($val, 0, -1);
+    $i++;
+}
 try {
     if (!empty($_POST['testStandardName']) && $testTypeId > 0) {
         $testAttribute['field_id'] = $_POST['fieldId'];
         $testAttribute['field_name'] = $_POST['fieldName'];
         $testAttribute['field_type'] = $_POST['fieldType'];
-        $testAttribute['drop_down'] = $_POST['dropDown'];
+        $testAttribute['drop_down'] = $_POST['fdropDown'];
         $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
         $testAttribute['section'] = $_POST['section'];
         $testAttribute['section_other'] = $_POST['sectionOther'];

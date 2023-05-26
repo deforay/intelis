@@ -1588,7 +1588,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
                               $("#result-sections").html(data.result);
                          } else {
-                              $('#resultSection').hide()
+                              $('#resultSection').hide();
                          }
                          if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
                               $("#specimenSection").after(data.specimenSection);
@@ -1597,13 +1597,17 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $("#otherSection").html(data.otherSection);
                          }
                          checkNum();
-                         $('.date').datepicker({
+                         $('.dateTime').datetimepicker({
                               changeMonth: true,
                               changeYear: true,
                               dateFormat: 'dd-M-yy',
-                              timeFormat: "hh:mm",
+                              timeFormat: "HH:mm",
                               maxDate: "Today",
-                              yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                              onChangeMonthYear: function(year, month, widget) {
+                                   setTimeout(function() {
+                                        $('.ui-datepicker-calendar').show();
+                                   });
+                              }
                          }).click(function() {
                               $('.ui-datepicker-calendar').show();
                          });
@@ -1616,6 +1620,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
                     });
+                   
           } else {
                $(".facilitySection").html('');
                $(".patientSectionInput").remove();
@@ -1624,6 +1629,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#otherSection").html('');
                $(".requestForm").hide();
           }
+        
      }
 
      function checkNum() {
@@ -1744,7 +1750,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
      }
-
      function updateInterpretationResult(obj){
 		if(obj.value){
                $.post("get-result-interpretation.php", {

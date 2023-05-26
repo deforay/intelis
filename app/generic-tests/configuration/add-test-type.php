@@ -22,6 +22,34 @@ $symptomInfo = $db->query($symQuery);
 		color: #000;
 		border: 1px solid #000;
 	}
+	.tag-input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.tag-input .tag-input-field {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.remove-tag {
+  margin-left: 5px;
+  cursor: pointer;
+}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -210,7 +238,7 @@ $symptomInfo = $db->query($symQuery);
 											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 										</td>
 										<td>
-											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type'); ?>">
+											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" onchange="changeField(this,'1')" title="<?php echo _('Please select the field type'); ?>">
 												<option value=""> <?php echo _("-- Select --"); ?> </option>
 												<option value="number"><?php echo _("Number"); ?></option>
 												<option value="text"><?php echo _("Text"); ?></option>
@@ -218,7 +246,13 @@ $symptomInfo = $db->query($symQuery);
 												<option value="dropdown"><?php echo _("Dropdown"); ?></option>
 												<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
 											</select><br>
-											<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>
+										<!--	<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
+												<div class="tag-input dropDown1" style="display:none;">
+												<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
+												<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]"/>
+												<div class="tag-container container1">
+												</div>
+												</div>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
@@ -400,8 +434,48 @@ $symptomInfo = $db->query($symQuery);
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
 		});
-	});
 
+	/*	$('.tag-input-field').on('keyup', function(e) {
+    if (e.key === ',' || e.key === 'Enter') {
+      var val = this.value;
+      if (val.length > 0) {
+        var tag = val.split(',')[0].trim();
+        $(this).closest('.tag-container').append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
+        this.value = "";
+      }
+    }
+  });*/
+
+  $(document).on('click', '.remove-tag', function() {
+	htmlVal = ($(this).parent().html());
+	htmlVal = htmlVal.replace('<span class="remove-tag">x</span>', '');
+	prevVal = $(this).parent().parent().prev(".fdropDown").val();
+	curVal = prevVal.replace(htmlVal+',', "");
+	$(this).parent().parent().prev(".fdropDown").val(curVal);
+    $(this).parent().remove();
+  });
+
+	});
+function showTags(e,obj,cls)
+{
+	var options=new Array();
+	if (e.key === ',' || e.key === 'Enter') {
+		var val = obj.value;
+      	if (val.length > 0) {
+        var tag = val.split(',')[0].trim();
+        $('.container'+cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
+		options.push(tag);
+		obj.value = "";
+		//obj.removeClass('isRequired');
+
+      }
+	  
+    }
+	for(let i = 0; i < options.length; i++){
+		$('#fdropDown'+cls).val($('#fdropDown'+cls).val()+options[i]+',');
+		
+	}
+}
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'addTestTypeForm'
@@ -440,7 +514,7 @@ $symptomInfo = $db->query($symQuery);
 		var f = a.insertCell(4);
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
-
+		tagClass = 'container'+tableRowId;
 		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
 		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
                             <option value=""> <?php echo _("-- Select --"); ?> </option>\
@@ -450,8 +524,7 @@ $symptomInfo = $db->query($symQuery);
 							<option value="dropdown"><?php echo _("Dropdown"); ?></option>\
 							<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>\
 						</select><br>\
-						<textarea name="dropDown[]" id="dropDown' + tableRowId + '" class="form-control" placeholder="<?php echo _("Drop down values as , separated"); ?>" title="<?php echo _("Please drop down values as comma separated"); ?>" style="display:none;"></textarea>';
-		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
+						<div class="tag-input dropDown'+tableRowId+'" style="display:none;"><input type="text" name="dropDown[]" id="dropDown'+tableRowId+'" onkeyup="showTags(event,this,'+tableRowId+')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown'+tableRowId+'" name="fdropDown[]" /><div class="tag-container container'+tableRowId+'"></div></div>';		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
                             <option value="yes"><?php echo _("Yes"); ?></option>\
                             <option value="no" selected><?php echo _("No"); ?></option>\
                         </select>';
@@ -581,8 +654,8 @@ $symptomInfo = $db->query($symQuery);
 		});
 	}
 
-	function changeField(obj, i) {
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('#dropDown' + i).show(), $('#dropDown' + i).addClass('isRequired')) : ($('#dropDown' + i).hide(), $('#dropDown' + i).removeClass('isRequired'));
+	function changeField(obj, i){
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show()) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
 	}
 </script>
 

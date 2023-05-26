@@ -655,15 +655,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person </label>
+														<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal Person <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control labSection" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
+															<input type="text" class="form-control labSection isRequired" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
+														<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number<span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+															<input type="text" class="form-control forceNumeric labSection isRequired" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 														</div>
 													</div>
 												</div>
@@ -714,7 +714,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 														<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason<span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
-															<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
+															<select name="rejectionReason" id="rejectionReason" class="form-control labSection isRequired" title="Please choose reason" onchange="checkRejectionReason();">
 																<option value="">-- Select --</option>
 																<?php foreach ($rejectionTypeResult as $type) { ?>
 																	<optgroup label="<?php echo ($type['rejection_type']); ?>">
@@ -737,9 +737,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 													<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
-														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>
+														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
+															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection isRequired" title="Please choose HIV detection">
 																<option value="">-- Select --</option>
 																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
 																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
@@ -763,9 +763,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-													<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
+													<label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+														<input type="text" class="form-control labSection isRequired" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load in log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
 													</div>
 												</div>
 												<?php if (count($reasonForFailure) > 0) { ?>
@@ -781,7 +781,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-4 vlResult">
 													<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control labSection" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
+														<input type="text" class="form-control labSection isRequired" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />
 													</div>
 												</div>
 												</div>
@@ -789,7 +789,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
-															<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+															<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose reviewed by" style="width: 100%;">
 																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 															</select>
 														</div>
@@ -801,9 +801,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="testedBy">Tested By </label>
+														<label class="col-lg-5 control-label" for="testedBy">Tested By <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
+															<select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose approved by">
 																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
 															</select>
 														</div>
@@ -813,7 +813,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
-															<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
+															<select name="approvedBy" id="approvedBy" class="form-control labSection isRequired" title="Please choose approved by">
 																<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
 															</select>
 														</div>
@@ -821,21 +821,21 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4">
 														<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+															<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-6">
-														<label class="col-lg-6 control-label" for="labComments">Lab Tech. Comments </label>
+														<label class="col-lg-6 control-label" for="labComments">Lab Tech. Comments<span class="mandatory">*</span> </label>
 														<div class="col-lg-6">
-															<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
+															<textarea class="form-control labSection" class="isRequired" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
 														</div>
 													</div>
 													<div class="col-md-6 reasonForResultChanges" style="display:none;">
 														<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
 														<div class="col-lg-6">
-															<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
+															<textarea class="form-control isRequired" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 														</div>
 													</div>
 												</div>
