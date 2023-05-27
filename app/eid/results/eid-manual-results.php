@@ -17,6 +17,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_COOKIE = $request->getCookieParams();
+
 $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
