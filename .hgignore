@@ -40,3 +40,4 @@ secretKey.txt
 rector.php
 **/node_modules/
 .dccache
+phpstan.neon

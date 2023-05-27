@@ -34,9 +34,6 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 //$id = $_GET['id'];
 $facilityInfo = $db->rawQueryOne('SELECT * from facility_details where facility_id= ?', [$id]);
 
-// sanitize $facilityInfo before using it
-$facilityInfo = array_map('htmlspecialchars', $facilityInfo);
-
 $facilityAttributes = json_decode($facilityInfo['facility_attributes']);
 
 

@@ -267,7 +267,7 @@ class VlService
             return null;
         }
 
-        // If result is numeric, then return it as is
+        // If result is numeric, then process it as a number
         if (is_numeric($result)) {
             $this->interpretViralLoadNumericResult($result, $unit);
         }
@@ -346,59 +346,55 @@ class VlService
         );
     }
 
-    public function interpretViralLoadNumericResult($result, $unit = null): ?array
+    public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
     {
         // If result is blank, then return null
-        if (empty(trim($result))) {
+        if (empty($result)) {
             return null;
         }
 
-        // If result is NOT numeric, then return it as is
-        if (!is_numeric($result)) {
-            return $result;
-        }
-
-        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
-
-
-        if (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') {
-            $interpretAndConvertResult = true;
-        } else {
-            $interpretAndConvertResult = false;
-        }
-
-
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = $result;
-        if (strpos($unit, 'Log') !== false && is_numeric($result)) {
-            $logVal = $result;
-            $originalResultValue = $vlResult = $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-        } elseif (strpos($unit, '10') !== false) {
-            $unitArray = explode(".", $unit);
-            $exponentArray = explode("*", $unitArray[0]);
-            $multiplier = pow($exponentArray[0], $exponentArray[1]);
-            $vlResult = $result * $multiplier;
-            $unit = $unitArray[1];
-        } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
-            if (strpos($result, '< 2.00E+1') !== false) {
-                $vlResult = "< 20";
+
+
+        if (is_numeric($result)) {
+
+            $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
+
+            $interpretAndConvertResult = (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') ? true : false;
+
+            if (!empty($unit) && strpos($unit, 'Log') !== false && is_numeric($result)) {
+                $logVal = (float) $result;
+                $originalResultValue =
+                    $vlResult = $absVal =
+                    $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+            } elseif (!empty($unit) && strpos($unit, '10') !== false) {
+                $unitArray = explode(".", $unit);
+                $exponentArray = explode("*", $unitArray[0]);
+                $multiplier = pow((float)$exponentArray[0], (float)$exponentArray[1]);
+                $vlResult = $result * $multiplier;
+                $unit = $unitArray[1];
+            } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
+                if (strpos($result, '< 2.00E+1') !== false) {
+                    $vlResult = "< 20";
+                } else {
+                    // incase there are some brackets in the result
+                    $resultArray = explode("(", $result);
+
+                    $absVal = ($resultArray[0]);
+                    $vlResult = $absDecimalVal = (float) $resultArray[0];
+                    $logVal = round(log10($absDecimalVal), 2);
+                }
             } else {
-                // incase there are some brackets in the result
-                $resultArray = explode("(", $result);
-
-                $absVal = ($resultArray[0]);
-                $vlResult = $absDecimalVal = (float) $resultArray[0];
+                $absVal = ($result);
+                $vlResult = $absDecimalVal = (float) trim($result);
                 $logVal = round(log10($absDecimalVal), 2);
+                $txtVal = null;
             }
-        } else {
-            $absVal = ($result);
-            $vlResult = $absDecimalVal = (float) trim($result);
-            $logVal = round(log10($absDecimalVal), 2);
-            $txtVal = null;
-        }
 
-        if ($interpretAndConvertResult) {
-            $originalResultValue = $vlResult;
+            if ($interpretAndConvertResult) {
+                $originalResultValue = $vlResult;
+            }
         }
 
         return array(

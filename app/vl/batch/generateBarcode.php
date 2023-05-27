@@ -28,21 +28,21 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientFirstName = 'patient_first_name';
     $patientLastName = 'patient_last_name';
     $worksheetName = 'Viral Load Test Worksheet';
-} else if (isset($_GET['type']) && $_GET['type'] == 'eid') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
     $refTable = "form_eid";
     $refPrimaryColumn = "eid_id";
     $patientIdColumn = 'child_id';
     $patientFirstName = 'child_name';
     $patientLastName = 'child_surname';
     $worksheetName = 'EID Test Worksheet';
-} else if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
     $refTable = "form_covid19";
     $refPrimaryColumn = "covid19_id";
     $patientIdColumn = 'patient_id';
     $patientFirstName = 'patient_name';
     $patientLastName = 'patient_surname';
     $worksheetName = 'Covid-19 Test Worksheet';
-} else if (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
     $refTable = "form_hepatitis";
     $refPrimaryColumn = "hepatitis_id";
     $patientIdColumn = 'patient_id';
@@ -50,7 +50,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientLastName = 'patient_surname';
     $worksheetName = 'Hepatitis Test Worksheet';
     $showPatientName = true;
-} else if (isset($_GET['type']) && $_GET['type'] == 'tb') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
     $refTable = "form_tb";
     $refPrimaryColumn = "tb_id";
     $patientIdColumn = 'patient_id';
@@ -76,15 +76,21 @@ if ($id > 0) {
     $tQuery = "SELECT * from global_config where name='header'";
     $tResult = $db->query($tQuery);
 
-    $bQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine LEFT JOIN user_details as u ON u.user_id=b_d.created_by where batch_id=$id";
-    $bResult = $db->query($bQuery);
+    $bQuery = "SELECT * FROM batch_details as b_d
+                    LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
+                    LEFT JOIN user_details as u ON u.user_id=b_d.created_by
+                    WHERE batch_id=?";
+    $bResult = $db->rawQuery($bQuery, [$id]);
 
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-
-        $dateQuery = "SELECT ct.*,covid19.sample_tested_datetime, result_reviewed_datetime, lot_number, lot_expiration_date, result_printed_datetime from $refTable as covid19
-        left join covid19_tests as ct on covid19.covid19_id = ct.covid19_id where sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime  not like '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
+        $dateQuery = "SELECT ct.*,
+                        covid19.sample_tested_datetime,
+                        result_reviewed_datetime, lot_number,
+                        lot_expiration_date, result_printed_datetime
+                    FROM $refTable as covid19
+                    LEFT JOIN covid19_tests as ct on covid19.covid19_id = ct.covid19_id
+                    WHERE sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime  not like '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
     } else {
-
         $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime  not like '0000-00-00 00:00:00') LIMIT 1";
     }
     $dateResult = $db->query($dateQuery);
@@ -102,8 +108,17 @@ if ($id > 0) {
 
     if (!empty($bResult)) {
         // Extend the TCPDF class to create custom Header and Footer
-        class MYPDF extends TCPDF
+        class BatchPdf extends TCPDF
         {
+            public $logo;
+            public $text;
+            public $batch;
+            public $resulted;
+            public $reviewed;
+            public $createdBy;
+            public $worksheetName;
+
+
             public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName)
             {
                 $this->logo = $logo;
@@ -157,7 +172,7 @@ if ($id > 0) {
         }
 
         // create new PDF document
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new BatchPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
 
@@ -489,13 +504,9 @@ if ($id > 0) {
             }
         }
 
-
         $pdf->writeHTML($tbl);
-        //$pdf->writeHTMLCell('', '', 12,$pdf->getY(),$tbl, 0, 1, 0, true, 'C', true);
         $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
-        // $pdf->Output($filename, 'I');
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename);
         exit;
-        // echo $filename;
     }
 }

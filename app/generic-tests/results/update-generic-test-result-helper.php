@@ -103,7 +103,7 @@ try {
     if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
         $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
     }
-    if (trim($allChange) != '' && trim($reasonForChanges) != '') {
+    if (!empty($allChange) && !empty($reasonForChanges)) {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
     } elseif (trim($reasonForChanges) != '') {
         $allChange =  $reasonForChanges;
@@ -119,9 +119,9 @@ try {
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if(isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])){
+    if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
-   }
+    }
 
     $vldata = array(
         'vlsm_instance_id'                          => $instanceId,

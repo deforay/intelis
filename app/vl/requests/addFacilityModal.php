@@ -5,7 +5,7 @@
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
-$_GET = array_map('htmlspecialchars', $_GET);
+$_GET = $request->getQueryParams();
 
 
 $type = $_GET['type'];

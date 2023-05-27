@@ -7,7 +7,6 @@ use App\Services\ApiService;
 use App\Services\EidService;
 use App\Helpers\ResultsHelper;
 use App\Services\UsersService;
-use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -21,16 +20,18 @@ use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
+use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Config\Factory as ConfigFactory;
 use App\ErrorHandlers\ErrorResponseGenerator;
-use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\SystemAdminAuthMiddleware;
+use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
 try {

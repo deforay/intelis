@@ -193,7 +193,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 4) {
 	// include('pdf/result-pdf-zam.php');
 } else if ($arr['vl_form'] == 5) {
-	// include('pdf/result-pdf-png.php');
+	include('pdf/result-pdf-png.php');
 } else if ($arr['vl_form'] == 6) {
 	// include('pdf/result-pdf-who.php');
 } else if ($arr['vl_form'] == 7) {

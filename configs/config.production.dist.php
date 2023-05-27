@@ -33,17 +33,6 @@ $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt'] = 'PUT-A-RANDOM-STRING-HERE';
 
 
-//Please use only GMAIL ID AND PASSWORD
-$systemConfig['adminEmailUserName'] = '';
-$systemConfig['adminEmailPassword'] = '';
-
-// Windows : Change it to the mysqldump.exe path for your computer for eg.
-// $systemConfig['mysqlDump'] = 'C:\wamp\mysql\bin\mysqldump.exe';
-
-// Linux : default for Ubuntu 20.04+, may be different for your distribution
-$systemConfig['mysqlDump'] = '/usr/bin/mysqldump';
-
-
 $systemConfig['interfacing'] = [];
 
 // Enable/Disable Interfacing
@@ -70,7 +59,6 @@ $systemConfig['recency']['crosslogin'] = false;
 
 // Domain URL of the Recency Web Application
 $systemConfig['recency']['url'] = '';
-
 
 
 // Enable/Disable Recency Viral Load tests sync

@@ -20,8 +20,10 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-// Sanitize values before using them below
-$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_COOKIE = $request->getCookieParams();
 
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
@@ -266,7 +268,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			$('#sampleCollectionDate').val("");
 		<?php
 		} else if (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-			$('#sampleCollectionDate').val("<?= htmlspecialchars($_COOKIE['collectionDate']); ?>");
+			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 
 		loadVlRequestData();

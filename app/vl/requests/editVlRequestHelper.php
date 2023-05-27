@@ -99,7 +99,7 @@ try {
                                    FROM r_vl_sample_rejection_reasons
                                    WHERE rejection_reason_name like ?";
           $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
-          if (!empty($rejectionResult)) {
+          if (empty($rejectionResult)) {
                $data = array(
                     'rejection_reason_name' => $_POST['newRejectionReason'],
                     'rejection_type' => 'general',
@@ -153,10 +153,10 @@ try {
                //Result is saved as entered
                $finalResult  = $_POST['vlResult'];
 
-               $logVal = $interpretedResults['logVal'];
-               $absDecimalVal = $interpretedResults['absDecimalVal'];
-               $absVal = $interpretedResults['absVal'];
-               $txtVal = $interpretedResults['txtVal'];
+               $logVal = $interpretedResults['logVal'] ?? null;
+               $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
+               $absVal = $interpretedResults['absVal'] ?? null;
+               $txtVal = $interpretedResults['txtVal'] ?? null;
           }
      } elseif (!empty($_POST['vlLog'])) {
           $resultStatus = 8; // Awaiting Approval
