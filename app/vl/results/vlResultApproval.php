@@ -316,13 +316,10 @@ foreach ($rejectionTypeResult as $type) {
         },
         //{"sClass":"center","bSortable":false},
       ],
-      <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-          [10, "desc"]
-        ],
-      <?php } else { ?> "aaSorting": [
-          [9, "desc"]
-        ],
-      <?php } ?> "fnDrawCallback": function() {
+      "aaSorting": [
+        [<?= ($_SESSION['instanceType'] != 'standalone') ? 10 : 9; ?>, "desc"]
+      ],
+      "fnDrawCallback": function() {
         var checkBoxes = document.getElementsByName("chk[]");
         len = checkBoxes.length;
         for (c = 0; c < len; c++) {

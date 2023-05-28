@@ -564,14 +564,9 @@ $state = $geolocationService->getProvinces("yes");
 				},
 
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[6, "desc"]
-				]
-			<?php } else { ?> "aaSorting": [
-					[5, "desc"]
-				]
-			<?php } ?>,
-			//aaSorting: [[ 4, "desc" ]],
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "getPositiveTbResultDetails.php",
@@ -657,14 +652,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[5, "desc"]
-				]
-			<?php } else { ?> "aaSorting": [
-					[4, "desc"]
-				]
-			<?php } ?>,
-			//"aaSorting": [[ 3, "desc" ]],
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "getSampleRejectionReport.php",
@@ -750,14 +740,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[5, "desc"]
-				]
-			<?php } else { ?> "aaSorting": [
-					[4, "desc"]
-				]
-			<?php } ?>,
-			//"aaSorting": [[ 3, "desc" ]],
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "getResultNotAvailable.php",
@@ -848,14 +833,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[2, "desc"]
-				]
-			<?php } else { ?> "aaSorting": [
-					[1, "desc"]
-				]
-			<?php } ?>,
-			//"aaSorting": [[ 1, "desc" ]],
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 2 : 1; ?>, "desc"]
+			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "dataQualityCheck.php",

@@ -335,13 +335,10 @@ $lastUrl2 = '';
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[9, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[8, "desc"]
-				],
-			<?php } ?> "bProcessing": true,
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 9 : 8; ?>, "desc"]
+			],
+			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "eid-samples-for-manual-result-entry.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {

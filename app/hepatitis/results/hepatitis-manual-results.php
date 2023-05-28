@@ -330,13 +330,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[8, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[7, "desc"]
-				],
-			<?php } ?> "bProcessing": true,
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 8 : 7; ?>, "desc"]
+			],
+			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "hepatitis-samples-for-manual-result-entry.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {

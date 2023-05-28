@@ -442,14 +442,12 @@ class Covid19Service
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
             if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
+                return 0;
             }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+                return 0;
             }
 
 

@@ -314,13 +314,10 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[6, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[5, "desc"]
-				],
-			<?php } ?> "bProcessing": true,
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
+			],
+			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "get-record-confirmatory-tests.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {

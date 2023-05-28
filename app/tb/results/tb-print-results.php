@@ -541,13 +541,10 @@ $state = $geolocationService->getProvinces("yes");
                     "bSortable": false
                 },
             ],
-            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [8, "desc"]
-                ],
-            <?php } else { ?> "aaSorting": [
-                    [7, "desc"]
-                ],
-            <?php } ?> "fnDrawCallback": function() {
+            "aaSorting": [
+                [<?= ($_SESSION['instanceType'] != 'standalone') ? 8 : 7; ?>, "desc"]
+            ],
+            "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
                 len = checkBoxes.length;
                 for (c = 0; c < len; c++) {
@@ -667,13 +664,10 @@ $state = $geolocationService->getProvinces("yes");
                     "bSortable": false
                 },
             ],
-            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [8, "desc"]
-                ],
-            <?php } else { ?> "aaSorting": [
-                    [7, "desc"]
-                ],
-            <?php } ?> "fnDrawCallback": function() {
+            "aaSorting": [
+                [<?= ($_SESSION['instanceType'] != 'standalone') ? 8 : 7; ?>, "desc"]
+            ],
+            "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");
                 len = checkBoxes.length;
                 for (c = 0; c < len; c++) {

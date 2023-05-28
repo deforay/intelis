@@ -11,11 +11,11 @@ function hasClassName(objElement, strClass) {
     // if there is a class
     if (objElement.className) {
         // the classes are just a space separated list, so first get the list
-        var arrList = objElement.className.split(' ');
+        let arrList = objElement.className.split(' ');
         // get uppercase class for comparison purposes
-        var strClassUpper = strClass.toUpperCase();
+        let strClassUpper = strClass.toUpperCase();
         // find all instances and remove them
-        for (var i = 0; i < arrList.length; i++) {
+        for (let i = 0; i < arrList.length; i++) {
             // if class found
             if (arrList[i].toUpperCase() == strClassUpper) {
                 // we found it
@@ -30,20 +30,19 @@ function hasClassName(objElement, strClass) {
 
 
 //deforayValidator literal
-var deforayValidator = {
+let deforayValidator = {
     init: function (settings) {
         this.settings = settings;
         this.form = document.getElementById(this.settings["formId"]);
-        //console.log(this.form);
-        formInputs = jQuery("input[type='text'],input[type='password'],textarea,select");
+        let formInputs = jQuery("input[type='text'],input[type='password'],textarea,select");
 
         // change color of inputs on focus
-        for (i = 0; i < formInputs.length; i++) {
+        for (let i = 0; i < formInputs.length; i++) {
             formInputs[i].onfocus = function () {
                 this.style.background = "#FFFFFF";
             }
         }
-        var error = deforayValidator.validate();
+        let error = deforayValidator.validate();
         if (error == "" || error == null) {
             return true;
         } else {
@@ -54,8 +53,8 @@ var deforayValidator = {
     validate: function () {
         error = '';
         this.form = document.getElementById(this.settings["formId"]);
-        formInputs = this.form.getElementsByTagName('*');
-        useTitleToShowMessage = true;
+        let formInputs = this.form.getElementsByTagName('*');
+        let useTitleToShowMessage = true;
         if (this.settings["useTitle"] != 'undefined' && this.settings["useTitle"] != null && this.settings["useTitle"] == false) {
             useTitleToShowMessage = false;
         }
@@ -70,13 +69,7 @@ var deforayValidator = {
 };
 // returns true if the string is not empty
 function isRequired(str) {
-    if (str == null || str.length == 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-    //return (str == null) || (str.length == 0);
+    return str == null || str.length == 0;
 }
 // returns true if the string is a valid email
 function isEmail(str, required) {
@@ -85,8 +78,8 @@ function isEmail(str, required) {
             return false;
     }
     else if (str != null && str.length != 0) {
-        //        var re = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i
-        var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        //        let re = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i
+        let re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
         return re.test(str);
     }
     return true; // else return true
@@ -109,7 +102,7 @@ function isAlpha(str, required) {
         if ((str == null || str.length == 0))
             return false;
     }
-    var re = /[a-zA-Z]/;
+    let re = /[a-zA-Z]/;
     if (re.test(str)) return true;
     return false;
 }
@@ -119,8 +112,8 @@ function isAlphaNum(str, required) {
         if ((str == null || str.length == 0))
             return false;
     }
-    // var re = /[0-9a-zA-Z]/
-    var re = /^[0-9A-Za-z]+$/;
+    // let re = /[0-9a-zA-Z]/
+    let re = /^[0-9A-Za-z]+$/;
     if (re.test(str)) return true;
     return false;
 }
@@ -130,7 +123,7 @@ function isSymbol(str, required) {
         if ((str == null || str.length == 0))
             return false;
     }
-    var re = /[^0-9a-zA-Z]/;
+    let re = /[^0-9a-zA-Z]/;
     if (re.test(str)) return true;
     return false;
 }
@@ -166,38 +159,29 @@ function exactLength(str, len) {
 }
 //confirm password validation
 function confirmPassword(name) {
-    var elements = document.getElementsByName(name);
+    let elements = document.getElementsByName(name);
     //assuming that there will be only 2 fields with this name
-
-    if (elements[0].value == elements[1].value) {
-        return true;
-    }
-    else {
-        return false;
-    }
-
+    return elements[0].value === elements[1].value;
 }
 //checkbox or radio required validation
 function isRequiredCheckBox(name) {
-    var flag = false;
-    var elements = document.getElementsByName(name);
-    size = elements.length;
-    count = 0;
+    let flag = false;
+    let elements = document.getElementsByName(name);
+    let size = elements.length;
+    let count = 0;
 
-    for (var i = 0; i < size; i++) {
+    for (let i = 0; i < size; i++) {
         if (elements[i].checked) {
             flag = true;
             break;
-        }
-        else {
-
         }
     }
     return flag;
 }
 function findPos(obj) {
 
-    var curleft = curtop = 0;
+    let curleft = 0;
+    let curtop = 0;
     if (obj.offsetParent) {
         curleft = obj.offsetLeft
         curtop = obj.offsetTop
@@ -211,25 +195,22 @@ function findPos(obj) {
 }
 function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
     // change color of inputs on focus
-    for (i = 0; i < formInputs.length; i++) {
-        classes = formInputs[i].className;
+    let valid = false;
+    for (let i = 0; i < formInputs.length; i++) {
+        let classes = formInputs[i].className;
         if (classes == "" || classes == null) {
             valid = true;
         }
-        var parts = classes.split(" ");
+        let parts = classes.split(" ");
 
-        if (hasClassName(formInputs[i], "useTitle")) {
-
-            elementTitle = formInputs[i].title;
-        }
-        else if (useTitleToShowMessage) {
+        if (useTitleToShowMessage && formInputs[i].title != null && formInputs[i].title != "") {
             elementTitle = formInputs[i].title;
         }
         else {
             elementTitle = "";
         }
-        for (var cCount = 0; cCount < parts.length; cCount++) {
-            var required = false;
+        for (let cCount = 0; cCount < parts.length; cCount++) {
+            let required = false;
             if (parts[cCount] == "isRequired") {
                 required = true;
                 if (formInputs[i].type == 'checkbox' || formInputs[i].type == 'radio') {
@@ -243,8 +224,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
 
                 }
                 else {
-
-                    var valu = (formInputs[i].value);
+                    let valu = (formInputs[i].value);
                     valid = !isRequired(valu);
                     if (elementTitle != null && elementTitle != "") {
                         errorMsg = elementTitle;
@@ -255,7 +235,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                 }
             }
             else if (parts[cCount] == "isEmail") {
-                var valu = (formInputs[i].value);
+                let valu = (formInputs[i].value);
                 valid = isEmail(valu, required);
                 if (elementTitle != null && elementTitle != "") {
                     errorMsg = elementTitle;
@@ -347,18 +327,14 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                 formInputs[i].style.border = "1px solid #CF3339";
                 $('.infocus').removeClass('infocus');
                 $(formInputs[i]).addClass('infocus');
-                //formInputs[i].focus();
-                //myPos = findPos(formInputs[i]);
-                //scrollTo(myPos[0],myPos[1]);
-
                 return errorMsg;
             }
         }
     }
 }
 
-var dateFormat = function () {
-    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+let dateFormat = function () {
+    let token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
         timezoneClip = /[^-+\dA-Z]/g,
         pad = function (val, len) {
@@ -370,7 +346,7 @@ var dateFormat = function () {
 
     // Regexes and supporting functions are cached through closure
     return function (date, mask, utc) {
-        var dF = dateFormat;
+        let dF = dateFormat;
 
         // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
         if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
@@ -390,7 +366,7 @@ var dateFormat = function () {
             utc = true;
         }
 
-        var _ = utc ? "getUTC" : "get",
+        let _ = utc ? "getUTC" : "get",
             d = date[_ + "Date"](),
             D = date[_ + "Day"](),
             m = date[_ + "Month"](),

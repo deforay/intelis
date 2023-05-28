@@ -334,13 +334,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                     "bSortable": false
                 }
             ],
-            <?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-                    [7, "desc"]
-                ],
-            <?php } else { ?> "aaSorting": [
-                    [6, "desc"]
-                ],
-            <?php } ?> "bProcessing": true,
+            "aaSorting": [
+                [<?= ($_SESSION['instanceType'] != 'standalone') ? 7 : 6; ?>, "desc"]
+            ],
+            "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "tb-samples-for-manual-result-entry.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
