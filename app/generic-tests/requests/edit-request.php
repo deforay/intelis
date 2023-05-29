@@ -1705,6 +1705,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					testType: testType,
 					result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+					resultInterpretation:'<?php echo $genericResultInfo['final_result_interpretation'];?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
@@ -1750,6 +1751,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						width: '100%',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
+					
 				});
 		} else {
 			removeDynamicForm();

@@ -404,12 +404,12 @@ try {
                     }
                     $covid19TestData = array(
                         'generic_id'                => $_POST['vlSampleId'],
-                        'test_name'                    => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+                        'test_name'                 => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
                         'facility_id'               => $_POST['labId'] ?? null,
-                        'sample_tested_datetime'     => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+                        'sample_tested_datetime'    => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
                         'testing_platform'          => $_POST['testingPlatform'][$testKey] ?? null,
-                        'kit_lot_no'                  => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                        'kit_expiry_date'              => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+                        'kit_lot_no'                => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+                        'kit_expiry_date'           => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
                         'result'                    => $_POST['testResult'][$testKey]
                     );
                     $db->insert($testTableName, $covid19TestData);

@@ -11,6 +11,11 @@ $disabled = "";
 if (isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
     $disabled = ' disabled ';
 }
+$resultInterpretation = "";
+if(isset($_POST['resultInterpretation']) && $_POST['resultInterpretation']!="")
+{
+    $resultInterpretation = $_POST['resultInterpretation'];
+}
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQuery($testTypeQuery, [$_POST['testType']]);
 $testAttribute = json_decode($testTypeResult[0]['test_form_config'], true);
@@ -164,7 +169,7 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
             }
         }
     }
-    $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" name="resultInterpretation"></input>';
+    $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
     $resultForm[] = $resultSection;
 }
