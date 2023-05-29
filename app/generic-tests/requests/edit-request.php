@@ -820,7 +820,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	<td>
 																		<?php
 																		$value = '';
-																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen','GeneXpert', 'ELISA', 'other'))) {
 																			$value = 'value="' . $rows['test_name'] . '"';
 																			$show =  "block";
 																		} else {
@@ -834,6 +834,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																				RDT-Antibody</option>
 																			<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>
 																				RDT-Antigen</option>
+																			<option value="GeneXpert" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
 																			<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>
 																				ELISA</option>
 																			<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>
@@ -893,7 +894,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													</tbody>
 													<tfoot id="resultSection">
 														<tr>
-															<th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+															<th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br>Result Interpretation</th>
 															<td id="result-sections">
 
 															</td>
@@ -1704,6 +1705,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					testType: testType,
 					result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+					resultInterpretation:'<?php echo $genericResultInfo['final_result_interpretation'];?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
@@ -1719,7 +1721,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#result-sections").html(data.result);
 					} else {
-						$('#resultSection').hide()
+						$('#resultSection').hide();
 					}
 					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
@@ -1749,6 +1751,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						width: '100%',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
+					
 				});
 		} else {
 			removeDynamicForm();

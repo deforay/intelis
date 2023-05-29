@@ -342,7 +342,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob">Date of Birth </label>
-                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -634,7 +634,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </tbody>
                                                                  <tfoot id="resultSection">
                                                                       <tr>
-                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br>Result Interpretation</th>
                                                                            <td id="result-sections">
 
                                                                            </td>

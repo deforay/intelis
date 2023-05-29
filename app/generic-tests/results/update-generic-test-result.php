@@ -79,7 +79,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
 $genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
-//echo '<pre>'; print_r($genericTestInfo); die;
+
 //get suspected treatment failure at
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
@@ -882,7 +882,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                 <td>
                                                                     <?php
                                                                     $value = '';
-                                                                    if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+                                                                    if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen','GeneXpert','ELISA', 'other'))) {
                                                                         $value = 'value="' . $rows['test_name'] . '"';
                                                                         $show = "block";
                                                                     } else {
@@ -899,6 +899,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                         <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>
                                                                             RDT-Antigen
                                                                         </option>
+                                                                        <option value="GeneXpert" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
                                                                         <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>
                                                                             ELISA
                                                                         </option>
@@ -917,11 +918,11 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
-                                                                    <!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                    <!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult< ?= ($indexKey + 1); ?>" title="Please select the result for row < ?= ($indexKey + 1); ?>">
 																				<option value=''> -- Select -- </option>
-																				<?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																					<option value="<?php echo $genResultKey; ?>" <?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> <?php echo $genResultValue; ?> </option>
-																				<?php } ?>
+																				< ?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
+																					<option value="< ?php echo $genResultKey; ?>" < ?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> < ?php echo $genResultValue; ?> </option>
+																				< ?php } ?>
 																			</select> -->
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;width:100px;">
@@ -969,11 +970,11 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </tbody>
                                                 <tfoot id="resultSection">
                                                     <tr>
-                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result <br><br/>Result Interpretation</th>
                                                         <td id="result-sections">
                                                             <input type="text" id="result" name="result" class="form-control result-text" value="" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);" autocomplete="off">
                                                             <br>
-                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation">
+                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation" value="<?php echo $genericResultInfo['final_result_interpretation']; ?>"> 
                                                             <input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="quantitative">
                                                         </td>
                                                     </tr>
@@ -1067,7 +1068,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
             <input type="hidden" name="oldStatus" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />
             <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-            <a href="view-requests.php" class="btn btn-default"> Cancel</a>
+            <a href="generic-test-results.php" class="btn btn-default"> Cancel</a>
         </div>
     </section>
 </div>
@@ -1766,6 +1767,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					testType: testType,
                     result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+                    resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
