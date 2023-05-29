@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 /**
  * General functions
@@ -81,12 +82,6 @@ class VlService
             $sampleCodeCol = 'remote_sample_code';
         }
 
-        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-        //     $remotePrefix = 'R';
-        //     $sampleCodeKeyCol = 'remote_sample_code_key';
-        //     $sampleCodeCol = 'remote_sample_code';
-        // }
-
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
@@ -101,13 +96,14 @@ class VlService
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -128,7 +124,11 @@ class VlService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = [
+            'maxId' => $maxId,
+            'mnthYr' => $mnthYr,
+            'auto' => $autoFormatedString
+        ];
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -136,36 +136,30 @@ class VlService
         }
 
         if ($sampleCodeFormat == 'auto') {
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        // if ($checkResult !== null) {
-        //     $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-        //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
-        // }
-        if ($checkResult !== null) {
-            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+        if (!empty($checkResult)) {
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
     public function getVlSampleTypesByName($name = "")
@@ -174,11 +168,11 @@ class VlService
         if (!empty($name)) {
             $where = " AND sample_name LIKE '$name%'";
         }
-        $query = "SELECT * FROM r_vl_sample_type where status='active'$where";
+        $query = "SELECT * FROM r_vl_sample_type where status='active' $where";
         return $this->db->rawQuery($query);
     }
 
-    public function getVlSampleTypes($updatedDateTime = null)
+    public function getVlSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_vl_sample_type where status='active'";
         if ($updatedDateTime) {
@@ -192,7 +186,7 @@ class VlService
         return $response;
     }
 
-    public function getVLResultCategory($resultStatus, $finalResult)
+    public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
 
         $vlResultCategory = null;

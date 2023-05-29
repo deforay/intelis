@@ -3,7 +3,7 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
-function prettyJson($json)
+function prettyJson($json): string
 {
     if (is_array($json)) {
         return stripslashes(json_encode($json, JSON_PRETTY_PRINT));

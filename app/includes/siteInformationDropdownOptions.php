@@ -52,7 +52,7 @@ $GLOBALS['facilityMap'] = $_SESSION['facilityMap'];
 // }
 
 
-function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null)
+function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null): string
 {
 	$db = $GLOBALS['db'];
 	$option = $GLOBALS['option'];

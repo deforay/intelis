@@ -29,7 +29,7 @@ class CommonService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function generateRandomString($length = 32)
+    public function generateRandomString($length = 32): string
     {
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
@@ -40,7 +40,7 @@ class CommonService
         return $randomString;
     }
 
-    public function escape($inputArray, $db = null)
+    public function escape($inputArray, $db = null): array
     {
         $db = !empty($db) ? $db : $this->db;
         $escapedArray = [];
@@ -51,7 +51,7 @@ class CommonService
     }
 
     // Returns a UUID format string
-    public function generateUUID($attachExtraString = true)
+    public function generateUUID($attachExtraString = true): string
     {
         $uuid = (Uuid::uuid4())->toString();
 
@@ -84,7 +84,7 @@ class CommonService
 
 
     //This will return a hex token
-    public function generateToken($length = 32)
+    public function generateToken($length = 32): string
     {
         try {
             // Ensure $length is always even
@@ -98,7 +98,7 @@ class CommonService
         }
     }
 
-    public function removeDirectory($dirname)
+    public function removeDirectory($dirname): bool
     {
         // Sanity check
         if (!file_exists($dirname)) {
@@ -204,7 +204,7 @@ class CommonService
     }
 
     // checking if the provided field list has any empty or null values
-    public function checkMandatoryFields($field)
+    public function checkMandatoryFields($field): bool
     {
         foreach ($field as $chkField) {
             if (empty(trim($chkField))) {
@@ -215,7 +215,7 @@ class CommonService
         return false;
     }
 
-    public static function encrypt($message, $key)
+    public static function encrypt($message, $key): string
     {
         $nonce = random_bytes(
             SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
@@ -235,7 +235,7 @@ class CommonService
         return $cipher;
     }
 
-    public static function decrypt($encrypted, $key)
+    public static function decrypt($encrypted, $key): string
     {
         $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
         if (empty($decoded)) {
@@ -320,7 +320,7 @@ class CommonService
     //     return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
     // }
 
-    public function startsWith($string, $startString)
+    public function startsWith($string, $startString): bool
     {
         $len = strlen($startString);
         return (substr($string, 0, $len) === $startString);
@@ -382,7 +382,7 @@ class CommonService
         return null;
     }
 
-    public function getAuthorizationBearerToken()
+    public function getAuthorizationBearerToken(): ?string
     {
         $headers = null;
         if (function_exists('apache_request_headers')) {
@@ -429,7 +429,7 @@ class CommonService
         return $this->db->rawQueryOne($query);
     }
 
-    public function getRejectionReasons($testType)
+    public function getRejectionReasons($testType): array
     {
         $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
         if ($testType == "vl") {
@@ -485,7 +485,7 @@ class CommonService
         return $localeLists;
     }
 
-    public function activeReportFormats($module, $countryShortCode)
+    public function activeReportFormats($module, $countryShortCode): array
     {
 
         $list = [];
@@ -556,7 +556,7 @@ class CommonService
         });
     }
 
-    public function getOperatingSystem($userAgent = null)
+    public function getOperatingSystem($userAgent = null): string
     {
         $osPlatform = "Unknown OS - " . $userAgent;
 
@@ -593,7 +593,7 @@ class CommonService
         return $osPlatform;
     }
 
-    public function getBrowser($userAgent = null)
+    public function getBrowser($userAgent = null): string
     {
         $browser        =   "Unknown Browser - " . $userAgent;
         $browserArray  =   array(
@@ -660,7 +660,7 @@ class CommonService
         return $code;
     }
 
-    public function excelColumnRange($lower, $upper)
+    public function excelColumnRange($lower, $upper): \Generator
     {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
@@ -711,14 +711,14 @@ class CommonService
         return $response;
     }
 
-    public function isJSON($string)
+    public function isJSON($string): bool
     {
         return is_string($string) &&
             is_array(json_decode($string, true)) &&
             (json_last_error() == JSON_ERROR_NONE);
     }
 
-    public function prettyJson($json)
+    public function prettyJson($json): string
     {
         if (is_array($json)) {
             return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
@@ -799,7 +799,7 @@ class CommonService
         }
     }
 
-    public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0))
+    public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string
     {
         $barcodeobj = new TCPDFBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
@@ -819,7 +819,7 @@ class CommonService
      * @param array $newData An optional array of new key-value pairs to add to the JSON
      * @return string The string that can be used with JSON_SET()
      */
-    public function jsonToSetString($json, $column, $newData = [])
+    public function jsonToSetString(string $json, string $column, array $newData = []): string
     {
         $data = json_decode($json, true);
         $setString = '';

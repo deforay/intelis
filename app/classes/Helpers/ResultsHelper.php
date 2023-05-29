@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use DateTimeImmutable;
+use MysqliDb;
 
 class ResultsHelper
 {
@@ -14,7 +15,7 @@ class ResultsHelper
 
     // $interpretFormat = true will try to parse and change the format to d/m/Y or m/d/Y
     // $interpretFormat = false will keep the format as is
-    public static function abbottTestingDateFormatter($inputTestingDate, $inputTestingDateFormat, $interpretFormat = true)
+    public static function abbottTestingDateFormatter($inputTestingDate, $inputTestingDateFormat, $interpretFormat = true): ?array
     {
 
         if (empty($inputTestingDate)) {

@@ -8,6 +8,7 @@ use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 /**
  * General functions
@@ -75,13 +76,14 @@ class GenericTestsService
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -102,7 +104,7 @@ class GenericTestsService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -112,34 +114,34 @@ class GenericTestsService
             if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
             if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
-            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        if ($checkResult !== null) {
-            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+        if (!empty($checkResult)) {
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
     public function generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType = null)
@@ -196,13 +198,14 @@ class GenericTestsService
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -223,7 +226,7 @@ class GenericTestsService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -234,39 +237,39 @@ class GenericTestsService
             if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
             if (isset($testType) && !empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
-            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM form_generic WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM form_generic WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        // if ($checkResult !== null) {
-        //     $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . ($sCodeKey['maxId'] + 1);
-        //     $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-        //     $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId'] + 1);
+        // if (!empty($checkResult)) {
+        //     $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . ($sampleCodeGenerator['maxId'] + 1);
+        //     $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . ($sampleCodeGenerator['maxId'] + 1);
+        //     $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+        //     $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId'] + 1);
         // }
-        if ($checkResult !== null) {
-            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+        if (!empty($checkResult)) {
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
     public function getGenericSampleTypesByName($name = "")
@@ -279,7 +282,7 @@ class GenericTestsService
         return $this->db->rawQuery($query);
     }
 
-    public function getGenericSampleTypes($updatedDateTime = null)
+    public function getGenericSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
         if ($updatedDateTime) {
@@ -293,7 +296,7 @@ class GenericTestsService
         return $response;
     }
 
-    public function getGenericResults()
+    public function getGenericResults(): array
     {
         return array(
             'positive' => 'Positive',
@@ -323,7 +326,7 @@ class GenericTestsService
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleIDGenericTest($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
+            $sampleJson = $this->generateGenericSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
@@ -399,7 +402,7 @@ class GenericTestsService
         }
     }
 
-    public function getDynamicFields($genericTestId)
+    public function getDynamicFields($genericTestId): array
     {
         $return = [];
         if ($genericTestId > 0) {

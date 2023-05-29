@@ -129,7 +129,7 @@ if ($id > 0) {
                 $this->createdBy = $createdBy;
                 $this->worksheetName = $worksheetName;
             }
-            public function imageExists($filePath)
+            public function imageExists($filePath): bool
             {
                 return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
             }

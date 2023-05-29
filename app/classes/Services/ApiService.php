@@ -22,7 +22,7 @@ class ApiService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function generateSelectOptions($options)
+    public function generateSelectOptions($options): array
     {
         $i = 0;
         $response = [];

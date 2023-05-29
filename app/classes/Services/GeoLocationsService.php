@@ -135,7 +135,7 @@ class GeoLocationsService
         return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
     }
 
-    public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false)
+    public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false): array
     {
 
         $response = [];
@@ -158,7 +158,7 @@ class GeoLocationsService
         return $response;
     }
 
-    public function getByDistrictId($districtId, $facilities = true, $labs = false)
+    public function getByDistrictId($districtId, $facilities = true, $labs = false): array
     {
 
         $response = [];

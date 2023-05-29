@@ -152,8 +152,7 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
         }
         $resultSection .= '</select>';
     } else {
-        $resultSection = '';
-        $resultSection .= '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
+        $resultSection = '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
         if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
             $resultSection .= '<datalist id="resultList">';
             if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
