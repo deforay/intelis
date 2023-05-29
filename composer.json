@@ -33,7 +33,6 @@
         "halaxa/json-machine": "^1.1",
         "crunzphp/crunz": "^3.4",
         "ramsey/uuid": "^4.2",
-        "phpseclib/phpseclib": "^3.0",
         "hackzilla/password-generator": "^1.6",
         "laminas/laminas-filter": "^2.22",
         "symfony/string": "^5.4",
@@ -48,7 +47,8 @@
         "php-di/php-di": "^6.4",
         "spatie/once": "^2.2",
         "monolog/monolog": "^2.9",
-        "league/csv": "^9.8"
+        "league/csv": "^9.8",
+        "ifsnop/mysqldump-php": "^2.12"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
@@ -61,6 +61,7 @@
     },
     "config": {},
     "require-dev": {
-        "symfony/var-dumper": "^5.4"
+        "symfony/var-dumper": "^5.4",
+        "phpstan/phpstan": "^1.10"
     }
 }

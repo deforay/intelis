@@ -33,30 +33,7 @@ $systemConfig['passwordSalt'] = 'PUT-A-RANDOM-STRING-HERE';
 $systemConfig['tryCrypt'] = 'PUT-A-RANDOM-STRING-HERE';
 
 
-//Please use only GMAIL ID AND PASSWORD
-$systemConfig['adminEmailUserName'] = '';
-$systemConfig['adminEmailPassword'] = '';
-
-// Windows : Change it to the mysqldump.exe path for your computer for eg.
-// $systemConfig['mysqlDump'] = 'C:\wamp\mysql\bin\mysqldump.exe';
-
-// Linux : default for Ubuntu 20.04+, may be different for your distribution
-$systemConfig['mysqlDump'] = '/usr/bin/mysqldump';
-
-
-// SFTP Settings for automated backups (optional, but recommended)
-$systemConfig['sftp']['host'] = ''; // eg. 'sftp.example.com'
-$systemConfig['sftp']['port'] = '22'; // usually 22
-$systemConfig['sftp']['path'] = ''; // eg. '/home/username/backups/labname'
-$systemConfig['sftp']['username'] = ''; // eg. 'username'
-$systemConfig['sftp']['privateKey'] = ''; // path to the private key file (recommended method to connect to SFTP)
-$systemConfig['sftp']['privateKeyPassphrase'] = ''; // if passphrase was set for the private key
-$systemConfig['sftp']['password'] = ''; // Optional Password for SFTP, if privateKey is not provided (not recommended)
-
-
-
 $systemConfig['interfacing'] = [];
-
 
 // Enable/Disable Interfacing
 // true => Enabled
@@ -84,7 +61,6 @@ $systemConfig['recency']['crosslogin'] = false;
 $systemConfig['recency']['url'] = '';
 
 
-
 // Enable/Disable Recency Viral Load tests sync
 // true => Enabled
 // false => Disabled
@@ -95,7 +71,7 @@ $systemConfig['recency']['vlsync'] = false;
 $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
 
-$systemConfig['system'] =[
+$systemConfig['system'] = [
     'debug_mode' => false, // set to true to enable debug mode
     'cache_di' => true, // set to true to enable DI Container caching
 ];

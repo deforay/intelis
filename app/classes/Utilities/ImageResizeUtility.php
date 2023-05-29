@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUndefinedClassInspection */
 
 namespace App\Utilities;
 
@@ -108,7 +108,7 @@ class ImageResizeUtility
      * @return ImageResizeUtility
      * @throws SystemException
      */
-    public function setFileName($filename)
+    public function setFileName(string $filename)
     {
         if (!defined('IMAGETYPE_WEBP')) {
             define('IMAGETYPE_WEBP', 18);
@@ -227,13 +227,13 @@ class ImageResizeUtility
      * Saves new image
      *
      * @param string $filename
-     * @param integer $image_type
-     * @param integer $quality
-     * @param integer $permissions
+     * @param integer|null $image_type
+     * @param integer|null $quality
+     * @param integer|null $permissions
      * @param boolean $exact_size
      * @return static
      */
-    public function save($filename, $image_type = null, $quality = null, $permissions = null, $exact_size = false)
+    public function save(string $filename, int $image_type = null, int $quality = null, int $permissions = null, bool $exact_size = false)
     {
         $image_type = $image_type ?: $this->source_type;
         $quality = is_numeric($quality) ? (int) abs($quality) : null;
@@ -389,11 +389,11 @@ class ImageResizeUtility
     /**
      * Convert the image to string
      *
-     * @param int $image_type
-     * @param int $quality
+     * @param int|null $image_type
+     * @param int|null $quality
      * @return string
      */
-    public function getImageAsString($image_type = null, $quality = null)
+    public function getImageAsString(int $image_type = null, int $quality = null)
     {
         $string_temp = tempnam(sys_get_temp_dir(), '');
 
@@ -418,10 +418,10 @@ class ImageResizeUtility
 
     /**
      * Outputs image to browser
-     * @param string $image_type
-     * @param integer $quality
+     * @param string|null $image_type
+     * @param integer|null $quality
      */
-    public function output($image_type = null, $quality = null)
+    public function output(string $image_type = null, int $quality = null)
     {
         $image_type = $image_type ?: $this->source_type;
 
@@ -437,7 +437,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToShortSide($max_short, $allow_enlarge = false)
+    public function resizeToShortSide(int $max_short, bool $allow_enlarge = false)
     {
         if ($this->getSourceHeight() < $this->getSourceWidth()) {
             $ratio = $max_short / $this->getSourceHeight();
@@ -461,7 +461,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToLongSide($max_long, $allow_enlarge = false)
+    public function resizeToLongSide(int $max_long, bool $allow_enlarge = false)
     {
         if ($this->getSourceHeight() > $this->getSourceWidth()) {
             $ratio = $max_long / $this->getSourceHeight();
@@ -485,7 +485,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToHeight($height, $allow_enlarge = false)
+    public function resizeToHeight(int $height, bool $allow_enlarge = false)
     {
         $ratio = $height / $this->getSourceHeight();
         $width = $this->getSourceWidth() * $ratio;
@@ -502,7 +502,7 @@ class ImageResizeUtility
      * @param boolean $allowEnlarge
      * @return static
      */
-    public function resizeToWidth($width, $allowEnlarge = false)
+    public function resizeToWidth(int $width, bool $allowEnlarge = false)
     {
         $ratio  = $width / $this->getSourceWidth();
         $height = $this->getSourceHeight() * $ratio;
@@ -520,7 +520,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToBestFit($max_width, $max_height, $allow_enlarge = false)
+    public function resizeToBestFit(int $max_width, int $max_height, bool $allow_enlarge = false)
     {
         if ($this->getSourceWidth() <= $max_width && $this->getSourceHeight() <= $max_height && $allow_enlarge === false) {
             return $this;
@@ -562,7 +562,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resize($width, $height, $allow_enlarge = false)
+    public function resize(int $width, int $height, bool $allow_enlarge = false)
     {
         if (!$allow_enlarge) {
             // if the user hasn't explicitly allowed enlarging,
@@ -596,7 +596,7 @@ class ImageResizeUtility
      * @param integer $position
      * @return static
      */
-    public function crop($width, $height, $allow_enlarge = false, $position = self::CROPCENTER)
+    public function crop(int $width, int $height, bool $allow_enlarge = false, int $position = self::CROPCENTER)
     {
         if (!$allow_enlarge) {
             // this logic is slightly different to resize(),
@@ -647,7 +647,7 @@ class ImageResizeUtility
      * @param integer $y
      * @return static
      */
-    public function freecrop($width, $height, $x = false, $y = false)
+    public function freecrop(int $width, int $height, $x = false, $y = false)
     {
         if ($x === false || $y === false) {
             return $this->crop($width, $height);
@@ -718,7 +718,7 @@ class ImageResizeUtility
      * @param integer $position
      * @return float|integer
      */
-    protected function getCropPosition($expectedSize, $position = self::CROPCENTER)
+    protected function getCropPosition(int $expectedSize, int $position = self::CROPCENTER)
     {
         $size = 0;
         switch ($position) {
@@ -740,11 +740,11 @@ class ImageResizeUtility
     /**
      *  Flips an image using a given mode if PHP version is lower than 5.5
      *
-     * @param  GdImage $image
-     * @param  integer  $mode
+     * @param GdImage $image
+     * @param integer $mode
      * @return null
      */
-    public function imageFlip($image, $mode)
+    public function imageFlip(GdImage $image, int $mode)
     {
         switch ($mode) {
             case self::IMG_FLIP_HORIZONTAL: {
@@ -790,7 +790,7 @@ class ImageResizeUtility
      * @param bool $enable
      * @return static
      */
-    public function gamma($enable = true)
+    public function gamma(bool $enable = true)
     {
         $this->gamma_correct = $enable;
 

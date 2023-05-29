@@ -30,8 +30,6 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 $sQuery = "SELECT * from instruments where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
 
-// Sanitize values before using them in the form
-$sInfo = array_map('htmlspecialchars', $sInfo);
 
 if (!empty($sInfo['supported_tests'])) {
 	$sInfo['supported_tests'] = json_decode($sInfo['supported_tests'], true);

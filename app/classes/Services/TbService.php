@@ -74,13 +74,14 @@ class TbService
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -103,7 +104,7 @@ class TbService
 
         //error_log($maxCodeKeyVal);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
 
 
@@ -114,33 +115,33 @@ class TbService
 
 
         if ($sampleCodeFormat == 'auto') {
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        if ($checkResult !== null) {
+        if (!empty($checkResult)) {
             return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
 
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
 
-    public function getTbSampleTypes($updatedDateTime = null)
+    public function getTbSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_tb_sample_type where status='active' ";
         if ($updatedDateTime) {
@@ -176,7 +177,7 @@ class TbService
         return $this->db->insert("tb_tests", $tbTestData);
     }
 
-    public function checkAllTbTestsForPositive($tbSampleId)
+    public function checkAllTbTestsForPositive($tbSampleId): bool
     {
         $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbSampleId ORDER BY test_id ASC");
 
@@ -189,7 +190,7 @@ class TbService
 
 
 
-    public function getTbResults($type = null, $updatedDateTime = null)
+    public function getTbResults($type = null, $updatedDateTime = null): array
     {
         $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
         if (!empty($type)) {
@@ -207,7 +208,7 @@ class TbService
         return $response;
     }
 
-    public function getTbReasonsForTesting($updatedDateTime = null)
+    public function getTbReasonsForTesting($updatedDateTime = null): array
     {
         $query = "SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' ";
         if ($updatedDateTime) {
@@ -221,7 +222,7 @@ class TbService
         return $response;
     }
 
-    public function getTbReasonsForTestingDRC()
+    public function getTbReasonsForTestingDRC(): array
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' AND (parent_reason IS NULL OR parent_reason = 0)");
         $response = [];

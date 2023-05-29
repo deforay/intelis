@@ -100,8 +100,8 @@ class MYPDF extends TCPDF
 		$this->testType = $testType;
 	}
 
-	public function imageExists($filePath)
-	{
+	public function imageExists($filePath): bool
+    {
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 	//Page header

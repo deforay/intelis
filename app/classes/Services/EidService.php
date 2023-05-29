@@ -7,6 +7,7 @@ use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -77,13 +78,14 @@ class EidService
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -104,7 +106,7 @@ class EidService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -113,31 +115,31 @@ class EidService
 
 
         if ($sampleCodeFormat == 'auto') {
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
-        if ($checkResult !== null) {
-            error_log("DUP::: Sample Code ====== " . $sCodeKey['sampleCode']);
+        if (!empty($checkResult)) {
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
 
@@ -156,7 +158,7 @@ class EidService
         return $response;
     }
 
-    public function getEidSampleTypes($updatedDateTime = null)
+    public function getEidSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_eid_sample_type where status='active' ";
         if ($updatedDateTime) {

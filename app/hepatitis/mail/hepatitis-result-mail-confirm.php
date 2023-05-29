@@ -47,7 +47,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
             $this->logo = $logo;
             $this->text = $text;
          }
-         public function imageExists($filePath)
+         public function imageExists($filePath): bool
          {
             return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
          }

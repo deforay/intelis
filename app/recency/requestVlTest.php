@@ -64,10 +64,6 @@ try {
 
     if (!empty($result) && $result[0] != "") {
 
-
-        // Sanitize values before using them below
-        $result = array_map('htmlspecialchars', $result);
-
         /* To get province and district from facility id */
         $facilityQuery = "SELECT facility_id, facility_state, facility_district from facility_details WHERE other_id = ?";
         $facilityResult = $db->rawQuery($facilityQuery, [$result[2]]);

@@ -19,6 +19,7 @@ $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
+$finalResult = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
 $formId = $general->getGlobalConfig('vl_form');
@@ -102,7 +103,7 @@ try {
                     FROM r_vl_sample_rejection_reasons
                     WHERE rejection_reason_name like ?";
         $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
-        if (!empty($rejectionResult)) {
+        if (empty($rejectionResult)) {
             $data = array(
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
@@ -157,10 +158,10 @@ try {
             //Result is saved as entered
             $finalResult  = $_POST['vlResult'];
 
-            $logVal = $interpretedResults['logVal'];
-            $absDecimalVal = $interpretedResults['absDecimalVal'];
-            $absVal = $interpretedResults['absVal'];
-            $txtVal = $interpretedResults['txtVal'];
+            $logVal = $interpretedResults['logVal'] ?? null;
+            $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
+            $absVal = $interpretedResults['absVal'] ?? null;
+            $txtVal = $interpretedResults['txtVal'] ?? null;
         }
     } elseif (!empty($_POST['vlLog'])) {
         $resultStatus = 8; // Awaiting Approval
@@ -285,7 +286,7 @@ try {
         'result_approved_datetime'              => DateUtility::isoDateFormat($_POST['approvedOnDateTime'], true),
         'date_test_ordered_by_physician'        => DateUtility::isoDateFormat($_POST['dateOfDemand']),
         'lab_tech_comments'                     => $_POST['labComments'] ?? null,
-        'result_status'                         => $resultStatus ?? null,
+        'result_status'                         => $resultStatus,
         'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
         'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
         'vl_test_number'                        => $_POST['viralLoadNo'] ?? null,

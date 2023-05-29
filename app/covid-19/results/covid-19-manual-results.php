@@ -17,8 +17,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-// Sanitize values before using them below
-$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_COOKIE = $request->getCookieParams();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -247,7 +249,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 			$('#sampleCollectionDate').val("");
 		<?php
 		} elseif (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-			$('#sampleCollectionDate').val("<?= htmlspecialchars($_COOKIE['collectionDate']); ?>");
+			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 
 		loadVlRequestData();
@@ -325,13 +327,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 					"bSortable": false
 				}
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[7, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[6, "desc"]
-				],
-			<?php } ?> "bProcessing": true,
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 7 : 6; ?>, "desc"]
+			],
+			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "covid-19-samples-for-manual-result-entry.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {

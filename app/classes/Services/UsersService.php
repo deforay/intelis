@@ -26,7 +26,7 @@ class UsersService
         $this->applicationConfig = $applicationConfig;
     }
 
-    public function isAllowed($currentFileName)
+    public function isAllowed($currentFileName): bool
     {
 
 
@@ -235,7 +235,7 @@ class UsersService
     }
 
     // These files don't need privileges check
-    public function getSkippedPrivileges()
+    public function getSkippedPrivileges(): array
     {
         return array(
             '401.php',
@@ -371,7 +371,7 @@ class UsersService
     }
 
 
-    public function getAuthToken(?string $token)
+    public function getAuthToken(?string $token): array
     {
         $result = $this->getUserByToken($token) ?? null;
 
@@ -410,7 +410,7 @@ class UsersService
         return $this->db->rawQueryOne($query, array($userId));
     }
 
-    public function getUserRolePrivileges(string $userId)
+    public function getUserRolePrivileges(string $userId): array
     {
         $response = [];
         $query = "SELECT r.role_id,

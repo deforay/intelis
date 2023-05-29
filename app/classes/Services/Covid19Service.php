@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
+use MysqliDb;
+use Exception;
+use DateTimeImmutable;
+use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
-use DateTimeImmutable;
-use Exception;
-use MysqliDb;
+use App\Services\GeoLocationsService;
 
 /**
  * General functions
@@ -53,11 +54,6 @@ class Covid19Service
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-        //     $remotePrefix = 'R';
-        //     $sampleCodeKeyCol = 'remote_sample_code_key';
-        //     $sampleCodeCol = 'remote_sample_code';
-        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -66,20 +62,21 @@ class Covid19Service
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
-        } else if ($sampleCodeFormat == 'YY') {
+        } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
         }
 
         $autoFormatedString = $year . $month . $day;
 
 
-        if ($maxCodeKeyVal === null) {
+        if (empty($maxCodeKeyVal)) {
             // If it is PNG form
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    $geoLocations = new GeoLocationsService($this->db);
-                    $provinceId = $geoLocations->getProvinceIDFromCode($provinceCode);
+                    /** @var GeoLocations $geoLocations */
+                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
+                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -100,46 +97,53 @@ class Covid19Service
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        //error_log($maxCodeKeyVal);
 
-        $sCodeKey = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = [
+            'sampleCode' => '',
+            'sampleCodeInText' => '',
+            'sampleCodeFormat' => '',
+            'sampleCodeKey' => '',
+            'maxId' => $maxId,
+            'mnthYr' => $mnthYr,
+            'auto' => $autoFormatedString
+        ];
 
-
-
+        // PNG format has an additional R in prefix
         if ($globalConfig['vl_form'] == 5) {
-            // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
         }
 
 
         if ($sampleCodeFormat == 'auto') {
-            $sCodeKey['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sCodeKey['maxId']);
-            $sCodeKey['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
-        } else if ($sampleCodeFormat == 'auto2') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sCodeKey['sampleCodeKey'] = $sCodeKey['maxId'];
-        } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sCodeKey['sampleCode'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'] . $sCodeKey['maxId'];
-            $sCodeKey['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sCodeKey['mnthYr'];
-            $sCodeKey['sampleCodeKey'] = ($sCodeKey['maxId']);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+        } elseif ($sampleCodeFormat == 'auto2') {
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
+        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sCodeKey['sampleCode'] . "'";
-        $checkResult = $this->db->rawQueryOne($checkQuery);
-        if ($checkResult !== null) {
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol
+                        FROM $this->table
+                        WHERE $sampleCodeCol= ?";
+        $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
+        if (!empty($checkResult)) {
             return $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
 
-        return json_encode($sCodeKey);
+        return json_encode($sampleCodeGenerator);
     }
 
 
-    public function getCovid19SampleTypes($updatedDateTime = null)
+    public function getCovid19SampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_covid19_sample_type where status='active' ";
         if ($updatedDateTime) {
@@ -163,7 +167,7 @@ class Covid19Service
         return $this->db->rawQuery($query);
     }
 
-    public function insertCovid19Tests($covid19SampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null)
+    public function insertCovid19Tests($covid19SampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null): bool
     {
         $covid19TestData = array(
             'covid19_id'            => $covid19SampleId,
@@ -175,7 +179,7 @@ class Covid19Service
         return $this->db->insert("covid19_tests", $covid19TestData);
     }
 
-    public function checkAllCovid19TestsForPositive($covid19SampleId)
+    public function checkAllCovid19TestsForPositive($covid19SampleId): bool
     {
         if (empty($covid19SampleId)) {
             return false;
@@ -193,7 +197,7 @@ class Covid19Service
     }
 
 
-    public function getCovid19Results($updatedDateTime = null)
+    public function getCovid19Results($updatedDateTime = null): array
     {
         $query = "SELECT result_id,result FROM r_covid19_results where status='active' ";
         if ($updatedDateTime) {
@@ -208,7 +212,7 @@ class Covid19Service
         return $response;
     }
 
-    public function getCovid19ReasonsForTesting($updatedDateTime = null)
+    public function getCovid19ReasonsForTesting($updatedDateTime = null): array
     {
         $query = "SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active'";
         if ($updatedDateTime) {
@@ -222,7 +226,7 @@ class Covid19Service
         return $response;
     }
 
-    public function getCovid19ReasonsForTestingDRC()
+    public function getCovid19ReasonsForTestingDRC(): array
     {
         $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_covid19_test_reasons WHERE `test_reason_status` LIKE 'active' AND (parent_reason IS NULL OR parent_reason = 0)");
         $response = [];
@@ -231,7 +235,7 @@ class Covid19Service
         }
         return $response;
     }
-    public function getCovid19Symptoms($updatedDateTime = null)
+    public function getCovid19Symptoms($updatedDateTime = null): array
     {
         $query = "SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active'";
         if ($updatedDateTime) {
@@ -245,7 +249,7 @@ class Covid19Service
         return $response;
     }
 
-    public function getCovid19SymptomsDRC()
+    public function getCovid19SymptomsDRC(): array
     {
         $results = $this->db->rawQuery("SELECT symptom_id,symptom_name FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active' AND (parent_symptom IS NULL OR parent_symptom = 0)");
         $response = [];
@@ -255,7 +259,7 @@ class Covid19Service
         return $response;
     }
 
-    public function getCovid19Comorbidities($updatedDateTime = null)
+    public function getCovid19Comorbidities($updatedDateTime = null): array
     {
         $query = "SELECT comorbidity_id,comorbidity_name
                     FROM r_covid19_comorbidities
@@ -272,7 +276,7 @@ class Covid19Service
     }
 
 
-    public function getCovid19TestsByFormId($c19Id = "")
+    public function getCovid19TestsByFormId($c19Id = ""): array
     {
         $response = [];
 
@@ -283,9 +287,9 @@ class Covid19Service
             foreach ($results as $row) {
                 $response[$row['covid19_id']][$row['test_id']] = $row;
             }
-        } else if (isset($c19Id) && $c19Id != "" && !is_array($c19Id)) {
+        } elseif (!empty($c19Id) && $c19Id != "" && !is_array($c19Id)) {
             $response = $this->db->rawQuery("SELECT * FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
-        } else if (!is_array($c19Id)) {
+        } elseif (!is_array($c19Id)) {
             $response = $this->db->rawQuery("SELECT * FROM covid19_tests ORDER BY test_id ASC");
         }
 
@@ -413,7 +417,7 @@ class Covid19Service
         if (empty($c19Id)) {
             return null;
         }
-        return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", array($c19Id));
+        return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", [$c19Id]);
     }
 
     public function fetchAllDetailsBySampleCode($sampleCode)
@@ -442,27 +446,20 @@ class Covid19Service
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
             if (empty($sampleCollectionDate)) {
-                echo 0;
-                exit();
+                return 0;
             }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
-                echo 0;
-                exit();
+                return 0;
             }
 
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
-            $sampleDate = explode(" ", $params['sampleCollectionDate']);
 
-            $sampleCollectionDate = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
-            if (empty($params['countryId'])) {
-                $params['countryId'] = null;
-            }
-
+            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
             $covid19Data = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
@@ -523,27 +520,28 @@ class Covid19Service
 
 
             $covid19Data['patient_id'] = $patientCode;
-            $sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+            $sQuery = "SELECT covid19_id,
+                                sample_code,
+                                sample_code_format,
+                                sample_code_key,
+                                remote_sample_code,
+                                remote_sample_code_format,
+                                remote_sample_code_key
+                        FROM form_covid19 ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
-            /* Update version in form attributes */
-            $version = $general->getSystemConfig('sc_version');
-            $ipaddress = $general->getClientIpAddress();
             $formAttributes = array(
-                'applicationVersion'  => $version,
-                'ip_address'    => $ipaddress
+                'applicationVersion'  => $general->getSystemConfig('sc_version'),
+                'ip_address'    => $general->getClientIpAddress()
             );
             $covid19Data['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
             if (!empty($rowData)) {
-                // $this->db = $this->db->where('covid19_id', $rowData['covid19_id']);
-                // $id = $this->db->update("form_covid19", $covid19Data);
-
                 // If this sample code exists, let us regenerate
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
@@ -554,11 +552,7 @@ class Covid19Service
                 }
             }
 
-            if ($id > 0) {
-                return  $id;
-            } else {
-                return 0;
-            }
+            return ($id > 0) ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
@@ -576,7 +570,7 @@ class Covid19Service
         return $this->db->rawQuery("SELECT test_id as testId, covid19_id as covid19Id, facility_id as facilityId, test_name as testName, kit_lot_no as kitLotNo, kit_expiry_date as kitExpiryDate, tested_by as testedBy, sample_tested_datetime as testDate, testing_platform as testingPlatform, result as testResult FROM covid19_tests WHERE `covid19_id` = $c19Id ORDER BY test_id ASC");
     }
 
-    public function generateCovid19QcCode()
+    public function generateCovid19QcCode(): array
     {
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key from qc_covid19 order by qc_id desc limit 1");
         if (empty($exist['qc_code_key'])) {
@@ -584,7 +578,7 @@ class Covid19Service
         } else {
             $number = ($exist['qc_code_key'] + 1);
         }
-        $sCodeKey = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
-        return array("code" => $sCodeKey, "key" => substr(str_repeat(0, 3) . $number, -3));
+        $sampleCodeGenerator = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
+        return array("code" => $sampleCodeGenerator, "key" => substr(str_repeat(0, 3) . $number, -3));
     }
 }

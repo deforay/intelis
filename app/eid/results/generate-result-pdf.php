@@ -94,8 +94,8 @@ class MYPDF extends TCPDF
 		$this->formId  = $formId;
 	}
 
-	public function imageExists($filePath)
-	{
+	public function imageExists($filePath): bool
+    {
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 
@@ -193,7 +193,7 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 4) {
 	// include('pdf/result-pdf-zam.php');
 } else if ($arr['vl_form'] == 5) {
-	// include('pdf/result-pdf-png.php');
+	include('pdf/result-pdf-png.php');
 } else if ($arr['vl_form'] == 6) {
 	// include('pdf/result-pdf-who.php');
 } else if ($arr['vl_form'] == 7) {

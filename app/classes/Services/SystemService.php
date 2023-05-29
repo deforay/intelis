@@ -28,7 +28,7 @@ class SystemService
     }
 
     // Application Bootstrap
-    public function bootstrap()
+    public function bootstrap(): SystemService
     {
         $this->setupTranslation();
         $this->setupDateTimeZone();
@@ -65,7 +65,7 @@ class SystemService
     }
 
     // Setup debugging
-    public function debug($debugMode = false)
+    public function debug($debugMode = false): SystemService
     {
 
         if ($debugMode) {

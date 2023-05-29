@@ -19,8 +19,16 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
-// sanitize values before using them below
-$_COOKIE = array_map('htmlspecialchars', $_COOKIE);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_COOKIE = $request->getCookieParams();
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_COOKIE = $request->getCookieParams();
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('vl');
@@ -129,14 +137,6 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<option value="not_recorded" <?php echo ($gender == 'not_recorded') ? "selected='selected'" : "" ?>><?php echo _("Not Recorded"); ?></option>
 								</select>
 							</td>
-							<!-- <td><strong>Status&nbsp;:</strong></td>
-		  <td>
-		      <select style="width: 220px;" name="status" id="status" class="form-control" title="Please choose status">
-			<option value="">-- Select --</option>
-			<option value="7"< ?php echo ($status=='7')?"selected='selected'":""?>>Accepted</option>
-			<option value="4"< ?php echo ($status=='4')?"selected='selected'":""?>>Rejected</option>
-		      </select>
-		    </td> -->
 						</tr>
 						<tr>
 							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
@@ -280,8 +280,8 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 		?>
 			$('#sampleCollectionDate').val("");
 		<?php
-		} else if (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-			$('#sampleCollectionDate').val("<?= htmlspecialchars($_COOKIE['collectionDate']); ?>");
+		} elseif (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
+			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 
 		loadVlRequestData();
@@ -368,13 +368,10 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 					"bSortable": false
 				},
 			],
-			<?php if ($_SESSION['instanceType'] != 'standalone') { ?> "aaSorting": [
-					[9, "desc"]
-				],
-			<?php } else { ?> "aaSorting": [
-					[8, "desc"]
-				],
-			<?php } ?> "bProcessing": true,
+			"aaSorting": [
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 9 : 8; ?>, "desc"]
+			],
+			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/results/get-manual-results.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {

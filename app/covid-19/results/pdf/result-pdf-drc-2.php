@@ -7,6 +7,14 @@ use App\Utilities\DateUtility;
 
 class DRC_PDF extends MYPDF
 {
+    public $htitle = '';
+    public $logo = '';
+    public $facilityInfo = [];
+    public $resultPrintedDate = null;
+    public $systemConfig = null;
+
+
+
     //Page header
     public function Header()
     {

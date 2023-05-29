@@ -122,7 +122,7 @@ class MYPDF extends TCPDF
         $this->formId = $formId;
         $this->facilityInfo = $facilityInfo;
     }
-    public function imageExists($filePath)
+    public function imageExists($filePath): bool
     {
         return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
     }
