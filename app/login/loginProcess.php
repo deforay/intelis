@@ -124,7 +124,7 @@ try {
             $usersService->userHistoryLog($userName, 'successful', $userRow['user_id']);
             $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
-            if (!empty($instanceResult['instanceId'])) {
+            if (!empty($instanceResult['vlsm_instance_id'])) {
                 $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
                 $_SESSION['instanceFacilityName'] = $instanceResult['instance_facility_name'];
             } else {
