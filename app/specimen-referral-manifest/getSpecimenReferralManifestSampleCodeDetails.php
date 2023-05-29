@@ -103,7 +103,7 @@ $result = $db->rawQuery($query);
 				<select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
 					<?php
 					foreach ($result as $sample) {
-						if ($sample[$sCode] != '') {
+						if (!empty($sample[$sCode])) {
 							if ($module == 'vl') {
 								$sampleId  = $sample['vl_sample_id'];
 								//$sampleCode  = $sample['vl_sample_id'];

@@ -122,7 +122,7 @@ $result = $db->rawQuery($query, [$id]);
                     </div><br /><br />
                     <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
                       <?php foreach ($result as $sample) {
-                        if ($sample[$sCode] != '') { ?>
+                        if (!empty($sample[$sCode])) { ?>
                           <option value="<?php echo $sample['covid19_id']; ?>" <?php echo ($sample['positive_test_manifest_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>
                       <?php }
                       } ?>

@@ -58,6 +58,7 @@ $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=
 
 $editTestType = '';
 $div = '';
+$extraDiv = '';
 if (!empty($testTypeInfo)) {
 	$div .= '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 	$tf = 0;

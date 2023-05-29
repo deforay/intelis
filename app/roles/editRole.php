@@ -1,6 +1,8 @@
 <?php
 
 
+use App\Registries\ContainerRegistry;
+
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
@@ -9,8 +11,11 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
-$roleQuery = "SELECT * from roles where role_id=$id";
-$roleInfo = $db->query($roleQuery);
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+$roleQuery = "SELECT * from roles where role_id= ?";
+$roleInfo = $db->rawQuery($roleQuery, [$id]);
 /* Not allowed to edit API role */
 if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
 	header("Location:roles.php");

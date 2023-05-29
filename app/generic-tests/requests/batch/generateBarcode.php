@@ -69,6 +69,15 @@ if ($id > 0) {
         // Extend the TCPDF class to create custom Header and Footer
         class MYPDF extends TCPDF
         {
+            public $logo;
+            public $text;
+            public $batch;
+            public $resulted;
+            public $reviewed;
+            public $createdBy;
+            public $worksheetName;
+
+
             public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName)
             {
                 $this->logo = $logo;
