@@ -820,7 +820,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	<td>
 																		<?php
 																		$value = '';
-																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen','GeneXpert', 'ELISA', 'other'))) {
 																			$value = 'value="' . $rows['test_name'] . '"';
 																			$show =  "block";
 																		} else {
@@ -834,6 +834,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																				RDT-Antibody</option>
 																			<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>
 																				RDT-Antigen</option>
+																			<option value="GeneXpert" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
 																			<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>
 																				ELISA</option>
 																			<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>
