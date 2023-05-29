@@ -135,7 +135,7 @@ if (!empty($interfaceData)) {
             //set result in result fields
             if (trim($result['results']) != "") {
 
-                $vlResult = trim(str_replace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
+                $vlResult = trim(str_ireplace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
 
                 $unit = trim($result['test_unit']);
 

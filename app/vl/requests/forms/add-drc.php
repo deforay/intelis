@@ -501,7 +501,7 @@ $sFormat = '';
 										<tr class="resultSection">
 											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label></td>
 											<td class="resultInputContainer">
-												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);" disabled>
+												<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" <?php echo $labFieldDisabled; ?> onchange="calculateLogValue(this);" disabled>
 												<datalist id="possibleVlResults">
 												</datalist>
 											</td>

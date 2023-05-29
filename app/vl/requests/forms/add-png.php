@@ -13,7 +13,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 $bQuery = "SELECT * FROM batch_details";
@@ -422,19 +422,22 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 											<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlVlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalVlResult');">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>
 											</td>
-											
+
 										</tr>
 										<tr>
-										<td class="vlResult labels"><label for="vlResult">VL result</label></td>
-											<td class="vlResult">
-												<input type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;">
+											<td class="vlResult labels"><label for="vlResult">VL result</label></td>
+											<td class="vlResult resultInputContainer">
+												<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlVlResult" id="cphlVlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;">
+												<datalist id="possibleVlResults">
+
+												</datalist>
 											</td>
 											<td class="labels"><label for="batchQuality">Batch quality</label></td>
 											<td>
@@ -454,10 +457,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<input type="radio" id="failed" name="testQuality" value="invalid" title="Test Quality">Invalid
 												</label>
 											</td>
-											
+
 										</tr>
 										<tr>
-										<td class="labels"><label for="batchNo">Batch</label></td>
+											<td class="labels"><label for="batchNo">Batch</label></td>
 											<td>
 												<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%">
 													<option value="">-- Select --</option>
@@ -466,7 +469,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<?php } ?>
 												</select>
 											</td>
-													</tr>
+										</tr>
 										<tr>
 											<th scope="row" colspan="6" style="font-size: 18px; font-weight: bold;">For failed / invalid runs only</th>
 										</tr>
@@ -477,7 +480,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 											<td class="labels"><label for="failedTestingTech">Testing Platform</label></td>
 											<td>
-												<select name="failedTestingTech" id="failedTestingTech" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
+												<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -485,8 +488,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												</select>
 											</td>
 											<td class="labels"><label for="failedvlResult">VL result</label></td>
-											<td>
-												<input type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;">
+											<td class="resultInputContainer">
+												<input list="failedPossibleVlResults" disabled="disabled" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;">
+												<datalist id="failedPossibleVlResults">
+
+												</datalist>
 											</td>
 										</tr>
 										<tr>
@@ -524,21 +530,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<th scope="row" class="labels" colspan="6" style="font-size: 18px; font-weight: bold;">Final Result</th>
 										</tr>
 										<tr>
-											<td class="labels"><label for="finalViralResult">Final Viral Load Result(copies/ml)</label></td>
-											<td>
-												<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;">
+											<td class="labels"><label for="finalVlResult">Final Viral Load Result(copies/ml)</label></td>
+											<td class="resultInputContainer">
+												<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalVlResult" id="finalVlResult" placeholder="Viral Load Result" title="Enter VL Result" style="width:100%;">
+												<datalist id="finalPossibleVlResults">
+
+												</datalist>
 											</td>
 											<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 											<td>
 												<input type="text" class="form-control" name="qcTechName" id="qcTechName" placeholder="QC Tech Name" title="Enter QC Tech Name" style="width:100%;">
 											</td>
-											<td class="labels"><label for="finalViralResult">Report Date</label></td>
+											<td class="labels"><label for="vlResult">Report Date</label></td>
 											<td>
 												<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;">
 											</td>
 										</tr>
 										<tr>
-											<td class="labels"><label for="finalViralResult">QC Tech Signature</label></td>
+											<td class="labels"><label for="vlResult">QC Tech Signature</label></td>
 											<td>
 												<input type="text" class="form-control" name="qcTechSign" id="qcTechSign" placeholder="QC Tech Signature" title="Enter QC Tech Signature" style="width:100%;">
 											</td>
@@ -608,55 +617,50 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	$(document).ready(function() {
 		$("#artNo").on('input', function() {
 
-let artNo = $.trim($(this).val());
+			let artNo = $.trim($(this).val());
 
-if (artNo.length > 3) {
+			if (artNo.length > 3) {
 
-	 $.post("/common/patient-last-request-details.php", {
-			   testType: 'vl',
-			   patientId: artNo,
-		  },
-		  function(data) {
-			   if (data != "0") {
-					obj = $.parseJSON(data);
-					if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-						 $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
-					}
-					if (obj.request_created_datetime != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
-					}
-					if (obj.sample_collection_date != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
-					}
-					if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
-					}
-			   } else {
-					
-						 $("#artNoGroup").html('');
-			   }
-		  });
-}
+				$.post("/common/patient-last-request-details.php", {
+						testType: 'vl',
+						patientId: artNo,
+					},
+					function(data) {
+						if (data != "0") {
+							obj = $.parseJSON(data);
+							if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+								$("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+							}
+							if (obj.request_created_datetime != null) {
+								$("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+							}
+							if (obj.sample_collection_date != null) {
+								$("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+							}
+							if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+								$("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+							}
+						} else {
 
-});
-		$("#gender").change(function(){
-			if($(this).val()=="female")
+							$("#artNoGroup").html('');
+						}
+					});
+			}
+
+		});
+		$("#gender").change(function() {
+			if ($(this).val() == "female")
 				$(".femaleFactor").show();
 			else
 				$(".femaleFactor").hide();
 		});
-		$("input[name='typeOfSample']").click(function(){
-			if($(this).val()=="DBS")
-			{
+		$("input[name='typeOfSample']").click(function() {
+			if ($(this).val() == "DBS") {
 				$("#plasmaOne,#plasmaTwo").val("");
 				$("#wholeBloodOne,#wholeBloodTwo").val("");
-			}
-			else if($(this).val()=="Whole blood")
-			{
+			} else if ($(this).val() == "Whole blood") {
 				$("#plasmaOne,#plasmaTwo").val("");
-			}
-			else if($(this).val()=="Plasma")
-			{
+			} else if ($(this).val() == "Plasma") {
 				$("#wholeBloodOne,#wholeBloodTwo").val("");
 			}
 		});
@@ -687,6 +691,8 @@ if (artNo.length > 3) {
 			$('.ui-datepicker-calendar').show();
 		});
 
+
+
 		$('#processTime').timepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -699,26 +705,26 @@ if (artNo.length > 3) {
 		$('#labId').select2({
 			placeholder: "Select Laboratory Name"
 		});
-		
-		
+
+
 		$('#reviewedBy').select2({
 			placeholder: "Select Reviewed By"
 		});
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
 		});
-	$('#labId').select2({
+		$('#labId').select2({
 			placeholder: "Select Testing Lab Name"
 		});
-          $('#fName').select2({
-               placeholder: "Select Clinic/Health Center"
-          });
-          $('#district').select2({
-               placeholder: "District"
-          });
-          $('#province').select2({
-               placeholder: "Province"
-          });
+		$('#fName').select2({
+			placeholder: "Select Clinic/Health Center"
+		});
+		$('#district').select2({
+			placeholder: "District"
+		});
+		$('#province').select2({
+			placeholder: "Province"
+		});
 
 
 	});
@@ -742,6 +748,23 @@ if (artNo.length > 3) {
 				document.getElementById('vlRequestForm').submit();
 			<?php } ?>
 		}
+	}
+
+	function getVlResults(testingPlatformId, datalistId, vlResultId) {
+		testingVal = $('#' + testingPlatformId).val();
+		var str1 = testingVal.split("##");
+		var platformId = str1[3];
+		$("#" + datalistId).html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				// alert(data);
+				if (data != "") {
+					$("#" + datalistId).html(data);
+					$("#" + vlResultId).attr("disabled", false);
+				}
+			});
 	}
 
 	function validateSaveNow() {
@@ -823,7 +846,7 @@ if (artNo.length > 3) {
 		//    if(cName!='' && provinceName && facilityName){
 		//      provinceName = false;
 		//    }
-		//    
+		//
 		//    if(cName!='' && facilityName){
 		//      $.post("/includes/siteInformationDropdownOptions.php", { cName : cName,testType: 'vl'},
 		//      function(data){

@@ -105,7 +105,7 @@ try {
         $_POST['regimenInitiatedOn'] = null;
     }
 
-   
+
 
     if (!isset($_POST['hasChangedRegimen']) || trim($_POST['hasChangedRegimen']) == '') {
         $_POST['hasChangedRegimen'] = null;
@@ -251,10 +251,10 @@ try {
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if(isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])){
+    if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
     }
-    
+
 
     $vldata = array(
         'vlsm_instance_id'                      => $instanceId,
@@ -381,7 +381,7 @@ try {
         $pngSpecificFields['failed_batch_quality'] = (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null);
         $pngSpecificFields['failed_sample_test_quality'] = (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null);
         $pngSpecificFields['failed_batch_id'] = (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null);
-        $pngSpecificFields['result'] = (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : null;
+        $pngSpecificFields['result'] = (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') ? $_POST['vlResult'] : null;
         $pngSpecificFields['qc_tech_name'] = (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null);
         $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
         $pngSpecificFields['qc_date'] = $_POST['qcDate'];

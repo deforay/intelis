@@ -191,7 +191,7 @@ try {
      if (!empty($allChange)) {
           $reasonForChanges = json_encode($allChange);
      }
-   
+
      if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
           $reviewedOn = explode(" ", $_POST['reviewedOn']);
           $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
@@ -206,7 +206,7 @@ try {
      /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
           $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
      } */
-     if(isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])){
+     if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
           $interpretationResult = $_POST['resultInterpretation'];
      }
 
@@ -325,7 +325,7 @@ try {
           $pngSpecificFields['plasma_process_tech'] = (isset($_POST['processTech']) && $_POST['processTech'] != '' ? $_POST['processTech'] : null);
           $pngSpecificFields['sample_collected_by'] = (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null);
           $pngSpecificFields['tech_name_png'] = (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null;
-          $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlvlResult']) && $_POST['cphlvlResult'] != '' ? $_POST['cphlvlResult'] : null);
+          $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlVlResult']) && $_POST['cphlVlResult'] != '' ? $_POST['cphlVlResult'] : null);
           $pngSpecificFields['batch_quality'] = (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null);
           $pngSpecificFields['sample_test_quality'] = (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null);
           $pngSpecificFields['sample_batch_id'] = (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null);
@@ -335,7 +335,7 @@ try {
           $pngSpecificFields['failed_batch_quality'] = (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null);
           $pngSpecificFields['failed_sample_test_quality'] = (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null);
           $pngSpecificFields['failed_batch_id'] = (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null);
-          $pngSpecificFields['result'] = (isset($_POST['finalViralResult']) && trim($_POST['finalViralResult']) != '') ? $_POST['finalViralResult'] : null;
+          $pngSpecificFields['result'] = (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') ? $_POST['vlResult'] : null;
           $pngSpecificFields['qc_tech_name'] = (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null);
           $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
           $pngSpecificFields['qc_date'] = $_POST['qcDate'];

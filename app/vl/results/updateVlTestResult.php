@@ -272,6 +272,7 @@ if ($arr['vl_form'] == 1) {
 }
 
 ?>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('.date').datepicker({
@@ -303,23 +304,25 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').mask('99-aaa-9999 99:99');
 
 		$('.result-focus').change(function(e) {
-			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") { ?>
-				var status = false;
-				$(".result-focus").each(function(index) {
-					if ($(this).val() != "") {
-						status = true;
-					}
-				});
-				if (status==true) {
-					$('.change-reason').show();
-					$('.reasonForResultChanges').show();
-					$('#reasonForResultChanges').addClass('isRequired');
-				} else {
-					$('.change-reason').hide();
-					$('.reasonForResultChanges').hide();
-					$('#reasonForResultChanges').removeClass('isRequired');
+			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") { 
+			?>
+			var status = false;
+			$(".result-focus").each(function(index) {
+				if ($(this).val() != "") {
+					status = true;
 				}
-			<?php //} ?>
+			});
+			if (status == true) {
+				$('.change-reason').show();
+				$('.reasonForResultChanges').show();
+				$('#reasonForResultChanges').addClass('isRequired');
+			} else {
+				$('.change-reason').hide();
+				$('.reasonForResultChanges').hide();
+				$('#reasonForResultChanges').removeClass('isRequired');
+			}
+			<?php //} 
+			?>
 		});
 	});
 </script>

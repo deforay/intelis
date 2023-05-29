@@ -126,7 +126,7 @@ $sFormat = '';
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-4 col-md-4 pull-right">
                                                        <div class="form-group">
-                                                            <label for="sampleCode">Print Barcode Label<span class="mandatory">*</span> </label> 
+                                                            <label for="sampleCode">Print Barcode Label<span class="mandatory">*</span> </label>
                                                             <input type="checkbox" class="" id="printBarCode" name="printBarCode" checked />
                                                        </div>
                                                   </div>
@@ -289,29 +289,29 @@ $sFormat = '';
                                              </div>
                                         </div>
                                         <div class="row">
-                                        <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant">Is Patient Pregnant? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3 femaleSection">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                        </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -355,7 +355,7 @@ $sFormat = '';
                                                                  <label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
                                                                       <option value=""> — Select-- </option>
-                                                                      <option value="6 Months - < 1 year"> 6 Months - < 1 year </option>   
+                                                                      <option value="6 Months - < 1 year"> 6 Months - < 1 year </option>
                                                                       <option value="1 - 2 years"> 1 - 2 years </option>
                                                                       <option value="2 - < 5 years"> 2 - < 5 years </option>
                                                                       <option value="5 years and above"> 5 years and above </option>
@@ -372,12 +372,12 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="">Indication for Treatment Initiation<span class="mandatory">*</span></label>
                                                                  <select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
-                                                                 <option value=""> — Select-- </option>
-                                                                 <option value="PMTCT"> PMTCT </option>     
-                                                                 <option value="Child under 15 years"> Child under 15 years </option>
-                                                                 <option value="CD4 less than 500"> CD4 less than 500 </option>
-                                                                 <option value="TB Infection"> TB Infection </option>
-                                                                 <option value="Other"> Other </option>
+                                                                      <option value=""> — Select-- </option>
+                                                                      <option value="PMTCT"> PMTCT </option>
+                                                                      <option value="Child under 15 years"> Child under 15 years </option>
+                                                                      <option value="CD4 less than 500"> CD4 less than 500 </option>
+                                                                      <option value="TB Infection"> TB Infection </option>
+                                                                      <option value="Other"> Other </option>
                                                                  </select>
                                                                  <input type="text" class="form-control newTreatmentIndication" name="newTreatmentIndication" id="newTreatmentIndication" placeholder="Treatment Initiation" title="Please enter Indication for Treatment Initiation" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -408,7 +408,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                   </div>
-                                                  <div class="row">                                                       
+                                                  <div class="row">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="">Which Treatment Line is Patient On? <span class="mandatory">*</span></label>
@@ -451,7 +451,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                                   <div class="row ">
-                                                       
+
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="">Patient has active TB<span class="mandatory">*</span> </label>
@@ -740,7 +740,7 @@ $sFormat = '';
                                                                  <div class="col-md-4 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
@@ -852,7 +852,7 @@ $sFormat = '';
                                    </div>
                               </div>
                          </div>
-                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                          <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
                     </form>
@@ -885,69 +885,67 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script>
      let provinceName = true;
      let facilityName = true;
+
      function checkIndicationForTreatmentValue() {
-        var treatmentIndication = $("#treatmentIndication").val();
-        if (treatmentIndication == 'Other') {
-            $(".newTreatmentIndication").show();
-            $("#newTreatmentIndication").addClass("isRequired");
-            $("#newTreatmentIndication").focus();
-        } else {
-            $(".newTreatmentIndication").hide();
-            $("#newTreatmentIndication").removeClass("isRequired");
-            $('#newTreatmentIndication').val("");
-        }
-    }
+          var treatmentIndication = $("#treatmentIndication").val();
+          if (treatmentIndication == 'Other') {
+               $(".newTreatmentIndication").show();
+               $("#newTreatmentIndication").addClass("isRequired");
+               $("#newTreatmentIndication").focus();
+          } else {
+               $(".newTreatmentIndication").hide();
+               $("#newTreatmentIndication").removeClass("isRequired");
+               $('#newTreatmentIndication').val("");
+          }
+     }
      $(document).ready(function() {
 
           $("#artNo").on('input', function() {
 
-let artNo = $.trim($(this).val());
+               let artNo = $.trim($(this).val());
 
 
-if (artNo.length > 3) {
+               if (artNo.length > 3) {
 
-	 $.post("/common/patient-last-request-details.php", {
-			   testType: 'vl',
-			   patientId: artNo,
-		  },
-		  function(data) {
-			   if (data != "0") {
-					obj = $.parseJSON(data);
-					if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-						 $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
-					}
-					if (obj.request_created_datetime != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
-					}
-					if (obj.sample_collection_date != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
-					}
-					if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
-					}
-			   } else {
-					
-						 $("#artNoGroup").html('');
-			   }
-		  });
-}
+                    $.post("/common/patient-last-request-details.php", {
+                              testType: 'vl',
+                              patientId: artNo,
+                         },
+                         function(data) {
+                              if (data != "0") {
+                                   obj = $.parseJSON(data);
+                                   if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                   }
+                                   if (obj.request_created_datetime != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                   }
+                                   if (obj.sample_collection_date != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                   }
+                                   if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                   }
+                              } else {
 
-});
-         $('#activeTB').on('change',function(){
-          if($(this).val()=='yes')
-          {
-               $('.tbPhaseBox').show();
-               $('#tbPhase').addClass('isRequired');
+                                   $("#artNoGroup").html('');
+                              }
+                         });
+               }
 
-          }
-                    else
-                    {
-                         $('.tbPhaseBox').hide();
-                         $('#tbPhase').removeClass('isRequired');
-                    }
-               
-         });
-        
+          });
+          $('#activeTB').on('change', function() {
+               if ($(this).val() == 'yes') {
+                    $('.tbPhaseBox').show();
+                    $('#tbPhase').addClass('isRequired');
+
+               } else {
+                    $('.tbPhaseBox').hide();
+                    $('#tbPhase').removeClass('isRequired');
+               }
+
+          });
+
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1157,20 +1155,19 @@ if (artNo.length > 3) {
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-         
-          if($("#selectedSample").val()!="")
-          {
+
+          if ($("#selectedSample").val() != "") {
                patientInfo = JSON.parse($("#selectedSample").val());
                if ($.trim(patientInfo['sample_tested_datetime']) != '') {
                     $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    
+
                }
                if ($.trim(patientInfo['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+                    $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
                }
           }
      }
@@ -1521,7 +1518,7 @@ if (artNo.length > 3) {
      function setPatientDetails(pDetails) {
           $("#selectedSample").val(pDetails);
           var patientArray = JSON.parse(pDetails);
-       //  alert(pDetails);
+          //  alert(pDetails);
           $("#patientFirstName").val(patientArray['name']);
           $("#patientPhoneNumber").val(patientArray['mobile']);
           if ($.trim(patientArray['dob']) != '') {
@@ -1586,16 +1583,16 @@ if (artNo.length > 3) {
           }
 
           if ($.trim(patientArray['sample_tested_datetime']) != '') {
-                    $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    
-               }
-               if ($.trim(patientArray['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientArray['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientArray['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
-               }
+               $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+
+          }
+          if ($.trim(patientArray['result']) != '') {
+               $("#rmTestingVlValue").val($.trim(patientArray['result']));
+               $("#repeatTestingVlValue").val($.trim(patientArray['result']));
+               $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
+          }
 
      }
 
@@ -1628,5 +1625,4 @@ if (artNo.length > 3) {
                $('#vlResult').val(value);
           }
      }
-
 </script>
