@@ -18,7 +18,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 $eidResults = $eidObj->getEidResults();
-$specimenTypeResult = $eidObj->getEidSampleTypes();
+$specimenTypeResult = $eidObj->getEidSampleTypes(); 
 
 // Getting the list of Provinces, Districts and Facilities
 
@@ -144,10 +144,10 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="labels"><label for="supportPartner">Implementing Partner </label></td>
+                                        <td class="labels"><label for="supportPartner">Implementing Partner <span class="mandatory">*</span></label></td>
                                         <td>
                                             <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
-                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
+                                            <select class="form-control isRequired" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
@@ -156,9 +156,9 @@ $aResult = $db->query($aQuery);
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <td class="labels"><label for="fundingSource">Funding Partner</label></td>
+                                        <td class="labels"><label for="fundingSource">Funding Partner<span class="mandatory">*</span></label></td>
                                         <td>
-                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                                            <select class="form-control isRequired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
@@ -201,15 +201,15 @@ $aResult = $db->query($aQuery);
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" oninput="showPatientList($(this).val(),1500);" />
                                         </td>
-                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name </label></th>
+                                        <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name<span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control isRequired" id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels"><label for="childDob">Date of Birth </label></th>
+                                        <th scope="row" class="labels"><label for="childDob">Date of Birth <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
                                         <th scope="row" class="labels"><label for="childGender">Gender <span class="mandatory">*</span> </label></th>
                                         <td>
@@ -224,15 +224,15 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" class="labels">Infant Age (months) <span class="mandatory">*</span></th>
                                         <td><input type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
-                                        <th scope="row" class="labels">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
+                                        <th scope="row" class="labels">Mother ART Number<span class="mandatory">*</span></th>
+                                        <td><input type="text" class="form-control isRequired" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Caretaker phone number</th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                        <th scope="row" class="labels">Caretaker phone number<span class="mandatory">*</span></th>
+                                        <td><input type="text" class="form-control isRequired" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
-                                        <th scope="row" class="labels">Infant caretaker address</th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
+                                        <th scope="row" class="labels">Infant caretaker address<span class="mandatory">*</span></th>
+                                        <td><textarea class="form-control isRequired" id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
 
@@ -249,9 +249,9 @@ $aResult = $db->query($aQuery);
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV Status:</th>
+                                        <th scope="row" style="width:15% !important" class="labels">Mother's HIV Status:<span class="mandatory">*</span> </th>
                                         <td style="width:35% !important">
-                                            <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
+                                            <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="positive" <?php echo ($eidInfo['mother_hiv_status'] == 'positive') ? "selected='selected'" : ""; ?>> Positive </option>
                                                 <option value="negative" <?php echo ($eidInfo['mother_hiv_status'] == 'negative') ? "selected='selected'" : ""; ?>> Negative </option>
@@ -259,9 +259,9 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
 
-                                        <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? </th>
+                                        <th scope="row" style="width:15% !important" class="labels">Is Mother on ART? <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important">
-                                            <select class="form-control" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
+                                            <select class="form-control isRequired" name="motherTreatment" id="motherTreatment" onchange="showRegimen();">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['mother_treatment'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['mother_treatment'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -293,9 +293,9 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Infant Rapid HIV Test Done</th>
+                                        <th scope="row" class="labels">Infant Rapid HIV Test Done<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
+                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -309,9 +309,9 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Rapid Test Result</th>
+                                        <th scope="row" class="labels">Rapid Test Result<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="rapidTestResult" id="rapidTestResult">
+                                            <select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
                                                 <option value=''> -- Select -- </option>
                                                 <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                     <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
@@ -320,9 +320,9 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
 
-                                        <th scope="row" class="labels">Infant still breastfeeding?</th>
+                                        <th scope="row" class="labels">Infant still breastfeeding?<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
+                                            <select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -331,17 +331,17 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis</th>
+                                        <th scope="row" class="labels">Infant On PMTCT Prophylaxis<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
+                                            <select class="form-control isRequired" name="infantOnPMTCTProphylaxis" id="infantOnPMTCTProphylaxis">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['infant_on_pmtct_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                             </select>
                                         </td>
-                                        <th scope="row" class="labels">Infant On CTX Prophylaxis</th>
+                                        <th scope="row" class="labels">Infant On CTX Prophylaxis<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
+                                            <select class="form-control isRequired" name="infantOnCTXProphylaxis" id="infantOnCTXProphylaxis">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['infant_on_ctx_prophylaxis'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -349,14 +349,14 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
+                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :<span class="mandatory">*</span> </th>
                                         <td>
-                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
+                                            <input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
                                         </td>
 
-                                        <th scope="row" class="labels">Type of Test :</th>
+                                        <th scope="row" class="labels">Type of Test :<span class="mandatory">*</span> </th>
                                         <td>
-                                            <select class="form-control" name="pcrTestNumber" id="pcrTestNumber">
+                                            <select class="form-control isRequired" name="pcrTestNumber" id="pcrTestNumber">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="1" <?php echo ($eidInfo['pcr_test_number'] == '1') ? "selected='selected'" : ""; ?>> 1st PCR </option>
                                                 <option value="2" <?php echo ($eidInfo['pcr_test_number'] == '2') ? "selected='selected'" : ""; ?>> 2nd PCR </option>
@@ -365,7 +365,7 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr class="pcrBox">
-                                        <th scope="row" class="labels">Previous PCR Test Result :</th>
+                                        <th scope="row" class="labels">Previous PCR Test Result :<span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
                                                 <option value=''> -- Select -- </option>
@@ -375,13 +375,13 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
 
-                                        <th scope="row" class="labels">Previous PCR test date :</th>
+                                        <th scope="row" class="labels">Previous PCR test date :<span class="mandatory">*</span> </th>
                                         <td>
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
                                     <tr class="pcrBox">
-                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
+                                        <th scope="row" class="labels">Reason for Repeat PCR :<span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
@@ -422,15 +422,15 @@ $aResult = $db->query($aQuery);
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row" class="labels">Requesting Officer</th>
+                                        <th scope="row" class="labels">Requesting Officer<span class="mandatory">*</span></th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
+                                            <input class="form-control isRequired" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Sample Requestor Phone</th>
+                                        <th scope="row" class="labels">Sample Requestor Phone<span class="mandatory">*</span></th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
+                                            <input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
                                         <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
@@ -771,10 +771,17 @@ $aResult = $db->query($aQuery);
         getTestingPoint();
         checkPCRTestReason();
         showRegimen();
+        $('#rapidTestPerformed').on('change', function(){
+            if($(this).val()=='yes')
+                $('#rapidtestDate').addClass('isRequired');
+            else
+                $('#rapidtestDate').removeClass('isRequired');
+        });
         if ($("#pcrTestNumber").val() == 1) {
             $("#prePcrTestResult").val("");
             $("#previousPCRTestDate").val("");
             $("#pcrTestReason").val("");
+           
             $('.pcrBox').hide();
         } else {
             $('.pcrBox').show();
@@ -782,11 +789,14 @@ $aResult = $db->query($aQuery);
 
         $("#pcrTestNumber").on("change", function() {
             if ($("#pcrTestNumber").val() == 1) {
-                $("#prePcrTestResult").val("");
-                $("#previousPCRTestDate").val("");
-                $("#pcrTestReason").val("");
+                $("#prePcrTestResult").removeClass("isRequired");
+            $("#previousPCRTestDate").removeClass("isRequired");
+            $("#pcrTestReason").removeClass("isRequired");
                 $('.pcrBox').hide();
             } else {
+                $("#prePcrTestResult").addClass("isRequired");
+            $("#previousPCRTestDate").addClass("isRequired");
+            $("#pcrTestReason").addClass("isRequired");
                 $('.pcrBox').show();
             }
         });

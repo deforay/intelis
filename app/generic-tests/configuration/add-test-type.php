@@ -224,11 +224,11 @@ $symptomInfo = $db->query($symQuery);
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;width:30%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:13%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:13%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:15%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:8%;"><?php echo _("Action"); ?></th>
+										<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:30%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:25%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
@@ -647,7 +647,7 @@ function showTags(e,obj,cls)
 		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
 			rl = document.getElementById(table).rows.length;
-			if (rl == 0) {
+			if (rl == 0) { 
 				testQuanCounter = 0;
 				addResultRow(table);
 			}

@@ -472,11 +472,6 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 
 										<ul class="treeview-menu">
 											<?php
-											if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu testTypeConfigurationMenu">
-													<a href="/generic-tests/configuration/test-type.php" data-inner-pages="<?= base64_encode('/generic-tests/configuration/add-test-type.php') . ';' . base64_encode('/generic-tests/configuration/edit-test-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
-												</li>
-											<?php }
 											if (isset($_SESSION['privileges']) && in_array("generic-sample-type.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu genericSampleTypeMenu">
 													<a href="/generic-tests/reference/sample-types/generic-sample-type.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/sample-types/generic-add-sample-type.php') . ';' . base64_encode('/generic-tests/reference/sample-types/generic-edit-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
@@ -501,7 +496,13 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 												<li class="allMenu genericSampleRejectionReasonsMenu">
 													<a href="/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/sample-rejection-reasons/generic-edit-rejection-reasons.php') . ';' . base64_encode('/generic-tests/reference/sample-rejection-reasons/generic-add-rejection-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Rejection Reasons"); ?></a>
 												</li>
-											<?php } ?>
+											<?php } 
+											if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu testTypeConfigurationMenu">
+													<a href="/generic-tests/configuration/test-type.php" data-inner-pages="<?= base64_encode('/generic-tests/configuration/add-test-type.php') . ';' . base64_encode('/generic-tests/configuration/edit-test-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
+												</li>
+											<?php }
+											?>
 										</ul>
 									</li>
 								<?php }

@@ -271,11 +271,11 @@ foreach ($testSymptomsMapInfo as $val) {
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:15%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;"><?php echo _("Action"); ?></th>
+										<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:30%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:25%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
@@ -584,7 +584,7 @@ foreach ($testSymptomsMapInfo as $val) {
 			htmlVal = htmlVal.replace('<span class="remove-tag">x</span>', '');
 			prevVal = $(this).parent().parent().prev(".fdropDown").val();
 			curVal = prevVal.replace(htmlVal+',', "");
-			$(this).parent().parent().prev(".fdropDown").val(curVal);
+			$(this).parent().parent().prev(".fdropDown").val(curVal); 
 			$(this).parent().remove();
 		});
 	});
