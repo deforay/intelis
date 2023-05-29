@@ -47,7 +47,7 @@ try {
     // compress file
     $baseName = basename($sqlFileName);
     if (!$zip->addFile($sqlFileName, $baseName)) {
-        throw new RuntimeException(sprintf('Add file failed: %s', $fileName));
+        throw new RuntimeException(sprintf('Add file failed: %s', $sqlFileName));
     }
 
     // encrypt the file with AES-256
@@ -84,7 +84,7 @@ try {
         // compress file
         $baseName = basename($sqlFileName);
         if (!$zip->addFile($sqlFileName, $baseName)) {
-            throw new RuntimeException(sprintf('Add file failed: %s', $fileName));
+            throw new RuntimeException(sprintf('Add file failed: %s', $sqlFileName));
         }
 
         // encrypt the file with AES-256
