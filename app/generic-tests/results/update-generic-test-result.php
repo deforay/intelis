@@ -79,7 +79,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
 $genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
-//echo '<pre>'; print_r($genericTestInfo); die;
+
 //get suspected treatment failure at
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
@@ -974,7 +974,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                         <td id="result-sections">
                                                             <input type="text" id="result" name="result" class="form-control result-text" value="" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);" autocomplete="off">
                                                             <br>
-                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation">
+                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation" value="<?php echo $genericResultInfo['final_result_interpretation']; ?>"> 
                                                             <input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="quantitative">
                                                         </td>
                                                     </tr>
@@ -1767,6 +1767,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					testType: testType,
                     result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+                    resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
