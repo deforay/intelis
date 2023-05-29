@@ -894,7 +894,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													</tbody>
 													<tfoot id="resultSection">
 														<tr>
-															<th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
+															<th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br>Result Interpretation</th>
 															<td id="result-sections">
 
 															</td>
@@ -1720,7 +1720,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#result-sections").html(data.result);
 					} else {
-						$('#resultSection').hide()
+						$('#resultSection').hide();
 					}
 					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
