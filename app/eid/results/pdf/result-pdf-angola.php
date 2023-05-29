@@ -11,6 +11,7 @@ use App\Utilities\DateUtility;
 
 class MYPDFANG extends TCPDF
 {
+    public $logo = '';
     //Page header
     public function setHeading($logo, $text, $lab)
     {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Services\EidService;
 use App\Services\FacilitiesService;
@@ -9,6 +10,11 @@ use App\Services\GenericTestsService;
 use App\Services\UsersService;
 use App\Services\VlService;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $title = "Edit Specimen Referral Manifest";
 
@@ -37,15 +43,20 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
-$pQuery = "SELECT * FROM package_details WHERE package_id=" . $id;
-$pResult = $db->rawQuery($pQuery);
+$pQuery = "SELECT * FROM package_details WHERE package_id = ?";
+$pResult = $db->rawQuery($pQuery, [$id]);
 
 if ($pResult[0]['package_status'] == 'dispatch') {
 	header("Location:packageList.php");
 }
+
+$sarr = $general->getSystemConfig();
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
+	$sCode = 'sample_code';
+} else{
 	$sCode = 'sample_code';
 }
 
@@ -53,7 +64,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
+$m = $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
 if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'vl') ? 'vl' : $module;
@@ -252,7 +263,7 @@ $global = $general->getGlobalConfig();
 									</div><br /><br />
 									<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 										<?php foreach ($result as $sample) {
-											if ($sample[$sCode] != '') {
+											if (!empty($sample[$sCode])) {
 												if ($module == 'vl') {
 													$sampleId  = $sample['vl_sample_id'];
 												} else if ($module == 'eid') {

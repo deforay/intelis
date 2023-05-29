@@ -1,7 +1,14 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName = "batch_details";
 try {

@@ -10,6 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var UsersService $userModel */
 $userModel = ContainerRegistry::get(UsersService::class);
 
@@ -33,6 +36,7 @@ if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty($_POST['u']) && !empty($_PO
 if ($fromRecencyAPI === true) {
     $_POST['userName'] = $_POST['u'];
     $_POST['password'] = $_POST['t'];
+    $userId = null;
 } else {
     $userId = base64_decode($_POST['userId']);
 }

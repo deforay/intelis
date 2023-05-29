@@ -31,6 +31,10 @@ if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
+    public $logo = "";
+    public $text = "";
+    public $labname = "";
+
     public function setHeading($logo, $text, $labname)
     {
         $this->logo = $logo;
