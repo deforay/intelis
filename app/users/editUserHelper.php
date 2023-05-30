@@ -130,18 +130,18 @@ try {
             // $nUser['email'] = $_POST['email'];
             // $nUser['phoneNo'] = $_POST['phoneNo'];
             // $nUser['interfaceUserName'] = $_POST['interfaceUserName'];
-            // $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            // $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+            // $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on STS
+            // $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+            // $nUser['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
             // $nUser['status'] = 'inactive';
             // $nUser['userId'] = base64_encode($data['user_id']);
 
             $_POST['userId'] = $userId;
-            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on STS
+            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
             $_POST['status'] = 'inactive';
             $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";

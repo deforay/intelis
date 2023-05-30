@@ -77,56 +77,6 @@ try {
     } else {
         $_POST['dob'] = null;
     }
-    if (isset($_POST['countryFormId']) && $_POST['countryFormId'] == '3') {
-        if (!isset($_POST['isPatientNew']) || trim($_POST['isPatientNew']) == '') {
-            $_POST['isPatientNew'] = null;
-            $_POST['dateOfArtInitiation'] = null;
-        } else if ($_POST['isPatientNew'] == "yes") {
-            //Ser ARV initiation date
-            if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-                $_POST['dateOfArtInitiation'] = DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
-            } else {
-                $_POST['dateOfArtInitiation'] = null;
-            }
-        } else if ($_POST['isPatientNew'] == "no") {
-            $_POST['dateOfArtInitiation'] = null;
-        }
-    } else {
-        if (isset($_POST['dateOfArtInitiation']) && trim($_POST['dateOfArtInitiation']) != "") {
-            $_POST['dateOfArtInitiation'] = DateUtility::isoDateFormat($_POST['dateOfArtInitiation']);
-        } else {
-            $_POST['dateOfArtInitiation'] = null;
-        }
-    }
-
-    if (isset($_POST['regimenInitiatedOn']) && trim($_POST['regimenInitiatedOn']) != "") {
-        $_POST['regimenInitiatedOn'] = DateUtility::isoDateFormat($_POST['regimenInitiatedOn']);
-    } else {
-        $_POST['regimenInitiatedOn'] = null;
-    }
-
-
-
-    if (!isset($_POST['hasChangedRegimen']) || trim($_POST['hasChangedRegimen']) == '') {
-        $_POST['hasChangedRegimen'] = null;
-        $_POST['reasonForArvRegimenChange'] = null;
-        $_POST['dateOfArvRegimenChange'] = null;
-    }
-    if (trim($_POST['hasChangedRegimen']) == "no") {
-        $_POST['reasonForArvRegimenChange'] = null;
-        $_POST['dateOfArvRegimenChange'] = null;
-    } else if (trim($_POST['hasChangedRegimen']) == "yes") {
-        if (isset($_POST['dateOfArvRegimenChange']) && trim($_POST['dateOfArvRegimenChange']) != "") {
-            $_POST['dateOfArvRegimenChange'] = DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']);
-        }
-    }
-
-    //Set last VL test date
-    if (isset($_POST['lastViralLoadTestDate']) && trim($_POST['lastViralLoadTestDate']) != "") {
-        $_POST['lastViralLoadTestDate'] = DateUtility::isoDateFormat($_POST['lastViralLoadTestDate']);
-    } else {
-        $_POST['lastViralLoadTestDate'] = null;
-    }
 
     //Sample type section
     if (isset($_POST['specimenType']) && trim($_POST['specimenType']) != "") {
@@ -274,7 +224,7 @@ try {
         'pregnancy_trimester'                   => (isset($_POST['trimester']) && $_POST['trimester'] != '') ? $_POST['trimester'] :  null,
         'patient_id'                            => (isset($_POST['artNo']) && $_POST['artNo'] != '') ? $_POST['artNo'] :  null,
         'treatment_indication'                  => (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] != '') ? $_POST['treatmentIndication'] :  null,
-        'treatment_initiated_date'              => $_POST['dateOfArtInitiation'],
+        //'treatment_initiated_date'              => $_POST['dateOfArtInitiation'],
         'patient_mobile_number'                 => (isset($_POST['patientPhoneNumber']) && $_POST['patientPhoneNumber'] != '') ? $_POST['patientPhoneNumber'] :  null,
         'consent_to_receive_sms'                => (isset($_POST['receiveSms']) && $_POST['receiveSms'] != '') ? $_POST['receiveSms'] :  null,
         'sample_type'                           => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  null,
@@ -356,38 +306,6 @@ try {
         $_POST['reportDate'] = null;
     }
 
-    //For PNG form
-    $pngSpecificFields = [];
-    if (isset($_POST['countryFormId']) && $_POST['countryFormId'] == '5') {
-        $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
-        $pngSpecificFields['art_cd_date'] = $_POST['cdDate'];
-        $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
-        $pngSpecificFields['sample_to_transport'] = (isset($_POST['typeOfSample']) && $_POST['typeOfSample'] != '' ? $_POST['typeOfSample'] : null);
-        $pngSpecificFields['whole_blood_ml'] = (isset($_POST['wholeBloodOne']) && $_POST['wholeBloodOne'] != '' ? $_POST['wholeBloodOne'] : null);
-        $pngSpecificFields['whole_blood_vial'] = (isset($_POST['wholeBloodTwo']) && $_POST['wholeBloodTwo'] != '' ? $_POST['wholeBloodTwo'] : null);
-        $pngSpecificFields['plasma_ml'] = (isset($_POST['plasmaOne']) && $_POST['plasmaOne'] != '' ? $_POST['plasmaOne'] : null);
-        $pngSpecificFields['plasma_vial'] = (isset($_POST['plasmaTwo']) && $_POST['plasmaTwo'] != '' ? $_POST['plasmaTwo'] : null);
-        $pngSpecificFields['plasma_process_time'] = (isset($_POST['processTime']) && $_POST['processTime'] != '' ? $_POST['processTime'] : null);
-        $pngSpecificFields['plasma_process_tech'] = (isset($_POST['processTech']) && $_POST['processTech'] != '' ? $_POST['processTech'] : null);
-        $pngSpecificFields['sample_collected_by'] = (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null);
-        $pngSpecificFields['tech_name_png'] = (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null;
-        $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlresult']) && $_POST['cphlresult'] != '' ? $_POST['cphlresult'] : null);
-        $pngSpecificFields['batch_quality'] = (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null);
-        $pngSpecificFields['sample_test_quality'] = (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null);
-        $pngSpecificFields['sample_batch_id'] = (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null);
-        $pngSpecificFields['failed_test_date'] = $_POST['failedTestDate'];
-        $pngSpecificFields['failed_test_tech'] = (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') ? $_POST['failedTestingTech'] : null;
-        $pngSpecificFields['failed_vl_result'] = (isset($_POST['failedresult']) && $_POST['failedresult'] != '' ? $_POST['failedresult'] : null);
-        $pngSpecificFields['failed_batch_quality'] = (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null);
-        $pngSpecificFields['failed_sample_test_quality'] = (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null);
-        $pngSpecificFields['failed_batch_id'] = (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null);
-        $pngSpecificFields['result'] = (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') ? $_POST['vlResult'] : null;
-        $pngSpecificFields['qc_tech_name'] = (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null);
-        $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
-        $pngSpecificFields['qc_date'] = $_POST['qcDate'];
-        $pngSpecificFields['report_date'] = $_POST['reportDate'];
-    }
-    $vldata = array_merge($vldata, $pngSpecificFields);
 
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
     $id = 0;
@@ -460,7 +378,7 @@ try {
         $_SESSION['alertMsg'] = _("VL request added successfully");
         //Add event log
 
-        $eventType = 'add-vl-request-sudan';
+        $eventType = 'add-test-request';
         $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
         $resource = 'vl-request-ss';
 

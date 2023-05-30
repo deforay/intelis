@@ -115,8 +115,8 @@ if (trim($id) != '') {
         $pdf->setHeading($arr['logo'], $arr['header'], $labname);
 
         // set document information
-        $pdf->SetCreator('VLSTS');
-        $pdf->SetAuthor('VLSTS');
+        $pdf->SetCreator('STS');
+        $pdf->SetAuthor('STS');
         $pdf->SetTitle('Positive Confirmation Manifest');
         $pdf->SetSubject('Positive Confirmation Manifest');
         $pdf->SetKeywords('Positive Confirmation Manifest');

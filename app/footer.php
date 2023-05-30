@@ -93,13 +93,13 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		function syncRemoteData(remoteUrl) {
 			if (!navigator.onLine) {
-				alert("<?= _("Please connect to internet to sync with VLSTS"); ?>");
+				alert("<?= _("Please connect to internet to sync with STS"); ?>");
 				return false;
 			}
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				$.blockUI({
-					message: "<h3><?= _("Preparing for VLSTS Remote sync."); ?><br><?= _("Please wait..."); ?></h3>"
+					message: "<h3><?= _("Preparing for STS sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/commonDataSync.php",
@@ -110,7 +110,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						//alert( "complete" );
@@ -135,7 +135,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -161,7 +161,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do VLSTS Remote Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();

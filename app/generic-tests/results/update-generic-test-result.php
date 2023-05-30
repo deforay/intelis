@@ -260,26 +260,6 @@ if (!empty($patientFullName)) {
 </style>
 <?php
 
-/*
-if ($arr['vl_form'] == 1) {
-     require('forms/edit-southsudan.php');
-} else if ($arr['vl_form'] == 2) {
-     require('forms/edit-sierraleone.php');
-} else if ($arr['vl_form'] == 3) {
-     require('forms/edit-drc.php');
-} else if ($arr['vl_form'] == 4) {
-     //require('forms/edit-zambia.php');
-} else if ($arr['vl_form'] == 5) {
-     require('forms/edit-png.php');
-} else if ($arr['vl_form'] == 6) {
-     require('forms/edit-who.php');
-} else if ($arr['vl_form'] == 7) {
-     require('forms/edit-rwanda.php');
-} else if ($arr['vl_form'] == 8) {
-     require('forms/edit-angola.php');
-}*/
-
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -882,7 +862,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                 <td>
                                                                     <?php
                                                                     $value = '';
-                                                                    if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen','GeneXpert','ELISA', 'other'))) {
+                                                                    if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'GeneXpert', 'ELISA', 'other'))) {
                                                                         $value = 'value="' . $rows['test_name'] . '"';
                                                                         $show = "block";
                                                                     } else {
@@ -970,11 +950,11 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </tbody>
                                                 <tfoot id="resultSection">
                                                     <tr>
-                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result <br><br/>Result Interpretation</th>
+                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result <br><br />Result Interpretation</th>
                                                         <td id="result-sections">
                                                             <input type="text" id="result" name="result" class="form-control result-text" value="" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);" autocomplete="off">
                                                             <br>
-                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation" value="<?php echo $genericResultInfo['final_result_interpretation']; ?>"> 
+                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation" value="<?php echo $genericResultInfo['final_result_interpretation']; ?>">
                                                             <input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="quantitative">
                                                         </td>
                                                     </tr>
@@ -1064,7 +1044,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
             <input type="hidden" name="revised" id="revised" value="no" />
             <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($genericResultInfo['sample_id']); ?>" />
             <input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($genericResultInfo['remote_sample']); ?>" />
-            <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php //echo base64_encode($genericResultInfo['reason_for_vl_result_changes']); ?>" />
+            <input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php //echo base64_encode($genericResultInfo['reason_for_vl_result_changes']);
+                                                                                                                ?>" />
             <input type="hidden" name="oldStatus" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />
             <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
             <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
@@ -1133,7 +1114,6 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
         });
 
 
-        /** Edit south sudan */
         $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
             if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1514,13 +1494,6 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
     }
 
 
-    /** Edit south sudan function */
-    function showTesting(chosenClass) {
-        $(".viralTestData").val('');
-        $(".hideTestData").hide();
-        $("." + chosenClass).show();
-    }
-
     function getProvinceDistricts(obj) {
         $.blockUI();
         var cName = $("#fName").val();
@@ -1710,9 +1683,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 
     $('#testingPlatform').on("change", function() {
         $(".vlResult").show();
-        //$('#vlResult, #noResult').addClass('isRequired');
         $("#noResult").val("");
-        //$("#noResult").trigger("change");
     });
 
 
@@ -1759,70 +1730,70 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
     }
 
     function getTestTypeForm() {
-		removeDynamicForm();
-		var testType = $("#testType").val();
-		if (testType != "") {
-			$(".requestForm").show();
-			$.post("/generic-tests/requests/getTestTypeForm.php", {
-					testType: testType,
-                    result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
-					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+        removeDynamicForm();
+        var testType = $("#testType").val();
+        if (testType != "") {
+            $(".requestForm").show();
+            $.post("/generic-tests/requests/getTestTypeForm.php", {
+                    testType: testType,
+                    result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
+                    testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
                     resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
-				},
-				function(data) {
-					data = JSON.parse(data);
-					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
-						$("#facilitySection").html(data.facilitySection);
-					}
-					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
-						$("#patientSection").after(data.patientSection);
-					}
-					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
-						$("#labSection").html(data.labSection);
-					}
-					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-						$("#result-sections").html(data.result);
-					} else {
-						$('#resultSection').hide()
-					}
-					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
-						$("#specimenSection").after(data.specimenSection);
-					}
-					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
-						$("#otherSection").html(data.otherSection);
-					}
-					$('.date').datepicker({
-						changeMonth: true,
-						changeYear: true,
-						dateFormat: 'dd-M-yy',
-						timeFormat: "hh:mm",
-						maxDate: "Today",
-						yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-					}).click(function() {
-						$('.ui-datepicker-calendar').show();
-					});
-					$(".dynamicFacilitySelect2").select2({
-						width: '285px',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
-					});
-					$(".dynamicSelect2").select2({
-						width: '100%',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
-					});
-				});
-		} else {
-			removeDynamicForm();
-		}
-	}
+                },
+                function(data) {
+                    data = JSON.parse(data);
+                    if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+                        $("#facilitySection").html(data.facilitySection);
+                    }
+                    if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
+                        $("#patientSection").after(data.patientSection);
+                    }
+                    if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
+                        $("#labSection").html(data.labSection);
+                    }
+                    if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+                        $("#result-sections").html(data.result);
+                    } else {
+                        $('#resultSection').hide()
+                    }
+                    if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
+                        $("#specimenSection").after(data.specimenSection);
+                    }
+                    if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
+                        $("#otherSection").html(data.otherSection);
+                    }
+                    $('.date').datepicker({
+                        changeMonth: true,
+                        changeYear: true,
+                        dateFormat: 'dd-M-yy',
+                        timeFormat: "hh:mm",
+                        maxDate: "Today",
+                        yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+                    }).click(function() {
+                        $('.ui-datepicker-calendar').show();
+                    });
+                    $(".dynamicFacilitySelect2").select2({
+                        width: '285px',
+                        placeholder: "<?php echo _("Select any one of the option"); ?>"
+                    });
+                    $(".dynamicSelect2").select2({
+                        width: '100%',
+                        placeholder: "<?php echo _("Select any one of the option"); ?>"
+                    });
+                });
+        } else {
+            removeDynamicForm();
+        }
+    }
 
     function removeDynamicForm() {
-		$(".facilitySection").html('');
-		$(".patientSectionInput").remove();
-		$("#labSection").html('');
-		$(".specimenSectionInput").remove();
-		$("#otherSection").html('');
-		$(".requestForm").hide();
-	}
+        $(".facilitySection").html('');
+        $(".patientSectionInput").remove();
+        $("#labSection").html('');
+        $(".specimenSectionInput").remove();
+        $("#otherSection").html('');
+        $(".requestForm").hide();
+    }
 
     function getSampleTypeList(testTypeId) {
         $.post("/includes/get-sample-type.php", {
@@ -1925,21 +1896,21 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
         });
     }
 
-    function updateInterpretationResult(obj){
-		if(obj.value){
-               $.post("/generic-tests/requests/get-result-interpretation.php", {
+    function updateInterpretationResult(obj) {
+        if (obj.value) {
+            $.post("/generic-tests/requests/get-result-interpretation.php", {
                     result: obj.value,
                     resultType: $('#resultType').val(),
-                    testType : $('#testType').val()
-               },
-               function(interpretation) {
+                    testType: $('#testType').val()
+                },
+                function(interpretation) {
                     if (interpretation != "") {
-                         $('#resultInterpretation').val(interpretation);
-					}else{
-                         $('#resultInterpretation').val('');
+                        $('#resultInterpretation').val(interpretation);
+                    } else {
+                        $('#resultInterpretation').val('');
                     }
-               });
-		}
-	}
+                });
+        }
+    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

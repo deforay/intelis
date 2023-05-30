@@ -145,8 +145,8 @@ if (trim($id) != '') {
         $pdf->setHeading($arr['logo'], $arr['header'], $labname);
 
         // set document information
-        $pdf->SetCreator('VLSTS');
-        $pdf->SetAuthor('VLSTS');
+        $pdf->SetCreator('STS');
+        $pdf->SetAuthor('STS');
         $pdf->SetTitle('Specimen Referral Manifest');
         $pdf->SetSubject('Specimen Referral Manifest');
         $pdf->SetKeywords('Specimen Referral Manifest');

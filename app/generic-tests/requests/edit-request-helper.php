@@ -229,7 +229,7 @@ try {
           'pregnancy_trimester'                   => (isset($_POST['trimester']) && $_POST['trimester'] != '') ? $_POST['trimester'] :  null,
           'patient_id'                            => (isset($_POST['artNo']) && $_POST['artNo'] != '') ? $_POST['artNo'] :  null,
           'treatment_indication'                  => (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] != '') ? $_POST['treatmentIndication'] :  null,
-          'treatment_initiated_date'              => $_POST['dateOfArtInitiation'],
+          //'treatment_initiated_date'              => $_POST['dateOfArtInitiation'],
           'patient_mobile_number'                 => (isset($_POST['patientPhoneNumber']) && $_POST['patientPhoneNumber'] != '') ? $_POST['patientPhoneNumber'] :  null,
           'consent_to_receive_sms'                => (isset($_POST['receiveSms']) && $_POST['receiveSms'] != '') ? $_POST['receiveSms'] :  null,
           'sample_type'                           => (isset($_POST['specimenType']) && $_POST['specimenType'] != '') ? $_POST['specimenType'] :  null,
@@ -264,8 +264,7 @@ try {
           'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
           'manual_result_entry'                   => 'yes',
           'test_type'                             => $_POST['testType'],
-          'test_type_form'                        => json_encode($_POST['dynamicFields']),
-          //'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null
+          'test_type_form'                        => json_encode($_POST['dynamicFields'])
      );
 
      // only if result status has changed, let us update
@@ -310,43 +309,10 @@ try {
           $_POST['reportDate'] = null;
      }
 
-     //For PNG form
-     $pngSpecificFields = [];
-     if (isset($_POST['countryFormId']) && $_POST['countryFormId'] == '5') {
-          $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
-          $pngSpecificFields['art_cd_date'] = $_POST['cdDate'];
-          $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
-          $pngSpecificFields['sample_to_transport'] = (isset($_POST['typeOfSample']) && $_POST['typeOfSample'] != '' ? $_POST['typeOfSample'] : null);
-          $pngSpecificFields['whole_blood_ml'] = (isset($_POST['wholeBloodOne']) && $_POST['wholeBloodOne'] != '' ? $_POST['wholeBloodOne'] : null);
-          $pngSpecificFields['whole_blood_vial'] = (isset($_POST['wholeBloodTwo']) && $_POST['wholeBloodTwo'] != '' ? $_POST['wholeBloodTwo'] : null);
-          $pngSpecificFields['plasma_ml'] = (isset($_POST['plasmaOne']) && $_POST['plasmaOne'] != '' ? $_POST['plasmaOne'] : null);
-          $pngSpecificFields['plasma_vial'] = (isset($_POST['plasmaTwo']) && $_POST['plasmaTwo'] != '' ? $_POST['plasmaTwo'] : null);
-          $pngSpecificFields['plasma_process_time'] = (isset($_POST['processTime']) && $_POST['processTime'] != '' ? $_POST['processTime'] : null);
-          $pngSpecificFields['plasma_process_tech'] = (isset($_POST['processTech']) && $_POST['processTech'] != '' ? $_POST['processTech'] : null);
-          $pngSpecificFields['sample_collected_by'] = (isset($_POST['collectedBy']) && $_POST['collectedBy'] != '' ? $_POST['collectedBy'] : null);
-          $pngSpecificFields['tech_name_png'] = (isset($_POST['techName']) && $_POST['techName'] != '') ? $_POST['techName'] : null;
-          $pngSpecificFields['cphl_vl_result'] = (isset($_POST['cphlVlResult']) && $_POST['cphlVlResult'] != '' ? $_POST['cphlVlResult'] : null);
-          $pngSpecificFields['batch_quality'] = (isset($_POST['batchQuality']) && $_POST['batchQuality'] != '' ? $_POST['batchQuality'] : null);
-          $pngSpecificFields['sample_test_quality'] = (isset($_POST['testQuality']) && $_POST['testQuality'] != '' ? $_POST['testQuality'] : null);
-          $pngSpecificFields['sample_batch_id'] = (isset($_POST['batchNo']) && $_POST['batchNo'] != '' ? $_POST['batchNo'] : null);
-          $pngSpecificFields['failed_test_date'] = $_POST['failedTestDate'];
-          $pngSpecificFields['failed_test_tech'] = (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') ? $_POST['failedTestingTech'] : null;
-          $pngSpecificFields['failed_vl_result'] = (isset($_POST['failedvlResult']) && $_POST['failedvlResult'] != '' ? $_POST['failedvlResult'] : null);
-          $pngSpecificFields['failed_batch_quality'] = (isset($_POST['failedbatchQuality']) && $_POST['failedbatchQuality'] != '' ? $_POST['failedbatchQuality'] : null);
-          $pngSpecificFields['failed_sample_test_quality'] = (isset($_POST['failedtestQuality']) && $_POST['failedtestQuality'] != '' ? $_POST['failedtestQuality'] : null);
-          $pngSpecificFields['failed_batch_id'] = (isset($_POST['failedbatchNo']) && $_POST['failedbatchNo'] != '' ? $_POST['failedbatchNo'] : null);
-          $pngSpecificFields['result'] = (isset($_POST['vlResult']) && trim($_POST['vlResult']) != '') ? $_POST['vlResult'] : null;
-          $pngSpecificFields['qc_tech_name'] = (isset($_POST['qcTechName']) && $_POST['qcTechName'] != '' ? $_POST['qcTechName'] : null);
-          $pngSpecificFields['qc_tech_sign'] = (isset($_POST['qcTechSign']) && $_POST['qcTechSign'] != '' ? $_POST['qcTechSign'] : null);
-          $pngSpecificFields['qc_date'] = $_POST['qcDate'];
-          $pngSpecificFields['report_date'] = $_POST['reportDate'];
-     }
-     $vldata = array_merge($vldata, $pngSpecificFields);
-
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
           if (isset($_POST['testName']) && !empty($_POST['testName'])) {
                $db = $db->where('generic_id', $_POST['vlSampleId']);
-               $db->delete($testTableName);
+               $db->delete('generic_test_results');
                foreach ($_POST['testName'] as $testKey => $testKitName) {
                     if (isset($testKitName) && !empty($testKitName)) {
                          if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
@@ -356,22 +322,22 @@ try {
                               $_POST['testDate'][$testKey] = null;
                          }
                          $covid19TestData = array(
-                              'generic_id'                    => $_POST['vlSampleId'],
-                              'test_name'                         => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-                              'facility_id'                => $_POST['labId'] ?? null,
-                              'sample_tested_datetime'      => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
-                              'testing_platform'           => $_POST['testingPlatform'][$testKey] ?? null,
-                              'kit_lot_no'                     => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                              'kit_expiry_date'                => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                              'result'                         => $_POST['testResult'][$testKey]
+                              'generic_id'                   => $_POST['vlSampleId'],
+                              'test_name'                    => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+                              'facility_id'                  => $_POST['labId'] ?? null,
+                              'sample_tested_datetime'       => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+                              'testing_platform'             => $_POST['testingPlatform'][$testKey] ?? null,
+                              'kit_lot_no'                   => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+                              'kit_expiry_date'              => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+                              'result'                       => $_POST['testResult'][$testKey]
                          );
-                         $db->insert($testTableName, $covid19TestData);
+                         $db->insert('generic_test_results', $covid19TestData);
                     }
                }
           }
      } else {
           $db = $db->where('generic_id', $_POST['vlSampleId']);
-          $db->delete($testTableName);
+          $db->delete('generic_test_results');
           $covid19Data['sample_tested_datetime'] = null;
      }
 
@@ -383,7 +349,7 @@ try {
           $_SESSION['alertMsg'] = _("Request updated successfully");
           //Add event log
 
-          $eventType = 'update-vl-request-sudan';
+          $eventType = 'update-test-request';
           $action = $_SESSION['userName'] . ' updated a request data with the sample code ' . $_POST['sampleCode'];
           $resource = 'vl-request-ss';
 

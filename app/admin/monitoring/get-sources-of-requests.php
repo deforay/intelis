@@ -20,7 +20,7 @@ $testType = 'vl';
 
 $sources = array(
     'vlsm' => 'VLSM',
-    'vlsts' => 'VLSTS',
+    'vlsts' => 'STS',
     'app' => 'Tablet',
     'api' => 'API',
     'dhis2' => 'DHIS2'

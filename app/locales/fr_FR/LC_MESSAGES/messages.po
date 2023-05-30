@@ -1745,8 +1745,8 @@ msgid "District"
 msgstr "District"
 
 #: admin/monitoring/lab-sync-details.php:167
-msgid "Last Request Sent from VLSTS"
-msgstr "Dernière demande envoyée par VLSTS"
+msgid "Last Request Sent from STS"
+msgstr "Dernière demande envoyée par STS"
 
 #: admin/monitoring/lab-sync-details.php:168
 msgid "Last Result Received From Lab"
@@ -1955,8 +1955,8 @@ msgstr "Synchronisation des derniers résultats du laboratoire"
 
 #: admin/monitoring/sync-status.php:142
 #, fuzzy
-msgid "Last Requests Sync from VLSTS"
-msgstr "Synchronisation des dernières demandes à partir de VLSTS"
+msgid "Last Requests Sync from STS"
+msgstr "Synchronisation des dernières demandes à partir de STS"
 
 #: admin/monitoring/sync-status.php:143
 msgid "Version"
@@ -9280,13 +9280,13 @@ msgstr "Facility Mapped to Selected Test Type successfully"
 
 #: footer.php:96
 #, fuzzy
-msgid "Please connect to internet to sync with VLSTS"
-msgstr "Veuillez vous connecter à Internet pour synchroniser avec VLSTS"
+msgid "Please connect to internet to sync with STS"
+msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
 #: footer.php:102
 #, fuzzy
-msgid "Preparing for VLSTS Remote sync."
-msgstr "Préparation de la synchronisation à distance du VLSTS."
+msgid "Preparing for STS sync."
+msgstr "Préparation de la synchronisation à distance du STS."
 
 #: footer.php:102 footer.php:125 footer.php:151
 msgid "Please wait..."
@@ -9295,9 +9295,9 @@ msgstr "Veuillez patienter..."
 #: footer.php:113 footer.php:138 footer.php:164
 #, fuzzy
 msgid ""
-"Unable to do VLSTS Remote Sync. Please contact technical team for assistance."
+"Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
-"Impossible d'effectuer la synchronisation à distance de VLSTS. Veuillez "
+"Impossible d'effectuer la synchronisation à distance de STS. Veuillez "
 "contacter l'équipe technique pour obtenir de l'aide."
 
 #: footer.php:125

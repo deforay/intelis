@@ -965,27 +965,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
      });
 
-     function showTesting(chosenClass) {
-          $(".viralTestData").val('');
-          $(".hideTestData").hide();
-          $("." + chosenClass).show();
-
-          if ($("#selectedSample").val() != "") {
-               patientInfo = JSON.parse($("#selectedSample").val());
-               if ($.trim(patientInfo['sample_tested_datetime']) != '') {
-                    $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-
-               }
-               if ($.trim(patientInfo['result']) != '') {
-                    $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-                    $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-                    $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
-               }
-          }
-     }
-
      function getProvinceDistricts(obj) {
           $.blockUI();
           var cName = $("#fName").val();
@@ -1330,14 +1309,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#artNo").val($.trim(patientArray['patient_id']));
           }
 
-          if ($.trim(patientArray['treatment_initiated_date']) != '') {
-               $("#dateOfArtInitiation").val($.trim(patientArray['treatment_initiated_date']));
-          }
-
-          if ($.trim(patientArray['current_regimen']) != '') {
-               $("#artRegimen").val($.trim(patientArray['current_regimen']));
-          }
-
           if ($.trim(patientArray['sample_tested_datetime']) != '') {
                $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
                $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
@@ -1620,7 +1591,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
                     });
-                   
+
           } else {
                $(".facilitySection").html('');
                $(".patientSectionInput").remove();
@@ -1629,7 +1600,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#otherSection").html('');
                $(".requestForm").hide();
           }
-        
+
      }
 
      function checkNum() {
@@ -1750,22 +1721,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           });
      }
-     function updateInterpretationResult(obj){
-		if(obj.value){
+
+     function updateInterpretationResult(obj) {
+          if (obj.value) {
                $.post("get-result-interpretation.php", {
-                    result: obj.value,
-                    resultType: $('#resultType').val(),
-                    testType : $('#testType').val()
-               },
-               function(interpretation) {
-                    if (interpretation != "") {
-                         $('#resultInterpretation').val(interpretation);
-                    }else{
-                         $('#resultInterpretation').val('');
-                    }
-               });
-		}
-	}
+                         result: obj.value,
+                         resultType: $('#resultType').val(),
+                         testType: $('#testType').val()
+                    },
+                    function(interpretation) {
+                         if (interpretation != "") {
+                              $('#resultInterpretation').val(interpretation);
+                         } else {
+                              $('#resultInterpretation').val('');
+                         }
+                    });
+          }
+     }
 </script>
 
 <?php include APPLICATION_PATH . '/footer.php';

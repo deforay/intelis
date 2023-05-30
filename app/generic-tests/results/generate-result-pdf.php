@@ -101,7 +101,7 @@ class MYPDF extends TCPDF
 	}
 
 	public function imageExists($filePath): bool
-    {
+	{
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 	//Page header
@@ -145,10 +145,6 @@ class MYPDF extends TCPDF
 					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
 				}
-			}
-			if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png')) {
-				$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . 'drc-logo.png';
-				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
 			}
 
 			if ($this->text != '') {

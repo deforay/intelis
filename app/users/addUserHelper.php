@@ -101,10 +101,10 @@ try {
     $systemType = $general->getSystemConfig('sc_user_type');
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {
         $_POST['userId'] = $userId;
-        $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-        $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-        $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-        $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+        $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+        $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on STS
+        $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+        $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
         $_POST['status'] = 'inactive';
         $_POST['userId'] = base64_encode($data['user_id']);
         $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
