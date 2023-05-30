@@ -51,10 +51,12 @@ if (strpos($headers[0], '200') === false) {
 
 $dataToSync = [];
 $commonDataToSync = [];
+$genericDataToSync = [];
 $vlDataToSync = [];
 $eidDataToSync = [];
 $covid19DataToSync = [];
 $hepatitisDataToSync = [];
+$tbDataToSync = [];
 
 
 $payload = array(
@@ -112,6 +114,27 @@ $commonDataToSync = array(
 
 $url = $remoteUrl . '/remote/remote/commonData.php';
 
+if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+    $payload['genericSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
+    $payload['genericRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_generic_sample_rejection_reasons');
+    $payload['genericFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_generic_test_failure_reasons');
+
+    // This array is used to sync data that we will later receive from the API call
+    $genericDataToSync = array(
+        'genericSampleTypes' => array(
+            'primaryKey' => 'sample_type_id',
+            'tableName' => 'r_generic_sample_types',
+        ),
+        'genericRejectionReasons' => array(
+            'primaryKey' => 'rejection_reason_id',
+            'tableName' => 'r_generic_sample_rejection_reasons',
+        ),
+        'genericFailureReasons' => array(
+            'primaryKey' => 'test_failure_reason_id',
+            'tableName' => 'r_generic_test_failure_reasons',
+        )
+    );
+}
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
     $payload['vlRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_rejection_reasons');
@@ -252,13 +275,42 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     );
 }
 
+if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
+    $payload['tbRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_tb_sample_rejection_reasons');
+    $payload['tbSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_tb_sample_type');
+    $payload['tbResultsLastModified'] = $general->getLastModifiedDateTime('r_tb_results');
+    $payload['tbReasonForTestingLastModified'] = $general->getLastModifiedDateTime('r_tb_test_reasons');
+
+    // This array is used to sync data that we will later receive from the API call
+    $tbDataToSync = array(
+        'tbReasonForTesting' => array(
+            'primaryKey' => 'test_reason_id',
+            'tableName' => 'r_tb_test_reasons',
+        ),
+        'tbResults' => array(
+            'primaryKey' => 'result_id',
+            'tableName' => 'r_tb_results',
+        ),
+        'tbSampleTypes' => array(
+            'primaryKey' => 'sample_id',
+            'tableName' => 'r_tb_sample_type',
+        ),
+        'tbRejectionReasons' => array(
+            'primaryKey' => 'rejection_reason_id',
+            'tableName' => 'r_tb_sample_rejection_reasons',
+        )
+    );
+}
+
 
 $dataToSync = array_merge(
     $commonDataToSync,
+    $genericDataToSync,
     $vlDataToSync,
     $eidDataToSync,
     $covid19DataToSync,
-    $hepatitisDataToSync
+    $hepatitisDataToSync,
+    $tbDataToSync
 );
 
 

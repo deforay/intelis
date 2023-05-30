@@ -34,6 +34,29 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     $response = [];
 
+    if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
+
+        $condition = null;
+        if (!empty($data['genericSampleTypesLastModified'])) {
+            $condition = "updated_datetime > '" . $data['genericSampleTypesLastModified'] . "'";
+        }
+        $response['genericSampleTypes'] = $general->fetchDataFromTable('r_generic_sample_types', $condition);
+
+        $condition = null;
+        if (!empty($data['genericRejectionReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['genericRejectionReasonsLastModified'] . "'";
+        }
+        $response['genericRejectionReasons'] = $general->fetchDataFromTable('r_generic_sample_rejection_reasons', $condition);
+
+        $condition = null;
+        if (!empty($data['genericFailureReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['genericFailureReasonsLastModified'] . "'";
+        }
+        $response['genericFailureReasons'] = $general->fetchDataFromTable('r_generic_test_failure_reasons', $condition);
+
+        $counter += (count($response['genericSampleTypes']) + count($response['genericRejectionReasons']) + count($response['genericFailureReasons']));
+    }
+
     if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 
 
@@ -187,6 +210,34 @@ if ($data['Key'] == 'vlsm-get-remote') {
         $counter += (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
     }
 
+    if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+
+        $condition = null;
+        if (!empty($data['tbRejectionReasonsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['tbRejectionReasonsLastModified'] . "'";
+        }
+        $response['tbRejectionReasons'] = $general->fetchDataFromTable('r_tb_sample_rejection_reasons', $condition);
+
+        $condition = null;
+        if (!empty($data['tbSampleTypesLastModified'])) {
+            $condition = "updated_datetime > '" . $data['tbSampleTypesLastModified'] . "'";
+        }
+        $response['tbSampleTypes'] = $general->fetchDataFromTable('r_tb_sample_type', $condition);
+
+        $condition = null;
+        if (!empty($data['tbResultsLastModified'])) {
+            $condition = "updated_datetime > '" . $data['tbResultsLastModified'] . "'";
+        }
+        $response['tbResults'] = $general->fetchDataFromTable('r_tb_results', $condition);
+
+        $condition = null;
+        if (!empty($data['tbReasonForTestingLastModified'])) {
+            $condition = "updated_datetime > '" . $data['tbReasonForTestingLastModified'] . "'";
+        }
+        $response['tbReasonForTesting'] = $general->fetchDataFromTable('r_tb_test_reasons', $condition);
+
+        $counter += (count($response['tbRejectionReasons']) + count($response['tbSampleTypes']) + count($response['tbResults']) + count($response['tbReasonForTesting']));
+    }
 
     $condition = null;
     if (!empty($data['globalConfigLastModified'])) {
