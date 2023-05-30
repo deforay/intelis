@@ -126,7 +126,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         $output[] = $row;
     }
 
-    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 50000) {
+    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 75000) {
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
         $file = new SplFileObject($fileName, 'w');
         $file->setCsvControl(",", "\r\n");

@@ -104,7 +104,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $row[] = $aRow['rejection_reason_name'];
           $output[] = $row;
      }
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {
+     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {
 
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Rejected-Data-report-' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');

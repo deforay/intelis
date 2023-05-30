@@ -129,7 +129,7 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
      if ($_POST['markAsComplete'] == 'true') {
           $vlId = implode(",", $vlSampleId);
      }
-     if (isset($_SESSION['highTbResultCount']) && $_SESSION['highTbResultCount'] > 50000) {
+     if (isset($_SESSION['highTbResultCount']) && $_SESSION['highTbResultCount'] > 75000) {
 
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-TB-Report-' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');

@@ -102,7 +102,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 	}
 
 
-	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 50000) {
+	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');

@@ -151,7 +151,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (" . $vlId . ")");
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
           $file->setCsvControl(",", "\r\n");

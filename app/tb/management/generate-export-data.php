@@ -140,7 +140,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 	}
 
 
-	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 50000) {
+	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');

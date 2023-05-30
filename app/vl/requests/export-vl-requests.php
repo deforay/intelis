@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
 	$no++;
 }
 
-if (isset($_SESSION['vlRequestSearchResultQueryCount']) && $_SESSION['vlRequestSearchResultQueryCount'] > 50000) {
+if (isset($_SESSION['vlRequestSearchResultQueryCount']) && $_SESSION['vlRequestSearchResultQueryCount'] > 75000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
 	$file = new SplFileObject($fileName, 'w');

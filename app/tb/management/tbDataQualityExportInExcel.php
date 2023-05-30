@@ -105,7 +105,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           $row[] = ($aRow['status_name']);
           $output[] = $row;
      }
-     if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 50000) {
+     if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 75000) {
 
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report-' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
