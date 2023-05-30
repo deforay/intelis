@@ -128,7 +128,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      if ($_POST['markAsComplete'] == 'true') {
           $vlId = implode(",", $vlSampleId);
      }
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 5000) {
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
           $file->setCsvControl(",", "\r\n");

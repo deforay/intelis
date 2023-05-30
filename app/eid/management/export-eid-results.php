@@ -120,7 +120,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$no++;
 	}
 
-	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 5000) {
+	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 50000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');

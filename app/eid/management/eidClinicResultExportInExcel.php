@@ -139,7 +139,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $vlId = implode(",", $vlSampleId);
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 5000) {
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
           $file->setCsvControl(",", "\r\n");

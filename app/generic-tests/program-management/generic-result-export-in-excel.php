@@ -266,7 +266,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$no++;
 	}
 
-	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 5000) {
+	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 50000) {
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
 		$file->setCsvControl(",", "\r\n");
