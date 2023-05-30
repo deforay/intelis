@@ -16,6 +16,8 @@ if (session_status() == PHP_SESSION_NONE) {
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
+$uploadedFiles = $request->getUploadedFiles();
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -59,18 +61,24 @@ try {
         $data['password'] = $password;
         $data['hash_algorithm'] = 'phb';
 
-        if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
-            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
-            $imageName = "usign-" . $data['user_id'] . "." . $extension;
-            $signatureImagePath .=  DIRECTORY_SEPARATOR . $imageName;
-            if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new ImageResizeUtility();
-                $resizeObj = $resizeObj->setFileName($signatureImagePath);
-                $resizeObj->resizeToWidth(100);
-                $resizeObj->save($signatureImagePath);
-                $data['user_signature'] = $imageName;
-            }
+        if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
+            $file = $uploadedFiles['userSignature'];
+            $fileName = $file->getClientFilename();
+            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $tmpFilePath = $file->getStream()->getMetadata('uri');
+            $fileSize = $file->getSize();
+            $fileMimeType = $file->getClientMediaType();
+            $newFileName = "usign-" . $userId . "." . $fileExtension;
+            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $newFileName;
+            $file->moveTo($newFilePath);
+
+            $resizeObj = new ImageResizeUtility();
+            $resizeObj = $resizeObj->setFileName($newFilePath);
+            $resizeObj->resizeToWidth(250);
+            $resizeObj->save($newFilePath);
+            $data['user_signature'] = $newFileName;
         }
+
         if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
@@ -80,7 +88,6 @@ try {
         }
 
         $id = $db->insert($tableName, $data);
-
 
         if ($id > 0 && trim($_POST['selectedFacility']) != '') {
             $selectedFacility = explode(",", $_POST['selectedFacility']);
@@ -102,7 +109,7 @@ try {
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {
         $_POST['userId'] = $userId;
         $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-        $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on STS
+        $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on STS
         $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
         $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
         $_POST['status'] = 'inactive';
