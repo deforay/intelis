@@ -106,21 +106,19 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $row[] = $aRow['rejection_reason_name'];
           $output[] = $row;
      }
-     
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 1) 
-	{
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	}
-	else
-	{
+
+     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 1) {
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
+          $file = new SplFileObject($fileName, 'w');
+          $file->setCsvControl("\t", "\r\n");
+          $file->fputcsv($headings);
+          foreach ($output as $row) {
+               $file->fputcsv($row);
+          }
+          // we dont need the $file variable anymore
+          $file = null;
+          echo base64_encode($fileName);
+     } else {
           $start = (count($output)) + 2;
           foreach ($output as $rowNo => $rowData) {
                $colNo = 1;

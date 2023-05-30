@@ -140,6 +140,7 @@ if (isset($_SESSION['vlRequestSearchResultQueryCount']) && $_SESSION['vlRequestS
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
 	$file = new SplFileObject($fileName, 'w');
+	$file->setCsvControl("\t", "\r\n");
 	$file->fputcsv($headings);
 	foreach ($output as $row) {
 		$file->fputcsv($row);

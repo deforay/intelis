@@ -266,10 +266,10 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$no++;
 	}
 
-	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 5000) 
-	{
+	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 5000) {
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
+		$file->setCsvControl("\t", "\r\n");
 		$file->fputcsv($headings);
 		foreach ($output as $row) {
 			$file->fputcsv($row);
@@ -277,9 +277,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		// we dont need the $file variable anymore
 		$file = null;
 		echo base64_encode($fileName);
-	}
-	else
-	{
+	} else {
 		$start = (count($output)) + 2;
 		foreach ($output as $rowNo => $rowData) {
 			$colNo = 1;

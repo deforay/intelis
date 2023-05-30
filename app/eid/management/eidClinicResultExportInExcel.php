@@ -139,20 +139,18 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $vlId = implode(",", $vlSampleId);
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 5000) 
-	{
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	}
-	else
-	{
+     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 5000) {
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
+          $file = new SplFileObject($fileName, 'w');
+          $file->setCsvControl("\t", "\r\n");
+          $file->fputcsv($headings);
+          foreach ($output as $row) {
+               $file->fputcsv($row);
+          }
+          // we dont need the $file variable anymore
+          $file = null;
+          echo base64_encode($fileName);
+     } else {
           $start = (count($output)) + 2;
           foreach ($output as $rowNo => $rowData) {
                $colNo = 1;
@@ -167,7 +165,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
           $writer = IOFactory::createWriter($excel, 'Xlsx');
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save( $filename);
+          $writer->save($filename);
           echo base64_encode($filename);
      }
 }

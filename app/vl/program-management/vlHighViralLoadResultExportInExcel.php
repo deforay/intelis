@@ -152,16 +152,17 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      }
 
      if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 5000) {
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	} else {
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
+          $file = new SplFileObject($fileName, 'w');
+          $file->setCsvControl("\t", "\r\n");
+          $file->fputcsv($headings);
+          foreach ($output as $row) {
+               $file->fputcsv($row);
+          }
+          // we dont need the $file variable anymore
+          $file = null;
+          echo base64_encode($fileName);
+     } else {
           $start = (count($output)) + 2;
           foreach ($output as $rowNo => $rowData) {
                $colNo = 1;

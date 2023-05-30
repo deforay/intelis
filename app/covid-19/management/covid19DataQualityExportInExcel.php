@@ -102,20 +102,18 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           $row[] = ($aRow['status_name']);
           $output[] = $row;
      }
-     if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 5000) 
-	{
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	}
-	else
-	{
+     if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 5000) {
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
+          $file = new SplFileObject($fileName, 'w');
+          $file->setCsvControl("\t", "\r\n");
+          $file->fputcsv($headings);
+          foreach ($output as $row) {
+               $file->fputcsv($row);
+          }
+          // we dont need the $file variable anymore
+          $file = null;
+          echo base64_encode($fileName);
+     } else {
           $start = (count($output)) + 2;
           foreach ($output as $rowNo => $rowData) {
                $colNo = 1;
@@ -130,7 +128,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           }
           $writer = IOFactory::createWriter($excel, 'Xlsx');
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save( $filename);
-          echo base64_encode( $filename);
+          $writer->save($filename);
+          echo base64_encode($filename);
      }
 }

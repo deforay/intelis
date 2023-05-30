@@ -248,6 +248,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
         $file = new SplFileObject($fileName, 'w');
+        $file->setCsvControl("\t", "\r\n");
         $file->fputcsv($headings);
         foreach ($output as $row) {
             $file->fputcsv($row);
