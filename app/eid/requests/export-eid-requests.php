@@ -119,7 +119,7 @@ if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidReques
 
     $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.csv';
     $file = new SplFileObject($fileName, 'w');
-    $file->setCsvControl("\t", "\r\n");
+    $file->setCsvControl(",", "\r\n");
     $file->fputcsv($headings);
     foreach ($output as $row) {
         $file->fputcsv($row);

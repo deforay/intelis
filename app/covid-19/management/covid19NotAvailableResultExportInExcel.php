@@ -120,7 +120,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 5000) {
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
         $file = new SplFileObject($fileName, 'w');
-        $file->setCsvControl("\t", "\r\n");
+        $file->setCsvControl(",", "\r\n");
         $file->fputcsv($headings);
         foreach ($output as $row) {
             $file->fputcsv($row);

@@ -269,7 +269,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 5000) {
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl("\t", "\r\n");
+		$file->setCsvControl(",", "\r\n");
 		$file->fputcsv($headings);
 		foreach ($output as $row) {
 			$file->fputcsv($row);

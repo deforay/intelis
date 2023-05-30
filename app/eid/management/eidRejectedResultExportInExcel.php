@@ -101,7 +101,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 5000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
-          $file->setCsvControl("\t", "\r\n");
+          $file->setCsvControl(",", "\r\n");
           $file->fputcsv($headings);
           foreach ($output as $row) {
                $file->fputcsv($row);

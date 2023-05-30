@@ -144,7 +144,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl("\t", "\r\n");
+		$file->setCsvControl(",", "\r\n");
 		$file->fputcsv($headings);
 		foreach ($output as $row) {
 			$file->fputcsv($row);
