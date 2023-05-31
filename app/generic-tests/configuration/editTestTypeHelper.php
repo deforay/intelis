@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\GenericTestsService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -13,6 +14,8 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$generic = ContainerRegistry::get(GenericTestsService::class);
+
 $tableName = "r_test_types";
 $tableName2 = "generic_test_sample_type_map";
 $tableName3 = "generic_test_reason_map";
@@ -79,26 +82,11 @@ try {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName3);
                 foreach ($_POST['testingReason'] as $val) {
+                    if(!is_numeric($val)){
+                        $val = $generic->quickInsert('r_generic_test_reasons', array('test_reason_code', 'test_reason', 'test_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                    }
                     $value = array('test_reason_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName3, $value);
-                }
-            }
-
-            if (isset($_POST['testFailureReason']) && !empty($_POST['testFailureReason'])) {
-                $db = $db->where('test_type_id', $testTypeId);
-                $db->delete($tableName5);
-                foreach ($_POST['testFailureReason'] as $val) {
-                    $value = array('test_failure_reason_id' => $val, 'test_type_id' => $testTypeId);
-                    $db->insert($tableName5, $value);
-                }
-            }
-
-            if (isset($_POST['rejectionReason']) && !empty($_POST['rejectionReason'])) {
-                $db = $db->where('test_type_id', $testTypeId);
-                $db->delete($tableName6);
-                foreach ($_POST['rejectionReason'] as $val) {
-                    $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
-                    $db->insert($tableName6, $value);
                 }
             }
 
@@ -108,6 +96,30 @@ try {
                 foreach ($_POST['symptoms'] as $val) {
                     $value = array('symptom_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName4, $value);
+                }
+            }
+            
+            if (isset($_POST['testFailureReason']) && !empty($_POST['testFailureReason'])) {
+                $db = $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName5);
+                foreach ($_POST['testFailureReason'] as $val) {
+                    if(!is_numeric($val)){
+                        $val = $generic->quickInsert('r_generic_test_failure_reasons', array('test_failure_reason_code', 'test_failure_reason', 'test_failure_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                    }
+                    $value = array('test_failure_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName5, $value);
+                }
+            }
+
+            if (isset($_POST['rejectionReason']) && !empty($_POST['rejectionReason'])) {
+                $db = $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName6);
+                foreach ($_POST['rejectionReason'] as $val) {
+                    if(!is_numeric($val)){
+                        $val = $generic->quickInsert('r_generic_sample_rejection_reasons', array('rejection_reason_code', 'rejection_reason_name', 'rejection_reason_status'), array($general->generateRandomString(5), $val, 'active'));
+                    }
+                    $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $db->insert($tableName6, $value);
                 }
             }
         }

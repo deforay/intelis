@@ -231,9 +231,9 @@ foreach ($testResultUnitMapInfo as $val) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?> <span class="mandatory">*</span></label>
+									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
+										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
 											<option value="">--Select--</option>
 											<?php foreach ($symptomInfo as $val) { ?>
 												<option value="<?php echo $val['symptom_id']; ?>" <?php echo in_array($val['symptom_id'], $testSymptomsId) ? "selected='selected'" : "" ?>><?php echo $val['symptom_name']; ?></option>
@@ -600,6 +600,50 @@ foreach ($testResultUnitMapInfo as $val) {
 			$(this).parent().parent().prev(".fdropDown").val(curVal); 
 			$(this).parent().remove();
 		});
+
+		let ajaxSelect = ["testingReason", "testFailureReason", "rejectionReason"];
+		let _p = ["testing reason", "test failure reason", "rejection reason"];
+		let _f = ["test_reason", "test_failure_reason", "rejection_reason_name"];
+		let _t = ["r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
+
+		$(ajaxSelect).each(function(index, item){
+			$("#"+item).select2({
+               placeholder: "Enter" + _p[index],
+               minimumInputLength: 0,
+               width: '100%',
+               allowClear: true,
+               id: function(bond) {
+                    return bond._id;
+               },
+               ajax: {
+                    placeholder: "Type one or more character to search",
+                    url: "/includes/get-data-list.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                         return {
+                              fieldName: _f[index],
+                              tableName: _t[index],
+                              q: params.term, // search term
+                              page: params.page
+                         };
+                    },
+                    processResults: function(data, params) {
+                         params.page = params.page || 1;
+                         return {
+                              results: data.result,
+                              pagination: {
+                                   more: (params.page * 30) < data.total_count
+                              }
+                         };
+                    },
+                    //cache: true
+               },
+               escapeMarkup: function(markup) {
+                    return markup;
+               }
+          });
+		});
 	});
 	function showTags(e,obj,cls)
 	{
@@ -638,6 +682,7 @@ foreach ($testResultUnitMapInfo as $val) {
 				fieldName: fieldName,
 				value: obj.value.trim(),
 				fnct: fnct,
+				type: (fieldName == 'test_loinc_code')?'multiple' : '',
 				format: "html"
 			},
 			function(data) {
