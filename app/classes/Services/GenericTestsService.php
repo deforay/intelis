@@ -475,4 +475,24 @@ class GenericTestsService
             }
         }
     }
+
+    public function getGenericTestsByFormId($genId = ""): array
+    {
+        $response = [];
+
+        // Using this in sync requests/results
+        if (is_array($genId) && !empty($genId)) {
+            $results = $this->db->rawQuery("SELECT * FROM generic_test_results WHERE `generic_id` IN (" . implode(",", $genId) . ") ORDER BY test_id ASC");
+
+            foreach ($results as $row) {
+                $response[$row['generic_id']][$row['test_id']] = $row;
+            }
+        } elseif (!empty($genId) && $genId != "" && !is_array($genId)) {
+            $response = $this->db->rawQuery("SELECT * FROM generic_test_results WHERE `generic_id` = $genId ORDER BY test_id ASC");
+        } elseif (!is_array($genId)) {
+            $response = $this->db->rawQuery("SELECT * FROM generic_test_results ORDER BY test_id ASC");
+        }
+
+        return $response;
+    }
 }

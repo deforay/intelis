@@ -4032,3 +4032,66 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
 -- Amit 25-May-2023
 INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'add-vl-results.php', 'Add VL Result Types');
 INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'edit-vl-results.php', 'Edit VL Result Types');
+
+-- Jeyabanu 30-May-2023
+CREATE TABLE `r_generic_test_result_units` (
+  `unit_id` int NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(256) DEFAULT NULL,
+  `unit_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`unit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `generic_test_result_units_map` (
+  `map_id` int NOT NULL AUTO_INCREMENT,
+  `unit_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
+  PRIMARY KEY (`map_id`),
+  KEY `test_type_id` (`test_type_id`),
+  KEY `unit_id` (`unit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-test-result-units.php', 'Manage Test Result Units');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-add-test-result-units.php', 'Add Test Result Units');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units');
+
+
+-- Jeyabanu 31-May-2023
+
+CREATE TABLE `r_generic_test_methods` (
+  `test_method_id` int NOT NULL AUTO_INCREMENT,
+  `test_method_name` varchar(256) DEFAULT NULL,
+  `test_method_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY (`test_method_id`),
+  UNIQUE KEY `test_method_name` (`test_method_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `generic_test_methods_map` (
+  `map_id` int NOT NULL AUTO_INCREMENT,
+  `test_method_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
+  PRIMARY KEY (`map_id`),
+  KEY `test_type_id` (`test_type_id`),
+  KEY `test_method_id` (`test_method_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-reference', 'generic-test-methods.php', 'Manage Test Methods'),
+(NULL, 'generic-test-reference', 'generic-add-test-methods.php', 'Add Test Method'),
+(NULL, 'generic-test-reference', 'generic-edit-test-methods.php', 'Edit Test Method');
+
+
+CREATE TABLE `r_generic_test_categories` (
+  `test_category_id` int NOT NULL AUTO_INCREMENT,
+  `test_category_name` varchar(256) DEFAULT NULL,
+  `test_category_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY (`test_category_id`),
+  UNIQUE KEY `test_category_name` (`test_category_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-reference', 'generic-test-categories.php', 'Manage Test Categories'),
+(NULL, 'generic-test-reference', 'generic-add-test-categories.php', 'Add Test Category'),
+(NULL, 'generic-test-reference', 'generic-edit-test-categories.php', 'Edit Test Category');

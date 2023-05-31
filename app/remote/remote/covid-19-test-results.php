@@ -44,7 +44,6 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     $lab = [];
     $resultData = [];
     $testResultsData = [];
-    $testResultsData = [];
     $symptomsData = [];
     $comorbiditiesData = [];
     $options = [

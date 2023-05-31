@@ -15,6 +15,11 @@ $sampleRejectionReasonInfo = $db->query($srQuery);
 
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
 $symptomInfo = $db->query($symQuery);
+
+$unitQuery = "SELECT * from r_generic_test_result_units where unit_status='active'";
+$testResultUnits = $db->query($unitQuery);
+
+
 ?>
 <style>
 	.tooltip-inner {
@@ -99,14 +104,14 @@ $symptomInfo = $db->query($symQuery);
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null); alphanumericValidation(this.value)' />
 									</div>
 								</div>
 							</div>
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("Test LOINC Code"); ?></label>
+									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("LOINC Codes"); ?></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)' />
 									</div>
@@ -117,34 +122,26 @@ $symptomInfo = $db->query($symQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($sampleTypeInfo as $sampleType) {
-											?>
+											<?php foreach ($sampleTypeInfo as $sampleType) { ?>
 												<option value="<?php echo $sampleType['sample_type_id']; ?>"><?php echo $sampleType['sample_type_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Testing Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($testReasonInfo as $testReason) {
-											?>
+											<?php foreach ($testReasonInfo as $testReason) { ?>
 												<option value="<?php echo $testReason['test_reason_id']; ?>"><?php echo $testReason['test_reason']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -154,34 +151,26 @@ $symptomInfo = $db->query($symQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> </label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> </label>
 									<div class="col-lg-7">
 										<select class="form-control" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($testFailureReasonInfo as $testFailureReason) {
-											?>
+											<?php foreach ($testFailureReasonInfo as $testFailureReason) { ?>
 												<option value="<?php echo $testFailureReason['test_failure_reason_id']; ?>"><?php echo $testFailureReason['test_failure_reason']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($sampleRejectionReasonInfo as $rejectionReason) {
-											?>
+											<?php foreach ($sampleRejectionReasonInfo as $rejectionReason) { ?>
 												<option value="<?php echo $rejectionReason['rejection_reason_id']; ?>"><?php echo $rejectionReason['rejection_reason_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -194,13 +183,9 @@ $symptomInfo = $db->query($symQuery);
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($symptomInfo as $val) {
-											?>
+											<?php foreach ($symptomInfo as $val) { ?>
 												<option value="<?php echo $val['symptom_id']; ?>"><?php echo $val['symptom_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -373,6 +358,24 @@ $symptomInfo = $db->query($symQuery);
 										</div>
 									</div>
 								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
+										<div class="col-lg-7">
+											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($testResultUnits as $unit) {
+											?>
+												<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+											<?php
+											}
+											?>
+											</select>
+										</div>
+									</div>
+								</div>
+								
 							</div>
 							<div class="row quantitativeDiv" style="display:none;">
 								<div class="col-md-12">
@@ -433,6 +436,9 @@ $symptomInfo = $db->query($symQuery);
 		});
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
+		});
+		$("#testResultUnit").select2({
+			placeholder: "<?php echo _("Select Test Result Unit"); ?>"
 		});
 
 	/*	$('.tag-input-field').on('keyup', function(e) {
@@ -501,6 +507,20 @@ function showTags(e,obj,cls)
 					document.getElementById(obj.id).value = "";
 				}
 			});
+	}
+
+	function alphanumericValidation(shortCode)
+	{
+		var regEx = /^[0-9a-zA-Z]+$/;
+			if(shortCode.match(regEx))
+			{
+				return true;
+			}
+			else
+			{
+				alert("Please enter letters and numbers only in short code.");
+				return false;
+			}
 	}
 
 	function insRow() {

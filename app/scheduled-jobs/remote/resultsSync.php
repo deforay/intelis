@@ -8,6 +8,7 @@ if (php_sapi_name() == 'cli') {
 
 use App\Services\ApiService;
 use App\Services\Covid19Service;
+use App\Services\GenericTestsService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -50,6 +51,65 @@ try {
         unset($systemConfig['modules']);
         $systemConfig['modules'][$forceSyncModule] = true;
     }
+
+    // GERNERIC TEST RESULTS
+    if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+
+        $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
+                    FROM `form_generic` AS generic
+                    LEFT JOIN `user_details` AS a ON generic.result_approved_by = a.user_id
+                    WHERE result_status NOT IN (9)
+                    AND sample_code !=''
+                    AND sample_code is not null
+                    AND generic.data_sync=0";
+
+        if (!empty($forceSyncModule) && trim($forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim($sampleCode) != "") {
+            $genericQuery .= " AND sample_code like '$sampleCode'";
+        }
+        $genericLabResult = $db->rawQuery($genericQuery);
+
+        $forms = array_column($genericLabResult, 'sample_id');
+
+
+        /** @var GenericTestsService $genericService */
+        $genericService = ContainerRegistry::get(GenericTestsService::class);
+        $testResults = $genericService->getGenericTestsByFormId($forms);
+        // echo "<pre>";print_r($testResults);die;
+        $url = $remoteUrl . '/remote/remote/generic-test-results.php';
+        $data = array(
+            "labId" => $labId,
+            "result" => $genericLabResult,
+            "testResults" => $testResults,
+            "Key" => "vlsm-lab-data--",
+        );
+        //open connection
+        $ch = curl_init($url);
+        $json_data = json_encode($data);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($json_data)
+            )
+        );
+        // execute post
+        $curl_response = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        $result = json_decode($curl_response, true);
+
+        if (!empty($result)) {
+            $db = $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_generic',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', count($genericLabResult), 'send-results', 'generic', $url, $json_data, $result, 'json', $labId);
+    }
+
 
     // VIRAL LOAD TEST RESULTS
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {

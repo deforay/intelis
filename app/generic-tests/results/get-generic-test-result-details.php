@@ -283,6 +283,7 @@ if (isset($sOrder) && $sOrder != "") {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
+echo $sQuery; die;
 $rResult = $db->rawQuery($sQuery);
 
 
