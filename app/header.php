@@ -502,6 +502,16 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 													<a href="/generic-tests/reference/test-result-units/generic-test-result-units.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-result-units/generic-add-test-result-units.php') . ';' . base64_encode('/generic-tests/reference/test-result-units/generic-edit-test-result-units.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Result Units"); ?></a>
 												</li>
 											<?php } 
+											if (isset($_SESSION['privileges']) && in_array("generic-test-methods.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericTestMethodsMenu">
+													<a href="/generic-tests/reference/test-methods/generic-test-methods.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-methods/generic-add-test-methods.php') . ';' . base64_encode('/generic-tests/reference/test-methods/generic-edit-test-methods.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Methods"); ?></a>
+												</li>
+											<?php } 
+											if (isset($_SESSION['privileges']) && in_array("generic-test-categories.php", $_SESSION['privileges'])) { ?>
+												<li class="allMenu genericTestCategoriesMenu">
+													<a href="/generic-tests/reference/test-categories/generic-test-categories.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-categories/generic-add-test-categories.php') . ';' . base64_encode('/generic-tests/reference/test-categories/generic-edit-test-categories.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Categories"); ?></a>
+												</li>
+											<?php } 
 											if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
 												<li class="allMenu testTypeConfigurationMenu">
 													<a href="/generic-tests/configuration/test-type.php" data-inner-pages="<?= base64_encode('/generic-tests/configuration/add-test-type.php') . ';' . base64_encode('/generic-tests/configuration/edit-test-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
