@@ -4032,3 +4032,25 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
 -- Amit 25-May-2023
 INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'add-vl-results.php', 'Add VL Result Types');
 INSERT INTO `privileges` ( `resource_id`, `privilege_name`, `display_name`) VALUES ( 'vl-reference', 'edit-vl-results.php', 'Edit VL Result Types');
+
+-- Jeyabanu 30-May-2023
+CREATE TABLE `r_generic_test_result_units` (
+  `unit_id` int NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(256) DEFAULT NULL,
+  `unit_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`unit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `generic_test_result_units_map` (
+  `map_id` int NOT NULL AUTO_INCREMENT,
+  `unit_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
+  PRIMARY KEY (`map_id`),
+  KEY `test_type_id` (`test_type_id`),
+  KEY `unit_id` (`unit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-test-result-units.php', 'Manage Test Result Units');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-add-test-result-units.php', 'Add Test Result Units');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units');

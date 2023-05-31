@@ -29,6 +29,9 @@ $sampleRejectionReasonInfo = $db->query($srQuery);
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
 $symptomInfo = $db->query($symQuery);
 
+$unitQuery = "SELECT * from r_generic_test_result_units where unit_status='active'";
+$testResultUnits = $db->query($unitQuery);
+
 $testSampleMapQuery = "SELECT * from generic_test_sample_type_map where test_type_id=$id";
 $testSampleMapInfo = $db->query($testSampleMapQuery);
 $testSampleId = [];
@@ -59,6 +62,15 @@ $testSymptomsId = [];
 foreach ($testSymptomsMapInfo as $val) {
 	$testSymptomsId[] = $val['symptom_id'];
 }
+
+$testResultUnitMapQuery = "SELECT * from generic_test_result_units_map where test_type_id=$id";
+$testResultUnitMapInfo = $db->query($testResultUnitMapQuery);
+$testResultUnitId = [];
+foreach ($testResultUnitMapInfo as $val) {
+	$testResultUnitId[] = $val['unit_id'];
+}
+
+
 ?>
 <style>
 	.tooltip-inner {
@@ -498,6 +510,23 @@ foreach ($testSymptomsMapInfo as $val) {
 										</div>
 									</div>
 								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
+										<div class="col-lg-7">
+											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($testResultUnits as $unit) {
+											?>
+												<option value="<?php echo $unit['unit_id']; ?>" <?php echo in_array($unit['unit_id'], $testResultUnitId) ? "selected='selected'" : "" ?>><?php echo $unit['unit_name']; ?></option>
+											<?php
+											}
+											?>
+											</select>
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="row quantitativeDiv" style="display:none;">
 								<div class="col-md-12">
@@ -579,6 +608,10 @@ foreach ($testSymptomsMapInfo as $val) {
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
 		});
+		$("#testResultUnit").select2({
+			placeholder: "<?php echo _("Select Test Result Unit"); ?>"
+		});
+
 		$(document).on('click', '.remove-tag', function() {
 			htmlVal = ($(this).parent().html());
 			htmlVal = htmlVal.replace('<span class="remove-tag">x</span>', '');

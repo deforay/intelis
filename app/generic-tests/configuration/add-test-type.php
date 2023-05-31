@@ -15,6 +15,11 @@ $sampleRejectionReasonInfo = $db->query($srQuery);
 
 $symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
 $symptomInfo = $db->query($symQuery);
+
+$unitQuery = "SELECT * from r_generic_test_result_units where unit_status='active'";
+$testResultUnits = $db->query($unitQuery);
+
+
 ?>
 <style>
 	.tooltip-inner {
@@ -99,7 +104,7 @@ $symptomInfo = $db->query($symQuery);
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null); alphanumericValidation(this.value)' />
 									</div>
 								</div>
 							</div>
@@ -373,6 +378,24 @@ $symptomInfo = $db->query($symQuery);
 										</div>
 									</div>
 								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
+										<div class="col-lg-7">
+											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
+											<option value="">--Select--</option>
+											<?php
+											foreach ($testResultUnits as $unit) {
+											?>
+												<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+											<?php
+											}
+											?>
+											</select>
+										</div>
+									</div>
+								</div>
+								
 							</div>
 							<div class="row quantitativeDiv" style="display:none;">
 								<div class="col-md-12">
@@ -433,6 +456,9 @@ $symptomInfo = $db->query($symQuery);
 		});
 		$("#symptoms").select2({
 			placeholder: "<?php echo _("Select Symptoms"); ?>"
+		});
+		$("#testResultUnit").select2({
+			placeholder: "<?php echo _("Select Test Result Unit"); ?>"
 		});
 
 	/*	$('.tag-input-field').on('keyup', function(e) {
@@ -501,6 +527,20 @@ function showTags(e,obj,cls)
 					document.getElementById(obj.id).value = "";
 				}
 			});
+	}
+
+	function alphanumericValidation(shortCode)
+	{
+		var regEx = /^[0-9a-zA-Z]+$/;
+			if(shortCode.match(regEx))
+			{
+				return true;
+			}
+			else
+			{
+				alert("Please enter letters and numbers only in short code.");
+				return false;
+			}
 	}
 
 	function insRow() {
