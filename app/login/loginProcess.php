@@ -110,7 +110,7 @@ try {
                     )
                 );
             } else {
-                throw new SystemException(_("Please checkss your login credentials"));
+                throw new SystemException(_("Please check your login credentials"));
             }
         } elseif ($userRow['hash_algorithm'] == 'phb' && !password_verify($_POST['password'], $userRow['password'])) {
             $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);

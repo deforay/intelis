@@ -44,20 +44,9 @@ RUN setfacl -R -m u:www-data:rwx /var/www/html;
 COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
-
-# Third stage: PHP with CLI for Cron
-FROM php-apache AS php-cron
-
 # Configure the cron job
 COPY ./docker/php-apache/crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab && \
     crontab /etc/cron.d/crontab
 
-# Use custom entrypoint script
-COPY ./docker/cron-entrypoint.sh /usr/local/bin/cron-entrypoint.sh
-RUN chmod +x /usr/local/bin/cron-entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/cron-entrypoint.sh"]
-CMD ["cron", "-f"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

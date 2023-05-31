@@ -13053,7 +13053,7 @@ msgstr ""
 
 #: login/loginProcess.php:114
 #, fuzzy
-msgid "Please checkss your login credentials"
+msgid "Please check your login credentials"
 msgstr "Veuillez vérifier vos identifiants de connexion"
 
 #: login/loginProcess.php:119 login/loginProcess.php:218

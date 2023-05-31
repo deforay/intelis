@@ -3042,7 +3042,7 @@ CREATE TABLE `qc_covid19_tests` (
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-results', 'covid-19-qc-data.php', 'Covid-19 QC Data'), (NULL, 'covid-19-results', 'add-covid-19-qc-data.php', 'Add Covid-19 QC Data'), (NULL, 'covid-19-results', 'edit-covid-19-qc-data.php', 'Edit Covid-19 QC Data');
 
- -- Amit 31-Mar-2022
+-- Amit 31-Mar-2022
 ALTER TABLE `vl_request_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
@@ -4040,7 +4040,7 @@ CREATE TABLE `r_generic_test_result_units` (
   `unit_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_result_units_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4054,3 +4054,44 @@ CREATE TABLE `generic_test_result_units_map` (
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-test-result-units.php', 'Manage Test Result Units');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-add-test-result-units.php', 'Add Test Result Units');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units');
+
+
+-- Jeyabanu 31-May-2023
+
+CREATE TABLE `r_generic_test_methods` (
+  `test_method_id` int NOT NULL AUTO_INCREMENT,
+  `test_method_name` varchar(256) DEFAULT NULL,
+  `test_method_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY (`test_method_id`),
+  UNIQUE KEY `test_method_name` (`test_method_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `generic_test_methods_map` (
+  `map_id` int NOT NULL AUTO_INCREMENT,
+  `test_method_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
+  PRIMARY KEY (`map_id`),
+  KEY `test_type_id` (`test_type_id`),
+  KEY `test_method_id` (`test_method_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-reference', 'generic-test-methods.php', 'Manage Test Methods'),
+(NULL, 'generic-test-reference', 'generic-add-test-methods.php', 'Add Test Method'),
+(NULL, 'generic-test-reference', 'generic-edit-test-methods.php', 'Edit Test Method');
+
+
+CREATE TABLE `r_generic_test_categories` (
+  `test_category_id` int NOT NULL AUTO_INCREMENT,
+  `test_category_name` varchar(256) DEFAULT NULL,
+  `test_category_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY (`test_category_id`),
+  UNIQUE KEY `test_category_name` (`test_category_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-reference', 'generic-test-categories.php', 'Manage Test Categories'),
+(NULL, 'generic-test-reference', 'generic-add-test-categories.php', 'Add Test Category'),
+(NULL, 'generic-test-reference', 'generic-edit-test-categories.php', 'Edit Test Category');

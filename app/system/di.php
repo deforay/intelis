@@ -69,7 +69,7 @@ $builder->addDefinitions([
 // Services
 $builder->addDefinitions([
     SystemService::class => DI\create(SystemService::class)
-        ->constructor(DI\get('db'), DI\get('applicationConfig')),
+        ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     CommonService::class => DI\create(CommonService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
