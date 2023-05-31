@@ -47,7 +47,6 @@ if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
 }
-
 $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
 $manifestCode = !empty($_GET['manifestCode']) ? $_GET['manifestCode'] : null;
 
@@ -62,6 +61,157 @@ if (!empty($forceSyncModule)) {
  * VIRAL LOAD TEST REQUESTS
  ****************************************************************
  */
+$request = [];
+if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+    
+    $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
+    $payload = array(
+        'labId' => $labId,
+        'module' => 'generic-tests',
+        "Key" => "vlsm-lab-data--",
+    );
+    if (!empty($forceSyncModule) && trim($forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim($manifestCode) != "") {
+        $payload['manifestCode'] = $manifestCode;
+    }
+    $columnList = [];
+
+    $client = new GuzzleHttp\Client();
+    $response = $client->post(
+    $url,
+        [
+            GuzzleHttp\RequestOptions::JSON => $payload
+        ]
+    );
+    
+    $jsonResponse = $response->getBody()->getContents();
+    
+    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+
+        $options = [
+            'pointer' => '/result',
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                            WHERE TABLE_SCHEMA = ? AND table_name='form_generic'";
+        $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
+        $columnList = array_map('current', $allColResult);
+
+        $removeKeys = array(
+            'sample_id',
+            'sample_batch_id',
+            'result',
+            'sample_tested_datetime',
+            'sample_received_at_testing_lab_datetime',
+            'result_dispatched_datetime',
+            'is_sample_rejected',
+            'reason_for_sample_rejection',
+            'result_approved_by',
+            'result_approved_datetime',
+            'data_sync'
+        );
+        $columnList = array_diff($columnList, $removeKeys);
+        $counter = 0;
+        foreach ($parsedData as $key => $remoteData) {
+            $counter++;
+            $request = [];
+            foreach ($columnList as $colName) {
+                if (isset($remoteData[$colName])) {
+                    $request[$colName] = $remoteData[$colName];
+                } else {
+                    $request[$colName] = null;
+                }
+            }
+            
+            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            
+            $exsvlQuery = "SELECT sample_id, sample_code
+                            FROM form_generic AS vl WHERE remote_sample_code=?";
+            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
+            if (!empty($exsvlResult)) {
+
+                $removeMoreKeys = array(
+                    'sample_code',
+                    'sample_code_key',
+                    'sample_code_format',
+                    'sample_batch_id',
+                    'lab_id',
+                    'vl_test_platform',
+                    'sample_received_at_hub_datetime',
+                    'sample_received_at_testing_lab_datetime',
+                    'sample_tested_datetime',
+                    'result_dispatched_datetime',
+                    'is_sample_rejected',
+                    'reason_for_sample_rejection',
+                    'rejection_on',
+                    'result',
+                    'result_reviewed_by',
+                    'result_reviewed_datetime',
+                    'tested_by',
+                    'result_approved_by',
+                    'result_approved_datetime',
+                    'lab_tech_comments',
+                    'reason_for_test_result_changes',
+                    'revised_by',
+                    'revised_on',
+                    'last_modified_by',
+                    'last_modified_datetime',
+                    'manual_result_entry',
+                    'result_status',
+                    'data_sync',
+                    'result_printed_datetime'
+                );
+
+                $request = array_diff_key($request, array_flip($removeMoreKeys));
+
+                $formAttributes = $general->jsonToSetString(
+                    $request['form_attributes'],
+                    'form_attributes',
+                    ['syncTransactionId' => $transactionId]
+                );
+                $request['form_attributes'] = $db->func($formAttributes);
+                
+                $db = $db->where('sample_id', $exsvlResult[0]['sample_id']);
+                $id = $db->update('form_generic', $request);
+            } else {
+                $request['source_of_request'] = 'vlsts';
+                
+                if (!empty($request['sample_collection_date'])) {
+                    
+                    $request['source_of_request'] = "vlsts";
+                    $formAttributes = $general->jsonToSetString(
+                        $request['form_attributes'],
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $db->func($formAttributes);
+                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                    $request['data_sync'] = 0;
+                    $id = $db->insert('form_generic', $request);
+                }
+            }
+        }
+
+        $options = [
+            'pointer' => '/testResults',
+            'decoder' => new ExtJsonDecoder(true)
+        ];
+        $parsedData = Items::fromString($jsonResponse, $options);
+
+        foreach ($parsedData as $genericId => $testResults) {
+            $db = $db->where('generic_id', $genericId);
+            $db->delete("generic_test_results");
+            foreach ($testResults as $genericTestData) {
+                unset($genericTestData['test_id']);
+                $db->insert("generic_test_results", $genericTestData);
+            }
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+}
+
 $request = [];
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     //$remoteSampleCodeList = [];
