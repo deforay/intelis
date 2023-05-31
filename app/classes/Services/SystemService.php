@@ -15,16 +15,16 @@ class SystemService
 
     protected ?MysqliDb $db = null;
     protected $applicationConfig = null;
+    protected $commonService = null;
 
-    public function __construct($db = null, $applicationConfig = null)
-    {
+    public function __construct(
+        ?MysqliDb $db = null,
+        ?array $applicationConfig = null,
+        CommonService $commonService = null
+    ) {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->applicationConfig = $applicationConfig;
-    }
-
-    public function setDb($db)
-    {
-        $this->db = $db;
+        $this->commonService = $commonService;
     }
 
     // Application Bootstrap
@@ -37,16 +37,11 @@ class SystemService
     }
 
     // Setup Translation
-    public function setupTranslation($domain = "messages")
+    public function setupTranslation($domain = "messages"): void
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(\App\Services\CommonService::class);
 
-        $locale = $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ??
-            $general->getGlobalConfig('app_locale') ?? 'en_US';
+        $locale = $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? 'en_US';
 
-        putenv('LC_ALL=' . $locale);
-        putenv('LANGUAGE=' . $locale);
         setlocale(LC_ALL, $locale);
         bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales');
         bind_textdomain_codeset($domain, 'UTF-8');
@@ -54,13 +49,10 @@ class SystemService
     }
 
     // Setup Timezone
-    public function setupDateTimeZone()
+    public function setupDateTimeZone(): void
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(\App\Services\CommonService::class);
-
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
-            $general->getGlobalConfig('default_time_zone') ?? 'UTC';
+            $this->commonService->getGlobalConfig('default_time_zone') ?? 'UTC';
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);
     }
 
@@ -82,8 +74,8 @@ class SystemService
             if (Misc::isAjaxRequest()) {
                 $jsonHandler = new JsonResponseHandler;
 
-                // You can also tell JsonResponseHandler to give you a full stack trace:
-                // $jsonHandler->addTraceToOutput(true);
+                // Setup JsonResponseHandler to give a full stack trace:
+                $jsonHandler->addTraceToOutput(true);
 
                 // Return a result compliant to the json:api spec
                 // re: http://jsonapi.org/examples/#error-objects
@@ -100,28 +92,15 @@ class SystemService
     {
         $response = [];
 
-        if (isset($this->applicationConfig['modules']['vl']) && $this->applicationConfig['modules']['vl'] === true) {
-            $response[] = 'vl';
-        }
+        $modules = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'genericTests'];
 
-        if (isset($this->applicationConfig['modules']['eid']) && $this->applicationConfig['modules']['eid'] === true) {
-            $response[] = 'eid';
-        }
-
-        if (isset($this->applicationConfig['modules']['covid19']) && $this->applicationConfig['modules']['covid19'] === true) {
-            $response[] = 'covid19';
-        }
-
-        if (isset($this->applicationConfig['modules']['hepatitis']) && $this->applicationConfig['modules']['hepatitis'] === true) {
-            $response[] = 'hepatitis';
-        }
-
-        if (isset($this->applicationConfig['modules']['tb']) && $this->applicationConfig['modules']['tb'] === true) {
-            $response[] = 'tb';
-        }
-
-        if (isset($this->applicationConfig['modules']['genericTests']) && $this->applicationConfig['modules']['genericTests'] === true) {
-            $response[] = 'genericTests';
+        foreach ($modules as $module) {
+            if (
+                isset($this->applicationConfig['modules'][$module]) &&
+                $this->applicationConfig['modules'][$module] === true
+            ) {
+                $response[] = $module;
+            }
         }
 
         return $response;

@@ -7,5 +7,8 @@ mv /etc/apache2/sites-enabled/000-default.conf.tmp /etc/apache2/sites-enabled/00
 # Add domain to /etc/hosts
 echo "127.0.0.1 ${DOMAIN}" >> /etc/hosts
 
+# Start the cron service
+service cron start
+
 # Start Apache in the foreground
 exec apache2-foreground

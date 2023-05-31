@@ -3042,7 +3042,7 @@ CREATE TABLE `qc_covid19_tests` (
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-results', 'covid-19-qc-data.php', 'Covid-19 QC Data'), (NULL, 'covid-19-results', 'add-covid-19-qc-data.php', 'Add Covid-19 QC Data'), (NULL, 'covid-19-results', 'edit-covid-19-qc-data.php', 'Edit Covid-19 QC Data');
 
- -- Amit 31-Mar-2022
+-- Amit 31-Mar-2022
 ALTER TABLE `vl_request_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_covid19` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
