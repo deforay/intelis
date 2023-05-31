@@ -108,14 +108,7 @@ try {
     }
 
     if (isset($_FILES['sign']) && $_FILES['sign']['error'] === UPLOAD_ERR_OK && $_FILES['sign']['size'] > 0) {
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature", 0777, true);
-        }
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['sign']['name'])));
-        $imageName = str_replace(" ", "-", $imageName);
-        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
-        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
@@ -123,12 +116,18 @@ try {
             mkdir($signatureImagePath, 0777, true);
         }
 
+        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['sign']['name'])));
+        $imageName = str_replace(" ", "-", $imageName);
+        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
+
+
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
 
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
             $resizeObj = new ImageResizeUtility();
             $resizeObj = $resizeObj->setFileName($signatureImagePath);
-            $resizeObj->resizeToWidth(100);
+            $resizeObj->resizeToWidth(250);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;
         }

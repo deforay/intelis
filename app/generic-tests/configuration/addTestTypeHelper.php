@@ -19,6 +19,7 @@ $tableName3 = "generic_test_reason_map";
 $tableName4 = "generic_test_symptoms_map";
 $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
+$tableName7 = "generic_test_result_units_map";
 $testAttribute = [];
 $_POST['testStandardName'] = trim($_POST['testStandardName']);
 $i=0;
@@ -29,7 +30,7 @@ foreach($_POST['fdropDown'] as $val)
 }
 
 try {
-    
+   // echo '<pre>'; print_r($_POST['resultConfig']['test_result_unit']); die;
     if (!empty($_POST['testStandardName'])) {
         $testAttribute['field_id'] = $_POST['fieldId'];
         $testAttribute['field_name'] = $_POST['fieldName'];
@@ -85,6 +86,13 @@ try {
                 foreach ($_POST['symptoms'] as $val) {
                     $value = array('symptom_id' => $val, 'test_type_id' => $lastId);
                     $db->insert($tableName4, $value);
+                }
+            }
+
+            if (!empty($_POST['resultConfig']['test_result_unit'])) {
+                foreach ($_POST['resultConfig']['test_result_unit'] as $val) {
+                    $value = array('unit_id' => $val, 'test_type_id' => $lastId);
+                    $db->insert($tableName7, $value);
                 }
             }
         }

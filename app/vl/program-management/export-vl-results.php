@@ -150,10 +150,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$no++;
 	}
 
-	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 5000) {
+	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
+		$file->setCsvControl(",", "\r\n");
 		$file->fputcsv($headings);
 		foreach ($output as $row) {
 			$file->fputcsv($row);

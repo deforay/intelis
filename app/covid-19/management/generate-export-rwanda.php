@@ -128,10 +128,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$no++;
 	}
 
-	if (isset($_SESSION['covid19ResultQueryCount']) && $_SESSION['covid19ResultQueryCount'] > 5000) {
+	if (isset($_SESSION['covid19ResultQueryCount']) && $_SESSION['covid19ResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
+		$file->setCsvControl(",", "\r\n");
 		$file->fputcsv($headings);
 		foreach ($output as $row) {
 			$file->fputcsv($row);

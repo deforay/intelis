@@ -24,7 +24,7 @@ acl snapd rsync git gdebi wget gedit -y;
 ```
 
 Optionally, install Visual Studio Code (useful for editing PHP and other config files)
-	
+
 ```bash
 sudo snap install --classic code
 ```
@@ -56,7 +56,7 @@ Now let us enter the MySQL terminal to set up the root user password
 sudo mysql;
 ```
 
-Once you are inside MySQL prompt type the following commands one by one : 
+Once you are inside MySQL prompt type the following commands one by one :
 
 `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<PASSWORD>';`
 
@@ -70,10 +70,10 @@ Once you are back in Bash terminal:
 sudo gedit /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 
-Search for the line which has `skip-external-locking` or `mysqlx-bind-address = 127.0.0.1` and add the following new lines after that : 
+Search for the line which has `skip-external-locking` or `mysqlx-bind-address = 127.0.0.1` and add the following new lines after that :
 
 ```text
-sql_mode = 
+sql_mode =
 innodb_strict_mode = 0
 ```
 Save and Close file. Then restart mysql :
@@ -89,7 +89,6 @@ Now let us install PHP 7.4:
 ```bash
 sudo add-apt-repository ppa:ondrej/php -y;
 sudo apt update;
-sudo apt purge php8* -y && apt autoremove -y;
 sudo apt -y install php7.4 openssl php7.4-common php7.4-cli \
 php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd \
 php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath \

@@ -13,7 +13,10 @@ use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
-if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
+if (
+    !isset(SYSTEM_CONFIG['interfacing']['enabled']) ||
+    SYSTEM_CONFIG['interfacing']['enabled'] === false
+) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -38,8 +41,10 @@ if (empty($labId)) {
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
-
+if (
+    !empty(SYSTEM_CONFIG['interfacing']['database']['host']) &&
+    !empty(SYSTEM_CONFIG['interfacing']['database']['username'])
+) {
     $mysqlConnected = true;
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
@@ -48,7 +53,6 @@ $sqliteDb = null;
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
-    //$sqliteDb = new SQLite3(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
     $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
