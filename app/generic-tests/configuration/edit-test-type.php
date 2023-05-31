@@ -163,7 +163,7 @@ foreach ($testResultUnitMapInfo as $val) {
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("Test LOINC Code"); ?></label>
+									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("LOINC Codes"); ?></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' value="<?php echo $testTypeInfo[0]['test_loinc_code']; ?>" onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo "test_type_id##" . $testTypeInfo[0]['test_type_id']; ?>','<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo[0]['test_loinc_code']; ?>" />
 									</div>
@@ -174,34 +174,26 @@ foreach ($testResultUnitMapInfo as $val) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?> <span class="mandatory">*</span></label>
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($sampleTypeInfo as $sampleType) {
-											?>
+											<?php foreach ($sampleTypeInfo as $sampleType) { ?>
 												<option value="<?php echo $sampleType['sample_type_id']; ?>" <?php echo in_array($sampleType['sample_type_id'], $testSampleId) ? "selected='selected'" : "" ?>><?php echo $sampleType['sample_type_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Testing Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($testReasonInfo as $testReason) {
-											?>
+											<?php foreach ($testReasonInfo as $testReason) { ?>
 												<option value="<?php echo $testReason['test_reason_id']; ?>" <?php echo in_array($testReason['test_reason_id'], $testReasonId) ? "selected='selected'" : "" ?>><?php echo $testReason['test_reason']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -210,34 +202,26 @@ foreach ($testResultUnitMapInfo as $val) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($testFailureReasonInfo as $testFailureReason) {
-											?>
+											<?php foreach ($testFailureReasonInfo as $testFailureReason) { ?>
 												<option value="<?php echo $testFailureReason['test_failure_reason_id']; ?>" <?php echo in_array($testFailureReason['test_failure_reason_id'], $testFailureReasonId) ? "selected='selected'" : "" ?>><?php echo $testFailureReason['test_failure_reason']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reason"); ?> <span class="mandatory">*</span></label>
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($sampleRejectionReasonInfo as $rejectionReason) {
-											?>
+											<?php foreach ($sampleRejectionReasonInfo as $rejectionReason) { ?>
 												<option value="<?php echo $rejectionReason['rejection_reason_id']; ?>" <?php echo in_array($rejectionReason['rejection_reason_id'], $rejectionReasonId) ? "selected='selected'" : "" ?>><?php echo $rejectionReason['rejection_reason_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -251,13 +235,9 @@ foreach ($testResultUnitMapInfo as $val) {
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
 											<option value="">--Select--</option>
-											<?php
-											foreach ($symptomInfo as $val) {
-											?>
+											<?php foreach ($symptomInfo as $val) { ?>
 												<option value="<?php echo $val['symptom_id']; ?>" <?php echo in_array($val['symptom_id'], $testSymptomsId) ? "selected='selected'" : "" ?>><?php echo $val['symptom_name']; ?></option>
-											<?php
-											}
-											?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
