@@ -4040,7 +4040,7 @@ CREATE TABLE `r_generic_test_result_units` (
   `unit_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_result_units_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4065,7 +4065,7 @@ CREATE TABLE `r_generic_test_methods` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
   PRIMARY KEY (`test_method_id`),
   UNIQUE KEY `test_method_name` (`test_method_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `generic_test_methods_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
@@ -4074,7 +4074,7 @@ CREATE TABLE `generic_test_methods_map` (
   PRIMARY KEY (`map_id`),
   KEY `test_type_id` (`test_type_id`),
   KEY `test_method_id` (`test_method_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
 (NULL, 'generic-test-reference', 'generic-test-methods.php', 'Manage Test Methods'),
@@ -4089,7 +4089,7 @@ CREATE TABLE `r_generic_test_categories` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
   PRIMARY KEY (`test_category_id`),
   UNIQUE KEY `test_category_name` (`test_category_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
 (NULL, 'generic-test-reference', 'generic-test-categories.php', 'Manage Test Categories'),
