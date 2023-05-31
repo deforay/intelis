@@ -5,7 +5,7 @@ $systemConfig = [];
 // System Locale
 $systemConfig['locale'] = 'en_US';
 
-// VLSTS URL
+// STS URL
 $systemConfig['remoteURL'] = '';
 
 // Enable/Disable Modules

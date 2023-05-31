@@ -25,8 +25,8 @@ $headings = [
     "Test Type",
     "Province",
     "District",
-    "Latest Results Sync from Lab",
-    "Latest Requests Sync from VLSTS"
+    "Latest Results Sync from LIS",
+    "Latest Requests Sync from STS"
 ];
 $colNo = 1;
 

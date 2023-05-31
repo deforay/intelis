@@ -139,7 +139,7 @@ $activeTestModules = $systemService->getActiveTestModules();
                                     <!-- <th><?php echo _("Request Type"); ?></th> -->
                                     <th class="center"><?php echo _("Last Synced on"); ?></th>
                                     <th class="center"><?php echo _("Last Results Sync from Lab"); ?></th>
-                                    <th class="center"><?php echo _("Last Requests Sync from VLSTS"); ?></th>
+                                    <th class="center"><?php echo _("Last Requests Sync from STS"); ?></th>
                                     <th class="center"><?php echo _("Version"); ?></th>
                                 </tr>
                             </thead>

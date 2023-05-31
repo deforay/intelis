@@ -292,17 +292,6 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 									<tr>
-										<!--<td style="width:10%">
-                        <label for="facility">Clinic/Ward  <span class="mandatory">*</span></label>
-                        </td>
-                        <td style="width:20%">
-                          <select class="form-control isRequired" id="wardData" name="wardData" title="Please select ward data" style="width:100%;">
-                        <option value="">-- Select --</option>
-                        <option value="inpatient" < ?php echo ($vlQueryInfo['ward']=="inpatient")?"selected='selected'":""?>>In-Patient</option>
-                        <option value="outpatient" < php echo ($vlQueryInfo['ward']=="outpatient")?"selected='selected'":""?>>Out-Patient</option>
-                        <option value="anc"< ?php echo ($vlQueryInfo['ward']=="anc")?"selected='selected'":""?>>ANC</option>
-                      </select>
-                        </td>-->
 										<td class="labels">
 											<label for="reqClinician">Requesting Medical Officer <span class="mandatory">*</span></label>
 										</td>
@@ -603,7 +592,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 										<td>
-											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -616,7 +605,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									</tr>
 									<tr>
 										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result</label></td>
-										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
+										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
 											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
 											<datalist id="possibleVlResults"></datalist>
 										</td>
@@ -664,7 +653,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="failedTestingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults')" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -674,11 +663,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 											</select>
 										</td>
 										<td class="labels"><label for="failedvlResult">VL result</label></td>
-										<td>
+										<td class="resultInputContainer">
 											<input list="failedPossibleVlResults" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
-											<datalist id="failedPossibleVlResults">
-
-											</datalist>
+											<datalist id="failedPossibleVlResults"></datalist>
 										</td>
 									</tr>
 									<tr>
@@ -713,21 +700,23 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="finalViralResult">Final Viral Load Result(copies/ml)</label></td>
-										<td>
-											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= ($vlQueryInfo['result']); ?>">
+										<td class="labels"><label for="finalViralLoadResult">Final Viral Load Result(copies/ml)</label></td>
+										<td class="resultInputContainer">
+											<input list="finalPossibleVlResults" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<datalist id="finalPossibleVlResults"></datalist>
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 										<td>
 											<input type="text" class="form-control" name="qcTechName" id="qcTechName" placeholder="QC Tech Name" title="Enter QC Tech Name" style="width:100%;" value="<?php echo $vlQueryInfo['qc_tech_name']; ?>">
 										</td>
-										<td class="labels"><label for="finalViralResult">Report Date</label></td>
+										<td class="labels"><label for="reportDate">Report Date</label></td>
 										<td>
 											<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;" value="<?php echo $vlQueryInfo['report_date']; ?>">
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="finalViralResult">QC Tech Signature</label></td>
+										<td class="labels"><label for="
+										">QC Tech Signature</label></td>
 										<td>
 											<input type="text" class="form-control" name="qcTechSign" id="qcTechSign" placeholder="QC Tech Signature" title="Enter QC Tech Signature" style="width:100%;" value="<?php echo $vlQueryInfo['qc_tech_sign']; ?>">
 										</td>
@@ -792,26 +781,27 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 	let provinceName = true;
 	let facilityName = true;
 
-	function getVlResults(testingPlatformId, vlResultId) {
+	function getVlResults(testingPlatformId, datalistId, vlResultId) {
 		testingVal = $('#' + testingPlatformId).val();
 		var str1 = testingVal.split("##");
 		var platformId = str1[3];
-		$("#" + vlResultId).html('');
+		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
 			},
 			function(data) {
 				// alert(data);
 				if (data != "") {
-					$("#" + vlResultId).html(data);
-					// $("#vlResult").attr("disabled", false);
+					$("#" + datalistId).html(data);
+					$("#" + vlResultId).attr("disabled", false);
 				}
 			});
 	}
 
 	$(document).ready(function() {
-		getVlResults('testingPlatform', 'possibleVlResults');
-		getVlResults('failedTestingTech', 'failedPossibleVlResults');
+		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
+		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult');
+		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');
 		$("#gender").change(function() {
 			if ($(this).val() == "female")
 				$(".femaleFactor").show();

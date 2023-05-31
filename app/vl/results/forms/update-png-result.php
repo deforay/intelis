@@ -520,7 +520,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingPlatform">Testing Platform <span class="mandatory">*</span></label></td>
 										<td>
-											<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -529,9 +529,10 @@ $disable = "disabled = 'disabled'";
 												?>
 											</select>
 										</td>
-										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="vlResult">VL result <span class="mandatory">*</span></label></td>
-										<td class="vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input type="text" class="form-control <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "isRequired"; ?>" name="vlResult" id="vlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?= ($vlQueryInfo['result']); ?>">
+										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="cphlvlResult">VL result <span class="mandatory">*</span></label></td>
+										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
+											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<datalist id="possibleVlResults"></datalist>
 										</td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
@@ -577,7 +578,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -587,8 +588,9 @@ $disable = "disabled = 'disabled'";
 											</select>
 										</td>
 										<td class="labels"><label for="vlResult">VL result</label></td>
-										<td>
-											<input type="text" class="form-control " name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+										<td class="resultInputContainer">
+											<input list="failedPossibleVlResults" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+											<datalist id="failedPossibleVlResults"></datalist>
 										</td>
 									</tr>
 									<tr>
@@ -623,21 +625,22 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="finalViralResult">Final Viral Load Result (copies/ml)</label></td>
-										<td>
-											<input type="text" class="form-control" name="finalViralResult" id="finalViralResult" placeholder="Viral Load Result" title="Enter Viral Result" style="width:100%;" value="<?= ($vlQueryInfo['result']); ?>">
+										<td class="labels"><label for="finalViralLoadResult">Final Viral Load Result (copies/ml)</label></td>
+										<td class="resultInputContainer">
+											<input list="finalPossibleVlResults" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<datalist id="finalPossibleVlResults"></datalist>
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
 										<td>
 											<input type="text" class="form-control" name="qcTechName" id="qcTechName" placeholder="QC Tech Name" title="Enter QC Tech Name" style="width:100%;" value="<?php echo $vlQueryInfo['qc_tech_name']; ?>">
 										</td>
-										<td class="labels"><label for="finalViralResult">Report Date</label></td>
+										<td class="labels"><label for="reportDate">Report Date</label></td>
 										<td>
 											<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;" value="<?php echo $vlQueryInfo['report_date']; ?>">
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="finalViralResult">QC Tech Signature</label></td>
+										<td class="labels"><label for="qcTechSign">QC Tech Signature</label></td>
 										<td>
 											<input type="text" class="form-control" name="qcTechSign" id="qcTechSign" placeholder="QC Tech Signature" title="Enter QC Tech Signature" style="width:100%;" value="<?php echo $vlQueryInfo['qc_tech_sign']; ?>">
 										</td>
@@ -697,7 +700,28 @@ $disable = "disabled = 'disabled'";
 <script>
 	provinceName = true;
 	facilityName = true;
+
+	function getVlResults(testingPlatformId, datalistId, vlResultId) {
+		testingVal = $('#' + testingPlatformId).val();
+		var str1 = testingVal.split("##");
+		var platformId = str1[3];
+		$("#" + datalistId).html('');
+		$.post("/vl/requests/getVlResults.php", {
+				instrumentId: platformId,
+			},
+			function(data) {
+				// alert(data);
+				if (data != "") {
+					$("#" + datalistId).html(data);
+					$("#" + vlResultId).attr("disabled", false);
+				}
+			});
+	}
+
 	$(document).ready(function() {
+		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
+		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult');
+		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,

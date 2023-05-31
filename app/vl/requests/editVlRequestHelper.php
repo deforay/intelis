@@ -112,6 +112,10 @@ try {
           }
      }
 
+     if ($formId == '5') {
+          $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+     }
+
      $isRejected = false;
      if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
           $vl_result_category = 'rejected';
@@ -327,7 +331,7 @@ try {
           $pngSpecificFields['plasma_process_tech'] = $_POST['processTech'] ?? null;
           $pngSpecificFields['sample_collected_by'] = $_POST['collectedBy'] ?? null;
           $pngSpecificFields['tech_name_png'] = $_POST['techName'] ?? null;
-          $pngSpecificFields['cphl_vl_result'] = $_POST['cphlvlResult'] ?? null;
+          $pngSpecificFields['cphl_vl_result'] = $_POST['cphlVlResult'] ?? null;
           $pngSpecificFields['batch_quality'] = $_POST['batchQuality'] ?? null;
           $pngSpecificFields['sample_test_quality'] = $_POST['testQuality'] ?? null;
           $pngSpecificFields['sample_batch_id'] = $_POST['batchNo'] ?? null;
@@ -337,7 +341,6 @@ try {
           $pngSpecificFields['failed_batch_quality'] = $_POST['failedbatchQuality'] ?? null;
           $pngSpecificFields['failed_sample_test_quality'] = $_POST['failedtestQuality'] ?? null;
           $pngSpecificFields['failed_batch_id'] = $_POST['failedbatchNo'] ?? null;
-          $pngSpecificFields['result'] = $_POST['finalViralResult'] ?? null;
           $pngSpecificFields['qc_tech_name'] = $_POST['qcTechName'] ?? null;
           $pngSpecificFields['qc_tech_sign'] = $_POST['qcTechSign'] ?? null;
           $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate']);

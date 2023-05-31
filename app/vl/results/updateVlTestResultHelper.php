@@ -85,6 +85,10 @@ try {
         }
     }
 
+    if ($formId == '5') {
+        $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
+    }
+
     $isRejected = false;
     $finalResult = null;
     $resultStatus = 8; // Awaiting Approval
@@ -208,6 +212,7 @@ try {
         'result_value_absolute'                 => $absVal ?? null,
         'result_value_absolute_decimal'         => $absDecimalVal ?? null,
         'result_value_text'                     => $txtVal ?? null,
+        'cphl_vl_result'                                => $finalResult ?? null,
         'result'                                => $finalResult ?? null,
         'result_value_log'                      => $logVal ?? null,
         'result_value_hiv_detection' => $_POST['hivDetection'] ?? null,

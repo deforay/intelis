@@ -1,14 +1,20 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
-
 $title = _("COVID-19 | Edit Request");
 
 require_once APPLICATION_PATH . '/header.php';
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
+
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -41,6 +47,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 
@@ -71,12 +78,12 @@ $covid19Info = $db->rawQueryOne($covid19Query, array($id));
 $covid19TestQuery = "SELECT * from covid19_tests where covid19_id=? ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery, array($id));
 
-//var_dump($covid19TestInfo);die;
-
-// echo "<pre>"; var_dump($covid19Info);die;
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
 
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
 
+$arr = $general->getGlobalConfig();
 
 if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'auto2' || $arr['covid19_sample_code'] == 'alphanumeric') {
     $sampleClass = '';

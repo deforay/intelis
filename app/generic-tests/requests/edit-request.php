@@ -820,7 +820,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	<td>
 																		<?php
 																		$value = '';
-																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen','GeneXpert', 'ELISA', 'other'))) {
+																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'GeneXpert', 'ELISA', 'other'))) {
 																			$value = 'value="' . $rows['test_name'] . '"';
 																			$show =  "block";
 																		} else {
@@ -1055,7 +1055,6 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 			}
 		});
 
-		/** Edit south sudan */
 		$("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
@@ -1449,14 +1448,6 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 		$.unblockUI();
 	}
 
-
-	/** Edit south sudan function */
-	function showTesting(chosenClass) {
-		$(".viralTestData").val('');
-		$(".hideTestData").hide();
-		$("." + chosenClass).show();
-	}
-
 	function getProvinceDistricts(obj) {
 		$.blockUI();
 		var cName = $("#fName").val();
@@ -1703,9 +1694,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
 					testType: testType,
-					result: $('#result').val() ? $('#result').val():'<?php echo $genericResultInfo['result'];?>',
+					result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
-					resultInterpretation:'<?php echo $genericResultInfo['final_result_interpretation'];?>',
+					resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
@@ -1730,19 +1721,19 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						$("#otherSection").html(data.otherSection);
 					}
 					$('.dateTime').datetimepicker({
-                              changeMonth: true,
-                              changeYear: true,
-                              dateFormat: 'dd-M-yy',
-                              timeFormat: "HH:mm",
-                              maxDate: "Today",
-                              onChangeMonthYear: function(year, month, widget) {
-                                   setTimeout(function() {
-                                        $('.ui-datepicker-calendar').show();
-                                   });
-                              }
-                         }).click(function() {
-                              $('.ui-datepicker-calendar').show();
-                         });
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: 'dd-M-yy',
+						timeFormat: "HH:mm",
+						maxDate: "Today",
+						onChangeMonthYear: function(year, month, widget) {
+							setTimeout(function() {
+								$('.ui-datepicker-calendar').show();
+							});
+						}
+					}).click(function() {
+						$('.ui-datepicker-calendar').show();
+					});
 					$(".dynamicFacilitySelect2").select2({
 						width: '285px',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
@@ -1751,7 +1742,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						width: '100%',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
-					
+
 				});
 		} else {
 			removeDynamicForm();
@@ -1869,20 +1860,20 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 		});
 	}
 
-	function updateInterpretationResult(obj){
-		if(obj.value){
-               $.post("get-result-interpretation.php", {
-                    result: obj.value,
-                    resultType: $('#resultType').val(),
-                    testType : $('#testType').val()
-               },
-               function(interpretation) {
-                    if (interpretation != "") {
-                         $('#resultInterpretation').val(interpretation);
-					}else{
-                         $('#resultInterpretation').val('');
-                    }
-               });
+	function updateInterpretationResult(obj) {
+		if (obj.value) {
+			$.post("get-result-interpretation.php", {
+					result: obj.value,
+					resultType: $('#resultType').val(),
+					testType: $('#testType').val()
+				},
+				function(interpretation) {
+					if (interpretation != "") {
+						$('#resultInterpretation').val(interpretation);
+					} else {
+						$('#resultInterpretation').val('');
+					}
+				});
 		}
 	}
 </script>

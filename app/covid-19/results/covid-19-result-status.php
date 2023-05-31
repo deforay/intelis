@@ -3,6 +3,11 @@ $title = _("Manage Result Status");
 
 require_once APPLICATION_PATH . '/header.php';
 
+use App\Registries\ContainerRegistry;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type";

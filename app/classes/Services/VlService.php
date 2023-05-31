@@ -191,10 +191,21 @@ class VlService
 
         $vlResultCategory = null;
         $orignalResultValue = $finalResult;
-        $finalResult = strtolower(trim($finalResult));
-        $finalResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $finalResult);
-        $finalResult = str_replace('-', '', $finalResult);
-        $finalResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $finalResult));
+        $find = [
+            'c/ml',
+            'cp/ml',
+            'copies/ml',
+            'cop/ml',
+            'copies',
+            'cpml',
+            'HIV-1 DETECTED',
+            'HIV1 DETECTED',
+            'HIV-1 NOT DETECTED',
+            'HIV-1 NOTDETECTED',
+            'HIV1 NOTDETECTED',
+
+        ];
+        $finalResult = str_ireplace($find, '', $finalResult);
 
         if (!isset($finalResult) || empty($finalResult)) {
             $vlResultCategory = null;

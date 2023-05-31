@@ -4767,20 +4767,20 @@ msgid "Facility Mapped to Selected Test Type successfully"
 msgstr "Facility Mapped to Selected Test Type ສໍາເລັດຜົນ"
 
 #: footer.php:72
-msgid "Please connect to internet to sync with VLSTS"
-msgstr "ກະລຸນາເຊື່ອມຕໍ່ອິນເຕີເນັດເພື່ອ sync ກັບ VLSTS"
+msgid "Please connect to internet to sync with STS"
+msgstr "ກະລຸນາເຊື່ອມຕໍ່ອິນເຕີເນັດເພື່ອ sync ກັບ STS"
 
 #: footer.php:78
-msgid "Preparing for VLSTS Remote sync."
-msgstr "ການກະກຽມສໍາລັບ VLSTS Remote sync."
+msgid "Preparing for STS sync."
+msgstr "ການກະກຽມສໍາລັບ STS sync."
 
 #: footer.php:78 footer.php:101 footer.php:127
 msgid "Please wait..."
 msgstr "ກະລຸນາລໍຖ້າ..."
 
 #: footer.php:89 footer.php:114 footer.php:140
-msgid "Unable to do VLSTS Remote Sync. Please contact technical team for assistance."
-msgstr "ບໍ່ສາມາດເຮັດ VLSTS Remote Sync ໄດ້. ກະລຸນາຕິດຕໍ່ຫາທີມງານເຕັກນິກເພື່ອຂໍຄວາມຊ່ວຍເຫຼືອ."
+msgid "Unable to do STS Sync. Please contact technical team for assistance."
+msgstr "ບໍ່ສາມາດເຮັດ STS Sync ໄດ້. ກະລຸນາຕິດຕໍ່ຫາທີມງານເຕັກນິກເພື່ອຂໍຄວາມຊ່ວຍເຫຼືອ."
 
 #: footer.php:101
 msgid "Trying to sync Test Requests"

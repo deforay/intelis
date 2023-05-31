@@ -48,10 +48,10 @@ try {
 
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $insertData['userId'] = $userId;
-            $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            $insertData['password'] = $usersService->passwordHash($general->generateRandomString()); // We don't want to unintentionally end up creating admin users on VLSTS
-            $insertData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            $insertData['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+            $insertData['password'] = $usersService->passwordHash($general->generateRandomString()); // We don't want to unintentionally end up creating admin users on STS
+            $insertData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+            $insertData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
             $insertData['status'] = 'inactive'; // so that we can retain whatever status is on server
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(

@@ -128,6 +128,8 @@ $fileArray = array(
 include __DIR__ . DIRECTORY_SEPARATOR . $fileArray[$arr['vl_form']];
 
 ?>
+
+<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.date').datepicker({

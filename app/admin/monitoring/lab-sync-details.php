@@ -150,7 +150,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                     <div class="box-body">
                         <table aria-describedby="table" class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
-                                <th scope="row">Last Request Sent from VLSTS :</th>
+                                <th scope="row">Last Request Sent from STS :</th>
                                 <td align="left"><?php echo $labInfo['request']; ?></td>
                                 <th scope="row">Last Result Received from Lab</th>
                                 <td align="left"><?php echo $labInfo['results']; ?></td>
@@ -164,7 +164,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                     <th class="center" scope="col"><?php echo _("Test Type"); ?></th>
                                     <th class="center" scope="col"><?php echo _("Province"); ?></th>
                                     <th class="center" scope="col"><?php echo _("District"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("Last Request Sent from VLSTS"); ?></th>
+                                    <th class="center" scope="col"><?php echo _("Last Request Sent from STS"); ?></th>
                                     <th class="center" scope="col"><?php echo _("Last Result Received From Lab"); ?></th>
                                 </tr>
                             </thead>

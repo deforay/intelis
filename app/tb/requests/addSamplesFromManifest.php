@@ -219,7 +219,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					})
 					.fail(function() {
 						$.unblockUI();
-						// alert("Unable to do VLSTS Remote Sync. Please contact technical team for assistance.");
+						// alert("Unable to do STS Sync. Please contact technical team for assistance.");
 					})
 					.always(function() {
 						$.unblockUI();

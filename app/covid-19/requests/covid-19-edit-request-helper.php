@@ -271,32 +271,8 @@ try {
 	$patientData['registeredBy'] = $_SESSION['userId'];
 	$patientsModel->updatePatient($patientData);
 
-
-	if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-		$sampleQuery = "SELECT covid19_id FROM form_covid19 where covid19_id = " . $_POST['covid19SampleId'] . " limit 1";
-		$sampleExist = $db->rawQueryOne($sampleQuery);
-		$_POST['covid19SampleId'] = $sampleExist['covid19_id'];
-		if ($_POST['sampleCode'] != "" && !empty($_POST['sampleCode']) && !$sampleExist) {
-			$sQuery = "SELECT covid19_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 where sample_code like '%" . $_POST['sampleCode'] . "%' or remote_sample_code like '%" . $_POST['sampleCode'] . "%' limit 1";
-			$rowData = $db->rawQueryOne($sQuery);
-			if (!empty($rowData)) {
-				$_POST['covid19SampleId'] = $rowData['covid19_id'];
-			} else {
-				$payload = array(
-					'status' => '0',
-					'timestamp' => time(),
-					'message' => 'No unique value found for update'
-				);
-				http_response_code(304);
-				echo json_encode($payload);
-				exit(0);
-			}
-		}
-		$covid19Data['last_modified_by'] =  $user['user_id'];
-	} else {
-		$covid19Data['last_modified_by'] =  $_SESSION['userId'];
-		$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'];
-	}
+	$covid19Data['last_modified_by'] =  $_SESSION['userId'];
+	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'];
 
 	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', $_POST['deletedRow']);
@@ -385,55 +361,28 @@ try {
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 	// echo "<pre>";print_r($covid19Data);die;
+    $id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->update($tableName, $covid19Data);
 		error_log($db->getLastError());
 	}
-	if (isset($_POST['api']) && $_POST['api'] == "yes") {
-		if ($id > 0) {
 
-			$payload = array(
-				'status' => 'success',
-				'timestamp' => time(),
-				'message' => 'Successfully updated.'
-			);
-			$trackId = $app->addApiTracking($user['user_id'], 1, 'update-record', 'covid19', $requestUrl, $params, 'json');
-			http_response_code(200);
-		} else {
-			$payload = array(
-				'status' => '0',
-				'timestamp' => time(),
-				'message' => 'This record has already been updated.'
-			);
-			http_response_code(304);
-		}
-		echo json_encode($payload);
-		exit(0);
-	} else {
-		if ($id > 0 || $sid > 0 || $pid > 0) {
-			$_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
-			//Add event log
-			$eventType = 'update-covid-19-request';
-			$action = $_SESSION['userName'] . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
-			$resource = 'covid-19-edit-request';
+    if ($id > 0 || $sid > 0 || $pid > 0) {
+        $_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
+        //Add event log
+        $eventType = 'update-covid-19-request';
+        $action = $_SESSION['userName'] . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+        $resource = 'covid-19-edit-request';
 
-			$general->activityLog($eventType, $action, $resource);
+        $general->activityLog($eventType, $action, $resource);
 
-			// $data=array(
-			// 'event_type'=>$eventType,
-			// 'action'=>$action,
-			// 'resource'=>$resource,
-			// 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
-			// );
-			// $db->insert($tableName1,$data);
+    } else {
+        $_SESSION['alertMsg'] = _("Please try again later");
+    }
+    error_log($db->getLastError());
+    header("Location:/covid-19/requests/covid-19-requests.php");
 
-		} else {
-			$_SESSION['alertMsg'] = _("Please try again later");
-		}
-		error_log($db->getLastError());
-		header("Location:/covid-19/requests/covid-19-requests.php");
-	}
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), $exc->getCode(), $exc);
 }

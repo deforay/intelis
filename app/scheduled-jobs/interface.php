@@ -13,7 +13,10 @@ use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 
-if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
+if (
+    !isset(SYSTEM_CONFIG['interfacing']['enabled']) ||
+    SYSTEM_CONFIG['interfacing']['enabled'] === false
+) {
     error_log('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -38,8 +41,10 @@ if (empty($labId)) {
 $mysqlConnected = false;
 $sqliteConnected = false;
 
-if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
-
+if (
+    !empty(SYSTEM_CONFIG['interfacing']['database']['host']) &&
+    !empty(SYSTEM_CONFIG['interfacing']['database']['username'])
+) {
     $mysqlConnected = true;
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
@@ -48,23 +53,22 @@ $sqliteDb = null;
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
-    //$sqliteDb = new SQLite3(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
     $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
 //get the value from interfacing DB
 $interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
 if ($mysqlConnected) {
-    $interfaceInfo = $db->connection('interface')->rawQuery($interfaceQuery);
-} else if ($sqliteConnected) {
-    $interfaceInfo = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
+    $interfaceData = $db->connection('interface')->rawQuery($interfaceQuery);
+} elseif ($sqliteConnected) {
+    $interfaceData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
 } else {
     exit(0);
 }
 
 
 $numberOfResults = 0;
-if (count($interfaceInfo) > 0) {
+if (!empty($interfaceData)) {
 
     $availableModules = [];
 
@@ -95,7 +99,7 @@ if (count($interfaceInfo) > 0) {
     $processedResults = [];
     $allowRepeatedTests = false;
 
-    foreach ($interfaceInfo as $key => $result) {
+    foreach ($interfaceData as $key => $result) {
 
         if (empty($result['test_id'])) {
             continue;
@@ -135,7 +139,7 @@ if (count($interfaceInfo) > 0) {
             //set result in result fields
             if (trim($result['results']) != "") {
 
-                $vlResult = trim(str_replace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
+                $vlResult = trim(str_ireplace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
 
                 $unit = trim($result['test_unit']);
 
@@ -143,30 +147,28 @@ if (count($interfaceInfo) > 0) {
                     $vlResult = "Not Detected";
                 }
 
-                if ((isset($vlResult) && $vlResult == 'Failed') || in_array(strtolower($vlResult), ['fail', 'failed', 'failure'])) {
-                    $logVal = null;
-                    $absDecimalVal = null;
-                    $absVal = null;
-                    $txtVal = null;
-                } elseif ((isset($vlResult) && $vlResult == 'Error') || in_array(strtolower($vlResult), ['error', 'err'])) {
-                    $logVal = null;
-                    $absDecimalVal = null;
-                    $absVal = null;
-                    $txtVal = null;
-                } elseif (!is_numeric($vlResult)) {
-                    $interpretedResults = $vlService->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
-                    $logVal = $interpretedResults['logVal'];
-                    $vlResult = $interpretedResults['result'];
-                    $absDecimalVal = $interpretedResults['absDecimalVal'];
-                    $absVal = $interpretedResults['absVal'];
-                    $txtVal = $interpretedResults['txtVal'];
-                } else {
-                    $interpretedResults = $vlService->interpretViralLoadNumericResult($vlResult, $unit);
-                    $logVal = $interpretedResults['logVal'];
-                    $vlResult = $interpretedResults['result'];
-                    $absDecimalVal = $interpretedResults['absDecimalVal'];
-                    $absVal = $interpretedResults['absVal'];
-                    $txtVal = $interpretedResults['txtVal'];
+                $logVal = null;
+                $absDecimalVal = null;
+                $absVal = null;
+                $txtVal = null;
+                $interpretedResults = [];
+
+                if (isset($vlResult)) {
+                    if (in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
+                        // Do nothing, variables are already set to null
+                    } elseif (!is_numeric($vlResult)) {
+                        $interpretedResults = $vlService->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
+                    } else {
+                        $interpretedResults = $vlService->interpretViralLoadNumericResult($vlResult, $unit);
+                    }
+
+                    if (!empty($interpretedResults)) {
+                        $logVal = $interpretedResults['logVal'];
+                        $vlResult = $interpretedResults['result'];
+                        $absDecimalVal = $interpretedResults['absDecimalVal'];
+                        $absVal = $interpretedResults['absVal'];
+                        $txtVal = $interpretedResults['txtVal'];
+                    }
                 }
             }
 
@@ -217,14 +219,29 @@ if (count($interfaceInfo) > 0) {
             $numberOfResults++;
             $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
-                $interfaceData = array(
-                    'lims_sync_status' => 1,
-                    'lims_sync_date_time' => date('Y-m-d H:i:s'),
-                );
-                $db->connection('interface')->where('test_id', $result['test_id']);
-                $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+                if ($mysqlConnected) {
+                    $interfaceData = array(
+                        'lims_sync_status' => 1,
+                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                    );
+                    $db->connection('interface')->where('test_id', $result['test_id']);
+                    $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+                }
+
+                if ($sqliteConnected) {
+                    // Prepare the SQL query
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE test_id = :test_id");
+
+                    // Bind the values to the placeholders in the prepared statement
+                    $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
+                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
+
+                    // Execute the prepared statement
+                    $stmt->execute();
+                }
             }
-        } else if (isset($tableInfo['eid_id'])) {
+        } elseif (isset($tableInfo['eid_id'])) {
 
             $absDecimalVal = null;
             $absVal = null;
@@ -235,7 +252,7 @@ if (count($interfaceInfo) > 0) {
 
                 if (strpos(strtolower($result['results']), 'not detected') !== false) {
                     $eidResult = 'negative';
-                } else if ((strpos(strtolower($result['results']), 'detected') !== false) || (strpos(strtolower($result['results']), 'passed') !== false)) {
+                } elseif ((strpos(strtolower($result['results']), 'detected') !== false) || (strpos(strtolower($result['results']), 'passed') !== false)) {
                     $eidResult = 'positive';
                 } else {
                     $eidResult = 'indeterminate';
@@ -263,18 +280,32 @@ if (count($interfaceInfo) > 0) {
             $numberOfResults++;
             $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {
-                $interfaceData = array(
-                    'lims_sync_status' => 1,
-                    'lims_sync_date_time' => date('Y-m-d H:i:s'),
-                );
-                $db->connection('interface')->where('test_id', $result['test_id']);
-                $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+                if ($mysqlConnected) {
+                    $interfaceData = array(
+                        'lims_sync_status' => 1,
+                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                    );
+                    $db->connection('interface')->where('test_id', $result['test_id']);
+                    $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+                }
+                if ($sqliteConnected) {
+                    // Prepare the SQL query
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE test_id = :test_id");
+
+                    // Bind the values to the placeholders in the prepared statement
+                    $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
+                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
+
+                    // Execute the prepared statement
+                    $stmt->execute();
+                }
             }
-        } else if (isset($tableInfo['covid19_id'])) {
+        } elseif (isset($tableInfo['covid19_id'])) {
 
             // TODO: Add covid19 results
 
-        } else if (isset($tableInfo['hepatitis_id'])) {
+        } elseif (isset($tableInfo['hepatitis_id'])) {
 
 
             $absDecimalVal = null;
@@ -286,7 +317,7 @@ if (count($interfaceInfo) > 0) {
             if ($testType == 'hbv') {
                 $resultField = "hbv_vl_count";
                 $otherField = "hcv_vl_count";
-            } else if ($testType == 'hcv') {
+            } elseif ($testType == 'hcv') {
                 $resultField = "hcv_vl_count";
                 $otherField = "hbv_vl_count";
             } else {
@@ -331,20 +362,48 @@ if (count($interfaceInfo) > 0) {
             $numberOfResults++;
             $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
+                if ($mysqlConnected) {
+                    $interfaceData = array(
+                        'lims_sync_status' => 1,
+                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                    );
+                    $db->connection('interface')->where('test_id', $result['test_id']);
+                    $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+                }
+                if ($sqliteConnected) {
+                    // Prepare the SQL query
+                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE test_id = :test_id");
+
+                    // Bind the values to the placeholders in the prepared statement
+                    $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
+                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
+
+                    // Execute the prepared statement
+                    $stmt->execute();
+                }
+            }
+        } else {
+            if ($mysqlConnected) {
                 $interfaceData = array(
-                    'lims_sync_status' => 1,
+                    'lims_sync_status' => 2,
                     'lims_sync_date_time' => date('Y-m-d H:i:s'),
                 );
                 $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }
-        } else {
-            $interfaceData = array(
-                'lims_sync_status' => 2,
-                'lims_sync_date_time' => date('Y-m-d H:i:s'),
-            );
-            $db->connection('interface')->where('test_id', $result['test_id']);
-            $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
+            if ($sqliteConnected) {
+                // Prepare the SQL query
+                $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status WHERE test_id = :test_id");
+
+                // Bind the values to the placeholders in the prepared statement
+                $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);
+                $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
+
+                // Execute the prepared statement
+                $stmt->execute();
+            }
         }
     }
 

@@ -23,6 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
+$uploadedFiles = $request->getUploadedFiles();
+
+
 $userId = base64_decode($_POST['userId']);
 
 $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
@@ -54,25 +57,30 @@ try {
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
-            $signatureImagePath .=  DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
-            if (!empty($signatureImagePath) && file_exists($signatureImagePath)) {
-                unlink($signatureImagePath);
+            $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
+            if (!empty($fImagePath) && file_exists($fImagePath)) {
+                unlink($fImagePath);
             }
             $data['user_signature'] = null;
         }
 
-        if (isset($_FILES['userSignature']['name']) && $_FILES['userSignature']['name'] != "") {
 
-            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['userSignature']['name'], PATHINFO_EXTENSION));
-            $imageName = "usign-" . $userId . "." . $extension;
-            $signatureImagePath .=  DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $imageName;
-            if (move_uploaded_file($_FILES["userSignature"]["tmp_name"], $signatureImagePath)) {
-                $resizeObj = new ImageResizeUtility();
-                $resizeObj = $resizeObj->setFileName($signatureImagePath);
-                $resizeObj->resizeToWidth(100);
-                $resizeObj->save($signatureImagePath);
-                $data['user_signature'] = $imageName;
-            }
+        if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
+            $file = $uploadedFiles['userSignature'];
+            $fileName = $file->getClientFilename();
+            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $tmpFilePath = $file->getStream()->getMetadata('uri');
+            $fileSize = $file->getSize();
+            $fileMimeType = $file->getClientMediaType();
+            $newFileName = "usign-" . $userId . "." . $fileExtension;
+            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $newFileName;
+            $file->moveTo($newFilePath);
+
+            $resizeObj = new ImageResizeUtility();
+            $resizeObj = $resizeObj->setFileName($newFilePath);
+            $resizeObj->resizeToWidth(250);
+            $resizeObj->save($newFilePath);
+            $data['user_signature'] = $newFileName;
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
@@ -124,24 +132,11 @@ try {
 
         $systemType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
-            // $nUser = [];
-            // $_POST['userId'] = $userId;
-            // $nUser['userName'] = $_POST['userName'];
-            // $nUser['email'] = $_POST['email'];
-            // $nUser['phoneNo'] = $_POST['phoneNo'];
-            // $nUser['interfaceUserName'] = $_POST['interfaceUserName'];
-            // $nUser['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['hash_algorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
-            // $nUser['status'] = 'inactive';
-            // $nUser['userId'] = base64_encode($data['user_id']);
-
             $_POST['userId'] = $userId;
-            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['password'] = $general->generateRandomString(); // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on VLSTS
-            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on VLSTS
+            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
             $_POST['status'] = 'inactive';
             $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";

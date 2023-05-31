@@ -98,9 +98,8 @@ $sampleSuggestionDisplay = 'display:none;';
 $sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     $vlObj = new Covid19Service();
-    $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
+    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate);
+    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate);
     $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
     $sampleSuggestion = $sampleCodeKeys['sampleCode'];
     $sampleSuggestionDisplay = 'display:block;';

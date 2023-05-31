@@ -127,10 +127,11 @@ foreach ($output as $rowNo => $rowData) {
     }
 }
 
-if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 5000) {
+if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 75000) {
 
     $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.csv';
     $file = new SplFileObject($fileName, 'w');
+    $file->setCsvControl(",", "\r\n");
     $file->fputcsv($headings);
     foreach ($output as $row) {
         $file->fputcsv($row);
