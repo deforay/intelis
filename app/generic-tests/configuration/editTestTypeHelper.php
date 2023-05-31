@@ -22,6 +22,7 @@ $tableName3 = "generic_test_reason_map";
 $tableName4 = "generic_test_symptoms_map";
 $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
+$tableName8 = "generic_test_methods_map";
 $testAttribute = [];
 $testTypeId = (int) base64_decode($_POST['testTypeId']);
 
@@ -55,11 +56,15 @@ try {
         } else {
             $testResultAttribute['qualitative_result'] = explode(",", $_POST['qualitativeResult']);
         }
+        if(!is_numeric($_POST['testCategory'])){
+            $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
+        }
         $data = array(
             'test_standard_name' => $_POST['testStandardName'],
             'test_generic_name' => $_POST['testGenericName'],
             'test_short_code' => $_POST['testShortCode'],
             'test_loinc_code' => !empty($_POST['testLoincCode']) ? $_POST['testLoincCode'] : null,
+            'test_category' => !empty($_POST['testCategory']) ? $_POST['testCategory'] : null,
             'test_form_config' => json_encode($testAttribute),
             'test_results_config' => json_encode($_POST['resultConfig']),
             'test_status' => $_POST['status']
@@ -120,6 +125,16 @@ try {
                     }
                     $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName6, $value);
+                }
+            }
+
+            if (!empty($_POST['testMethod'])) {
+                foreach ($_POST['testMethod'] as $val) {
+                    if(!is_numeric($val)){
+                        $val = $generic->quickInsert('r_generic_test_methods', array('test_method_name', 'test_method_status'), array($val, 'active'));
+                    }
+                    $value = array('test_method_id' => $val, 'test_type_id' => $lastId);
+                    $db->insert($tableName8, $value);
                 }
             }
         }

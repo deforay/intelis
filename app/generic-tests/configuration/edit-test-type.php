@@ -170,6 +170,28 @@ foreach ($testResultUnitMapInfo as $val) {
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
+											
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
+											
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
 
 						<div class="row">
 							<div class="col-md-6">
@@ -601,10 +623,10 @@ foreach ($testResultUnitMapInfo as $val) {
 			$(this).parent().remove();
 		});
 
-		let ajaxSelect = ["testingReason", "testFailureReason", "rejectionReason"];
-		let _p = ["testing reason", "test failure reason", "rejection reason"];
-		let _f = ["test_reason", "test_failure_reason", "rejection_reason_name"];
-		let _t = ["r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
+		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
+		let _p = ["test methods", "test categories", "testing reason", "test failure reason", "rejection reason"];
+		let _f = ["test_method_name", "test_category_name", "test_reason", "test_failure_reason", "rejection_reason_name"];
+		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
 
 		$(ajaxSelect).each(function(index, item){
 			$("#"+item).select2({
