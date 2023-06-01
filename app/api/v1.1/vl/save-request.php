@@ -441,10 +441,11 @@ try {
             $id = $db->update('form_vl', $vlFulldata);
             error_log($db->getLastError());
         }
+        // echo "<pre>";print_r($data);die;
         if ($id === true) {
 
             $sQuery = "SELECT sample_code,
-                            remote_sample_code,
+                            remote_sample_code
                             FROM form_vl
                             WHERE vl_sample_id = ?";
             $sampleRow = $db->rawQueryOne($sQuery, [$data['vlSampleId']]);

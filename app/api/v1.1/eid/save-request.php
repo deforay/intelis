@@ -406,7 +406,7 @@ try {
 
         if ($id === true) {
             $sQuery = "SELECT sample_code,
-                            remote_sample_code,
+                            remote_sample_code
                             FROM form_eid
                             WHERE eid_id = ?";
             $sampleRow = $db->rawQueryOne($sQuery, [$data['eidSampleId']]);

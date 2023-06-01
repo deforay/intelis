@@ -474,7 +474,7 @@ try {
         }
         if ($id === true) {
             $sQuery = "SELECT sample_code,
-                        remote_sample_code,
+                        remote_sample_code
                         FROM form_covid19
                         WHERE covid19_id = ?";
             $sampleRow = $db->rawQueryOne($sQuery, [$data['covid19SampleId']]);
