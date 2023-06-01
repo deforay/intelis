@@ -442,8 +442,15 @@ try {
             error_log($db->getLastError());
         }
         if ($id === true) {
-            $vlFulldata = $app->getTableDataUsingId('form_vl', 'vl_sample_id', $data['vlSampleId']);
-            $vlSampleCode = $vlFulldata['sample_code'] ?? $vlFulldata['remote_sample_code'] ?? null;
+
+            $sQuery = "SELECT sample_code,
+                            remote_sample_code,
+                            FROM form_vl
+                            WHERE vl_sample_id = ?";
+            $sampleRow = $db->rawQueryOne($sQuery, [$data['vlSampleId']]);
+
+            $vlSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
+
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'sampleCode' => $vlSampleCode,
@@ -460,20 +467,12 @@ try {
         }
     }
 
-    if (!empty($responseData)) {
-        $payload = array(
-            'status' => 'success',
-            'transactionId' => $transactionId,
-            'timestamp' => time(),
-            'data'  => $responseData
-        );
-    } else {
-        $payload = array(
-            'status' => 'success',
-            'transactionId' => $transactionId,
-            'timestamp' => time()
-        );
-    }
+    $payload = [
+        'status' => 'success',
+        'transactionId' => $transactionId,
+        'timestamp' => time(),
+        'data'  => $responseData ?? []
+    ];
 
     http_response_code(200);
 } catch (SystemException $exc) {

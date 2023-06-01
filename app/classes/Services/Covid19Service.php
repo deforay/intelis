@@ -460,7 +460,7 @@ class Covid19Service
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $covid19Data = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                 'facility_id' => $params['facilityId'] ?? null,
@@ -470,28 +470,28 @@ class Covid19Service
                 'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "[]",
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
-                $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $covid19Data['remote_sample'] = 'yes';
-                $covid19Data['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                    $covid19Data['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $covid19Data['remote_sample'] = 'no';
-                $covid19Data['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
 
 
@@ -523,7 +523,7 @@ class Covid19Service
             $patientsModel->savePatient($patientData);
 
 
-            $covid19Data['patient_id'] = $patientCode;
+            $tesRequestData['patient_id'] = $patientCode;
             $sQuery = "SELECT covid19_id,
                                 sample_code,
                                 sample_code_format,
@@ -544,8 +544,8 @@ class Covid19Service
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
-                $vlData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_covid19", $covid19Data);
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_covid19", $tesRequestData);
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }
