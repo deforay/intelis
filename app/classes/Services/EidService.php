@@ -168,11 +168,10 @@ class EidService
 
     public function insertSampleCode($params)
     {
-
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $vlsmSystemConfig = $this->commonService->getSystemConfig();
-
         try {
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $vlsmSystemConfig = $this->commonService->getSystemConfig();
+            
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -180,8 +179,6 @@ class EidService
             if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
                 return 0;
             }
-
-            $rowData = null;
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
             $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
@@ -249,13 +246,13 @@ class EidService
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             }
-            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert EID Sample : ' . $this->db->getLastErrno());
             error_log('Insert EID Sample : ' . $this->db->getLastError());
             error_log('Insert EID Sample : ' . $this->db->getLastQuery());
             error_log('Insert EID Sample : ' . $e->getMessage());
-            return 0;
+            $id =  0;
         }
+        return $id > 0 ? $id : 0;
     }
 }

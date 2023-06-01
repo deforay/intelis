@@ -142,52 +142,12 @@ try {
                 }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
-                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
-            } else {
-                $sampleJson = $eidService->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-                $sampleData = json_decode($sampleJson, true);
             }
-        } else {
-            $sampleJson = $eidService->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-            $sampleData = json_decode($sampleJson, true);
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-
-        $eidData = array(
-            'vlsm_country_id' => $formId,
-            'vlsm_instance_id' => $instanceId,
-            'unique_id' => $uniqueId,
-            'sample_collection_date' => $data['sampleCollectionDate'],
-            'province_id' => $provinceId,
-            'request_created_by' => $user['user_id'],
-            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
-            'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
-        );
-
-        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-            $eidData['remote_sample_code'] = $sampleData['sampleCode'];
-            $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-            $eidData['remote_sample'] = 'yes';
-            if ($user['access_type'] === 'testing-lab') {
-                $eidData['sample_code'] = $sampleData['sampleCode'];
-            }
-        } else {
-            $eidData['sample_code'] = $sampleData['sampleCode'];
-            $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $eidData['remote_sample'] = 'no';
-        }
-
-        /* Update version in form attributes */
-        $version = $general->getSystemConfig('sc_version');
-
         $formAttributes = array(
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
@@ -196,20 +156,20 @@ try {
         );
         $formAttributes = json_encode($formAttributes);
 
-
-        $id = 0;
-        if (isset($rowData)) {
+        if (!empty($rowData)) {
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
-            $id = $db->insert("form_eid", $eidData);
-            $data['eidSampleId'] = $id;
-        }
-        /* print_r($db->getLastError());
-        die; */
-        $tableName = "form_eid";
-        $tableName1 = "activity_log";
+            $params['appSampleCode'] = $data['appSampleCode'] ?? null;
+            $params['provinceCode'] = $provinceCode;
+            $params['provinceId'] = $provinceId;
+            $params['uniqueId'] = $uniqueId;
+            $params['sampleCollectionDate'] = $sampleCollectionDate;
+            $params['userId'] = $user['user_id'];
+            $params['facilityId'] = $data['facilityId'] ?? null;
+            $params['labId'] = $data['labId'] ?? null;
 
-        $data['sampleCode'] = $data['sampleCode'] ?? null;
+            $data['eidSampleId'] = $eidService->insertSampleCode($params);
+        }
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -386,17 +346,15 @@ try {
             $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
+            $eidData['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }
 
-        $eidData['request_created_by'] =  $user['user_id'];
-        $eidData['last_modified_by'] =  $user['user_id'];
-
         $id = false;
         if (!empty($data['eidSampleId'])) {
             $db = $db->where('eid_id', $data['eidSampleId']);
-            $id = $db->update($tableName, $eidData);
+            $id = $db->update('form_eid', $eidData);
             error_log($db->getLastError());
         }
 
@@ -413,14 +371,15 @@ try {
                 'status' => 'success',
                 'sampleCode' => $eidSampleCode,
                 'transactionId' => $transactionId,
-                'uniqueId' => $eidData['unique_id'],
+                'uniqueId' => $uniqueId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
-                'appSampleCode' => $data['appSampleCode'] ?? null
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'error' => $db->getLastError()
             ];
         }
     }
