@@ -445,6 +445,7 @@ try {
             error_log($db->getLastQuery());
             error_log($db->getLastError());
         }
+        // echo "<pre>";print_r($data);die;
         if ($id === true) {
 
             $sQuery = "SELECT sample_code,
