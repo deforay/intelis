@@ -742,7 +742,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 5; ?>, "desc"]
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
