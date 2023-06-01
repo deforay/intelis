@@ -507,9 +507,8 @@ class VlService
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $id = $this->db->insert("form_vl", $tesRequestData);
-                if ($this->db->getLastErrno() > 0) {
-                    error_log($this->db->getLastError());
-                }
+
+                error_log($this->db->getLastError());
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];

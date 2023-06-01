@@ -49,6 +49,8 @@ try {
         throw new SystemException("Invalid request");
     }
 
+    $db->startTransaction();
+
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -65,21 +67,23 @@ try {
 
     foreach ($input['data'] as $rootKey => $data) {
 
-        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
-        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
-        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
-        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+        if ($formId == 3) {
+            $mandatoryFields[] = 'provinceId';
+        }
+
+        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = array(
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => 'Missing required fields'
+                'message' => _("Missing required fields")
             );
             continue;
         }
 
-        if (!is_numeric($data['provinceId'])) {
+        if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
@@ -129,7 +133,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => 'Sample Locked or Resulted'
+                        'error' => _("Sample Locked or Finalized")
 
                     );
                     continue;
@@ -436,6 +440,7 @@ try {
         }
 
         $id = false;
+        var_dump($data['vlSampleId']);
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
@@ -462,7 +467,8 @@ try {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
-                'appSampleCode' => $data['appSampleCode'] ?? null
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'error' => $db->getLastError()
             ];
         }
     }
@@ -473,7 +479,7 @@ try {
         'timestamp' => time(),
         'data'  => $responseData ?? []
     ];
-
+    $db->commit();
     http_response_code(200);
 } catch (SystemException $exc) {
 
@@ -484,9 +490,11 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
+    $db->rollback();
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
+
 
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
