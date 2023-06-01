@@ -22,6 +22,11 @@ class ApiService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
+    public function returnNullIfEmpty($value)
+    {
+        return (empty($value) || strlen(trim($value)) === 0) ? null : $value;
+    }
+
     public function generateSelectOptions($options): array
     {
         $i = 0;

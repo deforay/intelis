@@ -2967,6 +2967,11 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 
 -- Amit 22-Mar-2022
+
+ALTER TABLE `form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`;
+-- ALTER TABLE `audit_form_hepatitis` ADD `app_sample_code` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `external_sample_code`;
+
+
 UPDATE vl_request_form SET source_of_request = 'vlsm' WHERE remote_sample = 'no' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web');
 UPDATE vl_request_form SET source_of_request = 'vlsts' WHERE remote_sample = 'yes' and (source_of_request is null OR source_of_request like '' OR source_of_request like 'web' OR source_of_request like 'vlsm');
 UPDATE vl_request_form SET source_of_request = 'app' WHERE (source_of_request like 'api' or app_sample_code is not null);
@@ -3083,7 +3088,7 @@ ALTER TABLE `form_vl` ADD INDEX(`result_reviewed_by`);
 UPDATE `system_config` SET `value` = '4.5.0' WHERE `system_config`.`name` = 'sc_version';
 
 
--- Thana 18-Apr-2022 version 4.5.0
+-- Thana 18-Apr-2022
 ALTER TABLE `form_eid` ADD `lab_tech_comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `tested_by`;
 
 -- Amit 28-Apr-2022
@@ -4098,3 +4103,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 31-May-2023
 ALTER TABLE `r_test_types` ADD `test_category` VARCHAR(256) NULL DEFAULT NULL AFTER `test_loinc_code`;
+
+
+-- Amit 1-Jun-2023 version 5.1.6
+UPDATE `system_config` SET `value` = '5.1.6' WHERE `system_config`.`name` = 'sc_version';

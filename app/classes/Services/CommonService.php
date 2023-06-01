@@ -856,4 +856,23 @@ class CommonService
 
         return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
     }
+
+    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null)
+    {
+
+        $query = "SELECT ".implode(",", $fields)." FROM ".$table;
+        if ($condition) {
+            $query .= " WHERE ". $condition;
+        }
+        // die($query);
+        $results = $this->db->rawQuery($query);
+        if($option){
+            foreach ($results as $row) {
+                $response[$row[$fields[0]]] = $row[$fields[1]];
+            }
+        }else{
+            $response = $results;
+        }
+        return $response;
+    }
 }

@@ -93,15 +93,22 @@ try {
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
         $sampleCollectionDate = $data['sampleCollectionDate'] = (!empty($data['sampleCollectionDate'])) ? DateUtility::isoDateFormat($data['sampleCollectionDate'], true) : null;
 
-        if (empty($sampleCollectionDate)) {
-            continue;
-        }
         $update = "no";
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+            $sQuery = "SELECT covid19_id,
+                            sample_code,
+                            unique_id,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key,
+                            result_status,
+                            locked
+                            FROM form_covid19 ";
 
             $sQueryWhere = [];
 
@@ -122,6 +129,13 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+
+                    );
                     continue;
                 }
                 $update = "yes";
@@ -187,13 +201,6 @@ try {
 
         $id = 0;
         if (!empty($rowData)) {
-            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
-                $db = $db->where('covid19_id', $rowData['covid19_id']);
-                $id = $db->update("form_covid19", $covid19Data);
-                // error_log($db->getLastError());
-            } else {
-                continue;
-            }
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
             $id = $db->insert("form_covid19", $covid19Data);
@@ -239,9 +246,9 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
+            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
-            $data['sampleCollectionDate'] = null;
+            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
         //Set sample received date
@@ -460,64 +467,41 @@ try {
             $db->delete($testTableName);
             $covid19Data['sample_tested_datetime'] = null;
         }
-        $id = 0;
+        $id = false;
         if (!empty($data['covid19SampleId'])) {
-            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
-                $db = $db->where('covid19_id', $data['covid19SampleId']);
-                $id = $db->update($tableName, $covid19Data);
-            } else {
-                continue;
-            }
+            $db = $db->where('covid19_id', $data['covid19SampleId']);
+            $id = $db->update($tableName, $covid19Data);
         }
-        if ($id > 0) {
-            $c19Data = $app->getTableDataUsingId('form_covid19', 'covid19_id', $data['covid19SampleId']);
-            $c19SampleCode = (isset($c19Data['sample_code']) && $c19Data['sample_code']) ? $c19Data['sample_code'] : $c19Data['remote_sample_code'];
+        if ($id === true) {
+            $sQuery = "SELECT sample_code,
+                        remote_sample_code,
+                        FROM form_covid19
+                        WHERE covid19_id = ?";
+            $sampleRow = $db->rawQueryOne($sQuery, [$data['covid19SampleId']]);
+
+            $c19SampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
             $responseData[$rootKey] = array(
                 'status' => 'success',
                 'sampleCode' => $c19SampleCode,
                 'transactionId' => $transactionId,
                 'uniqueId' => $c19Data['unique_id'],
-                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $c19Data['app_sample_code'] : null,
+                'appSampleCode' => $tbData['app_sample_code'] ?? null,
             );
             http_response_code(200);
         } else {
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = [
-                    'status' => 'failed',
-                    'timestamp' => time(),
-                ];
-            } else {
-                $payload = [
-                    'status' => 'failed',
-                    'timestamp' => time(),
-                    'error' => 'Unable to add this Covid-19 sample. Please try again later',
-                    'data' => []
-                ];
-            }
-            http_response_code(301);
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'status' => 'failed',
+                'appSampleCode' => $data['appSampleCode'] ?? null
+            ];
         }
     }
-    if ($update == "yes") {
-        $msg = 'Successfully updated.';
-    } else {
-        $msg = 'Successfully added.';
-    }
-    if (!empty($responseData)) {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg,
-            'data'  => $responseData
-        );
-    } else {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg
-        );
-    }
-
-    http_response_code(200);
+    $payload = [
+        'status' => 'success',
+        'transactionId' => $transactionId,
+        'timestamp' => time(),
+        'data'  => $responseData ?? []
+    ];
 } catch (SystemException $exc) {
 
     http_response_code(400);

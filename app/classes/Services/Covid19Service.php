@@ -6,6 +6,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -22,20 +23,19 @@ class Covid19Service
     protected ?MysqliDb $db = null;
     protected string $table = 'form_covid19';
     protected string $shortCode = 'C19';
+    protected CommonService $commonService;
 
-    public function __construct($db = null)
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
+        $this->commonService = $commonService;
     }
 
     public function generateCovid19SampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -431,12 +431,11 @@ class Covid19Service
 
     public function insertSampleCode($params)
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-        $patientsModel = new PatientsService();
 
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $patientsModel = ContainerRegistry::get(PatientsService::class);
+
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         $patientCodePrefix = 'P';
 
@@ -461,39 +460,44 @@ class Covid19Service
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $covid19Data = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
+                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
-                $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $covid19Data['remote_sample'] = 'yes';
-                $covid19Data['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                    $covid19Data['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $covid19Data['sample_code'] = $sampleData['sampleCode'];
-                $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $covid19Data['remote_sample'] = 'no';
-                $covid19Data['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
 
 
-            $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
+            $generateAutomatedPatientCode = $this->commonService->getGlobalConfig('covid19_generate_patient_code');
             if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
-                $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
+                $patientCodePrefix = $this->commonService->getGlobalConfig('covid19_patient_code_prefix');
                 if (empty($patientCodePrefix)) {
                     $patientCodePrefix = 'P';
                 }
@@ -519,7 +523,7 @@ class Covid19Service
             $patientsModel->savePatient($patientData);
 
 
-            $covid19Data['patient_id'] = $patientCode;
+            $tesRequestData['patient_id'] = $patientCode;
             $sQuery = "SELECT covid19_id,
                                 sample_code,
                                 sample_code_format,
@@ -534,25 +538,23 @@ class Covid19Service
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
-            $formAttributes = array(
-                'applicationVersion'  => $general->getSystemConfig('sc_version'),
-                'ip_address'    => $general->getClientIpAddress()
-            );
-            $covid19Data['form_attributes'] = json_encode($formAttributes);
-
             $id = 0;
-            if (!empty($rowData)) {
-                // If this sample code exists, let us regenerate
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_covid19", $tesRequestData);
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
+                }
+            } else {
+                // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
-            } else {
-                if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $covid19Data['unique_id'] = $general->generateUUID();
-                    $id = $this->db->insert("form_covid19", $covid19Data);
-                }
             }
-
-            return ($id > 0) ? $id : 0;
+            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());

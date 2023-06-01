@@ -751,9 +751,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 	}
 
 	function getVlResults(testingPlatformId, datalistId, vlResultId) {
-		testingVal = $('#' + testingPlatformId).val();
-		var str1 = testingVal.split("##");
-		var platformId = str1[3];
+		const testingVal = $('#' + testingPlatformId).val();
+		if (testingVal == "") {
+			$("#" + vlResultId).val("");
+			$("#" + vlResultId).attr("disabled", true);
+			return false;
+		}
+		const str1 = testingVal.split("##");
+		const platformId = str1[3];
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,

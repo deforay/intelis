@@ -94,7 +94,6 @@ try {
                     $db->insert($tableName3, $value);
                 }
             }
-
             if (isset($_POST['symptoms']) && !empty($_POST['symptoms'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName4);

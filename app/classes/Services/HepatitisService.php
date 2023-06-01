@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 /**
- * General functions
+ * Hepatitis functions
  *
  * @author Amit
  */
@@ -41,19 +41,19 @@ class HepatitisService
         'negat'
     );
 
-    public function __construct($db = null)
+    protected CommonService $commonService;
+
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
+        $this->commonService = $commonService;
     }
 
     public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(\App\Services\CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -277,11 +277,8 @@ class HepatitisService
 
     public function insertSampleCode($params)
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(\App\Services\CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         try {
 
@@ -303,10 +300,15 @@ class HepatitisService
             $hepatitisData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
+                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'hepatitis_test_type' => $prefix,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -337,8 +339,8 @@ class HepatitisService
             $rowData = $this->db->rawQueryOne($sQuery);
 
             /* Update version in form attributes */
-            $version = $general->getSystemConfig('sc_version');
-            $ipaddress = $general->getClientIpAddress();
+            $version = $this->commonService->getSystemConfig('sc_version');
+            $ipaddress = $this->commonService->getClientIpAddress();
             $formAttributes = [
                 'applicationVersion'  => $version,
                 'ip_address'    => $ipaddress
@@ -351,8 +353,8 @@ class HepatitisService
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             } else {
-                if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $hepatitisData['unique_id'] = $general->generateUUID();
+                if (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
+                    $hepatitisData['unique_id'] = $this->commonService->generateUUID();
                     $id = $this->db->insert("form_hepatitis", $hepatitisData);
                 }
             }

@@ -58,9 +58,24 @@ try {
 
     foreach ($input['data'] as $rootKey => $field) {
         $data = $field;
-        $sampleFrom = '';
 
         $data['formId'] = $formId;
+
+        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
+        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
+        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+
+        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+            $responseData[$rootKey] = array(
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => 'Missing required fields'
+            );
+            continue;
+        }
+
+
         /* V1 name to Id mapping */
         if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -79,16 +94,22 @@ try {
         $data['api'] = "yes";
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
-        if (empty($sampleCollectionDate)) {
-            continue;
-        }
         $update = "no";
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
-            $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
+            $sQuery = "SELECT tb_id,
+            unique_id,
+            sample_code,
+            sample_code_format,
+            sample_code_key,
+            remote_sample_code,
+            remote_sample_code_format,
+            remote_sample_code_key,
+            result_status,
+            locked
+            FROM form_tb ";
             $sQueryWhere = [];
 
             if (!empty($data['uniqueId'])) {
@@ -107,6 +128,13 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+
+                    );
                     continue;
                 }
                 $update = "yes";
@@ -127,7 +155,7 @@ try {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
+            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
@@ -174,12 +202,6 @@ try {
 
         $id = 0;
         if (!empty($rowData)) {
-            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
-                $db = $db->where('tb_id', $rowData['tb_id']);
-                $id = $db->update("form_tb", $tbData);
-            } else {
-                continue;
-            }
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
             $id = $db->insert("form_tb", $tbData);
@@ -218,10 +240,9 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = explode(" ", $data['sampleCollectionDate']);
-            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
-            $data['sampleCollectionDate'] = null;
+            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
 
@@ -369,56 +390,41 @@ try {
             $db = $db->where('tb_id', $data['tbSampleId']);
             $db->delete($testTableName);
         }
-        $id = 0;
+        $id = false;
         if (!empty($data['tbSampleId'])) {
-            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
-                $db = $db->where('tb_id', $data['tbSampleId']);
-                $id = $db->update($tableName, $tbData);
-                // error_log($db->getLastError());
-            } else {
-                continue;
-            }
+            $db = $db->where('tb_id', $data['tbSampleId']);
+            $id = $db->update($tableName, $tbData);
         }
-        if ($id > 0) {
-            $tbData = $app->getTableDataUsingId('form_tb', 'tb_id', $data['tbSampleId']);
-            $tbSampleCode = (isset($tbData['sample_code']) && $tbData['sample_code']) ? $tbData['sample_code'] : $tbData['remote_sample_code'];
-            $responseData[$rootKey] = array(
+        if ($id === true) {
+            $sQuery = "SELECT sample_code,
+                        remote_sample_code,
+                        FROM form_tb
+                        WHERE tb_id = ?";
+            $sampleRow = $db->rawQueryOne($sQuery, [$data['tbSampleId']]);
+
+            $tbSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
+            $responseData[$rootKey] = [
                 'status' => 'success',
                 'sampleCode' => $tbSampleCode,
                 'transactionId' => $transactionId,
                 'uniqueId' => $tbData['unique_id'],
                 'appSampleCode' => $tbData['app_sample_code'] ?? null,
-            );
-            http_response_code(200);
+            ];
         } else {
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'failed'
-                );
-            }
-            http_response_code(400);
-            throw new SystemException('Unable to add this TB sample. Please try again later');
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'status' => 'failed',
+                'appSampleCode' => $data['appSampleCode'] ?? null
+            ];
         }
     }
-    if ($update == "yes") {
-        $msg = 'Successfully updated.';
-    } else {
-        $msg = 'Successfully added.';
-    }
-    if (!empty($responseData)) {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg,
-            'data'  => $responseData
-        );
-    } else {
-        $payload = array(
-            'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg
-        );
-    }
+
+    $payload = [
+        'status' => 'success',
+        'transactionId' => $transactionId,
+        'timestamp' => time(),
+        'data'  => $responseData ?? []
+    ];
 
 
     http_response_code(200);

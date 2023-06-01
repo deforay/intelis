@@ -1,8 +1,14 @@
 <?php
+namespace App\Services;
 
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
+use App\Services\CommonService;
 
 require_once APPLICATION_PATH . '/header.php';
 
+$general = ContainerRegistry::get(CommonService::class);
+$generic = ContainerRegistry::get(GenericTestsService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -14,62 +20,24 @@ $testTypeInfo = $db->query($tQuery);
 $testAttribute = json_decode($testTypeInfo[0]['test_form_config'], true);
 $testResultAttribute = json_decode($testTypeInfo[0]['test_results_config'], true);
 
-$stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
-$sampleTypeInfo = $db->query($stQuery);
+// $stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
+$testMethodInfo = $general->getDataByTableAndFields("r_generic_test_methods", array("test_method_id", "test_method_name"), true, "test_method_status='active'");
+$testMethodId = $general->getDataByTableAndFields("generic_test_methods_map", array("test_method_id", "test_method_id"), true, "test_type_id=$id");
+$categoryInfo = $general->getDataByTableAndFields("r_generic_test_categories", array("test_category_id", "test_category_name"), true, "test_category_status='active'");
 
-$tQuery = "SELECT * from r_generic_test_reasons where test_reason_status='active'";
-$testReasonInfo = $db->query($tQuery);
+$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
+$testReasonInfo = $general->getDataByTableAndFields("r_generic_test_reasons", array("test_reason_id", "test_reason"), true, "test_reason_status='active'");
+$testFailureReasonInfo = $general->getDataByTableAndFields("r_generic_test_failure_reasons", array("test_failure_reason_id", "test_failure_reason"), true, "test_failure_reason_status='active'");
+$sampleRejectionReasonInfo = $general->getDataByTableAndFields("r_generic_sample_rejection_reasons", array("rejection_reason_id", "rejection_reason_name"), true, "rejection_reason_status='active'");
+$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
+$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$testSampleId = $general->getDataByTableAndFields("generic_test_sample_type_map", array("sample_type_id", "sample_type_id"), true, "test_type_id=$id");
 
-$tfQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_status='active'";
-$testFailureReasonInfo = $db->query($tfQuery);
-
-$srQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_status='active'";
-$sampleRejectionReasonInfo = $db->query($srQuery);
-
-$symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
-$symptomInfo = $db->query($symQuery);
-
-$unitQuery = "SELECT * from r_generic_test_result_units where unit_status='active'";
-$testResultUnits = $db->query($unitQuery);
-
-$testSampleMapQuery = "SELECT * from generic_test_sample_type_map where test_type_id=$id";
-$testSampleMapInfo = $db->query($testSampleMapQuery);
-$testSampleId = [];
-foreach ($testSampleMapInfo as $val) {
-	$testSampleId[] = $val['sample_type_id'];
-}
-$testReasonMapQuery = "SELECT * from generic_test_reason_map where test_type_id=$id";
-$testReasonMapInfo = $db->query($testReasonMapQuery);
-$testReasonId = [];
-foreach ($testReasonMapInfo as $val) {
-	$testReasonId[] = $val['test_reason_id'];
-}
-$testFailureReasonMapQuery = "SELECT * from generic_test_failure_reason_map where test_type_id=$id";
-$testFailureReasonMapInfo = $db->query($testFailureReasonMapQuery);
-$testFailureReasonId = [];
-foreach ($testFailureReasonMapInfo as $val) {
-	$testFailureReasonId[] = $val['test_failure_reason_id'];
-}
-$rejectionReasonMapQuery = "SELECT * from generic_sample_rejection_reason_map where test_type_id=$id";
-$rejectionReasonMapInfo = $db->query($rejectionReasonMapQuery);
-$rejectionReasonId = [];
-foreach ($rejectionReasonMapInfo as $val) {
-	$rejectionReasonId[] = $val['rejection_reason_id'];
-}
-$testSymptomsMapQuery = "SELECT * from generic_test_symptoms_map where test_type_id=$id";
-$testSymptomsMapInfo = $db->query($testSymptomsMapQuery);
-$testSymptomsId = [];
-foreach ($testSymptomsMapInfo as $val) {
-	$testSymptomsId[] = $val['symptom_id'];
-}
-
-$testResultUnitMapQuery = "SELECT * from generic_test_result_units_map where test_type_id=$id";
-$testResultUnitMapInfo = $db->query($testResultUnitMapQuery);
-$testResultUnitId = [];
-foreach ($testResultUnitMapInfo as $val) {
-	$testResultUnitId[] = $val['unit_id'];
-}
-
+$testReasonId = $general->getDataByTableAndFields("generic_test_reason_map", array("test_reason_id", "test_reason_id"), true, "test_type_id=$id");
+$testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_reason_map", array("test_failure_reason_id", "test_failure_reason_id"), true, "test_type_id=$id");
+$rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
+$testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
+$testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
 
 ?>
 <style>
@@ -118,7 +86,6 @@ foreach ($testResultUnitMapInfo as $val) {
 			<li class="active"><?php echo _("Edit Test Type"); ?></li>
 		</ol>
 	</section>
-
 	<!-- Main content -->
 	<section class="content">
 		<div class="box box-default">
@@ -176,7 +143,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
-											
+											<?= $general->generateSelectOptions($testMethodInfo, $testMethodId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -186,7 +153,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
-											
+											<?= $general->generateSelectOptions($categoryInfo, $testTypeInfo[0]['test_category'], '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -199,10 +166,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($sampleTypeInfo as $sampleType) { ?>
-												<option value="<?php echo $sampleType['sample_type_id']; ?>" <?php echo in_array($sampleType['sample_type_id'], $testSampleId) ? "selected='selected'" : "" ?>><?php echo $sampleType['sample_type_name']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($sampleTypeInfo, $testSampleId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -212,10 +176,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($testReasonInfo as $testReason) { ?>
-												<option value="<?php echo $testReason['test_reason_id']; ?>" <?php echo in_array($testReason['test_reason_id'], $testReasonId) ? "selected='selected'" : "" ?>><?php echo $testReason['test_reason']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($testReasonInfo, $testReasonId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -227,10 +188,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($testFailureReasonInfo as $testFailureReason) { ?>
-												<option value="<?php echo $testFailureReason['test_failure_reason_id']; ?>" <?php echo in_array($testFailureReason['test_failure_reason_id'], $testFailureReasonId) ? "selected='selected'" : "" ?>><?php echo $testFailureReason['test_failure_reason']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($testFailureReasonInfo, $testFailureReasonId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -240,10 +198,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($sampleRejectionReasonInfo as $rejectionReason) { ?>
-												<option value="<?php echo $rejectionReason['rejection_reason_id']; ?>" <?php echo in_array($rejectionReason['rejection_reason_id'], $rejectionReasonId) ? "selected='selected'" : "" ?>><?php echo $rejectionReason['rejection_reason_name']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($sampleRejectionReasonInfo, $rejectionReasonId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -256,10 +211,7 @@ foreach ($testResultUnitMapInfo as $val) {
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?></label>
 									<div class="col-lg-7">
 										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($symptomInfo as $val) { ?>
-												<option value="<?php echo $val['symptom_id']; ?>" <?php echo in_array($val['symptom_id'], $testSymptomsId) ? "selected='selected'" : "" ?>><?php echo $val['symptom_name']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($symptomInfo, $testSymptomsId, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -625,6 +577,7 @@ foreach ($testResultUnitMapInfo as $val) {
 
 		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
 		let _p = ["test methods", "test categories", "testing reason", "test failure reason", "rejection reason"];
+		let _fi = ["test_method_id", "test_category_id", "test_reason_id", "test_failure_reason_id", "rejection_reason_id"];
 		let _f = ["test_method_name", "test_category_name", "test_reason", "test_failure_reason", "rejection_reason_name"];
 		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
 
@@ -644,6 +597,7 @@ foreach ($testResultUnitMapInfo as $val) {
                     delay: 250,
                     data: function(params) {
                          return {
+							  fieldId: _fi[index],
                               fieldName: _f[index],
                               tableName: _t[index],
                               q: params.term, // search term

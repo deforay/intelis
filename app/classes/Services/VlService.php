@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 /**
- * General functions
+ * VL Service
  *
  * @author Amit
  */
@@ -449,12 +449,17 @@ class VlService
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $vlData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
+                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -463,21 +468,21 @@ class VlService
             $oldSampleCodeKey = null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $vlData['remote_sample_code'] = $sampleData['sampleCode'];
-                $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $vlData['remote_sample'] = 'yes';
-                $vlData['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $vlData['sample_code'] = $sampleData['sampleCode'];
-                    $vlData['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $vlData['sample_code'] = $sampleData['sampleCode'];
-                $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $vlData['remote_sample'] = 'no';
-                $vlData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
 
             $sQuery = "SELECT vl_sample_id,
@@ -495,18 +500,18 @@ class VlService
             $rowData = $this->db->rawQueryOne($sQuery);
 
             $id = 0;
-            if (empty($rowData)) {
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
                 $formAttributes = [
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
-                $vlData['form_attributes'] = json_encode($formAttributes);
-                if (!empty($params['sampleCode']) && !empty($params['sampleCollectionDate'])) {
-                    $vlData['unique_id'] = $vlData['unique_id'] ?? $this->commonService->generateUUID();
-                    $id = $this->db->insert("form_vl", $vlData);
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_vl", $tesRequestData);
+                if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }
             } else {
+                // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             }

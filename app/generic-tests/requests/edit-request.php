@@ -904,7 +904,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6" style="margin-top: 10px;">
+											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By
 													<span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
@@ -955,14 +955,14 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													<input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
 												</div>
 											</div>
-										</div>
-										<div class="row">
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
 												<div class="col-lg-7">
 													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($genericResultInfo['lab_tech_comments']); ?></textarea>
 												</div>
 											</div>
+										</div>
+										<div class="row">
 											<div class="col-md-6 change-reason" style="display:none;">
 												<label class="col-lg-5 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span></label>
 												<div class="col-lg-7">

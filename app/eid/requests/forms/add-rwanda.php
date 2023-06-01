@@ -286,7 +286,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                         <th scope="row">Previous PCR test : <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
+                                            <select class="form-control isRequired" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>

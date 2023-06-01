@@ -8,14 +8,9 @@ use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /**
- * General functions
+ * EID functions
  *
  * @author Amit
  */
@@ -26,20 +21,19 @@ class EidService
     protected ?MysqliDb $db = null;
     protected string $table = 'form_eid';
     protected string $shortCode = 'EID';
+    protected CommonService $commonService;
 
-    public function __construct($db = null)
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
+        $this->commonService = $commonService;
     }
 
     public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -174,11 +168,9 @@ class EidService
 
     public function insertSampleCode($params)
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
 
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         try {
             $provinceCode = $params['provinceCode'] ?? null;
@@ -196,12 +188,17 @@ class EidService
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $eidData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
+                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -210,21 +207,21 @@ class EidService
             $oldSampleCodeKey = null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $eidData['remote_sample_code'] = $sampleData['sampleCode'];
-                $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $eidData['remote_sample'] = 'yes';
-                $eidData['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $eidData['sample_code'] = $sampleData['sampleCode'];
-                    $eidData['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $eidData['sample_code'] = $sampleData['sampleCode'];
-                $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $eidData['remote_sample'] = 'no';
-                $eidData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
 
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
@@ -235,37 +232,22 @@ class EidService
 
             $rowData = $this->db->rawQueryOne($sQuery);
 
-            /* Update version in form attributes */
-            $version = $general->getSystemConfig('sc_version');
-            $ipaddress = $general->getClientIpAddress();
-            $formAttributes = [
-                'applicationVersion'  => $version,
-                'ip_address'    => $ipaddress
-            ];
-            $eidData['form_attributes'] = json_encode($formAttributes);
+
             $id = 0;
-
-            if (!empty($rowData)) {
-                // $this->db = $this->db->where('eid_id', $rowData['eid_id']);
-                // $id = $this->db->update("form_eid", $eidData);
-                // $params['eidSampleId'] = $rowData['eid_id'];
-
-                // If this sample code exists, let us regenerate
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_eid", $tesRequestData);
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
+                }
+            } else {
+                // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
-            } else {
-
-                if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("form_eid", $eidData);
-                    error_log($this->db->getLastError());
-                    $params['eidSampleId'] = $id;
-                } else {
-                    if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $eidData['unique_id'] = $general->generateUUID();
-                        $id = $this->db->insert("form_eid", $eidData);
-                        error_log($this->db->getLastError());
-                    }
-                }
             }
             return $id > 0 ? $id : 0;
         } catch (Exception $e) {

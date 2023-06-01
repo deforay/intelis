@@ -531,7 +531,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="vlResult labels" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>"><label for="cphlvlResult">VL result <span class="mandatory">*</span></label></td>
 										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input list="possibleVlResults" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlvlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
 											<datalist id="possibleVlResults"></datalist>
 										</td>
 										<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
@@ -589,7 +589,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="vlResult">VL result</label></td>
 										<td class="resultInputContainer">
-											<input list="failedPossibleVlResults" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+											<input list="failedPossibleVlResults" disabled="disabled" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
 											<datalist id="failedPossibleVlResults"></datalist>
 										</td>
 									</tr>
@@ -627,7 +627,7 @@ $disable = "disabled = 'disabled'";
 									<tr>
 										<td class="labels"><label for="finalViralLoadResult">Final Viral Load Result (copies/ml)</label></td>
 										<td class="resultInputContainer">
-											<input list="finalPossibleVlResults" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
 											<datalist id="finalPossibleVlResults"></datalist>
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
@@ -702,9 +702,14 @@ $disable = "disabled = 'disabled'";
 	facilityName = true;
 
 	function getVlResults(testingPlatformId, datalistId, vlResultId) {
-		testingVal = $('#' + testingPlatformId).val();
-		var str1 = testingVal.split("##");
-		var platformId = str1[3];
+		const testingVal = $('#' + testingPlatformId).val();
+		if (testingVal == "") {
+			$("#" + vlResultId).val("");
+			$("#" + vlResultId).attr("disabled", true);
+			return false;
+		}
+		const str1 = testingVal.split("##");
+		const platformId = str1[3];
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
