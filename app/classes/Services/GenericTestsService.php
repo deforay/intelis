@@ -326,7 +326,7 @@ class GenericTestsService
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $vlData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                 'facility_id' => $params['facilityId'] ?? null,
@@ -337,7 +337,7 @@ class GenericTestsService
                 'province_id' => $provinceId,
                 'test_type' => $testType,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "[]",
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -345,21 +345,21 @@ class GenericTestsService
 
             $oldSampleCodeKey = null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $vlData['remote_sample_code'] = $sampleData['sampleCode'];
-                $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $vlData['remote_sample'] = 'yes';
-                $vlData['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $vlData['sample_code'] = $sampleData['sampleCode'];
-                    $vlData['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $vlData['sample_code'] = $sampleData['sampleCode'];
-                $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $vlData['remote_sample'] = 'no';
-                $vlData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
             $sQuery = "SELECT sample_id,
                             sample_code,
@@ -380,8 +380,8 @@ class GenericTestsService
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
-                $vlData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_generic", $vlData);
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_generic", $tesRequestData);
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }

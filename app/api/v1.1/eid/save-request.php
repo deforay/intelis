@@ -157,9 +157,9 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
+            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
-            $data['sampleCollectionDate'] = null;
+            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
         $eidData = array(
@@ -403,9 +403,16 @@ try {
             $id = $db->update($tableName, $eidData);
             error_log($db->getLastError());
         }
+
         if ($id === true) {
-            $eidData = $app->getTableDataUsingId($tableName, 'eid_id', $data['eidSampleId']);
-            $eidSampleCode = $eidData['sample_code'] ?? $eidData['remote_sample_code'] ?? null;
+            $sQuery = "SELECT sample_code,
+                            remote_sample_code,
+                            FROM form_eid
+                            WHERE eid_id = ?";
+            $sampleRow = $db->rawQueryOne($sQuery, [$data['eidSampleId']]);
+
+            $eidSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
+
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'sampleCode' => $eidSampleCode,
@@ -421,22 +428,13 @@ try {
             ];
         }
     }
-    if (!empty($responseData)) {
-        $payload = array(
-            'status' => 'success',
-            'transactionId' => $transactionId,
-            'timestamp' => time(),
-            'data'  => $responseData
-        );
-    } else {
-        $payload = array(
-            'status' => 'success',
-            'transactionId' => $transactionId,
-            'timestamp' => time()
-        );
-    }
 
-    http_response_code(200);
+    $payload = [
+        'status' => 'success',
+        'transactionId' => $transactionId,
+        'timestamp' => time(),
+        'data'  => $responseData ?? []
+    ];
 } catch (SystemException $exc) {
 
     http_response_code(400);

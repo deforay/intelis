@@ -188,7 +188,7 @@ class EidService
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $eidData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
                 'facility_id' => $params['facilityId'] ?? null,
@@ -198,7 +198,7 @@ class EidService
                 'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "[]",
+                'form_attributes' => $params['formAttributes'] ?? "{}",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -207,21 +207,21 @@ class EidService
             $oldSampleCodeKey = null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $eidData['remote_sample_code'] = $sampleData['sampleCode'];
-                $eidData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $eidData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $eidData['remote_sample'] = 'yes';
-                $eidData['result_status'] = 9;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
                 if ($_SESSION['accessType'] === 'testing-lab') {
-                    $eidData['sample_code'] = $sampleData['sampleCode'];
-                    $eidData['result_status'] = 6;
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $eidData['sample_code'] = $sampleData['sampleCode'];
-                $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $eidData['remote_sample'] = 'no';
-                $eidData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
 
             $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
@@ -239,8 +239,8 @@ class EidService
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
-                $vlData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_eid", $eidData);
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_eid", $tesRequestData);
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }
