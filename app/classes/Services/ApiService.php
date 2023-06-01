@@ -27,6 +27,16 @@ class ApiService
         return (empty($value) || strlen(trim($value)) === 0) ? null : $value;
     }
 
+    function checkIfNullOrEmpty($array)
+    {
+        foreach ($array as $value) {
+            if ($value === null || $value === "") {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function generateSelectOptions($options): array
     {
         $i = 0;

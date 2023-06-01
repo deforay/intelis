@@ -61,9 +61,25 @@ try {
 
     $responseData = [];
     foreach ($input['data'] as $rootKey => $data) {
-        $sampleFrom = '';
-        /* V1 name to Id mapping */
-        if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
+
+
+        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
+
+        if ($formId == 3) {
+            $mandatoryFields[] = 'provinceId';
+        }
+
+        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+            $responseData[$rootKey] = array(
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Missing required fields")
+            );
+            continue;
+        }
+
+        if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
@@ -91,7 +107,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (!empty($data['sampleCollectionDate'])) ? DateUtility::isoDateFormat($data['sampleCollectionDate'], true) : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;
@@ -133,7 +149,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => 'Sample Locked or Resulted'
+                        'error' => _("Sample Locked or Finalized")
 
                     );
                     continue;
@@ -207,10 +223,6 @@ try {
             error_log($db->getLastError());
             $data['covid19SampleId'] = $id;
         }
-
-        // $general->elog($data);
-        // $general->elog($db->getLastQuery());
-        // $general->elog($db->getLastError());
 
         $tableName = "form_covid19";
         $tableName1 = "activity_log";

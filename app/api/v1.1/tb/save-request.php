@@ -56,28 +56,26 @@ try {
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 
-    foreach ($input['data'] as $rootKey => $field) {
-        $data = $field;
+    foreach ($input['data'] as $rootKey => $data) {
 
-        $data['formId'] = $formId;
+        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
-        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
-        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
-        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+        if ($formId == 3) {
+            $mandatoryFields[] = 'provinceId';
+        }
 
-        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = array(
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => 'Missing required fields'
+                'message' => _("Missing required fields")
             );
             continue;
         }
 
 
-        /* V1 name to Id mapping */
-        if (isset($data['provinceId']) && !is_numeric($data['provinceId'])) {
+        if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
@@ -94,6 +92,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;
@@ -132,7 +131,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => 'Sample Locked or Resulted'
+                        'error' => _("Sample Locked or Finalized")
 
                     );
                     continue;
@@ -154,15 +153,11 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
-        }
+
         $data['instanceId'] = $data['instanceId'] ?: $instanceId;
 
         $tbData = array(
-            'vlsm_country_id' => $data['formId'] ?: null,
+            'vlsm_country_id' => $formId,
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'vlsm_instance_id' => $data['instanceId'],
@@ -304,7 +299,7 @@ try {
 
         $tbData = array(
             'vlsm_instance_id'                    => $data['instanceId'],
-            'vlsm_country_id'                     => $data['formId'],
+            'vlsm_country_id'                     => $formId,
             'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',

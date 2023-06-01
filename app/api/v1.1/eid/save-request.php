@@ -61,23 +61,24 @@ try {
     $responseData = [];
     foreach ($input['data'] as $rootKey => $data) {
 
-        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
-        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
-        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
-        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+        if ($formId == 3) {
+            $mandatoryFields[] = 'provinceId';
+        }
+
+        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = array(
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => 'Missing required fields'
+                'message' => _("Missing required fields")
             );
             continue;
         }
 
 
-        /* V1 name to Id mapping */
-        if (!is_numeric($data['provinceId'])) {
+        if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
@@ -95,6 +96,7 @@ try {
 
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;
@@ -134,7 +136,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => 'Sample Locked or Resulted'
+                        'error' => _("Sample Locked or Finalized")
                     );
                     continue;
                 }
