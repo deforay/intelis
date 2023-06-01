@@ -431,15 +431,11 @@ class Covid19Service
 
     public function insertSampleCode($params)
     {
-
-        $patientsService = ContainerRegistry::get(PatientsService::class);
-
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $vlsmSystemConfig = $this->commonService->getSystemConfig();
-
-        $patientCodePrefix = 'P';
-
         try {
+            $patientsService = ContainerRegistry::get(PatientsService::class);
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $vlsmSystemConfig = $this->commonService->getSystemConfig();
+            $patientCodePrefix = 'P';
             $provinceCode = (!empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (!empty($params['provinceId'])) ? $params['provinceId'] : null;
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
@@ -554,14 +550,14 @@ class Covid19Service
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             }
-            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastErrno());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
-            return 0;
+            $id =  0;
         }
+        return $id > 0 ? $id : 0;
     }
 
     public function getCovid19TestsByC19Id($c19Id)

@@ -262,10 +262,9 @@ class TbService
 
     public function insertSampleCode($params)
     {
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $vlsmSystemConfig = $this->commonService->getSystemConfig();
-
         try {
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $vlsmSystemConfig = $this->commonService->getSystemConfig();
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -349,12 +348,11 @@ class TbService
                     //error_log($this->db->getLastError()); die;
                 }
             }
-
-            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());
             error_log('Insert TB Sample : ' . $e->getMessage());
-            return 0;
+            $id = 0;
         }
+        return $id > 0 ? $id : 0;
     }
 }

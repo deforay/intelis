@@ -14,7 +14,6 @@ session_unset(); // no need of session in json response
 try {
     ini_set('memory_limit', -1);
 
-
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
@@ -36,9 +35,12 @@ try {
     /** @var TbService $tbService */
     $tbService = ContainerRegistry::get(TbService::class);
 
+    $user = null;
+    $tableName = "form_tb";
+    $tableName1 = "activity_log";
+    $testTableName = 'tb_tests';
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
-    $user = null;
 
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
@@ -138,53 +140,12 @@ try {
                 }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
-                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
-            } else {
-                $sampleJson = $tbService->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-                $sampleData = json_decode($sampleJson, true);
             }
-        } else {
-            $sampleJson = $tbService->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-            $sampleData = json_decode($sampleJson, true);
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-
-        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
-
-        $tbData = array(
-            'vlsm_country_id' => $formId,
-            'unique_id' => $uniqueId,
-            'sample_collection_date' => $data['sampleCollectionDate'],
-            'vlsm_instance_id' => $data['instanceId'],
-            'province_id' => $provinceId,
-            'request_created_by' => null,
-            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
-            'last_modified_by' => null,
-            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
-        );
-
-        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-            $tbData['remote_sample_code'] = $sampleData['sampleCode'];
-            $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-            $tbData['remote_sample'] = 'yes';
-            if ($user['access_type'] === 'testing-lab') {
-                $tbData['sample_code'] = $sampleData['sampleCode'];
-            }
-        } else {
-            $tbData['sample_code'] = $sampleData['sampleCode'];
-            $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $tbData['remote_sample'] = 'no';
-        }
-
-        /* Update version in form attributes */
-        $version = $general->getSystemConfig('sc_version');
 
         $formAttributes = array(
             'applicationVersion'    => $version,
@@ -195,31 +156,32 @@ try {
         $formAttributes = json_encode($formAttributes);
 
 
-        $id = 0;
         if (!empty($rowData)) {
             $data['tbSampleId'] = $rowData['tb_id'];
         } else {
-            $id = $db->insert("form_tb", $tbData);
-            $data['tbSampleId'] = $id;
-        }
-        $tableName = "form_tb";
-        $tableName1 = "activity_log";
-        $testTableName = 'tb_tests';
+            $params['appSampleCode'] = $data['appSampleCode'] ?? null;
+            $params['provinceCode'] = $provinceCode;
+            $params['provinceId'] = $provinceId;
+            $params['uniqueId'] = $uniqueId;
+            $params['sampleCollectionDate'] = $sampleCollectionDate;
+            $params['userId'] = $user['user_id'];
+            $params['facilityId'] = $data['facilityId'] ?? null;
+            $params['labId'] = $data['labId'] ?? null;
 
+            $data['tbSampleId'] = $tbService->insertSampleCode($params);
+        }
+
+        $status = 6;
+        if ($roleUser['access_type'] != 'testing-lab') {
+            $status = 9;
+        }
+        
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = null;
         }
-
-        $data['sampleCode'] = $data['sampleCode'] ?? null;
-
-        $status = 6;
-        if ($roleUser['access_type'] != 'testing-lab') {
-            $status = 9;
-        }
-
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
@@ -403,14 +365,16 @@ try {
                 'status' => 'success',
                 'sampleCode' => $tbSampleCode,
                 'transactionId' => $transactionId,
-                'uniqueId' => $tbData['unique_id'],
-                'appSampleCode' => $tbData['app_sample_code'] ?? null,
+                'uniqueId' => $uniqueId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
+            http_response_code(200);
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
-                'appSampleCode' => $data['appSampleCode'] ?? null
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'error' => $db->getLastError()
             ];
         }
     }
@@ -421,26 +385,19 @@ try {
         'timestamp' => time(),
         'data'  => $responseData ?? []
     ];
-
-
     http_response_code(200);
-    $payload =  json_encode($payload);
 } catch (SystemException $exc) {
-
-    // http_response_code(500);
+    
+    http_response_code(400);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => []
     ];
-
-
-    $payload = json_encode($payload);
-
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-
+$payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

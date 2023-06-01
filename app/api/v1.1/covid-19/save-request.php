@@ -34,9 +34,11 @@ try {
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-
+    
+    $tableName = "form_covid19";
+    $tableName1 = "activity_log";
+    $testTableName = 'covid19_tests';    
     $transactionId = $general->generateUUID();
-
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
@@ -155,55 +157,12 @@ try {
                 }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
-                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
-            } else {
-                $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-                $sampleData = json_decode($sampleJson, true);
             }
-        } else {
-            $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-            $sampleData = json_decode($sampleJson, true);
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
         }
-
-
-        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
-
-        $covid19Data = array(
-            'vlsm_country_id' => $data['formId'] ?: null,
-            'unique_id' => $uniqueId,
-            'sample_collection_date' => $data['sampleCollectionDate'],
-            'vlsm_instance_id' => $data['instanceId'],
-            'province_id' => $provinceId,
-            'request_created_by' => null,
-            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
-            'last_modified_by' => null,
-            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
-        );
-
-
-        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-            $covid19Data['remote_sample_code'] = $sampleData['sampleCode'];
-            $covid19Data['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $covid19Data['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-            $covid19Data['remote_sample'] = 'yes';
-            if ($user['access_type'] === 'testing-lab') {
-                $covid19Data['sample_code'] = $sampleData['sampleCode'];
-            }
-        } else {
-            $covid19Data['sample_code'] = $sampleData['sampleCode'];
-            $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $covid19Data['remote_sample'] = 'no';
-        }
-
-        /* Update version in form attributes */
-        $version = $general->getSystemConfig('sc_version');
 
         $formAttributes = array(
             'applicationVersion'    => $version,
@@ -214,34 +173,31 @@ try {
         $formAttributes = json_encode($formAttributes);
 
 
-        $id = 0;
         if (!empty($rowData)) {
             $data['covid19SampleId'] = $rowData['covid19_id'];
         } else {
-            $id = $db->insert("form_covid19", $covid19Data);
-            error_log($db->getLastError());
-            $data['covid19SampleId'] = $id;
+            $params['appSampleCode'] = $data['appSampleCode'] ?? null;
+            $params['provinceCode'] = $provinceCode;
+            $params['provinceId'] = $provinceId;
+            $params['uniqueId'] = $uniqueId;
+            $params['sampleCollectionDate'] = $sampleCollectionDate;
+            $params['userId'] = $user['user_id'];
+            $params['facilityId'] = $data['facilityId'] ?? null;
+            $params['labId'] = $data['labId'] ?? null;
+
+            $data['covid19SampleId'] = $covid19Service->insertSampleCode($params);
         }
-
-        $tableName = "form_covid19";
-        $tableName1 = "activity_log";
-        $testTableName = 'covid19_tests';
-
-
+        
+        $status = 6;
+        if ($roleUser['access_type'] != 'testing-lab') {
+            $status = 9;
+        }
+        
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = null;
         }
-
-
-        $data['sampleCode'] = $data['sampleCode'] ?? null;
-
-        $status = 6;
-        if ($roleUser['access_type'] != 'testing-lab') {
-            $status = 9;
-        }
-
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
@@ -496,15 +452,16 @@ try {
                 'status' => 'success',
                 'sampleCode' => $c19SampleCode,
                 'transactionId' => $transactionId,
-                'uniqueId' => $c19Data['unique_id'],
-                'appSampleCode' => $tbData['app_sample_code'] ?? null,
+                'uniqueId' => $uniqueId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
             );
             http_response_code(200);
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
-                'appSampleCode' => $data['appSampleCode'] ?? null
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'error' => $db->getLastError()
             ];
         }
     }
