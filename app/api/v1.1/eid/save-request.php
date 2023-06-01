@@ -96,6 +96,7 @@ try {
 
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;

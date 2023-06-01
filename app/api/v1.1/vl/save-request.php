@@ -94,6 +94,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = $data['provinceCode'] ?? null;
         $provinceId = $data['provinceId'] ?? null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;

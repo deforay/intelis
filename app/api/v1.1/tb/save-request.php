@@ -92,6 +92,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;
@@ -152,11 +153,7 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
-        }
+
         $data['instanceId'] = $data['instanceId'] ?: $instanceId;
 
         $tbData = array(
