@@ -16,23 +16,31 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $text = '';
+$fieldId = $_GET['fieldId'];
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];
 $returnField = (isset($_GET['returnField']) && !empty($_GET['returnField'])) ? $_GET['returnField'] : null;
 $limit = (isset($_GET['limit']) && !empty($_GET['limit'])) ? $_GET['limit'] : null;
 $text = (isset($_GET['q']) && !empty($_GET['q'])) ? $_GET['q'] : null;
 
+// Set value as id
+$selectField = $field;
+$fieldId = (isset($fieldId) && !empty($fieldId))?$fieldId:$field;
+if(isset($fieldId) && !empty($fieldId)){
+    $selectField = $field . ', '. $fieldId;
+}
+
 if (isset($text) && !empty($text) && $text != "") {
     if (isset($returnField) && $returnField != "") {
         $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
     } else {
-        $cQuery = "SELECT DISTINCT $field FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
+        $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
     }
 } else {
     if (isset($returnField) && $returnField != "") {
         $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field is not null";
     } else {
-        $cQuery = "SELECT DISTINCT $field FROM $table WHERE $field is not null";
+        $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field is not null";
     }
 }
 if (isset($limit) && !empty($limit) && $limit > 0) {
@@ -45,7 +53,7 @@ if (isset($returnField) && $returnField != "") {
     $echoResult = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
+            $echoResult[] = array("id" => $row[$fieldId], "text" => ($row[$field]));
         }
     } else {
         $echoResult[] = array("id" => $text, 'text' => $text);

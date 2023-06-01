@@ -1539,6 +1539,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function getTestTypeForm() {
           var testType = $("#testType").val();
           getSampleTypeList(testType);
+          getTestReason(testType);
           if (testType != "") {
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1628,6 +1629,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                function(data) {
                     if (data != "") {
                          $("#specimenType").html(data);
+                    }
+               });
+     }
+
+     function getTestReason(testTypeId)
+     {
+          $.post("/includes/get-test-reason.php", {
+                    testTypeId: testTypeId,
+               },
+               function(data) {
+                    if (data != "") {
+                         $("#reasonForTesting").html(data);
                     }
                });
      }
