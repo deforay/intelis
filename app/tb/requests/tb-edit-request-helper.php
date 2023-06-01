@@ -231,7 +231,7 @@ try {
         $id = $db->update($tableName, $tbData);
     }
 
-    if ($id > 0) {
+    if ($id === true) {
         $_SESSION['alertMsg'] = _("TB test request updated successfully");
         //Add event log
         $eventType = 'tb-add-request';

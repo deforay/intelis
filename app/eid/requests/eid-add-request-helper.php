@@ -240,14 +240,12 @@ try {
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
 		$eidData['source_of_request'] = 'vlsm';
-	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
+	} elseif (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$eidData['source_of_request'] = 'vlsts';
-	} else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-		$eidData['source_of_request'] = 'api';
 	}
 
-	$eidData['request_created_by'] =  $_SESSION['userId'];
-	$eidData['last_modified_by'] =  $_SESSION['userId'];
+	$eidData['request_created_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+	$eidData['last_modified_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
@@ -255,43 +253,22 @@ try {
 		$id = $db->update($tableName, $eidData);
 		error_log($db->getLastError());
 	}
-	if (isset($_POST['api']) && $_POST['api'] == "yes") {
-		$payload = array(
-			'status' => 'success',
-			'timestamp' => time(),
-			'message' => 'Successfully added.'
-		);
 
+	if ($id === true) {
+		$_SESSION['alertMsg'] = _("EID request added successfully");
+		//Add event log
+		$eventType = 'add-eid-request';
+		$action = $_SESSION['userName'] . ' added a new EID request for the Child ID ' . $_POST['childId'];
+		$resource = 'eid-request';
 
-		http_response_code(200);
-		echo json_encode($payload);
-		exit(0);
+		$general->activityLog($eventType, $action, $resource);
 	} else {
-		if ($id > 0) {
-			$_SESSION['alertMsg'] = _("EID request added successfully");
-			//Add event log
-			$eventType = 'add-eid-request';
-			$action = $_SESSION['userName'] . ' added a new EID request for the Child ID ' . $_POST['childId'];
-			$resource = 'eid-request';
-
-			$general->activityLog($eventType, $action, $resource);
-
-			// $data=array(
-			// 'event_type'=>$eventType,
-			// 'action'=>$action,
-			// 'resource'=>$resource,
-			// 'date_time'=>\App\Utilities\DateUtility::getCurrentDateTime()
-			// );
-			// $db->insert($tableName1,$data);
-
-		} else {
-			$_SESSION['alertMsg'] = _("Please try again later");
-		}
-		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-			header("Location:/eid/requests/eid-add-request.php");
-		} else {
-			header("Location:/eid/requests/eid-requests.php");
-		}
+		$_SESSION['alertMsg'] = _("Please try again later");
+	}
+	if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
+		header("Location:/eid/requests/eid-add-request.php");
+	} else {
+		header("Location:/eid/requests/eid-requests.php");
 	}
 } catch (Exception $exc) {
 	error_log($exc->getMessage());

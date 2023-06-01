@@ -161,12 +161,8 @@ try {
 		$hepatitisData['source_of_request'] = 'vlsm';
 	} else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
 		$hepatitisData['source_of_request'] = 'vlsts';
-	} else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-		$hepatitisData['source_of_request'] = 'api';
 	}
 
-	// echo "<pre>";print_r($hepatitisData);die;
-	// For Save Comorbidity
 	if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != 0) {
 
 		$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
@@ -195,16 +191,16 @@ try {
 			}
 		}
 
-		$id = 0;
+		$id = false;
 		if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != '') {
 			$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 			$id = $db->update($tableName, $hepatitisData);
 		}
 	} else {
-		$id = 0;
+		$id = false;
 	}
 
-	if ($id > 0) {
+	if ($id === true) {
 		$_SESSION['alertMsg'] = _("Hepatitis test request added successfully");
 		//Add event log
 		$eventType = 'hepatitis-add-request';

@@ -132,7 +132,7 @@ try {
             $data['user_signature'] = $imageName;
         }
     }
-    $id = 0;
+    $id = false;
     if (isset($aRow['user_id']) && $aRow['user_id'] != "") {
         $db = $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
@@ -141,8 +141,8 @@ try {
         $id = $db->insert("user_details", $data);
     }
 
-    if ($id > 0) {
-        if ($id > 0 && trim($post['selectedFacility']) != '') {
+    if ($id === true) {
+        if (trim($post['selectedFacility']) != '') {
             $db = $db->where('user_id', $data['user_id']);
             $delId = $db->delete("user_facility_map");
             $selectedFacility = explode(",", $post['selectedFacility']);
@@ -158,7 +158,7 @@ try {
             }
         }
     }
-    if ($id > 0) {
+    if ($id === true) {
         $payload = array(
             'status' => 'success',
             'timestamp' => time(),

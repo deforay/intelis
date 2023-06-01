@@ -432,7 +432,7 @@ class Covid19Service
     public function insertSampleCode($params)
     {
 
-        $patientsModel = ContainerRegistry::get(PatientsService::class);
+        $patientsService = ContainerRegistry::get(PatientsService::class);
 
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
@@ -502,7 +502,7 @@ class Covid19Service
                     $patientCodePrefix = 'P';
                 }
                 $generateAutomatedPatientCode = true;
-                $patientCodeJson = $patientsModel->generatePatientId($patientCodePrefix);
+                $patientCodeJson = $patientsService->generatePatientId($patientCodePrefix);
                 $patientCodeArray = json_decode($patientCodeJson, true);
             } else {
                 $generateAutomatedPatientCode = false;
@@ -520,7 +520,7 @@ class Covid19Service
             $patientData['patientLastName'] = $params['lastName'];
             $patientData['patientGender'] = $params['patientGender'];
             $patientData['registeredBy'] = $_SESSION['userId'];
-            $patientsModel->savePatient($patientData);
+            $patientsService->savePatient($patientData);
 
 
             $tesRequestData['patient_id'] = $patientCode;

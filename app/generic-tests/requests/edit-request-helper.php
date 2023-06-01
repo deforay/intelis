@@ -36,26 +36,16 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 $resultStatus = null;
-// echo "<pre>";print_r($_POST);die;
 try {
-     if (isset($_POST['api']) && $_POST['api'] == "yes") {
-     } else {
-          $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
-          $chkValidation = $general->checkMandatoryFields($validateField);
-          if ($chkValidation) {
-               $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
-               header("Location:edit-request.php?id=" . base64_encode($_POST['vlSampleId']));
-               die;
-          }
+     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
+     $chkValidation = $general->checkMandatoryFields($validateField);
+     if ($chkValidation) {
+          $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
+          header("Location:edit-request.php?id=" . base64_encode($_POST['vlSampleId']));
+          die;
      }
-     //system config
-     $systemConfigQuery = "SELECT * from system_config";
-     $systemConfigResult = $db->query($systemConfigQuery);
-     $sarr = [];
-     // now we create an associative array so that we can easily create view variables
-     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-          $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-     }
+
+     $sarr = $general->getSystemConfig();
 
      //add province
      $splitProvince = explode("##", $_POST['province']);
@@ -272,42 +262,14 @@ try {
           $vldata['result_status'] = $resultStatus;
      }
 
-     if (isset($_POST['api']) && $_POST['api'] == "yes") {
-     } else
-          $vldata['last_modified_by'] =  $_SESSION['userId'];
+     $vldata['last_modified_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+
      if ($_SESSION['instanceType'] == 'remoteuser') {
           $vldata['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] :  null;
-     } else if ($_POST['sampleCodeCol'] != '') {
+     } elseif ($_POST['sampleCodeCol'] != '') {
           $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] :  null;
      }
 
-     if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
-          $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
-     } else {
-          $_POST['cdDate'] = null;
-     }
-
-     if (isset($_POST['failedTestDate']) && trim($_POST['failedTestDate']) != "") {
-          $failedtestDate = explode(" ", $_POST['failedTestDate']);
-          $_POST['failedTestDate'] = DateUtility::isoDateFormat($failedtestDate[0]) . " " . $failedtestDate[1];
-     } else {
-          $_POST['failedTestDate'] = null;
-     }
-     if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
-          $platForm = explode("##", $_POST['failedTestingTech']);
-          $_POST['failedTestingTech'] = $platForm[0];
-     }
-     if (isset($_POST['qcDate']) && trim($_POST['qcDate']) != "") {
-          $_POST['qcDate'] = DateUtility::isoDateFormat($_POST['qcDate']);
-     } else {
-          $_POST['qcDate'] = null;
-     }
-
-     if (isset($_POST['reportDate']) && trim($_POST['reportDate']) != "") {
-          $_POST['reportDate'] = DateUtility::isoDateFormat($_POST['reportDate']);
-     } else {
-          $_POST['reportDate'] = null;
-     }
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
           if (isset($_POST['testName']) && !empty($_POST['testName'])) {
@@ -345,7 +307,7 @@ try {
      $db = $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      error_log($db->getLastError());
-     if ($id > 0) {
+     if ($id === true) {
           $_SESSION['alertMsg'] = _("Request updated successfully");
           //Add event log
 

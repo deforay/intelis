@@ -304,8 +304,6 @@ try {
         $vlData['source_of_request'] = 'vlsm';
     } elseif (isset($systemType) && ($systemType == "remoteuser")) {
         $vlData['source_of_request'] = 'vlsts';
-    } elseif (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $vlData['source_of_request'] = 'api';
     }
 
     $vlData['request_created_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
