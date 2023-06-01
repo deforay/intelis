@@ -493,4 +493,11 @@ class GenericTestsService
 
         return $response;
     }
+
+    // Quickly insert data in dynamic
+    public function quickInsert($table, $fields, $values)
+    {
+        // echo "<pre>";print_r(array_combine($fields, $values));die;
+        return $this->db->insert($table, array_combine($fields, $values));
+    }
 }

@@ -4095,3 +4095,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'generic-test-reference', 'generic-test-categories.php', 'Manage Test Categories'),
 (NULL, 'generic-test-reference', 'generic-add-test-categories.php', 'Add Test Category'),
 (NULL, 'generic-test-reference', 'generic-edit-test-categories.php', 'Edit Test Category');
+
+-- Thana 31-May-2023
+ALTER TABLE `r_test_types` ADD `test_category` VARCHAR(256) NULL DEFAULT NULL AFTER `test_loinc_code`;
