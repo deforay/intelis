@@ -444,7 +444,7 @@ try {
         if ($id === true) {
 
             $sQuery = "SELECT sample_code,
-                            remote_sample_code,
+                            remote_sample_code
                             FROM form_vl
                             WHERE vl_sample_id = ?";
             $sampleRow = $db->rawQueryOne($sQuery, [$data['vlSampleId']]);
