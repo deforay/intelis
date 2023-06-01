@@ -1540,6 +1540,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var testType = $("#testType").val();
           getSampleTypeList(testType);
           getTestReason(testType);
+          getTestMethods(testType);
           if (testType != "") {
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1645,19 +1646,26 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                });
      }
 
+     function getTestMethods(testTypeId)
+     {
+          $.post("/includes/get-test-methods.php", {
+                    testTypeId: testTypeId,
+               },
+               function(data) {
+                    if (data != "") {
+                         $("#testName1").html(data);
+                    }
+               });
+     }
+
      function addTestRow() {
           testCounter++;
+          testMethods = $("#testName1").html();
           let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>
                     <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                    <option value="">-- Select --</option>
-                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                    <option value="RDT-Antibody">RDT-Antibody</option>
-                    <option value="RDT-Antigen">RDT-Antigen</option>
-                    <option value="GeneXpert">GeneXpert</option>
-                    <option value="ELISA">ELISA</option>
-                    <option value="other">Others</option>
+                   ${testMethods}
                 </select>
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>

@@ -128,11 +128,13 @@ try {
             }
 
             if (!empty($_POST['testMethod'])) {
+                $db = $db->where('test_type_id', $testTypeId);
+                $db->delete($tableName8);
                 foreach ($_POST['testMethod'] as $val) {
                     if(!is_numeric($val)){
                         $val = $generic->quickInsert('r_generic_test_methods', array('test_method_name', 'test_method_status'), array($val, 'active'));
                     }
-                    $value = array('test_method_id' => $val, 'test_type_id' => $lastId);
+                    $value = array('test_method_id' => $val, 'test_type_id' => $testTypeId);
                     $db->insert($tableName8, $value);
                 }
             }
