@@ -4098,3 +4098,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 
 -- Thana 31-May-2023
 ALTER TABLE `r_test_types` ADD `test_category` VARCHAR(256) NULL DEFAULT NULL AFTER `test_loinc_code`;
+
+
+-- Amit 1-Jun-2023 version 5.1.6
+UPDATE `system_config` SET `value` = '5.1.6' WHERE `system_config`.`name` = 'sc_version';
