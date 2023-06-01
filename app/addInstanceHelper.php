@@ -74,7 +74,7 @@ try {
 
     $db = $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update($tableName, $data);
-    if ($id > 0) {
+    if ($id === true) {
       $_SESSION['instanceFacilityName'] = $_POST['fName'];
       if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo")) {

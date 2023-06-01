@@ -302,16 +302,6 @@ try {
     $resource             = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
-    //new log for update in result
-    if (isset($id) && $id > 0) {
-        $data = array(
-            'user_id' => $_SESSION['userId'],
-            'hepatitis_id' => $id,
-            'test_type' => 'vl',
-            'updated_on' => DateUtility::getCurrentDateTime()
-        );
-        $db->insert("log_result_updates", $data);
-    }
     header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

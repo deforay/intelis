@@ -45,7 +45,7 @@ try {
     $id = $db->insert($tableName, $data);
 
 
-    if ($id > 0 && !empty($_POST['sampleCode'])) {
+    if ($id === true && !empty($_POST['sampleCode'])) {
         if ($tableName != "") {
             $mainData = array(
                 "lab_id"                    => $_POST['labNameTo'],

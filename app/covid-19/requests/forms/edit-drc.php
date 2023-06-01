@@ -32,8 +32,8 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-/** @var PatientsService $patientsModel */
-$patientsModel = ContainerRegistry::get(PatientsService::class);
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 
 $covid19Results = $covid19Service->getCovid19Results();
@@ -141,7 +141,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     $generateAutomatedPatientCode = false;
 }
 
-$patientData = $patientsModel->getPatient($covid19Info['patient_id']);
+$patientData = $patientsService->getPatient($covid19Info['patient_id']);
 $patientCodePrefix = $patientCodeKey = "";
 if (!empty($patientData)) {
     $patientCodePrefix = $patientData['patient_code_prefix'];

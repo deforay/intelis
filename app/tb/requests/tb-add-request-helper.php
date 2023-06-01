@@ -216,8 +216,6 @@ try {
         $tbData['source_of_request'] = 'vlsm';
     } else if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "remoteuser")) {
         $tbData['source_of_request'] = 'vlsts';
-    } else if (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $tbData['source_of_request'] = 'api';
     }
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
@@ -242,7 +240,7 @@ try {
         $id = $db->update($tableName, $tbData);
         error_log($db->getLastError());
     }
-    if ($id > 0) {
+    if ($id === true) {
         $_SESSION['alertMsg'] = _("TB test request added successfully");
         //Add event log
         $eventType = 'tb-add-request';

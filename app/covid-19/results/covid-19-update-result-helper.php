@@ -147,7 +147,7 @@ try {
 	print_r($covid19Data);die; */
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
-	if ($id > 0) {
+	if ($id === true) {
 		$_SESSION['alertMsg'] = _("Covid-19 result updated successfully");
 	} else {
 		$_SESSION['alertMsg'] = _("Please try again later");

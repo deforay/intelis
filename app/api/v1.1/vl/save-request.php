@@ -49,6 +49,8 @@ try {
         throw new SystemException("Invalid request");
     }
 
+    $db->startTransaction();
+
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -65,21 +67,27 @@ try {
 
     foreach ($input['data'] as $rootKey => $data) {
 
-        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
-        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
-        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+        $mandatoryFields = [
+            'sampleCollectionDate',
+            'facilityId',
+            'appSampleCode'
+        ];
 
-        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+        if ($formId == 5) {
+            $mandatoryFields[] = 'provinceId';
+        }
+
+        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = array(
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => 'Missing required fields'
+                'message' => _("Missing required fields")
             );
             continue;
         }
 
-        if (!is_numeric($data['provinceId'])) {
+        if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
@@ -90,6 +98,7 @@ try {
         $data['api'] = "yes";
         $provinceCode = $data['provinceCode'] ?? null;
         $provinceId = $data['provinceId'] ?? null;
+        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
         $rowData = null;
@@ -129,7 +138,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => 'Sample Locked or Resulted'
+                        'error' => _("Sample Locked or Finalized")
 
                     );
                     continue;
@@ -141,12 +150,6 @@ try {
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
 
@@ -304,10 +307,10 @@ try {
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $formId,
             'unique_id'                             => $uniqueId,
+            'sample_collection_date'                => $sampleCollectionDate,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  null,
-            'sample_collection_date'                => $data['sampleCollectionDate'],
             'patient_Gender'                        => (isset($data['patientGender']) && $data['patientGender'] != '') ? $data['patientGender'] :  null,
             'patient_dob'                           => $data['patientDob'] ?? null,
             'patient_age_in_years'                  => (isset($data['ageInYears']) && $data['ageInYears'] != '') ? $data['ageInYears'] :  null,
@@ -378,7 +381,7 @@ try {
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                       => $formAttributes
+            'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         );
 
 
@@ -439,12 +442,14 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
+            error_log($db->getLastQuery());
             error_log($db->getLastError());
         }
+        // echo "<pre>";print_r($data);die;
         if ($id === true) {
 
             $sQuery = "SELECT sample_code,
-                            remote_sample_code,
+                            remote_sample_code
                             FROM form_vl
                             WHERE vl_sample_id = ?";
             $sampleRow = $db->rawQueryOne($sQuery, [$data['vlSampleId']]);
@@ -462,7 +467,8 @@ try {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
-                'appSampleCode' => $data['appSampleCode'] ?? null
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'error' => $db->getLastError()
             ];
         }
     }
@@ -473,7 +479,7 @@ try {
         'timestamp' => time(),
         'data'  => $responseData ?? []
     ];
-
+    $db->commit();
     http_response_code(200);
 } catch (SystemException $exc) {
 
@@ -484,9 +490,11 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
+    $db->rollback();
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
+
 
 $payload = json_encode($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');

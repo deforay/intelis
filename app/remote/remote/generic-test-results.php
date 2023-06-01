@@ -50,7 +50,7 @@ try {
             if ($name === 'labId') {
                 $labId = $data;
             } else if ($name === 'testResults') {
-                $testResultsData = $data; 
+                $testResultsData = $data;
             } else if ($name === 'result') {
                 $resultData = $data;
             }
@@ -145,7 +145,7 @@ try {
                 continue;
             }
 
-            if ($id > 0 && isset($lab['sample_code'])) {
+            if ($id === true && isset($lab['sample_code'])) {
                 $sampleCodes[] = $lab['sample_code'];
                 $facilityIds[] = $lab['facility_id'];
             }

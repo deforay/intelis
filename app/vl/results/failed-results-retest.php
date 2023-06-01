@@ -49,7 +49,7 @@ try {
         "result_status"                 => $status
     ));
 
-    if ($id > 0 && !empty($response)) {
+    if ($id === true && !empty($response)) {
         foreach ($response as $result) {
             if (isset($result['vl_sample_id']) && $result['vl_sample_id'] != "") {
                 $db->insert('failed_result_retest_tracker', array(

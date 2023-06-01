@@ -14,8 +14,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$patientsModel = new PatientsService();
+
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 $prefix  = $_POST['patientCodePrefix'];
 
-echo $patientsModel->generatePatientId($prefix);
+echo $patientsService->generatePatientId($prefix);

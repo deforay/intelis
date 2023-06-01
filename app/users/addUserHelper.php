@@ -89,7 +89,7 @@ try {
 
         $id = $db->insert($tableName, $data);
 
-        if ($id > 0 && trim($_POST['selectedFacility']) != '') {
+        if ($id === true && trim($_POST['selectedFacility']) != '') {
             $selectedFacility = explode(",", $_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
             for ($j = 0; $j <= count($selectedFacility); $j++) {
