@@ -141,7 +141,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
             continue;
         }
 
-        if ($id > 0 && isset($lab['sample_code'])) {
+        if ($id === true && isset($lab['sample_code'])) {
             $sampleCodes[] = $lab['sample_code'];
             $facilityIds[] = $lab['facility_id'];
         }

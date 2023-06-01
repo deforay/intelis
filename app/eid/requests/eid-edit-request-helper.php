@@ -253,29 +253,8 @@ try {
 		'last_modified_datetime'							=> DateUtility::getCurrentDateTime()
 	);
 
-	if (isset($_POST['api']) && $_POST['api'] == "yes") {
-	} else {
-		$eidData['request_created_by'] =  $_SESSION['userId'];
-		$eidData['last_modified_by'] =  $_SESSION['userId'];
-	}
-	// if ($_SESSION['instanceType'] == 'remoteuser') {
-	//   //$eidData['remote_sample_code'] = (isset($_POST['sampleCode']) && $_POST['sampleCode'] != '') ? $_POST['sampleCode'] : null;
-	// } else {
-	//   if ($_POST['sampleCodeCol'] != '') {
-	//     //$eidData['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
-	//   } else {
-	//     $eidService = new \App\Services\EidService();
-
-	//     $sampleCodeKeysJson = $eidService->generateEIDSampleCode($_POST['provinceCode'], $_POST['sampleCollectionDate']);
-	//     $sampleCodeKeys = json_decode($sampleCodeKeysJson, true);
-	//     $eidData['sample_code'] = $sampleCodeKeys['sampleCode'];
-	//     $eidData['sample_code_key'] = $sampleCodeKeys['sampleCodeKey'];
-	//     $eidData['sample_code_format'] = $sampleCodeKeys['sampleCodeFormat'];
-	//   }
-	// }
-
-
-
+	$eidData['request_created_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+	$eidData['last_modified_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db = $db->where('eid_id', $_POST['eidSampleId']);
@@ -283,32 +262,18 @@ try {
 		error_log($db->getLastError());
 	}
 
+	if ($id === true) {
+		$_SESSION['alertMsg'] = _("EID request updated successfully");
+		//Add event log
+		$eventType = 'eid-edit-request';
+		$action = $_SESSION['userName'] . ' updated EID request for the Child ID ' . $_POST['childId'];
+		$resource = 'eid-request';
 
-	if (isset($_POST['api']) && $_POST['api'] == "yes") {
-		$payload = array(
-			'status' => 'success',
-			'timestamp' => time(),
-			'message' => 'Successfully updated.'
-		);
-
-
-		http_response_code(200);
-		echo json_encode($payload);
-		exit(0);
+		$general->activityLog($eventType, $action, $resource);
 	} else {
-		if ($id > 0) {
-			$_SESSION['alertMsg'] = _("EID request updated successfully");
-			//Add event log
-			$eventType = 'eid-edit-request';
-			$action = $_SESSION['userName'] . ' updated EID request for the Child ID ' . $_POST['childId'];
-			$resource = 'eid-request';
-
-			$general->activityLog($eventType, $action, $resource);
-		} else {
-			$_SESSION['alertMsg'] = _("Please try again later");
-		}
-		header("Location:/eid/requests/eid-requests.php");
+		$_SESSION['alertMsg'] = _("Please try again later");
 	}
+	header("Location:/eid/requests/eid-requests.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

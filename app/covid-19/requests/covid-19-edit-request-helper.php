@@ -30,61 +30,54 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $app = ContainerRegistry::get(ApiService::class);
 
 
-$patientsModel = new PatientsService();
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
-// echo "<pre>";print_r($_POST);die;
 
 $tableName = "form_covid19";
 $tableName1 = "activity_log";
 $testTableName = 'covid19_tests';
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
 try {
-	//system config
-	$systemConfigQuery = "SELECT * FROM system_config";
-	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = [];
-	// now we create an associative array so that we can easily create view variables
-	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-	}
+	$sarr = $general->getSystemConfig();
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];
 	}
 
 	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
-		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
+		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'], true);
 	} else {
 		$_POST['sampleCollectionDate'] = null;
 	}
 
 	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
-		$sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
-		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
+		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'], true);
 	} else {
 		$_POST['sampleDispatchedDate'] = null;
 	}
 
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
+		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true);
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
 	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
+		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'], true);
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
 	if (isset($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
-		$arrivalDate = explode(" ", $_POST['arrivalDateTime']);
-		$_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
+		$_POST['arrivalDateTime'] = DateUtility::isoDateFormat($_POST['arrivalDateTime'], true);
 	} else {
 		$_POST['arrivalDateTime'] = null;
 	}
@@ -269,7 +262,7 @@ try {
 	$patientData['patientLastName'] = $_POST['lastName'];
 	$patientData['patientGender'] = $_POST['patientGender'];
 	$patientData['registeredBy'] = $_SESSION['userId'];
-	$patientsModel->updatePatient($patientData);
+	$patientsService->updatePatient($patientData);
 
 	$covid19Data['last_modified_by'] =  $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'];
@@ -361,28 +354,26 @@ try {
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 	// echo "<pre>";print_r($covid19Data);die;
-    $id = 0;
+	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->update($tableName, $covid19Data);
 		error_log($db->getLastError());
 	}
 
-    if ($id > 0 || $sid > 0 || $pid > 0) {
-        $_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
-        //Add event log
-        $eventType = 'update-covid-19-request';
-        $action = $_SESSION['userName'] . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
-        $resource = 'covid-19-edit-request';
+	if ($id > 0 || $sid > 0 || $pid > 0) {
+		$_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
+		//Add event log
+		$eventType = 'update-covid-19-request';
+		$action = $_SESSION['userName'] . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+		$resource = 'covid-19-edit-request';
 
-        $general->activityLog($eventType, $action, $resource);
-
-    } else {
-        $_SESSION['alertMsg'] = _("Please try again later");
-    }
-    error_log($db->getLastError());
-    header("Location:/covid-19/requests/covid-19-requests.php");
-
+		$general->activityLog($eventType, $action, $resource);
+	} else {
+		$_SESSION['alertMsg'] = _("Please try again later");
+	}
+	error_log($db->getLastError());
+	header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), $exc->getCode(), $exc);
 }

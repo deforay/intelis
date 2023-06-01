@@ -62,7 +62,7 @@ foreach ($sampleResult as $sampleRow) {
         }
         $db = $db->where('sample_id', $sampleRow['sample_id']);
         $id = $db->update('form_generic', $vldata);
-        if ($id > 0) {
+        if ($id === true) {
             $status = $id;
         }
     }

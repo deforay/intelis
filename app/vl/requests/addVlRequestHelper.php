@@ -270,7 +270,7 @@ try {
         'vl_focal_person_phone_number'          => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'lab_id'                                => $_POST['labId'] ?? null,
         'vl_test_platform'                      => $testingPlatform ?? null,
-        'sample_received_at_hub_datetime'       =>  DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true),
+        'sample_received_at_hub_datetime'       => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true),
         'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true),
         'sample_tested_datetime'                => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'], true),
         'result_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['resultDispatchedOn'], true),
@@ -304,8 +304,6 @@ try {
         $vlData['source_of_request'] = 'vlsm';
     } elseif (isset($systemType) && ($systemType == "remoteuser")) {
         $vlData['source_of_request'] = 'vlsts';
-    } elseif (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $vlData['source_of_request'] = 'api';
     }
 
     $vlData['request_created_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;

@@ -34,16 +34,15 @@ $vl_result_category = null;
 $systemType = $general->getSystemConfig('sc_user_type');
 // echo "<pre>";print_r($_POST);die;
 try {
-    if (isset($_POST['api']) && $_POST['api'] == "yes") {
-    } else {
-        $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
-        $chkValidation = $general->checkMandatoryFields($validateField);
-        if ($chkValidation) {
-            $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
-            header("Location:addVlRequest.php");
-            die;
-        }
+
+    $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
+    $chkValidation = $general->checkMandatoryFields($validateField);
+    if ($chkValidation) {
+        $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
+        header("Location:addVlRequest.php");
+        die;
     }
+
 
     $resultStatus = 6;
 
@@ -269,14 +268,10 @@ try {
         $vldata['source_of_request'] = 'vlsm';
     } elseif (isset($systemType) && ($systemType == "remoteuser")) {
         $vldata['source_of_request'] = 'vlsts';
-    } elseif (!empty($_POST['api']) && $_POST['api'] == "yes") {
-        $vldata['source_of_request'] = 'api';
     }
-    if (isset($_POST['api']) && $_POST['api'] == "yes") {
-    } else {
-        $vldata['request_created_by'] =  $_SESSION['userId'];
-        $vldata['last_modified_by'] =  $_SESSION['userId'];
-    }
+
+    $vldata['request_created_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+    $vldata['last_modified_by'] =  $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
     if (isset($_POST['cdDate']) && trim($_POST['cdDate']) != "") {
         $_POST['cdDate'] = DateUtility::isoDateFormat($_POST['cdDate']);
@@ -374,7 +369,7 @@ try {
         $id = $db->insert($tableName, $vldata);
     }
 
-    if ($id > 0) {
+    if ($id === true) {
         $_SESSION['alertMsg'] = _("VL request added successfully");
         //Add event log
 

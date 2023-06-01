@@ -196,7 +196,7 @@ try {
     $db = $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vldata);
     //var_dump($db->getLastError());die;
-    if ($id > 0) {
+    if ($id === true) {
         $_SESSION['alertMsg'] = _("Lab Tests results updated successfully");
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");

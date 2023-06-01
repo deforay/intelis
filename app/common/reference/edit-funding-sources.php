@@ -14,8 +14,8 @@ if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
     header("Location:province-details.php");
 }
-$query = "SELECT * from r_funding_sources where funding_source_id = $id";
-$partnerInfo = $db->query($query);
+$query = "SELECT * from r_funding_sources where funding_source_id = ?";
+$partnerInfo = $db->rawQuery($query, [$id]);
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

@@ -90,7 +90,7 @@ try {
 	$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$id = $db->update($tableName, $hepatitisData);
 	error_log($db->getLastError() . PHP_EOL);
-	if ($id > 0) {
+	if ($id === true) {
 		$_SESSION['alertMsg'] = _("Hepatitis result updated successfully");
 	} else {
 		$_SESSION['alertMsg'] = _("Please try again later");
