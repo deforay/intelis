@@ -216,14 +216,6 @@ try {
     $resource             = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
-    //new log for update in result
-    $data = array(
-        'user_id' => $_SESSION['userId'],
-        'vl_sample_id' => $id,
-        'test_type' => 'vl',
-        'updated_on' => DateUtility::getCurrentDateTime()
-    );
-    $db->insert("log_result_updates", $data);
 
     header("Location:/import-result/imported-results.php");
 } catch (Exception $exc) {

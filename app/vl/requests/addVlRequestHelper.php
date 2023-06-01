@@ -270,7 +270,7 @@ try {
         'vl_focal_person_phone_number'          => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'lab_id'                                => $_POST['labId'] ?? null,
         'vl_test_platform'                      => $testingPlatform ?? null,
-        'sample_received_at_hub_datetime'       =>  DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true),
+        'sample_received_at_hub_datetime'       => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true),
         'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true),
         'sample_tested_datetime'                => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'], true),
         'result_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['resultDispatchedOn'], true),
