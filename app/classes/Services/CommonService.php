@@ -854,23 +854,25 @@ class CommonService
             }
         }
 
+        error_log('JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')');
+
         return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
     }
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null)
     {
 
-        $query = "SELECT ".implode(",", $fields)." FROM ".$table;
+        $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
         if ($condition) {
-            $query .= " WHERE ". $condition;
+            $query .= " WHERE " . $condition;
         }
         // die($query);
         $results = $this->db->rawQuery($query);
-        if($option){
+        if ($option) {
             foreach ($results as $row) {
                 $response[$row[$fields[0]]] = $row[$fields[1]];
             }
-        }else{
+        } else {
             $response = $results;
         }
         return $response;

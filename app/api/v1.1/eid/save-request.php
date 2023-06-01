@@ -63,7 +63,7 @@ try {
 
         $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
-        if ($formId == 3) {
+        if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -156,12 +156,6 @@ try {
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
         $eidData = array(
@@ -356,7 +350,7 @@ try {
             'choice_of_feeding'                                 => $data['choiceOfFeeding'] ?? null,
             'is_cotrimoxazole_being_administered_to_the_infant' => $data['isCotrimoxazoleBeingAdministered'] ?? null,
             'specimen_type'                                     => $data['specimenType'] ?? null,
-            'sample_collection_date'                            => $data['sampleCollectionDate'] ?? null,
+            'sample_collection_date'                            => $sampleCollectionDate,
             'sample_dispatched_datetime'                        => $data['sampleDispatchedOn'],
             'result_dispatched_datetime'                        => $data['resultDispatchedOn'],
             'sample_requestor_phone'                            => $data['sampleRequestorPhone'] ?? null,
@@ -385,7 +379,7 @@ try {
             'reason_for_sample_rejection'                       => $data['sampleRejectionReason'] ?? null,
             'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'source_of_request'                                 => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                       => $formAttributes
+            'form_attributes'                                   => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         );
 
         if (!empty($rowData)) {

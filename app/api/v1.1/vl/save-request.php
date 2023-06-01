@@ -67,9 +67,13 @@ try {
 
     foreach ($input['data'] as $rootKey => $data) {
 
-        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
+        $mandatoryFields = [
+            'sampleCollectionDate',
+            'facilityId',
+            'appSampleCode'
+        ];
 
-        if ($formId == 3) {
+        if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -146,12 +150,6 @@ try {
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
 
@@ -309,10 +307,10 @@ try {
             'vlsm_instance_id'                      => $instanceId,
             'vlsm_country_id'                       => $formId,
             'unique_id'                             => $uniqueId,
+            'sample_collection_date'                => $sampleCollectionDate,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  null,
-            'sample_collection_date'                => $data['sampleCollectionDate'],
             'patient_Gender'                        => (isset($data['patientGender']) && $data['patientGender'] != '') ? $data['patientGender'] :  null,
             'patient_dob'                           => $data['patientDob'] ?? null,
             'patient_age_in_years'                  => (isset($data['ageInYears']) && $data['ageInYears'] != '') ? $data['ageInYears'] :  null,
@@ -383,7 +381,7 @@ try {
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                       => $formAttributes
+            'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         );
 
 
@@ -441,10 +439,10 @@ try {
         }
 
         $id = false;
-        var_dump($data['vlSampleId']);
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
+            error_log($db->getLastQuery());
             error_log($db->getLastError());
         }
         if ($id === true) {

@@ -65,7 +65,7 @@ try {
 
         $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
-        if ($formId == 3) {
+        if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -150,7 +150,6 @@ try {
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
-
                     );
                     continue;
                 }
@@ -212,7 +211,7 @@ try {
             'mobileAppVersion'      => $input['appVersion'],
             'deviceId'              => $deviceId
         );
-        $covid19Data['form_attributes'] = json_encode($formAttributes);
+        $formAttributes = json_encode($formAttributes);
 
 
         $id = 0;
@@ -393,7 +392,8 @@ try {
             'result_status'                       => $status,
             'data_sync'                           => 0,
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
-            'source_of_request'                   => $data['sourceOfRequest'] ?? "API"
+            'source_of_request'                   => $data['sourceOfRequest'] ?? "API",
+            'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes')),
         );
         if (!empty($rowData)) {
             $covid19Data['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
