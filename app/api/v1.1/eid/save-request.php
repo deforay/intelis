@@ -60,10 +60,22 @@ try {
 
     $responseData = [];
     foreach ($input['data'] as $rootKey => $data) {
-        $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $formId;
 
-        $sampleFrom = '';
+        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
+        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
+        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
+
+        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+            $responseData[$rootKey] = array(
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => 'Missing required fields'
+            );
+            continue;
+        }
+
+
         /* V1 name to Id mapping */
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -83,17 +95,23 @@ try {
 
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = (!empty($data['sampleCollectionDate'])) ? $data['sampleCollectionDate'] : null;
 
-        if (empty($sampleCollectionDate)) {
-            exit();
-        }
         $update = "no";
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT eid_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
+            $sQuery = "SELECT eid_id,
+                            unique_id,
+                            sample_code,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key,
+                            result_status,
+                            locked
+                            FROM form_eid ";
 
             $sQueryWhere = [];
 
@@ -112,6 +130,12 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+                    );
                     continue;
                 }
                 $update = "yes";
@@ -138,11 +162,9 @@ try {
             $data['sampleCollectionDate'] = null;
         }
 
-        $data['instanceId'] = $data['instanceId'] ?: $instanceId;
-
         $eidData = array(
-            'vlsm_country_id' => $data['formId'] ?: null,
-            'vlsm_instance_id' => $data['instanceId'],
+            'vlsm_country_id' => $formId,
+            'vlsm_instance_id' => $instanceId,
             'unique_id' => $uniqueId,
             'sample_collection_date' => $data['sampleCollectionDate'],
             'province_id' => $provinceId,
@@ -176,17 +198,11 @@ try {
             'mobileAppVersion'      => $input['appVersion'],
             'deviceId'              => $deviceId
         );
-        $eidData['form_attributes'] = json_encode($formAttributes);
+        $formAttributes = json_encode($formAttributes);
 
 
         $id = 0;
-        if (isset($rowData) && $rowData['eid_id'] > 0) {
-            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
-                $db = $db->where('eid_id', $rowData['eid_id']);
-                $id = $db->update("form_eid", $eidData);
-            } else {
-                continue;
-            }
+        if (isset($rowData)) {
             $data['eidSampleId'] = $rowData['eid_id'];
         } else {
             $id = $db->insert("form_eid", $eidData);
@@ -300,7 +316,7 @@ try {
 
         $eidData = array(
             'vlsm_instance_id'                                  => $instanceId,
-            'vlsm_country_id'                                   => $data['formId'],
+            'vlsm_country_id'                                   => $formId,
             'unique_id'                                         => $uniqueId,
             'app_sample_code'                                   => $data['appSampleCode'] ?? null,
             'facility_id'                                       => $data['facilityId'] ?? null,
@@ -366,7 +382,8 @@ try {
             'data_sync'                                         => 0,
             'reason_for_sample_rejection'                       => $data['sampleRejectionReason'] ?? null,
             'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
-            'source_of_request'                                 => $data['sourceOfRequest'] ?? "API"
+            'source_of_request'                                 => $data['sourceOfRequest'] ?? "API",
+            'form_attributes'                       => $formAttributes
         );
 
         if (!empty($rowData)) {
@@ -380,62 +397,42 @@ try {
         $eidData['request_created_by'] =  $user['user_id'];
         $eidData['last_modified_by'] =  $user['user_id'];
 
-        /* echo "<pre>";
-        print_r($eidData);
-        die; */
-        $id = 0;
+        $id = false;
         if (!empty($data['eidSampleId'])) {
-            if ($data['result_status'] != 7 && $data['locked'] != 'yes') {
-                $db = $db->where('eid_id', $data['eidSampleId']);
-                $id = $db->update($tableName, $eidData);
-            } else {
-                continue;
-            }
+            $db = $db->where('eid_id', $data['eidSampleId']);
+            $id = $db->update($tableName, $eidData);
+            error_log($db->getLastError());
         }
-        if ($id > 0) {
+        if ($id === true) {
             $eidData = $app->getTableDataUsingId($tableName, 'eid_id', $data['eidSampleId']);
-            $eidSampleCode = (isset($eidData['sample_code']) && $eidData['sample_code']) ? $eidData['sample_code'] : $eidData['remote_sample_code'];
-            $responseData[$rootKey] = array(
+            $eidSampleCode = $eidData['sample_code'] ?? $eidData['remote_sample_code'] ?? null;
+            $responseData[$rootKey] = [
                 'status' => 'success',
                 'sampleCode' => $eidSampleCode,
                 'transactionId' => $transactionId,
                 'uniqueId' => $eidData['unique_id'],
-                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $eidData['app_sample_code'] : null,
-            );
-            http_response_code(200);
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+            ];
         } else {
-            http_response_code(301);
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = [
-                    'status' => 'failed'
-                ];
-            } else {
-                $payload = [
-                    'status' => 'failed',
-                    'timestamp' => time(),
-                    'error' => 'Unable to add this EID sample. Please try again later',
-                    'data' => []
-                ];
-            }
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'status' => 'failed',
+                'appSampleCode' => $data['appSampleCode'] ?? null
+            ];
         }
-    }
-    if ($update == "yes") {
-        $msg = 'Successfully updated.';
-    } else {
-        $msg = 'Successfully added.';
     }
     if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
+            'transactionId' => $transactionId,
             'timestamp' => time(),
-            'message' => $msg,
             'data'  => $responseData
         );
     } else {
         $payload = array(
             'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg
+            'transactionId' => $transactionId,
+            'timestamp' => time()
         );
     }
 

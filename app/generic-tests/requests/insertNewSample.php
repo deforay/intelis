@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
-echo $genericTestsService->insertSampleCodeGenericTest($_POST);
+echo $genericTestsService->insertSampleCode($_POST);

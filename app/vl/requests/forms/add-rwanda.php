@@ -562,7 +562,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                           <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="yes">Yes</option>
                                                                                 <option value="no">No</option>
@@ -731,7 +731,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                let artNo = $.trim($(this).val());
 
                if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
                }
                if (artNo.length > 3) {
 
@@ -756,7 +756,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    }
                               } else {
                                    if (artNo.length < 10) {
-                                        $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
+                                        $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
                                    } else {
                                         $("#artNoGroup").html('');
                                    }
@@ -1104,8 +1104,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length != 10) {
-               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+          if (ARTlength.length < 10) {
+               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({
@@ -1143,8 +1143,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length != 10) {
-               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+          if (ARTlength.length < 10) {
+               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({

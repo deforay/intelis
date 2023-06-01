@@ -19,11 +19,13 @@ class UsersService
     protected ?MysqliDb $db = null;
     protected $applicationConfig = null;
     protected string $table = 'user_details';
+    protected CommonService $commonService;
 
-    public function __construct($db = null, $applicationConfig = null)
+    public function __construct($db = null, $applicationConfig = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->applicationConfig = $applicationConfig;
+        $this->commonService = $commonService;
     }
 
     public function isAllowed($currentFileName): bool
@@ -300,9 +302,8 @@ class UsersService
 
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {
-            /** @var CommonService $general */
-            $general = ContainerRegistry::get(CommonService::class);
-            $userId = $general->generateUUID();
+
+            $userId = $this->commonService->generateUUID();
             $userData = array(
                 'user_id' => $userId,
                 'user_name' => $name,
@@ -336,10 +337,7 @@ class UsersService
 
     public function generateAuthToken($size = 8): string
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        return  base64_encode($general->generateUUID() . "-" . $general->generateToken($size));
+        return  base64_encode($this->commonService->generateUUID() . "-" . $this->commonService->generateToken($size));
     }
 
     public function getUserByUserId(?string $userId = null): ?array
@@ -445,12 +443,10 @@ class UsersService
 
     public function userHistoryLog($loginId, $loginStatus, $userId = null)
     {
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
 
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;
-        $ipaddress = $general->getClientIpAddress();
+        $ipaddress = $this->commonService->getClientIpAddress();
 
         $data = array(
             'login_id' => $loginId,

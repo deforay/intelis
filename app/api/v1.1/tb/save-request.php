@@ -88,7 +88,17 @@ try {
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
-            $sQuery = "SELECT tb_id, unique_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
+            $sQuery = "SELECT tb_id,
+            unique_id,
+            sample_code,
+            sample_code_format,
+            sample_code_key,
+            remote_sample_code,
+            remote_sample_code_format,
+            remote_sample_code_key,
+            result_status,
+            locked
+            FROM form_tb ";
             $sQueryWhere = [];
 
             if (!empty($data['uniqueId'])) {
@@ -107,6 +117,13 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+
+                    );
                     continue;
                 }
                 $update = "yes";

@@ -75,17 +75,17 @@ $builder->addDefinitions([
     VlService::class => DI\create(VlService::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class)),
     EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     UsersService::class => DI\create(UsersService::class)
-        ->constructor(DI\get('db'), DI\get('applicationConfig')),
+        ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get('applicationConfig')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
         ->constructor(DI\get('db')),
     FacilitiesService::class => DI\create(FacilitiesService::class)

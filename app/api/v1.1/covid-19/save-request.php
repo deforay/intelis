@@ -101,7 +101,17 @@ try {
         $uniqueId = null;
         if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT covid19_id, sample_code, unique_id, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_covid19 ";
+            $sQuery = "SELECT covid19_id,
+                            sample_code,
+                            unique_id,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key,
+                            result_status,
+                            locked
+                            FROM form_covid19 ";
 
             $sQueryWhere = [];
 
@@ -122,6 +132,13 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+
+                    );
                     continue;
                 }
                 $update = "yes";

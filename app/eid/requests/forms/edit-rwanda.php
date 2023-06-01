@@ -330,7 +330,7 @@ if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
 
                                         <th scope="row">Previous PCR test : <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value)">
+                                            <select class="form-control isRequired" name="pcrTestPerformedBefore" title="Please select if Previous PCR Test was done" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value)">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>

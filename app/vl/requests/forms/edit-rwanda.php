@@ -261,7 +261,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                            <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= ($vlQueryInfo['patient_art_no']); ?>" onchange="if(this.value.length!=10) alert('ART No. should be 10 characters long');" />
+                                                            <input type="text" name="artNo" id="artNo" maxlength="10" minlength="10" class="form-control isRequired" placeholder="Enter ART Number" title="Enter art number" value="<?= ($vlQueryInfo['patient_art_no']); ?>" onchange="if(this.value.length<10) alert('ART No. should be at least 10 characters long');" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -657,7 +657,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
                                                                            <div class="col-lg-7">
-                                                                                <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                                <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                                      <option value="">-- Select --</option>
                                                                                      <option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
                                                                                      <option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -1152,8 +1152,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
      function validateNow() {
           var ARTlength = $("#artNo").val();
-          if (ARTlength.length != 10) {
-               alert("<?= _("Patient ART No. should be 10 characters long"); ?>");
+          if (ARTlength.length < 10) {
+               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({

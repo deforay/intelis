@@ -7,11 +7,12 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 /**
- * General functions
+ * Generic tests functions
  *
  * @author Amit
  */
@@ -22,10 +23,12 @@ class GenericTestsService
     protected ?MysqliDb $db = null;
     protected string $table = 'form_generic';
     protected string $shortCode = 'LAB';
+    protected CommonService $commonService;
 
-    public function __construct($db = null)
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
+        $this->commonService = $commonService;
     }
 
     public function generateGenericSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType = null)
@@ -35,12 +38,8 @@ class GenericTestsService
             error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
         }
 
-
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -151,12 +150,8 @@ class GenericTestsService
             error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
         }
 
-
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
-        $globalConfig = $general->getGlobalConfig();
-        $vlsmSystemConfig = $general->getSystemConfig();
+        $globalConfig = $this->commonService->getGlobalConfig();
+        $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
         if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -305,22 +300,23 @@ class GenericTestsService
         );
     }
 
-    public function insertSampleCodeGenericTest($params)
+    public function insertSampleCode($params)
     {
         try {
 
-            /** @var CommonService $general */
-            $general = ContainerRegistry::get(CommonService::class);
-
-            $globalConfig = $general->getGlobalConfig();
-            $vlsmSystemConfig = $general->getSystemConfig();
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
             $testType = $params['testType'] ?? null;
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($testType) || empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+            if (
+                empty($testType) ||
+                empty($sampleCollectionDate) ||
+                ($globalConfig['vl_form'] == 5 && empty($provinceId))
+            ) {
                 return 0;
             }
 
@@ -332,10 +328,16 @@ class GenericTestsService
 
             $vlData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
+                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
                 'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $params['instanceId'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
                 'province_id' => $provinceId,
+                'test_type' => $testType,
                 'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "[]",
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -359,39 +361,35 @@ class GenericTestsService
                 $vlData['remote_sample'] = 'no';
                 $vlData['result_status'] = 6;
             }
-            $sQuery = "SELECT sample_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_generic ";
+            $sQuery = "SELECT sample_id,
+                            sample_code,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key
+                            FROM form_generic ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
-            $version = $general->getSystemConfig('sc_version');
-            $ipaddress = $general->getClientIpAddress();
-            $formAttributes = [
-                'applicationVersion'  => $version,
-                'ip_address'    => $ipaddress
-            ];
-            $vlData['form_attributes'] = json_encode($formAttributes);
-
-
             $id = 0;
-            if (!empty($rowData)) {
-                // If this sample code exists, let us regenerate
-                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCodeGenericTest($params);
-            } else {
-                if (isset($params['api']) && $params['api'] = "yes") {
-                    $id = $this->db->insert("form_generic", $vlData);
-                    $params['GenericSampleId'] = $id;
-                } else {
-                    if (isset($params['sampleCode']) && $params['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                        $vlData['unique_id'] = $general->generateUUID();
-                        $id = $this->db->insert("form_generic", $vlData);
-                        error_log($this->db->getLastError());
-                    }
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $vlData['form_attributes'] = json_encode($formAttributes);
+                $id = $this->db->insert("form_generic", $vlData);
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
                 }
+            } else {
+                // If this sample code exists, let us regenerate the sample code and insert
+                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
+                return $this->insertSampleCode($params);
             }
-
             return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());

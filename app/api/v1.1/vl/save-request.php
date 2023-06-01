@@ -13,7 +13,6 @@ ini_set('memory_limit', -1);
 
 try {
 
-
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
@@ -63,17 +62,22 @@ try {
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 
+
     foreach ($input['data'] as $rootKey => $data) {
 
-        $sampleCollectionDate = $data['sampleCollectionDate'] ?? null;
+        $sampleCollectionDate = $app->returnNullIfEmpty($data['sampleCollectionDate']);
+        $data['facilityId'] = $app->returnNullIfEmpty(($data['facilityId']));
+        $data['appSampleCode'] = $app->returnNullIfEmpty(($data['appSampleCode']));
 
-        if (empty($sampleCollectionDate)) {
+        if (empty($sampleCollectionDate) || empty($data['facilityId']) || empty($data['appSampleCode'])) {
+            $responseData[$rootKey] = array(
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => 'Missing required fields'
+            );
             continue;
         }
-
-        $sampleFrom = '';
-        $data['formId'] = $data['countryId'] = $formId;
-        $sampleFrom = '';
 
         if (!is_numeric($data['provinceId'])) {
             $province = explode("##", $data['provinceId']);
@@ -99,7 +103,9 @@ try {
                             sample_code_key,
                             remote_sample_code,
                             remote_sample_code_format,
-                            remote_sample_code_key
+                            remote_sample_code_key,
+                            result_status,
+                            locked
                         FROM form_vl ";
 
             $sQueryWhere = [];
@@ -119,20 +125,18 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $responseData[$rootKey] = array(
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                        'status' => 'failed',
+                        'error' => 'Sample Locked or Resulted'
+
+                    );
                     continue;
                 }
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
-                $sampleData['sampleCode'] = $rowData['sample_code'] ?? $rowData['remote_sample_code'];
-                $sampleData['sampleCodeFormat'] = $rowData['sample_code_format'] ?? $rowData['remote_sample_code_format'];
-                $sampleData['sampleCodeKey'] = $rowData['sample_code_key'] ?? $rowData['remote_sample_code_key'];
-            } else {
-                $sampleJson = $vlService->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-                $sampleData = json_decode($sampleJson, true);
             }
-        } else {
-            $sampleJson = $vlService->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, null, $user);
-            $sampleData = json_decode($sampleJson, true);
         }
 
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
@@ -140,43 +144,11 @@ try {
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
+            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
-        $data['instanceId'] = $data['instanceId'] ?? $instanceId;
-
-        $vlData = array(
-            'vlsm_country_id' => $data['formId'] ?? null,
-            'unique_id' => $uniqueId,
-            'sample_collection_date' => DateUtility::isoDateFormat($data['sampleCollectionDate'], true),
-            'vlsm_instance_id' => $data['instanceId'],
-            'province_id' => $provinceId,
-            'request_created_by' => $user['user_id'],
-            'request_created_datetime' => (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime(),
-            'last_modified_by' => $user['user_id'],
-            'last_modified_datetime' => (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime()
-        );
-
-        if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-            $vlData['remote_sample_code'] = $sampleData['sampleCode'];
-            $vlData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $vlData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-            $vlData['remote_sample'] = 'yes';
-            $vlData['result_status'] = 9;
-
-            if ($user['access_type'] === 'testing-lab') {
-                $vlData['sample_code'] = $sampleData['sampleCode'];
-                $vlData['result_status'] = 6;
-            }
-        } else {
-            $vlData['sample_code'] = $sampleData['sampleCode'];
-            $vlData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $vlData['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $vlData['remote_sample'] = 'no';
-            $vlData['result_status'] = 6;
-        }
 
         $formAttributes = array(
             'applicationVersion'    => $version,
@@ -184,29 +156,24 @@ try {
             'mobileAppVersion'      => $input['appVersion'],
             'deviceId'              => $deviceId
         );
-        $vlData['form_attributes'] = json_encode($formAttributes);
+        $formAttributes = json_encode($formAttributes);
 
 
-        $id = 0;
         if (!empty($rowData)) {
-            if ($rowData['result_status'] != 7 && $rowData['locked'] != 'yes') {
-                $db = $db->where('vl_sample_id', $rowData['vl_sample_id']);
-                $id = $db->update("form_vl", $vlData);
-                error_log($db->getLastError());
-            } else {
-                continue;
-            }
             $data['vlSampleId'] = $rowData['vl_sample_id'];
         } else {
-            $id = $db->insert("form_vl", $vlData);
-            error_log($db->getLastError());
-            $data['vlSampleId'] = $id;
+            $params['appSampleCode'] = $data['appSampleCode'] ?? null;
+            $params['provinceCode'] = $provinceCode;
+            $params['provinceId'] = $provinceId;
+            $params['uniqueId'] = $uniqueId;
+            $params['sampleCollectionDate'] = $sampleCollectionDate;
+            $params['userId'] = $user['user_id'];
+            $params['facilityId'] = $data['facilityId'] ?? null;
+            $params['labId'] = $data['labId'] ?? null;
+
+            $data['vlSampleId'] = $vlService->insertSampleCode($params);
         }
-        $tableName = "form_vl";
-        $tableName1 = "activity_log";
 
-
-        $data['sampleCode'] = $data['sampleCode'] ?? null;
 
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
@@ -334,12 +301,11 @@ try {
             $data['revisedOn'] = null;
         }
         $vlFulldata = array(
-            'vlsm_instance_id'                      => $data['instanceId'],
-            'vlsm_country_id'                       => $data['formId'],
+            'vlsm_instance_id'                      => $instanceId,
+            'vlsm_country_id'                       => $formId,
             'unique_id'                             => $uniqueId,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => (isset($data['sampleReordered']) && $data['sampleReordered'] == 'yes') ? 'yes' :  'no',
-            'sample_code_format'                    => (isset($data['sampleCodeFormat']) && $data['sampleCodeFormat'] != '') ? $data['sampleCodeFormat'] :  null,
             'facility_id'                           => (isset($data['facilityId']) && $data['facilityId'] != '') ? $data['facilityId'] :  null,
             'sample_collection_date'                => $data['sampleCollectionDate'],
             'patient_Gender'                        => (isset($data['patientGender']) && $data['patientGender'] != '') ? $data['patientGender'] :  null,
@@ -404,7 +370,6 @@ try {
             'external_sample_code'                  => $data['serialNo'] ?? null,
             'is_patient_new'                        => (isset($data['isPatientNew']) && $data['isPatientNew'] != '') ? $data['isPatientNew'] :  null,
             'has_patient_changed_regimen'           => (isset($data['hasChangedRegimen']) && $data['hasChangedRegimen'] != '') ? $data['hasChangedRegimen'] :  null,
-            //'sample_dispatched_datetime'    => (isset($data['dateDispatchedFromClinicToLab']) && $data['dateDispatchedFromClinicToLab'] != '') ? $data['specimenType'] :  null,
             'vl_test_number'                        => (isset($data['viralLoadNo'])) ? $data['viralLoadNo'] : null,
             'last_viral_load_result'                => (isset($data['lastViralLoadResult'])) ? $data['lastViralLoadResult'] : null,
             'last_viral_load_date'                  => (isset($data['lastViralLoadTestDate'])) ? DateUtility::isoDateFormat($data['lastViralLoadTestDate']) : null,
@@ -412,7 +377,8 @@ try {
             'date_test_ordered_by_physician'        => (isset($data['dateOfDemand']) && $data['dateOfDemand'] != '') ? $data['dateOfDemand'] :  null,
             'result_reviewed_by'                    => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime'              => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
-            'source_of_request'                     => $data['sourceOfRequest'] ?? "API"
+            'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
+            'form_attributes'                       => $formAttributes
         );
 
 
@@ -428,28 +394,28 @@ try {
         }
 
         // South Sudan specific
-        if ($formId === 1) {
+        //if ($formId === 1) {
 
-            $patientFullName = [];
-            if (trim($vlFulldata['patient_first_name']) != '') {
-                $patientFullName[] = trim($vlFulldata['patient_first_name']);
-            }
-            if (trim($vlFulldata['patient_middle_name']) != '') {
-                $patientFullName[] = trim($vlFulldata['patient_middle_name']);
-            }
-            if (trim($vlFulldata['patient_last_name']) != '') {
-                $patientFullName[] = trim($vlFulldata['patient_last_name']);
-            }
-
-            if (!empty($patientFullName)) {
-                $patientFullName = implode(" ", $patientFullName);
-            } else {
-                $patientFullName = '';
-            }
-            $vlFulldata['patient_first_name'] = $patientFullName;
-            $vlFulldata['patient_middle_name'] = null;
-            $vlFulldata['patient_last_name'] = null;
+        $patientFullName = [];
+        if (!empty(trim($vlFulldata['patient_first_name']))) {
+            $patientFullName[] = trim($vlFulldata['patient_first_name']);
         }
+        if (!empty(trim($vlFulldata['patient_middle_name']))) {
+            $patientFullName[] = trim($vlFulldata['patient_middle_name']);
+        }
+        if (!empty(trim($vlFulldata['patient_last_name']))) {
+            $patientFullName[] = trim($vlFulldata['patient_last_name']);
+        }
+
+        if (!empty($patientFullName)) {
+            $patientFullName = implode(" ", $patientFullName);
+        } else {
+            $patientFullName = '';
+        }
+        $vlFulldata['patient_first_name'] = $patientFullName;
+        $vlFulldata['patient_middle_name'] = null;
+        $vlFulldata['patient_last_name'] = null;
+        //}
 
         if (!empty($rowData)) {
             $vlFulldata['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
@@ -468,55 +434,44 @@ try {
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = 4;
         }
-        //  echo " Sample Id update :".$data['vlSampleId']; exit;
-        //  echo '<pre>'; print_r($vlFulldata);
-        $id = 0;
+
+        $id = false;
         if (!empty($data['vlSampleId'])) {
-
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
-            $id = $db->update($tableName, $vlFulldata);
+            $id = $db->update('form_vl', $vlFulldata);
             error_log($db->getLastError());
-
-            // echo "ID=>" . $id;
         }
-        if ($id > 0) {
-            $vlFulldata = $app->getTableDataUsingId($tableName, 'vl_sample_id', $data['vlSampleId']);
-            $vlSampleCode = (isset($vlFulldata['sample_code']) && $vlFulldata['sample_code']) ? $vlFulldata['sample_code'] : $vlFulldata['remote_sample_code'];
-            $responseData[$rootKey] = array(
+        if ($id === true) {
+            $vlFulldata = $app->getTableDataUsingId('form_vl', 'vl_sample_id', $data['vlSampleId']);
+            $vlSampleCode = $vlFulldata['sample_code'] ?? $vlFulldata['remote_sample_code'] ?? null;
+            $responseData[$rootKey] = [
                 'status' => 'success',
                 'sampleCode' => $vlSampleCode,
                 'transactionId' => $transactionId,
-                'uniqueId' => $vlFulldata['unique_id'],
-                'appSampleCode' => (isset($data['appSampleCode']) && $data['appSampleCode'] != "") ? $vlFulldata['app_sample_code'] : null,
-            );
-            http_response_code(200);
+                'uniqueId' => $uniqueId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+            ];
         } else {
-            if (isset($data['appSampleCode']) && $data['appSampleCode'] != "") {
-                $responseData[$rootKey] = array(
-                    'status' => 'failed'
-                );
-            } else {
-                throw new SystemException('Unable to add this VL sample. Please try again later');
-            }
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'status' => 'failed',
+                'appSampleCode' => $data['appSampleCode'] ?? null
+            ];
         }
     }
-    if ($update == "yes") {
-        $msg = 'Successfully updated';
-    } else {
-        $msg = 'Successfully added';
-    }
+
     if (!empty($responseData)) {
         $payload = array(
             'status' => 'success',
+            'transactionId' => $transactionId,
             'timestamp' => time(),
-            'message' => $msg,
             'data'  => $responseData
         );
     } else {
         $payload = array(
             'status' => 'success',
-            'timestamp' => time(),
-            'message' => $msg
+            'transactionId' => $transactionId,
+            'timestamp' => time()
         );
     }
 
