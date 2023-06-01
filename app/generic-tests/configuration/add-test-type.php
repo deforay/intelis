@@ -1,25 +1,14 @@
 <?php
+namespace App\Services;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
+use App\Services\CommonService;
+
 require_once APPLICATION_PATH . '/header.php';
-
-$stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
-$sampleTypeInfo = $db->query($stQuery);
-
-$tQuery = "SELECT * from r_generic_test_reasons where test_reason_status='active'";
-$testReasonInfo = $db->query($tQuery);
-
-$tfQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_status='active'";
-$testFailureReasonInfo = $db->query($tfQuery);
-
-$srQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_status='active'";
-$sampleRejectionReasonInfo = $db->query($srQuery);
-
-$symQuery = "SELECT * from r_generic_symptoms where symptom_status='active'";
-$symptomInfo = $db->query($symQuery);
-
-$unitQuery = "SELECT * from r_generic_test_result_units where unit_status='active'";
-$testResultUnits = $db->query($unitQuery);
-
-
+$general = ContainerRegistry::get(CommonService::class);
+$generic = ContainerRegistry::get(GenericTestsService::class);
+$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
+$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
 ?>
 <style>
 	.tooltip-inner {
@@ -149,10 +138,7 @@ $testResultUnits = $db->query($unitQuery);
 									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($sampleTypeInfo as $sampleType) { ?>
-												<option value="<?php echo $sampleType['sample_type_id']; ?>"><?php echo $sampleType['sample_type_name']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($sampleTypeInfo, null, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -197,10 +183,7 @@ $testResultUnits = $db->query($unitQuery);
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?></label>
 									<div class="col-lg-7">
 										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
-											<option value="">--Select--</option>
-											<?php foreach ($symptomInfo as $val) { ?>
-												<option value="<?php echo $val['symptom_id']; ?>"><?php echo $val['symptom_name']; ?></option>
-											<?php } ?>
+											<?= $general->generateSelectOptions($symptomInfo, null, '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -480,6 +463,7 @@ $testResultUnits = $db->query($unitQuery);
 
 		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
 		let _p = ["test methods", "test categories", "testing reason", "test failure reason", "rejection reason"];
+		let _fi = ["test_method_id", "test_category_id", "test_reason_id", "test_failure_reason_id", "rejection_reason_id"];
 		let _f = ["test_method_name", "test_category_name", "test_reason", "test_failure_reason", "rejection_reason_name"];
 		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
 
@@ -499,6 +483,7 @@ $testResultUnits = $db->query($unitQuery);
                     delay: 250,
                     data: function(params) {
                          return {
+							  fieldId: _fi[index],
                               fieldName: _f[index],
                               tableName: _t[index],
                               q: params.term, // search term
