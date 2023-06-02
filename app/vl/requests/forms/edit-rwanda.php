@@ -781,8 +781,6 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      facilityName = true;
      $(document).ready(function() {
 
-
-
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);
@@ -825,6 +823,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                     }
                }
           });
+          hivDetectionChange();
      });
 
      function hivDetectionChange() {
