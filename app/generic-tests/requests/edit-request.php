@@ -213,8 +213,8 @@ if (!empty($patientFullName)) {
 } else {
 	$patientFullName = '';
 }
-
-
+$testMethods = $general->getTestMethod($genericResultInfo['test_type']);
+//echo '<pre>'; print_r($testMethods); die;
 ?>
 <style>
 	.ui_tpicker_second_label {
@@ -819,6 +819,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	</td>
 																	<td>
 																		<?php
+												
 																		$value = '';
 																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'GeneXpert', 'ELISA', 'other'))) {
 																			$value = 'value="' . $rows['test_name'] . '"';
@@ -827,20 +828,17 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																			$show =  "none";
 																		} ?>
 																		<select class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-																			<option value="">--Select--</option>
-																			<option value="Real Time RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>>
-																				Real Time RT-PCR</option>
-																			<option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>
-																				RDT-Antibody</option>
-																			<option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>
-																				RDT-Antigen</option>
-																			<option value="GeneXpert" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'GeneXpert') ? "selected='selected'" : ""; ?>>GeneXpert</option>
-																			<option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>
-																				ELISA</option>
-																			<option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>
-																				Others</option>
+																		<option value="">--Select--</option>
+																		<?php
+																			foreach($testMethods as $methods)
+																			{
+																				?>
+																			<option value="<?php echo $methods['test_method_id']; ?>" <?php echo (isset($rows['test_name']) && $rows['test_name']==$methods['test_method_id']) ? "selected='selected'" : ""; ?>><?php echo $methods['test_method_name']; ?></option>
+																				<?php
+																			}
+																			?>
 																		</select>
-																		<input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
+																		<input <?php echo $value; ?> type="hidden" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
 																	</td>
 																	<td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime'], true); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
 																	</td>
@@ -863,17 +861,17 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																<td class="text-center">1</td>
 																<td>
 																	<select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-																		<option value="">-- Select --</option>
-																		<option value="Real Time RT-PCR">Real Time
-																			RT-PCR</option>
-																		<option value="RDT-Antibody">RDT-Antibody
-																		</option>
-																		<option value="RDT-Antigen">RDT-Antigen</option>
-																		<option value="GeneXpert">GeneXpert</option>
-																		<option value="ELISA">ELISA</option>
-																		<option value="other">Others</option>
+																	<option value="">--Select--</option>
+																		<?php
+																			foreach($testMethods as $methods)
+																			{
+																				?>
+																			<option value="<?php echo $methods['test_method_id']; ?>"><?php echo $methods['test_method_name']; ?></option>
+																				<?php
+																			}
+																			?>
 																	</select>
-																	<input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+																	<input type="hidden" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
 																</td>
 																<td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" />
 																</td>
@@ -1010,7 +1008,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 
 		var testType = $("#testType").val();
 		getSampleTypeList(testType);
-
+		getTestReason(testType);
+      //  getTestMethods(testType);
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1770,19 +1769,40 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 			});
 	}
 
+	function getTestReason(testTypeId)
+     {
+          $.post("/includes/get-test-reason.php", {
+                    testTypeId: testTypeId,
+					testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>'
+               },
+               function(data) {
+                    if (data != "") {
+                         $("#reasonForTesting").html(data);
+                    }
+               });
+     }
+
+     function getTestMethods(testTypeId)
+     {
+          $.post("/includes/get-test-methods.php", {
+                    testTypeId: testTypeId,
+					testMethodId: '<?php echo $genericResultInfo['reason_for_testing']; ?>'
+               },
+               function(data) {
+                    if (data != "") {
+                         $("#testName1").html(data);
+                    }
+               });
+     }
+
 	function addTestRow() {
 		testCounter++;
+		testMethods = $("#testName1").html();
 		let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>
                     <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                    <option value="">-- Select --</option>
-                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                    <option value="RDT-Antibody">RDT-Antibody</option>
-                    <option value="RDT-Antigen">RDT-Antigen</option>
-                    <option value="GeneXpert">GeneXpert</option>
-                    <option value="ELISA">ELISA</option>
-                    <option value="other">Others</option>
+					${testMethods}
                 </select>
                 <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
             </td>
@@ -1798,8 +1818,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
             </td>
         </tr>`;
+		
 		$("#testKitNameTable").append(rowString);
-
+$("#testName"+testCounter).val("");
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,

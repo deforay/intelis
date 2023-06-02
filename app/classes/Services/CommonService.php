@@ -817,6 +817,12 @@ class CommonService
         return $this->db->query($testReasonQry);
     }
 
+    public function getTestMethod($testTypeId)
+    {
+        $testMethodQry = "SELECT * FROM r_generic_test_methods as tm INNER JOIN generic_test_methods_map as map ON map.test_method_id=tm.test_method_id WHERE map.test_type_id=$testTypeId AND tm.test_method_status='active'";
+        return $this->db->query($testMethodQry);
+    }
+
     /**
      * Convert a JSON string to a string that can be used with JSON_SET()
      *
