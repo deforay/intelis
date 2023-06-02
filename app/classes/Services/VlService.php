@@ -544,7 +544,6 @@ class VlService
 
     public function getVlResults($instrumentId = null)
     {
-
         if (!empty($instrumentId)) {
             $this->db->where("(JSON_SEARCH(available_for_instruments, 'all','$instrumentId') IS NOT NULL)");
         }

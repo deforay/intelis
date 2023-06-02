@@ -238,18 +238,16 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
                                                   <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
                                              </div>
-                                             <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                                  <div class="row">
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="">
-                                                                 <label for="labId">VL Testing Hub <span class="mandatory">*</span></label>
-                                                                 <select name="labId" id="labId" class="form-control isRequired" title="Please choose a VL testing hub">
-                                                                      <?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Select --'); ?>
-                                                                 </select>
-                                                            </div>
+                                             <div class="row">
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="">
+                                                            <label for="labId">VL Testing Hub <span class="mandatory">*</span></label>
+                                                            <select name="labId" id="labId" class="form-control isRequired" title="Please choose a VL testing hub">
+                                                                 <?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Select --'); ?>
+                                                            </select>
                                                        </div>
                                                   </div>
-                                             <?php } ?>
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="box box-primary">
@@ -624,7 +622,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-md-4">
                                                                            <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
                                                                            <div class="col-lg-7">
-                                                                                <select name="testingPlatform" id="testingPlatform" class="form-control labSection" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
+                                                                                <select name="testingPlatform" id="testingPlatform" class="form-control labSection" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
                                                                                      <option value="">-- Select --</option>
                                                                                      <?php foreach ($importResult as $mName) { ?>
                                                                                           <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -689,15 +687,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" class="form-control labSection" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
-                                                                                <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 20' || $vlQueryInfo['result'] == '<20') ? 'checked="checked"' : ''; ?>>
-                                                                                &lt; 20<br>
-                                                                                <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check VL Result" <?php echo ($vlQueryInfo['result'] == '< 40' || $vlQueryInfo['result'] == '<40') ? 'checked="checked"' : ''; ?>>
-                                                                                &lt; 40<br>
-                                                                                <input type="checkbox" class="labSection specialResults" name="tnd" value="yes" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected') ? 'checked="checked"' : ''; ?> title="Please check tnd"> Target Not Detected<br>
-                                                                                <input type="checkbox" class="labSection specialResults" name="bdl" value="yes" <?php echo ($vlQueryInfo['result'] == 'Below Detection Level') ? 'checked="checked"' : ''; ?> title="Please check bdl"> Below Detection Level<br>
-                                                                                <input type="checkbox" class="labSection specialResults" name="failed" value="yes" <?php echo ($vlQueryInfo['result'] == 'Failed') ? 'checked="checked"' : ''; ?> title="Please check Failed"> Failed <br>
-                                                                                <input type="checkbox" class="labSection specialResults" name="invalid" value="yes" <?php echo ($vlQueryInfo['result'] == 'Invalid') ? 'checked="checked"' : ''; ?> title="Please check Invalid"> Invalid
+                                                                                <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
+                                                                                <datalist id="possibleVlResults">
+
+                                                                                </datalist>
                                                                            </div>
                                                                       </div>
                                                                  </div>
@@ -727,9 +720,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="row">
 
                                                                       <div class="col-md-4">
-                                                                           <label class="col-lg-5 control-label" for="approvedOn">Approved On </label>
+                                                                           <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
+                                                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
                                                                            </div>
                                                                       </div>
                                                                       <div class="col-md-4">
@@ -824,7 +817,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           result = ($("#vlResult").length) ? $("#vlResult").val() : '';
           //logVal = ($("#vlLog").length)?$("#vlLog").val():'';
 
-          $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
+          $("#vlLog").on('keyup keypress blur change paste', function() {
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
@@ -833,6 +826,34 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                }
           });
      });
+
+     function hivDetectionChange() {
+          
+          var text = $('#testingPlatform').val();
+          if (!text) {
+               $("#vlResult").attr("disabled", true);
+               return;
+          }
+          var str1 = text.split("##");
+          var str = str1[0];
+
+          $(".vlResult, .vlLog").show();
+          $("#noResult").val("");
+          //Get VL results by platform id
+          var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: platformId,
+               },
+               function(data) {
+                    // alert(data);
+                    if (data != "") {
+                         $("#possibleVlResults").html(data);
+                         $("#vlResult").attr("disabled", false);
+                    }
+               });
+
+     }
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
@@ -965,7 +986,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           }
      });
 
-     $("input:radio[name=noResult]").click(function() {
+     $("#noResult").change(function() {
 
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
@@ -976,7 +997,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                $('.vlResult').css('display', 'block');
                $('.rejectionReason').hide();
                $('#rejectionReason').removeClass('isRequired');
-               $('#vlResult').addClass('isRequired');
+               // $('#vlResult').addClass('isRequired');
                // if any of the special results like tnd,bld are selected then remove isRequired from vlResult
                if ($('.specialResults:checkbox:checked').length) {
                     $('#vlResult').removeClass('isRequired');
