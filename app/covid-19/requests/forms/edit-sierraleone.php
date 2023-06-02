@@ -90,7 +90,8 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
-
+$patientProvinceInfo = explode('##',$covid19Info['patient_province']);
+$patientProvince = $patientProvinceInfo[0];
 ?>
 
 
@@ -267,7 +268,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <th scope="row">Case State</th>
                                         <td>
                                             <select class="form-control select2" name="patientProvince" id="patientProvince" title="Please Case State" onchange="getPatientDistrictDetails(this.value);" style="width:100%;">
-                                                <?= $general->generateSelectOptions($provinceInfo, $covid19Info['patient_province'], '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>

@@ -739,7 +739,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV Detection <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection isRequired" title="Please choose HIV detection">
+															<select name="hivDetection" id="hivDetection" class="form-control hivDetection labSection" title="Please choose HIV detection">
 																<option value="">-- Select --</option>
 																<option value="HIV-1 Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Detected</option>
 																<option value="HIV-1 Not Detected" <?php echo (isset($vlQueryInfo['result_value_hiv_detection']) && $vlQueryInfo['result_value_hiv_detection'] == 'HIV-1 Not Detected') ? 'selected="selected"' : ''; ?>>HIV-1 Not Detected</option>
@@ -835,7 +835,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-6 reasonForResultChanges" style="display:none;">
 														<label class="col-lg-6 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span> </label>
 														<div class="col-lg-6">
-															<textarea class="form-control isRequired" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
+															<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
 														</div>
 													</div>
 												</div>
@@ -972,6 +972,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').addClass('isRequired');
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
+			$('#hivDetection').removeClass('isRequired');
 			//$('#approvedBy').addClass('isRequired');
 			//$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
@@ -1061,9 +1062,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
 			$('.hivDetection').prop('disabled', false);
 			$('.hivDetection').show();
+			$('#hivDetection').addClass('isRequired');
 		} else {
 			$('.hivDetection').hide();
 			$("#hivDetection").val("");
+			$('#hivDetection').removeClass('isRequired');
 		}
 
 		//Get VL results by platform id

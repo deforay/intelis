@@ -1033,6 +1033,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').addClass('isRequired');
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
+			$('#hivDetection').removeClass('isRequired');
 			//$('#approvedBy').addClass('isRequired');
 			//$('#approvedOn').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
@@ -1125,6 +1126,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		} else {
 			$('.hivDetection').hide();
 			$("#hivDetection").val("");
+			$('#hivDetection').removeClass('isRequired');
 		}
 
 		//Get VL results by platform id
