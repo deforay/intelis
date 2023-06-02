@@ -291,7 +291,8 @@ try {
                               'testing_platform'             => $_POST['testingPlatform'][$testKey] ?? null,
                               'kit_lot_no'                   => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
                               'kit_expiry_date'              => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                              'result'                       => $_POST['testResult'][$testKey]
+                              'result'                       => $_POST['testResult'][$testKey],
+                              'result_unit'                => $_POST['testResultUnit'][$testKey]
                          );
                          $db->insert('generic_test_results', $covid19TestData);
                     }

@@ -9,6 +9,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $generic = ContainerRegistry::get(GenericTestsService::class);
 $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
+$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 ?>
 <style>
 	.tooltip-inner {
@@ -363,9 +364,9 @@ $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("sy
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
 												<option value="">--Select--</option>
 												<?php
-												foreach ($testResultUnits as $unit) {
+												foreach ($testResultUnits as $key=>$unit) {
 												?>
-													<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+													<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
 												<?php
 												}
 												?>

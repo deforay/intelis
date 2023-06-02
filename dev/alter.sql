@@ -4107,3 +4107,9 @@ ALTER TABLE `r_test_types` ADD `test_category` VARCHAR(256) NULL DEFAULT NULL AF
 
 -- Amit 1-Jun-2023 version 5.1.6
 UPDATE `system_config` SET `value` = '5.1.6' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Jeyabanu 02-06-2023
+
+ALTER TABLE `generic_test_results` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result`;
+ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result`;

@@ -471,12 +471,12 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
 											<option value="">--Select--</option>
 											<?php
-											foreach ($testResultUnits as $unit) {
-											?>
-												<option value="<?php echo $unit['unit_id']; ?>" <?php echo in_array($unit['unit_id'], $testResultUnitId) ? "selected='selected'" : "" ?>><?php echo $unit['unit_name']; ?></option>
-											<?php
-											}
-											?>
+												foreach ($testResultUnits as $key=>$unit) {
+												?>
+													<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+												<?php
+												}
+												?>
 											</select>
 										</div>
 									</div>

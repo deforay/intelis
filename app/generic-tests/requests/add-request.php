@@ -71,6 +71,8 @@ $pdResult = $general->fetchDataFromTable('geographical_divisions');
 /*
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
+$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+
 ?>
 <style>
      .ui_tpicker_second_label {
@@ -596,6 +598,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <th scope="row" class="text-center">Date of Testing</th>
                                                                            <th scope="row" class="text-center">Test Platform/Test Kit</th>
                                                                            <th scope="row" class="text-center">Test Result</th>
+                                                                           <th scope="row" class="text-center">Test Result Unit</th>
                                                                            <th scope="row" class="text-center">Action</th>
                                                                       </tr>
                                                                  </thead>
@@ -626,6 +629,18 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                                <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
                                                                                           </select> -->
                                                                            </td>
+                                                                           <td>
+                                                                           <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                                                                                     <option value="">--Select--</option>
+                                                                                     <?php
+                                                                                          foreach ($testResultUnits as $key=>$unit) {
+                                                                                          ?>
+                                                                                     <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+                                                                                     <?php
+                                                                                          }
+                                                                                     ?>
+                                                                           </select>
+                                                                           </td>
                                                                            <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -634,7 +649,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </tbody>
                                                                  <tfoot id="resultSection">
                                                                       <tr>
-                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br>Result Interpretation</th>
+                                                                           <th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br>Test Result Unit<br><br>Result Interpretation</th>
                                                                            <td id="result-sections">
 
                                                                            </td>
@@ -842,6 +857,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                width: '285px',
                placeholder: "Funding Source"
           });
+        
+
+          
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -1675,6 +1693,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
             <td>
                <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+            </td>
+            <td>
+            <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+					<option value="">--Select--</option>
+					<?php
+						foreach ($testResultUnits as $key=>$unit) {
+						?>
+					<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+					<?php
+						}
+					?>
+			</select>
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
