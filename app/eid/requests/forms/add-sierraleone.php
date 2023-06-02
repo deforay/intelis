@@ -158,7 +158,7 @@ $aResult = $db->query($aQuery);
                                     <tr class="testingPoint" style="display:none;">
                                         <td class="labels"><label for="labTestingPoint">Lab Testing Points <span class="mandatory">*</span></label> </td>
                                         <td>
-                                            <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control isRequired" title="Please select the Lab Testing Points" style="width:100%;">
+                                            <select name="labTestingPoint" id="labTestingPoint" class="select2 form-control" title="Please select the Lab Testing Points" style="width:100%;">
 
                                             </select>
                                         </td>
@@ -785,11 +785,11 @@ $aResult = $db->query($aQuery);
                 },
                 function(data) {
                     if (data != 0) {
-                        $('.testingPoint').show();
+                        $('.testingPoint').css('display', 'block');
                         $("#labTestingPoint").addClass("isRequired");
                         $("#labTestingPoint").html(data);
                     } else {
-                        $('.testingPoint').hide();
+                        $('.testingPoint').css('display', 'none');
                         $("#labTestingPoint").removeClass("isRequired");
                         $("#labTestingPoint").html("");
                     }
