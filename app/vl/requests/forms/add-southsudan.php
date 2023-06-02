@@ -541,13 +541,13 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div> -->
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="vlFocalPerson" class="col-lg-5 control-label labels">VL Focal Person </label>
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name"></select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels">VL Focal Person Phone Number</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
@@ -555,31 +555,24 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" onchange="checkSampleReceviedAtHubDate()" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" onchange="checkSampleReceviedDate()" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
-                                                                      </div>
-                                                                 </div>
-
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="mandatory result-span">*</span></label>
+                                                                 <div class="col-md-6">
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -587,17 +580,19 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected?</label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                           <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="yes">Yes</option>
                                                                                 <option value="no">No</option>
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
@@ -619,13 +614,46 @@ $sFormat = '';
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6 vlResult">
+                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6 vlResult">
+                                                                      <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
+                                                                      <div class="col-lg-7 resultInputContainer">
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
+                                                                           <datalist id="possibleVlResults">
+
+                                                                           </datalist>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="vlLog col-md-6">
+                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label labels">HIV Detection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">
@@ -635,25 +663,8 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
-                                                                      <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
-                                                                           <datalist id="possibleVlResults">
-
-                                                                           </datalist>
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="vlLog col-md-4">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlLog">Viral Load (Log) </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" style="width:100%;" onchange="calculateLogValue(this);" />
-                                                                      </div>
-                                                                 </div>
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
-                                                                      <div class="col-md-4" style="display: none;">
+                                                                      <div class="col-md-6 reasonForFailure" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                            <div class="col-lg-7">
                                                                                 <select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -662,15 +673,10 @@ $sFormat = '';
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <div class="col-md-4 vlResult">
-                                                                      <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
-                                                                      </div>
-                                                                 </div>
                                                             </div>
+                                                            <hr>
                                                             <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
@@ -678,13 +684,15 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="testedBy">Tested By </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
@@ -692,9 +700,7 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by">
@@ -702,16 +708,18 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-2 control-label labels" for="labComments">Lab Tech. Comments </label>
-                                                                      <div class="col-lg-10">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments" style=" width: 90% !important;margin-left: 24px;"></textarea>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label labels" for="labComments">Lab Tech. Comments </label>
+                                                                      <div class="col-lg-7">
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" title="Please enter LabComments"></textarea>
                                                                       </div>
                                                                  </div>
                                                             </div>
