@@ -16,7 +16,6 @@ $vlService = ContainerRegistry::get(VlService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-
 if (isset($_POST['instrumentId'])) {
   $configId = $_POST['instrumentId'];
 }

@@ -88,6 +88,8 @@ class UsersService
                     'vl-failed-results.php'                 => 'vlTestResult.php',
                     'add-vl-art-code-details.php'           => 'vl-art-code-details.php',
                     'edit-vl-art-code-details.php'          => 'vl-art-code-details.php',
+                    'add-vl-results.php'                    => 'vl-art-code-details.php',
+                    'edit-vl-results.php'                   => 'vl-art-code-details.php',
                     'vl-sample-rejection-reasons.php'       => 'vl-art-code-details.php',
                     'add-vl-sample-rejection-reasons.php'   => 'vl-art-code-details.php',
                     'edit-vl-sample-rejection-reasons.php'  => 'vl-art-code-details.php',

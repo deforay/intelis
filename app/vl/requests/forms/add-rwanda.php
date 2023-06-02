@@ -88,7 +88,6 @@ $sFormat = '';
      </section>
      <!-- Main content -->
      <section class="content">
-
           <div class="box box-default">
                <div class="box-header with-border">
                     <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
@@ -173,18 +172,16 @@ $sFormat = '';
                                              <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                             <div class="row">
-                                                  <div class="col-xs-3 col-md-3">
-                                                       <div class="">
-                                                            <label for="labId">VL Testing Hub <span class="mandatory">*</span></label>
-                                                            <select name="labId" id="labId" class="form-control isRequired" title="Please choose a VL testing hub" style="width:100%;">
-                                                                 <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                            </select>
-                                                       </div>
+                                        <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="">
+                                                       <label for="labId">VL Testing Hub <span class="mandatory">*</span></label>
+                                                       <select name="labId" id="labId" class="form-control isRequired" title="Please choose a VL testing hub" style="width:100%;">
+                                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                                       </select>
                                                   </div>
                                              </div>
-                                        <?php } ?>
+                                        </div>
                                    </div>
                               </div>
                               <div class="box box-primary">
@@ -471,16 +468,30 @@ $sFormat = '';
                                                        <?php }  ?>
                                                        <hr>
                                                        <div class="row">
-                                                            <div class="col-md-4">
+                                                            <div class="col-md-6">
                                                                  <label for="reqClinician" class="col-lg-5 control-label">Request Clinician <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinician" name="reqClinician" placeholder="Request Clinician name" title="Please enter request clinician" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-4">
+                                                            <div class="col-md-6">
                                                                  <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row">
+                                                            <div class="col-md-6">
+                                                                 <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="Shipper Name" title="Please enter shipper name" />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" />
                                                                  </div>
                                                             </div>
                                                             <!-- <div class="col-md-4">
@@ -489,20 +500,6 @@ $sFormat = '';
                                                                       <input type="text" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="requestDate" name="requestDate" placeholder="Request Date" title="Please select request date" />
                                                                  </div>
                                                             </div>-->
-                                                       </div>
-                                                       <div class="row">
-                                                            <div class="col-md-4">
-                                                                 <label for="vlFocalPerson" class="col-lg-5 control-label">Shipper Name<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPerson" name="vlFocalPerson" placeholder="Shipper Name" title="Please enter shipper name" />
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                 <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" />
-                                                                 </div>
-                                                            </div>
                                                             <!-- <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label" for="emailHf">Email for HF</label>
                                                                  <div class="col-lg-7">
@@ -519,47 +516,40 @@ $sFormat = '';
                                                        </div>
                                                        <div class="box-body">
                                                             <div class="row">
-                                                                 <!--<div class="col-md-4">
-                                                                      <label for="labId" class="col-lg-5 control-label">Lab Name </label>
-                                                                      <div class="col-lg-7">
-                                                                           <select name="labId" id="labId" class="form-control" title="Please choose lab">
-                                                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>-->
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
-                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
                                                                                 <?php } ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
-
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" <?php echo $labFieldDisabled; ?> />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="noResult">Sample Rejection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
@@ -570,7 +560,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
 
-                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
@@ -592,10 +582,13 @@ $sFormat = '';
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 vlResult">
+                                                                 <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" />
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled/>
+                                                                           <datalist id="possibleVlResults">
+
+                                                                           </datalist>
                                                                            <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
                                                                            &lt; 20<br>
                                                                            <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
@@ -608,21 +601,27 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-
-                                                                 <div class="col-md-4 vlResult">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlLog">Viral Load (Log) </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
-
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
@@ -631,15 +630,15 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
 
-                                                            </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label" for="approvedOn">Approved On </label>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
+                                                                           <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
@@ -650,7 +649,7 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
                                                                       <div class="col-lg-7">
                                                                            <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>></textarea>
@@ -766,7 +765,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           });
 
-          $("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
+          $("#vlLog").on('keyup keypress blur change paste', function() {
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
@@ -795,6 +794,34 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ?>
           // BARCODESTUFF END
      });
+     
+     function hivDetectionChange() {
+          
+          var text = $('#testingPlatform').val();
+          if (!text) {
+               $("#vlResult").attr("disabled", true);
+               return;
+          }
+          var str1 = text.split("##");
+          var str = str1[0];
+
+          $(".vlResult, .vlLog").show();
+          $("#noResult").val("");
+          //Get VL results by platform id
+          var platformId = str1[3];
+          $("#possibleVlResults").html('');
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: platformId,
+               },
+               function(data) {
+                    // alert(data);
+                    if (data != "") {
+                         $("#possibleVlResults").html(data);
+                         $("#vlResult").attr("disabled", false);
+                    }
+               });
+
+     }
 
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
@@ -957,7 +984,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $("input:radio[name=noResult]").click(function() {
+     $("#noResult").change(function() {
+          console.log(this.value);
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
                $('.vlResult').css('display', 'none');
