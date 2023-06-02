@@ -584,7 +584,7 @@ $sFormat = '';
                                                                  </div>
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
-                                                                      <div class="col-lg-7">
+                                                                      <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled/>
                                                                            <datalist id="possibleVlResults">
 

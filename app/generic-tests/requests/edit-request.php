@@ -893,7 +893,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													<tfoot id="resultSection">
 														<tr>
 															<th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br>Result Interpretation</th>
-															<td id="result-sections">
+															<td id="result-sections" class="resultInputContainer">
 
 															</td>
 														</tr>
