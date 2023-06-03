@@ -243,6 +243,7 @@ try {
         'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
         'rejection_on'                          => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result'                                => $_POST['result'] ?: null,
+        'result_unit'                           => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? $_POST['finalTestResultUnit'] : null,
         'final_result_interpretation'           => $interpretationResult,
         'result_reviewed_by'                    => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
         'result_reviewed_datetime'              => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
@@ -323,7 +324,8 @@ try {
                         'testing_platform'          => $_POST['testingPlatform'][$testKey] ?? null,
                         'kit_lot_no'                => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
                         'kit_expiry_date'           => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                        'result'                    => $_POST['testResult'][$testKey]
+                        'result'                    => $_POST['testResult'][$testKey],
+                        'result_unit'                => $_POST['testResultUnit'][$testKey]
                     );
                     $db->insert($testTableName, $covid19TestData);
                 }

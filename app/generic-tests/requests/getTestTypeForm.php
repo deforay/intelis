@@ -16,6 +16,8 @@ if(isset($_POST['resultInterpretation']) && $_POST['resultInterpretation']!="")
 {
     $resultInterpretation = $_POST['resultInterpretation'];
 }
+$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQuery($testTypeQuery, [$_POST['testType']]);
 $testAttribute = json_decode($testTypeResult[0]['test_form_config'], true);
@@ -169,6 +171,15 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
             }
         }
     }
+    $resultSection .= '<br> <select class="form-control resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
+   
+        foreach ($testResultUnits as $key=>$unit) {
+      
+            $resultSection .= '<option value="'.$key.'">'.$unit.'</option>';
+    
+        }
+   
+        $resultSection .= '</select>';
     $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
     $resultForm[] = $resultSection;
