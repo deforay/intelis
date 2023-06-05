@@ -574,7 +574,7 @@ foreach ($rejectionTypeResult as $type) {
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
