@@ -31,6 +31,11 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                unset($headings[$key]);
           }
      }
+     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+          if (($key = array_search("Patient Name", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
 
      $colNo = 1;
 
@@ -98,7 +103,9 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+               $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          }
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];

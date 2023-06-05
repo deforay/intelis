@@ -77,11 +77,11 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -94,7 +94,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -121,7 +121,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($fResult as $name) {
@@ -137,7 +137,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:220px;">
+														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="yes"><?php echo _("Completed"); ?></option>
 															<option value="no"><?php echo _("Not Completed"); ?></option>
@@ -146,7 +146,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="male"><?php echo _("Male"); ?></option>
 															<option value="female"><?php echo _("Female"); ?></option>
@@ -168,6 +168,13 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="yes"><?php echo _("Yes"); ?></option>
+															<option value="no"><?php echo _("No"); ?></option>
+														</select>
+													</td>
+													<td><strong><?php echo _("Export with Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes"><?php echo _("Yes"); ?></option>
 															<option value="no"><?php echo _("No"); ?></option>
 														</select>
@@ -211,11 +218,11 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -228,7 +235,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -255,7 +262,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($fResult as $name) {
@@ -271,7 +278,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="male"><?php echo _("Male"); ?></option>
 															<option value="female"><?php echo _("Female"); ?></option>
@@ -298,7 +305,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong><?php echo _("Rejection Reason"); ?>&nbsp;:</strong></td>
-													<td colspan="2">
+													<td colspan="3">
 														<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
@@ -314,6 +321,13 @@ $state = $geolocationService->getProvinces("yes");
 															if ($sarr['sc_user_type'] != 'vluser') {  ?>
 																<option value="other">Other (Please Specify) </option>
 															<?php } ?>
+														</select>
+													</td>
+													<td><strong><?php echo _("Export with Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="patientRejectedInfo" id="patientRejectedInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+															<option value="yes"><?php echo _("Yes"); ?></option>
+															<option value="no"><?php echo _("No"); ?></option>
 														</select>
 													</td>
 												</tr>
@@ -351,11 +365,11 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -368,7 +382,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -395,7 +409,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<?php
 															foreach ($fResult as $name) {
@@ -411,7 +425,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="male"><?php echo _("Male"); ?></option>
 															<option value="female"><?php echo _("Female"); ?></option>
@@ -430,6 +444,15 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control" title="<?php echo _('Please choose option'); ?>">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
+															<option value="yes"><?php echo _("Yes"); ?></option>
+															<option value="no"><?php echo _("No"); ?></option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><strong><?php echo _("Export with Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="patientNtAvailInfo" id="patientNtAvailInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes"><?php echo _("Yes"); ?></option>
 															<option value="no"><?php echo _("No"); ?></option>
 														</select>
@@ -469,11 +492,11 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" />
 													</td>
 													<td>&nbsp;<strong><?php echo _("Fields"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields'); ?>" style="width:220px;">
+														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields'); ?>" style="width:170px;">
 															<option value=""> <?php echo _("-- Select --"); ?> </option>
 															<option value="sample_code"><?php echo _("Sample Code"); ?></option>
 															<option value="sample_collection_date"><?php echo _("Sample Collection Date"); ?></option>
@@ -486,6 +509,13 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="sample_type"><?php echo _("Sample Type"); ?></option>
 															<option value="result"><?php echo _("Result"); ?></option>
 															<option value="result_status"><?php echo _("Status"); ?></option>
+														</select>
+													</td>
+													<td><strong><?php echo _("Export with Patient Name"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="patientVlQualityInfo" id="patientVlQualityInfo" class="form-control" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+															<option value="yes"><?php echo _("Yes"); ?></option>
+															<option value="no"><?php echo _("No"); ?></option>
 														</select>
 													</td>
 												</tr>
@@ -545,15 +575,19 @@ $state = $geolocationService->getProvinces("yes");
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState").select2({
+			width: '170px',
 			placeholder: "<?php echo _("Select Province"); ?>"
 		});
 		$("#district,#rjtDistrict,#noResultDistrict").select2({
+			width: '170px',
 			placeholder: "<?php echo _("Select District"); ?>"
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
+			width: '170px',
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
+			width: '170px',
 			placeholder: "<?php echo _("Select Fields"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
@@ -942,7 +976,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 2 : 1; ?>, "desc"]
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 2 : 2; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -1011,6 +1045,7 @@ $state = $geolocationService->getProvinces("yes");
 				Sample_Type: $("#hvlSampleType  option:selected").text(),
 				Facility_Name: $("#hvlFacilityName  option:selected").text(),
 				Gender: $("#hvlGender  option:selected").text(),
+				patientInfo: $("#patientInfo  option:selected").val(),
 				Pregnant: $("#hvlPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#hvlPatientBreastfeeding  option:selected").text(),
 				markAsComplete: markAsComplete
@@ -1039,6 +1074,7 @@ $state = $geolocationService->getProvinces("yes");
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
 				Gender: $("#rjtGender  option:selected").text(),
+				patientInfo: $("#patientRejectedInfo  option:selected").val(),
 				Pregnant: $("#rjtPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#rjtPatientBreastfeeding  option:selected").text(),
 				RejectionReason: $("#rejectionReason  option:selected").val()
@@ -1065,6 +1101,7 @@ $state = $geolocationService->getProvinces("yes");
 				Sample_Type: $("#noResultSampleType  option:selected").text(),
 				Facility_Name: $("#noResultFacilityName  option:selected").text(),
 				Gender: $("#noResultGender  option:selected").text(),
+				patientInfo: $("#patientNtAvailInfo  option:selected").val(),
 				Pregnant: $("#noResultPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#noResultPatientBreastfeeding  option:selected").text()
 			},
@@ -1086,7 +1123,9 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		$.post("/vl/program-management/vlDataQualityExportInExcel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
-				Field_Name: $("#formField  option:selected").text()
+				Field_Name: $("#formField  option:selected").text(),
+				patientInfo: $("#patientVlQualityInfo  option:selected").val(),
+				
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {

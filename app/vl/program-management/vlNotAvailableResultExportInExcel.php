@@ -39,7 +39,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             unset($headings[$key]);
         }
     }
-
+    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+        if (($key = array_search("Patient Name", $headings)) !== false) {
+             unset($headings[$key]);
+        }
+   }
     $colNo = 1;
 
     $styleArray = array(
@@ -119,7 +123,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         }
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['patient_art_no'];
-        $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+            $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+        }
         $row[] = $sampleCollectionDate;
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);

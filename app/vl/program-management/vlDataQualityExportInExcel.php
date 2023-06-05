@@ -35,6 +35,11 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
                unset($headings[$key]);
           }
      }
+     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+          if (($key = array_search("Patient's Name", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
 
      $colNo = 1;
 
@@ -109,7 +114,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+               $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
