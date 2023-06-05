@@ -16,7 +16,7 @@ if(isset($_POST['resultInterpretation']) && $_POST['resultInterpretation']!="")
 {
     $resultInterpretation = $_POST['resultInterpretation'];
 }
-$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$testResultUnits = $general->getTestResultUnit($_POST['testType']);
 
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQuery($testTypeQuery, [$_POST['testType']]);
@@ -173,9 +173,9 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
     }
     $resultSection .= '<br> <select class="form-control resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
    
-        foreach ($testResultUnits as $key=>$unit) {
+        foreach ($testResultUnits as $unit) {
       
-            $resultSection .= '<option value="'.$key.'">'.$unit.'</option>';
+            $resultSection .= '<option value="'.$unit['unit_id'].'">'.$unit['unit_name'].'</option>';
     
         }
    

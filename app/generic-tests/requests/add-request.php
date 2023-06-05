@@ -1556,9 +1556,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function getTestTypeForm() {
           var testType = $("#testType").val();
-          getSampleTypeList(testType);
-          getTestReason(testType);
-          getTestMethods(testType);
+          getTestTypeConfigList(testType);
           if (testType != "") {
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1641,37 +1639,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
      }
 
-     function getSampleTypeList(testTypeId) {
-          $.post("/includes/get-sample-type.php", {
-                    testTypeId: testTypeId,
+     function getTestTypeConfigList(testTypeId) {
+         
+               $.post("/includes/get-test-type-config.php", {
+                    testTypeId: testTypeId
                },
                function(data) {
+                    Obj = $.parseJSON(data);
                     if (data != "") {
-                         $("#specimenType").html(data);
-                    }
-               });
-     }
-
-     function getTestReason(testTypeId)
-     {
-          $.post("/includes/get-test-reason.php", {
-                    testTypeId: testTypeId,
-               },
-               function(data) {
-                    if (data != "") {
-                         $("#reasonForTesting").html(data);
-                    }
-               });
-     }
-
-     function getTestMethods(testTypeId)
-     {
-          $.post("/includes/get-test-methods.php", {
-                    testTypeId: testTypeId,
-               },
-               function(data) {
-                    if (data != "") {
-                         $("#testName1").html(data);
+                         $("#specimenType").html(Obj['sampleTypes']);
+                         $("#reasonForTesting").html(Obj['testReasons']);
+                         $("#testName1").html(Obj['testMethods']);
+                         $("#testResultUnit1").html(Obj['testResultUnits']);
+                         $("#finalTestResultUnit").html(Obj['testResultUnits']);
+                         
                     }
                });
      }

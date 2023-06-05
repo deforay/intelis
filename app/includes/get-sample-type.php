@@ -14,18 +14,7 @@ if (empty($_POST)) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
-if (isset($_POST['testTypeId'])) {
-    $testTypeId = $_POST['testTypeId'];
-    $sampleTypeList = $general->getSampleType($testTypeId);
-    if (!empty($sampleTypeList)) { ?>
-        <option value=""><?php echo _("-- Select--"); ?></option>
-        <?php foreach ($sampleTypeList as $sample) { ?>
-            <option value="<?php echo $sample['sample_type_id']; ?>" <?php echo (isset($_POST['sampleTypeId']) && !empty($_POST['sampleTypeId']) && $_POST['sampleTypeId'] == $sample['sample_type_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_type_name']; ?></option>
-        <?php }
-    } else { ?>
-        <option value=""><?php echo _("-- Select--"); ?></option>
-    <?php }
-} else {
+
     $db = $db->where('facility_id', $_POST['facilityId']);
     $facilityDetails = $db->getOne('facility_details', array('facility_attributes'));
     $facilityAttributes = json_decode($facilityDetails['facility_attributes'], true);
@@ -45,6 +34,6 @@ if (isset($_POST['testTypeId'])) {
         <?php } ?>
     <?php } else { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
-<?php }
+<?php 
 }
 ?>

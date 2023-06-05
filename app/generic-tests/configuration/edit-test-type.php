@@ -27,13 +27,15 @@ $categoryInfo = $general->getDataByTableAndFields("r_generic_test_categories", a
 
 $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
 $testReasonInfo = $general->getDataByTableAndFields("r_generic_test_reasons", array("test_reason_id", "test_reason"), true, "test_reason_status='active'");
+$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+
 $testFailureReasonInfo = $general->getDataByTableAndFields("r_generic_test_failure_reasons", array("test_failure_reason_id", "test_failure_reason"), true, "test_failure_reason_status='active'");
 $sampleRejectionReasonInfo = $general->getDataByTableAndFields("r_generic_sample_rejection_reasons", array("rejection_reason_id", "rejection_reason_name"), true, "rejection_reason_status='active'");
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
-$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 $testSampleId = $general->getDataByTableAndFields("generic_test_sample_type_map", array("sample_type_id", "sample_type_id"), true, "test_type_id=$id");
 
 $testReasonId = $general->getDataByTableAndFields("generic_test_reason_map", array("test_reason_id", "test_reason_id"), true, "test_type_id=$id");
+
 $testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_reason_map", array("test_failure_reason_id", "test_failure_reason_id"), true, "test_type_id=$id");
 $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
@@ -469,14 +471,16 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
 										<div class="col-lg-7">
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
-											<option value="">--Select--</option>
+											<!--<option value="">--Select--</option>
 											<?php
 												foreach ($testResultUnits as $key=>$unit) {
 												?>
-													<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+													<option value="<?php echo $key; ?>" <?php //echo $testResultAttribute[''] ?>><?php echo $unit; ?></option>
 												<?php
 												}
-												?>
+												?>-->
+										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, '-- Select --') ?>
+
 											</select>
 										</div>
 									</div>
