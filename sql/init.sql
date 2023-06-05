@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 24, 2023 at 04:30 PM
+-- Generation Time: Jun 03, 2023 at 11:33 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `vlsm-init`
+-- Database: `vlsm`
 --
 
 -- --------------------------------------------------------
@@ -2183,6 +2183,18 @@ CREATE TABLE `generic_test_failure_reason_map` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `generic_test_methods_map`
+--
+
+CREATE TABLE `generic_test_methods_map` (
+  `map_id` int(11) NOT NULL,
+  `test_method_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `generic_test_reason_map`
 --
 
@@ -2210,6 +2222,18 @@ CREATE TABLE `generic_test_results` (
   `kit_expiry_date` date DEFAULT NULL,
   `result` varchar(500) NOT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `generic_test_result_units_map`
+--
+
+CREATE TABLE `generic_test_result_units_map` (
+  `map_id` int(11) NOT NULL,
+  `unit_id` int(11) NOT NULL,
+  `test_type_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2883,7 +2907,18 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (284, 'generic-management', 'generic-monthly-threshold-report.php', 'Monthly Threshold Report'),
 (297, 'generic-test-reference', 'generic-test-failure-reason.php', 'Manage Test Failure Reason'),
 (298, 'generic-test-reference', 'generic-add-test-failure-reason.php', 'Add New Test Failure Reason'),
-(299, 'generic-test-reference', 'generic-edit-test-failure-reason.php', 'Edit Test Failure Reason');
+(299, 'generic-test-reference', 'generic-edit-test-failure-reason.php', 'Edit Test Failure Reason'),
+(300, 'vl-reference', 'add-vl-results.php', 'Add VL Result Types'),
+(301, 'vl-reference', 'edit-vl-results.php', 'Edit VL Result Types'),
+(302, 'generic-test-reference', 'generic-test-methods.php', 'Manage Test Methods'),
+(303, 'generic-test-reference', 'generic-add-test-methods.php', 'Add Test Method'),
+(304, 'generic-test-reference', 'generic-edit-test-methods.php', 'Edit Test Method'),
+(305, 'generic-test-reference', 'generic-test-categories.php', 'Manage Test Categories'),
+(306, 'generic-test-reference', 'generic-add-test-categories.php', 'Add Test Category'),
+(307, 'generic-test-reference', 'generic-edit-test-categories.php', 'Edit Test Category'),
+(308, 'generic-test-reference', 'generic-test-result-units.php', 'Manage Test Result Units'),
+(309, 'generic-test-reference', 'generic-add-test-result-units.php', 'Add Test Result Units'),
+(310, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units');
 
 -- --------------------------------------------------------
 
@@ -3061,8 +3096,8 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`role_id`, `role_name`, `role_code`, `status`, `access_type`, `landing_page`) VALUES
 (1, 'Admin', 'AD', 'active', 'testing-lab', '/dashboard/index.php'),
 (2, 'Remote Order', 'REMOTEORDER', 'active', 'collection-site', '/dashboard/index.php'),
-(3, 'Lab Technician', 'LABTECH', 'active', NULL, ''),
-(7, 'API User', 'API', 'active', 'testing-lab', NULL);
+(3, 'Lab Technician', 'LABTECH', 'active', NULL, '/dashboard/index.php'),
+(4, 'API User', 'API', 'active', 'testing-lab', NULL);
 
 -- --------------------------------------------------------
 
@@ -3777,9 +3812,9 @@ CREATE TABLE `r_eid_results` (
 --
 
 INSERT INTO `r_eid_results` (`result_id`, `result`, `status`, `updated_datetime`, `data_sync`) VALUES
-('1', 'Indeterminate', 'active', NULL, 0),
-('2', 'Negative', 'active', NULL, 0),
-('3', 'Positive', 'active', NULL, 0);
+('indeterminate', 'Indeterminate', 'active', NULL, 0),
+('negative', 'Negative', 'active', NULL, 0),
+('positive', 'Positive', 'active', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -3950,6 +3985,19 @@ CREATE TABLE `r_generic_symptoms` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `r_generic_test_categories`
+--
+
+CREATE TABLE `r_generic_test_categories` (
+  `test_category_id` int(11) NOT NULL,
+  `test_category_name` varchar(256) DEFAULT NULL,
+  `test_category_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `r_generic_test_failure_reasons`
 --
 
@@ -3965,6 +4013,19 @@ CREATE TABLE `r_generic_test_failure_reasons` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `r_generic_test_methods`
+--
+
+CREATE TABLE `r_generic_test_methods` (
+  `test_method_id` int(11) NOT NULL,
+  `test_method_name` varchar(256) DEFAULT NULL,
+  `test_method_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `r_generic_test_reasons`
 --
 
@@ -3974,6 +4035,19 @@ CREATE TABLE `r_generic_test_reasons` (
   `test_reason` varchar(256) DEFAULT NULL,
   `test_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `r_generic_test_result_units`
+--
+
+CREATE TABLE `r_generic_test_result_units` (
+  `unit_id` int(11) NOT NULL,
+  `unit_name` varchar(256) DEFAULT NULL,
+  `unit_status` varchar(256) DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -4307,6 +4381,7 @@ CREATE TABLE `r_test_types` (
   `test_generic_name` varchar(255) DEFAULT NULL,
   `test_short_code` varchar(255) DEFAULT NULL,
   `test_loinc_code` varchar(255) DEFAULT NULL,
+  `test_category` varchar(256) DEFAULT NULL,
   `test_form_config` text,
   `test_results_config` text,
   `test_status` varchar(100) DEFAULT NULL,
@@ -4575,7 +4650,7 @@ CREATE TABLE `system_config` (
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 ('Testing Lab ID', 'sc_testing_lab_id', ''),
 ('User Type', 'sc_user_type', 'vluser'),
-('Version', 'sc_version', '5.1.5'),
+('Version', 'sc_version', '5.1.6'),
 ('Email Id', 'sup_email', NULL),
 ('Password', 'sup_password', NULL);
 
@@ -5079,6 +5154,14 @@ ALTER TABLE `generic_test_failure_reason_map`
   ADD KEY `test_reason_id` (`test_failure_reason_id`);
 
 --
+-- Indexes for table `generic_test_methods_map`
+--
+ALTER TABLE `generic_test_methods_map`
+  ADD PRIMARY KEY (`map_id`),
+  ADD KEY `test_type_id` (`test_type_id`),
+  ADD KEY `test_method_id` (`test_method_id`);
+
+--
 -- Indexes for table `generic_test_reason_map`
 --
 ALTER TABLE `generic_test_reason_map`
@@ -5092,6 +5175,14 @@ ALTER TABLE `generic_test_reason_map`
 ALTER TABLE `generic_test_results`
   ADD PRIMARY KEY (`test_id`),
   ADD KEY `generic_id` (`generic_id`);
+
+--
+-- Indexes for table `generic_test_result_units_map`
+--
+ALTER TABLE `generic_test_result_units_map`
+  ADD PRIMARY KEY (`map_id`),
+  ADD KEY `test_type_id` (`test_type_id`),
+  ADD KEY `unit_id` (`unit_id`);
 
 --
 -- Indexes for table `generic_test_sample_type_map`
@@ -5374,10 +5465,24 @@ ALTER TABLE `r_generic_symptoms`
   ADD UNIQUE KEY `symptom_name` (`symptom_name`);
 
 --
+-- Indexes for table `r_generic_test_categories`
+--
+ALTER TABLE `r_generic_test_categories`
+  ADD PRIMARY KEY (`test_category_id`),
+  ADD UNIQUE KEY `test_category_name` (`test_category_name`);
+
+--
 -- Indexes for table `r_generic_test_failure_reasons`
 --
 ALTER TABLE `r_generic_test_failure_reasons`
   ADD PRIMARY KEY (`test_failure_reason_id`);
+
+--
+-- Indexes for table `r_generic_test_methods`
+--
+ALTER TABLE `r_generic_test_methods`
+  ADD PRIMARY KEY (`test_method_id`),
+  ADD UNIQUE KEY `test_method_name` (`test_method_name`);
 
 --
 -- Indexes for table `r_generic_test_reasons`
@@ -5386,6 +5491,12 @@ ALTER TABLE `r_generic_test_reasons`
   ADD PRIMARY KEY (`test_reason_id`),
   ADD UNIQUE KEY `test_reason_code` (`test_reason_code`),
   ADD UNIQUE KEY `test_reason` (`test_reason`);
+
+--
+-- Indexes for table `r_generic_test_result_units`
+--
+ALTER TABLE `r_generic_test_result_units`
+  ADD PRIMARY KEY (`unit_id`);
 
 --
 -- Indexes for table `r_hepatitis_comorbidities`
@@ -5751,6 +5862,12 @@ ALTER TABLE `generic_test_failure_reason_map`
   MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `generic_test_methods_map`
+--
+ALTER TABLE `generic_test_methods_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `generic_test_reason_map`
 --
 ALTER TABLE `generic_test_reason_map`
@@ -5761,6 +5878,12 @@ ALTER TABLE `generic_test_reason_map`
 --
 ALTER TABLE `generic_test_results`
   MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `generic_test_result_units_map`
+--
+ALTER TABLE `generic_test_result_units_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_sample_type_map`
@@ -5838,7 +5961,7 @@ ALTER TABLE `patients`
 -- AUTO_INCREMENT for table `privileges`
 --
 ALTER TABLE `privileges`
-  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300;
+  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
 
 --
 -- AUTO_INCREMENT for table `province_details`
@@ -5874,7 +5997,7 @@ ALTER TABLE `result_import_stats`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `roles_privileges_map`
@@ -5952,7 +6075,7 @@ ALTER TABLE `r_funding_sources`
 -- AUTO_INCREMENT for table `r_generic_sample_rejection_reasons`
 --
 ALTER TABLE `r_generic_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_sample_types`
@@ -5967,16 +6090,34 @@ ALTER TABLE `r_generic_symptoms`
   MODIFY `symptom_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `r_generic_test_categories`
+--
+ALTER TABLE `r_generic_test_categories`
+  MODIFY `test_category_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `r_generic_test_failure_reasons`
 --
 ALTER TABLE `r_generic_test_failure_reasons`
   MODIFY `test_failure_reason_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `r_generic_test_methods`
+--
+ALTER TABLE `r_generic_test_methods`
+  MODIFY `test_method_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `r_generic_test_reasons`
 --
 ALTER TABLE `r_generic_test_reasons`
   MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `r_generic_test_result_units`
+--
+ALTER TABLE `r_generic_test_result_units`
+  MODIFY `unit_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_comorbidities`
