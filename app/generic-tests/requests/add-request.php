@@ -503,7 +503,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        <div class="col-md-6">
                                                             <label for="testPlatform" class="col-lg-5 control-label labels"> Testing Platform <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
-                                                                 <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional" title="Please choose Testing Platform">
+                                                                 <select name="testPlatform" id="testPlatform" class="form-control result-optional" title="Please choose Testing Platform">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($importResult as $mName) { ?>
                                                                            <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
@@ -514,7 +514,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
-                                                                 <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                 <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
                                                                       <option value="">-- Select --</option>
                                                                       <option value="yes">Yes</option>
                                                                       <option value="no">No</option>
@@ -555,13 +555,13 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control isRequired result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
+                                                                 <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
-                                                                 <select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
+                                                                 <select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="Please choose reason for testing">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($testReason as $treason) { ?>
                                                                            <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords($treason['test_reason']); ?></option>
@@ -630,16 +630,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                           </select> -->
                                                                            </td>
                                                                            <td>
-                                                                           <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                                                                                <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
-                                                                                     <?php
-                                                                                          foreach ($testResultUnits as $key=>$unit) {
-                                                                                          ?>
+                                                                                     <?php foreach ($testResultUnits as $key=>$unit) { ?>
                                                                                      <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
-                                                                                     <?php
-                                                                                          }
-                                                                                     ?>
-                                                                           </select>
+                                                                                     <?php } ?>
+                                                                                </select>
                                                                            </td>
                                                                            <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -650,7 +646,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <tfoot id="resultSection">
                                                                       <tr>
                                                                            <th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br>Test Result Unit<br><br>Result Interpretation</th>
-                                                                           <td id="result-sections">
+                                                                           <td id="result-sections" class="resultInputContainer">
 
                                                                            </td>
                                                                       </tr>

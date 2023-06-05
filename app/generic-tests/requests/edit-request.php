@@ -699,7 +699,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 												<label for="testPlatform" class="col-lg-5 control-label"> Testing
 													Platform <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
+													<select name="testPlatform" id="testPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform">
 														<option value="">-- Select --</option>
 														<?php foreach ($importResult as $mName) { ?>
 															<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($genericResultInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>>
@@ -712,7 +712,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 												<label class="col-lg-5 control-label" for="noResult">Sample Rejection
 													<span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<select name="noResult" id="noResult" class="form-control isRequired labSection" title="Please check if sample is rejected or not">
+													<select name="noResult" id="noResult" class="form-control labSection" title="Please check if sample is rejected or not">
 														<option value="">-- Select --</option>
 														<option value="yes" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
 															Yes</option>
@@ -760,13 +760,13 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+													<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 												</div>
 											</div>
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label labels" for="reasonForTesting">Reason For Testing <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<select name="reasonForTesting" id="reasonForTesting" class="form-control isRequired result-optional" title="Please choose reason for testing">
+													<select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="Please choose reason for testing">
 														<option value="">-- Select --</option>
 														<?php foreach ($testReason as $treason) { ?>
 															<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
@@ -922,8 +922,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 														<tr>
 														<th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br>Test Result Unit<br><br>Result Interpretation</th>
 															<td id="result-sections" class="resultInputContainer">
-
-                                                                           </td>
+																
+															</td>
 														</tr>
 													</tfoot>
 												</table>
