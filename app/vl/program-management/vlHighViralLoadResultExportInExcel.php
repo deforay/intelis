@@ -30,6 +30,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      if ($sarr['sc_user_type'] == 'standalone') {
           $headings = array('Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
+     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+          if (($key = array_search("Patient's Name", $headings)) !== false) {
+               unset($headings[$key]);
+          }
+     }
 
      $colNo = 1;
 
@@ -136,7 +141,9 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+               $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          }
           $row[] = $aRow['patient_mobile_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
