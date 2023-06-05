@@ -1,8 +1,13 @@
 <?php
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 $testTypeForm = [];
 if (isset($_POST['testTypeForm']) && !empty($_POST['testTypeForm'])) {
     $testTypeForm = json_decode(base64_decode($_POST['testTypeForm']), true);
@@ -16,7 +21,7 @@ if(isset($_POST['resultInterpretation']) && $_POST['resultInterpretation']!="")
 {
     $resultInterpretation = $_POST['resultInterpretation'];
 }
-$testResultUnits = $general->getTestResultUnit($_POST['testType']);
+$testResultUnits = $genericTestsService->getTestResultUnit($_POST['testType']);
 
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQuery($testTypeQuery, [$_POST['testType']]);
@@ -172,10 +177,11 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
         }
     }
     $resultSection .= '<br> <select class="form-control resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
-   
+    $selected ="";
         foreach ($testResultUnits as $unit) {
-      
-            $resultSection .= '<option value="'.$unit['unit_id'].'">'.$unit['unit_name'].'</option>';
+        if(isset($_POST['resultUnit'])==$unit['unit_id'])
+            $selected = "selected='selected'";
+            $resultSection .= '<option value="'.$unit['unit_id'].'" '.$selected.'>'.$unit['unit_name'].'</option>';
     
         }
    

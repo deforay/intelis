@@ -160,7 +160,7 @@ foreach ($testPlatformResult as $machine) {
 				<tr>
 					<th scope="col"><?php echo _("Positions"); ?></th>
 					<td>
-						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
+						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>" style="width:280px;">
 							<option value="numeric"><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
 						</select>

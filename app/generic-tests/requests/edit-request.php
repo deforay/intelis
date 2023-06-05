@@ -213,9 +213,9 @@ if (!empty($patientFullName)) {
 } else {
 	$patientFullName = '';
 }
-$testMethods = $general->getTestMethod($genericResultInfo['test_type']);
-$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
-
+$testMethods = $genericTestsService->getTestMethod($genericResultInfo['test_type']);
+//$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 //echo '<pre>'; print_r($testMethods); die;
 ?>
 <style>
@@ -817,6 +817,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 														<?php
 														if (isset($genericTestInfo) && !empty($genericTestInfo)) {
 															$kitShow = false;
+															//echo '<pre>'; print_r($genericTestInfo); die;
 															foreach ($genericTestInfo as $indexKey => $rows) { ?>
 																<tr>
 																	<td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>">
@@ -855,12 +856,12 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
 																	<td>
-																	<select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																	<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
                                                                                      <?php
-                                                                                          foreach ($testResultUnits as $key=>$unit) {
+                                                                                          foreach ($testResultUnits as $unit) {
                                                                                           ?>
-                                                                                     <option value="<?php echo $key; ?>" <?php echo (isset($rows['result_unit']) && $rows['result_unit']==$key) ? "selected='selected'" : ""; ?>><?php echo $unit; ?></option>
+                                                                                     <option value="<?php echo $unit['unit_id']; ?>" <?php echo (isset($rows['result_unit']) && $rows['result_unit']==$unit['unit_id']) ? "selected='selected'" : ""; ?>><?php echo $unit['unit_name']; ?></option>
                                                                                      <?php
                                                                                           }
                                                                                      ?>
@@ -882,7 +883,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																			foreach($testMethods as $methods)
 																			{
 																				?>
-																			<option value="<?php echo $methods['test_method_id']; ?>"><?php echo $methods['test_method_name']; ?></option>
+																			<option value="<?php echo $methods['test_method_id']; ?>" ><?php echo $methods['test_method_name']; ?></option>
 																				<?php
 																			}
 																			?>
@@ -903,9 +904,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
                                                                                      <?php
-                                                                                          foreach ($testResultUnits as $key=>$unit) {
+                                                                                          foreach ($testResultUnits as $unit) {
                                                                                           ?>
-                                                                                     <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+                                                                                     <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
                                                                                      <?php
                                                                                           }
                                                                                      ?>
@@ -923,7 +924,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 														<th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br>Test Result Unit<br><br>Result Interpretation</th>
 															<td id="result-sections" class="resultInputContainer">
 
-                                                                           </td>
+                                                            </td>
 														</tr>
 													</tfoot>
 												</table>
@@ -1035,9 +1036,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 	$(document).ready(function() {
 
 		var testType = $("#testType").val();
-		getSampleTypeList(testType);
-		getTestReason(testType);
-      //  getTestMethods(testType);
+		getTestTypeConfigList(testType);
+
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -1717,6 +1717,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 	function getTestTypeForm() {
 		removeDynamicForm();
 		var testType = $("#testType").val();
+		getTestTypeConfigList(testType);
 		if (testType != "") {
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
@@ -1724,6 +1725,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 					result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
 					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
 					resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+					resultUnit:'<?php echo $genericResultInfo['result_unit']; ?>',
 				},
 				function(data) {
 					data = JSON.parse(data);
@@ -1785,43 +1787,31 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 		$(".requestForm").hide();
 	}
 
-	function getSampleTypeList(testTypeId) {
-		$.post("/includes/get-sample-type.php", {
-				testTypeId: testTypeId,
-				sampleTypeId: '<?php echo $genericResultInfo['sample_type']; ?>'
-			},
-			function(data) {
-				if (data != "") {
-					$("#specimenType").html(data);
-				}
-			});
-	}
 
-	function getTestReason(testTypeId)
-     {
-          $.post("/includes/get-test-reason.php", {
-                    testTypeId: testTypeId,
-					testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>'
-               },
-               function(data) {
-                    if (data != "") {
-                         $("#reasonForTesting").html(data);
-                    }
-               });
-     }
-
-     function getTestMethods(testTypeId)
-     {
-          $.post("/includes/get-test-methods.php", {
-                    testTypeId: testTypeId,
-					testMethodId: '<?php echo $genericResultInfo['reason_for_testing']; ?>'
-               },
-               function(data) {
-                    if (data != "") {
-                         $("#testName1").html(data);
-                    }
-               });
-     }
+	function getTestTypeConfigList(testTypeId) {
+         
+		 $.post("/includes/get-test-type-config.php", {
+			  testTypeId: testTypeId,
+			  sampleTypeId: '<?php echo $genericResultInfo['sample_type']; ?>',
+			  testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>',
+			  //testMethodId: '< ?php echo $genericResultInfo['reason_for_testing']; ?>'
+		 },
+		 function(data) {
+			  Obj = $.parseJSON(data);
+			  if (data != "") {
+				   $("#specimenType").html(Obj['sampleTypes']);
+				   $("#reasonForTesting").html(Obj['testReasons']);
+				  
+				    if($("#testName1").val()=='')
+				   		$("#testName1").html(Obj['testMethods']);
+					if($("#testResultUnit1").val()=='')
+				   		$("#testResultUnit1").html(Obj['testResultUnits']);
+					if($("#finalTestResultUnit").val()=='')
+				 	    $("#finalTestResultUnit").html(Obj['testResultUnits']);
+				   
+			  }
+		 });
+}
 
 	function addTestRow() {
 		testCounter++;
@@ -1845,9 +1835,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
             <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
-						foreach ($testResultUnits as $key=>$unit) {
+						foreach ($testResultUnits as $unit) {
 						?>
-					<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+					<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
 					<?php
 						}
 					?>
