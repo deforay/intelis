@@ -707,7 +707,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
+														<select name="testingPlatform" id="testingPlatform" class="form-control result-optional labSection" title="Please choose VL Testing Platform">
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -718,7 +718,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="noResult">Sample Rejection <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
-														<select name="noResult" id="noResult" class="form-control isRequired labSection" title="Please check if sample is rejected or not">
+														<select name="noResult" id="noResult" class="form-control labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -760,7 +760,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample Testing Date <span class="mandatory result-span">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
+														<input type="text" class="form-control dateTime result-fieldsform-control result-fields labSection <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
 												<div class="col-md-6 vlResult">
