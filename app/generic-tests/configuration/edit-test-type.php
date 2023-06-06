@@ -593,6 +593,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		let _fi = ["test_method_id", "test_category_id", "test_reason_id", "test_failure_reason_id", "rejection_reason_id"];
 		let _f = ["test_method_name", "test_category_name", "test_reason", "test_failure_reason", "rejection_reason_name"];
 		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
+		let _as = ["test_method_status", "test_category_status", "test_reason_status", "test_failure_reason_status", "rejection_reason_status"];
 
 		$(ajaxSelect).each(function(index, item){
 			$("#"+item).select2({
@@ -605,11 +606,12 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
                },
                ajax: {
                     placeholder: "Type one or more character to search",
-                    url: "/includes/get-data-list.php",
+                    url: "/includes/get-data-list-for-generic.php",
                     dataType: 'json',
                     delay: 250,
                     data: function(params) {
                          return {
+							  status: _as[index],
 							  fieldId: _fi[index],
                               fieldName: _f[index],
                               tableName: _t[index],
