@@ -4,6 +4,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Services\GenericTestsService;
 
 
 $title = "Edit Batch";
@@ -16,6 +17,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var GenericTestsService $general */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -51,7 +55,7 @@ $getTestId = "SELECT * FROM r_test_types where test_short_code= '" . $_GET['code
 $testTypeId = $db->rawQuery($getTestId);
 
 
-$sampleResult = $general->getSampleType($testTypeId[0]['test_type_id']);
+$sampleResult = $genericTestsService->getSampleType($testTypeId[0]['test_type_id']);
 $sResult = $sampleResult;
 //Get active machines
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
