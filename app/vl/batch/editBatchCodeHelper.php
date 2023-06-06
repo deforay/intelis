@@ -3,13 +3,16 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName1 = "batch_details";
 $tableName2 = "form_vl";
@@ -23,12 +26,11 @@ try {
         );
         $db = $db->where('batch_id', $id);
         $db->update($tableName1, $data);
-        if ($id === true) {
+        if ($id > 0) {
             $value = array('sample_batch_id' => null);
             $db = $db->where('sample_batch_id', $id);
             $db->update($tableName2, $value);
             $xplodResultSample = [];
-            // echo '<pre>'; print_r($_POST['selectedSample']); die;
             if (isset($_POST['selectedSample']) && trim($_POST['selectedSample']) != "") {
                 $xplodResultSample = explode(",", $_POST['selectedSample']);
             }
@@ -51,8 +53,10 @@ try {
             }
             //Update batch controls position, If samples has changed
             $displaySampleOrderArray = [];
-            $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
-            $batchInfo = $db->query($batchQuery);
+            $batchQuery = "SELECT * FROM batch_details as b_d
+                            INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine
+                            WHERE batch_id=?";
+            $batchInfo = $db->rawQuery($batchQuery, [$id]);
             if (isset($batchInfo) && !empty($batchInfo)) {
 
                 if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
@@ -64,8 +68,11 @@ try {
                 }
                 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
                     //Get display sample only
-                    $samplesQuery = "SELECT vl_sample_id,sample_code from form_vl where sample_batch_id=$id ORDER BY sample_code ASC";
-                    $samplesInfo = $db->query($samplesQuery);
+                    $samplesQuery = "SELECT vl_sample_id,sample_code
+                                        FROM form_vl
+                                        WHERE sample_batch_id=?
+                                        ORDER BY sample_code ASC";
+                    $samplesInfo = $db->rawQuery($samplesQuery, [$id]);
                     foreach ($samplesInfo as $sample) {
                         $displaySampleOrderArray[] = $sample['vl_sample_id'];
                     }
