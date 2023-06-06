@@ -19,6 +19,8 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
+    $origJson = $request->getBody()->getContents();
+
     $appVersion = null;
     try {
         $appVersion = Items::fromString($origJson, [
