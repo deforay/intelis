@@ -191,6 +191,7 @@ try {
             $params['uniqueId'] = $uniqueId;
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
+            $params['accessType'] = $user['access_type'];
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 

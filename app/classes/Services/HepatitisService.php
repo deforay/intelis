@@ -122,7 +122,15 @@ class HepatitisService
 
         //error_log($maxCodeKeyVal);
 
-        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = [
+            'sampleCode' => '',
+            'sampleCodeInText' => '',
+            'sampleCodeFormat' => '',
+            'sampleCodeKey' => '',
+            'maxId' => $maxId,
+            'mnthYr' => $mnthYr,
+            'auto' => $autoFormatedString
+        ];
 
 
 
@@ -297,7 +305,7 @@ class HepatitisService
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $hepatitisData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
                 'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
@@ -313,25 +321,33 @@ class HepatitisService
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
-            $oldSampleCodeKey = null;
+
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $hepatitisData['remote_sample_code'] = $sampleData['sampleCode'];
-                $hepatitisData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $hepatitisData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $hepatitisData['remote_sample'] = 'yes';
-                $hepatitisData['result_status'] = 9;
-                if ($_SESSION['accessType'] == 'testing-lab') {
-                    $hepatitisData['sample_code'] = $sampleData['sampleCode'];
-                    $hepatitisData['result_status'] = 6;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
+                if ($accessType === 'testing-lab') {
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $hepatitisData['sample_code'] = $sampleData['sampleCode'];
-                $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $hepatitisData['remote_sample'] = 'no';
-                $hepatitisData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
-            $sQuery = "SELECT hepatitis_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_hepatitis ";
+            $sQuery = "SELECT hepatitis_id,
+                            sample_code,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key
+                            FROM form_hepatitis ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -345,27 +361,33 @@ class HepatitisService
                 'applicationVersion'  => $version,
                 'ip_address'    => $ipaddress
             ];
-            $hepatitisData['form_attributes'] = json_encode($formAttributes);
+            $tesRequestData['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
-            if (!empty($rowData)) {
-                // If this sample code exists, let us regenerate
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $this->db->insert("form_hepatitis", $tesRequestData);
+                $id = $this->db->getInsertId();
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
+                }
+            } else {
+                // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
-            } else {
-                if (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $hepatitisData['unique_id'] = $this->commonService->generateUUID();
-                    $id = $this->db->insert("form_hepatitis", $hepatitisData);
-                }
             }
-            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
 
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastErrno());
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastError());
             error_log('Insert Hepatitis Sample : ' . $this->db->getLastQuery());
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
-            return 0;
+            $id = 0;
         }
+        return $id > 0 ? $id : 0;
     }
 }

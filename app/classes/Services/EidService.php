@@ -52,11 +52,6 @@ class EidService
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-        //     $remotePrefix = 'R';
-        //     $sampleCodeKeyCol = 'remote_sample_code_key';
-        //     $sampleCodeCol = 'remote_sample_code';
-        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -65,7 +60,7 @@ class EidService
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
-        } else if ($sampleCodeFormat == 'YY') {
+        } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
         }
 
@@ -100,7 +95,15 @@ class EidService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
+        $sampleCodeGenerator = [
+            'sampleCode' => '',
+            'sampleCodeInText' => '',
+            'sampleCodeFormat' => '',
+            'sampleCodeKey' => '',
+            'maxId' => $maxId,
+            'mnthYr' => $mnthYr,
+            'auto' => $autoFormatedString
+        ];
 
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
@@ -113,20 +116,23 @@ class EidService
             $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
             $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
-        } else if ($sampleCodeFormat == 'auto2') {
+        } elseif ($sampleCodeFormat == 'auto2') {
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-        } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
-        $checkResult = $this->db->rawQueryOne($checkQuery);
+        $checkQuery = "SELECT $sampleCodeCol,
+                                $sampleCodeKeyCol
+                                FROM $this->table
+                                WHERE $sampleCodeCol=?";
+        $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
             error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
@@ -171,7 +177,7 @@ class EidService
         try {
             $globalConfig = $this->commonService->getGlobalConfig();
             $vlsmSystemConfig = $this->commonService->getSystemConfig();
-            
+
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -201,7 +207,7 @@ class EidService
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
-            $oldSampleCodeKey = null;
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
@@ -209,7 +215,7 @@ class EidService
                 $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $tesRequestData['remote_sample'] = 'yes';
                 $tesRequestData['result_status'] = 9;
-                if ($_SESSION['accessType'] === 'testing-lab') {
+                if ($accessType === 'testing-lab') {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['result_status'] = 6;
                 }
@@ -221,7 +227,14 @@ class EidService
                 $tesRequestData['result_status'] = 6;
             }
 
-            $sQuery = "SELECT eid_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_eid ";
+            $sQuery = "SELECT eid_id,
+                            sample_code,
+                            sample_code_format,
+                            sample_code_key,
+                            remote_sample_code,
+                            remote_sample_code_format,
+                            remote_sample_code_key
+                            FROM form_eid ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -237,7 +250,8 @@ class EidService
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_eid", $tesRequestData);
+                $this->db->insert("form_eid", $tesRequestData);
+                $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }

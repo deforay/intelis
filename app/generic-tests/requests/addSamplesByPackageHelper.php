@@ -1,15 +1,17 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 // Sanitized values from $request object
@@ -17,21 +19,26 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$sampleQuery = "SELECT sample_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_generic where sample_id IN (?)";
+$sampleQuery = "SELECT sample_id,
+                    sample_collection_date,
+                    sample_package_code,
+                    province_id, sample_code
+                    FROM form_generic
+                    WHERE sample_id IN (?)";
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
     $provinceCode = null;
 
     $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
-    $testTypeShortCode = "LAB";
+    $testTypeShortCode = "T";
     if (!empty($testType['dynamicLabel']['test_short_code'])) {
         $testTypeShortCode = $testType['dynamicLabel']['test_short_code'];
     }
 
     if (!empty($sampleRow['province_id'])) {
-        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id = " . $sampleRow['province_id'];
-        $provinceResult = $db->rawQueryOne($provinceQuery);
+        $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id = ?";
+        $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
         $provinceCode = $provinceResult['geo_code'];
     }
     if (!empty($_POST['testDate'])) {
@@ -44,7 +51,7 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $genericTestsService->generateGenericSampleID($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']), null, '', null, null, $testTypeShortCode);
+        $sampleJson = $genericTestsService->generateGenericTestSampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']), null, '', null, null, $testTypeShortCode);
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];

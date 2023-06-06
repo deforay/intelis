@@ -57,10 +57,6 @@ class VlService
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
-        if (!empty($maxCodeKeyVal)) {
-            error_log(" ===== MAXX Code ====== " . $maxCodeKeyVal);
-        }
-
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
@@ -125,6 +121,10 @@ class VlService
         $maxId = sprintf("%04d", (int) $maxId);
 
         $sampleCodeGenerator = [
+            'sampleCode' => '',
+            'sampleCodeInText' => '',
+            'sampleCodeFormat' => '',
+            'sampleCodeKey' => '',
             'maxId' => $maxId,
             'mnthYr' => $mnthYr,
             'auto' => $autoFormatedString
@@ -465,7 +465,7 @@ class VlService
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
-            $oldSampleCodeKey = null;
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
@@ -473,7 +473,7 @@ class VlService
                 $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $tesRequestData['remote_sample'] = 'yes';
                 $tesRequestData['result_status'] = 9;
-                if ($_SESSION['accessType'] === 'testing-lab') {
+                if ($accessType === 'testing-lab') {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['result_status'] = 6;
                 }
@@ -506,9 +506,11 @@ class VlService
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_vl", $tesRequestData);
-
-                error_log($this->db->getLastError());
+                $this->db->insert("form_vl", $tesRequestData);
+                $id = $this->db->getInsertId();
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
+                }
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
